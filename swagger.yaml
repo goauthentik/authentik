@@ -4062,6 +4062,39 @@ paths:
         type: string
         format: slug
         pattern: ^[-a-zA-Z0-9_]+$
+  /flows/instances/{slug}/set_background/:
+    post:
+      operationId: flows_instances_set_background
+      description: Set Flow background
+      parameters:
+        - name: file
+          in: formData
+          required: true
+          type: file
+      responses:
+        '200':
+          description: Success
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+        '404':
+          description: Object does not exist or caller has insufficient permissions
+            to access it.
+          schema:
+            $ref: '#/definitions/APIException'
+      consumes:
+        - multipart/form-data
+      tags:
+        - flows
+    parameters:
+      - name: slug
+        in: path
+        description: Visible in the URL.
+        required: true
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
   /oauth2/authorization_codes/:
     get:
       operationId: oauth2_authorization_codes_list

@@ -3,11 +3,12 @@ from dataclasses import dataclass
 
 from django.core.cache import cache
 from django.db.models import Model
-from django.http.response import JsonResponse
+from django.http.response import HttpResponseBadRequest, JsonResponse
 from drf_yasg import openapi
 from drf_yasg.utils import no_body, swagger_auto_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
+from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
@@ -194,3 +195,28 @@ class FlowViewSet(ModelViewSet):
                     )
         diagram = "\n".join([str(x) for x in header + body + footer])
         return Response({"diagram": diagram})
+
+    @permission_required("authentik_flows.change_flow")
+    @swagger_auto_schema(
+        request_body=no_body,
+        manual_parameters=[
+            openapi.Parameter(
+                name="file",
+                in_=openapi.IN_FORM,
+                type=openapi.TYPE_FILE,
+                required=True,
+            )
+        ],
+        responses={200: "Success"},
+    )
+    @action(detail=True, methods=["POST"], parser_classes=(MultiPartParser,))
+    # pylint: disable=unused-argument
+    def set_background(self, request: Request, slug: str):
+        """Set Flow background"""
+        app: Flow = self.get_object()
+        icon = request.FILES.get("file", None)
+        if not icon:
+            return HttpResponseBadRequest()
+        app.background = icon
+        app.save()
+        return Response({})
