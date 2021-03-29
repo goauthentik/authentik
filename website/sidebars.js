@@ -117,6 +117,7 @@ module.exports = {
                         "integrations/services/grafana/index",
                         "integrations/services/harbor/index",
                         "integrations/services/home-assistant/index",
+                        "integrations/services/minio/index",
                         "integrations/services/nextcloud/index",
                         "integrations/services/rancher/index",
                         "integrations/services/sentry/index",

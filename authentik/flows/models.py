@@ -158,6 +158,8 @@ class Flow(SerializerModel, PolicyBindingModel):
 
         permissions = [
             ("export_flow", "Can export a Flow"),
+            ("view_flow_cache", "View Flow's cache metrics"),
+            ("clear_flow_cache", "Clear Flow's cache metrics"),
         ]
 
 

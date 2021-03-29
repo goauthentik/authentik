@@ -16,6 +16,7 @@ from rest_framework.serializers import (
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.api.decorators import permission_required
 from authentik.core.api.applications import user_app_cache_key
 from authentik.core.api.groups import GroupSerializer
 from authentik.core.api.utils import (
@@ -143,12 +144,14 @@ class PolicyViewSet(
             )
         return Response(TypeCreateSerializer(data, many=True).data)
 
+    @permission_required("authentik_policies.view_policy_cache")
     @swagger_auto_schema(responses={200: CacheSerializer(many=False)})
     @action(detail=False)
     def cache_info(self, request: Request) -> Response:
         """Info about cached policies"""
         return Response(data={"count": len(cache.keys("policy_*"))})
 
+    @permission_required("authentik_policies.clear_policy_cache")
     @swagger_auto_schema(
         request_body=no_body,
         responses={204: "Successfully cleared cache", 400: "Bad request"},
