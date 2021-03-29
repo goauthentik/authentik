@@ -4496,6 +4496,48 @@ paths:
       tags:
         - outposts
     parameters: []
+  /outposts/outposts/default_settings/:
+    get:
+      operationId: outposts_outposts_default_settings
+      description: Global default outpost config
+      parameters:
+        - name: providers__isnull
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: Page Index
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Page Size
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OutpostDefaultConfig'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+      tags:
+        - outposts
+    parameters: []
   /outposts/outposts/{uuid}/:
     get:
       operationId: outposts_outposts_read
@@ -15658,6 +15700,13 @@ definitions:
       _config:
         title: config
         type: object
+  OutpostDefaultConfig:
+    type: object
+    properties:
+      config:
+        title: Config
+        type: object
+        readOnly: true
   OutpostHealth:
     type: object
     properties:

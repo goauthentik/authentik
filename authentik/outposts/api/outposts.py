@@ -9,7 +9,7 @@ from rest_framework.serializers import JSONField, ModelSerializer, Serializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
-from authentik.outposts.models import Outpost
+from authentik.outposts.models import Outpost, default_outpost_config
 
 
 class OutpostSerializer(ModelSerializer):
@@ -30,6 +30,18 @@ class OutpostSerializer(ModelSerializer):
             "token_identifier",
             "_config",
         ]
+
+
+class OutpostDefaultConfigSerializer(Serializer):
+    """Global default outpost config"""
+
+    config = JSONField(read_only=True)
+
+    def create(self, validated_data: dict) -> Model:
+        raise NotImplementedError
+
+    def update(self, instance: Model, validated_data: dict) -> Model:
+        raise NotImplementedError
 
 
 class OutpostHealthSerializer(Serializer):
@@ -78,3 +90,9 @@ class OutpostViewSet(ModelViewSet):
                 }
             )
         return Response(OutpostHealthSerializer(states, many=True).data)
+
+    @swagger_auto_schema(responses={200: OutpostDefaultConfigSerializer(many=False)})
+    @action(detail=False, methods=["GET"])
+    def default_settings(self, request: Request) -> Response:
+        """Global default outpost config"""
+        return Response({"config": default_outpost_config(request._request.get_host())})

@@ -71,7 +71,7 @@ export class GroupForm extends Form<Group> {
                 label=${gettext("Members")}
                 ?required=${true}
                 name="users">
-                <select name="users" class="pf-c-form-control" multiple>
+                <select class="pf-c-form-control" multiple>
                     ${until(new CoreApi(DEFAULT_CONFIG).coreUsersList({}).then(users => {
                         return users.results.map(user => {
                             const selected = Array.from(this.group?.users || []).some(su => {
