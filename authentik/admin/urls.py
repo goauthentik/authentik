@@ -2,7 +2,6 @@
 from django.urls import path
 
 from authentik.admin.views import (
-    outposts,
     outposts_service_connections,
     policies,
     policies_bindings,
@@ -113,17 +112,6 @@ urlpatterns = [
         "property-mappings/<uuid:pk>/test/",
         property_mappings.PropertyMappingTestView.as_view(),
         name="property-mapping-test",
-    ),
-    # Outposts
-    path(
-        "outposts/create/",
-        outposts.OutpostCreateView.as_view(),
-        name="outpost-create",
-    ),
-    path(
-        "outposts/<uuid:pk>/update/",
-        outposts.OutpostUpdateView.as_view(),
-        name="outpost-update",
     ),
     # Outpost Service Connections
     path(

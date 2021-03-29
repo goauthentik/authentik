@@ -95,4 +95,5 @@ class OutpostViewSet(ModelViewSet):
     @action(detail=False, methods=["GET"])
     def default_settings(self, request: Request) -> Response:
         """Global default outpost config"""
-        return Response({"config": default_outpost_config(request._request.get_host())})
+        host = self.request.build_absolute_uri("/")
+        return Response({"config": default_outpost_config(host)})

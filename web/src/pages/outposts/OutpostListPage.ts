@@ -6,14 +6,13 @@ import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
 
 import "./OutpostHealth";
+import "./OutpostForm";
 import "../../elements/buttons/SpinnerButton";
-import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/TokenCopyButton";
 import "../../elements/forms/DeleteForm";
 import { PAGE_SIZE } from "../../constants";
 import { Outpost, OutpostsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { AdminURLManager } from "../../api/legacy";
 import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-outpost-list")
@@ -58,12 +57,19 @@ export class OutpostListPage extends TablePage<Outpost> {
             })}</ul>`,
             html`<ak-outpost-health outpostId=${ifDefined(item.pk)}></ak-outpost-health>`,
             html`
-            <ak-modal-button href="${AdminURLManager.outposts(`${item.pk}/update/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            <ak-forms-modal>
+                <span slot="submit">
+                    ${gettext("Update")}
+                </span>
+                <span slot="header">
+                    ${gettext("Update Outpost")}
+                </span>
+                <ak-outpost-form slot="form" .outpost=${item}>
+                </ak-outpost-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>&nbsp;
+                </button>
+            </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${gettext("Outpost")}
@@ -122,12 +128,19 @@ export class OutpostListPage extends TablePage<Outpost> {
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-modal-button href=${AdminURLManager.outposts("create/")}>
-            <ak-spinner-button slot="trigger" class="pf-m-primary">
+        <ak-forms-modal>
+            <span slot="submit">
                 ${gettext("Create")}
-            </ak-spinner-button>
-            <div slot="modal"></div>
-        </ak-modal-button>
+            </span>
+            <span slot="header">
+                ${gettext("Create Outpost")}
+            </span>
+            <ak-outpost-form slot="form">
+            </ak-outpost-form>
+            <button slot="trigger" class="pf-c-button pf-m-primary">
+                ${gettext("Create")}
+            </button>
+        </ak-forms-modal>
         ${super.renderToolbar()}
         `;
     }
