@@ -17,6 +17,7 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.core.api.applications import user_app_cache_key
+from authentik.core.api.groups import GroupSerializer
 from authentik.core.api.utils import (
     CacheSerializer,
     MetaNameSerializer,
@@ -175,6 +176,8 @@ class PolicyBindingSerializer(ModelSerializer):
         queryset=PolicyBindingModel.objects.select_subclasses(),
         required=True,
     )
+
+    group = GroupSerializer(required=False)
 
     class Meta:
 
