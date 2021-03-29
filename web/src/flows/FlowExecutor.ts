@@ -39,9 +39,9 @@ import { Challenge, ChallengeTypeEnum, Config, FlowsApi, RootApi } from "authent
 import { DEFAULT_CONFIG } from "../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
-import { TITLE_SUFFIX } from "../elements/router/RouterOutlet";
 import { AccessDeniedChallenge } from "./access_denied/FlowAccessDenied";
 import { SpinnerSize } from "../elements/Spinner";
+import { TITLE_SUFFIX } from "../constants";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement implements StageHost {

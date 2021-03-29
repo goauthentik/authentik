@@ -4,11 +4,9 @@ import { ROUTES } from "../../routes";
 import { RouteMatch } from "./RouteMatch";
 import AKGlobal from "../../authentik.css";
 
-import "../../pages/generic/SiteShell";
 import "./Router404";
 import { Page } from "../Page";
-
-export const TITLE_SUFFIX = "authentik";
+import { TITLE_SUFFIX } from "../../constants";
 
 @customElement("ak-router-outlet")
 export class RouterOutlet extends LitElement {
