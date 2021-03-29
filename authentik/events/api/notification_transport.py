@@ -1,7 +1,6 @@
 """NotificationTransport API Views"""
 from django.http.response import Http404
 from drf_yasg2.utils import no_body, swagger_auto_schema
-from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, ListField, SerializerMethodField
 from rest_framework.request import Request
@@ -9,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.api.decorators import permission_required
 from authentik.events.models import (
     Notification,
     NotificationSeverity,
@@ -57,18 +57,17 @@ class NotificationTransportViewSet(ModelViewSet):
     queryset = NotificationTransport.objects.all()
     serializer_class = NotificationTransportSerializer
 
+    @permission_required("authentik_events.change_notificationtransport")
     @swagger_auto_schema(
         responses={200: NotificationTransportTestSerializer(many=False)},
         request_body=no_body,
     )
     @action(detail=True, methods=["post"])
-    # pylint: disable=invalid-name
+    # pylint: disable=invalid-name, unused-argument
     def test(self, request: Request, pk=None) -> Response:
         """Send example notification using selected transport. Requires
         Modify permissions."""
-        transports = get_objects_for_user(
-            request.user, "authentik_events.change_notificationtransport"
-        ).filter(pk=pk)
+        transports = self.get_object()
         if not transports.exists():
             raise Http404
         transport: NotificationTransport = transports.first()

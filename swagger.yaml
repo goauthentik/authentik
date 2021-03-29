@@ -1726,6 +1726,24 @@ paths:
         description: A unique integer value identifying this User.
         required: true
         type: integer
+  /core/users/{id}/recovery/:
+    get:
+      operationId: core_users_recovery
+      description: Create a temporary link that a user can use to recover their accounts
+      parameters: []
+      responses:
+        '200':
+          description: Recovery link for a user to reset their password
+          schema:
+            $ref: '#/definitions/UserRecovery'
+      tags:
+        - core
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this User.
+        required: true
+        type: integer
   /crypto/certificatekeypairs/:
     get:
       operationId: crypto_certificatekeypairs_list
@@ -11120,6 +11138,16 @@ definitions:
         items:
           $ref: '#/definitions/Coordinate'
         readOnly: true
+  UserRecovery:
+    description: Recovery link for a user to reset their password
+    required:
+      - link
+    type: object
+    properties:
+      link:
+        title: Link
+        type: string
+        minLength: 1
   CertificateKeyPair:
     description: CertificateKeyPair Serializer
     required:

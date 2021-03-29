@@ -3,6 +3,7 @@ import django_filters
 from django.db.models.aggregates import Count
 from django.db.models.fields.json import KeyTextTransform
 from drf_yasg2.utils import swagger_auto_schema
+from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, DictField, IntegerField
 from rest_framework.request import Request
@@ -132,7 +133,8 @@ class EventViewSet(ReadOnlyModelViewSet):
         filtered_action = request.query_params.get("action", EventAction.LOGIN)
         top_n = request.query_params.get("top_n", 15)
         return Response(
-            Event.objects.filter(action=filtered_action)
+            get_objects_for_user(request.user, "authentik_events.view_event")
+            .filter(action=filtered_action)
             .exclude(context__authorized_application=None)
             .annotate(application=KeyTextTransform("authorized_application", "context"))
             .annotate(user_pk=KeyTextTransform("pk", "user"))

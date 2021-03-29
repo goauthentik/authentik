@@ -1,12 +1,9 @@
 """Application API Views"""
 from django.core.cache import cache
 from django.db.models import QuerySet
-from django.http.response import Http404
 from drf_yasg2.utils import swagger_auto_schema
-from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.fields import SerializerMethodField
-from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
@@ -15,6 +12,7 @@ from rest_framework_guardian.filters import ObjectPermissionsFilter
 from structlog.stdlib import get_logger
 
 from authentik.admin.api.metrics import CoordinateSerializer, get_events_per_1h
+from authentik.api.decorators import permission_required
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.models import Application
 from authentik.events.models import EventAction
@@ -110,16 +108,15 @@ class ApplicationViewSet(ModelViewSet):
         serializer = self.get_serializer(allowed_applications, many=True)
         return self.get_paginated_response(serializer.data)
 
+    @permission_required(
+        "authentik_core.view_application", "authentik_events.view_event"
+    )
     @swagger_auto_schema(responses={200: CoordinateSerializer(many=True)})
     @action(detail=True)
+    # pylint: disable=unused-argument
     def metrics(self, request: Request, slug: str):
         """Metrics for application logins"""
-        app = get_object_or_404(
-            get_objects_for_user(request.user, "authentik_core.view_application"),
-            slug=slug,
-        )
-        if not request.user.has_perm("authentik_events.view_event"):
-            raise Http404
+        app = self.get_object()
         return Response(
             get_events_per_1h(
                 action=EventAction.AUTHORIZE_APPLICATION,
