@@ -60,10 +60,6 @@ export class AdminURLManager {
         return `/administration/events/rules/${rest}`;
     }
 
-    static eventTransports(rest: string): string {
-        return `/administration/events/transports/${rest}`;
-    }
-
 }
 
 export class UserURLManager {

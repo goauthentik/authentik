@@ -4,7 +4,6 @@ from django.urls import path
 from authentik.admin.views import (
     applications,
     events_notifications_rules,
-    events_notifications_transports,
     flows,
     outposts,
     outposts_service_connections,
@@ -171,17 +170,6 @@ urlpatterns = [
         "outpost_service_connections/<uuid:pk>/update/",
         outposts_service_connections.OutpostServiceConnectionUpdateView.as_view(),
         name="outpost-service-connection-update",
-    ),
-    # Event Notification Transpots
-    path(
-        "events/transports/create/",
-        events_notifications_transports.NotificationTransportCreateView.as_view(),
-        name="notification-transport-create",
-    ),
-    path(
-        "events/transports/<uuid:pk>/update/",
-        events_notifications_transports.NotificationTransportUpdateView.as_view(),
-        name="notification-transport-update",
     ),
     # Event Notification Rules
     path(

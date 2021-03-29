@@ -4,14 +4,14 @@ import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/buttons/ActionButton";
-import "../../elements/buttons/ModalButton";
+import "../../elements/forms/ModalForm";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
 import { EventsApi, NotificationTransport } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { AdminURLManager } from "../../api/legacy";
 import "../../elements/forms/DeleteForm";
+import "./TransportForm";
 
 @customElement("ak-event-transport-list")
 export class TransportListPage extends TablePage<NotificationTransport> {
@@ -61,12 +61,19 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                 }}>
                 ${gettext("Test")}
             </ak-action-button>
-            <ak-modal-button href="${AdminURLManager.eventTransports(`${item.pk}/update/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            <ak-forms-modal>
+                <span slot="submit">
+                    ${gettext("Update")}
+                </span>
+                <span slot="header">
+                    ${gettext("Update Notification Transport")}
+                </span>
+                <ak-event-transport-form slot="form" .transport=${item}>
+                </ak-event-transport-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
                     ${gettext("Edit")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
+                </button>
+            </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${gettext("Notifications Transport")}
@@ -84,12 +91,19 @@ export class TransportListPage extends TablePage<NotificationTransport> {
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-modal-button href=${AdminURLManager.eventTransports("create/")}>
-            <ak-spinner-button slot="trigger" class="pf-m-primary">
+        <ak-forms-modal>
+            <span slot="submit">
                 ${gettext("Create")}
-            </ak-spinner-button>
-            <div slot="modal"></div>
-        </ak-modal-button>
+            </span>
+            <span slot="header">
+                ${gettext("Create Notification Transport")}
+            </span>
+            <ak-event-transport-form slot="form">
+            </ak-event-transport-form>
+            <button slot="trigger" class="pf-c-button pf-m-primary">
+                ${gettext("Create")}
+            </button>
+        </ak-forms-modal>
         ${super.renderToolbar()}
         `;
     }
