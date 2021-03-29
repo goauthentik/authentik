@@ -33,7 +33,8 @@
         "rollup-plugin-cssimport": "^1.0.2",
         "rollup-plugin-external-globals": "^0.6.1",
         "tslib": "^2.1.0",
-        "webcomponent-qr-code": "^1.0.5"
+        "webcomponent-qr-code": "^1.0.5",
+        "yaml": "^1.10.2"
     },
     "devDependencies": {
         "@rollup/plugin-typescript": "^8.2.1",

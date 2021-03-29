@@ -19,16 +19,16 @@ export class HorizontalFormElement extends LitElement {
     }
 
     @property()
-    label: string = "";
+    label = "";
 
     @property({ type: Boolean })
     required = false;
 
     @property()
-    errorMessage: string = "";
+    errorMessage = "";
 
-    @property()
-    invalid: boolean = false;
+    @property({ type: Boolean })
+    invalid = false;
 
     updated(): void {
         this.querySelectorAll<HTMLInputElement>("input[autofocus]").forEach(input => {

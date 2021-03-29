@@ -7,6 +7,8 @@ import { Form } from "../../elements/forms/Form";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
+import "../../elements/CodeMirror";
+import YAML from "yaml";
 
 @customElement("ak-group-form")
 export class GroupForm extends Form<Group> {
@@ -65,6 +67,10 @@ export class GroupForm extends Form<Group> {
                     }))}
                 </select>
                 <p class="pf-c-form__helper-text">${gettext("Hold control/command to select multiple items.")}</p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${gettext("Attributes")}>
+                <ak-codemirror mode="yaml" name="attributes" value="${YAML.stringify(this.group?.attributes)}">
+                </ak-codemirror>
             </ak-form-element-horizontal>
         </form>`;
     }
