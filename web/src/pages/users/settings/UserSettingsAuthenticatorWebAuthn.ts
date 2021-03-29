@@ -11,6 +11,8 @@ import "../../../elements/buttons/SpinnerButton";
 import "../../../elements/forms/DeleteForm";
 import "../../../elements/forms/Form";
 import "../../../elements/forms/ModalForm";
+import "../../../elements/forms/HorizontalFormElement";
+import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-user-settings-authenticator-webauthn")
 export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
@@ -52,12 +54,12 @@ export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
                     });
                 }}>
                 <form class="pf-c-form pf-m-horizontal">
-                    <paper-input
-                        name="name"
-                        ?alwaysFloatLabel=${true}
-                        label="${gettext("Device name")}"
-                        value=${device.name}>
-                    </paper-input>
+                    <ak-form-element-horizontal
+                        label=${gettext("Device name")}
+                        ?required=${true}
+                        name="name">
+                        <input type="text" value="${ifDefined(device.name)}" class="pf-c-form-control" required>
+                    </ak-form-element-horizontal>
                 </form>
             </ak-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
