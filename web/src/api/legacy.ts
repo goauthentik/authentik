@@ -28,10 +28,6 @@ export class AdminURLManager {
         return `/administration/stages_prompts/${rest}`;
     }
 
-    static stageInvitations(rest: string): string {
-        return `/administration/stages/invitations/${rest}`;
-    }
-
     static stageBindings(rest: string): string {
         return `/administration/stages/bindings/${rest}`;
     }
@@ -50,10 +46,6 @@ export class UserURLManager {
 
     static tokens(rest: string): string {
         return `/-/user/tokens/${rest}`;
-    }
-
-    static authenticatorWebauthn(rest: string): string {
-        return `/-/user/authenticator/webauthn/${rest}`;
     }
 
 }
