@@ -1,6 +1,5 @@
 """policy API Views"""
 from django.core.cache import cache
-from django.http.response import HttpResponseBadRequest
 from django.urls import reverse
 from drf_yasg.utils import no_body, swagger_auto_schema
 from guardian.shortcuts import get_objects_for_user
@@ -127,8 +126,6 @@ class PolicyViewSet(
     @action(detail=False, methods=["POST"])
     def cache_clear(self, request: Request) -> Response:
         """Clear policy cache"""
-        if not request.user.is_superuser:
-            return HttpResponseBadRequest()
         keys = cache.keys("policy_*")
         cache.delete_many(keys)
         LOGGER.debug("Cleared Policy cache", keys=len(keys))
@@ -143,16 +140,17 @@ class PolicyViewSet(
         responses={200: PolicyTestResultSerializer()},
     )
     @action(detail=True, methods=["POST"])
-    def test(self, request: Request) -> Response:
+    # pylint: disable=unused-argument, invalid-name
+    def test(self, request: Request, pk: str) -> Response:
         """Test policy"""
         policy = self.get_object()
-        test_params = PolicyTestSerializer(request.data)
+        test_params = PolicyTestSerializer(data=request.data)
         if not test_params.is_valid():
             return Response(test_params.errors, status=400)
 
         # User permission check, only allow policy testing for users that are readable
         users = get_objects_for_user(request.user, "authentik_core.view_user").filter(
-            pk=test_params["user"]
+            pk=test_params.validated_data["user"].pk
         )
         if not users.exists():
             raise PermissionDenied()
@@ -165,4 +163,4 @@ class PolicyViewSet(
         proc = PolicyProcess(PolicyBinding(policy=policy), p_request, None)
         result = proc.execute()
         response = PolicyTestResultSerializer(result)
-        return Response(response)
+        return Response(response.data)
