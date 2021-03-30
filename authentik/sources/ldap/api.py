@@ -3,17 +3,16 @@ from datetime import datetime
 from time import time
 
 from django.core.cache import cache
-from django.db.models.base import Model
-from drf_yasg2.utils import swagger_auto_schema
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.fields import DateTimeField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer, Serializer
+from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.sources import SourceSerializer
-from authentik.core.api.utils import MetaNameSerializer
+from authentik.core.api.utils import MetaNameSerializer, PassiveSerializer
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 
 
@@ -44,16 +43,10 @@ class LDAPSourceSerializer(SourceSerializer):
         extra_kwargs = {"bind_password": {"write_only": True}}
 
 
-class LDAPSourceSyncStatusSerializer(Serializer):
+class LDAPSourceSyncStatusSerializer(PassiveSerializer):
     """LDAP Sync status"""
 
     last_sync = DateTimeField(read_only=True)
-
-    def create(self, validated_data: dict) -> Model:
-        raise NotImplementedError
-
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        raise NotImplementedError
 
 
 class LDAPSourceViewSet(ModelViewSet):

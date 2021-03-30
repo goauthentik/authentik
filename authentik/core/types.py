@@ -2,9 +2,9 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from django.db.models.base import Model
 from rest_framework.fields import CharField
-from rest_framework.serializers import Serializer
+
+from authentik.core.api.utils import PassiveSerializer
 
 
 @dataclass
@@ -21,29 +21,17 @@ class UILoginButton:
     icon_url: Optional[str] = None
 
 
-class UILoginButtonSerializer(Serializer):
+class UILoginButtonSerializer(PassiveSerializer):
     """Serializer for Login buttons of sources"""
 
     name = CharField()
     url = CharField()
     icon_url = CharField(required=False)
 
-    def create(self, validated_data: dict) -> Model:
-        return Model()
 
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        return Model()
-
-
-class UserSettingSerializer(Serializer):
+class UserSettingSerializer(PassiveSerializer):
     """Serializer for User settings for stages and sources"""
 
     object_uid = CharField()
     component = CharField()
     title = CharField()
-
-    def create(self, validated_data: dict) -> Model:
-        return Model()
-
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        return Model()

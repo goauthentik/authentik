@@ -1,13 +1,5 @@
 export class AdminURLManager {
 
-    static applications(rest: string): string {
-        return `/administration/applications/${rest}`;
-    }
-
-    static cryptoCertificates(rest: string): string {
-        return `/administration/crypto/certificates/${rest}`;
-    }
-
     static policies(rest: string): string {
         return `/administration/policies/${rest}`;
     }
@@ -24,16 +16,8 @@ export class AdminURLManager {
         return `/administration/property-mappings/${rest}`;
     }
 
-    static outposts(rest: string): string {
-        return `/administration/outposts/${rest}`;
-    }
-
     static outpostServiceConnections(rest: string): string {
         return `/administration/outpost_service_connections/${rest}`;
-    }
-
-    static flows(rest: string): string {
-        return `/administration/flows/${rest}`;
     }
 
     static stages(rest: string): string {
@@ -60,21 +44,6 @@ export class AdminURLManager {
         return `/administration/tokens/${rest}`;
     }
 
-    static eventRules(rest: string): string {
-        return `/administration/events/rules/${rest}`;
-    }
-
-    static eventTransports(rest: string): string {
-        return `/administration/events/transports/${rest}`;
-    }
-
-    static users(rest: string): string {
-        return `/administration/users/${rest}`;
-    }
-
-    static groups(rest: string): string {
-        return `/administration/groups/${rest}`;
-    }
 }
 
 export class UserURLManager {
@@ -104,6 +73,10 @@ export class AppURLManager {
 }
 
 export class FlowURLManager {
+
+    static defaultUnenrollment(): string {
+        return "/flows/-/default/unenrollment/";
+    }
 
     static configure(stageUuid: string, rest: string): string {
         return `/flows/-/configure/${stageUuid}/${rest}`;

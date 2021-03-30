@@ -17,7 +17,6 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import AKGlobal from "../../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
-import { AdminURLManager } from "../../api/legacy";
 
 @customElement("ak-flow-view")
 export class FlowViewPage extends LitElement {
@@ -80,9 +79,17 @@ export class FlowViewPage extends LitElement {
                                         </dt>
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">
-                                                <a class="pf-c-button pf-m-secondary ak-root-link" href="${AdminURLManager.flows(`${this.flow.pk}/execute/?next=/%23${window.location.href}`)}">
+                                                <button
+                                                    class="pf-c-button pf-m-secondary"
+                                                    @click=${() => {
+                                                    new FlowsApi(DEFAULT_CONFIG).flowsInstancesExecute({
+                                                        slug: this.flow.slug
+                                                    }).then(link => {
+                                                        window.location.assign(`${link.link}?next=/%23${window.location.href}`);
+                                                    });
+                                                }}>
                                                     ${gettext("Execute")}
-                                                </a>
+                                                </button>
                                             </div>
                                         </dd>
                                     </div>

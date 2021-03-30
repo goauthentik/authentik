@@ -1,6 +1,6 @@
 """PropertyMapping API Views"""
 from django.urls import reverse
-from drf_yasg2.utils import swagger_auto_schema
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.request import Request

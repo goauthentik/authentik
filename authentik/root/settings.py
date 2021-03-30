@@ -126,7 +126,7 @@ INSTALLED_APPS = [
     "authentik.stages.user_write.apps.AuthentikStageUserWriteConfig",
     "rest_framework",
     "django_filters",
-    "drf_yasg2",
+    "drf_yasg",
     "guardian",
     "django_prometheus",
     "channels",
@@ -137,6 +137,7 @@ INSTALLED_APPS = [
 GUARDIAN_MONKEY_PATCH = False
 
 SWAGGER_SETTINGS = {
+    "DEFAULT_AUTO_SCHEMA_CLASS": "authentik.api.schema.ErrorResponseAutoSchema",
     "DEFAULT_INFO": "authentik.api.v2.urls.info",
     "DEFAULT_PAGINATOR_INSPECTORS": [
         "authentik.api.pagination_schema.PaginationInspector",
@@ -437,7 +438,7 @@ _LOGGING_HANDLER_MAP = {
     "kubernetes": "INFO",
     "asyncio": "WARNING",
     "aioredis": "WARNING",
-    "drf_yasg2.utils": "WARNING",
+    "drf_yasg.utils": "WARNING",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false

@@ -12,8 +12,6 @@ import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import AKGlobal from "../../authentik.css";
-import CodeMirrorStyle from "codemirror/lib/codemirror.css";
-import CodeMirrorTheme from "codemirror/theme/monokai.css";
 
 import { convertToSlug } from "../../utils";
 import { SpinnerButton } from "./SpinnerButton";
@@ -33,7 +31,7 @@ export class ModalButton extends LitElement {
     modal = "<slot name='modal'></slot>";
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFModalBox, PFForm, PFFormControl, PFBullseye, PFBackdrop, PFPage, PFStack, PFCard, PFContent, AKGlobal, CodeMirrorStyle, CodeMirrorTheme].concat(
+        return [PFBase, PFButton, PFModalBox, PFForm, PFFormControl, PFBullseye, PFBackdrop, PFPage, PFStack, PFCard, PFContent, AKGlobal].concat(
             css`
                 :host {
                     text-align: left;
@@ -56,8 +54,15 @@ export class ModalButton extends LitElement {
         super();
         window.addEventListener("keyup", (e) => {
             if (e.code === "Escape") {
+                this.resetForms();
                 this.open = false;
             }
+        });
+    }
+
+    resetForms(): void {
+        this.querySelectorAll<HTMLFormElement>("[slot=form]").forEach(form => {
+            form.reset();
         });
     }
 
@@ -136,6 +141,11 @@ export class ModalButton extends LitElement {
         if (!this.href) {
             this.updateHandlers();
             this.open = true;
+            this.querySelectorAll("*").forEach(child => {
+                if ("requestUpdate" in child) {
+                    (child as LitElement).requestUpdate();
+                }
+            });
         } else {
             const request = new Request(this.href);
             fetch(request, {

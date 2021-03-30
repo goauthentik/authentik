@@ -11,7 +11,6 @@ import "./pages/events/RuleListPage";
 import "./pages/events/TransportListPage";
 import "./pages/flows/FlowListPage";
 import "./pages/flows/FlowViewPage";
-import "./pages/generic/SiteShell";
 import "./pages/groups/GroupListPage";
 import "./pages/LibraryPage";
 import "./pages/outposts/OutpostListPage";

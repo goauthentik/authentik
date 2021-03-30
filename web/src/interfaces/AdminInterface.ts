@@ -1,8 +1,5 @@
 import "construct-style-sheets-polyfill";
 
-// Elements that are used by SiteShell pages
-// And can't dynamically be imported
-import "../elements/CodeMirror";
 import "../elements/messages/MessageContainer";
 import { customElement } from "lit-element";
 import { me } from "../api/Users";
@@ -15,15 +12,6 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     new SidebarItem("Monitor").children(
         new SidebarItem("Overview", "/administration/overview"),
         new SidebarItem("System Tasks", "/administration/system-tasks"),
-    ).when((): Promise<boolean> => {
-        return me().then(u => u.user.isSuperuser||false);
-    }),
-    new SidebarItem("Events").children(
-        new SidebarItem("Logs", "/events/log").activeWhen(
-            `^/events/log/(?<id>${UUID_REGEX})$`
-        ),
-        new SidebarItem("Notification Rules", "/events/rules"),
-        new SidebarItem("Notification Transports", "/events/transports"),
     ).when((): Promise<boolean> => {
         return me().then(u => u.user.isSuperuser||false);
     }),
@@ -41,6 +29,15 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         new SidebarItem("Outpost Service Connections", "/outpost/service-connections"),
     ).when((): Promise<boolean> => {
         return me().then(u => u.user.isSuperuser||false);
+    }),
+    new SidebarItem("Events").children(
+        new SidebarItem("Logs", "/events/log").activeWhen(
+            `^/events/log/(?<id>${UUID_REGEX})$`
+        ),
+        new SidebarItem("Notification Rules", "/events/rules"),
+        new SidebarItem("Notification Transports", "/events/transports"),
+    ).when((): Promise<boolean> => {
+        return me().then(u => u.user.isSuperuser || false);
     }),
     new SidebarItem("Customisation").children(
         new SidebarItem("Policies", "/policy/policies"),

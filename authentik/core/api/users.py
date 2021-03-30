@@ -1,18 +1,18 @@
 """User API Views"""
-from django.db.models.base import Model
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
-from drf_yasg2.utils import swagger_auto_schema, swagger_serializer_method
+from drf_yasg.utils import swagger_auto_schema, swagger_serializer_method
 from guardian.utils import get_anonymous_user
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import BooleanField, ModelSerializer, Serializer
+from rest_framework.serializers import BooleanField, ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.admin.api.metrics import CoordinateSerializer, get_events_per_1h
 from authentik.api.decorators import permission_required
+from authentik.core.api.utils import LinkSerializer, PassiveSerializer
 from authentik.core.middleware import (
     SESSION_IMPERSONATE_ORIGINAL_USER,
     SESSION_IMPERSONATE_USER,
@@ -43,33 +43,15 @@ class UserSerializer(ModelSerializer):
         ]
 
 
-class SessionUserSerializer(Serializer):
+class SessionUserSerializer(PassiveSerializer):
     """Response for the /user/me endpoint, returns the currently active user (as `user` property)
     and, if this user is being impersonated, the original user in the `original` property."""
 
     user = UserSerializer()
     original = UserSerializer(required=False)
 
-    def create(self, validated_data: dict) -> Model:
-        raise NotImplementedError
 
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        raise NotImplementedError
-
-
-class UserRecoverySerializer(Serializer):
-    """Recovery link for a user to reset their password"""
-
-    link = CharField()
-
-    def create(self, validated_data: dict) -> Model:
-        raise NotImplementedError
-
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        raise NotImplementedError
-
-
-class UserMetricsSerializer(Serializer):
+class UserMetricsSerializer(PassiveSerializer):
     """User Metrics"""
 
     logins_per_1h = SerializerMethodField()
@@ -98,12 +80,6 @@ class UserMetricsSerializer(Serializer):
             action=EventAction.AUTHORIZE_APPLICATION, user__pk=request.user.pk
         )
 
-    def create(self, validated_data: dict) -> Model:
-        raise NotImplementedError
-
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        raise NotImplementedError
-
 
 class UserViewSet(ModelViewSet):
     """User Viewset"""
@@ -131,7 +107,7 @@ class UserViewSet(ModelViewSet):
         serializer.is_valid()
         return Response(serializer.data)
 
-    @permission_required("authentik_core.view_user", "authentik_events.view_event")
+    @permission_required("authentik_core.view_user", ["authentik_events.view_event"])
     @swagger_auto_schema(responses={200: UserMetricsSerializer(many=False)})
     @action(detail=False)
     def metrics(self, request: Request) -> Response:
@@ -142,7 +118,7 @@ class UserViewSet(ModelViewSet):
 
     @permission_required("authentik_core.reset_user_password")
     @swagger_auto_schema(
-        responses={"200": UserRecoverySerializer(many=False)},
+        responses={"200": LinkSerializer(many=False)},
     )
     @action(detail=True)
     # pylint: disable=invalid-name, unused-argument

@@ -10,7 +10,8 @@ import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
 import { CoreApi, Group } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { AdminURLManager } from "../../api/legacy";
+import "../../elements/forms/ModalForm";
+import "./GroupForm";
 
 @customElement("ak-group-list")
 export class GroupListPage extends TablePage<Group> {
@@ -53,15 +54,22 @@ export class GroupListPage extends TablePage<Group> {
         return [
             html`${item.name}`,
             html`${item.parent || "-"}`,
-            html`${item.users.keys.length}`,
+            html`${item.users?.keys.length}`,
             html`${item.isSuperuser ? "Yes" : "No"}`,
             html`
-            <ak-modal-button href="${AdminURLManager.groups(`${item.pk}/update/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            <ak-forms-modal>
+                <span slot="submit">
+                    ${gettext("Update")}
+                </span>
+                <span slot="header">
+                    ${gettext("Update Group")}
+                </span>
+                <ak-group-form slot="form" .group=${item}>
+                </ak-group-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
+                </button>
+            </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${gettext("Group")}
@@ -79,12 +87,19 @@ export class GroupListPage extends TablePage<Group> {
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-modal-button href=${AdminURLManager.groups("create/")}>
-            <ak-spinner-button slot="trigger" class="pf-m-primary">
+        <ak-forms-modal>
+            <span slot="submit">
                 ${gettext("Create")}
-            </ak-spinner-button>
-            <div slot="modal"></div>
-        </ak-modal-button>
+            </span>
+            <span slot="header">
+                ${gettext("Create Group")}
+            </span>
+            <ak-group-form slot="form">
+            </ak-group-form>
+            <button slot="trigger" class="pf-c-button pf-m-primary">
+                ${gettext("Create")}
+            </button>
+        </ak-forms-modal>
         ${super.renderToolbar()}
         `;
     }

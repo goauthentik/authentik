@@ -1,45 +1,32 @@
 """core Configs API"""
-from django.db.models import Model
-from drf_yasg2.utils import swagger_auto_schema
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.fields import BooleanField, CharField, ListField
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ViewSet
 
+from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.config import CONFIG
 
 
-class LinkSerializer(Serializer):
+class FooterLinkSerializer(PassiveSerializer):
     """Links returned in Config API"""
 
     href = CharField(read_only=True)
     name = CharField(read_only=True)
 
-    def create(self, validated_data: dict) -> Model:
-        raise NotImplementedError
 
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        raise NotImplementedError
-
-
-class ConfigSerializer(Serializer):
+class ConfigSerializer(PassiveSerializer):
     """Serialize authentik Config into DRF Object"""
 
     branding_logo = CharField(read_only=True)
     branding_title = CharField(read_only=True)
-    ui_footer_links = ListField(child=LinkSerializer(), read_only=True)
+    ui_footer_links = ListField(child=FooterLinkSerializer(), read_only=True)
 
     error_reporting_enabled = BooleanField(read_only=True)
     error_reporting_environment = CharField(read_only=True)
     error_reporting_send_pii = BooleanField(read_only=True)
-
-    def create(self, validated_data: dict) -> Model:
-        raise NotImplementedError
-
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        raise NotImplementedError
 
 
 class ConfigsViewSet(ViewSet):

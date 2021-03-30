@@ -17,7 +17,7 @@ def post_save_application(sender, instance, created: bool, **_):
 
     if sender != Application:
         return
-    if not created:
+    if not created:  # pragma: no cover
         return
     # Also delete user application cache
     keys = cache.keys(user_app_cache_key("*"))

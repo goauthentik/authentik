@@ -10,8 +10,8 @@ from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import View
-from drf_yasg2 import openapi
-from drf_yasg2.utils import no_body, swagger_auto_schema
+from drf_yasg import openapi
+from drf_yasg.utils import no_body, swagger_auto_schema
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from structlog.stdlib import BoundLogger, get_logger

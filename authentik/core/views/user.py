@@ -1,51 +1,18 @@
 """authentik core user views"""
-from typing import Any
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import (
     PermissionRequiredMixin as DjangoPermissionRequiredMixin,
 )
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http.response import HttpResponse
-from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from django.views.generic import UpdateView
-from django.views.generic.base import TemplateView
 from guardian.mixins import PermissionRequiredMixin
 from guardian.shortcuts import get_objects_for_user
 
 from authentik.core.forms.token import UserTokenForm
-from authentik.core.forms.users import UserDetailForm
 from authentik.core.models import Token, TokenIntents
-from authentik.flows.models import Flow, FlowDesignation
 from authentik.lib.views import CreateAssignPermView
-
-
-class UserSettingsView(TemplateView):
-    """Multiple SiteShells for user details and all stages"""
-
-    template_name = "user/settings.html"
-
-
-class UserDetailsView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
-    """Update User details"""
-
-    template_name = "user/details.html"
-    form_class = UserDetailForm
-
-    success_message = _("Successfully updated user.")
-    success_url = reverse_lazy("authentik_core:user-details")
-
-    def get_object(self):
-        return self.request.user
-
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        kwargs = super().get_context_data(**kwargs)
-        unenrollment_flow = Flow.with_policy(
-            self.request, designation=FlowDesignation.UNRENOLLMENT
-        )
-        kwargs["unenrollment_enabled"] = bool(unenrollment_flow)
-        return kwargs
 
 
 class TokenCreateView(

@@ -1,19 +1,16 @@
 """policy API Views"""
 from django.core.cache import cache
-from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import HttpResponseBadRequest
 from django.urls import reverse
-from drf_yasg2.utils import no_body, swagger_auto_schema
+from drf_yasg.utils import no_body, swagger_auto_schema
+from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import (
-    ModelSerializer,
-    PrimaryKeyRelatedField,
-    SerializerMethodField,
-)
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.decorators import permission_required
@@ -25,40 +22,12 @@ from authentik.core.api.utils import (
 )
 from authentik.lib.templatetags.authentik_utils import verbose_name
 from authentik.lib.utils.reflection import all_subclasses
-from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel
+from authentik.policies.api.exec import PolicyTestResultSerializer, PolicyTestSerializer
+from authentik.policies.models import Policy, PolicyBinding
+from authentik.policies.process import PolicyProcess
+from authentik.policies.types import PolicyRequest
 
 LOGGER = get_logger()
-
-
-class PolicyBindingModelForeignKey(PrimaryKeyRelatedField):
-    """rest_framework PrimaryKeyRelatedField which resolves
-    model_manager's InheritanceQuerySet"""
-
-    def use_pk_only_optimization(self):
-        return False
-
-    # pylint: disable=inconsistent-return-statements
-    def to_internal_value(self, data):
-        if self.pk_field is not None:
-            data = self.pk_field.to_internal_value(data)
-        try:
-            # Due to inheritance, a direct DB lookup for the primary key
-            # won't return anything. This is because the direct lookup
-            # checks the PK of PolicyBindingModel (for example),
-            # but we get given the Primary Key of the inheriting class
-            for model in self.get_queryset().select_subclasses().all().select_related():
-                if model.pk == data:
-                    return model
-            # as a fallback we still try a direct lookup
-            return self.get_queryset().get_subclass(pk=data)
-        except ObjectDoesNotExist:
-            self.fail("does_not_exist", pk_value=data)
-        except (TypeError, ValueError):
-            self.fail("incorrect_type", data_type=type(data).__name__)
-
-    def to_representation(self, value):
-        correct_model = PolicyBindingModel.objects.get_subclass(pbm_uuid=value.pbm_uuid)
-        return correct_model.pk
 
 
 class PolicySerializer(ModelSerializer, MetaNameSerializer):
@@ -168,39 +137,32 @@ class PolicyViewSet(
         cache.delete_many(keys)
         return Response(status=204)
 
-
-class PolicyBindingSerializer(ModelSerializer):
-    """PolicyBinding Serializer"""
-
-    # Because we're not interested in the PolicyBindingModel's PK but rather the subclasses PK,
-    # we have to manually declare this field
-    target = PolicyBindingModelForeignKey(
-        queryset=PolicyBindingModel.objects.select_subclasses(),
-        required=True,
+    @permission_required("authentik_policies.view_policy")
+    @swagger_auto_schema(
+        request_body=PolicyTestSerializer(),
+        responses={200: PolicyTestResultSerializer()},
     )
+    @action(detail=True, methods=["POST"])
+    def test(self, request: Request) -> Response:
+        """Test policy"""
+        policy = self.get_object()
+        test_params = PolicyTestSerializer(request.data)
+        if not test_params.is_valid():
+            return Response(test_params.errors, status=400)
 
-    class Meta:
+        # User permission check, only allow policy testing for users that are readable
+        users = get_objects_for_user(request.user, "authentik_core.view_user").filter(
+            pk=test_params["user"]
+        )
+        if not users.exists():
+            raise PermissionDenied()
 
-        model = PolicyBinding
-        fields = [
-            "pk",
-            "policy",
-            "group",
-            "user",
-            "target",
-            "enabled",
-            "order",
-            "timeout",
-        ]
-        depth = 2
+        p_request = PolicyRequest(users.first())
+        p_request.debug = True
+        p_request.set_http_request(self.request)
+        p_request.context = test_params.validated_data.get("context", {})
 
-
-class PolicyBindingViewSet(ModelViewSet):
-    """PolicyBinding Viewset"""
-
-    queryset = PolicyBinding.objects.all().select_related(
-        "policy", "target", "group", "user"
-    )
-    serializer_class = PolicyBindingSerializer
-    filterset_fields = ["policy", "target", "enabled", "order", "timeout"]
-    search_fields = ["policy__name"]
+        proc = PolicyProcess(PolicyBinding(policy=policy), p_request, None)
+        result = proc.execute()
+        response = PolicyTestResultSerializer(result)
+        return Response(response)

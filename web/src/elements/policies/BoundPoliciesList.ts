@@ -14,6 +14,9 @@ import { PAGE_SIZE } from "../../constants";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
 
+import "../../elements/forms/ModalForm";
+import "../../pages/groups/GroupForm";
+
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList extends Table<PolicyBinding> {
     @property()
@@ -59,12 +62,19 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 <div slot="modal"></div>
             </ak-modal-button>`;
         } else if (item.group) {
-            return html`<ak-modal-button href="${AdminURLManager.groups(`${item.group?.groupUuid}/update/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            return html`<ak-forms-modal>
+                <span slot="submit">
+                    ${gettext("Update")}
+                </span>
+                <span slot="header">
+                    ${gettext("Update Group")}
+                </span>
+                <ak-group-form slot="form" .group=${item.group}>
+                </ak-group-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
                     ${gettext("Edit Group")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>`;
+                </button>
+            </ak-forms-modal>`;
         } else if (item.user) {
             return html`<ak-modal-button href="${AdminURLManager.policies(`${item.user?.id}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">

@@ -12,7 +12,9 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import AKGlobal from "../../authentik.css";
 
-import "../../elements/buttons/ModalButton";
+import "../../elements/forms/ModalForm";
+import "./UserForm";
+import "../../elements/buttons/ActionButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/CodeMirror";
 import "../../elements/Tabs";
@@ -24,8 +26,9 @@ import "../../elements/charts/UserChart";
 import { Page } from "../../elements/Page";
 import { CoreApi, User } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { AdminURLManager } from "../../api/legacy";
 import { EVENT_REFRESH } from "../../constants";
+import { showMessage } from "../../elements/messages/MessageContainer";
+import { MessageLevel } from "../../elements/messages/Message";
 
 @customElement("ak-user-view")
 export class UserViewPage extends Page {
@@ -131,20 +134,35 @@ export class UserViewPage extends Page {
                                 </dl>
                             </div>
                             <div class="pf-c-card__footer">
-                                <ak-modal-button href="${AdminURLManager.users(`${this.user.pk}/update/`)}">
-                                    <ak-spinner-button slot="trigger" class="pf-m-primary">
+                                <ak-forms-modal>
+                                    <span slot="submit">
+                                        ${gettext("Update")}
+                                    </span>
+                                    <span slot="header">
+                                        ${gettext("Update User")}
+                                    </span>
+                                    <ak-user-form slot="form" .user=${this.user}>
+                                    </ak-user-form>
+                                    <button slot="trigger" class="pf-m-primary pf-c-button">
                                         ${gettext("Edit")}
-                                    </ak-spinner-button>
-                                    <div slot="modal"></div>
-                                </ak-modal-button>
+                                    </button>
+                                </ak-forms-modal>
                             </div>
                             <div class="pf-c-card__footer">
-                                <ak-modal-button href="${AdminURLManager.users(`${this.user.pk}/reset/`)}">
-                                    <ak-spinner-button slot="trigger" class="pf-m-secondary">
-                                        ${gettext("Reset Password")}
-                                    </ak-spinner-button>
-                                    <div slot="modal"></div>
-                                </ak-modal-button>
+                                <ak-action-button
+                                    .apiRequest=${() => {
+                                        return new CoreApi(DEFAULT_CONFIG).coreUsersRecovery({
+                                            id: this.user?.pk || 0,
+                                        }).then(rec => {
+                                            showMessage({
+                                                level: MessageLevel.success,
+                                                message: gettext("Successfully generated recovery link"),
+                                                description: rec.link
+                                            });
+                                        });
+                                    }}>
+                                    ${gettext("Reset Password")}
+                                </ak-action-button>
                             </div>
                         </div>
                         <div class="pf-c-card pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 4;grid-row-end: span 2;">

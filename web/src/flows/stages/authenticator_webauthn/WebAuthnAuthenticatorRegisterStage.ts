@@ -64,9 +64,9 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage {
         // post the transformed credential data to the server for validation
         // and storing the public key
         try {
-            const formData = new FormData();
-            formData.set("response", JSON.stringify(newAssertionForServer));
-            await this.host?.submit(formData);
+            await this.host?.submit({
+                response: newAssertionForServer
+            });
         } catch (err) {
             throw new Error(gettext(`Server validation of credential failed: ${err}`));
         }

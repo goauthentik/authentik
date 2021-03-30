@@ -3,16 +3,18 @@ import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
-import "../../elements/buttons/ModalButton";
+import "../../elements/forms/ModalForm";
 import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/ActionButton";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
 import { CoreApi, User } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { AdminURLManager } from "../../api/legacy";
 import "../../elements/forms/DeleteForm";
 import "./UserActiveForm";
+import "./UserForm";
+import { showMessage } from "../../elements/messages/MessageContainer";
+import { MessageLevel } from "../../elements/messages/Message";
 
 @customElement("ak-user-list")
 export class UserListPage extends TablePage<User> {
@@ -59,12 +61,19 @@ export class UserListPage extends TablePage<User> {
             html`${item.isActive ? "Yes" : "No"}`,
             html`${item.lastLogin?.toLocaleString()}`,
             html`
-            <ak-modal-button href="${AdminURLManager.users(`${item.pk}/update/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            <ak-forms-modal>
+                <span slot="submit">
+                    ${gettext("Update")}
+                </span>
+                <span slot="header">
+                    ${gettext("Update User")}
+                </span>
+                <ak-user-form slot="form" .user=${item}>
+                </ak-user-form>
+                <button slot="trigger" class="pf-m-secondary pf-c-button">
                     ${gettext("Edit")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
+                </button>
+            </ak-forms-modal>
             <ak-dropdown class="pf-c-dropdown">
                 <button class="pf-c-dropdown__toggle pf-m-primary" type="button">
                     <span class="pf-c-dropdown__toggle-text">${gettext(item.isActive ? "Disable" : "Enable")}</span>
@@ -107,7 +116,18 @@ export class UserListPage extends TablePage<User> {
                     </li>
                 </ul>
             </ak-dropdown>
-            <ak-action-button method="GET" url="${AdminURLManager.users(`${item.pk}/reset/`)}">
+            <ak-action-button
+                .apiRequest=${() => {
+                    return new CoreApi(DEFAULT_CONFIG).coreUsersRecovery({
+                        id: item.pk || 0,
+                    }).then(rec => {
+                        showMessage({
+                            level: MessageLevel.success,
+                            message: gettext("Successfully generated recovery link"),
+                            description: rec.link
+                        });
+                    });
+                }}>
                 ${gettext("Reset Password")}
             </ak-action-button>
             <a class="pf-c-button pf-m-tertiary" href="${`/-/impersonation/${item.pk}/`}">
@@ -118,13 +138,21 @@ export class UserListPage extends TablePage<User> {
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-modal-button href=${AdminURLManager.users("create/")}>
-            <ak-spinner-button slot="trigger" class="pf-m-primary">
+        <ak-forms-modal>
+            <span slot="submit">
                 ${gettext("Create")}
-            </ak-spinner-button>
-            <div slot="modal"></div>
-        </ak-modal-button>
+            </span>
+            <span slot="header">
+                ${gettext("Create User")}
+            </span>
+            <ak-user-form slot="form">
+            </ak-user-form>
+            <button slot="trigger" class="pf-c-button pf-m-primary">
+                ${gettext("Create")}
+            </button>
+        </ak-forms-modal>
         ${super.renderToolbar()}
         `;
     }
+
 }

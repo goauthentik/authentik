@@ -4,17 +4,21 @@ from rest_framework.fields import CharField, IntegerField
 from rest_framework.serializers import Serializer, SerializerMethodField
 
 
-class MetaNameSerializer(Serializer):
+class PassiveSerializer(Serializer):
+    """Base serializer class which doesn't implement create/update methods"""
+
+    def create(self, validated_data: dict) -> Model:
+        return Model()
+
+    def update(self, instance: Model, validated_data: dict) -> Model:
+        return Model()
+
+
+class MetaNameSerializer(PassiveSerializer):
     """Add verbose names to response"""
 
     verbose_name = SerializerMethodField()
     verbose_name_plural = SerializerMethodField()
-
-    def create(self, validated_data: dict) -> Model:
-        raise NotImplementedError
-
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        raise NotImplementedError
 
     def get_verbose_name(self, obj: Model) -> str:
         """Return object's verbose_name"""
@@ -25,27 +29,21 @@ class MetaNameSerializer(Serializer):
         return obj._meta.verbose_name_plural
 
 
-class TypeCreateSerializer(Serializer):
+class TypeCreateSerializer(PassiveSerializer):
     """Types of an object that can be created"""
 
     name = CharField(required=True)
     description = CharField(required=True)
     link = CharField(required=True)
 
-    def create(self, validated_data: dict) -> Model:
-        raise NotImplementedError
 
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        raise NotImplementedError
-
-
-class CacheSerializer(Serializer):
+class CacheSerializer(PassiveSerializer):
     """Generic cache stats for an object"""
 
     count = IntegerField(read_only=True)
 
-    def create(self, validated_data: dict) -> Model:
-        raise NotImplementedError
 
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        raise NotImplementedError
+class LinkSerializer(PassiveSerializer):
+    """Returns a single link"""
+
+    link = CharField()

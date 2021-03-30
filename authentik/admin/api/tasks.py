@@ -2,22 +2,21 @@
 from importlib import import_module
 
 from django.contrib import messages
-from django.db.models import Model
 from django.http.response import Http404
 from django.utils.translation import gettext_lazy as _
-from drf_yasg2.utils import swagger_auto_schema
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, ChoiceField, DateTimeField, ListField
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ViewSet
 
+from authentik.core.api.utils import PassiveSerializer
 from authentik.events.monitored_tasks import TaskInfo, TaskResultStatus
 
 
-class TaskSerializer(Serializer):
+class TaskSerializer(PassiveSerializer):
     """Serialize TaskInfo and TaskResult"""
 
     task_name = CharField()
@@ -29,12 +28,6 @@ class TaskSerializer(Serializer):
         choices=[(x.name, x.name) for x in TaskResultStatus],
     )
     messages = ListField(source="result.messages")
-
-    def create(self, validated_data: dict) -> Model:
-        raise NotImplementedError
-
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        raise NotImplementedError
 
 
 class TaskViewSet(ViewSet):

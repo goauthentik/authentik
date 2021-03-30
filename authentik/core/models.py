@@ -369,6 +369,7 @@ class Token(ManagedModel, ExpiringModel):
             models.Index(fields=["identifier"]),
             models.Index(fields=["key"]),
         ]
+        permissions = (("view_token_key", "View token's key"),)
 
 
 class PropertyMapping(SerializerModel, ManagedModel):

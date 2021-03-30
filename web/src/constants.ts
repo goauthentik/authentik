@@ -9,3 +9,4 @@ export const EVENT_REFRESH = "ak-refresh";
 export const EVENT_NOTIFICATION_TOGGLE = "ak-notification-toggle";
 export const EVENT_SIDEBAR_TOGGLE = "ak-sidebar-toggle";
 export const EVENT_API_DRAWER_REFRESH = "ak-api-drawer-refresh";
+export const TITLE_SUFFIX = "authentik";

@@ -1,5 +1,5 @@
 """ProxyProvider API Views"""
-from drf_yasg2.utils import swagger_serializer_method
+from drf_yasg.utils import swagger_serializer_method
 from rest_framework.fields import CharField, ListField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response

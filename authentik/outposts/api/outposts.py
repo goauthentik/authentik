@@ -1,15 +1,15 @@
 """Outpost API Views"""
-from django.db.models import Model
-from drf_yasg2.utils import swagger_auto_schema
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, DateTimeField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import JSONField, ModelSerializer, Serializer
+from rest_framework.serializers import JSONField, ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
-from authentik.outposts.models import Outpost
+from authentik.core.api.utils import PassiveSerializer
+from authentik.outposts.models import Outpost, default_outpost_config
 
 
 class OutpostSerializer(ModelSerializer):
@@ -32,19 +32,19 @@ class OutpostSerializer(ModelSerializer):
         ]
 
 
-class OutpostHealthSerializer(Serializer):
+class OutpostDefaultConfigSerializer(PassiveSerializer):
+    """Global default outpost config"""
+
+    config = JSONField(read_only=True)
+
+
+class OutpostHealthSerializer(PassiveSerializer):
     """Outpost health status"""
 
     last_seen = DateTimeField(read_only=True)
     version = CharField(read_only=True)
     version_should = CharField(read_only=True)
     version_outdated = BooleanField(read_only=True)
-
-    def create(self, validated_data: dict) -> Model:
-        raise NotImplementedError
-
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        raise NotImplementedError
 
 
 class OutpostViewSet(ModelViewSet):
@@ -78,3 +78,10 @@ class OutpostViewSet(ModelViewSet):
                 }
             )
         return Response(OutpostHealthSerializer(states, many=True).data)
+
+    @swagger_auto_schema(responses={200: OutpostDefaultConfigSerializer(many=False)})
+    @action(detail=False, methods=["GET"])
+    def default_settings(self, request: Request) -> Response:
+        """Global default outpost config"""
+        host = self.request.build_absolute_uri("/")
+        return Response({"config": default_outpost_config(host)})

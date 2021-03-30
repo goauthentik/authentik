@@ -80,9 +80,9 @@ class OutpostType(models.TextChoices):
     PROXY = "proxy"
 
 
-def default_outpost_config():
+def default_outpost_config(host: Optional[str] = None):
     """Get default outpost config"""
-    return asdict(OutpostConfig(authentik_host=""))
+    return asdict(OutpostConfig(authentik_host=host or ""))
 
 
 @dataclass

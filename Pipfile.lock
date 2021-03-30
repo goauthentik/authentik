@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "5fce5772178e4bc782d7112fab658f5bbb21abb77bb93fc3c0a66e9db3a23a37"
+            "sha256": "a9d504f00ee8820017f26a4fda2938de456cb72b4bc2f8735fc8c6a6c615d46a"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -416,13 +416,13 @@
             "index": "pypi",
             "version": "==4.4.4"
         },
-        "drf-yasg2": {
+        "drf-yasg": {
             "hashes": [
-                "sha256:7037a8041eb5d1073fa504a284fc889685f93d0bfd008a963db1b366db786734",
-                "sha256:75e661ca5cf15eb44fcfab408c7b864f87c20794f564aa08b3a31817a857f19d"
+                "sha256:8b72e5b1875931a8d11af407be3a9a5ba8776541492947a0df5bafda6b7f8267",
+                "sha256:d50f197c7f02545d0b736df88c6d5cf874f8fea2507ad85ad7de6ae5bf2d9e5a"
             ],
             "index": "pypi",
-            "version": "==1.19.4"
+            "version": "==1.20.0"
         },
         "facebook-sdk": {
             "hashes": [

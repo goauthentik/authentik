@@ -1,7 +1,7 @@
 """api v2 urls"""
 from django.urls import path, re_path
-from drf_yasg2 import openapi
-from drf_yasg2.views import get_schema_view
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
 from rest_framework import routers
 from rest_framework.permissions import AllowAny
 
@@ -33,7 +33,8 @@ from authentik.outposts.api.outpost_service_connections import (
     ServiceConnectionViewSet,
 )
 from authentik.outposts.api.outposts import OutpostViewSet
-from authentik.policies.api import PolicyBindingViewSet, PolicyViewSet
+from authentik.policies.api.bindings import PolicyBindingViewSet
+from authentik.policies.api.policies import PolicyViewSet
 from authentik.policies.dummy.api import DummyPolicyViewSet
 from authentik.policies.event_matcher.api import EventMatcherPolicyViewSet
 from authentik.policies.expiry.api import PasswordExpiryPolicyViewSet
@@ -189,7 +190,7 @@ router.register("policies/dummy", DummyPolicyViewSet)
 
 info = openapi.Info(
     title="authentik API",
-    default_version="v2",
+    default_version="v2beta",
     contact=openapi.Contact(email="hello@beryju.org"),
     license=openapi.License(
         name="GNU GPLv3", url="https://github.com/BeryJu/authentik/blob/master/LICENSE"

@@ -12,7 +12,7 @@ import { CoreApi, Token } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
 
-@customElement("ak-token-user-list")
+@customElement("ak-user-token-list")
 export class UserTokenList extends Table<Token> {
     searchEnabled(): boolean {
         return true;
@@ -41,7 +41,7 @@ export class UserTokenList extends Table<Token> {
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-modal-button href="-/user/tokens/create/">
+        <ak-modal-button href="/-/user/tokens/create/">
             <ak-spinner-button slot="trigger" class="pf-m-primary">
                 ${gettext("Create")}
             </ak-spinner-button>

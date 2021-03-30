@@ -1,6 +1,5 @@
 """Managed Object models"""
 from django.db import models
-from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 
 
@@ -21,10 +20,6 @@ class ManagedModel(models.Model):
         ),
         unique=True,
     )
-
-    def managed_objects(self) -> QuerySet:
-        """Get all objects which are managed"""
-        return self.objects.exclude(managed__isnull=True)
 
     class Meta:
 

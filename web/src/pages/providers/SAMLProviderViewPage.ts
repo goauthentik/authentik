@@ -12,8 +12,6 @@ import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import AKGlobal from "../../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import CodeMirrorStyle from "codemirror/lib/codemirror.css";
-import CodeMirrorTheme from "codemirror/theme/monokai.css";
 
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
@@ -26,6 +24,7 @@ import { ProvidersApi, SAMLProvider } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager, AppURLManager } from "../../api/legacy";
 import { EVENT_REFRESH } from "../../constants";
+import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-provider-saml-view")
 export class SAMLProviderViewPage extends Page {
@@ -55,7 +54,7 @@ export class SAMLProviderViewPage extends Page {
     provider?: SAMLProvider;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing,CodeMirrorStyle, CodeMirrorTheme,  AKGlobal];
+        return [PFBase, PFPage, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, AKGlobal];
     }
 
     constructor() {
@@ -153,7 +152,7 @@ export class SAMLProviderViewPage extends Page {
                                         new ProvidersApi(DEFAULT_CONFIG).providersSamlMetadata({
                                             id: this.provider.pk || 0,
                                         }).then(m => {
-                                            return html`<ak-codemirror mode="xml"><textarea class="pf-c-form-control" readonly>${m.metadata}</textarea></ak-codemirror>`;
+                                            return html`<ak-codemirror mode="xml" ?readOnly=${true} value="${ifDefined(m.metadata)}"></ak-codemirror>`;
                                         })
                                     )}
                                 </div>

@@ -1,17 +1,20 @@
 """Outpost API Views"""
 from dataclasses import asdict
 
-from django.db.models.base import Model
 from django.urls import reverse
-from drf_yasg2.utils import swagger_auto_schema
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer, Serializer
+from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
+from authentik.core.api.utils import (
+    MetaNameSerializer,
+    PassiveSerializer,
+    TypeCreateSerializer,
+)
 from authentik.lib.templatetags.authentik_utils import verbose_name
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.outposts.models import (
@@ -43,17 +46,11 @@ class ServiceConnectionSerializer(ModelSerializer, MetaNameSerializer):
         ]
 
 
-class ServiceConnectionStateSerializer(Serializer):
+class ServiceConnectionStateSerializer(PassiveSerializer):
     """Serializer for Service connection state"""
 
     healthy = BooleanField(read_only=True)
     version = CharField(read_only=True)
-
-    def create(self, validated_data: dict) -> Model:
-        raise NotImplementedError
-
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        raise NotImplementedError
 
 
 class ServiceConnectionViewSet(ModelViewSet):

@@ -3,16 +3,16 @@ from email.policy import Policy
 from types import MethodType
 from typing import Any, Callable, Iterator
 
-from django.db.models.base import Model
 from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from django.utils.translation import gettext_lazy as _
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.fields import BooleanField, CharField, IntegerField
-from rest_framework.serializers import Serializer, ValidationError
+from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
+from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User
 from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
@@ -26,7 +26,7 @@ LOGGER = get_logger()
 PLAN_CONTEXT_PROMPT = "prompt_data"
 
 
-class PromptSerializer(Serializer):
+class PromptSerializer(PassiveSerializer):
     """Serializer for a single Prompt field"""
 
     field_key = CharField()
@@ -35,12 +35,6 @@ class PromptSerializer(Serializer):
     required = BooleanField()
     placeholder = CharField()
     order = IntegerField()
-
-    def create(self, validated_data: dict) -> Model:
-        return Model()
-
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        return Model()
 
 
 class PromptChallenge(Challenge):

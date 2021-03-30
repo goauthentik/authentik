@@ -2,13 +2,6 @@
 from django.urls import path
 
 from authentik.admin.views import (
-    applications,
-    certificate_key_pair,
-    events_notifications_rules,
-    events_notifications_transports,
-    flows,
-    groups,
-    outposts,
     outposts_service_connections,
     policies,
     policies_bindings,
@@ -19,22 +12,10 @@ from authentik.admin.views import (
     stages_bindings,
     stages_invitations,
     stages_prompts,
-    users,
 )
 from authentik.providers.saml.views.metadata import MetadataImportView
 
 urlpatterns = [
-    # Applications
-    path(
-        "applications/create/",
-        applications.ApplicationCreateView.as_view(),
-        name="application-create",
-    ),
-    path(
-        "applications/<uuid:pk>/update/",
-        applications.ApplicationUpdateView.as_view(),
-        name="application-update",
-    ),
     # Sources
     path("sources/create/", sources.SourceCreateView.as_view(), name="source-create"),
     path(
@@ -116,27 +97,6 @@ urlpatterns = [
         stages_invitations.InvitationCreateView.as_view(),
         name="stage-invitation-create",
     ),
-    # Flows
-    path(
-        "flows/create/",
-        flows.FlowCreateView.as_view(),
-        name="flow-create",
-    ),
-    path(
-        "flows/import/",
-        flows.FlowImportView.as_view(),
-        name="flow-import",
-    ),
-    path(
-        "flows/<uuid:pk>/update/",
-        flows.FlowUpdateView.as_view(),
-        name="flow-update",
-    ),
-    path(
-        "flows/<uuid:pk>/execute/",
-        flows.FlowDebugExecuteView.as_view(),
-        name="flow-execute",
-    ),
     # Property Mappings
     path(
         "property-mappings/create/",
@@ -153,48 +113,6 @@ urlpatterns = [
         property_mappings.PropertyMappingTestView.as_view(),
         name="property-mapping-test",
     ),
-    # Users
-    path("users/create/", users.UserCreateView.as_view(), name="user-create"),
-    path("users/<int:pk>/update/", users.UserUpdateView.as_view(), name="user-update"),
-    path(
-        "users/<int:pk>/reset/",
-        users.UserPasswordResetView.as_view(),
-        name="user-password-reset",
-    ),
-    # Groups
-    path("groups/create/", groups.GroupCreateView.as_view(), name="group-create"),
-    path(
-        "groups/<uuid:pk>/update/",
-        groups.GroupUpdateView.as_view(),
-        name="group-update",
-    ),
-    # Certificate-Key Pairs
-    path(
-        "crypto/certificates/create/",
-        certificate_key_pair.CertificateKeyPairCreateView.as_view(),
-        name="certificatekeypair-create",
-    ),
-    path(
-        "crypto/certificates/generate/",
-        certificate_key_pair.CertificateKeyPairGenerateView.as_view(),
-        name="certificatekeypair-generate",
-    ),
-    path(
-        "crypto/certificates/<uuid:pk>/update/",
-        certificate_key_pair.CertificateKeyPairUpdateView.as_view(),
-        name="certificatekeypair-update",
-    ),
-    # Outposts
-    path(
-        "outposts/create/",
-        outposts.OutpostCreateView.as_view(),
-        name="outpost-create",
-    ),
-    path(
-        "outposts/<uuid:pk>/update/",
-        outposts.OutpostUpdateView.as_view(),
-        name="outpost-update",
-    ),
     # Outpost Service Connections
     path(
         "outpost_service_connections/create/",
@@ -205,27 +123,5 @@ urlpatterns = [
         "outpost_service_connections/<uuid:pk>/update/",
         outposts_service_connections.OutpostServiceConnectionUpdateView.as_view(),
         name="outpost-service-connection-update",
-    ),
-    # Event Notification Transpots
-    path(
-        "events/transports/create/",
-        events_notifications_transports.NotificationTransportCreateView.as_view(),
-        name="notification-transport-create",
-    ),
-    path(
-        "events/transports/<uuid:pk>/update/",
-        events_notifications_transports.NotificationTransportUpdateView.as_view(),
-        name="notification-transport-update",
-    ),
-    # Event Notification Rules
-    path(
-        "events/rules/create/",
-        events_notifications_rules.NotificationRuleCreateView.as_view(),
-        name="notification-rule-create",
-    ),
-    path(
-        "events/rules/<uuid:pk>/update/",
-        events_notifications_rules.NotificationRuleUpdateView.as_view(),
-        name="notification-rule-update",
     ),
 ]

@@ -1,5 +1,4 @@
 """Validation stage challenge checking"""
-from django.db.models import Model
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from django_otp import match_token
@@ -7,7 +6,7 @@ from django_otp.models import Device
 from django_otp.plugins.otp_static.models import StaticDevice
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from rest_framework.fields import CharField, JSONField
-from rest_framework.serializers import Serializer, ValidationError
+from rest_framework.serializers import ValidationError
 from webauthn import WebAuthnAssertionOptions, WebAuthnAssertionResponse, WebAuthnUser
 from webauthn.webauthn import (
     AuthenticationRejectedException,
@@ -15,23 +14,18 @@ from webauthn.webauthn import (
     WebAuthnUserDataMissing,
 )
 
+from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.authenticator_webauthn.utils import generate_challenge, get_origin
 
 
-class DeviceChallenge(Serializer):
+class DeviceChallenge(PassiveSerializer):
     """Single device challenge"""
 
     device_class = CharField()
     device_uid = CharField()
     challenge = JSONField()
-
-    def create(self, validated_data: dict) -> Model:
-        raise NotImplementedError
-
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        raise NotImplementedError
 
 
 def get_challenge_for_device(request: HttpRequest, device: Device) -> dict:

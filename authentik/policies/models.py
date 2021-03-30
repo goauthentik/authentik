@@ -95,7 +95,7 @@ class PolicyBinding(SerializerModel):
 
     @property
     def serializer(self) -> BaseSerializer:
-        from authentik.policies.api import PolicyBindingSerializer
+        from authentik.policies.api.bindings import PolicyBindingSerializer
 
         return PolicyBindingSerializer
 

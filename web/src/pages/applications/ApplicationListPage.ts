@@ -1,17 +1,17 @@
 import { gettext } from "django";
 import { css, CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
-import "../../elements/buttons/ModalButton";
+import "../../elements/forms/ModalForm";
 import "../../elements/forms/DeleteForm";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
 import { Application, CoreApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { AdminURLManager } from "../../api/legacy";
-import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
+import "./ApplicationForm";
 
 @customElement("ak-application-list")
 export class ApplicationListPage extends TablePage<Application> {
@@ -74,15 +74,22 @@ export class ApplicationListPage extends TablePage<Application> {
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : html``}
             </a>`,
             html`<code>${item.slug}</code>`,
-            html`${item.provider?.name}`,
-            html`${item.provider?.verboseName}`,
+            html`${item.provider?.name || "-"}`,
+            html`${item.provider?.verboseName || "-"}`,
             html`
-            <ak-modal-button href="${AdminURLManager.applications(`${item.pk}/update/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            <ak-forms-modal>
+                <span slot="submit">
+                    ${gettext("Update")}
+                </span>
+                <span slot="header">
+                    ${gettext("Update Application")}
+                </span>
+                <ak-application-form slot="form" .application=${item}>
+                </ak-application-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
+                </button>
+            </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${gettext("Application")}
@@ -100,12 +107,19 @@ export class ApplicationListPage extends TablePage<Application> {
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-modal-button href=${AdminURLManager.applications("create/")}>
-            <ak-spinner-button slot="trigger" class="pf-m-primary">
+        <ak-forms-modal>
+            <span slot="submit">
                 ${gettext("Create")}
-            </ak-spinner-button>
-            <div slot="modal"></div>
-        </ak-modal-button>
+            </span>
+            <span slot="header">
+                ${gettext("Create Application")}
+            </span>
+            <ak-application-form slot="form">
+            </ak-application-form>
+            <button slot="trigger" class="pf-c-button pf-m-primary">
+                ${gettext("Create")}
+            </button>
+        </ak-forms-modal>
         ${super.renderToolbar()}
         `;
     }

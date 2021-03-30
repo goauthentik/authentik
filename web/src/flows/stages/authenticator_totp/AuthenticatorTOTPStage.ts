@@ -85,7 +85,7 @@ export class AuthenticatorTOTPStage extends BaseStage {
                             autofocus=""
                             autocomplete="one-time-code"
                             class="pf-c-form-control"
-                            required="">
+                            required>
                     </ak-form-element>
 
                     <div class="pf-c-form__group pf-m-action">

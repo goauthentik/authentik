@@ -63,7 +63,7 @@ export class PasswordStage extends BaseStage {
                             autofocus=""
                             autocomplete="current-password"
                             class="pf-c-form-control"
-                            required=""
+                            required
                             value=${PasswordManagerPrefill.password || ""}>
                     </ak-form-element>
 

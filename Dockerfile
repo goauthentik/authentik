@@ -40,7 +40,7 @@ RUN apt-get update && \
     chown authentik:authentik /backups
 
 COPY ./authentik/ /authentik
-COPY ./pytest.ini /
+COPY ./pyproject.toml /
 COPY ./xml /xml
 COPY ./manage.py /
 COPY ./lifecycle/ /lifecycle

@@ -6,7 +6,7 @@ import { showMessage } from "./MessageContainer";
 export class MessageMiddleware implements Middleware {
 
     post(context: ResponseContext): Promise<Response | void> {
-        if (!context.response.ok) {
+        if (context.response.status >= 500) {
             showMessage({
                 level: MessageLevel.error,
                 message: gettext("API request failed"),
