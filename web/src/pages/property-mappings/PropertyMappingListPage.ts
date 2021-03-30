@@ -7,6 +7,8 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteForm";
+import "../../elements/forms/ModalForm";
+import "./PropertyMappingTestForm";
 import { TableColumn } from "../../elements/table/Table";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
@@ -64,12 +66,19 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${AdminURLManager.propertyMappings(`${item.pk}/test/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
+                <span slot="submit">
                     ${gettext("Test")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
+                </span>
+                <span slot="header">
+                    ${gettext("Test Property Mapping")}
+                </span>
+                <ak-property-mapping-test-form slot="form" .mapping=${item}>
+                </ak-property-mapping-test-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
+                    ${gettext("Test")}
+                </button>
+            </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${gettext("Property Mapping")}

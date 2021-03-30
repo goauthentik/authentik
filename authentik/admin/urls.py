@@ -30,11 +30,6 @@ urlpatterns = [
         policies.PolicyUpdateView.as_view(),
         name="policy-update",
     ),
-    path(
-        "policies/<uuid:pk>/test/",
-        policies.PolicyTestView.as_view(),
-        name="policy-test",
-    ),
     # Policy bindings
     path(
         "policies/bindings/create/",
@@ -107,11 +102,6 @@ urlpatterns = [
         "property-mappings/<uuid:pk>/update/",
         property_mappings.PropertyMappingUpdateView.as_view(),
         name="property-mapping-update",
-    ),
-    path(
-        "property-mappings/<uuid:pk>/test/",
-        property_mappings.PropertyMappingTestView.as_view(),
-        name="property-mapping-test",
     ),
     # Outpost Service Connections
     path(
