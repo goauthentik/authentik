@@ -29,5 +29,5 @@ class TestPropertyMappingAPI(APITestCase):
             },
         )
         self.assertJSONEqual(
-            response.content.decode(), {"result": dumps({"foo": "bar"})}
+            response.content.decode(), {"result": dumps({"foo": "bar"}), "successful": True}
         )
