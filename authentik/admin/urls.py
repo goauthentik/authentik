@@ -10,7 +10,6 @@ from authentik.admin.views import (
     sources,
     stages,
     stages_bindings,
-    stages_prompts,
 )
 from authentik.providers.saml.views.metadata import MetadataImportView
 
@@ -73,17 +72,6 @@ urlpatterns = [
         "stages/bindings/<uuid:pk>/update/",
         stages_bindings.StageBindingUpdateView.as_view(),
         name="stage-binding-update",
-    ),
-    # Stage Prompts
-    path(
-        "stages_prompts/create/",
-        stages_prompts.PromptCreateView.as_view(),
-        name="stage-prompt-create",
-    ),
-    path(
-        "stages_prompts/<uuid:pk>/update/",
-        stages_prompts.PromptUpdateView.as_view(),
-        name="stage-prompt-update",
     ),
     # Property Mappings
     path(
