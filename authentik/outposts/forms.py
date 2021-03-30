@@ -1,5 +1,4 @@
 """Outpost forms"""
-
 from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -12,40 +11,7 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.outposts.models import (
     DockerServiceConnection,
     KubernetesServiceConnection,
-    Outpost,
-    OutpostServiceConnection,
 )
-from authentik.providers.proxy.models import ProxyProvider
-
-
-class OutpostForm(forms.ModelForm):
-    """Outpost Form"""
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["providers"].queryset = ProxyProvider.objects.all()
-        self.fields[
-            "service_connection"
-        ].queryset = OutpostServiceConnection.objects.select_subclasses()
-
-    class Meta:
-
-        model = Outpost
-        fields = [
-            "name",
-            "type",
-            "service_connection",
-            "providers",
-            "_config",
-        ]
-        widgets = {
-            "name": forms.TextInput(),
-            "_config": CodeMirrorWidget,
-        }
-        field_classes = {
-            "_config": YAMLField,
-        }
-        labels = {"_config": _("Configuration")}
 
 
 class DockerServiceConnectionForm(forms.ModelForm):
