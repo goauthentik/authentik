@@ -7,7 +7,7 @@ from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 
-@MANAGER.source(kind=RequestKind.redirect, name="OpenID Connect")
+@MANAGER.source(kind=RequestKind.REDIRECT, name="OpenID Connect")
 class OpenIDConnectOAuthRedirect(OAuthRedirect):
     """OpenIDConnect OAuth2 Redirect"""
 
@@ -17,7 +17,7 @@ class OpenIDConnectOAuthRedirect(OAuthRedirect):
         }
 
 
-@MANAGER.source(kind=RequestKind.callback, name="OpenID Connect")
+@MANAGER.source(kind=RequestKind.CALLBACK, name="OpenID Connect")
 class OpenIDConnectOAuth2Callback(OAuthCallback):
     """OpenIDConnect OAuth2 Callback"""
 

@@ -8,12 +8,12 @@ from authentik.sources.oauth.views.dispatcher import DispatcherView
 urlpatterns = [
     path(
         "login/<slug:source_slug>/",
-        DispatcherView.as_view(kind=RequestKind.redirect),
+        DispatcherView.as_view(kind=RequestKind.REDIRECT),
         name="oauth-client-login",
     ),
     path(
         "callback/<slug:source_slug>/",
-        DispatcherView.as_view(kind=RequestKind.callback),
+        DispatcherView.as_view(kind=RequestKind.CALLBACK),
         name="oauth-client-callback",
     ),
 ]

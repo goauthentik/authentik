@@ -6,7 +6,7 @@ from authentik.sources.oauth.types.manager import MANAGER, RequestKind
 from authentik.sources.oauth.views.callback import OAuthCallback
 
 
-@MANAGER.source(kind=RequestKind.callback, name="Twitter")
+@MANAGER.source(kind=RequestKind.CALLBACK, name="Twitter")
 class TwitterOAuthCallback(OAuthCallback):
     """Twitter OAuth2 Callback"""
 

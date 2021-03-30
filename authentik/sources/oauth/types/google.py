@@ -7,7 +7,7 @@ from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 
-@MANAGER.source(kind=RequestKind.redirect, name="Google")
+@MANAGER.source(kind=RequestKind.REDIRECT, name="Google")
 class GoogleOAuthRedirect(OAuthRedirect):
     """Google OAuth2 Redirect"""
 
@@ -17,7 +17,7 @@ class GoogleOAuthRedirect(OAuthRedirect):
         }
 
 
-@MANAGER.source(kind=RequestKind.callback, name="Google")
+@MANAGER.source(kind=RequestKind.CALLBACK, name="Google")
 class GoogleOAuth2Callback(OAuthCallback):
     """Google OAuth2 Callback"""
 
