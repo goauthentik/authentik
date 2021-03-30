@@ -28,7 +28,7 @@ import "./pages/system-tasks/SystemTaskListPage";
 import "./pages/tokens/TokenListPage";
 import "./pages/users/UserListPage";
 import "./pages/users/UserViewPage";
-import "./pages/users/UserSettingsPage";
+import "./pages/user-settings/UserSettingsPage";
 
 export const ROUTES: Route[] = [
     // Prevent infinite Shell loops
