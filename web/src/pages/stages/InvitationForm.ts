@@ -4,7 +4,6 @@ import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { Form } from "../../elements/forms/Form";
-import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
 import "../../elements/CodeMirror";
 import YAML from "yaml";
@@ -42,7 +41,7 @@ export class InvitationForm extends Form<Invitation> {
                 label=${gettext("Expires")}
                 ?required=${true}
                 name="expires">
-                <input type="date" value="${ifDefined(this.invitation?.expires)}" class="pf-c-form-control" required>
+                <input type="date" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${gettext("Attributes")}

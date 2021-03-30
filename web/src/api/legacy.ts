@@ -32,18 +32,6 @@ export class AdminURLManager {
         return `/administration/sources/${rest}`;
     }
 
-    static tokens(rest: string): string {
-        return `/administration/tokens/${rest}`;
-    }
-
-}
-
-export class UserURLManager {
-
-    static tokens(rest: string): string {
-        return `/-/user/tokens/${rest}`;
-    }
-
 }
 
 export class AppURLManager {
