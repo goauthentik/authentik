@@ -3,13 +3,11 @@ from dataclasses import dataclass
 
 from django.core.cache import cache
 from django.db.models import Model
-from django.http.response import HttpResponseBadRequest, JsonResponse
-from django.shortcuts import get_object_or_404
+from django.http.response import JsonResponse
 from drf_yasg2 import openapi
 from drf_yasg2.utils import no_body, swagger_auto_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
@@ -21,6 +19,7 @@ from rest_framework.serializers import (
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.api.decorators import permission_required
 from authentik.core.api.utils import CacheSerializer
 from authentik.flows.models import Flow
 from authentik.flows.planner import cache_key
@@ -89,12 +88,14 @@ class FlowViewSet(ModelViewSet):
     search_fields = ["name", "slug", "designation", "title"]
     filterset_fields = ["flow_uuid", "name", "slug", "designation"]
 
+    @permission_required("authentik_flows.view_flow_cache")
     @swagger_auto_schema(responses={200: CacheSerializer(many=False)})
     @action(detail=False)
     def cache_info(self, request: Request) -> Response:
         """Info about cached flows"""
         return Response(data={"count": len(cache.keys("flow_*"))})
 
+    @permission_required("authentik_flows.clear_flow_cache")
     @swagger_auto_schema(
         request_body=no_body,
         responses={204: "Successfully cleared cache", 400: "Bad request"},
@@ -102,13 +103,12 @@ class FlowViewSet(ModelViewSet):
     @action(detail=False, methods=["POST"])
     def cache_clear(self, request: Request) -> Response:
         """Clear flow cache"""
-        if not request.user.is_superuser:
-            return HttpResponseBadRequest()
         keys = cache.keys("flow_*")
         cache.delete_many(keys)
         LOGGER.debug("Cleared flow cache", keys=len(keys))
         return Response(status=204)
 
+    @permission_required("authentik_flows.export_flow")
     @swagger_auto_schema(
         responses={
             "200": openapi.Response(
@@ -121,8 +121,6 @@ class FlowViewSet(ModelViewSet):
     def export(self, request: Request, slug: str) -> Response:
         """Export flow to .akflow file"""
         flow = self.get_object()
-        if not request.user.has_perm("authentik_flows.export_flow", flow):
-            raise PermissionDenied()
         exporter = FlowExporter(flow)
         response = JsonResponse(exporter.export(), encoder=DataclassEncoder, safe=False)
         response["Content-Disposition"] = f'attachment; filename="{flow.slug}.akflow"'
@@ -130,13 +128,10 @@ class FlowViewSet(ModelViewSet):
 
     @swagger_auto_schema(responses={200: FlowDiagramSerializer()})
     @action(detail=True, methods=["get"])
+    # pylint: disable=unused-argument
     def diagram(self, request: Request, slug: str) -> Response:
         """Return diagram for flow with slug `slug`, in the format used by flowchart.js"""
-        flow = get_object_or_404(
-            get_objects_for_user(request.user, "authentik_flows.view_flow").filter(
-                slug=slug
-            )
-        )
+        flow = self.get_object()
         header = [
             DiagramElement("st", "start", "Start"),
         ]

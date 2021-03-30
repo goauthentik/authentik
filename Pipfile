@@ -51,7 +51,7 @@ python_version = "3.9"
 [dev-packages]
 bandit = "*"
 black = "==20.8b1"
-bumpversion = "*"
+bump2version = "*"
 colorama = "*"
 coverage = "*"
 pylint = "*"
