@@ -1,7 +1,10 @@
 """Crypto tests"""
+import datetime
+
 from django.test import TestCase
 
 from authentik.crypto.api import CertificateKeyPairSerializer
+from authentik.crypto.builder import CertificateBuilder
 from authentik.crypto.models import CertificateKeyPair
 
 
@@ -29,3 +32,16 @@ class TestCrypto(TestCase):
                 }
             ).is_valid()
         )
+
+    def test_builder(self):
+        """Test Builder"""
+        builder = CertificateBuilder()
+        builder.common_name = "test-cert"
+        builder.build(
+            subject_alt_names=[],
+            validity_days=3,
+        )
+        instance = builder.save()
+        now = datetime.datetime.today()
+        self.assertEqual(instance.name, "test-cert")
+        self.assertEqual((instance.certificate.not_valid_after - now).days, 2)
