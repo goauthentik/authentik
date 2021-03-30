@@ -6,7 +6,7 @@ test-integration:
 	coverage run manage.py test -v 3 tests/integration
 
 test-e2e:
-	coverage run manage.py test -v 3 tests/e2e
+	coverage run manage.py test --failfast -v 3 tests/e2e
 
 coverage:
 	coverage run manage.py test -v 3 authentik
