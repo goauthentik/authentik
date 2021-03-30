@@ -18,7 +18,7 @@ from authentik.events.models import Event, EventAction
 class TokenSerializer(ModelSerializer):
     """Token Serializer"""
 
-    user = UserSerializer()
+    user = UserSerializer(required=False)
 
     class Meta:
 
@@ -60,6 +60,9 @@ class TokenViewSet(ModelViewSet):
         "description",
     ]
     ordering = ["expires"]
+
+    def perform_create(self, serializer: TokenSerializer):
+        serializer.save(user=self.request.user)
 
     @permission_required("authentik_core.view_token_key")
     @swagger_auto_schema(responses={200: TokenViewSerializer(many=False)})
