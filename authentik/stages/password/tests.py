@@ -72,7 +72,7 @@ class TestPasswordStage(TestCase):
                 "component": "ak-stage-access-denied",
                 "error_message": None,
                 "title": "",
-                "type": ChallengeTypes.native.value,
+                "type": ChallengeTypes.NATIVE.value,
             },
         )
 
@@ -206,6 +206,6 @@ class TestPasswordStage(TestCase):
                 "component": "ak-stage-access-denied",
                 "error_message": None,
                 "title": "",
-                "type": ChallengeTypes.native.value,
+                "type": ChallengeTypes.NATIVE.value,
             },
         )

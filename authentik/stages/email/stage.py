@@ -96,7 +96,7 @@ class EmailStageView(ChallengeStageView):
     def get_challenge(self) -> Challenge:
         challenge = EmailChallenge(
             data={
-                "type": ChallengeTypes.native.value,
+                "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-email",
                 "title": "Email sent.",
             }

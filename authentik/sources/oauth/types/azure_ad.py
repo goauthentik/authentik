@@ -7,7 +7,7 @@ from authentik.sources.oauth.types.manager import MANAGER, RequestKind
 from authentik.sources.oauth.views.callback import OAuthCallback
 
 
-@MANAGER.source(kind=RequestKind.callback, name="Azure AD")
+@MANAGER.source(kind=RequestKind.CALLBACK, name="Azure AD")
 class AzureADOAuthCallback(OAuthCallback):
     """AzureAD OAuth2 Callback"""
 

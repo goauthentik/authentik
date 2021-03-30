@@ -10,7 +10,7 @@ from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 
-@MANAGER.source(kind=RequestKind.redirect, name="reddit")
+@MANAGER.source(kind=RequestKind.REDIRECT, name="reddit")
 class RedditOAuthRedirect(OAuthRedirect):
     """Reddit OAuth2 Redirect"""
 
@@ -30,7 +30,7 @@ class RedditOAuth2Client(OAuth2Client):
         return super().get_access_token(auth=auth)
 
 
-@MANAGER.source(kind=RequestKind.callback, name="reddit")
+@MANAGER.source(kind=RequestKind.CALLBACK, name="reddit")
 class RedditOAuth2Callback(OAuthCallback):
     """Reddit OAuth2 Callback"""
 

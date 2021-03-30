@@ -6,7 +6,7 @@ from authentik.sources.oauth.types.manager import MANAGER, RequestKind
 from authentik.sources.oauth.views.callback import OAuthCallback
 
 
-@MANAGER.source(kind=RequestKind.callback, name="GitHub")
+@MANAGER.source(kind=RequestKind.CALLBACK, name="GitHub")
 class GitHubOAuth2Callback(OAuthCallback):
     """GitHub OAuth2 Callback"""
 
