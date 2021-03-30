@@ -1,17 +1,34 @@
 """PropertyMapping API Views"""
+from json import dumps
+
 from django.urls import reverse
 from drf_yasg.utils import swagger_auto_schema
+from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.fields import CharField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 
-from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
+from authentik.api.decorators import permission_required
+from authentik.core.api.utils import (
+    MetaNameSerializer,
+    PassiveSerializer,
+    TypeCreateSerializer,
+)
 from authentik.core.models import PropertyMapping
 from authentik.lib.templatetags.authentik_utils import verbose_name
 from authentik.lib.utils.reflection import all_subclasses
+from authentik.policies.api.exec import PolicyTestSerializer
+
+
+class PropertyMappingTestResultSerializer(PassiveSerializer):
+    """Result of a Property-mapping test"""
+
+    result = CharField(read_only=True)
 
 
 class PropertyMappingSerializer(ModelSerializer, MetaNameSerializer):
@@ -76,3 +93,37 @@ class PropertyMappingViewSet(
                 }
             )
         return Response(TypeCreateSerializer(data, many=True).data)
+
+    @permission_required("authentik_core.view_propertymapping")
+    @swagger_auto_schema(
+        request_body=PolicyTestSerializer(),
+        responses={200: PropertyMappingTestResultSerializer},
+    )
+    @action(detail=True, methods=["POST"])
+    # pylint: disable=unused-argument, invalid-name
+    def test(self, request: Request, pk: str) -> Response:
+        """Test Property Mapping"""
+        mapping: PropertyMapping = self.get_object()
+        test_params = PolicyTestSerializer(data=request.data)
+        if not test_params.is_valid():
+            return Response(test_params.errors, status=400)
+
+        # User permission check, only allow mapping testing for users that are readable
+        users = get_objects_for_user(request.user, "authentik_core.view_user").filter(
+            pk=test_params.validated_data["user"].pk
+        )
+        if not users.exists():
+            raise PermissionDenied()
+
+        response_data = {}
+        try:
+            result = mapping.evaluate(
+                users.first(),
+                self.request,
+                **test_params.validated_data.get("context", {}),
+            )
+            response_data["result"] = dumps(result)
+        except Exception as exc:  # pylint: disable=broad-except
+            response_data["result"] = str(exc)
+        response = PropertyMappingTestResultSerializer(response_data)
+        return Response(response.data)

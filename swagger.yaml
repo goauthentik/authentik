@@ -7984,6 +7984,43 @@ paths:
         required: true
         type: string
         format: uuid
+  /propertymappings/all/{pm_uuid}/test/:
+    post:
+      operationId: propertymappings_all_test
+      description: Test Property Mapping
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PolicyTest'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PropertyMappingTestResult'
+        '400':
+          description: Invalid input.
+          schema:
+            $ref: '#/definitions/ValidationError'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+        '404':
+          description: Object does not exist or caller has insufficient permissions
+            to access it.
+          schema:
+            $ref: '#/definitions/APIException'
+      tags:
+        - propertymappings
+    parameters:
+      - name: pm_uuid
+        in: path
+        description: A UUID string identifying this Property Mapping.
+        required: true
+        type: string
+        format: uuid
   /propertymappings/ldap/:
     get:
       operationId: propertymappings_ldap_list
@@ -16843,6 +16880,14 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+  PropertyMappingTestResult:
+    type: object
+    properties:
+      result:
+        title: Result
+        type: string
+        readOnly: true
+        minLength: 1
   LDAPPropertyMapping:
     required:
       - name
