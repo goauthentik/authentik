@@ -15,6 +15,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from structlog.stdlib import get_logger
 from yaml import safe_dump
 
+from authentik.core.models import User
 from authentik.flows.models import Flow
 from authentik.providers.oauth2.generators import (
     generate_client_id,
@@ -162,17 +163,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.wait_for_url(self.if_admin_url("/library"))
         self.driver.get(self.if_admin_url("/user"))
 
-        self.assertEqual(
-            self.driver.find_element(By.ID, "id_username").get_attribute("value"), "foo"
-        )
-        self.assertEqual(
-            self.driver.find_element(By.ID, "id_name").get_attribute("value"),
-            "admin",
-        )
-        self.assertEqual(
-            self.driver.find_element(By.ID, "id_email").get_attribute("value"),
-            "admin@example.com",
-        )
+        self.assert_user(User(username="foo", name="admin", email="admin@example.com"))
 
     @retry()
     @apply_migration("authentik_core", "0003_default_user")
@@ -257,17 +248,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.wait_for_url(self.if_admin_url("/library"))
         self.driver.get(self.if_admin_url("/user"))
 
-        self.assertEqual(
-            self.driver.find_element(By.ID, "id_username").get_attribute("value"), "foo"
-        )
-        self.assertEqual(
-            self.driver.find_element(By.ID, "id_name").get_attribute("value"),
-            "admin",
-        )
-        self.assertEqual(
-            self.driver.find_element(By.ID, "id_email").get_attribute("value"),
-            "admin@example.com",
-        )
+        self.assert_user(User(username="foo", name="admin", email="admin@example.com"))
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -361,15 +342,6 @@ class TestSourceOAuth1(SeleniumTestCase):
         self.wait_for_url(self.if_admin_url("/library"))
         self.driver.get(self.if_admin_url("/user"))
 
-        self.assertEqual(
-            self.driver.find_element(By.ID, "id_username").get_attribute("value"),
-            "example-user",
-        )
-        self.assertEqual(
-            self.driver.find_element(By.ID, "id_name").get_attribute("value"),
-            "test name",
-        )
-        self.assertEqual(
-            self.driver.find_element(By.ID, "id_email").get_attribute("value"),
-            "foo@example.com",
+        self.assert_user(
+            User(username="example-user", name="test name", email="foo@example.com")
         )

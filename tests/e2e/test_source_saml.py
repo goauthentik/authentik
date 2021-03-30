@@ -5,12 +5,14 @@ from typing import Any, Optional
 from unittest.case import skipUnless
 
 from docker.types import Healthcheck
+from guardian.utils import get_anonymous_user
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from structlog.stdlib import get_logger
 
+from authentik.core.models import User
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
@@ -155,9 +157,10 @@ class TestSourceSAML(SeleniumTestCase):
         self.wait_for_url(self.if_admin_url("/library"))
         self.driver.get(self.if_admin_url("/user"))
 
-        # Wait until we've loaded the user info page
-        self.assertNotEqual(
-            self.driver.find_element(By.ID, "id_username").get_attribute("value"), ""
+        self.assert_user(
+            User.objects.exclude(username="akadmin")
+            .exclude(pk=get_anonymous_user().pk)
+            .first()
         )
 
     @retry()
@@ -235,9 +238,10 @@ class TestSourceSAML(SeleniumTestCase):
         self.wait_for_url(self.if_admin_url("/library"))
         self.driver.get(self.if_admin_url("/user"))
 
-        # Wait until we've loaded the user info page
-        self.assertNotEqual(
-            self.driver.find_element(By.ID, "id_username").get_attribute("value"), ""
+        self.assert_user(
+            User.objects.exclude(username="akadmin")
+            .exclude(pk=get_anonymous_user().pk)
+            .first()
         )
 
     @retry()
@@ -302,7 +306,8 @@ class TestSourceSAML(SeleniumTestCase):
         self.wait_for_url(self.if_admin_url("/library"))
         self.driver.get(self.if_admin_url("/user"))
 
-        # Wait until we've loaded the user info page
-        self.assertNotEqual(
-            self.driver.find_element(By.ID, "id_username").get_attribute("value"), ""
+        self.assert_user(
+            User.objects.exclude(username="akadmin")
+            .exclude(pk=get_anonymous_user().pk)
+            .first()
         )
