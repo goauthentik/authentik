@@ -103,7 +103,7 @@ class InitiateView(View):
         relay_state = request.GET.get("next", "")
         auth_n_req = RequestProcessor(source, request, relay_state)
         # If the source is configured for Redirect bindings, we can just redirect there
-        if source.binding_type == SAMLBindingTypes.Redirect:
+        if source.binding_type == SAMLBindingTypes.REDIRECT:
             url_args = urlencode(auth_n_req.build_auth_n_detached())
             return redirect(f"{source.sso_url}?{url_args}")
         # As POST Binding we show a form

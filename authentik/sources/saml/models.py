@@ -34,7 +34,7 @@ from authentik.sources.saml.processors.constants import (
 class SAMLBindingTypes(models.TextChoices):
     """SAML Binding types"""
 
-    Redirect = "REDIRECT", _("Redirect Binding")
+    REDIRECT = "REDIRECT", _("Redirect Binding")
     POST = "POST", _("POST Binding")
     POST_AUTO = "POST_AUTO", _("POST Binding with auto-confirmation")
 
@@ -95,7 +95,7 @@ class SAMLSource(Source):
     binding_type = models.CharField(
         max_length=100,
         choices=SAMLBindingTypes.choices,
-        default=SAMLBindingTypes.Redirect,
+        default=SAMLBindingTypes.REDIRECT,
     )
 
     temporary_user_delete_after = models.TextField(
