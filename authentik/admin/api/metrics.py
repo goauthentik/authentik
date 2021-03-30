@@ -3,7 +3,7 @@ import time
 from collections import Counter
 from datetime import timedelta
 
-from django.db.models import Count, ExpressionWrapper, F, Model
+from django.db.models import Count, ExpressionWrapper, F
 from django.db.models.fields import DurationField
 from django.db.models.functions import ExtractHour
 from django.utils.timezone import now
@@ -12,9 +12,9 @@ from rest_framework.fields import IntegerField, SerializerMethodField
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ViewSet
 
+from authentik.core.api.utils import PassiveSerializer
 from authentik.events.models import Event, EventAction
 
 
@@ -45,20 +45,14 @@ def get_events_per_1h(**filter_kwargs) -> list[dict[str, int]]:
     return results
 
 
-class CoordinateSerializer(Serializer):
+class CoordinateSerializer(PassiveSerializer):
     """Coordinates for diagrams"""
 
     x_cord = IntegerField(read_only=True)
     y_cord = IntegerField(read_only=True)
 
-    def create(self, validated_data: dict) -> Model:
-        raise NotImplementedError
 
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        raise NotImplementedError
-
-
-class LoginMetricsSerializer(Serializer):
+class LoginMetricsSerializer(PassiveSerializer):
     """Login Metrics per 1h"""
 
     logins_per_1h = SerializerMethodField()
@@ -73,12 +67,6 @@ class LoginMetricsSerializer(Serializer):
     def get_logins_failed_per_1h(self, _):
         """Get failed logins per hour for the last 24 hours"""
         return get_events_per_1h(action=EventAction.LOGIN_FAILED)
-
-    def create(self, validated_data: dict) -> Model:
-        raise NotImplementedError
-
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        raise NotImplementedError
 
 
 class AdministrationMetricsViewSet(ViewSet):

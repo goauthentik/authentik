@@ -2,7 +2,6 @@
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import load_pem_x509_certificate
-from django.db.models import Model
 from django.utils.translation import gettext_lazy as _
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
@@ -14,10 +13,11 @@ from rest_framework.fields import (
 )
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer, Serializer, ValidationError
+from rest_framework.serializers import ModelSerializer, ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.decorators import permission_required
+from authentik.core.api.utils import PassiveSerializer
 from authentik.crypto.builder import CertificateBuilder
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
@@ -79,19 +79,13 @@ class CertificateKeyPairSerializer(ModelSerializer):
         }
 
 
-class CertificateDataSerializer(Serializer):
+class CertificateDataSerializer(PassiveSerializer):
     """Get CertificateKeyPair's data"""
 
     data = CharField(read_only=True)
 
-    def create(self, validated_data: dict) -> Model:
-        raise NotImplementedError
 
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        raise NotImplementedError
-
-
-class CertificateGenerationSerializer(Serializer):
+class CertificateGenerationSerializer(PassiveSerializer):
     """Certificate generation parameters"""
 
     common_name = CharField()
@@ -99,12 +93,6 @@ class CertificateGenerationSerializer(Serializer):
         required=False, allow_blank=True, label=_("Subject-alt name")
     )
     validity_days = IntegerField(initial=365)
-
-    def create(self, validated_data: dict) -> Model:
-        raise NotImplementedError
-
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        raise NotImplementedError
 
 
 class CertificateKeyPairViewSet(ModelViewSet):

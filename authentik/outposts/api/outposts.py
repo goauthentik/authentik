@@ -1,14 +1,14 @@
 """Outpost API Views"""
-from django.db.models import Model
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, DateTimeField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import JSONField, ModelSerializer, Serializer
+from rest_framework.serializers import JSONField, ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
+from authentik.core.api.utils import PassiveSerializer
 from authentik.outposts.models import Outpost, default_outpost_config
 
 
@@ -32,31 +32,19 @@ class OutpostSerializer(ModelSerializer):
         ]
 
 
-class OutpostDefaultConfigSerializer(Serializer):
+class OutpostDefaultConfigSerializer(PassiveSerializer):
     """Global default outpost config"""
 
     config = JSONField(read_only=True)
 
-    def create(self, validated_data: dict) -> Model:
-        raise NotImplementedError
 
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        raise NotImplementedError
-
-
-class OutpostHealthSerializer(Serializer):
+class OutpostHealthSerializer(PassiveSerializer):
     """Outpost health status"""
 
     last_seen = DateTimeField(read_only=True)
     version = CharField(read_only=True)
     version_should = CharField(read_only=True)
     version_outdated = BooleanField(read_only=True)
-
-    def create(self, validated_data: dict) -> Model:
-        raise NotImplementedError
-
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        raise NotImplementedError
 
 
 class OutpostViewSet(ModelViewSet):

@@ -2,7 +2,6 @@
 from os import environ
 
 from django.core.cache import cache
-from django.db.models import Model
 from drf_yasg.utils import swagger_auto_schema
 from packaging.version import parse
 from rest_framework.fields import SerializerMethodField
@@ -10,14 +9,14 @@ from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import Serializer
 from rest_framework.viewsets import GenericViewSet
 
 from authentik import ENV_GIT_HASH_KEY, __version__
 from authentik.admin.tasks import VERSION_CACHE_KEY, update_latest_version
+from authentik.core.api.utils import PassiveSerializer
 
 
-class VersionSerializer(Serializer):
+class VersionSerializer(PassiveSerializer):
     """Get running and latest version."""
 
     version_current = SerializerMethodField()
@@ -46,12 +45,6 @@ class VersionSerializer(Serializer):
         return parse(self.get_version_current(instance)) < parse(
             self.get_version_latest(instance)
         )
-
-    def create(self, validated_data: dict) -> Model:
-        raise NotImplementedError
-
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        raise NotImplementedError
 
 
 class VersionViewSet(ListModelMixin, GenericViewSet):

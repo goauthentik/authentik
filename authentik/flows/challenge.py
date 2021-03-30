@@ -2,11 +2,11 @@
 from enum import Enum
 from typing import TYPE_CHECKING, Optional
 
-from django.db.models.base import Model
 from django.http import JsonResponse
 from rest_framework.fields import ChoiceField, DictField
-from rest_framework.serializers import CharField, Serializer
+from rest_framework.serializers import CharField
 
+from authentik.core.api.utils import PassiveSerializer
 from authentik.flows.transfer.common import DataclassEncoder
 
 if TYPE_CHECKING:
@@ -21,20 +21,14 @@ class ChallengeTypes(Enum):
     REDIRECT = "redirect"
 
 
-class ErrorDetailSerializer(Serializer):
+class ErrorDetailSerializer(PassiveSerializer):
     """Serializer for rest_framework's error messages"""
 
     string = CharField()
     code = CharField()
 
-    def create(self, validated_data: dict) -> Model:
-        return Model()
 
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        return Model()
-
-
-class Challenge(Serializer):
+class Challenge(PassiveSerializer):
     """Challenge that gets sent to the client based on which stage
     is currently active"""
 
@@ -48,12 +42,6 @@ class Challenge(Serializer):
     response_errors = DictField(
         child=ErrorDetailSerializer(many=True), allow_empty=True, required=False
     )
-
-    def create(self, validated_data: dict) -> Model:
-        return Model()
-
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        return Model()
 
 
 class RedirectChallenge(Challenge):
@@ -81,20 +69,14 @@ class AccessDeniedChallenge(Challenge):
     error_message = CharField(required=False)
 
 
-class PermissionSerializer(Serializer):
+class PermissionSerializer(PassiveSerializer):
     """Permission used for consent"""
 
     name = CharField()
     id = CharField()
 
-    def create(self, validated_data: dict) -> Model:
-        return Model()
 
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        return Model()
-
-
-class ChallengeResponse(Serializer):
+class ChallengeResponse(PassiveSerializer):
     """Base class for all challenge responses"""
 
     stage: Optional["StageView"]
@@ -102,12 +84,6 @@ class ChallengeResponse(Serializer):
     def __init__(self, instance=None, data=None, **kwargs):
         self.stage = kwargs.pop("stage", None)
         super().__init__(instance=instance, data=data, **kwargs)
-
-    def create(self, validated_data: dict) -> Model:
-        return Model()
-
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        return Model()
 
 
 class HttpChallengeResponse(JsonResponse):

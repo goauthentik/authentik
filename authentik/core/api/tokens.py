@@ -1,15 +1,15 @@
 """Tokens API Viewset"""
-from django.db.models.base import Model
 from django.http.response import Http404
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.fields import CharField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer, Serializer
+from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.users import UserSerializer
+from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Token
 from authentik.events.models import Event, EventAction
 
@@ -34,16 +34,10 @@ class TokenSerializer(ModelSerializer):
         depth = 2
 
 
-class TokenViewSerializer(Serializer):
+class TokenViewSerializer(PassiveSerializer):
     """Show token's current key"""
 
     key = CharField(read_only=True)
-
-    def create(self, validated_data: dict) -> Model:
-        raise NotImplementedError
-
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        raise NotImplementedError
 
 
 class TokenViewSet(ModelViewSet):
