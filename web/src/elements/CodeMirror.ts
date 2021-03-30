@@ -29,6 +29,7 @@ export class CodeMirrorTextarea extends LitElement {
 
     @property()
     set value(v: string) {
+        if (v === null) return;
         this._value = v.toString();
     }
 
