@@ -76,7 +76,9 @@ class AuditMiddleware:
         user: User, request: HttpRequest, sender, instance: Model, **_
     ):
         """Signal handler for all object's pre_delete"""
-        if isinstance(instance, (Event, Notification, UserObjectPermission)):
+        if isinstance(
+            instance, (Event, Notification, UserObjectPermission)
+        ):  # pragma: no cover
             return
 
         EventNewThread(
