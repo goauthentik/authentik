@@ -1,16 +1,3 @@
-export interface QueryArguments {
-    page?: number;
-    page_size?: number;
-    [key: string]: number | string | boolean | undefined | null;
-}
-
-export interface BaseInheritanceModel {
-    objectType: string;
-
-    verboseName: string;
-    verboseNamePlural: string;
-}
-
 export interface AKPagination {
     next?: number;
     previous?: number;
