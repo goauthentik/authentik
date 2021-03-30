@@ -7,7 +7,7 @@ from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.fields import CharField
+from rest_framework.fields import BooleanField, CharField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
@@ -29,6 +29,7 @@ class PropertyMappingTestResultSerializer(PassiveSerializer):
     """Result of a Property-mapping test"""
 
     result = CharField(read_only=True)
+    successful = BooleanField(read_only=True)
 
 
 class PropertyMappingSerializer(ModelSerializer, MetaNameSerializer):
@@ -115,7 +116,9 @@ class PropertyMappingViewSet(
         if not users.exists():
             raise PermissionDenied()
 
-        response_data = {}
+        response_data = {
+            "successful": True
+        }
         try:
             result = mapping.evaluate(
                 users.first(),
@@ -125,5 +128,6 @@ class PropertyMappingViewSet(
             response_data["result"] = dumps(result)
         except Exception as exc:  # pylint: disable=broad-except
             response_data["result"] = str(exc)
+            response_data["successful"] = False
         response = PropertyMappingTestResultSerializer(response_data)
         return Response(response.data)

@@ -16888,6 +16888,10 @@ definitions:
         type: string
         readOnly: true
         minLength: 1
+      successful:
+        title: Successful
+        type: boolean
+        readOnly: true
   LDAPPropertyMapping:
     required:
       - name

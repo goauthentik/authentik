@@ -10,6 +10,7 @@ import "./OutpostForm";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/TokenCopyButton";
 import "../../elements/forms/DeleteForm";
+import "../../elements/forms/ModalForm";
 import { PAGE_SIZE } from "../../constants";
 import { Outpost, OutpostsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";

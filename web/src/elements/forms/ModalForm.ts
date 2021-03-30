@@ -1,11 +1,14 @@
 import { gettext } from "django";
-import { customElement, html, TemplateResult } from "lit-element";
+import { customElement, html, property, TemplateResult } from "lit-element";
 import { EVENT_REFRESH } from "../../constants";
 import { ModalButton } from "../buttons/ModalButton";
 import { Form } from "./Form";
 
 @customElement("ak-forms-modal")
 export class ModalForm extends ModalButton {
+
+    @property({ type: Boolean })
+    closeAfterSuccessfulSubmit = true;
 
     confirm(): void {
         this.querySelectorAll<Form<unknown>>("[slot=form]").forEach(form => {
@@ -14,8 +17,10 @@ export class ModalForm extends ModalButton {
                 return;
             }
             formPromise.then(() => {
-                this.open = false;
-                form.reset();
+                if (this.closeAfterSuccessfulSubmit) {
+                    this.open = false;
+                    form.reset();
+                }
                 this.dispatchEvent(
                     new CustomEvent(EVENT_REFRESH, {
                         bubbles: true,

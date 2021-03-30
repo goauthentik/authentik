@@ -7,6 +7,8 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteForm";
+import "../../elements/forms/ModalForm";
+import "./PolicyTestForm";
 import { TableColumn } from "../../elements/table/Table";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
@@ -69,12 +71,19 @@ export class PolicyListPage extends TablePage<Policy> {
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${AdminURLManager.policies(`${item.pk}/test/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
+                <span slot="submit">
                     ${gettext("Test")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
+                </span>
+                <span slot="header">
+                    ${gettext("Test Policy")}
+                </span>
+                <ak-policy-test-form slot="form" .policy=${item}>
+                </ak-policy-test-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
+                    ${gettext("Test")}
+                </button>
+            </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${gettext("Policy")}
