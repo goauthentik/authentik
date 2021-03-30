@@ -34,7 +34,7 @@ export class PolicyTestForm extends Form<PolicyTest> {
         return html`<ak-form-element-horizontal
                 label=${gettext("Result")}>
             ${this.result?.successful ?
-                html`<ak-codemirror mode="javascript" ?readOnly=${true} value="${this.result?.result}">
+                html`<ak-codemirror mode="javascript" ?readOnly=${true} value="${ifDefined(this.result?.result)}">
                 </ak-codemirror>`:
                 html`
                     <div class="pf-c-form__group-label">

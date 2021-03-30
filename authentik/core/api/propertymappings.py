@@ -116,9 +116,7 @@ class PropertyMappingViewSet(
         if not users.exists():
             raise PermissionDenied()
 
-        response_data = {
-            "successful": True
-        }
+        response_data = {"successful": True}
         try:
             result = mapping.evaluate(
                 users.first(),

@@ -78,10 +78,9 @@ export class Form<T> extends LitElement {
     }
 
     serializeForm(form: IronFormElement): T {
-        const elements = form._getSubmittableElements();
+        const elements: HTMLInputElement[] = form._getSubmittableElements();
         const json: { [key: string]: unknown } = {};
-        for (let i = 0; i < elements.length; i++) {
-            const element = elements[i] as HTMLInputElement;
+        elements.forEach(element => {
             const values = form._serializeElementValues(element);
             if (element.tagName.toLowerCase() === "select" && "multiple" in element.attributes) {
                 json[element.name] = values;
@@ -90,7 +89,7 @@ export class Form<T> extends LitElement {
                     form._addSerializedElement(json, element.name, values[v]);
                 }
             }
-        }
+        });
         return json as unknown as T;
     }
 
