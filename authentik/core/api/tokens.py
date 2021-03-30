@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.api.decorators import permission_required
 from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Token
@@ -60,6 +61,7 @@ class TokenViewSet(ModelViewSet):
     ]
     ordering = ["expires"]
 
+    @permission_required("authentik_core.view_token_key")
     @swagger_auto_schema(responses={200: TokenViewSerializer(many=False)})
     @action(detail=True)
     # pylint: disable=unused-argument
