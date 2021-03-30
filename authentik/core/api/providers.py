@@ -2,12 +2,13 @@
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.fields import ReadOnlyField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
 from authentik.core.models import Provider
@@ -44,7 +45,12 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
         ]
 
 
-class ProviderViewSet(ModelViewSet):
+class ProviderViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     """Provider Viewset"""
 
     queryset = Provider.objects.none()

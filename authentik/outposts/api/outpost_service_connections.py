@@ -3,12 +3,13 @@ from dataclasses import asdict
 
 from django.urls import reverse
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.core.api.utils import (
     MetaNameSerializer,
@@ -53,7 +54,12 @@ class ServiceConnectionStateSerializer(PassiveSerializer):
     version = CharField(read_only=True)
 
 
-class ServiceConnectionViewSet(ModelViewSet):
+class ServiceConnectionViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     """ServiceConnection Viewset"""
 
     queryset = OutpostServiceConnection.objects.select_subclasses()

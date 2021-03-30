@@ -4943,30 +4943,6 @@ paths:
             $ref: '#/definitions/GenericError'
       tags:
         - outposts
-    post:
-      operationId: outposts_service_connections_all_create
-      description: ServiceConnection Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/ServiceConnection'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/ServiceConnection'
-        '400':
-          description: Invalid input.
-          schema:
-            $ref: '#/definitions/ValidationError'
-        '403':
-          description: Authentication credentials were invalid, absent or insufficient.
-          schema:
-            $ref: '#/definitions/GenericError'
-      tags:
-        - outposts
     parameters: []
   /outposts/service_connections/all/types/:
     get:
@@ -5022,64 +4998,6 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/ServiceConnection'
-        '403':
-          description: Authentication credentials were invalid, absent or insufficient.
-          schema:
-            $ref: '#/definitions/GenericError'
-        '404':
-          description: Object does not exist or caller has insufficient permissions
-            to access it.
-          schema:
-            $ref: '#/definitions/APIException'
-      tags:
-        - outposts
-    put:
-      operationId: outposts_service_connections_all_update
-      description: ServiceConnection Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/ServiceConnection'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/ServiceConnection'
-        '400':
-          description: Invalid input.
-          schema:
-            $ref: '#/definitions/ValidationError'
-        '403':
-          description: Authentication credentials were invalid, absent or insufficient.
-          schema:
-            $ref: '#/definitions/GenericError'
-        '404':
-          description: Object does not exist or caller has insufficient permissions
-            to access it.
-          schema:
-            $ref: '#/definitions/APIException'
-      tags:
-        - outposts
-    patch:
-      operationId: outposts_service_connections_all_partial_update
-      description: ServiceConnection Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/ServiceConnection'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/ServiceConnection'
-        '400':
-          description: Invalid input.
-          schema:
-            $ref: '#/definitions/ValidationError'
         '403':
           description: Authentication credentials were invalid, absent or insufficient.
           schema:
@@ -8689,30 +8607,6 @@ paths:
             $ref: '#/definitions/GenericError'
       tags:
         - providers
-    post:
-      operationId: providers_all_create
-      description: Provider Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/Provider'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/Provider'
-        '400':
-          description: Invalid input.
-          schema:
-            $ref: '#/definitions/ValidationError'
-        '403':
-          description: Authentication credentials were invalid, absent or insufficient.
-          schema:
-            $ref: '#/definitions/GenericError'
-      tags:
-        - providers
     parameters: []
   /providers/all/types/:
     get:
@@ -8768,64 +8662,6 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/Provider'
-        '403':
-          description: Authentication credentials were invalid, absent or insufficient.
-          schema:
-            $ref: '#/definitions/GenericError'
-        '404':
-          description: Object does not exist or caller has insufficient permissions
-            to access it.
-          schema:
-            $ref: '#/definitions/APIException'
-      tags:
-        - providers
-    put:
-      operationId: providers_all_update
-      description: Provider Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/Provider'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/Provider'
-        '400':
-          description: Invalid input.
-          schema:
-            $ref: '#/definitions/ValidationError'
-        '403':
-          description: Authentication credentials were invalid, absent or insufficient.
-          schema:
-            $ref: '#/definitions/GenericError'
-        '404':
-          description: Object does not exist or caller has insufficient permissions
-            to access it.
-          schema:
-            $ref: '#/definitions/APIException'
-      tags:
-        - providers
-    patch:
-      operationId: providers_all_partial_update
-      description: Provider Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/Provider'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/Provider'
-        '400':
-          description: Invalid input.
-          schema:
-            $ref: '#/definitions/ValidationError'
         '403':
           description: Authentication credentials were invalid, absent or insufficient.
           schema:
