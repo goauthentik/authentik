@@ -49,7 +49,7 @@ class TestUserDenyStage(TestCase):
                 "component": "ak-stage-access-denied",
                 "error_message": None,
                 "title": "",
-                "type": ChallengeTypes.native.value,
+                "type": ChallengeTypes.NATIVE.value,
             },
         )
 

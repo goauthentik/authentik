@@ -94,7 +94,7 @@ class TestFlowExecutor(TestCase):
                 "component": "ak-stage-access-denied",
                 "error_message": FlowNonApplicableException.__doc__,
                 "title": "",
-                "type": ChallengeTypes.native.value,
+                "type": ChallengeTypes.NATIVE.value,
             },
         )
 
@@ -415,7 +415,7 @@ class TestFlowExecutor(TestCase):
                 force_str(response.content),
                 {
                     "background": flow.background.url,
-                    "type": ChallengeTypes.native.value,
+                    "type": ChallengeTypes.NATIVE.value,
                     "component": "ak-stage-dummy",
                     "title": binding.stage.name,
                 },
@@ -446,7 +446,7 @@ class TestFlowExecutor(TestCase):
             force_str(response.content),
             {
                 "background": flow.background.url,
-                "type": ChallengeTypes.native.value,
+                "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-dummy",
                 "title": binding4.stage.name,
             },

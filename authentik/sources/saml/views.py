@@ -50,7 +50,7 @@ class AutosubmitStageView(ChallengeStageView):
     def get_challenge(self, *args, **kwargs) -> Challenge:
         return AutosubmitChallenge(
             data={
-                "type": ChallengeTypes.native.value,
+                "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-autosubmit",
                 "title": self.executor.plan.context.get(PLAN_CONTEXT_TITLE, ""),
                 "url": self.executor.plan.context.get(PLAN_CONTEXT_URL, ""),

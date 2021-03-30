@@ -24,7 +24,7 @@ class DummyStageView(ChallengeStageView):
     def get_challenge(self, *args, **kwargs) -> Challenge:
         return DummyChallenge(
             data={
-                "type": ChallengeTypes.native.value,
+                "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-dummy",
                 "title": self.executor.current_stage.name,
             }

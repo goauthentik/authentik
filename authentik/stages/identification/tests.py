@@ -104,7 +104,7 @@ class TestIdentificationStage(TestCase):
             force_str(response.content),
             {
                 "background": flow.background.url,
-                "type": ChallengeTypes.native.value,
+                "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-identification",
                 "input_type": "email",
                 "enroll_url": reverse(
@@ -147,7 +147,7 @@ class TestIdentificationStage(TestCase):
             force_str(response.content),
             {
                 "background": flow.background.url,
-                "type": ChallengeTypes.native.value,
+                "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-identification",
                 "input_type": "email",
                 "recovery_url": reverse(
