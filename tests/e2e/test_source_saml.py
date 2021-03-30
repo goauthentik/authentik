@@ -124,7 +124,7 @@ class TestSourceSAML(SeleniumTestCase):
             pre_authentication_flow=pre_authentication_flow,
             issuer="entity-id",
             sso_url="http://localhost:8080/simplesaml/saml2/idp/SSOService.php",
-            binding_type=SAMLBindingTypes.Redirect,
+            binding_type=SAMLBindingTypes.REDIRECT,
             signing_kp=keypair,
         )
 

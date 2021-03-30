@@ -10,7 +10,7 @@ from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 
-@MANAGER.source(kind=RequestKind.redirect, name="Facebook")
+@MANAGER.source(kind=RequestKind.REDIRECT, name="Facebook")
 class FacebookOAuthRedirect(OAuthRedirect):
     """Facebook OAuth2 Redirect"""
 
@@ -28,7 +28,7 @@ class FacebookOAuth2Client(OAuth2Client):
         return api.get_object("me", fields="id,name,email")
 
 
-@MANAGER.source(kind=RequestKind.callback, name="Facebook")
+@MANAGER.source(kind=RequestKind.CALLBACK, name="Facebook")
 class FacebookOAuth2Callback(OAuthCallback):
     """Facebook OAuth2 Callback"""
 

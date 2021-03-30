@@ -241,7 +241,7 @@ class FlowExecutorView(APIView):
                 {
                     "error_message": error_message,
                     "title": self.flow.title,
-                    "type": ChallengeTypes.native.value,
+                    "type": ChallengeTypes.NATIVE.value,
                     "component": "ak-stage-access-denied",
                 }
             )
@@ -334,14 +334,14 @@ def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpRespons
         )
         return HttpChallengeResponse(
             RedirectChallenge(
-                {"type": ChallengeTypes.redirect, "to": str(redirect_url)}
+                {"type": ChallengeTypes.REDIRECT, "to": str(redirect_url)}
             )
         )
     if isinstance(source, TemplateResponse):
         return HttpChallengeResponse(
             ShellChallenge(
                 {
-                    "type": ChallengeTypes.shell,
+                    "type": ChallengeTypes.SHELL,
                     "body": source.render().content.decode("utf-8"),
                 }
             )
@@ -351,7 +351,7 @@ def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpRespons
         return HttpChallengeResponse(
             ShellChallenge(
                 {
-                    "type": ChallengeTypes.shell,
+                    "type": ChallengeTypes.SHELL,
                     "body": source.content.decode("utf-8"),
                 }
             )

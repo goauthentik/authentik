@@ -78,7 +78,7 @@ class PasswordStageView(ChallengeStageView):
     def get_challenge(self) -> Challenge:
         challenge = PasswordChallenge(
             data={
-                "type": ChallengeTypes.native.value,
+                "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-password",
             }
         )

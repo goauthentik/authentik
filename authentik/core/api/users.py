@@ -58,6 +58,18 @@ class SessionUserSerializer(Serializer):
         raise NotImplementedError
 
 
+class UserRecoverySerializer(Serializer):
+    """Recovery link for a user to reset their password"""
+
+    link = CharField()
+
+    def create(self, validated_data: dict) -> Model:
+        raise NotImplementedError
+
+    def update(self, instance: Model, validated_data: dict) -> Model:
+        raise NotImplementedError
+
+
 class UserMetricsSerializer(Serializer):
     """User Metrics"""
 

@@ -16,9 +16,9 @@ if TYPE_CHECKING:
 class ChallengeTypes(Enum):
     """Currently defined challenge types"""
 
-    native = "native"
-    shell = "shell"
-    redirect = "redirect"
+    NATIVE = "native"
+    SHELL = "shell"
+    REDIRECT = "redirect"
 
 
 class ErrorDetailSerializer(Serializer):

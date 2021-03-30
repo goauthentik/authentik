@@ -15,8 +15,8 @@ LOGGER = get_logger()
 class RequestKind(Enum):
     """Enum of OAuth Request types"""
 
-    callback = "callback"
-    redirect = "redirect"
+    CALLBACK = "callback"
+    REDIRECT = "redirect"
 
 
 class SourceTypeManager:
@@ -52,9 +52,9 @@ class SourceTypeManager:
                 have=self.__source_types[kind.value].keys(),
             )
             # Return defaults
-            if kind == RequestKind.callback:
+            if kind == RequestKind.CALLBACK:
                 return OAuthCallback
-            if kind == RequestKind.redirect:
+            if kind == RequestKind.REDIRECT:
                 return OAuthRedirect
         raise KeyError(
             f"Provider Type {source.provider_type} (type {kind.value}) not found."

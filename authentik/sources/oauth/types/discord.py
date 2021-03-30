@@ -7,7 +7,7 @@ from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 
-@MANAGER.source(kind=RequestKind.redirect, name="Discord")
+@MANAGER.source(kind=RequestKind.REDIRECT, name="Discord")
 class DiscordOAuthRedirect(OAuthRedirect):
     """Discord OAuth2 Redirect"""
 
@@ -17,7 +17,7 @@ class DiscordOAuthRedirect(OAuthRedirect):
         }
 
 
-@MANAGER.source(kind=RequestKind.callback, name="Discord")
+@MANAGER.source(kind=RequestKind.CALLBACK, name="Discord")
 class DiscordOAuth2Callback(OAuthCallback):
     """Discord OAuth2 Callback"""
 
