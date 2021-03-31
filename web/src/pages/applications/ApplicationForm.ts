@@ -108,6 +108,7 @@ export class ApplicationForm extends Form<Application> {
                     <option value=${ApplicationPolicyEngineModeEnum.All} ?selected=${this.application?.policyEngineMode === ApplicationPolicyEngineModeEnum.All}>
                         ${gettext("ALL, all policies must match to grant access.")}
                     </option>
+                </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${gettext("Launch URL")}

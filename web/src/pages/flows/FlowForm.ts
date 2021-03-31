@@ -104,6 +104,7 @@ export class FlowForm extends Form<Flow> {
                     <option value=${FlowPolicyEngineModeEnum.All} ?selected=${this.flow?.policyEngineMode === FlowPolicyEngineModeEnum.All}>
                         ${gettext("ALL, all policies must match to grant access.")}
                     </option>
+                </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${gettext("Designation")}

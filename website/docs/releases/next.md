@@ -2,7 +2,21 @@
 title: Next
 ---
 
-# TBD
+## Headline Changes
+
+- Configurable Policy engine mode
+
+    In the past, all objects, which could have policies attached to them, required *all* policies to pass to consider an action successful.
+    You can now configure if *all* policies need to pass, or if *any* policy needs to pass.
+
+    This can now be configured for the following objects:
+
+        - Applications (access restrictions)
+        - Sources
+        - Flows
+        - Flow-stage bindings
+
+    For backwards compatibility, this is set to *all*, but new objects will default to *any*.
 
 ## Upgrading
 
