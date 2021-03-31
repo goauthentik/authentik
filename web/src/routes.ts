@@ -14,7 +14,7 @@ import "./pages/flows/FlowViewPage";
 import "./pages/groups/GroupListPage";
 import "./pages/LibraryPage";
 import "./pages/outposts/OutpostListPage";
-import "./pages/outposts/OutpostServiceConnectionListPage";
+import "./pages/outposts/ServiceConnectionListPage";
 import "./pages/policies/PolicyListPage";
 import "./pages/property-mappings/PropertyMappingListPage";
 import "./pages/providers/ProviderListPage";

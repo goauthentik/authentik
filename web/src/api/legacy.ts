@@ -12,10 +12,6 @@ export class AdminURLManager {
         return `/administration/property-mappings/${rest}`;
     }
 
-    static outpostServiceConnections(rest: string): string {
-        return `/administration/outpost_service_connections/${rest}`;
-    }
-
     static stages(rest: string): string {
         return `/administration/stages/${rest}`;
     }

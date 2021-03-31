@@ -10,11 +10,15 @@ import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/Dropdown";
 import "../../elements/forms/DeleteForm";
+import "../../elements/forms/ModalForm";
+import "./ServiceConnectionKubernetesForm";
+import "./ServiceConnectionDockerForm";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
 import { OutpostsApi, ServiceConnection } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { AdminURLManager } from "../../api/legacy";
+import "../../elements/forms/ProxyForm";
+import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-outpost-service-connection-list")
 export class OutpostServiceConnectionListPage extends TablePage<ServiceConnection> {
@@ -68,12 +72,28 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                     return html`<i class="fas fa-times pf-m-danger"></i> ${gettext("Unhealthy")}`;
                 }), html`<ak-spinner></ak-spinner>`)}`,
             html`
-            <ak-modal-button href="${AdminURLManager.outpostServiceConnections(`${item.pk}/update/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            <ak-forms-modal>
+                <span slot="submit">
+                    ${gettext("Update")}
+                </span>
+                <span slot="header">
+                    ${gettext(`Update ${item.verboseName}`)}
+                </span>
+                <ak-proxy-form
+                    slot="form"
+                    .args=${{
+                        "scUUID": item.pk
+                    }}
+                    type=${ifDefined(item.objectType)}
+                    .typeMap=${{
+                        "docker": "ak-service-connection-docker-form",
+                        "kubernetes": "ak-service-connection-kubernetes-form"
+                    }}>
+                </ak-proxy-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
+                </button>
+            </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${gettext("Outpost Service-connection")}
@@ -100,12 +120,22 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                 ${until(new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllTypes({}).then((types) => {
                     return types.map((type) => {
                         return html`<li>
-                            <ak-modal-button href="${type.link}">
-                                <button slot="trigger" class="pf-c-dropdown__menu-item">${type.name}<br>
+                            <ak-forms-modal>
+                                <span slot="submit">
+                                    ${gettext("Create")}
+                                </span>
+                                <span slot="header">
+                                    ${gettext(`Create ${type.name}`)}
+                                </span>
+                                <ak-proxy-form
+                                    slot="form"
+                                    type=${type.link}>
+                                </ak-proxy-form>
+                                <button slot="trigger" class="pf-c-dropdown__menu-item">
+                                    ${type.name}<br>
                                     <small>${type.description}</small>
                                 </button>
-                                <div slot="modal"></div>
-                            </ak-modal-button>
+                            </ak-forms-modal>
                         </li>`;
                     });
                 }), html`<ak-spinner></ak-spinner>`)}

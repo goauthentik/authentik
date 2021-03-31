@@ -1,9 +1,12 @@
 """Outpost API Views"""
 from dataclasses import asdict
 
-from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import mixins
+from kubernetes.client.configuration import Configuration
+from kubernetes.config.config_exception import ConfigException
+from kubernetes.config.kube_config import load_kube_config_from_dict
+from rest_framework import mixins, serializers
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, SerializerMethodField
 from rest_framework.request import Request
@@ -77,8 +80,7 @@ class ServiceConnectionViewSet(
                 {
                     "name": verbose_name(subclass),
                     "description": subclass.__doc__,
-                    "link": reverse("authentik_admin:outpost-service-connection-create")
-                    + f"?type={subclass.__name__}",
+                    "component": subclass().component,
                 }
             )
         return Response(TypeCreateSerializer(data, many=True).data)
@@ -114,6 +116,24 @@ class DockerServiceConnectionViewSet(ModelViewSet):
 
 class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
     """KubernetesServiceConnection Serializer"""
+
+    def validate_kubeconfig(self, kubeconfig):
+        """Validate kubeconfig by attempting to load it"""
+        if kubeconfig == {}:
+            if not self.validated_data["local"]:
+                raise serializers.ValidationError(
+                    _(
+                        "You can only use an empty kubeconfig when connecting to a local cluster."
+                    )
+                )
+            # Empty kubeconfig is valid
+            return kubeconfig
+        config = Configuration()
+        try:
+            load_kube_config_from_dict(kubeconfig, client_configuration=config)
+        except ConfigException:
+            raise serializers.ValidationError(_("Invalid kubeconfig"))
+        return kubeconfig
 
     class Meta:
 

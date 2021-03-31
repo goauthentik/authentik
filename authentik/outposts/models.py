@@ -1,14 +1,13 @@
 """Outpost models"""
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from typing import Iterable, Optional, Type, Union
+from typing import Iterable, Optional, Union
 from uuid import uuid4
 
 from dacite import from_dict
 from django.core.cache import cache
 from django.db import models, transaction
 from django.db.models.base import Model
-from django.forms.models import ModelForm
 from django.utils.translation import gettext_lazy as _
 from docker.client import DockerClient
 from docker.errors import DockerException
@@ -132,8 +131,8 @@ class OutpostServiceConnection(models.Model):
         raise NotImplementedError
 
     @property
-    def form(self) -> Type[ModelForm]:
-        """Return Form class used to edit this object"""
+    def component(self) -> str:
+        """Return component used to edit this object"""
         raise NotImplementedError
 
     class Meta:
@@ -180,10 +179,8 @@ class DockerServiceConnection(OutpostServiceConnection):
     )
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.outposts.forms import DockerServiceConnectionForm
-
-        return DockerServiceConnectionForm
+    def component(self) -> str:
+        return "ak-service-connection-docker-form"
 
     def __str__(self) -> str:
         return f"Docker Service-Connection {self.name}"
@@ -237,10 +234,8 @@ class KubernetesServiceConnection(OutpostServiceConnection):
     )
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.outposts.forms import KubernetesServiceConnectionForm
-
-        return KubernetesServiceConnectionForm
+    def component(self) -> str:
+        return "ak-service-connection-kubernetes-form"
 
     def __str__(self) -> str:
         return f"Kubernetes Service-Connection {self.name}"
