@@ -5,7 +5,7 @@ import "../../elements/Tabs";
 import "../../elements/events/ObjectChangelog";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
-import "../../elements/policies/BoundPoliciesList";
+import "../policies/BoundPoliciesList";
 import "./BoundStagesList";
 import "./FlowDiagram";
 import { Flow, FlowsApi } from "authentik-api";

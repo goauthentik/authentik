@@ -10,7 +10,7 @@ import "../../elements/Tabs";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
-import "../../elements/policies/BoundPoliciesList";
+import "../policies/BoundPoliciesList";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
 import { FlowsApi, FlowStageBinding, StagesApi } from "authentik-api";

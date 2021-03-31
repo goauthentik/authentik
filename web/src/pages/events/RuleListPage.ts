@@ -3,7 +3,7 @@ import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
-import "../../elements/policies/BoundPoliciesList";
+import "../policies/BoundPoliciesList";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/ModalForm";
 import { TableColumn } from "../../elements/table/Table";

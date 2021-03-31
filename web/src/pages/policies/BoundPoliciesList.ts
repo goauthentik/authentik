@@ -15,7 +15,7 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
 
 import "../../elements/forms/ModalForm";
-import "../../pages/groups/GroupForm";
+import "../groups/GroupForm";
 
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList extends Table<PolicyBinding> {
