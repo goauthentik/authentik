@@ -24,10 +24,6 @@ export class AdminURLManager {
         return `/administration/stages/${rest}`;
     }
 
-    static stageBindings(rest: string): string {
-        return `/administration/stages/bindings/${rest}`;
-    }
-
     static sources(rest: string): string {
         return `/administration/sources/${rest}`;
     }

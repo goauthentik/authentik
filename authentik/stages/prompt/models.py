@@ -12,8 +12,8 @@ from rest_framework.fields import (
     DateField,
     DateTimeField,
     EmailField,
+    HiddenField,
     IntegerField,
-    HiddenField
 )
 from rest_framework.serializers import BaseSerializer
 
