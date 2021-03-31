@@ -35,7 +35,7 @@ class PolicyBindingModelForeignKey(PrimaryKeyRelatedField):
             # checks the PK of PolicyBindingModel (for example),
             # but we get given the Primary Key of the inheriting class
             for model in self.get_queryset().select_subclasses().all():
-                if str(model.pk) == data:
+                if str(model.pk) == str(data):
                     return model
             # as a fallback we still try a direct lookup
             return self.get_queryset().get_subclass(pk=data)
@@ -82,7 +82,13 @@ class PolicyBindingSerializer(ModelSerializer):
 
     def validate(self, data: OrderedDict) -> OrderedDict:
         """Check that either policy, group or user is set."""
-        count = sum([bool(data["policy"]), bool(data["group"]), bool(data["user"])])
+        count = sum(
+            [
+                bool(data.get("policy", None)),
+                bool(data.get("group", None)),
+                bool(data.get("user", None)),
+            ]
+        )
         invalid = count > 1
         empty = count < 1
         if invalid:

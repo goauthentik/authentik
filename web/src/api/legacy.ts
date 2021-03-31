@@ -4,10 +4,6 @@ export class AdminURLManager {
         return `/administration/policies/${rest}`;
     }
 
-    static policyBindings(rest: string): string {
-        return `/administration/policies/bindings/${rest}`;
-    }
-
     static providers(rest: string): string {
         return `/administration/providers/${rest}`;
     }

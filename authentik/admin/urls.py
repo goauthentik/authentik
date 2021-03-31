@@ -4,7 +4,6 @@ from django.urls import path
 from authentik.admin.views import (
     outposts_service_connections,
     policies,
-    policies_bindings,
     property_mappings,
     providers,
     sources,
@@ -26,17 +25,6 @@ urlpatterns = [
         "policies/<uuid:pk>/update/",
         policies.PolicyUpdateView.as_view(),
         name="policy-update",
-    ),
-    # Policy bindings
-    path(
-        "policies/bindings/create/",
-        policies_bindings.PolicyBindingCreateView.as_view(),
-        name="policy-binding-create",
-    ),
-    path(
-        "policies/bindings/<uuid:pk>/update/",
-        policies_bindings.PolicyBindingUpdateView.as_view(),
-        name="policy-binding-update",
     ),
     # Providers
     path(

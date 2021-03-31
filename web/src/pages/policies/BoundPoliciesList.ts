@@ -16,6 +16,9 @@ import { AdminURLManager } from "../../api/legacy";
 
 import "../../elements/forms/ModalForm";
 import "../groups/GroupForm";
+import "../users/UserForm";
+import "./PolicyBindingForm";
+import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList extends Table<PolicyBinding> {
@@ -43,11 +46,11 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
 
     getPolicyUserGroupRow(item: PolicyBinding): string {
         if (item.policy) {
-            return gettext(`Policy ${item.policy.name}`);
+            return gettext(`Policy ${item.policyObj?.name}`);
         } else if (item.group) {
-            return gettext(`Group ${item.group.name}`);
+            return gettext(`Group ${item.groupObj?.name}`);
         } else if (item.user) {
-            return gettext(`User ${item.user.name}`);
+            return gettext(`User ${item.userObj?.name}`);
         } else {
             return gettext("");
         }
@@ -55,7 +58,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
 
     getObjectEditButton(item: PolicyBinding): TemplateResult {
         if (item.policy) {
-            return html`<ak-modal-button href="${AdminURLManager.policies(`${item.policy?.policyUuid}/update/`)}">
+            return html`<ak-modal-button href="${AdminURLManager.policies(`${item.policy}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     ${gettext("Edit Policy")}
                 </ak-spinner-button>
@@ -69,19 +72,26 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 <span slot="header">
                     ${gettext("Update Group")}
                 </span>
-                <ak-group-form slot="form" .group=${item.group}>
+                <ak-group-form slot="form" .group=${item.groupObj}>
                 </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">
                     ${gettext("Edit Group")}
                 </button>
             </ak-forms-modal>`;
         } else if (item.user) {
-            return html`<ak-modal-button href="${AdminURLManager.policies(`${item.user?.id}/update/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
-                    ${gettext("Edit User")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>`;
+            return html`<ak-forms-modal>
+                <span slot="submit">
+                    ${gettext("Update")}
+                </span>
+                <span slot="header">
+                    ${gettext("Update User")}
+                </span>
+                <ak-user-form slot="form" .user=${item.userObj}>
+                </ak-user-form>
+                <button slot="trigger" class="pf-m-secondary pf-c-button">
+                    ${gettext("Edit")}
+                </button>
+            </ak-forms-modal>`;
         } else {
             return html``;
         }
@@ -95,12 +105,19 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             html`${item.timeout}`,
             html`
             ${this.getObjectEditButton(item)}
-            <ak-modal-button href="${AdminURLManager.policyBindings(`${item.pk}/update/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            <ak-forms-modal>
+                <span slot="submit">
+                    ${gettext("Update")}
+                </span>
+                <span slot="header">
+                    ${gettext("Update Binding")}
+                </span>
+                <ak-policy-binding-form slot="form" .binding=${item} targetPk=${ifDefined(this.target)}>
+                </ak-policy-binding-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit Binding")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
+                </button>
+            </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${gettext("Policy binding")}
@@ -122,12 +139,19 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 ${gettext("No policies are currently bound to this object.")}
             </div>
             <div slot="primary">
-                <ak-modal-button href=${AdminURLManager.policyBindings(`create/?target=${this.target}`)}>
-                    <ak-spinner-button slot="trigger" class="pf-m-primary">
-                        ${gettext("Bind Policy")}
-                    </ak-spinner-button>
-                    <div slot="modal"></div>
-                </ak-modal-button>
+                <ak-forms-modal>
+                    <span slot="submit">
+                        ${gettext("Create")}
+                    </span>
+                    <span slot="header">
+                        ${gettext("Create Binding")}
+                    </span>
+                    <ak-policy-binding-form slot="form" targetPk=${ifDefined(this.target)}>
+                    </ak-policy-binding-form>
+                    <button slot="trigger" class="pf-c-button pf-m-primary">
+                        ${gettext("Create Binding")}
+                    </button>
+                </ak-forms-modal>
             </div>
         </ak-empty-state>`);
     }
@@ -154,12 +178,19 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 }), html`<ak-spinner></ak-spinner>`)}
             </ul>
         </ak-dropdown>
-        <ak-modal-button href=${AdminURLManager.policyBindings(`create/?target=${this.target}`)}>
-            <ak-spinner-button slot="trigger" class="pf-m-primary">
-                ${gettext("Bind Policy")}
-            </ak-spinner-button>
-            <div slot="modal"></div>
-        </ak-modal-button>
+        <ak-forms-modal>
+            <span slot="submit">
+                ${gettext("Create")}
+            </span>
+            <span slot="header">
+                ${gettext("Create Binding")}
+            </span>
+            <ak-policy-binding-form slot="form" targetPk=${ifDefined(this.target)}>
+            </ak-policy-binding-form>
+            <button slot="trigger" class="pf-c-button pf-m-primary">
+                ${gettext("Create Binding")}
+            </button>
+        </ak-forms-modal>
         ${super.renderToolbar()}
         `;
     }
