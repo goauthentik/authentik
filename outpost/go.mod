@@ -12,12 +12,14 @@ require (
 	github.com/go-openapi/swag v0.19.14
 	github.com/go-openapi/validate v0.20.2
 	github.com/go-redis/redis/v7 v7.4.0 // indirect
+	github.com/go-swagger/go-swagger v0.26.1 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/gorilla/websocket v1.4.2
+	github.com/jessevdk/go-flags v1.5.0 // indirect
 	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a
 	github.com/justinas/alice v1.2.0
 	github.com/kr/pretty v0.2.1 // indirect
-	github.com/magiconair/properties v1.8.4 // indirect
+	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/oauth2-proxy/oauth2-proxy v0.0.0-20200831161845-e4e5580852dc
 	github.com/pelletier/go-toml v1.8.1 // indirect
@@ -31,9 +33,10 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.7.1 // indirect
 	golang.org/x/crypto v0.0.0-20201124201722-c8d3bf9c5392 // indirect
-	golang.org/x/net v0.0.0-20210316092652-d523dce5a7f4 // indirect
+	golang.org/x/mod v0.4.2 // indirect
+	golang.org/x/net v0.0.0-20210331060903-cb1fcc7394e5 // indirect
 	golang.org/x/oauth2 v0.0.0-20201109201403-9fd604954f58 // indirect
-	golang.org/x/sys v0.0.0-20210320140829-1e4c9ba3b0c4 // indirect
+	golang.org/x/tools v0.1.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	gopkg.in/ini.v1 v1.62.0 // indirect
 	gopkg.in/square/go-jose.v2 v2.5.1 // indirect
