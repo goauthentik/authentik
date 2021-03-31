@@ -102,11 +102,11 @@ export class ApplicationForm extends Form<Application> {
                 ?required=${true}
                 name="policyEngineMode">
                 <select class="pf-c-form-control">
-                    <option value=${ApplicationPolicyEngineModeEnum.All} ?selected=${this.application?.policyEngineMode === ApplicationPolicyEngineModeEnum.All}>
-                        ${gettext("ALL, all policies must match to grant access.")}
-                    </option>
                     <option value=${ApplicationPolicyEngineModeEnum.Any} ?selected=${this.application?.policyEngineMode === ApplicationPolicyEngineModeEnum.Any}>
                         ${gettext("ANY, any policy must match to grant access.")}
+                    </option>
+                    <option value=${ApplicationPolicyEngineModeEnum.All} ?selected=${this.application?.policyEngineMode === ApplicationPolicyEngineModeEnum.All}>
+                        ${gettext("ALL, all policies must match to grant access.")}
                     </option>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal

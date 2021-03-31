@@ -98,11 +98,11 @@ export class FlowForm extends Form<Flow> {
                 ?required=${true}
                 name="policyEngineMode">
                 <select class="pf-c-form-control">
-                    <option value=${FlowPolicyEngineModeEnum.All} ?selected=${this.flow?.policyEngineMode === FlowPolicyEngineModeEnum.All}>
-                        ${gettext("ALL, all policies must match to grant access.")}
-                    </option>
                     <option value=${FlowPolicyEngineModeEnum.Any} ?selected=${this.flow?.policyEngineMode === FlowPolicyEngineModeEnum.Any}>
                         ${gettext("ANY, any policy must match to grant access.")}
+                    </option>
+                    <option value=${FlowPolicyEngineModeEnum.All} ?selected=${this.flow?.policyEngineMode === FlowPolicyEngineModeEnum.All}>
+                        ${gettext("ALL, all policies must match to grant access.")}
                     </option>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal

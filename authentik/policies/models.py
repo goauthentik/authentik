@@ -38,7 +38,7 @@ class PolicyBindingModel(models.Model):
 
     policy_engine_mode = models.TextField(
         choices=PolicyEngineMode.choices,
-        default=PolicyEngineMode.MODE_ALL,
+        default=PolicyEngineMode.MODE_ANY,
     )
 
     objects = InheritanceManager()

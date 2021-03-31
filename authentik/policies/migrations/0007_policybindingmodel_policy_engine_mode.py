@@ -10,6 +10,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        # Create field with default as all for backwards compat
         migrations.AddField(
             model_name="policybindingmodel",
             name="policy_engine_mode",
@@ -19,6 +20,18 @@ class Migration(migrations.Migration):
                     ("any", "ANY, any policy must pass"),
                 ],
                 default="all",
+            ),
+        ),
+        # Set default for new objects to any
+        migrations.AlterField(
+            model_name="policybindingmodel",
+            name="policy_engine_mode",
+            field=models.TextField(
+                choices=[
+                    ("all", "ALL, all policies must pass"),
+                    ("any", "ANY, any policy must pass"),
+                ],
+                default="any",
             ),
         ),
     ]
