@@ -13,6 +13,7 @@ from rest_framework.fields import (
     DateTimeField,
     EmailField,
     IntegerField,
+    HiddenField
 )
 from rest_framework.serializers import BaseSerializer
 
@@ -89,8 +90,8 @@ class Prompt(SerializerModel):
             field_class = EmailField
         if self.type == FieldTypes.NUMBER:
             field_class = IntegerField
-        # TODO: Hidden?
         if self.type == FieldTypes.HIDDEN:
+            field_class = HiddenField
             kwargs["required"] = False
             kwargs["initial"] = self.placeholder
         if self.type == FieldTypes.CHECKBOX:
