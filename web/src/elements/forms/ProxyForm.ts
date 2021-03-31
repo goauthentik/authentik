@@ -18,7 +18,7 @@ export class ProxyForm extends Form<unknown> {
     }
 
     reset(): void {
-        (this.shadowRoot?.firstElementChild as Form<unknown>).reset();
+        (this.shadowRoot?.firstElementChild as Form<unknown> | undefined)?.reset();
     }
 
     getSuccessMessage(): string {
