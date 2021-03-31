@@ -24,16 +24,18 @@ return False
 ### Context variables
 
 - `request`: A PolicyRequest object, which has the following properties:
-    - `request.user`: The current user, against which the policy is applied. ([ref](../expressions/reference/user-object.md))
-    - `request.http_request`: The Django HTTP Request. ([ref](https://docs.djangoproject.com/en/3.0/ref/request-response/#httprequest-objects))
+    - `request.user`: ([ref](../expressions/reference/user-object.md)) The current user, against which the policy is applied.
+    - `request.http_request`: ([ref](https://docs.djangoproject.com/en/3.0/ref/request-response/#httprequest-objects)) The Django HTTP Request.
     - `request.obj`: A Django Model instance. This is only set if the policy is ran against an object.
     - `request.context`: A dictionary with dynamic data. This depends on the origin of the execution.
-- `geoip`: `geoip2.models.City` object, which is added when GeoIP is enabled.
+- `geoip`: ([ref](https://geoip2.readthedocs.io/en/latest/#geoip2.models.City)) GeoIP object, which is added when GeoIP is enabled.
 - `ak_is_sso_flow`: Boolean which is true if request was initiated by authenticating through an external provider.
-- `ak_client_ip`: Client's IP Address or 255.255.255.255 if no IP Address could be extracted. Can be [compared](../expressions/index.md#comparing-ip-addresses), for example
+- `ak_client_ip`: ([ref](https://docs.python.org/3/library/ipaddress.html#ipaddress.ip_address))  Client's IP Address or 255.255.255.255 if no IP Address could be extracted. Can be [compared](../expressions/index.md#comparing-ip-addresses), for example
 
     ```python
     return ak_client_ip in ip_network('10.0.0.0/24')
+    # or
+    return ak_client_ip.is_private
     ```
 
 Additionally, when the policy is executed from a flow, every variable from the flow's current context is accessible under the `context` object.
