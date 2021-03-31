@@ -1,7 +1,7 @@
 """evaluator tests"""
-from django.core.exceptions import ValidationError
 from django.test import TestCase
 from guardian.shortcuts import get_anonymous_user
+from rest_framework.serializers import ValidationError
 
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.expression.evaluator import PolicyEvaluator

@@ -1,7 +1,6 @@
 """PropertyMapping API Views"""
 from json import dumps
 
-from django.urls import reverse
 from drf_yasg.utils import swagger_auto_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins
@@ -19,6 +18,7 @@ from authentik.core.api.utils import (
     PassiveSerializer,
     TypeCreateSerializer,
 )
+from authentik.core.expression import PropertyMappingEvaluator
 from authentik.core.models import PropertyMapping
 from authentik.lib.templatetags.authentik_utils import verbose_name
 from authentik.lib.utils.reflection import all_subclasses
@@ -40,6 +40,12 @@ class PropertyMappingSerializer(ModelSerializer, MetaNameSerializer):
     def get_object_type(self, obj: PropertyMapping) -> str:
         """Get object type so that we know which API Endpoint to use to get the full object"""
         return obj._meta.object_name.lower().replace("propertymapping", "")
+
+    def validate_expression(self, expression: str) -> str:
+        """Test Syntax"""
+        evaluator = PropertyMappingEvaluator()
+        evaluator.validate(expression)
+        return expression
 
     class Meta:
 
@@ -109,7 +115,7 @@ class PropertyMappingViewSet(
         if not users.exists():
             raise PermissionDenied()
 
-        response_data = {"successful": True}
+        response_data = {"successful": True, "result": ""}
         try:
             result = mapping.evaluate(
                 users.first(),

@@ -192,10 +192,8 @@ class SAMLPropertyMapping(PropertyMapping):
     friendly_name = models.TextField(default=None, blank=True, null=True)
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.providers.saml.forms import SAMLPropertyMappingForm
-
-        return SAMLPropertyMappingForm
+    def component(self) -> str:
+        return "ak-property-mapping-saml-form"
 
     @property
     def serializer(self) -> Type[Serializer]:

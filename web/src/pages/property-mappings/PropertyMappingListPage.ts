@@ -12,6 +12,7 @@ import "../../elements/forms/ProxyForm";
 import "./PropertyMappingTestForm";
 import "./PropertyMappingScopeForm";
 import "./PropertyMappingLDAPForm";
+import "./PropertyMappingSAMLForm";
 import { TableColumn } from "../../elements/table/Table";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
@@ -79,6 +80,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                     .typeMap=${{
                         "scopemapping": "ak-property-mapping-scope-form",
                         "ldap": "ak-property-mapping-ldap-form",
+                        "saml": "ak-property-mapping-saml-form",
                     }}>
                 </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">

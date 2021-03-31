@@ -4,11 +4,11 @@ from rest_framework.decorators import action
 from rest_framework.fields import ReadOnlyField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer, Serializer
+from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.propertymappings import PropertyMappingSerializer
 from authentik.core.api.providers import ProviderSerializer
-from authentik.core.api.utils import MetaNameSerializer
 from authentik.core.models import Provider
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.views.metadata import DescriptorDownloadView
@@ -67,20 +67,15 @@ class SAMLProviderViewSet(ModelViewSet):
             return Response({"metadata": ""})
 
 
-class SAMLPropertyMappingSerializer(ModelSerializer, MetaNameSerializer):
+class SAMLPropertyMappingSerializer(PropertyMappingSerializer):
     """SAMLPropertyMapping Serializer"""
 
     class Meta:
 
         model = SAMLPropertyMapping
-        fields = [
-            "pk",
-            "name",
+        fields = PropertyMappingSerializer.Meta.fields + [
             "saml_name",
             "friendly_name",
-            "expression",
-            "verbose_name",
-            "verbose_name_plural",
         ]
 
 
