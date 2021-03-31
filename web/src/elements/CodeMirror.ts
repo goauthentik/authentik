@@ -44,14 +44,10 @@ export class CodeMirrorTextarea extends LitElement {
     }
 
     private getInnerValue(): string {
-        if (!this.shadowRoot) {
+        if (!this.editor) {
             return "";
         }
-        const ta = this.shadowRoot?.querySelector("textarea");
-        if (!ta) {
-            return "";
-        }
-        return ta.value;
+        return this.editor.getValue();
     }
 
     static get styles(): CSSResult[] {
