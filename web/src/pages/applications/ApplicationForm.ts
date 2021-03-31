@@ -1,4 +1,4 @@
-import { CoreApi, Application, ProvidersApi, Provider } from "authentik-api";
+import { CoreApi, Application, ProvidersApi, Provider, ApplicationPolicyEngineModeEnum } from "authentik-api";
 import { gettext } from "django";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -96,6 +96,18 @@ export class ApplicationForm extends Form<Application> {
                         return this.groupProviders(providers.results);
                     }), html``)}
                 </select>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${gettext("Policy engine mode")}
+                ?required=${true}
+                name="policyEngineMode">
+                <select class="pf-c-form-control">
+                    <option value=${ApplicationPolicyEngineModeEnum.All} ?selected=${this.application?.policyEngineMode === ApplicationPolicyEngineModeEnum.All}>
+                        ${gettext("ALL, all policies must match to grant access.")}
+                    </option>
+                    <option value=${ApplicationPolicyEngineModeEnum.Any} ?selected=${this.application?.policyEngineMode === ApplicationPolicyEngineModeEnum.Any}>
+                        ${gettext("ANY, any policy must match to grant access.")}
+                    </option>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${gettext("Launch URL")}
