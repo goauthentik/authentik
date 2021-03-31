@@ -43,7 +43,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
             page: page,
             pageSize: PAGE_SIZE,
             search: this.search || "",
-            managedIsnull: this.hideManaged.toString(),
+            managedIsnull: this.hideManaged ? "true" : undefined,
         });
     }
 
@@ -126,6 +126,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                     <div class="pf-c-check">
                         <input class="pf-c-check__input" type="checkbox" id="hide-managed" name="hide-managed" ?checked=${this.hideManaged} @change=${() => {
                             this.hideManaged = !this.hideManaged;
+                            this.page = 1;
                             this.fetch();
                         }} />
                         <label class="pf-c-check__label" for="hide-managed">${gettext("Hide managed mappings")}</label>

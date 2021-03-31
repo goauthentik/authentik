@@ -93,7 +93,7 @@ class Prompt(SerializerModel):
         if self.type == FieldTypes.HIDDEN:
             field_class = HiddenField
             kwargs["required"] = False
-            kwargs["initial"] = self.placeholder
+            kwargs["default"] = self.placeholder
         if self.type == FieldTypes.CHECKBOX:
             field_class = BooleanField
             kwargs["required"] = False
