@@ -1,10 +1,18 @@
 """policy binding API Views"""
+from typing import OrderedDict
+
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField
+from rest_framework.serializers import (
+    ModelSerializer,
+    PrimaryKeyRelatedField,
+    ValidationError,
+)
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.core.api.groups import GroupSerializer
+from authentik.core.api.users import UserSerializer
+from authentik.policies.api.policies import PolicySerializer
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
 
 LOGGER = get_logger()
@@ -26,8 +34,8 @@ class PolicyBindingModelForeignKey(PrimaryKeyRelatedField):
             # won't return anything. This is because the direct lookup
             # checks the PK of PolicyBindingModel (for example),
             # but we get given the Primary Key of the inheriting class
-            for model in self.get_queryset().select_subclasses().all().select_related():
-                if model.pk == data:
+            for model in self.get_queryset().select_subclasses().all():
+                if str(model.pk) == str(data):
                     return model
             # as a fallback we still try a direct lookup
             return self.get_queryset().get_subclass(pk=data)
@@ -51,7 +59,9 @@ class PolicyBindingSerializer(ModelSerializer):
         required=True,
     )
 
-    group = GroupSerializer(required=False)
+    policy_obj = PolicySerializer(required=False, read_only=True, source="policy")
+    group_obj = GroupSerializer(required=False, read_only=True, source="group")
+    user_obj = UserSerializer(required=False, read_only=True, source="user")
 
     class Meta:
 
@@ -61,12 +71,31 @@ class PolicyBindingSerializer(ModelSerializer):
             "policy",
             "group",
             "user",
+            "policy_obj",
+            "group_obj",
+            "user_obj",
             "target",
             "enabled",
             "order",
             "timeout",
         ]
-        depth = 2
+
+    def validate(self, data: OrderedDict) -> OrderedDict:
+        """Check that either policy, group or user is set."""
+        count = sum(
+            [
+                bool(data.get("policy", None)),
+                bool(data.get("group", None)),
+                bool(data.get("user", None)),
+            ]
+        )
+        invalid = count > 1
+        empty = count < 1
+        if invalid:
+            raise ValidationError("Only one of 'policy', 'group' or 'user' can be set.")
+        if empty:
+            raise ValidationError("One of 'policy', 'group' or 'user' must be set.")
+        return data
 
 
 class PolicyBindingViewSet(ModelViewSet):

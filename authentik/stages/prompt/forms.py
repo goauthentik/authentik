@@ -1,7 +1,7 @@
 """Prompt forms"""
 from django import forms
 
-from authentik.stages.prompt.models import Prompt, PromptStage
+from authentik.stages.prompt.models import PromptStage
 
 
 class PromptStageForm(forms.ModelForm):
@@ -13,24 +13,4 @@ class PromptStageForm(forms.ModelForm):
         fields = ["name", "fields", "validation_policies"]
         widgets = {
             "name": forms.TextInput(),
-        }
-
-
-class PromptAdminForm(forms.ModelForm):
-    """Form to edit Prompt instances for admins"""
-
-    class Meta:
-
-        model = Prompt
-        fields = [
-            "field_key",
-            "label",
-            "type",
-            "required",
-            "placeholder",
-            "order",
-        ]
-        widgets = {
-            "label": forms.TextInput(),
-            "placeholder": forms.TextInput(),
         }

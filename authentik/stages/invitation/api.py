@@ -49,5 +49,4 @@ class InvitationViewSet(ModelViewSet):
     filterset_fields = ["created_by__username", "expires"]
 
     def perform_create(self, serializer: InvitationSerializer):
-        serializer.instance.created_by = self.request.user
-        return super().perform_create(serializer)
+        serializer.save(created_by=self.request.user)

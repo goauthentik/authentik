@@ -4,10 +4,6 @@ export class AdminURLManager {
         return `/administration/policies/${rest}`;
     }
 
-    static policyBindings(rest: string): string {
-        return `/administration/policies/bindings/${rest}`;
-    }
-
     static providers(rest: string): string {
         return `/administration/providers/${rest}`;
     }
@@ -24,36 +20,8 @@ export class AdminURLManager {
         return `/administration/stages/${rest}`;
     }
 
-    static stagePrompts(rest: string): string {
-        return `/administration/stages_prompts/${rest}`;
-    }
-
-    static stageInvitations(rest: string): string {
-        return `/administration/stages/invitations/${rest}`;
-    }
-
-    static stageBindings(rest: string): string {
-        return `/administration/stages/bindings/${rest}`;
-    }
-
     static sources(rest: string): string {
         return `/administration/sources/${rest}`;
-    }
-
-    static tokens(rest: string): string {
-        return `/administration/tokens/${rest}`;
-    }
-
-}
-
-export class UserURLManager {
-
-    static tokens(rest: string): string {
-        return `/-/user/tokens/${rest}`;
-    }
-
-    static authenticatorWebauthn(rest: string): string {
-        return `/-/user/authenticator/webauthn/${rest}`;
     }
 
 }

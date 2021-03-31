@@ -52,7 +52,7 @@ export class TokenListPage extends TablePage<Token> {
     row(item: Token): TemplateResult[] {
         return [
             html`${item.identifier}`,
-            html`${item.user.username}`,
+            html`${item.user?.username}`,
             html`${item.expiring ? "Yes" : "No"}`,
             html`${item.expiring ? item.expires?.toLocaleString() : "-"}`,
             html`

@@ -9,6 +9,7 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import AKGlobal from "../../authentik.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import { MessageLevel } from "../messages/Message";
 import { IronFormElement } from "@polymer/iron-form/iron-form";
 import { camelToSnake } from "../../utils";
@@ -31,8 +32,11 @@ export class Form<T> extends LitElement {
     @property()
     send!: (data: T) => Promise<unknown>;
 
+    @property({attribute: false})
+    nonFieldErrors?: string[];
+
     static get styles(): CSSResult[] {
-        return [PFBase, PFCard, PFButton, PFForm, PFFormControl, AKGlobal, css`
+        return [PFBase, PFCard, PFButton, PFForm, PFAlert, PFFormControl, AKGlobal, css`
             select[multiple] {
                 height: 15em;
             }
@@ -84,6 +88,8 @@ export class Form<T> extends LitElement {
             const values = form._serializeElementValues(element);
             if (element.tagName.toLowerCase() === "select" && "multiple" in element.attributes) {
                 json[element.name] = values;
+            } else if (element.tagName.toLowerCase() === "input" && element.type === "date") {
+                json[element.name] = element.valueAsDate;
             } else {
                 for (let v = 0; v < values.length; v++) {
                     form._addSerializedElement(json, element.name, values[v]);
@@ -114,6 +120,7 @@ export class Form<T> extends LitElement {
                     if (errorMessage instanceof Error) {
                         throw errorMessage;
                     }
+                    // assign all input-related errors to their elements
                     const elements: PaperInputElement[] = ironForm._getSubmittableElements();
                     elements.forEach((element) => {
                         const elementName = element.name;
@@ -123,6 +130,9 @@ export class Form<T> extends LitElement {
                             element.invalid = true;
                         }
                     });
+                    if ("non_field_errors" in errorMessage) {
+                        this.nonFieldErrors = errorMessage["non_field_errors"];
+                    }
                     throw new APIError(errorMessage);
                 });
             }
@@ -134,6 +144,24 @@ export class Form<T> extends LitElement {
         return html`<slot></slot>`;
     }
 
+    renderNonFieldErrors(): TemplateResult {
+        if (!this.nonFieldErrors) {
+            return html``;
+        }
+        return html`<div class="pf-c-form__alert">
+        ${this.nonFieldErrors.map(err => {
+            return html`<div class="pf-c-alert pf-m-inline pf-m-danger">
+                <div class="pf-c-alert__icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <h4 class="pf-c-alert__title">
+                    ${err}
+                </h4>
+            </div>`;
+        })}
+        </div>`;
+    }
+
     render(): TemplateResult {
         const rect = this.getBoundingClientRect();
         if (rect.x + rect.y + rect.width + rect.height === 0) {
@@ -141,6 +169,7 @@ export class Form<T> extends LitElement {
         }
         return html`<iron-form
             @iron-form-presubmit=${(ev: Event) => { this.submit(ev); }}>
+            ${this.renderNonFieldErrors()}
             ${this.renderForm()}
         </iron-form>`;
     }

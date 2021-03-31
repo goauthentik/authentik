@@ -100,6 +100,9 @@ export class Sidebar extends LitElement {
             PFNav,
             AKGlobal,
             css`
+                :host {
+                    z-index: 100;
+                }
                 .pf-c-nav__link.pf-m-current::after,
                 .pf-c-nav__link.pf-m-current:hover::after,
                 .pf-c-nav__item.pf-m-current:not(.pf-m-expanded) .pf-c-nav__link::after {

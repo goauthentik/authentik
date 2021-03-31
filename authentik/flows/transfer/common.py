@@ -29,6 +29,9 @@ def get_attrs(obj: SerializerModel) -> dict[str, Any]:
     for to_remove_name in to_remove:
         if to_remove_name in data:
             data.pop(to_remove_name)
+    for key in list(data.keys()):
+        if key.endswith("_obj"):
+            data.pop(key)
     return data
 
 

@@ -56,3 +56,16 @@ export function camelToSnake(key: string): string {
     const result = key.replace(/([A-Z])/g, " $1");
     return result.split(" ").join("_").toLowerCase();
 }
+
+export function groupBy<T>(objects: T[], callback: (obj: T) => string): Array<[string, T[]]> {
+    const m = new Map<string, T[]>();
+    objects.forEach(obj => {
+        const group = callback(obj);
+        if (!m.has(group)) {
+            m.set(group, []);
+        }
+        const tProviders = m.get(group) || [];
+        tProviders.push(obj);
+    });
+    return Array.from(m);
+}

@@ -5,24 +5,13 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import RedirectView
 from django.views.generic.base import TemplateView
 
-from authentik.core.views import impersonate, user
+from authentik.core.views import impersonate
 
 urlpatterns = [
     path(
         "",
         login_required(RedirectView.as_view(pattern_name="authentik_core:if-admin")),
         name="root-redirect",
-    ),
-    # User views
-    path(
-        "-/user/tokens/create/",
-        user.TokenCreateView.as_view(),
-        name="user-tokens-create",
-    ),
-    path(
-        "-/user/tokens/<slug:identifier>/update/",
-        user.TokenUpdateView.as_view(),
-        name="user-tokens-update",
     ),
     # Impersonation
     path(

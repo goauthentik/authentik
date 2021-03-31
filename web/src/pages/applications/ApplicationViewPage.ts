@@ -5,7 +5,7 @@ import "../../elements/Tabs";
 import "../../elements/charts/ApplicationAuthorizeChart";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
-import "../../elements/policies/BoundPoliciesList";
+import "../policies/BoundPoliciesList";
 import "../../elements/EmptyState";
 import "../../elements/events/ObjectChangelog";
 import { Application, CoreApi } from "authentik-api";

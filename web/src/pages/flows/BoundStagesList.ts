@@ -4,16 +4,19 @@ import { AKResponse } from "../../api/Client";
 import { Table, TableColumn } from "../../elements/table/Table";
 
 import "../../elements/forms/DeleteForm";
+import "../../elements/forms/ModalForm";
+import "./StageBindingForm";
 import "../../elements/Tabs";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
-import "../../elements/policies/BoundPoliciesList";
+import "../policies/BoundPoliciesList";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
 import { FlowsApi, FlowStageBinding, StagesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
+import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-bound-stages-list")
 export class BoundStagesList extends Table<FlowStageBinding> {
@@ -52,12 +55,19 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${AdminURLManager.stageBindings(`${item.pk}/update/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            <ak-forms-modal>
+                <span slot="submit">
+                    ${gettext("Update")}
+                </span>
+                <span slot="header">
+                    ${gettext("Update Stage binding")}
+                </span>
+                <ak-stage-binding-form slot="form" .fsb=${item}>
+                </ak-stage-binding-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit Binding")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
+                </button>
+            </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${gettext("Stage binding")}
@@ -95,12 +105,19 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                 ${gettext("No stages are currently bound to this flow.")}
             </div>
             <div slot="primary">
-                <ak-modal-button href="${AdminURLManager.stageBindings(`create/?target=${this.target}`)}">
-                    <ak-spinner-button slot="trigger" class="pf-m-primary">
-                        ${gettext("Bind Stage")}
-                    </ak-spinner-button>
-                    <div slot="modal"></div>
-                </ak-modal-button>
+                <ak-forms-modal>
+                    <span slot="submit">
+                        ${gettext("Create")}
+                    </span>
+                    <span slot="header">
+                        ${gettext("Create Stage binding")}
+                    </span>
+                    <ak-stage-binding-form slot="form" targetPk=${ifDefined(this.target)}>
+                    </ak-stage-binding-form>
+                    <button slot="trigger" class="pf-c-button pf-m-primary">
+                        ${gettext("Bind stage")}
+                    </button>
+                </ak-forms-modal>
             </div>
         </ak-empty-state>`);
     }
@@ -127,12 +144,19 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                 }), html`<ak-spinner></ak-spinner>`)}
             </ul>
         </ak-dropdown>
-        <ak-modal-button href="${AdminURLManager.stageBindings(`create/?target=${this.target}`)}">
-            <ak-spinner-button slot="trigger" class="pf-m-primary">
-                ${gettext("Bind Stage")}
-            </ak-spinner-button>
-            <div slot="modal"></div>
-        </ak-modal-button>
+        <ak-forms-modal>
+            <span slot="submit">
+                ${gettext("Create")}
+            </span>
+            <span slot="header">
+                ${gettext("Create Stage binding")}
+            </span>
+            <ak-stage-binding-form slot="form" targetPk=${ifDefined(this.target)}>
+            </ak-stage-binding-form>
+            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                ${gettext("Bind stage")}
+            </button>
+        </ak-forms-modal>
         ${super.renderToolbar()}
         `;
     }

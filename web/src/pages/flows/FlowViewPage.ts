@@ -5,12 +5,13 @@ import "../../elements/Tabs";
 import "../../elements/events/ObjectChangelog";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
-import "../../elements/policies/BoundPoliciesList";
+import "../policies/BoundPoliciesList";
 import "./BoundStagesList";
 import "./FlowDiagram";
 import { Flow, FlowsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -33,7 +34,7 @@ export class FlowViewPage extends LitElement {
     flow!: Flow;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFCard, PFContent, PFGallery, AKGlobal].concat(
+        return [PFBase, PFPage, PFButton, PFCard, PFContent, PFGallery, AKGlobal].concat(
             css`
                 img.pf-icon {
                     max-height: 24px;

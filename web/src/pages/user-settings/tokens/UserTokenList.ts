@@ -1,16 +1,18 @@
 import { gettext } from "django";
-import { customElement, html, property, TemplateResult } from "lit-element";
-import { AKResponse } from "../../api/Client";
+import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { AKResponse } from "../../../api/Client";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import "../../elements/forms/DeleteForm";
-import "../../elements/buttons/ModalButton";
-import "../../elements/buttons/Dropdown";
-import "../../elements/buttons/TokenCopyButton";
-import { Table, TableColumn } from "../../elements/table/Table";
-import { PAGE_SIZE } from "../../constants";
+import "../../../elements/forms/DeleteForm";
+import "../../../elements/forms/ModalForm";
+import "../../../elements/buttons/ModalButton";
+import "../../../elements/buttons/Dropdown";
+import "../../../elements/buttons/TokenCopyButton";
+import { Table, TableColumn } from "../../../elements/table/Table";
+import { PAGE_SIZE } from "../../../constants";
 import { CoreApi, Token } from "authentik-api";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { AdminURLManager } from "../../api/legacy";
+import { DEFAULT_CONFIG } from "../../../api/Config";
+import "./UserTokenForm";
 
 @customElement("ak-user-token-list")
 export class UserTokenList extends Table<Token> {
@@ -39,14 +41,25 @@ export class UserTokenList extends Table<Token> {
         ];
     }
 
+    static get styles(): CSSResult[] {
+        return super.styles.concat(PFDescriptionList);
+    }
+
     renderToolbar(): TemplateResult {
         return html`
-        <ak-modal-button href="/-/user/tokens/create/">
-            <ak-spinner-button slot="trigger" class="pf-m-primary">
+        <ak-forms-modal>
+            <span slot="submit">
                 ${gettext("Create")}
-            </ak-spinner-button>
-            <div slot="modal"></div>
-        </ak-modal-button>
+            </span>
+            <span slot="header">
+                ${gettext("Create Token")}
+            </span>
+            <ak-user-token-form slot="form">
+            </ak-user-token-form>
+            <button slot="trigger" class="pf-c-button pf-m-primary">
+                ${gettext("Create")}
+            </button>
+        </ak-forms-modal>
         ${super.renderToolbar()}
         `;
     }
@@ -61,7 +74,7 @@ export class UserTokenList extends Table<Token> {
                             <span class="pf-c-description-list__text">${gettext("User")}</span>
                         </dt>
                         <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">${item.user.username}</div>
+                            <div class="pf-c-description-list__text">${item.user?.username}</div>
                         </dd>
                     </div>
                     <div class="pf-c-description-list__group">
@@ -90,12 +103,19 @@ export class UserTokenList extends Table<Token> {
         return [
             html`${item.identifier}`,
             html`
-            <ak-modal-button href="${AdminURLManager.tokens(`${item.identifier}/update/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            <ak-forms-modal>
+                <span slot="submit">
+                    ${gettext("Update")}
+                </span>
+                <span slot="header">
+                    ${gettext("Update Token")}
+                </span>
+                <ak-user-token-form slot="form" .token=${item}>
+                </ak-user-token-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
+                </button>
+            </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${gettext("Token")}

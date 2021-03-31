@@ -6,11 +6,12 @@ import { TablePage } from "../../elements/table/TablePage";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteForm";
+import "../../elements/forms/ModalForm";
+import "./PromptForm";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
 import { Prompt, StagesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { AdminURLManager } from "../../api/legacy";
 
 @customElement("ak-stage-prompt-list")
 export class PromptListPage extends TablePage<Prompt> {
@@ -60,12 +61,19 @@ export class PromptListPage extends TablePage<Prompt> {
                 return html`<li>${stage.name}</li>`;
             })}`,
             html`
-            <ak-modal-button href="${AdminURLManager.stagePrompts(`${item.pk}/update/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            <ak-forms-modal>
+                <span slot="submit">
+                    ${gettext("Update")}
+                </span>
+                <span slot="header">
+                    ${gettext("Update Prompt")}
+                </span>
+                <ak-stage-prompt-form slot="form" .prompt=${item}>
+                </ak-stage-prompt-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
+                </button>
+            </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${gettext("Prompt")}
@@ -83,12 +91,19 @@ export class PromptListPage extends TablePage<Prompt> {
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-modal-button href=${AdminURLManager.stagePrompts("create/")}>
-            <ak-spinner-button slot="trigger" class="pf-m-primary">
+        <ak-forms-modal>
+            <span slot="submit">
                 ${gettext("Create")}
-            </ak-spinner-button>
-            <div slot="modal"></div>
-        </ak-modal-button>
+            </span>
+            <span slot="header">
+                ${gettext("Create Prompt")}
+            </span>
+            <ak-stage-prompt-form slot="form">
+            </ak-stage-prompt-form>
+            <button slot="trigger" class="pf-c-button pf-m-primary">
+                ${gettext("Create")}
+            </button>
+        </ak-forms-modal>
         ${super.renderToolbar()}
         `;
     }

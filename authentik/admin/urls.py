@@ -4,14 +4,10 @@ from django.urls import path
 from authentik.admin.views import (
     outposts_service_connections,
     policies,
-    policies_bindings,
     property_mappings,
     providers,
     sources,
     stages,
-    stages_bindings,
-    stages_invitations,
-    stages_prompts,
 )
 from authentik.providers.saml.views.metadata import MetadataImportView
 
@@ -29,17 +25,6 @@ urlpatterns = [
         "policies/<uuid:pk>/update/",
         policies.PolicyUpdateView.as_view(),
         name="policy-update",
-    ),
-    # Policy bindings
-    path(
-        "policies/bindings/create/",
-        policies_bindings.PolicyBindingCreateView.as_view(),
-        name="policy-binding-create",
-    ),
-    path(
-        "policies/bindings/<uuid:pk>/update/",
-        policies_bindings.PolicyBindingUpdateView.as_view(),
-        name="policy-binding-update",
     ),
     # Providers
     path(
@@ -63,34 +48,6 @@ urlpatterns = [
         "stages/<uuid:pk>/update/",
         stages.StageUpdateView.as_view(),
         name="stage-update",
-    ),
-    # Stage bindings
-    path(
-        "stages/bindings/create/",
-        stages_bindings.StageBindingCreateView.as_view(),
-        name="stage-binding-create",
-    ),
-    path(
-        "stages/bindings/<uuid:pk>/update/",
-        stages_bindings.StageBindingUpdateView.as_view(),
-        name="stage-binding-update",
-    ),
-    # Stage Prompts
-    path(
-        "stages_prompts/create/",
-        stages_prompts.PromptCreateView.as_view(),
-        name="stage-prompt-create",
-    ),
-    path(
-        "stages_prompts/<uuid:pk>/update/",
-        stages_prompts.PromptUpdateView.as_view(),
-        name="stage-prompt-update",
-    ),
-    # Stage Invitations
-    path(
-        "stages/invitations/create/",
-        stages_invitations.InvitationCreateView.as_view(),
-        name="stage-invitation-create",
     ),
     # Property Mappings
     path(
