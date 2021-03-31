@@ -59,6 +59,7 @@ class FlowSerializer(ModelSerializer):
             "stages",
             "policies",
             "cache_count",
+            "policy_engine_mode",
         ]
 
 

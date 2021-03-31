@@ -52,6 +52,7 @@ class ApplicationSerializer(ModelSerializer):
             "meta_icon",
             "meta_description",
             "meta_publisher",
+            "policy_engine_mode",
         ]
 
 
