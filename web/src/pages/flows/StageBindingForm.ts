@@ -7,6 +7,7 @@ import { Form } from "../../elements/forms/Form";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
+import { groupBy } from "../../utils";
 
 @customElement("ak-stage-binding-form")
 export class StageBindingForm extends Form<FlowStageBinding> {
@@ -39,16 +40,8 @@ export class StageBindingForm extends Form<FlowStageBinding> {
     };
 
     groupStages(stages: Stage[]): TemplateResult {
-        const m = new Map<string, Stage[]>();
-        stages.forEach(p => {
-            if (!m.has(p.verboseName || "")) {
-                m.set(p.verboseName || "", []);
-            }
-            const tProviders = m.get(p.verboseName || "") || [];
-            tProviders.push(p);
-        });
         return html`
-            ${Array.from(m).map(([group, stages]) => {
+            ${groupBy<Stage>(stages, (s => s.verboseName || "")).map(([group, stages]) => {
                 return html`<optgroup label=${group}>
                     ${stages.map(stage => {
                         const selected = (this.fsb?.stage === stage.pk);
