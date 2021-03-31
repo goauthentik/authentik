@@ -382,8 +382,8 @@ class PropertyMapping(SerializerModel, ManagedModel):
     objects = InheritanceManager()
 
     @property
-    def form(self) -> Type[ModelForm]:
-        """Return Form class used to edit this object"""
+    def component(self) -> str:
+        """Return component used to edit this object"""
         raise NotImplementedError
 
     @property

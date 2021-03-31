@@ -8,10 +8,6 @@ export class AdminURLManager {
         return `/administration/providers/${rest}`;
     }
 
-    static propertyMappings(rest: string): string {
-        return `/administration/property-mappings/${rest}`;
-    }
-
     static stages(rest: string): string {
         return `/administration/stages/${rest}`;
     }

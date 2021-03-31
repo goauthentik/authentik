@@ -1,13 +1,7 @@
 """authentik URL Configuration"""
 from django.urls import path
 
-from authentik.admin.views import (
-    policies,
-    property_mappings,
-    providers,
-    sources,
-    stages,
-)
+from authentik.admin.views import policies, providers, sources, stages
 from authentik.providers.saml.views.metadata import MetadataImportView
 
 urlpatterns = [
@@ -47,16 +41,5 @@ urlpatterns = [
         "stages/<uuid:pk>/update/",
         stages.StageUpdateView.as_view(),
         name="stage-update",
-    ),
-    # Property Mappings
-    path(
-        "property-mappings/create/",
-        property_mappings.PropertyMappingCreateView.as_view(),
-        name="property-mapping-create",
-    ),
-    path(
-        "property-mappings/<uuid:pk>/update/",
-        property_mappings.PropertyMappingUpdateView.as_view(),
-        name="property-mapping-update",
     ),
 ]

@@ -35,17 +35,11 @@ class PropertyMappingTestResultSerializer(PassiveSerializer):
 class PropertyMappingSerializer(ModelSerializer, MetaNameSerializer):
     """PropertyMapping Serializer"""
 
-    object_type = SerializerMethodField(method_name="get_type")
+    object_type = SerializerMethodField()
 
-    def get_type(self, obj):
+    def get_object_type(self, obj: PropertyMapping) -> str:
         """Get object type so that we know which API Endpoint to use to get the full object"""
         return obj._meta.object_name.lower().replace("propertymapping", "")
-
-    def to_representation(self, instance: PropertyMapping):
-        # pyright: reportGeneralTypeIssues=false
-        if instance.__class__ == PropertyMapping:
-            return super().to_representation(instance)
-        return instance.serializer(instance=instance).data
 
     class Meta:
 
@@ -89,8 +83,7 @@ class PropertyMappingViewSet(
                 {
                     "name": verbose_name(subclass),
                     "description": subclass.__doc__,
-                    "link": reverse("authentik_admin:property-mapping-create")
-                    + f"?type={subclass.__name__}",
+                    "link": subclass.component,
                 }
             )
         return Response(TypeCreateSerializer(data, many=True).data)

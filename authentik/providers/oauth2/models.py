@@ -112,10 +112,8 @@ class ScopeMapping(PropertyMapping):
     )
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.providers.oauth2.forms import ScopeMappingForm
-
-        return ScopeMappingForm
+    def component(self) -> str:
+        return "ak-service-connection-docker-form"
 
     @property
     def serializer(self) -> Type[Serializer]:
