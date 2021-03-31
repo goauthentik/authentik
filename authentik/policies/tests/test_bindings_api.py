@@ -3,7 +3,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Group, User
-from authentik.policies.models import PolicyBinding, PolicyBindingModel
+from authentik.policies.models import PolicyBindingModel
 
 
 class TestBindingsAPI(APITestCase):

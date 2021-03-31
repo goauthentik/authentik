@@ -5,6 +5,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
 from guardian.shortcuts import get_anonymous_user
+from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
@@ -134,3 +135,20 @@ class TestUserLoginStage(TestCase):
             force_str(response.content),
             {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
         )
+
+
+class TestInvitationsAPI(APITestCase):
+    """Test Invitations API"""
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.user = User.objects.get(username="akadmin")
+        self.client.force_login(self.user)
+
+    def test_invite_create(self):
+        """Test Invitations creation endpoint"""
+        response = self.client.post(
+            reverse("authentik_api:invitation-list"), {"identifier": "test-token"}
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(Invitation.objects.first().created_by, self.user)
