@@ -16006,10 +16006,24 @@ definitions:
         format: uuid
         readOnly: true
       policy:
-        $ref: '#/definitions/Policy'
+        title: Policy
+        type: string
+        format: uuid
+        x-nullable: true
       group:
-        $ref: '#/definitions/Group'
+        title: Group
+        type: string
+        format: uuid
+        x-nullable: true
       user:
+        title: User
+        type: integer
+        x-nullable: true
+      policy_obj:
+        $ref: '#/definitions/Policy'
+      group_obj:
+        $ref: '#/definitions/Group'
+      user_obj:
         $ref: '#/definitions/User'
       target:
         title: Target

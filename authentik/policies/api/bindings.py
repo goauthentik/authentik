@@ -1,6 +1,7 @@
 """policy binding API Views"""
+from typing import OrderedDict
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField
+from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField, ValidationError
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
@@ -28,8 +29,8 @@ class PolicyBindingModelForeignKey(PrimaryKeyRelatedField):
             # won't return anything. This is because the direct lookup
             # checks the PK of PolicyBindingModel (for example),
             # but we get given the Primary Key of the inheriting class
-            for model in self.get_queryset().select_subclasses().all().select_related():
-                if model.pk == data:
+            for model in self.get_queryset().select_subclasses().all():
+                if str(model.pk) == data:
                     return model
             # as a fallback we still try a direct lookup
             return self.get_queryset().get_subclass(pk=data)
@@ -53,9 +54,9 @@ class PolicyBindingSerializer(ModelSerializer):
         required=True,
     )
 
-    policy = PolicySerializer(required=False)
-    group = GroupSerializer(required=False)
-    user = UserSerializer(required=False)
+    policy_obj = PolicySerializer(required=False, read_only=True, source="policy")
+    group_obj = GroupSerializer(required=False, read_only=True, source="group")
+    user_obj = UserSerializer(required=False, read_only=True, source="user")
 
     class Meta:
 
@@ -65,13 +66,26 @@ class PolicyBindingSerializer(ModelSerializer):
             "policy",
             "group",
             "user",
+            "policy_obj",
+            "group_obj",
+            "user_obj",
             "target",
             "enabled",
             "order",
             "timeout",
         ]
-        depth = 2
 
+    def validate(self, data: OrderedDict) -> OrderedDict:
+        """Check that either policy, group or user is set."""
+        count = sum([bool(data["policy"]), bool(
+            data["group"]), bool(data["user"])])
+        invalid = count > 1
+        empty = count < 1
+        if invalid:
+            raise ValidationError("Only one of 'policy', 'group' or 'user' can be set.")
+        if empty:
+            raise ValidationError("One of 'policy', 'group' or 'user' must be set.")
+        return data
 
 class PolicyBindingViewSet(ModelViewSet):
     """PolicyBinding Viewset"""
