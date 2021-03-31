@@ -26,6 +26,7 @@ class LDAPSourceForm(forms.ModelForm):
             "name",
             "slug",
             "enabled",
+            "policy_engine_mode",
             # -- start of our custom fields
             "server_uri",
             "start_tls",

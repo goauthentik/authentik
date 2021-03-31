@@ -43,6 +43,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
             "object_type",
             "verbose_name",
             "verbose_name_plural",
+            "policy_engine_mode",
         ]
 
 
