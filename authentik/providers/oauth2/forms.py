@@ -4,8 +4,6 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 
-from authentik.admin.fields import CodeMirrorWidget
-from authentik.core.expression import PropertyMappingEvaluator
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.providers.oauth2.generators import (
@@ -74,28 +72,4 @@ class OAuth2ProviderForm(forms.ModelForm):
                     "The client stil has to specify the scope to access the data."
                 )
             )
-        }
-
-
-class ScopeMappingForm(forms.ModelForm):
-    """Form to edit ScopeMappings"""
-
-    template_name = "providers/oauth2/property_mapping_form.html"
-
-    def clean_expression(self):
-        """Test Syntax"""
-        expression = self.cleaned_data.get("expression")
-        evaluator = PropertyMappingEvaluator()
-        evaluator.validate(expression)
-        return expression
-
-    class Meta:
-
-        model = ScopeMapping
-        fields = ["name", "scope_name", "description", "expression"]
-        widgets = {
-            "name": forms.TextInput(),
-            "scope_name": forms.TextInput(),
-            "description": forms.TextInput(),
-            "expression": CodeMirrorWidget(mode="python"),
         }

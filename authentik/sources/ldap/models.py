@@ -119,10 +119,8 @@ class LDAPPropertyMapping(PropertyMapping):
     object_field = models.TextField()
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.sources.ldap.forms import LDAPPropertyMappingForm
-
-        return LDAPPropertyMappingForm
+    def component(self) -> str:
+        return "ak-property-mapping-ldap-form"
 
     @property
     def serializer(self) -> Type[Serializer]:

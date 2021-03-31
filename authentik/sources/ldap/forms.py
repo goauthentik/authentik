@@ -3,8 +3,6 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from authentik.admin.fields import CodeMirrorWidget
-from authentik.core.expression import PropertyMappingEvaluator
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 
 
@@ -59,31 +57,4 @@ class LDAPSourceForm(forms.ModelForm):
             "group_object_filter": forms.TextInput(),
             "group_membership_field": forms.TextInput(),
             "object_uniqueness_field": forms.TextInput(),
-        }
-
-
-class LDAPPropertyMappingForm(forms.ModelForm):
-    """LDAP Property Mapping form"""
-
-    template_name = "ldap/property_mapping_form.html"
-
-    def clean_expression(self):
-        """Test Syntax"""
-        expression = self.cleaned_data.get("expression")
-        evaluator = PropertyMappingEvaluator()
-        evaluator.validate(expression)
-        return expression
-
-    class Meta:
-
-        model = LDAPPropertyMapping
-        fields = ["name", "object_field", "expression"]
-        widgets = {
-            "name": forms.TextInput(),
-            "ldap_property": forms.TextInput(),
-            "object_field": forms.TextInput(),
-            "expression": CodeMirrorWidget(mode="python"),
-        }
-        help_texts = {
-            "object_field": _("Field of the user object this value is written to.")
         }
