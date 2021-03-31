@@ -1,5 +1,4 @@
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 
 import CodeMirror from "codemirror";
 import "codemirror/addon/display/autorefresh";
@@ -25,12 +24,12 @@ export class CodeMirrorTextarea extends LitElement {
 
     editor?: CodeMirror.EditorFromTextArea;
 
-    private _value?: string;
-
     @property()
     set value(v: string) {
         if (v === null) return;
-        this._value = v.toString();
+        if (this.editor) {
+            this.editor.setValue(v);
+        }
     }
 
     get value(): string {
@@ -56,7 +55,11 @@ export class CodeMirrorTextarea extends LitElement {
     }
 
     static get styles(): CSSResult[] {
-        return [PFForm, CodeMirrorStyle, CodeMirrorTheme];
+        return [CodeMirrorStyle, CodeMirrorTheme, css`
+            .CodeMirror-wrap pre {
+                word-break: break-word !important;
+            }
+        `];
     }
 
     firstUpdated(): void {
@@ -70,6 +73,7 @@ export class CodeMirrorTextarea extends LitElement {
             lineNumbers: false,
             readOnly: this.readOnly,
             autoRefresh: true,
+            lineWrapping: true,
         });
         this.editor.on("blur", () => {
             this.editor?.save();
@@ -77,6 +81,6 @@ export class CodeMirrorTextarea extends LitElement {
     }
 
     render(): TemplateResult {
-        return html`<textarea class="pf-c-form-control" name=${ifDefined(this.name)}>${this._value || ""}</textarea>`;
+        return html`<textarea name=${ifDefined(this.name)}></textarea>`;
     }
 }
