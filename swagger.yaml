@@ -3421,6 +3421,11 @@ paths:
           description: ''
           required: false
           type: string
+        - name: policy_engine_mode
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: fsb_uuid
           in: query
           description: ''
@@ -14729,6 +14734,12 @@ definitions:
       meta_publisher:
         title: Meta publisher
         type: string
+      policy_engine_mode:
+        title: Policy engine mode
+        type: string
+        enum:
+          - all
+          - any
   Group:
     required:
       - name
@@ -15288,6 +15299,12 @@ definitions:
         title: Cache count
         type: string
         readOnly: true
+      policy_engine_mode:
+        title: Policy engine mode
+        type: string
+        enum:
+          - all
+          - any
   Stage:
     required:
       - name
@@ -15358,13 +15375,12 @@ definitions:
         type: integer
         maximum: 2147483647
         minimum: -2147483648
-      policies:
-        type: array
-        items:
-          type: string
-          format: uuid
-        readOnly: true
-        uniqueItems: true
+      policy_engine_mode:
+        title: Policy engine mode
+        type: string
+        enum:
+          - all
+          - any
   ErrorDetail:
     required:
       - string
@@ -16151,6 +16167,12 @@ definitions:
                   type: string
                   format: uuid
                   readOnly: true
+                policy_engine_mode:
+                  title: Policy engine mode
+                  type: string
+                  enum:
+                    - all
+                    - any
                 name:
                   title: Name
                   description: Source's display Name.
@@ -17172,6 +17194,12 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      policy_engine_mode:
+        title: Policy engine mode
+        type: string
+        enum:
+          - all
+          - any
   UserSetting:
     required:
       - object_uid
@@ -17246,6 +17274,12 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      policy_engine_mode:
+        title: Policy engine mode
+        type: string
+        enum:
+          - all
+          - any
       server_uri:
         title: Server URI
         type: string
@@ -17388,6 +17422,12 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      policy_engine_mode:
+        title: Policy engine mode
+        type: string
+        enum:
+          - all
+          - any
       provider_type:
         title: Provider type
         type: string
@@ -17504,6 +17544,12 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      policy_engine_mode:
+        title: Policy engine mode
+        type: string
+        enum:
+          - all
+          - any
       pre_authentication_flow:
         title: Pre authentication flow
         description: Flow used before authentication.
@@ -18196,6 +18242,12 @@ definitions:
                   type: string
                   format: uuid
                   readOnly: true
+                policy_engine_mode:
+                  title: Policy engine mode
+                  type: string
+                  enum:
+                    - all
+                    - any
                 name:
                   title: Name
                   description: Source's display Name.

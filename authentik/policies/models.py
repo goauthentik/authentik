@@ -18,6 +18,15 @@ from authentik.policies.exceptions import PolicyException
 from authentik.policies.types import PolicyRequest, PolicyResult
 
 
+class PolicyEngineMode(models.TextChoices):
+    """Decide how results of multiple policies should be combined."""
+
+    # pyright: reportGeneralTypeIssues=false
+    MODE_ALL = "all", _("ALL, all policies must pass")  # type: "PolicyEngineMode"
+    # pyright: reportGeneralTypeIssues=false
+    MODE_ANY = "any", _("ANY, any policy must pass")  # type: "PolicyEngineMode"
+
+
 class PolicyBindingModel(models.Model):
     """Base Model for objects that have policies applied to them."""
 
@@ -25,6 +34,11 @@ class PolicyBindingModel(models.Model):
 
     policies = models.ManyToManyField(
         "Policy", through="PolicyBinding", related_name="bindings", blank=True
+    )
+
+    policy_engine_mode = models.TextField(
+        choices=PolicyEngineMode.choices,
+        default=PolicyEngineMode.MODE_ANY,
     )
 
     objects = InheritanceManager()

@@ -1,4 +1,4 @@
-import { Flow, FlowDesignationEnum, FlowsApi } from "authentik-api";
+import { Flow, FlowDesignationEnum, FlowPolicyEngineModeEnum, FlowsApi } from "authentik-api";
 import { gettext } from "django";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -92,6 +92,19 @@ export class FlowForm extends Form<Flow> {
                 name="slug">
                 <input type="text" value="${ifDefined(this.flow?.slug)}" class="pf-c-form-control" required>
                 <p class="pf-c-form__helper-text">${gettext("Visible in the URL.")}</p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${gettext("Policy engine mode")}
+                ?required=${true}
+                name="policyEngineMode">
+                <select class="pf-c-form-control">
+                    <option value=${FlowPolicyEngineModeEnum.Any} ?selected=${this.flow?.policyEngineMode === FlowPolicyEngineModeEnum.Any}>
+                        ${gettext("ANY, any policy must match to grant access.")}
+                    </option>
+                    <option value=${FlowPolicyEngineModeEnum.All} ?selected=${this.flow?.policyEngineMode === FlowPolicyEngineModeEnum.All}>
+                        ${gettext("ALL, all policies must match to grant access.")}
+                    </option>
+                </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${gettext("Designation")}

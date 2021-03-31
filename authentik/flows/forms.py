@@ -27,6 +27,7 @@ class FlowStageBindingForm(forms.ModelForm):
             "evaluate_on_plan",
             "re_evaluate_policies",
             "order",
+            "policy_engine_mode",
         ]
         widgets = {
             "name": forms.TextInput(),

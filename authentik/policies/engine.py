@@ -1,5 +1,4 @@
 """authentik policy engine"""
-from enum import Enum
 from multiprocessing import Pipe, current_process
 from multiprocessing.connection import Connection
 from typing import Iterator, Optional
@@ -11,7 +10,12 @@ from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import User
-from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel
+from authentik.policies.models import (
+    Policy,
+    PolicyBinding,
+    PolicyBindingModel,
+    PolicyEngineMode,
+)
 from authentik.policies.process import PolicyProcess, cache_key
 from authentik.policies.types import PolicyRequest, PolicyResult
 
@@ -35,13 +39,6 @@ class PolicyProcessInfo:
         self.result = None
 
 
-class PolicyEngineMode(Enum):
-    """Decide how results of multiple policies should be combined."""
-
-    MODE_AND = "and"
-    MODE_OR = "or"
-
-
 class PolicyEngine:
     """Orchestrate policy checking, launch tasks and return result"""
 
@@ -63,7 +60,7 @@ class PolicyEngine:
         self, pbm: PolicyBindingModel, user: User, request: HttpRequest = None
     ):
         self.logger = get_logger().bind()
-        self.mode = PolicyEngineMode.MODE_AND
+        self.mode = pbm.policy_engine_mode
         # For backwards compatibility, set empty_result to true
         # objects with no policies attached will pass.
         self.empty_result = True
@@ -147,9 +144,9 @@ class PolicyEngine:
         if len(all_results) == 0:
             return PolicyResult(self.empty_result)
         passing = False
-        if self.mode == PolicyEngineMode.MODE_AND:
+        if self.mode == PolicyEngineMode.MODE_ALL:
             passing = all(x.passing for x in all_results)
-        if self.mode == PolicyEngineMode.MODE_OR:
+        if self.mode == PolicyEngineMode.MODE_ANY:
             passing = any(x.passing for x in all_results)
         result = PolicyResult(passing)
         result.messages = tuple(y for x in all_results for y in x.messages)

@@ -32,6 +32,7 @@ class OAuthSourceForm(forms.ModelForm):
             "name",
             "slug",
             "enabled",
+            "policy_engine_mode",
             "authentication_flow",
             "enrollment_flow",
             "provider_type",

@@ -35,6 +35,7 @@ class SAMLSourceForm(forms.ModelForm):
             "name",
             "slug",
             "enabled",
+            "policy_engine_mode",
             "pre_authentication_flow",
             "authentication_flow",
             "enrollment_flow",
