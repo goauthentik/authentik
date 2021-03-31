@@ -5,6 +5,8 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.core.api.groups import GroupSerializer
+from authentik.core.api.users import UserSerializer
+from authentik.policies.api.policies import PolicySerializer
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
 
 LOGGER = get_logger()
@@ -51,7 +53,9 @@ class PolicyBindingSerializer(ModelSerializer):
         required=True,
     )
 
+    policy = PolicySerializer(required=False)
     group = GroupSerializer(required=False)
+    user = UserSerializer(required=False)
 
     class Meta:
 
