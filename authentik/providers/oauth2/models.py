@@ -13,7 +13,6 @@ from uuid import uuid4
 from dacite import from_dict
 from django.conf import settings
 from django.db import models
-from django.forms import ModelForm
 from django.http import HttpRequest
 from django.utils import dateformat, timezone
 from django.utils.translation import gettext_lazy as _
@@ -284,16 +283,14 @@ class OAuth2Provider(Provider):
         return main_url.replace(launch_url.path, "")
 
     @property
+    def component(self) -> str:
+        return "ak-provider-oauth2-form"
+
+    @property
     def serializer(self) -> Type[Serializer]:
         from authentik.providers.oauth2.api.provider import OAuth2ProviderSerializer
 
         return OAuth2ProviderSerializer
-
-    @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.providers.oauth2.forms import OAuth2ProviderForm
-
-        return OAuth2ProviderForm
 
     def __str__(self):
         return f"OAuth2 Provider {self.name}"

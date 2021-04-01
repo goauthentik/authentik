@@ -1,5 +1,4 @@
 """Provider API Views"""
-from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import mixins
@@ -34,7 +33,6 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
         fields = [
             "pk",
             "name",
-            "application",
             "authorization_flow",
             "property_mappings",
             "object_type",
@@ -76,15 +74,14 @@ class ProviderViewSet(
                 {
                     "name": verbose_name(subclass),
                     "description": subclass.__doc__,
-                    "link": reverse("authentik_admin:provider-create")
-                    + f"?type={subclass.__name__}",
+                    "link": subclass().component,
                 }
             )
         data.append(
             {
                 "name": _("SAML Provider from Metadata"),
                 "description": _("Create a SAML Provider by importing its Metadata."),
-                "link": reverse("authentik_admin:provider-saml-from-metadata"),
+                "link": "ak-provider-saml-import-form",
             }
         )
         return Response(TypeCreateSerializer(data, many=True).data)
