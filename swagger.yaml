@@ -2290,6 +2290,16 @@ paths:
       operationId: crypto_certificatekeypairs_list
       description: CertificateKeyPair Viewset
       parameters:
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: has_key
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -16548,10 +16558,10 @@ definitions:
         title: Expression
         type: string
         minLength: 1
-      object_field:
-        title: Object field
+      object_type:
+        title: Object type
         type: string
-        minLength: 1
+        readOnly: true
       verbose_name:
         title: Verbose name
         type: string
@@ -16560,11 +16570,15 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      object_field:
+        title: Object field
+        type: string
+        minLength: 1
   SAMLPropertyMapping:
     required:
       - name
-      - saml_name
       - expression
+      - saml_name
     type: object
     properties:
       pk:
@@ -16576,6 +16590,22 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      expression:
+        title: Expression
+        type: string
+        minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       saml_name:
         title: SAML Name
         type: string
@@ -16584,23 +16614,11 @@ definitions:
         title: Friendly name
         type: string
         x-nullable: true
-      expression:
-        title: Expression
-        type: string
-        minLength: 1
-      verbose_name:
-        title: Verbose name
-        type: string
-        readOnly: true
-      verbose_name_plural:
-        title: Verbose name plural
-        type: string
-        readOnly: true
   ScopeMapping:
     required:
       - name
-      - scope_name
       - expression
+      - scope_name
     type: object
     properties:
       pk:
@@ -16612,6 +16630,22 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      expression:
+        title: Expression
+        type: string
+        minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       scope_name:
         title: Scope name
         description: Scope used by the client
@@ -16622,18 +16656,6 @@ definitions:
         description: Description shown to the user when consenting. If left empty,
           the user won't be informed.
         type: string
-      expression:
-        title: Expression
-        type: string
-        minLength: 1
-      verbose_name:
-        title: Verbose name
-        type: string
-        readOnly: true
-      verbose_name_plural:
-        title: Verbose name plural
-        type: string
-        readOnly: true
   OAuth2ProviderSetupURLs:
     type: object
     properties:
