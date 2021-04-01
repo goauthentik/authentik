@@ -9227,6 +9227,42 @@ paths:
       tags:
         - providers
     parameters: []
+  /providers/saml/import_metadata/:
+    post:
+      operationId: providers_saml_import_metadata
+      description: Create provider from SAML Metadata
+      parameters:
+        - name: name
+          in: formData
+          required: true
+          type: string
+          minLength: 1
+        - name: authorization_flow
+          in: formData
+          required: true
+          type: string
+          format: slug
+          pattern: ^[-a-zA-Z0-9_]+$
+        - name: file
+          in: formData
+          required: true
+          type: file
+      responses:
+        '204':
+          description: Successfully imported provider
+        '400':
+          description: Invalid input.
+          schema:
+            $ref: '#/definitions/ValidationError'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+      consumes:
+        - multipart/form-data
+      tags:
+        - providers
+    parameters: []
   /providers/saml/{id}/:
     get:
       operationId: providers_saml_read

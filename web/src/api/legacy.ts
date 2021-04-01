@@ -22,9 +22,6 @@ export class AppURLManager {
     static sourceOAuth(slug: string, action: string): string {
         return `/source/oauth/${action}/${slug}/`;
     }
-    static providerSAML(rest: string): string {
-        return `/application/saml/${rest}`;
-    }
 
 }
 

@@ -3,7 +3,6 @@ from typing import Optional, Type
 from urllib.parse import urlparse
 
 from django.db import models
-from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
@@ -171,10 +170,8 @@ class SAMLProvider(Provider):
         return SAMLProviderSerializer
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.providers.saml.forms import SAMLProviderForm
-
-        return SAMLProviderForm
+    def component(self) -> str:
+        return "ak-provider-saml-form"
 
     def __str__(self):
         return f"SAML Provider {self.name}"

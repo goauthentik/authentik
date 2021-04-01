@@ -12,6 +12,7 @@ import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import AKGlobal from "../../../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 import "../../../elements/buttons/ModalButton";
 import "../../../elements/buttons/SpinnerButton";
@@ -23,7 +24,6 @@ import "./SAMLProviderForm";
 import { Page } from "../../../elements/Page";
 import { ProvidersApi, SAMLProvider } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { AppURLManager } from "../../../api/legacy";
 import { EVENT_REFRESH } from "../../../constants";
 import { ifDefined } from "lit-html/directives/if-defined";
 
@@ -55,7 +55,7 @@ export class SAMLProviderViewPage extends Page {
     provider?: SAMLProvider;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, AKGlobal];
+        return [PFBase, PFPage, PFButton, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, AKGlobal];
     }
 
     constructor() {
@@ -153,27 +153,28 @@ export class SAMLProviderViewPage extends Page {
                         </div>
                     </div>
                 </section>
+                ${this.provider.assignedApplicationName ? html`
                 <section slot="page-3" data-tab-title="${gettext("Metadata")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-u-display-flex pf-u-justify-content-center">
                         <div class="pf-u-w-75">
                             <div class="pf-c-card">
                                 <div class="pf-c-card__body">
-                                    ${until(
-                                        new ProvidersApi(DEFAULT_CONFIG).providersSamlMetadata({
-                                            id: this.provider.pk || 0,
-                                        }).then(m => {
-                                            return html`<ak-codemirror mode="xml" ?readOnly=${true} value="${ifDefined(m.metadata)}"></ak-codemirror>`;
-                                        })
-                                    )}
+                                    ${until(new ProvidersApi(DEFAULT_CONFIG).providersSamlMetadata({
+                                        id: this.provider.pk || 0,
+                                    }).then(m => {
+                                        return html`<ak-codemirror mode="xml" ?readOnly=${true} value="${ifDefined(m.metadata)}"></ak-codemirror>`;
+                                    }))}
                                 </div>
                                 <div class="pf-c-card__footer">
-                                    <a class="pf-c-button pf-m-primary" target="_blank" href="${AppURLManager.providerSAML(`${this.provider.assignedApplicationSlug}/metadata/`)}">
+                                    <a class="pf-c-button pf-m-primary" target="_blank"
+                                        href="/api/v2beta/providers/saml/${this.provider.pk}/metadata/?download">
                                         ${gettext("Download")}
                                     </a>
                                 </div>
                             </div>
                         </div>
                     </div>
+                ` : html``}
                 </section>
             </ak-tabs>`;
     }

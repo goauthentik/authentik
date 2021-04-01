@@ -2,7 +2,6 @@
 from django.urls import path
 
 from authentik.admin.views import policies, providers, sources, stages
-from authentik.providers.saml.views.metadata import MetadataImportView
 
 urlpatterns = [
     # Sources
@@ -24,11 +23,6 @@ urlpatterns = [
         "providers/create/",
         providers.ProviderCreateView.as_view(),
         name="provider-create",
-    ),
-    path(
-        "providers/create/saml/from-metadata/",
-        MetadataImportView.as_view(),
-        name="provider-saml-from-metadata",
     ),
     path(
         "providers/<int:pk>/update/",

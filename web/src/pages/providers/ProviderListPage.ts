@@ -11,6 +11,7 @@ import "../../elements/forms/ProxyForm";
 import "./oauth2/OAuth2ProviderForm";
 import "./proxy/ProxyProviderForm";
 import "./saml/SAMLProviderForm";
+import "./saml/SAMLProviderImportForm";
 import { TableColumn } from "../../elements/table/Table";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
