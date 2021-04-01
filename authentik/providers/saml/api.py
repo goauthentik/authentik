@@ -3,11 +3,13 @@ from xml.etree.ElementTree import ParseError  # nosec
 
 from defusedxml.ElementTree import fromstring
 from django.http.response import HttpResponse
+from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, FileField, ReadOnlyField
 from rest_framework.parsers import MultiPartParser
+from rest_framework.permissions import AllowAny
 from rest_framework.relations import SlugRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -78,11 +80,12 @@ class SAMLProviderViewSet(ModelViewSet):
     serializer_class = SAMLProviderSerializer
 
     @swagger_auto_schema(responses={200: SAMLMetadataSerializer(many=False)})
-    @action(methods=["GET"], detail=True)
+    @action(methods=["GET"], detail=True, permission_classes=[AllowAny])
     # pylint: disable=invalid-name, unused-argument
     def metadata(self, request: Request, pk: int) -> Response:
         """Return metadata as XML string"""
-        provider = self.get_object()
+        # We don't use self.get_object() on purpose as this view is un-authenticated
+        provider = get_object_or_404(SAMLProvider, pk=pk)
         try:
             metadata = MetadataProcessor(provider, request).build_entity_descriptor()
             if "download" in request._request.GET:
