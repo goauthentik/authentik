@@ -77,10 +77,7 @@ export class ServiceConnectionDockerForm extends Form<DockerServiceConnection> {
                         ordering: "pk"
                     }).then(certs => {
                         return certs.results.map(cert => {
-                            const selected = Array.from(this.sc?.tlsVerification || []).some(sp => {
-                                return sp == cert.pk;
-                            });
-                            return html`<option value=${ifDefined(cert.pk)} ?selected=${selected}>${cert.name}</option>`;
+                            return html`<option value=${ifDefined(cert.pk)} ?selected=${this.sc?.tlsVerification === cert.pk}>${cert.name}</option>`;
                         });
                     }))}
                 </select>
@@ -96,10 +93,7 @@ export class ServiceConnectionDockerForm extends Form<DockerServiceConnection> {
                         ordering: "pk"
                     }).then(certs => {
                         return certs.results.map(cert => {
-                            const selected = Array.from(this.sc?.tlsAuthentication || []).some(sp => {
-                                return sp == cert.pk;
-                            });
-                            return html`<option value=${ifDefined(cert.pk)} ?selected=${selected}>${cert.name}</option>`;
+                            return html`<option value=${ifDefined(cert.pk)} ?selected=${this.sc?.tlsAuthentication === cert.pk}>${cert.name}</option>`;
                         });
                     }))}
                 </select>

@@ -1,6 +1,5 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import { until } from "lit-html/directives/until";
 
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -10,26 +9,25 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import AKGlobal from "../../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import AKGlobal from "../../../authentik.css";
 
-import "../../elements/buttons/ModalButton";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/CodeMirror";
-import "../../elements/Tabs";
-import "../../elements/events/ObjectChangelog";
-import "./RelatedApplicationButton";
-import { Page } from "../../elements/Page";
-import { ProvidersApi, SAMLProvider } from "authentik-api";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { AdminURLManager, AppURLManager } from "../../api/legacy";
-import { EVENT_REFRESH } from "../../constants";
-import { ifDefined } from "lit-html/directives/if-defined";
+import "../../../elements/buttons/ModalButton";
+import "../../../elements/buttons/SpinnerButton";
+import "../../../elements/CodeMirror";
+import "../../../elements/Tabs";
+import "../../../elements/events/ObjectChangelog";
+import "../RelatedApplicationButton";
+import "./ProxyProviderForm";
+import { Page } from "../../../elements/Page";
+import { ProvidersApi, ProxyProvider } from "authentik-api";
+import { DEFAULT_CONFIG } from "../../../api/Config";
+import { EVENT_REFRESH } from "../../../constants";
 
-@customElement("ak-provider-saml-view")
-export class SAMLProviderViewPage extends Page {
+@customElement("ak-provider-proxy-view")
+export class ProxyProviderViewPage extends Page {
     pageTitle(): string {
-        return gettext(`SAML Provider ${this.provider?.name || ""}`);
+        return gettext(`Proxy Provider ${this.provider?.name || ""}`);
     }
     pageDescription(): string | undefined {
         return;
@@ -45,13 +43,13 @@ export class SAMLProviderViewPage extends Page {
 
     @property({type: Number})
     set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG).providersSamlRead({
+        new ProvidersApi(DEFAULT_CONFIG).providersProxyRead({
             id: value,
         }).then((prov) => (this.provider = prov));
     }
 
     @property({ attribute: false })
-    provider?: SAMLProvider;
+    provider?: ProxyProvider;
 
     static get styles(): CSSResult[] {
         return [PFBase, PFPage, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, AKGlobal];
@@ -96,37 +94,55 @@ export class SAMLProviderViewPage extends Page {
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("ACS URL")}</span>
+                                                <span class="pf-c-description-list__text">${gettext("Internal Host")}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.provider.acsUrl}</div>
+                                                <div class="pf-c-description-list__text">${this.provider.internalHost}</div>
                                             </dd>
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Audience")}</span>
+                                                <span class="pf-c-description-list__text">${gettext("External Host")}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.provider.audience}</div>
+                                                <div class="pf-c-description-list__text">${this.provider.externalHost}</div>
                                             </dd>
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Issuer")}</span>
+                                                <span class="pf-c-description-list__text">${gettext("Basic-Auth")}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.provider.issuer}</div>
+                                                <div class="pf-c-description-list__text">
+                                                    ${this.provider.basicAuthEnabled ?
+                                                        html`<span class="pf-c-button__icon pf-m-start">
+                                                            <i class="fas fa-check-circle" aria-hidden="true"></i>
+                                                            </span>${gettext("Yes")}`:
+                                                        html`<span class="pf-c-button__icon pf-m-start">
+                                                            <i class="fas fa-times-circle" aria-hidden="true"></i>
+                                                            </span>${gettext("No")}`
+                                                    }
+                                                </div>
                                             </dd>
                                         </div>
                                     </dl>
                                 </div>
                                 <div class="pf-c-card__footer">
-                                    <ak-modal-button href="${AdminURLManager.providers(`${this.provider.pk}/update/`)}">
-                                        <ak-spinner-button slot="trigger" class="pf-m-primary">
+                                    <ak-forms-modal>
+                                        <span slot="submit">
+                                            ${gettext("Update")}
+                                        </span>
+                                        <span slot="header">
+                                            ${gettext("Update Proxy Provider")}
+                                        </span>
+                                        <ak-provider-proxy-form
+                                            slot="form"
+                                            .providerUUID=${this.provider.pk || 0}>
+                                        </ak-provider-proxy-form>
+                                        <button slot="trigger" class="pf-c-button pf-m-primary">
                                             ${gettext("Edit")}
-                                        </ak-spinner-button>
-                                        <div slot="modal"></div>
-                                    </ak-modal-button>
+                                        </button>
+                                    </ak-forms-modal>
                                 </div>
                             </div>
                         </div>
@@ -137,31 +153,9 @@ export class SAMLProviderViewPage extends Page {
                         <div class="pf-c-card__body">
                             <ak-object-changelog
                                 targetModelPk=${this.provider.pk || ""}
-                                targetModelApp="authentik_providers_saml"
-                                targetModelName="samlprovider">
+                                targetModelApp="authentik_providers_proxy"
+                                targetModelName="proxyprovider">
                             </ak-object-changelog>
-                        </div>
-                    </div>
-                </section>
-                <section slot="page-3" data-tab-title="${gettext("Metadata")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
-                    <div class="pf-u-display-flex pf-u-justify-content-center">
-                        <div class="pf-u-w-75">
-                            <div class="pf-c-card">
-                                <div class="pf-c-card__body">
-                                    ${until(
-                                        new ProvidersApi(DEFAULT_CONFIG).providersSamlMetadata({
-                                            id: this.provider.pk || 0,
-                                        }).then(m => {
-                                            return html`<ak-codemirror mode="xml" ?readOnly=${true} value="${ifDefined(m.metadata)}"></ak-codemirror>`;
-                                        })
-                                    )}
-                                </div>
-                                <div class="pf-c-card__footer">
-                                    <a class="pf-c-button pf-m-primary" target="_blank" href="${AppURLManager.providerSAML(`${this.provider.assignedApplicationSlug}/metadata/`)}">
-                                        ${gettext("Download")}
-                                    </a>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </section>

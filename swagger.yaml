@@ -14652,7 +14652,6 @@ definitions:
   Provider:
     required:
       - name
-      - application
       - authorization_flow
     type: object
     properties:
@@ -14664,9 +14663,6 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      application:
-        title: Application
-        type: string
       authorization_flow:
         title: Authorization flow
         description: Flow used when authorizing this provider.
@@ -15456,7 +15452,6 @@ definitions:
   OAuth2Provider:
     required:
       - name
-      - application
       - authorization_flow
     type: object
     properties:
@@ -15468,9 +15463,6 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      application:
-        title: Application
-        type: string
       authorization_flow:
         title: Authorization flow
         description: Flow used when authorizing this provider.
@@ -16686,7 +16678,6 @@ definitions:
   ProxyProvider:
     required:
       - name
-      - application
       - authorization_flow
       - internal_host
       - external_host
@@ -16700,9 +16691,6 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      application:
-        title: Application
-        type: string
       authorization_flow:
         title: Authorization flow
         description: Flow used when authorizing this provider.
@@ -16774,7 +16762,6 @@ definitions:
   SAMLProvider:
     required:
       - name
-      - application
       - authorization_flow
       - acs_url
     type: object
@@ -16787,9 +16774,6 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      application:
-        title: Application
-        type: string
       authorization_flow:
         title: Authorization flow
         description: Flow used when authorizing this provider.
@@ -16892,6 +16876,14 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+      sp_binding:
+        title: Service Provider Binding
+        description: This determines how authentik sends the response back to the
+          Service Provider.
+        type: string
+        enum:
+          - redirect
+          - post
   SAMLMetadata:
     type: object
     properties:

@@ -6,6 +6,7 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 import { Form } from "../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
+import "../../elements/CodeMirror";
 
 @customElement("ak-property-mapping-scope-form")
 export class PropertyMappingScopeForm extends Form<ScopeMapping> {
@@ -67,7 +68,7 @@ export class PropertyMappingScopeForm extends Form<ScopeMapping> {
             <ak-form-element-horizontal
                 label=${gettext("Expression")}
                 name="expression">
-                <ak-codemirror mode="python" value="${this.mapping?.expression}">
+                <ak-codemirror mode="python" value="${ifDefined(this.mapping?.expression)}">
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
                     Expression using Python. See <a href="https://goauthentik.io/docs/property-mappings/expression/">here</a> for a list of all variables.

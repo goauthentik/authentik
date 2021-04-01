@@ -4,9 +4,9 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/EmptyState";
 
-import "./SAMLProviderViewPage";
-import "./OAuth2ProviderViewPage";
-import "./ProxyProviderViewPage";
+import "./saml/SAMLProviderViewPage";
+import "./oauth2/OAuth2ProviderViewPage";
+import "./proxy/ProxyProviderViewPage";
 import { Provider, ProvidersApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";

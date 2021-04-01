@@ -3,16 +3,20 @@ import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
-import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
 import "../../elements/forms/DeleteForm";
+import "../../elements/forms/ModalForm";
+import "../../elements/forms/ProxyForm";
+import "./oauth2/OAuth2ProviderForm";
+import "./proxy/ProxyProviderForm";
+import "./saml/SAMLProviderForm";
 import { TableColumn } from "../../elements/table/Table";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
 import { Provider, ProvidersApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { AdminURLManager } from "../../api/legacy";
+import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-provider-list")
 export class ProviderListPage extends TablePage<Provider> {
@@ -63,12 +67,29 @@ export class ProviderListPage extends TablePage<Provider> {
                 ${gettext("Warning: Provider not assigned to any application.")}`,
             html`${item.verboseName}`,
             html`
-            <ak-modal-button href="${AdminURLManager.providers(`${item.pk}/update/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            <ak-forms-modal>
+                <span slot="submit">
+                    ${gettext("Update")}
+                </span>
+                <span slot="header">
+                    ${gettext(`Update ${item.verboseName}`)}
+                </span>
+                <ak-proxy-form
+                    slot="form"
+                    .args=${{
+                        "providerUUID": item.pk
+                    }}
+                    type=${ifDefined(item.objectType)}
+                    .typeMap=${{
+                        "oauth2": "ak-provider-oauth2-form",
+                        "saml": "ak-provider-saml-form",
+                        "proxy": "ak-provider-proxy-form",
+                    }}>
+                </ak-proxy-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
+                </button>
+            </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${gettext("Source")}
@@ -95,12 +116,22 @@ export class ProviderListPage extends TablePage<Provider> {
                 ${until(new ProvidersApi(DEFAULT_CONFIG).providersAllTypes({}).then((types) => {
                     return types.map((type) => {
                         return html`<li>
-                            <ak-modal-button href="${type.link}">
-                                <button slot="trigger" class="pf-c-dropdown__menu-item">${type.name}<br>
+                            <ak-forms-modal>
+                                <span slot="submit">
+                                    ${gettext("Create")}
+                                </span>
+                                <span slot="header">
+                                    ${gettext(`Create ${type.name}`)}
+                                </span>
+                                <ak-proxy-form
+                                    slot="form"
+                                    type=${type.link}>
+                                </ak-proxy-form>
+                                <button slot="trigger" class="pf-c-dropdown__menu-item">
+                                    ${type.name}<br>
                                     <small>${type.description}</small>
                                 </button>
-                                <div slot="modal"></div>
-                            </ak-modal-button>
+                            </ak-forms-modal>
                         </li>`;
                     });
                 }), html`<ak-spinner></ak-spinner>`)}

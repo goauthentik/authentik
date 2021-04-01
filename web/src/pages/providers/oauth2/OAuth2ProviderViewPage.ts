@@ -9,23 +9,23 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "../../../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 
-import "../../elements/buttons/ModalButton";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/CodeMirror";
-import "../../elements/Tabs";
-import "../../elements/events/ObjectChangelog";
-import "./RelatedApplicationButton";
-import { Page } from "../../elements/Page";
-import { convertToTitle } from "../../utils";
+import "../../../elements/buttons/ModalButton";
+import "../../../elements/buttons/SpinnerButton";
+import "../../../elements/CodeMirror";
+import "../../../elements/Tabs";
+import "../../../elements/events/ObjectChangelog";
+import "../RelatedApplicationButton";
+import "./OAuth2ProviderForm";
+import { Page } from "../../../elements/Page";
+import { convertToTitle } from "../../../utils";
 import { OAuth2Provider, OAuth2ProviderSetupURLs, ProvidersApi } from "authentik-api";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { AdminURLManager } from "../../api/legacy";
-import { EVENT_REFRESH } from "../../constants";
+import { DEFAULT_CONFIG } from "../../../api/Config";
+import { EVENT_REFRESH } from "../../../constants";
 
 @customElement("ak-provider-oauth2-view")
 export class OAuth2ProviderViewPage extends Page {
@@ -128,12 +128,21 @@ export class OAuth2ProviderViewPage extends Page {
                                     </dl>
                                 </div>
                                 <div class="pf-c-card__footer">
-                                    <ak-modal-button href="${AdminURLManager.providers(`${this.provider.pk}/update/`)}">
-                                        <ak-spinner-button slot="trigger" class="pf-m-primary">
+                                    <ak-forms-modal>
+                                        <span slot="submit">
+                                            ${gettext("Update")}
+                                        </span>
+                                        <span slot="header">
+                                            ${gettext("Update OAuth2 Provider")}
+                                        </span>
+                                        <ak-provider-oauth2-form
+                                            slot="form"
+                                            .providerUUID=${this.provider.pk || 0}>
+                                        </ak-provider-oauth2-form>
+                                        <button slot="trigger" class="pf-c-button pf-m-primary">
                                             ${gettext("Edit")}
-                                        </ak-spinner-button>
-                                        <div slot="modal"></div>
-                                    </ak-modal-button>
+                                        </button>
+                                    </ak-forms-modal>
                                 </div>
                             </div>
                         </div>
