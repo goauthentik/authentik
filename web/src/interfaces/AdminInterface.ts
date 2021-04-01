@@ -1,5 +1,3 @@
-import "construct-style-sheets-polyfill";
-
 import "../elements/messages/MessageContainer";
 import { customElement } from "lit-element";
 import { me } from "../api/Users";
