@@ -1,17 +1,16 @@
 """ProxyProvider API Views"""
 from drf_yasg.utils import swagger_serializer_method
 from rest_framework.fields import CharField, ListField, SerializerMethodField
-from rest_framework.request import Request
-from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
+from authentik.core.api.utils import PassiveSerializer
 from authentik.providers.oauth2.views.provider import ProviderInfoView
 from authentik.providers.proxy.models import ProxyProvider
 
 
-class OpenIDConnectConfigurationSerializer(Serializer):
+class OpenIDConnectConfigurationSerializer(PassiveSerializer):
     """rest_framework Serializer for OIDC Configuration"""
 
     issuer = CharField()
@@ -26,12 +25,6 @@ class OpenIDConnectConfigurationSerializer(Serializer):
     id_token_signing_alg_values_supported = ListField(child=CharField())
     subject_types_supported = ListField(child=CharField())
     token_endpoint_auth_methods_supported = ListField(child=CharField())
-
-    def create(self, request: Request) -> Response:
-        raise NotImplementedError
-
-    def update(self, request: Request) -> Response:
-        raise NotImplementedError
 
 
 class ProxyProviderSerializer(ProviderSerializer):
