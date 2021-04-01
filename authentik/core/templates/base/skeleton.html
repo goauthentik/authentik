@@ -14,6 +14,7 @@
         <link rel="stylesheet" type="text/css" href="{% static 'dist/patternfly.min.css' %}?v={{ ak_version }}">
         <link rel="stylesheet" type="text/css" href="{% static 'dist/authentik.css' %}?v={{ ak_version }}">
         <script src="{% url 'authentik_api:javascript-catalog' %}?v={{ ak_version }}"></script>
+        <script src="{% static 'dist/adoptedStyleSheets.js' %}?v={{ ak_version }}" type="module"></script>
         {% block head %}
         {% endblock %}
     </head>
