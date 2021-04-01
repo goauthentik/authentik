@@ -174,8 +174,7 @@ export class SAMLProviderViewPage extends Page {
                             </div>
                         </div>
                     </div>
-                ` : html``}
-                </section>
+                </section>` : html``}
             </ak-tabs>`;
     }
 }

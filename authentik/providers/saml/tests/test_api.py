@@ -76,7 +76,7 @@ class TestSAMLProviderAPI(APITestCase):
                         designation=FlowDesignation.AUTHORIZATION
                     )
                     .first()
-                    .pk,
+                    .slug,
                 },
                 format="multipart",
             )
@@ -97,7 +97,7 @@ class TestSAMLProviderAPI(APITestCase):
                         designation=FlowDesignation.AUTHORIZATION
                     )
                     .first()
-                    .pk,
+                    .slug,
                 },
                 format="multipart",
             )
