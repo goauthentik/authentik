@@ -38,10 +38,8 @@ class AuthenticatorTOTPStage(ConfigurableStage, Stage):
         return AuthenticatorTOTPStageView
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.stages.authenticator_totp.forms import AuthenticatorTOTPStageForm
-
-        return AuthenticatorTOTPStageForm
+    def component(self) -> str:
+        return "ak-stage-authenticator-totp-form"
 
     @property
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:

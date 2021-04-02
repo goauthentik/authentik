@@ -69,10 +69,10 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
                         name="transports">
                         <select name="users" class="pf-c-form-control" multiple>
                             <option value=${IdentificationStageUserFieldsEnum.Username} ?selected=${this.isUserFieldSelected(IdentificationStageUserFieldsEnum.Username)}>
-                                ${IdentificationStageUserFieldsEnum.Username}
+                                ${gettext("Username")}
                             </option>
                             <option value=${IdentificationStageUserFieldsEnum.Email} ?selected=${this.isUserFieldSelected(IdentificationStageUserFieldsEnum.Email)}>
-                                ${IdentificationStageUserFieldsEnum.Email}
+                                ${gettext("Email")}
                             </option>
                         </select>
                         <p class="pf-c-form__helper-text">${gettext("Fields a user can identify themselves with.")}</p>
