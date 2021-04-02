@@ -1,6 +1,5 @@
 """policy API Views"""
 from django.core.cache import cache
-from django.urls import reverse
 from drf_yasg.utils import no_body, swagger_auto_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins

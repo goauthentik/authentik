@@ -1,4 +1,4 @@
-import { AdminApi, ExpressionPolicy, EventsApi, PoliciesApi } from "authentik-api";
+import { ExpressionPolicy, PoliciesApi } from "authentik-api";
 import { gettext } from "django";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -7,6 +7,7 @@ import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
+import "../../../elements/CodeMirror";
 
 @customElement("ak-policy-expression-form")
 export class ExpressionPolicyForm extends Form<ExpressionPolicy> {

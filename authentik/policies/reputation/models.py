@@ -1,9 +1,6 @@
 """authentik reputation request policy"""
-from typing import Type
-
 from django.core.cache import cache
 from django.db import models
-from django.forms import ModelForm
 from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
 

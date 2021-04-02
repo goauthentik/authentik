@@ -114,7 +114,7 @@ export class PasswordPolicyForm extends Form<PasswordPolicy> {
                         label=${gettext("Symbol charset")}
                         ?required=${true}
                         name="symbolCharset">
-                        <input type="text" value="${ifDefined(this.policy?.symbolCharset || "!\\\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ ")}" class="pf-c-form-control" required>
+                        <input type="text" value="${ifDefined(this.policy?.symbolCharset || "!\\\"#$%&'()*+,-./:;<=>?@[]^_`{|}~ ")}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${gettext("Characters which are considered as symbols.")}</p>
                     </ak-form-element-horizontal>
                 </div>
