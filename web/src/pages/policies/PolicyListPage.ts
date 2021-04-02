@@ -18,6 +18,7 @@ import { ifDefined } from "lit-html/directives/if-defined";
 import "./dummy/DummyPolicyForm";
 import "./event_matcher/EventMatcherPolicyForm";
 import "./expression/ExpressionPolicyForm";
+import "./expiry/ExpiryPolicyForm";
 
 @customElement("ak-policy-list")
 export class PolicyListPage extends TablePage<Policy> {
@@ -85,6 +86,7 @@ export class PolicyListPage extends TablePage<Policy> {
                         "dummy": "ak-policy-dummy-form",
                         "eventmatcher": "ak-policy-event-matcher-form",
                         "expression": "ak-policy-expression-form",
+                        "expiry": "ak-policy-password-expiry-form",
                     }}>
                 </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">

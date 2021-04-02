@@ -1,9 +1,7 @@
 """authentik password_expiry_policy Models"""
 from datetime import timedelta
-from typing import Type
 
 from django.db import models
-from django.forms import ModelForm
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
@@ -29,10 +27,8 @@ class PasswordExpiryPolicy(Policy):
         return PasswordExpiryPolicySerializer
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.policies.expiry.forms import PasswordExpiryPolicyForm
-
-        return PasswordExpiryPolicyForm
+    def component(self) -> str:
+        return "ak-policy-password-expiry-form"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """If password change date is more than x days in the past, call set_unusable_password
