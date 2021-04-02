@@ -3,7 +3,6 @@ from typing import Type
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
@@ -84,10 +83,8 @@ class IdentificationStage(Stage):
         return IdentificationStageView
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.stages.identification.forms import IdentificationStageForm
-
-        return IdentificationStageForm
+    def component(self) -> str:
+        return "ak-stage-identification-form"
 
     class Meta:
 
