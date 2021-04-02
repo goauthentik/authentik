@@ -20,6 +20,25 @@ securityDefinitions:
 security:
   - token: []
 paths:
+  /admin/apps/:
+    get:
+      operationId: admin_apps_list
+      description: List current messages and pass into Serializer
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/App'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+      tags:
+        - admin
+    parameters: []
   /admin/metrics/:
     get:
       operationId: admin_metrics_list
@@ -14206,6 +14225,20 @@ definitions:
       code:
         description: Error code
         type: string
+  App:
+    required:
+      - name
+      - label
+    type: object
+    properties:
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      label:
+        title: Label
+        type: string
+        minLength: 1
   Coordinate:
     type: object
     properties:
