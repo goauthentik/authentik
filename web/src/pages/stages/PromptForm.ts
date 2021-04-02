@@ -7,7 +7,7 @@ import { Form } from "../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
 
-@customElement("ak-stage-prompt-form")
+@customElement("ak-prompt-form")
 export class PromptForm extends Form<Prompt> {
 
     @property({attribute: false})

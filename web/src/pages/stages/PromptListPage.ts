@@ -68,8 +68,8 @@ export class PromptListPage extends TablePage<Prompt> {
                 <span slot="header">
                     ${gettext("Update Prompt")}
                 </span>
-                <ak-stage-prompt-form slot="form" .prompt=${item}>
-                </ak-stage-prompt-form>
+                <ak-prompt-form slot="form" .prompt=${item}>
+                </ak-prompt-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit")}
                 </button>
@@ -98,8 +98,8 @@ export class PromptListPage extends TablePage<Prompt> {
             <span slot="header">
                 ${gettext("Create Prompt")}
             </span>
-            <ak-stage-prompt-form slot="form">
-            </ak-stage-prompt-form>
+            <ak-prompt-form slot="form">
+            </ak-prompt-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
                 ${gettext("Create")}
             </button>
