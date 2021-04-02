@@ -46,7 +46,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
                         designation: FlowDesignationEnum.Authorization,
                     }).then(flows => {
                         return flows.results.map(flow => {
-                            return html`<option value=${ifDefined(flow.pk)}>${flow.name}</option>`;
+                            return html`<option value=${ifDefined(flow.pk)}>${flow.name} (${flow.slug})</option>`;
                         });
                     }))}
                 </select>
