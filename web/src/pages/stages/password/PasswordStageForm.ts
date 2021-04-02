@@ -64,9 +64,9 @@ export class PasswordStageForm extends Form<PasswordStage> {
                 </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${gettext("User fields")}
+                        label=${gettext("Backends")}
                         ?required=${true}
-                        name="transports">
+                        name="backends">
                         <select name="users" class="pf-c-form-control" multiple>
                             <option value=${PasswordStageBackendsEnum.DjangoContribAuthBackendsModelBackend} ?selected=${this.isBackendSelected(PasswordStageBackendsEnum.DjangoContribAuthBackendsModelBackend)}>
                                 ${gettext("authentik Builtin Database")}

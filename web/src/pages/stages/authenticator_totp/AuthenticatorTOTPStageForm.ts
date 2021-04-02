@@ -61,7 +61,7 @@ export class AuthenticatorTOTPStageForm extends Form<AuthenticatorTOTPStage> {
                         label=${gettext("Digits")}
                         ?required=${true}
                         name="digits">
-                        <select name="users" class="pf-c-form-control" multiple>
+                        <select name="users" class="pf-c-form-control">
                             <option value="6" ?selected=${this.stage?.digits === 6}>
                                 ${gettext("6 digits, widely compatible")}
                             </option>
