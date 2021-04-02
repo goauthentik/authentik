@@ -12,11 +12,25 @@ from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, Stage
 
 
+def get_authentication_backends():
+    """Return all available authentication backends as tuple set"""
+    return [
+        (
+            "django.contrib.auth.backends.ModelBackend",
+            _("authentik-internal Userdatabase"),
+        ),
+        (
+            "authentik.sources.ldap.auth.LDAPBackend",
+            _("authentik LDAP"),
+        ),
+    ]
+
+
 class PasswordStage(ConfigurableStage, Stage):
     """Prompts the user for their password, and validates it against the configured backends."""
 
     backends = ArrayField(
-        models.TextField(),
+        models.TextField(choices=get_authentication_backends()),
         help_text=_("Selection of backends to test the password against."),
     )
     failed_attempts_before_cancel = models.IntegerField(
@@ -42,10 +56,8 @@ class PasswordStage(ConfigurableStage, Stage):
         return PasswordStageView
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.stages.password.forms import PasswordStageForm
-
-        return PasswordStageForm
+    def component(self) -> str:
+        return "ak-stage-password-form"
 
     @property
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:

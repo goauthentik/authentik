@@ -18049,7 +18049,9 @@ definitions:
         items:
           title: Backends
           type: string
-          minLength: 1
+          enum:
+            - django.contrib.auth.backends.ModelBackend
+            - authentik.sources.ldap.auth.LDAPBackend
       configure_flow:
         title: Configure flow
         description: Flow used by an authenticated user to configure this Stage. If

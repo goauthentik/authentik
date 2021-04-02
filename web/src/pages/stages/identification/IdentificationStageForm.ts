@@ -112,7 +112,7 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
                                 });
                             }))}
                         </select>
-                        <p class="pf-c-form__helper-text">${gettext("Optional enrollment flow, which is linked at the bottom of the page..")}</p>
+                        <p class="pf-c-form__helper-text">${gettext("Optional enrollment flow, which is linked at the bottom of the page.")}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${gettext("Recovery flow")}
