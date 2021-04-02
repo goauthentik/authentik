@@ -6,9 +6,9 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/EmptyState";
 
-import "./LDAPSourceViewPage";
-import "./OAuthSourceViewPage";
-import "./SAMLSourceViewPage";
+import "./ldap/LDAPSourceViewPage";
+import "./oauth/OAuthSourceViewPage";
+import "./saml/SAMLSourceViewPage";
 
 @customElement("ak-source-view")
 export class SourceViewPage extends LitElement {

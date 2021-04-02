@@ -9,19 +9,19 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "../../../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import "../../elements/buttons/ModalButton";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/CodeMirror";
-import "../../elements/Tabs";
-import "../../elements/events/ObjectChangelog";
-import { Page } from "../../elements/Page";
+import "../../../elements/buttons/ModalButton";
+import "../../../elements/buttons/SpinnerButton";
+import "../../../elements/CodeMirror";
+import "../../../elements/Tabs";
+import "../../../elements/events/ObjectChangelog";
+import { Page } from "../../../elements/Page";
 import { OAuthSource, SourcesApi } from "authentik-api";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { AdminURLManager } from "../../api/legacy";
-import { EVENT_REFRESH } from "../../constants";
+import { DEFAULT_CONFIG } from "../../../api/Config";
+import { AdminURLManager } from "../../../api/legacy";
+import { EVENT_REFRESH } from "../../../constants";
 
 @customElement("ak-source-oauth-view")
 export class OAuthSourceViewPage extends Page {
