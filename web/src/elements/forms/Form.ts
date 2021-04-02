@@ -12,7 +12,7 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import { MessageLevel } from "../messages/Message";
 import { IronFormElement } from "@polymer/iron-form/iron-form";
-import { camelToSnake } from "../../utils";
+import { camelToSnake, convertToSlug } from "../../utils";
 import { ValidationError } from "authentik-api/src";
 
 export class APIError extends Error {
@@ -45,6 +45,28 @@ export class Form<T> extends LitElement {
 
     getSuccessMessage(): string {
         return this.successMessage;
+    }
+
+    updated(): void {
+        this.shadowRoot?.querySelectorAll<HTMLInputElement>("input[name=name]").forEach(nameInput => {
+            const form = nameInput.closest("form");
+            if (form === null) {
+                return;
+            }
+            const slugField = form.querySelector<HTMLInputElement>("input[name=slug]");
+            if (!slugField) {
+                return;
+            }
+            // Only attach handler if the slug is already equal to the name
+            // if not, they are probably completely different and shouldn't update
+            // each other
+            if (convertToSlug(nameInput.value) !== slugField.value) {
+                return;
+            }
+            nameInput.addEventListener("input", () => {
+                slugField.value = convertToSlug(nameInput.value);
+            });
+        });
     }
 
     /**
