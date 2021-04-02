@@ -4,7 +4,6 @@ import { AKResponse } from "../../api/Client";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
 
-import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
 import "../../elements/forms/DeleteForm";
@@ -16,6 +15,7 @@ import { Source, SourcesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "./ldap/LDAPSourceForm";
+import "./saml/SAMLSourceForm";
 
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {
@@ -75,6 +75,7 @@ export class SourceListPage extends TablePage<Source> {
                     type=${ifDefined(item.objectType)}
                     .typeMap=${{
                         "ldap": "ak-source-ldap-form",
+                        "saml": "ak-source-saml-form",
                     }}>
                 </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
@@ -107,12 +108,22 @@ export class SourceListPage extends TablePage<Source> {
                 ${until(new SourcesApi(DEFAULT_CONFIG).sourcesAllTypes({}).then((types) => {
                     return types.map((type) => {
                         return html`<li>
-                            <ak-modal-button href="${type.link}">
-                                <button slot="trigger" class="pf-c-dropdown__menu-item">${type.name}<br>
+                            <ak-forms-modal>
+                                <span slot="submit">
+                                    ${gettext("Create")}
+                                </span>
+                                <span slot="header">
+                                    ${gettext(`Create ${type.name}`)}
+                                </span>
+                                <ak-proxy-form
+                                    slot="form"
+                                    type=${type.link}>
+                                </ak-proxy-form>
+                                <button slot="trigger" class="pf-c-dropdown__menu-item">
+                                    ${type.name}<br>
                                     <small>${type.description}</small>
                                 </button>
-                                <div slot="modal"></div>
-                            </ak-modal-button>
+                            </ak-forms-modal>
                         </li>`;
                     });
                 }), html`<ak-spinner></ak-spinner>`)}
