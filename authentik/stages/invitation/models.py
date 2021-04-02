@@ -3,7 +3,6 @@ from typing import Type
 from uuid import uuid4
 
 from django.db import models
-from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
@@ -40,10 +39,8 @@ class InvitationStage(Stage):
         return InvitationStageView
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.stages.invitation.forms import InvitationStageForm
-
-        return InvitationStageForm
+    def component(self) -> str:
+        return "ak-stage-invitation-form"
 
     class Meta:
 

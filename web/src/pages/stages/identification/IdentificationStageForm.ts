@@ -98,7 +98,6 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${gettext("Enrollment flow")}
-                        ?required=${true}
                         name="enrollmentFlow">
                         <select class="pf-c-form-control">
                             <option value="" ?selected=${this.stage?.enrollmentFlow === undefined}>---------</option>
@@ -116,9 +115,9 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${gettext("Recovery flow")}
-                        ?required=${true}
                         name="recoveryFlow">
                         <select class="pf-c-form-control">
+                            <option value="" ?selected=${this.stage?.recoveryFlow === undefined}>---------</option>
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
                                 designation: FlowDesignationEnum.Recovery,

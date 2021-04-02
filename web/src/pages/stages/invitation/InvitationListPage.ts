@@ -1,17 +1,17 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
-import { AKResponse } from "../../api/Client";
-import { TablePage } from "../../elements/table/TablePage";
+import { AKResponse } from "../../../api/Client";
+import { TablePage } from "../../../elements/table/TablePage";
 
-import "../../elements/buttons/ModalButton";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/forms/DeleteForm";
-import "../../elements/forms/ModalForm";
+import "../../../elements/buttons/ModalButton";
+import "../../../elements/buttons/SpinnerButton";
+import "../../../elements/forms/DeleteForm";
+import "../../../elements/forms/ModalForm";
 import "./InvitationForm";
-import { TableColumn } from "../../elements/table/Table";
-import { PAGE_SIZE } from "../../constants";
+import { TableColumn } from "../../../elements/table/Table";
+import { PAGE_SIZE } from "../../../constants";
 import { Invitation, StagesApi } from "authentik-api";
-import { DEFAULT_CONFIG } from "../../api/Config";
+import { DEFAULT_CONFIG } from "../../../api/Config";
 
 @customElement("ak-stage-invitation-list")
 export class InvitationListPage extends TablePage<Invitation> {
@@ -79,8 +79,8 @@ export class InvitationListPage extends TablePage<Invitation> {
             <span slot="header">
                 ${gettext("Create Invitation")}
             </span>
-            <ak-stage-invitation-form slot="form">
-            </ak-stage-invitation-form>
+            <ak-invitation-form slot="form">
+            </ak-invitation-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
                 ${gettext("Create")}
             </button>

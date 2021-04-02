@@ -79,7 +79,6 @@ export class PromptStageForm extends Form<PromptStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${gettext("Validation Policies")}
-                        ?required=${true}
                         name="validationPolicies">
                         <select name="users" class="pf-c-form-control" multiple>
                             ${until(new PoliciesApi(DEFAULT_CONFIG).policiesAllList({

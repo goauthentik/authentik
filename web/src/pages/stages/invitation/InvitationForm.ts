@@ -2,13 +2,13 @@ import { Invitation, StagesApi } from "authentik-api";
 import { gettext } from "django";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { Form } from "../../elements/forms/Form";
-import "../../elements/forms/HorizontalFormElement";
-import "../../elements/CodeMirror";
+import { DEFAULT_CONFIG } from "../../../api/Config";
+import { Form } from "../../../elements/forms/Form";
+import "../../../elements/forms/HorizontalFormElement";
+import "../../../elements/CodeMirror";
 import YAML from "yaml";
 
-@customElement("ak-stage-invitation-form")
+@customElement("ak-invitation-form")
 export class InvitationForm extends Form<Invitation> {
 
     @property({attribute: false})

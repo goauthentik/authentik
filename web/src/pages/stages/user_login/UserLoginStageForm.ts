@@ -58,8 +58,9 @@ export class UserLoginStageForm extends Form<UserLoginStage> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${gettext("Session duration")}
+                        ?required=${true}
                         name="privateKey">
-                        <input type="text" value="${ifDefined(this.stage?.sessionDuration || "seconds=0")}" class="pf-c-form-control">
+                        <input type="text" value="${ifDefined(this.stage?.sessionDuration || "seconds=0")}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${gettext("Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3).")}</p>
                     </ak-form-element-horizontal>
                 </div>

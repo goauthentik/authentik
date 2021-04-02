@@ -1,4 +1,4 @@
-import { CaptchaStage, StagesApi } from "authentik-api";
+import { InvitationStage, StagesApi } from "authentik-api";
 import { gettext } from "django";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -8,11 +8,11 @@ import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
 
-@customElement("ak-stage-captcha-form")
-export class CaptchaStageForm extends Form<CaptchaStage> {
+@customElement("ak-stage-invitation-form")
+export class InvitationStageForm extends Form<InvitationStage> {
 
     set stageUUID(value: string) {
-        new StagesApi(DEFAULT_CONFIG).stagesCaptchaRead({
+        new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesRead({
             stageUuid: value,
         }).then(stage => {
             this.stage = stage;
@@ -20,7 +20,7 @@ export class CaptchaStageForm extends Form<CaptchaStage> {
     }
 
     @property({attribute: false})
-    stage?: CaptchaStage;
+    stage?: InvitationStage;
 
     getSuccessMessage(): string {
         if (this.stage) {
@@ -30,14 +30,14 @@ export class CaptchaStageForm extends Form<CaptchaStage> {
         }
     }
 
-    send = (data: CaptchaStage): Promise<CaptchaStage> => {
+    send = (data: InvitationStage): Promise<InvitationStage> => {
         if (this.stage) {
-            return new StagesApi(DEFAULT_CONFIG).stagesCaptchaUpdate({
+            return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesUpdate({
                 stageUuid: this.stage.pk || "",
                 data: data
             });
         } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesCaptchaCreate({
+            return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesCreate({
                 data: data
             });
         }
@@ -56,19 +56,14 @@ export class CaptchaStageForm extends Form<CaptchaStage> {
                     ${gettext("Stage-specific settings")}
                 </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${gettext("Public Key")}
-                        ?required=${true}
-                        name="publicKey">
-                        <input type="text" value="${ifDefined(this.stage?.publicKey || "")}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${gettext("Public key, acquired from https://www.google.com/recaptcha/intro/v3.html.")}</p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${gettext("Private Key")}
-                        ?required=${true}
-                        name="privateKey">
-                        <input type="text" value="${ifDefined(this.stage?.privateKey || "")}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${gettext("Private key, acquired from https://www.google.com/recaptcha/intro/v3.html.")}</p>
+                    <ak-form-element-horizontal name="continueFlowWithoutInvitation">
+                        <div class="pf-c-check">
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${this.stage?.continueFlowWithoutInvitation || true}>
+                            <label class="pf-c-check__label">
+                                ${gettext("Continue flow without invitation")}
+                            </label>
+                        </div>
+                        <p class="pf-c-form__helper-text">${gettext("If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.")}</p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
