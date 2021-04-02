@@ -1,7 +1,6 @@
 """dummy stage models"""
 from typing import Type
 
-from django.forms import ModelForm
 from django.utils.translation import gettext as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer

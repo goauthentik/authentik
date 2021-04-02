@@ -3,7 +3,6 @@ from typing import Optional, Type
 
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.forms import ModelForm
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views import View
@@ -34,12 +33,8 @@ class AuthenticateWebAuthnStage(ConfigurableStage, Stage):
         return AuthenticatorWebAuthnStageView
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.stages.authenticator_webauthn.forms import (
-            AuthenticateWebAuthnStageForm,
-        )
-
-        return AuthenticateWebAuthnStageForm
+    def component(self) -> str:
+        return "ak-stage-authenticator-webauthn-form"
 
     @property
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
