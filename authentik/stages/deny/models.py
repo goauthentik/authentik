@@ -25,10 +25,8 @@ class DenyStage(Stage):
         return DenyStageView
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.stages.deny.forms import DenyStageForm
-
-        return DenyStageForm
+    def component(self) -> str:
+        return "ak-stage-deny-form"
 
     class Meta:
 

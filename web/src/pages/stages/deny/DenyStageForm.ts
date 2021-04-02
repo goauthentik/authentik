@@ -1,4 +1,4 @@
-import { UserDeleteStage, StagesApi } from "authentik-api";
+import { DenyStage, StagesApi } from "authentik-api";
 import { gettext } from "django";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -7,11 +7,11 @@ import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 
-@customElement("ak-stage-user-delete-form")
-export class UserDeleteStageForm extends Form<UserDeleteStage> {
+@customElement("ak-stage-deny-form")
+export class DenyStageForm extends Form<DenyStage> {
 
     set stageUUID(value: string) {
-        new StagesApi(DEFAULT_CONFIG).stagesUserDeleteRead({
+        new StagesApi(DEFAULT_CONFIG).stagesDenyRead({
             stageUuid: value,
         }).then(stage => {
             this.stage = stage;
@@ -19,7 +19,7 @@ export class UserDeleteStageForm extends Form<UserDeleteStage> {
     }
 
     @property({attribute: false})
-    stage?: UserDeleteStage;
+    stage?: DenyStage;
 
     getSuccessMessage(): string {
         if (this.stage) {
@@ -29,14 +29,14 @@ export class UserDeleteStageForm extends Form<UserDeleteStage> {
         }
     }
 
-    send = (data: UserDeleteStage): Promise<UserDeleteStage> => {
+    send = (data: DenyStage): Promise<DenyStage> => {
         if (this.stage) {
-            return new StagesApi(DEFAULT_CONFIG).stagesUserDeleteUpdate({
+            return new StagesApi(DEFAULT_CONFIG).stagesDenyUpdate({
                 stageUuid: this.stage.pk || "",
                 data: data
             });
         } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesUserDeleteCreate({
+            return new StagesApi(DEFAULT_CONFIG).stagesDenyCreate({
                 data: data
             });
         }
