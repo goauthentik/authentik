@@ -8,11 +8,14 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
 import "../../elements/forms/DeleteForm";
+import "../../elements/forms/ModalForm";
+import "../../elements/forms/ProxyForm";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
 import { Source, SourcesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { AdminURLManager } from "../../api/legacy";
+import { ifDefined } from "lit-html/directives/if-defined";
+import "./ldap/LDAPSourceForm";
 
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {
@@ -57,12 +60,27 @@ export class SourceListPage extends TablePage<Source> {
             </a>`,
             html`${item.verboseName}`,
             html`
-            <ak-modal-button href="${AdminURLManager.sources(`${item.pk}/update/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            <ak-forms-modal>
+                <span slot="submit">
+                    ${gettext("Update")}
+                </span>
+                <span slot="header">
+                    ${gettext(`Update ${item.verboseName}`)}
+                </span>
+                <ak-proxy-form
+                    slot="form"
+                    .args=${{
+                        "sourceSlug": item.slug
+                    }}
+                    type=${ifDefined(item.objectType)}
+                    .typeMap=${{
+                        "ldap": "ak-source-ldap-form",
+                    }}>
+                </ak-proxy-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
+                </button>
+            </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${gettext("Source")}

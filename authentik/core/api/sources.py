@@ -1,7 +1,6 @@
 """Source API Views"""
 from typing import Iterable
 
-from django.urls import reverse
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
@@ -72,8 +71,7 @@ class SourceViewSet(
                 {
                     "name": verbose_name(subclass),
                     "description": subclass.__doc__,
-                    "link": reverse("authentik_admin:source-create")
-                    + f"?type={subclass.__name__}",
+                    "link": subclass().component,
                 }
             )
         return Response(TypeCreateSerializer(data, many=True).data)

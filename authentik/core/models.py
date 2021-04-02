@@ -276,6 +276,11 @@ class Source(SerializerModel, PolicyBindingModel):
     objects = InheritanceManager()
 
     @property
+    def component(self) -> str:
+        """Return component used to edit this object"""
+        raise NotImplementedError
+
+    @property
     def form(self) -> Type[ModelForm]:
         """Return Form class used to edit this object"""
         raise NotImplementedError
