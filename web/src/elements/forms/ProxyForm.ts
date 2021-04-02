@@ -25,6 +25,12 @@ export class ProxyForm extends Form<unknown> {
         return (this.shadowRoot?.firstElementChild as Form<unknown>).getSuccessMessage();
     }
 
+    async requestUpdate(name?: PropertyKey | undefined, oldValue?: unknown): Promise<unknown> {
+        const result = await super.requestUpdate(name, oldValue);
+        await (this.shadowRoot?.firstElementChild as Form<unknown> | undefined)?.requestUpdate();
+        return result;
+    }
+
     renderVisible(): TemplateResult {
         let elementName = this.type;
         if (this.type in this.typeMap) {
