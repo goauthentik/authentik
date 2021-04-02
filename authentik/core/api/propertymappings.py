@@ -91,7 +91,7 @@ class PropertyMappingViewSet(
                 {
                     "name": verbose_name(subclass),
                     "description": subclass.__doc__,
-                    "link": subclass.component,
+                    "component": subclass.component,
                 }
             )
         return Response(TypeCreateSerializer(data, many=True).data)

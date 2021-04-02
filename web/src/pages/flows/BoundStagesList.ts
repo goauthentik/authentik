@@ -133,7 +133,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                 ${until(new StagesApi(DEFAULT_CONFIG).stagesAllTypes().then((types) => {
                     return types.map((type) => {
                         return html`<li>
-                            <ak-modal-button href="${type.link}">
+                            <ak-modal-button href="${type.component}">
                                 <button slot="trigger" class="pf-c-dropdown__menu-item">${type.name}<br>
                                     <small>${type.description}</small>
                                 </button>

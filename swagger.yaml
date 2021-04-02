@@ -14821,7 +14821,7 @@ definitions:
     required:
       - name
       - description
-      - link
+      - component
     type: object
     properties:
       name:
@@ -14832,8 +14832,8 @@ definitions:
         title: Description
         type: string
         minLength: 1
-      link:
-        title: Link
+      component:
+        title: Component
         type: string
         minLength: 1
   EventTopPerUser:

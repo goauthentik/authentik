@@ -23,7 +23,7 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
 
     object_type = SerializerMethodField()
 
-    def get_object_type(self, obj):
+    def get_object_type(self, obj):  # pragma: no cover
         """Get object type so that we know which API Endpoint to use to get the full object"""
         return obj._meta.object_name.lower().replace("provider", "")
 
@@ -74,14 +74,14 @@ class ProviderViewSet(
                 {
                     "name": verbose_name(subclass),
                     "description": subclass.__doc__,
-                    "link": subclass().component,
+                    "component": subclass().component,
                 }
             )
         data.append(
             {
                 "name": _("SAML Provider from Metadata"),
                 "description": _("Create a SAML Provider by importing its Metadata."),
-                "link": "ak-provider-saml-import-form",
+                "component": "ak-provider-saml-import-form",
             }
         )
         return Response(TypeCreateSerializer(data, many=True).data)

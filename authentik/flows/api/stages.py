@@ -70,7 +70,7 @@ class StageViewSet(
                 {
                     "name": verbose_name(subclass),
                     "description": subclass.__doc__,
-                    "link": reverse("authentik_admin:stage-create")
+                    "component": reverse("authentik_admin:stage-create")
                     + f"?type={subclass.__name__}",
                 }
             )

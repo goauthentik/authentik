@@ -129,7 +129,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                                 </span>
                                 <ak-proxy-form
                                     slot="form"
-                                    type=${type.link}>
+                                    type=${type.component}>
                                 </ak-proxy-form>
                                 <button slot="trigger" class="pf-c-dropdown__menu-item">
                                     ${type.name}<br>

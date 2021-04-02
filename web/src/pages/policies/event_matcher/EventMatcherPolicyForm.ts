@@ -73,7 +73,7 @@ export class EventMatcherPolicyForm extends Form<EventMatcherPolicy> {
                             <option value="" ?selected=${this.policy?.action === undefined}>---------</option>
                             ${until(new EventsApi(DEFAULT_CONFIG).eventsEventsActions().then(actions => {
                                 return actions.map(action => {
-                                    return html`<option value=${action.link} ?selected=${this.policy?.action === action.link}>${action.name}</option>`;
+                                    return html`<option value=${action.component} ?selected=${this.policy?.action === action.component}>${action.name}</option>`;
                                 });
                             }))}
                         </select>
