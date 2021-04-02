@@ -14,7 +14,6 @@ from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests.test_views import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views import SESSION_KEY_PLAN
-from authentik.stages.invitation.forms import InvitationStageForm
 from authentik.stages.invitation.models import Invitation, InvitationStage
 from authentik.stages.invitation.stage import INVITATION_TOKEN_KEY, PLAN_CONTEXT_PROMPT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
@@ -35,11 +34,6 @@ class TestUserLoginStage(TestCase):
         )
         self.stage = InvitationStage.objects.create(name="invitation")
         FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
-
-    def test_form(self):
-        """Test Form"""
-        data = {"name": "test"}
-        self.assertEqual(InvitationStageForm(data).is_valid(), True)
 
     @patch(
         "authentik.flows.views.to_stage_response",

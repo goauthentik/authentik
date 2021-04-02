@@ -2,7 +2,6 @@
 from typing import Type
 
 from django.db import models
-from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
@@ -51,10 +50,8 @@ class ConsentStage(Stage):
         return ConsentStageView
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.stages.consent.forms import ConsentStageForm
-
-        return ConsentStageForm
+    def component(self) -> str:
+        return "ak-stage-consent-form"
 
     class Meta:
 
