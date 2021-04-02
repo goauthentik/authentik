@@ -4,15 +4,34 @@ import { AKResponse } from "../../api/Client";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
 
-import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
 import "../../elements/forms/DeleteForm";
+import "../../elements/forms/ProxyForm";
+import "../../elements/forms/ModalForm";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
 import { Stage, StagesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { AdminURLManager } from "../../api/legacy";
+import { ifDefined } from "lit-html/directives/if-defined";
+
+import "./pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts";
+import "./pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts";
+import "./pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts";
+import "./pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts";
+import "./pages/stages/captcha/CaptchaStageForm.ts";
+import "./pages/stages/consent/ConsentStageForm.ts";
+import "./pages/stages/deny/DenyStageForm.ts";
+import "./pages/stages/dummy/DummyStageForm.ts";
+import "./pages/stages/email/EmailStageForm.ts";
+import "./pages/stages/identification/IdentificationStageForm.ts";
+import "./pages/stages/invitation/InvitationStageForm.ts";
+import "./pages/stages/password/PasswordStageForm.ts";
+import "./pages/stages/prompt/PromptStageForm.ts";
+import "./pages/stages/user_delete/UserDeleteStageForm.ts";
+import "./pages/stages/user_login/UserLoginStageForm.ts";
+import "./pages/stages/user_logout/UserLogoutStageForm.ts";
+import "./pages/stages/user_write/UserWriteStageForm.ts";
 
 @customElement("ak-stage-list")
 export class StageListPage extends TablePage<Stage> {
@@ -61,12 +80,33 @@ export class StageListPage extends TablePage<Stage> {
                 </a>`;
             })}`,
             html`
-            <ak-modal-button href="${AdminURLManager.stages(`${item.pk}/update/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            <ak-forms-modal>
+                <span slot="submit">
+                    ${gettext("Update")}
+                </span>
+                <span slot="header">
+                    ${gettext(`Update ${item.verboseName}`)}
+                </span>
+                <ak-proxy-form
+                    slot="form"
+                    .args=${{
+                        "stageUUID": item.pk
+                    }}
+                    type=${ifDefined(item.objectType)}
+                    .typeMap=${{
+                        "dummy": "ak-policy-dummy-form",
+                        "eventmatcher": "ak-policy-event-matcher-form",
+                        "expression": "ak-policy-expression-form",
+                        "passwordexpiry": "ak-policy-password-expiry-form",
+                        "haveibeenpwend": "ak-policy-hibp-form",
+                        "password": "ak-policy-password-form",
+                        "reputation": "ak-policy-reputation-form",
+                    }}>
+                </ak-proxy-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
+                </button>
+            </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${gettext("Group")}
@@ -93,12 +133,21 @@ export class StageListPage extends TablePage<Stage> {
                 ${until(new StagesApi(DEFAULT_CONFIG).stagesAllTypes().then((types) => {
                     return types.map((type) => {
                         return html`<li>
-                            <ak-modal-button href="${type.component}">
-                                <button slot="trigger" class="pf-c-dropdown__menu-item">${type.name}<br>
+                            <ak-forms-modal>
+                                <span slot="submit">
+                                    ${gettext("Create")}
+                                </span>
+                                <span slot="header">
+                                    ${gettext(`Create ${type.name}`)}
+                                </span>
+                                <ak-proxy-form
+                                    slot="form"
+                                    type=${type.component}>
+                                </ak-proxy-form>
+                                <button slot="trigger" class="pf-c-dropdown__menu-item">
+                                    ${type.name}<br>
                                     <small>${type.description}</small>
                                 </button>
-                                <div slot="modal"></div>
-                            </ak-modal-button>
                         </li>`;
                     });
                 }), html`<ak-spinner></ak-spinner>`)}

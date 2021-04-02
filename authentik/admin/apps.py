@@ -7,5 +7,4 @@ class AuthentikAdminConfig(AppConfig):
 
     name = "authentik.admin"
     label = "authentik_admin"
-    mountpoint = "administration/"
     verbose_name = "authentik Admin"

@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING, Optional, Type
 from uuid import uuid4
 
 from django.db import models
-from django.forms import ModelForm
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
@@ -60,8 +59,8 @@ class Stage(SerializerModel):
         raise NotImplementedError
 
     @property
-    def form(self) -> Type[ModelForm]:
-        """Return Form class used to edit this object"""
+    def component(self) -> str:
+        """Return component used to edit this object"""
         raise NotImplementedError
 
     @property

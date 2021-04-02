@@ -1,15 +1,3 @@
-export class AdminURLManager {
-
-    static policies(rest: string): string {
-        return `/administration/policies/${rest}`;
-    }
-
-    static stages(rest: string): string {
-        return `/administration/stages/${rest}`;
-    }
-
-}
-
 export class AppURLManager {
 
     static sourceSAML(slug: string, rest: string): string {

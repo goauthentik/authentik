@@ -1,7 +1,6 @@
 """Flow Stage API Views"""
 from typing import Iterable
 
-from django.urls import reverse
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
@@ -70,8 +69,7 @@ class StageViewSet(
                 {
                     "name": verbose_name(subclass),
                     "description": subclass.__doc__,
-                    "component": reverse("authentik_admin:stage-create")
-                    + f"?type={subclass.__name__}",
+                    "component": subclass().component,
                 }
             )
         data = sorted(data, key=lambda x: x["name"])
