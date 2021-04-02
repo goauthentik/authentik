@@ -1,8 +1,5 @@
 """authentik expression Policy Models"""
-from typing import Type
-
 from django.db import models
-from django.forms import ModelForm
 from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
 
@@ -23,10 +20,8 @@ class ExpressionPolicy(Policy):
         return ExpressionPolicySerializer
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.policies.expression.forms import ExpressionPolicyForm
-
-        return ExpressionPolicyForm
+    def component(self) -> str:
+        return "ak-policy-expression-form"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Evaluate and render expression. Returns PolicyResult(false) on error."""

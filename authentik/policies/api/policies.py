@@ -105,8 +105,7 @@ class PolicyViewSet(
                 {
                     "name": verbose_name(subclass),
                     "description": subclass.__doc__,
-                    "link": reverse("authentik_admin:policy-create")
-                    + f"?type={subclass.__name__}",
+                    "link": subclass().component,
                 }
             )
         return Response(TypeCreateSerializer(data, many=True).data)
