@@ -22,6 +22,7 @@ from authentik.core.expression import PropertyMappingEvaluator
 from authentik.core.models import PropertyMapping
 from authentik.lib.templatetags.authentik_utils import verbose_name
 from authentik.lib.utils.reflection import all_subclasses
+from authentik.managed.api import ManagedSerializer
 from authentik.policies.api.exec import PolicyTestSerializer
 
 
@@ -32,7 +33,7 @@ class PropertyMappingTestResultSerializer(PassiveSerializer):
     successful = BooleanField(read_only=True)
 
 
-class PropertyMappingSerializer(ModelSerializer, MetaNameSerializer):
+class PropertyMappingSerializer(ManagedSerializer, ModelSerializer, MetaNameSerializer):
     """PropertyMapping Serializer"""
 
     object_type = SerializerMethodField()
@@ -52,6 +53,7 @@ class PropertyMappingSerializer(ModelSerializer, MetaNameSerializer):
         model = PropertyMapping
         fields = [
             "pk",
+            "managed",
             "name",
             "expression",
             "object_type",

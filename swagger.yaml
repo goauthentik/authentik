@@ -14876,6 +14876,12 @@ definitions:
         type: string
         format: uuid
         readOnly: true
+      managed:
+        title: Managed
+        type: string
+        readOnly: true
+        minLength: 1
+        x-nullable: true
       identifier:
         title: Identifier
         type: string
@@ -16534,6 +16540,12 @@ definitions:
         type: string
         format: uuid
         readOnly: true
+      managed:
+        title: Managed
+        type: string
+        readOnly: true
+        minLength: 1
+        x-nullable: true
       name:
         title: Name
         type: string
@@ -16578,6 +16590,12 @@ definitions:
         type: string
         format: uuid
         readOnly: true
+      managed:
+        title: Managed
+        type: string
+        readOnly: true
+        minLength: 1
+        x-nullable: true
       name:
         title: Name
         type: string
@@ -16614,6 +16632,12 @@ definitions:
         type: string
         format: uuid
         readOnly: true
+      managed:
+        title: Managed
+        type: string
+        readOnly: true
+        minLength: 1
+        x-nullable: true
       name:
         title: Name
         type: string
@@ -16654,6 +16678,12 @@ definitions:
         type: string
         format: uuid
         readOnly: true
+      managed:
+        title: Managed
+        type: string
+        readOnly: true
+        minLength: 1
+        x-nullable: true
       name:
         title: Name
         type: string

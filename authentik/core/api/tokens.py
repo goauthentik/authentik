@@ -13,9 +13,10 @@ from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Token
 from authentik.events.models import Event, EventAction
+from authentik.managed.api import ManagedSerializer
 
 
-class TokenSerializer(ModelSerializer):
+class TokenSerializer(ManagedSerializer, ModelSerializer):
     """Token Serializer"""
 
     user = UserSerializer(required=False)
@@ -25,6 +26,7 @@ class TokenSerializer(ModelSerializer):
         model = Token
         fields = [
             "pk",
+            "managed",
             "identifier",
             "intent",
             "user",
