@@ -137,6 +137,7 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                 ?required=${true}
                 name="rsaKey">
                 <select class="pf-c-form-control">
+                    <option value="" ?selected=${this.provider?.rsaKey === undefined}>---------</option>
                     ${until(new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
                         ordering: "pk",
                         hasKey: "true",
