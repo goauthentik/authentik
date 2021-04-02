@@ -117,7 +117,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                 <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </button>
             <ul class="pf-c-dropdown__menu" hidden>
-                ${until(new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllTypes({}).then((types) => {
+                ${until(new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllTypes().then((types) => {
                     return types.map((type) => {
                         return html`<li>
                             <ak-forms-modal>

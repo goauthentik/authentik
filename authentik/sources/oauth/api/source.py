@@ -46,8 +46,8 @@ class OAuthSourceSerializer(SourceSerializer):
 class OAuthSourceProviderType(PassiveSerializer):
     """OAuth Provider"""
 
-    name = CharField(read_only=True)
-    value = CharField(read_only=True)
+    name = CharField(required=True)
+    value = CharField(required=True)
 
 
 class OAuthSourceViewSet(ModelViewSet):

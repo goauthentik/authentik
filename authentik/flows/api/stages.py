@@ -61,7 +61,7 @@ class StageViewSet(
         return Stage.objects.select_subclasses()
 
     @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
-    @action(detail=False)
+    @action(detail=False, pagination_class=None, filter_backends=[])
     def types(self, request: Request) -> Response:
         """Get all creatable stage types"""
         data = []
@@ -78,7 +78,7 @@ class StageViewSet(
         return Response(TypeCreateSerializer(data, many=True).data)
 
     @swagger_auto_schema(responses={200: UserSettingSerializer(many=True)})
-    @action(detail=False)
+    @action(detail=False, pagination_class=None, filter_backends=[])
     def user_settings(self, request: Request) -> Response:
         """Get all stages the user can configure"""
         _all_stages: Iterable[Stage] = Stage.objects.all().select_subclasses()

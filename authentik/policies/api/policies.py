@@ -96,7 +96,7 @@ class PolicyViewSet(
         )
 
     @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
-    @action(detail=False)
+    @action(detail=False, pagination_class=None, filter_backends=[])
     def types(self, request: Request) -> Response:
         """Get all creatable policy types"""
         data = []
@@ -113,7 +113,7 @@ class PolicyViewSet(
 
     @permission_required("authentik_policies.view_policy_cache")
     @swagger_auto_schema(responses={200: CacheSerializer(many=False)})
-    @action(detail=False)
+    @action(detail=False, pagination_class=None, filter_backends=[])
     def cache_info(self, request: Request) -> Response:
         """Info about cached policies"""
         return Response(data={"count": len(cache.keys("policy_*"))})
@@ -139,7 +139,7 @@ class PolicyViewSet(
         request_body=PolicyTestSerializer(),
         responses={200: PolicyTestResultSerializer()},
     )
-    @action(detail=True, methods=["POST"])
+    @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
     # pylint: disable=unused-argument, invalid-name
     def test(self, request: Request, pk: str) -> Response:
         """Test policy"""

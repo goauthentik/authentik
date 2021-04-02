@@ -105,7 +105,7 @@ export class SourceListPage extends TablePage<Source> {
                 <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </button>
             <ul class="pf-c-dropdown__menu" hidden>
-                ${until(new SourcesApi(DEFAULT_CONFIG).sourcesAllTypes({}).then((types) => {
+                ${until(new SourcesApi(DEFAULT_CONFIG).sourcesAllTypes().then((types) => {
                     return types.map((type) => {
                         return html`<li>
                             <ak-forms-modal>

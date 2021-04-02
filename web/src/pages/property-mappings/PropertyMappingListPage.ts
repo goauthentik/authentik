@@ -123,7 +123,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                 <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </button>
             <ul class="pf-c-dropdown__menu" hidden>
-                ${until(new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllTypes({}).then((types) => {
+                ${until(new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllTypes().then((types) => {
                     return types.map((type) => {
                         return html`<li>
                             <ak-forms-modal>

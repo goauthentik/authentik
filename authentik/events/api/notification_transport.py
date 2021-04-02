@@ -63,7 +63,7 @@ class NotificationTransportViewSet(ModelViewSet):
         responses={200: NotificationTransportTestSerializer(many=False)},
         request_body=no_body,
     )
-    @action(detail=True, methods=["post"])
+    @action(detail=True, pagination_class=None, filter_backends=[], methods=["post"])
     # pylint: disable=invalid-name, unused-argument
     def test(self, request: Request, pk=None) -> Response:
         """Send example notification using selected transport. Requires

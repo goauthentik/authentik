@@ -62,7 +62,7 @@ class SourceViewSet(
         return Source.objects.select_subclasses()
 
     @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
-    @action(detail=False)
+    @action(detail=False, pagination_class=None, filter_backends=[])
     def types(self, request: Request) -> Response:
         """Get all creatable source types"""
         data = []
@@ -77,7 +77,7 @@ class SourceViewSet(
         return Response(TypeCreateSerializer(data, many=True).data)
 
     @swagger_auto_schema(responses={200: UserSettingSerializer(many=True)})
-    @action(detail=False)
+    @action(detail=False, pagination_class=None, filter_backends=[])
     def user_settings(self, request: Request) -> Response:
         """Get all sources the user can configure"""
         _all_sources: Iterable[Source] = Source.objects.filter(

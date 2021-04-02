@@ -71,7 +71,7 @@ class ServiceConnectionViewSet(
     filterset_fields = ["name"]
 
     @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
-    @action(detail=False)
+    @action(detail=False, pagination_class=None, filter_backends=[])
     def types(self, request: Request) -> Response:
         """Get all creatable service connection types"""
         data = []
@@ -86,7 +86,7 @@ class ServiceConnectionViewSet(
         return Response(TypeCreateSerializer(data, many=True).data)
 
     @swagger_auto_schema(responses={200: ServiceConnectionStateSerializer(many=False)})
-    @action(detail=True)
+    @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=unused-argument, invalid-name
     def state(self, request: Request, pk: str) -> Response:
         """Get the service connection's state"""

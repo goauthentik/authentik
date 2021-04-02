@@ -82,7 +82,7 @@ class PropertyMappingViewSet(
         return PropertyMapping.objects.select_subclasses()
 
     @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
-    @action(detail=False)
+    @action(detail=False, pagination_class=None, filter_backends=[])
     def types(self, request: Request) -> Response:
         """Get all creatable property-mapping types"""
         data = []
@@ -101,7 +101,7 @@ class PropertyMappingViewSet(
         request_body=PolicyTestSerializer(),
         responses={200: PropertyMappingTestResultSerializer},
     )
-    @action(detail=True, methods=["POST"])
+    @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
     # pylint: disable=unused-argument, invalid-name
     def test(self, request: Request, pk: str) -> Response:
         """Test Property Mapping"""

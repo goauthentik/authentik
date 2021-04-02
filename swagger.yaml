@@ -2055,42 +2055,7 @@ paths:
     get:
       operationId: core_users_me
       description: Get information about current user
-      parameters:
-        - name: username
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: name
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: is_active
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -2107,42 +2072,7 @@ paths:
     get:
       operationId: core_users_metrics
       description: User metrics per 1h
-      parameters:
-        - name: username
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: name
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: is_active
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -3860,47 +3790,7 @@ paths:
     get:
       operationId: flows_instances_cache_info
       description: Info about cached flows
-      parameters:
-        - name: flow_uuid
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: name
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: slug
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: designation
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -4963,32 +4853,7 @@ paths:
     get:
       operationId: outposts_service_connections_all_types
       description: Get all creatable service connection types
-      parameters:
-        - name: name
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -5574,37 +5439,7 @@ paths:
     get:
       operationId: policies_all_cache_info
       description: Info about cached policies
-      parameters:
-        - name: bindings__isnull
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: promptstage__isnull
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -5621,37 +5456,7 @@ paths:
     get:
       operationId: policies_all_types
       description: Get all creatable policy types
-      parameters:
-        - name: bindings__isnull
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: promptstage__isnull
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -7831,32 +7636,7 @@ paths:
     get:
       operationId: propertymappings_all_types
       description: Get all creatable property-mapping types
-      parameters:
-        - name: managed__isnull
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -8627,32 +8407,7 @@ paths:
     get:
       operationId: providers_all_types
       description: Get all creatable provider types
-      parameters:
-        - name: application__isnull
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -9484,27 +9239,7 @@ paths:
     get:
       operationId: sources_all_types
       description: Get all creatable source types
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -9523,27 +9258,7 @@ paths:
     get:
       operationId: sources_all_user_settings
       description: Get all sources the user can configure
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -9920,6 +9635,25 @@ paths:
           description: Invalid input.
           schema:
             $ref: '#/definitions/ValidationError'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+      tags:
+        - sources
+    parameters: []
+  /sources/oauth/provider_types/:
+    get:
+      operationId: sources_oauth_provider_types
+      description: Get all creatable source types
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/OAuthSourceProviderType'
         '403':
           description: Authentication credentials were invalid, absent or insufficient.
           schema:
@@ -10541,32 +10275,7 @@ paths:
     get:
       operationId: stages_all_types
       description: Get all creatable stage types
-      parameters:
-        - name: name
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -10585,32 +10294,7 @@ paths:
     get:
       operationId: stages_all_user_settings
       description: Get all stages the user can configure
-      parameters:
-        - name: name
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -17327,6 +17011,20 @@ definitions:
         title: Callback url
         type: string
         readOnly: true
+  OAuthSourceProviderType:
+    required:
+      - name
+      - value
+    type: object
+    properties:
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      value:
+        title: Value
+        type: string
+        minLength: 1
   UserOAuthSourceConnection:
     required:
       - user

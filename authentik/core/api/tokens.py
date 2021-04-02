@@ -68,7 +68,7 @@ class TokenViewSet(ModelViewSet):
 
     @permission_required("authentik_core.view_token_key")
     @swagger_auto_schema(responses={200: TokenViewSerializer(many=False)})
-    @action(detail=True)
+    @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=unused-argument
     def view_key(self, request: Request, identifier: str) -> Response:
         """Return token key and log access"""
