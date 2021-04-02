@@ -9642,9 +9642,9 @@ paths:
       tags:
         - sources
     parameters: []
-  /sources/oauth/provider_types/:
+  /sources/oauth/source_types/:
     get:
-      operationId: sources_oauth_provider_types
+      operationId: sources_oauth_source_types
       description: Get all creatable source types
       parameters: []
       responses:
@@ -9653,7 +9653,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/OAuthSourceProviderType'
+              $ref: '#/definitions/SourceType'
         '403':
           description: Authentication credentials were invalid, absent or insufficient.
           schema:
@@ -16907,6 +16907,49 @@ definitions:
         type: string
         format: date-time
         readOnly: true
+  SourceType:
+    description: Get source's type configuration
+    required:
+      - name
+      - slug
+      - urls_customizable
+    type: object
+    properties:
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      slug:
+        title: Slug
+        type: string
+        minLength: 1
+      urls_customizable:
+        title: Urls customizable
+        type: boolean
+      request_token_url:
+        title: Request token url
+        type: string
+        readOnly: true
+        minLength: 1
+        x-nullable: true
+      authorization_url:
+        title: Authorization url
+        type: string
+        readOnly: true
+        minLength: 1
+        x-nullable: true
+      access_token_url:
+        title: Access token url
+        type: string
+        readOnly: true
+        minLength: 1
+        x-nullable: true
+      profile_url:
+        title: Profile url
+        type: string
+        readOnly: true
+        minLength: 1
+        x-nullable: true
   OAuthSource:
     required:
       - name
@@ -17011,20 +17054,8 @@ definitions:
         title: Callback url
         type: string
         readOnly: true
-  OAuthSourceProviderType:
-    required:
-      - name
-      - value
-    type: object
-    properties:
-      name:
-        title: Name
-        type: string
-        minLength: 1
-      value:
-        title: Value
-        type: string
-        minLength: 1
+      type:
+        $ref: '#/definitions/SourceType'
   UserOAuthSourceConnection:
     required:
       - user

@@ -2,11 +2,10 @@
 from typing import Any
 
 from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
-from authentik.sources.oauth.types.manager import MANAGER, RequestKind
+from authentik.sources.oauth.types.manager import MANAGER, SourceType
 from authentik.sources.oauth.views.callback import OAuthCallback
 
 
-@MANAGER.source(kind=RequestKind.CALLBACK, name="GitHub")
 class GitHubOAuth2Callback(OAuthCallback):
     """GitHub OAuth2 Callback"""
 
@@ -21,3 +20,18 @@ class GitHubOAuth2Callback(OAuthCallback):
             "email": info.get("email"),
             "name": info.get("name"),
         }
+
+
+@MANAGER.type()
+class GitHubType(SourceType):
+    """GitHub Type definition"""
+
+    callback_view = GitHubOAuth2Callback
+    name = "GitHub"
+    slug = "github"
+
+    urls_customizable = True
+
+    authorization_url = "https://github.com/login/oauth/authorize"
+    access_token_url = "https://github.com/login/oauth/access_token"  # nosec
+    profile_url = "https://api.github.com/user"

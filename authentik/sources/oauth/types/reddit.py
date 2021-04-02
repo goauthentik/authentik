@@ -5,12 +5,11 @@ from requests.auth import HTTPBasicAuth
 
 from authentik.sources.oauth.clients.oauth2 import OAuth2Client
 from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
-from authentik.sources.oauth.types.manager import MANAGER, RequestKind
+from authentik.sources.oauth.types.manager import MANAGER, SourceType
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 
-@MANAGER.source(kind=RequestKind.REDIRECT, name="reddit")
 class RedditOAuthRedirect(OAuthRedirect):
     """Reddit OAuth2 Redirect"""
 
@@ -30,7 +29,6 @@ class RedditOAuth2Client(OAuth2Client):
         return super().get_access_token(auth=auth)
 
 
-@MANAGER.source(kind=RequestKind.CALLBACK, name="reddit")
 class RedditOAuth2Callback(OAuthCallback):
     """Reddit OAuth2 Callback"""
 
@@ -48,3 +46,17 @@ class RedditOAuth2Callback(OAuthCallback):
             "name": info.get("name"),
             "password": None,
         }
+
+
+@MANAGER.type()
+class RedditType(SourceType):
+    """Reddit Type definition"""
+
+    callback_view = RedditOAuth2Callback
+    redirect_view = RedditOAuthRedirect
+    name = "reddit"
+    slug = "reddit"
+
+    authorization_url = "https://accounts.google.com/o/oauth2/auth"
+    access_token_url = "https://accounts.google.com/o/oauth2/token"  # nosec
+    profile_url = "https://www.googleapis.com/oauth2/v1/userinfo"

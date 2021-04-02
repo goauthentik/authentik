@@ -1,15 +1,16 @@
 """Source type manager"""
 from enum import Enum
-from typing import Callable
+from typing import TYPE_CHECKING, Callable, Optional
 
-from django.utils.text import slugify
 from structlog.stdlib import get_logger
 
-from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 LOGGER = get_logger()
+
+if TYPE_CHECKING:
+    from authentik.sources.oauth.models import OAuthSource
 
 
 class RequestKind(Enum):
@@ -19,46 +20,67 @@ class RequestKind(Enum):
     REDIRECT = "redirect"
 
 
+class SourceType:
+    """Source type, allows overriding of urls and views per type"""
+
+    callback_view = OAuthCallback
+    redirect_view = OAuthRedirect
+    name: str
+    slug: str
+
+    urls_customizable = False
+
+    request_token_url: Optional[str] = None
+    authorization_url: Optional[str] = None
+    access_token_url: Optional[str] = None
+    profile_url: Optional[str] = None
+
+
 class SourceTypeManager:
     """Manager to hold all Source types."""
 
-    __source_types: dict[RequestKind, dict[str, Callable]] = {}
-    __names: list[str] = []
+    __sources: list[SourceType] = []
 
-    def source(self, kind: RequestKind, name: str):
+    def type(self):
         """Class decorator to register classes inline."""
 
         def inner_wrapper(cls):
-            if kind.value not in self.__source_types:
-                self.__source_types[kind.value] = {}
-            self.__source_types[kind.value][slugify(name)] = cls
-            self.__names.append(name)
+            self.__sources.append(cls)
             return cls
 
         return inner_wrapper
 
+    def get(self):
+        """Get a list of all source types"""
+        return self.__sources
+
     def get_name_tuple(self):
         """Get list of tuples of all registered names"""
-        return [(slugify(x), x) for x in set(self.__names)]
+        return [(x.slug, x.name) for x in self.__sources]
 
-    def find(self, source: OAuthSource, kind: RequestKind) -> Callable:
-        """Find fitting Source Type"""
-        if kind.value in self.__source_types:
-            if source.provider_type in self.__source_types[kind.value]:
-                return self.__source_types[kind.value][source.provider_type]
+    def find_type(self, source: "OAuthSource") -> SourceType:
+        """Find type based on source"""
+        found_type = None
+        for src_type in self.__sources:
+            if src_type.slug == source.provider_type:
+                return src_type
+        if not found_type:
+            found_type = SourceType()
             LOGGER.warning(
                 "no matching type found, using default",
                 wanted=source.provider_type,
-                have=self.__source_types[kind.value].keys(),
+                have=[x.name for x in self.__sources],
             )
-            # Return defaults
-            if kind == RequestKind.CALLBACK:
-                return OAuthCallback
-            if kind == RequestKind.REDIRECT:
-                return OAuthRedirect
-        raise KeyError(
-            f"Provider Type {source.provider_type} (type {kind.value}) not found."
-        )
+        return found_type
+
+    def find(self, source: "OAuthSource", kind: RequestKind) -> Callable:
+        """Find fitting Source Type"""
+        found_type = self.find_type(source)
+        if kind == RequestKind.CALLBACK:
+            return found_type.callback_view
+        if kind == RequestKind.REDIRECT:
+            return found_type.redirect_view
+        raise ValueError
 
 
 MANAGER = SourceTypeManager()

@@ -2,11 +2,10 @@
 from typing import Any
 
 from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
-from authentik.sources.oauth.types.manager import MANAGER, RequestKind
+from authentik.sources.oauth.types.manager import MANAGER, SourceType
 from authentik.sources.oauth.views.callback import OAuthCallback
 
 
-@MANAGER.source(kind=RequestKind.CALLBACK, name="Twitter")
 class TwitterOAuthCallback(OAuthCallback):
     """Twitter OAuth2 Callback"""
 
@@ -21,3 +20,20 @@ class TwitterOAuthCallback(OAuthCallback):
             "email": info.get("email", None),
             "name": info.get("name"),
         }
+
+
+@MANAGER.type()
+class TwitterType(SourceType):
+    """Twitter Type definition"""
+
+    callback_view = TwitterOAuthCallback
+    name = "Twitter"
+    slug = "twitter"
+
+    request_token_url = "https://api.twitter.com/oauth/request_token"  # nosec
+    authorization_url = "https://api.twitter.com/oauth/authenticate"
+    access_token_url = "https://api.twitter.com/oauth/access_token"  # nosec
+    profile_url = (
+        "https://api.twitter.com/1.1/account/"
+        "verify_credentials.json?include_email=true"
+    )
