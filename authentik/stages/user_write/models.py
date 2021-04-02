@@ -26,10 +26,8 @@ class UserWriteStage(Stage):
         return UserWriteStageView
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.stages.user_write.forms import UserWriteStageForm
-
-        return UserWriteStageForm
+    def component(self) -> str:
+        return "ak-stage-user-write-form"
 
     class Meta:
 
