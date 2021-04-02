@@ -27,10 +27,8 @@ class DummyStage(Stage):
         return DummyStageView
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.stages.dummy.forms import DummyStageForm
-
-        return DummyStageForm
+    def component(self) -> str:
+        return "ak-stage-dummy-form"
 
     class Meta:
 
