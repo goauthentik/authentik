@@ -35,10 +35,8 @@ class HaveIBeenPwendPolicy(Policy):
         return HaveIBeenPwendPolicySerializer
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.policies.hibp.forms import HaveIBeenPwnedPolicyForm
-
-        return HaveIBeenPwnedPolicyForm
+    def component(self) -> str:
+        return "ak-policy-hibp-form"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Check if password is in HIBP DB. Hashes given Password with SHA1, uses the first 5

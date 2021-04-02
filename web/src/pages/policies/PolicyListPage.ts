@@ -19,6 +19,7 @@ import "./dummy/DummyPolicyForm";
 import "./event_matcher/EventMatcherPolicyForm";
 import "./expression/ExpressionPolicyForm";
 import "./expiry/ExpiryPolicyForm";
+import "./hibp/HaveIBeenPwnedPolicyForm";
 
 @customElement("ak-policy-list")
 export class PolicyListPage extends TablePage<Policy> {
@@ -86,7 +87,8 @@ export class PolicyListPage extends TablePage<Policy> {
                         "dummy": "ak-policy-dummy-form",
                         "eventmatcher": "ak-policy-event-matcher-form",
                         "expression": "ak-policy-expression-form",
-                        "expiry": "ak-policy-password-expiry-form",
+                        "passwordexpiry": "ak-policy-password-expiry-form",
+                        "haveibeenpwend": "ak-policy-hibp-form",
                     }}>
                 </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
