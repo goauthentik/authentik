@@ -67,10 +67,10 @@
         },
         "amqp": {
             "hashes": [
-                "sha256:1e759a7f202d910939de6eca45c23a107f6b71111f41d1282c648e9ac3d21901",
-                "sha256:affdd263d8b8eb3c98170b78bf83867cdb6a14901d586e00ddb65bfe2f0c4e60"
+                "sha256:03e16e94f2b34c31f8bf1206d8ddd3ccaa4c315f7f6a1879b7b1210d229568c2",
+                "sha256:493a2ac6788ce270a2f6a765b017299f60c1998f5a8617908ee9be082f7300fb"
             ],
-            "version": "==5.0.5"
+            "version": "==5.0.6"
         },
         "asgiref": {
             "hashes": [
@@ -109,25 +109,24 @@
         },
         "billiard": {
             "hashes": [
-                "sha256:bff575450859a6e0fbc2f9877d9b715b0bbc07c3565bb7ed2280526a0cdf5ede",
-                "sha256:d91725ce6425f33a97dfa72fb6bfef0e47d4652acd98a032bd1a7fbf06d5fa6a"
+                "sha256:299de5a8da28a783d51b197d496bef4f1595dd023a93a4f59dde1886ae905547",
+                "sha256:87103ea78fa6ab4d5c751c4909bcff74617d985de7fa8b672cf8618afd5a875b"
             ],
-            "version": "==3.6.3.0"
+            "version": "==3.6.4.0"
         },
         "boto3": {
             "hashes": [
-                "sha256:8ee7909771535f582cc4842f5695776725a9f80b7205786a8453d59b978f4e49",
-                "sha256:bc7217eb0b4fbdaddffd8169a6b339d883468d925dba0eed49e99dc26d371a1a"
+                "sha256:b86aaa96ccbdba1aaca0a321dbe4be480a39b7d6fe85dcd7ee5d7c44c9b32726"
             ],
             "index": "pypi",
-            "version": "==1.17.42"
+            "version": "==1.17.43"
         },
         "botocore": {
             "hashes": [
-                "sha256:58ac95e801fb02023927abd03280277616137c50cfdef39a69b97a08a64417d2",
-                "sha256:724fb32ccfe903e5a37860890a6da6b56ea3ecda28a324549f2baedd3c4e4e30"
+                "sha256:7630d734260babdc34dc53c704d937f53c362bb15ccd3863ccf1b1b26be04df8",
+                "sha256:7d0326fd8f8d7b3b7d2e8ecc4edb5a39ecd5537072bd0f088767ca53dd34818a"
             ],
-            "version": "==1.20.42"
+            "version": "==1.20.43"
         },
         "cachetools": {
             "hashes": [
