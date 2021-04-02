@@ -2610,6 +2610,25 @@ paths:
       tags:
         - events
     parameters: []
+  /events/events/actions/:
+    get:
+      operationId: events_events_actions
+      description: Get all actions
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TypeCreate'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+      tags:
+        - events
+    parameters: []
   /events/events/top_per_user/:
     get:
       operationId: events_events_top_per_user
@@ -14765,6 +14784,25 @@ definitions:
         title: Expires
         type: string
         format: date-time
+  TypeCreate:
+    required:
+      - name
+      - description
+      - link
+    type: object
+    properties:
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      description:
+        title: Description
+        type: string
+        minLength: 1
+      link:
+        title: Link
+        type: string
+        minLength: 1
   EventTopPerUser:
     required:
       - application
@@ -15547,25 +15585,6 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
-  TypeCreate:
-    required:
-      - name
-      - description
-      - link
-    type: object
-    properties:
-      name:
-        title: Name
-        type: string
-        minLength: 1
-      description:
-        title: Description
-        type: string
-        minLength: 1
-      link:
-        title: Link
-        type: string
-        minLength: 1
   ServiceConnectionState:
     type: object
     properties:
