@@ -15,7 +15,6 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests.test_views import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
-from authentik.stages.user_write.forms import UserWriteStageForm
 from authentik.stages.user_write.models import UserWriteStage
 
 
@@ -135,8 +134,3 @@ class TestUserWriteStage(TestCase):
                 "type": ChallengeTypes.NATIVE.value,
             },
         )
-
-    def test_form(self):
-        """Test Form"""
-        data = {"name": "test"}
-        self.assertEqual(UserWriteStageForm(data).is_valid(), True)

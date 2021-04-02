@@ -9,7 +9,6 @@ from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
-from authentik.stages.user_logout.forms import UserLogoutStageForm
 from authentik.stages.user_logout.models import UserLogoutStage
 
 
@@ -51,8 +50,3 @@ class TestUserLogoutStage(TestCase):
             force_str(response.content),
             {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
         )
-
-    def test_form(self):
-        """Test Form"""
-        data = {"name": "test"}
-        self.assertEqual(UserLogoutStageForm(data).is_valid(), True)
