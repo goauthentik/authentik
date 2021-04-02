@@ -43,3 +43,10 @@ class TestPropertyMappingAPI(APITestCase):
         self.assertEqual(PropertyMappingSerializer().validate_expression(expr), expr)
         with self.assertRaises(ValidationError):
             print(PropertyMappingSerializer().validate_expression("/"))
+
+    def test_types(self):
+        """Test PropertyMappigns's types endpoint"""
+        response = self.client.get(
+            reverse("authentik_api:propertymapping-types"),
+        )
+        self.assertEqual(response.status_code, 200)

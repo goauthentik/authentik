@@ -71,3 +71,8 @@ class TestAdminAPI(TestCase):
         """Test metrics API"""
         response = self.client.get(reverse("authentik_api:admin_metrics-list"))
         self.assertEqual(response.status_code, 200)
+
+    def test_apps(self):
+        """Test apps API"""
+        response = self.client.get(reverse("authentik_api:apps-list"))
+        self.assertEqual(response.status_code, 200)
