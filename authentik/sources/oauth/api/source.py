@@ -1,10 +1,16 @@
 """OAuth Source Serializer"""
 from django.urls.base import reverse_lazy
-from rest_framework.fields import SerializerMethodField
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework.decorators import action
+from rest_framework.fields import CharField, SerializerMethodField
+from rest_framework.request import Request
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.sources import SourceSerializer
+from authentik.core.api.utils import PassiveSerializer
 from authentik.sources.oauth.models import OAuthSource
+from authentik.sources.oauth.types.manager import MANAGER
 
 
 class OAuthSourceSerializer(SourceSerializer):
@@ -37,9 +43,30 @@ class OAuthSourceSerializer(SourceSerializer):
         extra_kwargs = {"consumer_secret": {"write_only": True}}
 
 
+class OAuthSourceProviderType(PassiveSerializer):
+    """OAuth Provider"""
+
+    name = CharField(read_only=True)
+    value = CharField(read_only=True)
+
+
 class OAuthSourceViewSet(ModelViewSet):
     """Source Viewset"""
 
     queryset = OAuthSource.objects.all()
     serializer_class = OAuthSourceSerializer
     lookup_field = "slug"
+
+    @swagger_auto_schema(responses={200: OAuthSourceProviderType(many=True)})
+    @action(detail=False, pagination_class=None, filter_backends=[])
+    def provider_types(self, request: Request) -> Response:
+        """Get all creatable source types"""
+        data = []
+        for key, value in MANAGER.get_name_tuple():
+            data.append(
+                {
+                    "name": value,
+                    "value": key,
+                }
+            )
+        return Response(OAuthSourceProviderType(data, many=True).data)
