@@ -1,12 +1,11 @@
 """OAuth Source Serializer"""
 from django.urls.base import reverse_lazy
-from drf_yasg.utils import swagger_auto_schema
+from drf_yasg.utils import swagger_auto_schema, swagger_serializer_method
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from drf_yasg.utils import swagger_serializer_method
 
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.utils import PassiveSerializer
@@ -61,7 +60,6 @@ class OAuthSourceSerializer(SourceSerializer):
             "callback_url",
             "type",
         ]
-        extra_kwargs = {"consumer_secret": {"write_only": True}}
 
 
 class OAuthSourceViewSet(ModelViewSet):

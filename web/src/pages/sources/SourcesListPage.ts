@@ -16,6 +16,7 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "./ldap/LDAPSourceForm";
 import "./saml/SAMLSourceForm";
+import "./oauth/OAuthSourceForm";
 
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {
@@ -76,6 +77,7 @@ export class SourceListPage extends TablePage<Source> {
                     .typeMap=${{
                         "ldap": "ak-source-ldap-form",
                         "saml": "ak-source-saml-form",
+                        "oauth": "ak-source-oauth-form",
                     }}>
                 </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">

@@ -12,16 +12,18 @@ import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import AKGlobal from "../../../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
-import "../../../elements/buttons/ModalButton";
 import "../../../elements/buttons/SpinnerButton";
 import "../../../elements/CodeMirror";
 import "../../../elements/Tabs";
 import "../../../elements/events/ObjectChangelog";
+import "../../../elements/forms/ModalForm";
+import "./SAMLSourceForm";
 import { Page } from "../../../elements/Page";
 import { SAMLSource, SourcesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { AdminURLManager, AppURLManager } from "../../../api/legacy";
+import { AppURLManager } from "../../../api/legacy";
 import { EVENT_REFRESH } from "../../../constants";
 import { ifDefined } from "lit-html/directives/if-defined";
 
@@ -50,7 +52,7 @@ export class SAMLSourceViewPage extends Page {
     source?: SAMLSource;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, AKGlobal];
+        return [PFBase, PFPage, PFFlex, PFButton, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, AKGlobal];
     }
 
     constructor() {
@@ -107,12 +109,21 @@ export class SAMLSourceViewPage extends Page {
                                     </dl>
                                 </div>
                                 <div class="pf-c-card__footer">
-                                    <ak-modal-button href="${AdminURLManager.sources(`${this.source.pk}/update/`)}">
-                                        <ak-spinner-button slot="trigger" class="pf-m-primary">
+                                    <ak-forms-modal>
+                                        <span slot="submit">
+                                            ${gettext("Update")}
+                                        </span>
+                                        <span slot="header">
+                                            ${gettext("Update SAML Source")}
+                                        </span>
+                                        <ak-source-saml-form
+                                            slot="form"
+                                            .sourceSlug=${this.source.slug}>
+                                        </ak-source-saml-form>
+                                        <button slot="trigger" class="pf-c-button pf-m-primary">
                                             ${gettext("Edit")}
-                                        </ak-spinner-button>
-                                        <div slot="modal"></div>
-                                    </ak-modal-button>
+                                        </button>
+                                    </ak-forms-modal>
                                 </div>
                             </div>
                         </div>

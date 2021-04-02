@@ -1,16 +1,9 @@
 """authentik URL Configuration"""
 from django.urls import path
 
-from authentik.admin.views import policies, sources, stages
+from authentik.admin.views import policies, stages
 
 urlpatterns = [
-    # Sources
-    path("sources/create/", sources.SourceCreateView.as_view(), name="source-create"),
-    path(
-        "sources/<uuid:pk>/update/",
-        sources.SourceUpdateView.as_view(),
-        name="source-update",
-    ),
     # Policies
     path("policies/create/", policies.PolicyCreateView.as_view(), name="policy-create"),
     path(

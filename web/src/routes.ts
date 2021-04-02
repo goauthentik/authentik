@@ -30,6 +30,8 @@ import "./pages/users/UserListPage";
 import "./pages/users/UserViewPage";
 import "./pages/user-settings/UserSettingsPage";
 
+import "./pages/TestPage";
+
 export const ROUTES: Route[] = [
     // Prevent infinite Shell loops
     new Route(new RegExp("^/$")).redirect("/library"),
@@ -74,4 +76,5 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/outpost/service-connections$"), html`<ak-outpost-service-connection-list></ak-outpost-service-connection-list>`),
     new Route(new RegExp("^/crypto/certificates$"), html`<ak-crypto-certificate-list></ak-crypto-certificate-list>`),
     new Route(new RegExp("^/user$"), html`<ak-user-settings></ak-user-settings>`),
+    new Route(new RegExp("^/test$"), html`<ak-test-page></ak-test-page>`),
 ];

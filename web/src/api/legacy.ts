@@ -8,10 +8,6 @@ export class AdminURLManager {
         return `/administration/stages/${rest}`;
     }
 
-    static sources(rest: string): string {
-        return `/administration/sources/${rest}`;
-    }
-
 }
 
 export class AppURLManager {

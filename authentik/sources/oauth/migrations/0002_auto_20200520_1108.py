@@ -47,4 +47,11 @@ class Migration(migrations.Migration):
                 verbose_name="Profile URL",
             ),
         ),
+        migrations.AlterModelOptions(
+            name="oauthsource",
+            options={
+                "verbose_name": "OAuth Source",
+                "verbose_name_plural": "OAuth Sources",
+            },
+        ),
     ]

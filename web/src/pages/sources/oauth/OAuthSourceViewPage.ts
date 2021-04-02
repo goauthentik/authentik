@@ -11,16 +11,17 @@ import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import AKGlobal from "../../../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
-import "../../../elements/buttons/ModalButton";
 import "../../../elements/buttons/SpinnerButton";
 import "../../../elements/CodeMirror";
 import "../../../elements/Tabs";
 import "../../../elements/events/ObjectChangelog";
+import "../../../elements/forms/ModalForm";
+import "./OAuthSourceForm";
 import { Page } from "../../../elements/Page";
 import { OAuthSource, SourcesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { AdminURLManager } from "../../../api/legacy";
 import { EVENT_REFRESH } from "../../../constants";
 
 @customElement("ak-source-oauth-view")
@@ -48,7 +49,7 @@ export class OAuthSourceViewPage extends Page {
     source?: OAuthSource;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, AKGlobal];
+        return [PFBase, PFPage, PFButton, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, AKGlobal];
     }
 
     constructor() {
@@ -121,12 +122,21 @@ export class OAuthSourceViewPage extends Page {
                                     </dl>
                                 </div>
                                 <div class="pf-c-card__footer">
-                                    <ak-modal-button href="${AdminURLManager.sources(`${this.source.pk}/update/`)}">
-                                        <ak-spinner-button slot="trigger" class="pf-m-primary">
+                                    <ak-forms-modal>
+                                        <span slot="submit">
+                                            ${gettext("Update")}
+                                        </span>
+                                        <span slot="header">
+                                            ${gettext("Update OAuth Source")}
+                                        </span>
+                                        <ak-source-oauth-form
+                                            slot="form"
+                                            .sourceSlug=${this.source.slug}>
+                                        </ak-source-oauth-form>
+                                        <button slot="trigger" class="pf-c-button pf-m-primary">
                                             ${gettext("Edit")}
-                                        </ak-spinner-button>
-                                        <div slot="modal"></div>
-                                    </ak-modal-button>
+                                        </button>
+                                    </ak-forms-modal>
                                 </div>
                             </div>
                         </div>

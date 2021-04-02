@@ -86,8 +86,8 @@ class OAuthSource(Source):
 
     class Meta:
 
-        verbose_name = _("Generic OAuth Source")
-        verbose_name_plural = _("Generic OAuth Sources")
+        verbose_name = _("OAuth Source")
+        verbose_name_plural = _("OAuth Sources")
 
 
 class GitHubOAuthSource(OAuthSource):
