@@ -8,7 +8,7 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import AKGlobal from "../../authentik.css";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 
 import "../../elements/EmptyState";
 
@@ -30,7 +30,7 @@ export class FlowAccessDenied extends BaseStage {
         if (!this.challenge) {
             return html`<ak-empty-state
                 ?loading="${true}"
-                header=${gettext("Loading")}>
+                header=${t`Loading`}>
             </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
@@ -43,7 +43,7 @@ export class FlowAccessDenied extends BaseStage {
                     <div class="pf-c-form__group">
                         <p>
                             <i class="pf-icon pf-icon-error-circle-o"></i>
-                            ${gettext("Request has been denied.")}
+                            ${t`Request has been denied.`}
                         </p>
                         ${this.challenge?.error_message &&
                             html`<hr>

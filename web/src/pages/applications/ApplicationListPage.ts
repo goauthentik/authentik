@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { css, CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import { AKResponse } from "../../api/Client";
@@ -19,10 +19,10 @@ export class ApplicationListPage extends TablePage<Application> {
         return true;
     }
     pageTitle(): string {
-        return gettext("Applications");
+        return t`Applications`;
     }
     pageDescription(): string {
-        return gettext("External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML.");
+        return t`External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML.`;
     }
     pageIcon(): string {
         return "pf-icon pf-icon-applications";
@@ -54,8 +54,8 @@ export class ApplicationListPage extends TablePage<Application> {
     columns(): TableColumn[] {
         return [
             new TableColumn(""),
-            new TableColumn("Name", "name"),
-            new TableColumn("Slug", "slug"),
+            new TableColumn(t`Name`, t`name`),
+            new TableColumn(t`Slug`, t`slug`),
             new TableColumn("Provider"),
             new TableColumn("Provider Type"),
             new TableColumn(""),
@@ -65,7 +65,7 @@ export class ApplicationListPage extends TablePage<Application> {
     row(item: Application): TemplateResult[] {
         return [
             item.metaIcon ?
-                html`<img class="app-icon pf-c-avatar" src="${item.metaIcon}" alt="${gettext("Application Icon")}">` :
+                html`<img class="app-icon pf-c-avatar" src="${item.metaIcon}" alt="${t`Application Icon`}">` :
                 html`<i class="fas fas fa-share-square"></i>`,
             html`<a href="#/core/applications/${item.slug}">
                 <div>
@@ -79,27 +79,27 @@ export class ApplicationListPage extends TablePage<Application> {
             html`
             <ak-forms-modal>
                 <span slot="submit">
-                    ${gettext("Update")}
+                    ${t`Update`}
                 </span>
                 <span slot="header">
-                    ${gettext("Update Application")}
+                    ${t`Update Application`}
                 </span>
                 <ak-application-form slot="form" .application=${item}>
                 </ak-application-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${gettext("Edit")}
+                    ${t`Edit`}
                 </button>
             </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
-                objectLabel=${gettext("Application")}
+                objectLabel=${t`Application`}
                 .delete=${() => {
                     return new CoreApi(DEFAULT_CONFIG).coreApplicationsDelete({
                         slug: item.slug || ""
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${gettext("Delete")}
+                    ${t`Delete`}
                 </button>
             </ak-forms-delete>`,
         ];
@@ -109,15 +109,15 @@ export class ApplicationListPage extends TablePage<Application> {
         return html`
         <ak-forms-modal>
             <span slot="submit">
-                ${gettext("Create")}
+                ${t`Create`}
             </span>
             <span slot="header">
-                ${gettext("Create Application")}
+                ${t`Create Application`}
             </span>
             <ak-application-form slot="form">
             </ak-application-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${gettext("Create")}
+                ${t`Create`}
             </button>
         </ak-forms-modal>
         ${super.renderToolbar()}

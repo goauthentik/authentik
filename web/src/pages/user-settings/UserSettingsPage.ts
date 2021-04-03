@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
 
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -48,7 +48,7 @@ export class UserSettingsPage extends LitElement {
                 return html`<ak-user-settings-authenticator-static objectId=${stage.objectUid}>
                 </ak-user-settings-authenticator-static>`;
             default:
-                return html`<p>${gettext(`Error: unsupported stage settings: ${stage.component}`)}</p>`;
+                return html`<p>${t`Error: unsupported stage settings: ${stage.component}`}</p>`;
         }
     }
 
@@ -58,7 +58,7 @@ export class UserSettingsPage extends LitElement {
                 return html`<ak-user-settings-source-oauth objectId=${source.objectUid}>
                 </ak-user-settings-source-oauth>`;
             default:
-                return html`<p>${gettext(`Error: unsupported source settings: ${source.component}`)}</p>`;
+                return html`<p>${t`Error: unsupported source settings: ${source.component}`}</p>`;
         }
     }
 
@@ -69,16 +69,16 @@ export class UserSettingsPage extends LitElement {
                     <div class="pf-c-content">
                         <h1>
                             <i class="pf-icon pf-icon-user"></i>
-                            ${gettext("User Settings")}
+                            ${t`User Settings`}
                         </h1>
-                        <p>${gettext("Configure settings relevant to your user profile.")}</p>
+                        <p>${t`Configure settings relevant to your user profile.`}</p>
                     </div>
                 </section>
                 <ak-tabs ?vertical="${true}" style="height: 100%;">
-                    <section slot="page-1" data-tab-title="${gettext("User details")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                    <section slot="page-1" data-tab-title="${t`User details`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                         <ak-user-details></ak-user-details>
                     </section>
-                    <section slot="page-2" data-tab-title="${gettext("Tokens")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                    <section slot="page-2" data-tab-title="${t`Tokens`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                         <ak-user-token-list></ak-user-token-list>
                     </section>
                     ${until(new StagesApi(DEFAULT_CONFIG).stagesAllUserSettings().then((stages) => {

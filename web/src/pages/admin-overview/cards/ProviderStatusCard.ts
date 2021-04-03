@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { ProvidersApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
@@ -19,7 +19,7 @@ export class ProviderStatusCard extends AdminStatusCard<number> {
         if (value > 0) {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
-                message: gettext("Warning: At least one Provider has no application assigned."),
+                message: t`Warning: At least one Provider has no application assigned.`,
             });
         } else {
             return Promise.resolve<AdminStatus>({

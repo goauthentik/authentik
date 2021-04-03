@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../../api/Client";
 import { TablePage } from "../../../elements/table/TablePage";
@@ -19,10 +19,10 @@ export class PromptListPage extends TablePage<Prompt> {
         return true;
     }
     pageTitle(): string {
-        return gettext("Prompts");
+        return t`Prompts`;
     }
     pageDescription(): string {
-        return gettext("Single Prompts that can be used for Prompt Stages.");
+        return t`Single Prompts that can be used for Prompt Stages.`;
     }
     pageIcon(): string {
         return "pf-icon pf-icon-plugged";
@@ -42,10 +42,10 @@ export class PromptListPage extends TablePage<Prompt> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Field", "field_key"),
-            new TableColumn("Label", "label"),
-            new TableColumn("Type", "type"),
-            new TableColumn("Order", "order"),
+            new TableColumn(t`Field`, t`field_key`),
+            new TableColumn(t`Label`, t`label`),
+            new TableColumn(t`Type`, t`type`),
+            new TableColumn(t`Order`, t`order`),
             new TableColumn("Stages"),
             new TableColumn(""),
         ];
@@ -63,27 +63,27 @@ export class PromptListPage extends TablePage<Prompt> {
             html`
             <ak-forms-modal>
                 <span slot="submit">
-                    ${gettext("Update")}
+                    ${t`Update`}
                 </span>
                 <span slot="header">
-                    ${gettext("Update Prompt")}
+                    ${t`Update Prompt`}
                 </span>
                 <ak-prompt-form slot="form" .prompt=${item}>
                 </ak-prompt-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${gettext("Edit")}
+                    ${t`Edit`}
                 </button>
             </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
-                objectLabel=${gettext("Prompt")}
+                objectLabel=${t`Prompt`}
                 .delete=${() => {
                     return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsDelete({
                         promptUuid: item.pk || ""
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${gettext("Delete")}
+                    ${t`Delete`}
                 </button>
             </ak-forms-delete>`,
         ];
@@ -93,15 +93,15 @@ export class PromptListPage extends TablePage<Prompt> {
         return html`
         <ak-forms-modal>
             <span slot="submit">
-                ${gettext("Create")}
+                ${t`Create`}
             </span>
             <span slot="header">
-                ${gettext("Create Prompt")}
+                ${t`Create Prompt`}
             </span>
             <ak-prompt-form slot="form">
             </ak-prompt-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${gettext("Create")}
+                ${t`Create`}
             </button>
         </ak-forms-modal>
         ${super.renderToolbar()}

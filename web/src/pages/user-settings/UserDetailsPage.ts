@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import AKGlobal from "../../authentik.css";
@@ -36,16 +36,16 @@ export class UserDetailsPage extends LitElement {
         if (!this.user) {
             return html`<ak-empty-state
                 ?loading="${true}"
-                header=${gettext("Loading")}>
+                header=${t`Loading`}>
             </ak-empty-state>`;
         }
         return html`<div class="pf-c-card">
             <div class="pf-c-card__title">
-                ${gettext("Update details")}
+                ${t`Update details`}
             </div>
             <div class="pf-c-card__body">
                 <ak-form
-                    successMessage=${gettext("Successfully updated details.")}
+                    successMessage=${t`Successfully updated details.`}
                     .send=${(data: unknown) => {
                         return new CoreApi(DEFAULT_CONFIG).coreUsersUpdate({
                             id: this.user?.pk || 0,
@@ -56,22 +56,22 @@ export class UserDetailsPage extends LitElement {
                         <paper-input
                             name="username"
                             ?alwaysFloatLabel=${true}
-                            label="${gettext("Username")}"
+                            label="${t`Username`}"
                             value=${this.user.username}>
                         </paper-input>
-                        <p class="pf-c-form__helper-text">${gettext("Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.")}</p>
+                        <p class="pf-c-form__helper-text">${t`Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.`}</p>
                         <paper-input
                             name="name"
                             ?alwaysFloatLabel=${true}
-                            label="${gettext("Name")}"
+                            label="${t`Name`}"
                             value=${this.user.name}>
                         </paper-input>
-                        <p class="pf-c-form__helper-text">${gettext("User's display name.")}</p>
+                        <p class="pf-c-form__helper-text">${t`User's display name.`}</p>
                         <paper-input
                             name="email"
                             ?alwaysFloatLabel=${true}
                             type="email"
-                            label="${gettext("Email address")}"
+                            label="${t`Email address`}"
                             value=${this.user.email || ""}>
                         </paper-input>
 
@@ -79,11 +79,11 @@ export class UserDetailsPage extends LitElement {
                             <div class="pf-c-form__horizontal-group">
                                 <div class="pf-c-form__actions">
                                     <button class="pf-c-button pf-m-primary">
-                                        ${gettext("Update")}
+                                        ${t`Update`}
                                     </button>
                                     <a class="pf-c-button pf-m-danger"
                                         href="${FlowURLManager.defaultUnenrollment()}">
-                                        ${gettext("Delete account")}
+                                        ${t`Delete account`}
                                     </a>
                                 </div>
                             </div>

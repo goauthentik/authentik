@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { unsafeHTML } from "lit-html/directives/unsafe-html";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -121,7 +121,7 @@ export class PromptStage extends BaseStage {
         if (!this.challenge) {
             return html`<ak-empty-state
     ?loading="${true}"
-    header=${gettext("Loading")}>
+    header=${t`Loading`}>
 </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
@@ -142,7 +142,7 @@ export class PromptStage extends BaseStage {
                     })}
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${gettext("Continue")}
+                            ${t`Continue`}
                         </button>
                     </div>
                 </form>

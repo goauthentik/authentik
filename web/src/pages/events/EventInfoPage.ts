@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { EventsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -37,7 +37,7 @@ export class EventInfoPage extends LitElement {
             <div class="pf-c-content">
                 <h1>
                     <i class="pf-icon pf-icon-catalog"></i>
-                    ${gettext(`Event ${this.event?.pk || ""}`)}
+                    ${t`Event ${this.event?.pk || ""}`}
                 </h1>
             </div>
         </section>

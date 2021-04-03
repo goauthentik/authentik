@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
@@ -15,10 +15,10 @@ export class SystemTaskListPage extends TablePage<Task> {
         return false;
     }
     pageTitle(): string {
-        return gettext("System Tasks");
+        return t`System Tasks`;
     }
     pageDescription(): string {
-        return gettext("Long-running operations which authentik executes in the background.");
+        return t`Long-running operations which authentik executes in the background.`;
     }
     pageIcon(): string {
         return "pf-icon pf-icon-automation";
@@ -44,7 +44,7 @@ export class SystemTaskListPage extends TablePage<Task> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Identifier", "task_name"),
+            new TableColumn(t`Identifier`, t`task_name`),
             new TableColumn("Description"),
             new TableColumn("Last run"),
             new TableColumn("Status"),
@@ -56,13 +56,13 @@ export class SystemTaskListPage extends TablePage<Task> {
     taskStatus(task: Task): TemplateResult {
         switch (task.status) {
             case TaskStatusEnum.Successful:
-                return html`<i class="fas fa-check pf-m-success" > </i> ${gettext("Successful")}`;
+                return html`<i class="fas fa-check pf-m-success" > </i> ${t`Successful`}`;
             case TaskStatusEnum.Warning:
-                return html`<i class="fas fa-exclamation-triangle pf-m-warning" > </i> ${gettext("Warning")}`;
+                return html`<i class="fas fa-exclamation-triangle pf-m-warning" > </i> ${t`Warning`}`;
             case TaskStatusEnum.Error:
-                return html`<i class="fas fa-times pf-m-danger" > </i> ${gettext("Error")}`;
+                return html`<i class="fas fa-times pf-m-danger" > </i> ${t`Error`}`;
             default:
-                return html`<i class="fas fa-question-circle" > </i> ${gettext("Unknown")}`;
+                return html`<i class="fas fa-question-circle" > </i> ${t`Unknown`}`;
         }
     }
 
@@ -81,7 +81,7 @@ export class SystemTaskListPage extends TablePage<Task> {
                         id: item.taskName
                     });
                 }}>
-                ${gettext("Retry Task")}
+                ${t`Retry Task`}
             </ak-action-button>`,
         ];
     }

@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../../api/Client";
 import { TablePage } from "../../../elements/table/TablePage";
@@ -19,10 +19,10 @@ export class InvitationListPage extends TablePage<Invitation> {
         return true;
     }
     pageTitle(): string {
-        return gettext("Invitations");
+        return t`Invitations`;
     }
     pageDescription(): string {
-        return gettext("Create Invitation Links to enroll Users, and optionally force specific attributes of their account.");
+        return t`Create Invitation Links to enroll Users, and optionally force specific attributes of their account.`;
     }
     pageIcon(): string {
         return "pf-icon pf-icon-migration";
@@ -42,8 +42,8 @@ export class InvitationListPage extends TablePage<Invitation> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("ID", "pk"),
-            new TableColumn("Created by", "created_by"),
+            new TableColumn(t`ID`, t`pk`),
+            new TableColumn(t`Created by`, t`created_by`),
             new TableColumn("Expiry"),
             new TableColumn(""),
         ];
@@ -57,14 +57,14 @@ export class InvitationListPage extends TablePage<Invitation> {
             html`
             <ak-forms-delete
                 .obj=${item}
-                objectLabel=${gettext("Prompt")}
+                objectLabel=${t`Prompt`}
                 .delete=${() => {
                     return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsDelete({
                         inviteUuid: item.pk || ""
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${gettext("Delete")}
+                    ${t`Delete`}
                 </button>
             </ak-forms-delete>`,
         ];
@@ -74,15 +74,15 @@ export class InvitationListPage extends TablePage<Invitation> {
         return html`
         <ak-forms-modal>
             <span slot="submit">
-                ${gettext("Create")}
+                ${t`Create`}
             </span>
             <span slot="header">
-                ${gettext("Create Invitation")}
+                ${t`Create Invitation`}
             </span>
             <ak-invitation-form slot="form">
             </ak-invitation-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${gettext("Create")}
+                ${t`Create`}
             </button>
         </ak-forms-modal>
         ${super.renderToolbar()}

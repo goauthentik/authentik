@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
@@ -19,10 +19,10 @@ export class FlowListPage extends TablePage<Flow> {
         return true;
     }
     pageTitle(): string {
-        return gettext("Flows");
+        return t`Flows`;
     }
     pageDescription(): string {
-        return gettext("Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.");
+        return t`Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.`;
     }
     pageIcon(): string {
         return "pf-icon pf-icon-process-automation";
@@ -42,9 +42,9 @@ export class FlowListPage extends TablePage<Flow> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Identifier", "slug"),
-            new TableColumn("Name", "name"),
-            new TableColumn("Designation", "designation"),
+            new TableColumn(t`Identifier`, t`slug`),
+            new TableColumn(t`Name`, t`name`),
+            new TableColumn(t`Designation`, t`designation`),
             new TableColumn("Stages"),
             new TableColumn("Policies"),
             new TableColumn(""),
@@ -63,27 +63,27 @@ export class FlowListPage extends TablePage<Flow> {
             html`
             <ak-forms-modal>
                 <span slot="submit">
-                    ${gettext("Update")}
+                    ${t`Update`}
                 </span>
                 <span slot="header">
-                    ${gettext("Update Flow")}
+                    ${t`Update Flow`}
                 </span>
                 <ak-flow-form slot="form" .flow=${item}>
                 </ak-flow-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${gettext("Edit")}
+                    ${t`Edit`}
                 </button>
             </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
-                objectLabel=${gettext("Flow")}
+                objectLabel=${t`Flow`}
                 .delete=${() => {
                     return new FlowsApi(DEFAULT_CONFIG).flowsInstancesDelete({
                         slug: item.slug
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${gettext("Delete")}
+                    ${t`Delete`}
                 </button>
             </ak-forms-delete>
             <button
@@ -95,10 +95,10 @@ export class FlowListPage extends TablePage<Flow> {
                         window.location.assign(`${link.link}?next=/%23${window.location.href}`);
                     });
                 }}>
-                ${gettext("Execute")}
+                ${t`Execute`}
             </button>
             <a class="pf-c-button pf-m-secondary" href="${`${DEFAULT_CONFIG.basePath}/flows/instances/${item.slug}/export/`}">
-                ${gettext("Export")}
+                ${t`Export`}
             </a>`,
         ];
     }
@@ -107,28 +107,28 @@ export class FlowListPage extends TablePage<Flow> {
         return html`
         <ak-forms-modal>
             <span slot="submit">
-                ${gettext("Create")}
+                ${t`Create`}
             </span>
             <span slot="header">
-                ${gettext("Create Flow")}
+                ${t`Create Flow`}
             </span>
             <ak-flow-form slot="form">
             </ak-flow-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${gettext("Create")}
+                ${t`Create`}
             </button>
         </ak-forms-modal>
         <ak-forms-modal>
             <span slot="submit">
-                ${gettext("Import")}
+                ${t`Import`}
             </span>
             <span slot="header">
-                ${gettext("Import Flow")}
+                ${t`Import Flow`}
             </span>
             <ak-flow-import-form slot="form">
             </ak-flow-import-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${gettext("Import")}
+                ${t`Import`}
             </button>
         </ak-forms-modal>
         ${super.renderToolbar()}

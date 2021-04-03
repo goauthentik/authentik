@@ -1,5 +1,5 @@
 import { ConsentStage, ConsentStageModeEnum, StagesApi } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
@@ -28,9 +28,9 @@ export class ConsentStageForm extends Form<ConsentStage> {
 
     getSuccessMessage(): string {
         if (this.stage) {
-            return gettext("Successfully updated stage.");
+            return t`Successfully updated stage.`;
         } else {
-            return gettext("Successfully created stage.");
+            return t`Successfully created stage.`;
         }
     }
 
@@ -50,18 +50,18 @@ export class ConsentStageForm extends Form<ConsentStage> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Name")}
+                label=${t`Name`}
                 ?required=${true}
                 name="name">
                 <input type="text" value="${ifDefined(this.stage?.name || "")}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header">
-                    ${gettext("Stage-specific settings")}
+                    ${t`Stage-specific settings`}
                 </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${gettext("Mode")}
+                        label=${t`Mode`}
                         ?required=${true}
                         name="mode">
                         <select class="pf-c-form-control" @change=${(ev: Event) => {
@@ -73,23 +73,23 @@ export class ConsentStageForm extends Form<ConsentStage> {
                             }
                         }}>
                             <option value=${ConsentStageModeEnum.AlwaysRequire} ?selected=${this.stage?.mode === ConsentStageModeEnum.AlwaysRequire}>
-                                ${gettext("Always require consent")}
+                                ${t`Always require consent`}
                             </option>
                             <option value=${ConsentStageModeEnum.Permanent} ?selected=${this.stage?.mode === ConsentStageModeEnum.Permanent}>
-                                ${gettext("Consent given last indefinitely")}
+                                ${t`Consent given last indefinitely`}
                             </option>
                             <option value=${ConsentStageModeEnum.Expiring} ?selected=${this.stage?.mode === ConsentStageModeEnum.Expiring}>
-                                ${gettext("Consent expires.")}
+                                ${t`Consent expires.`}
                             </option>
                         </select>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         ?hidden=${!this.showExpiresIn}
-                        label=${gettext("Consent expires in")}
+                        label=${t`Consent expires in`}
                         ?required=${true}
                         name="consentExpireIn">
                         <input type="text" value="${ifDefined(this.stage?.consentExpireIn || "weeks=4")}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${gettext("Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).")}</p>
+                        <p class="pf-c-form__helper-text">${t`Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).`}</p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

@@ -1,5 +1,5 @@
 import { FlowsApi, FlowStageBinding, FlowStageBindingPolicyEngineModeEnum, Stage, StagesApi } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -20,9 +20,9 @@ export class StageBindingForm extends Form<FlowStageBinding> {
 
     getSuccessMessage(): string {
         if (this.fsb) {
-            return gettext("Successfully updated binding.");
+            return t`Successfully updated binding.`;
         } else {
-            return gettext("Successfully created binding.");
+            return t`Successfully created binding.`;
         }
     }
 
@@ -71,7 +71,7 @@ export class StageBindingForm extends Form<FlowStageBinding> {
             `;
         }
         return html`<ak-form-element-horizontal
-            label=${gettext("Target")}
+            label=${t`Target`}
             ?required=${true}
             name="target">
             <select class="pf-c-form-control">
@@ -91,7 +91,7 @@ export class StageBindingForm extends Form<FlowStageBinding> {
         return html`<form class="pf-c-form pf-m-horizontal">
             ${this.renderTarget()}
             <ak-form-element-horizontal
-                label=${gettext("Stage")}
+                label=${t`Stage`}
                 ?required=${true}
                 name="stage">
                 <select class="pf-c-form-control">
@@ -106,36 +106,36 @@ export class StageBindingForm extends Form<FlowStageBinding> {
                 <div class="pf-c-check">
                     <input type="checkbox" class="pf-c-check__input" ?checked=${this.fsb?.evaluateOnPlan || true}>
                     <label class="pf-c-check__label">
-                        ${gettext("Evaluate on plan")}
+                        ${t`Evaluate on plan`}
                     </label>
                 </div>
-                <p class="pf-c-form__helper-text">${gettext("Evaluate policies during the Flow planning process. Disable this for input-based policies.")}</p>
+                <p class="pf-c-form__helper-text">${t`Evaluate policies during the Flow planning process. Disable this for input-based policies.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="reEvaluatePolicies">
                 <div class="pf-c-check">
                     <input type="checkbox" class="pf-c-check__input" ?checked=${this.fsb?.reEvaluatePolicies || false}>
                     <label class="pf-c-check__label">
-                        ${gettext("Re-evaluate policies")}
+                        ${t`Re-evaluate policies`}
                     </label>
                 </div>
-                <p class="pf-c-form__helper-text">${gettext("Evaluate policies when the Stage is present to the user.")}</p>
+                <p class="pf-c-form__helper-text">${t`Evaluate policies when the Stage is present to the user.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Order")}
+                label=${t`Order`}
                 ?required=${true}
                 name="order">
                 <input type="number" value="${until(this.getOrder(), this.fsb?.order)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Policy engine mode")}
+                label=${t`Policy engine mode`}
                 ?required=${true}
                 name="policyEngineMode">
                 <select class="pf-c-form-control">
                     <option value=${FlowStageBindingPolicyEngineModeEnum.Any} ?selected=${this.fsb?.policyEngineMode === FlowStageBindingPolicyEngineModeEnum.Any}>
-                        ${gettext("ANY, any policy must match to grant access.")}
+                        ${t`ANY, any policy must match to grant access.`}
                     </option>
                     <option value=${FlowStageBindingPolicyEngineModeEnum.All} ?selected=${this.fsb?.policyEngineMode === FlowStageBindingPolicyEngineModeEnum.All}>
-                        ${gettext("ALL, all policies must match to grant access.")}
+                        ${t`ALL, all policies must match to grant access.`}
                     </option>
                 </select>
             </ak-form-element-horizontal>

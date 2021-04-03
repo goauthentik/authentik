@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { WithUserInfoChallenge } from "../../../api/Flows";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -54,7 +54,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage {
                 throw new Error("Credential is empty");
             }
         } catch (err) {
-            throw new Error(gettext(`Error creating credential: ${err}`));
+            throw new Error(t`Error creating credential: ${err}`);
         }
 
         // we now have a new credential! We now need to encode the byte arrays
@@ -68,7 +68,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage {
                 response: newAssertionForServer
             });
         } catch (err) {
-            throw new Error(gettext(`Server validation of credential failed: ${err}`));
+            throw new Error(t`Server validation of credential failed: ${err}`);
         }
     }
 
@@ -113,7 +113,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage {
                         <button class="pf-c-button pf-m-primary pf-m-block" @click=${() => {
                             this.registerWrapper();
                         }}>
-                            ${gettext("Register device")}
+                            ${t`Register device`}
                         </button>
                     </div>`}
             </div>

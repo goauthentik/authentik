@@ -1,5 +1,5 @@
 import { CryptoApi, DockerServiceConnection, OutpostsApi } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -24,9 +24,9 @@ export class ServiceConnectionDockerForm extends Form<DockerServiceConnection> {
 
     getSuccessMessage(): string {
         if (this.sc) {
-            return gettext("Successfully updated service-connection.");
+            return t`Successfully updated service-connection.`;
         } else {
-            return gettext("Successfully created service-connection.");
+            return t`Successfully created service-connection.`;
         }
     }
 
@@ -46,7 +46,7 @@ export class ServiceConnectionDockerForm extends Form<DockerServiceConnection> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Name")}
+                label=${t`Name`}
                 ?required=${true}
                 name="name">
                 <input type="text" value="${ifDefined(this.sc?.name)}" class="pf-c-form-control" required>
@@ -55,20 +55,20 @@ export class ServiceConnectionDockerForm extends Form<DockerServiceConnection> {
                 <div class="pf-c-check">
                     <input type="checkbox" class="pf-c-check__input" ?checked=${this.sc?.local || false}>
                     <label class="pf-c-check__label">
-                        ${gettext("Local")}
+                        ${t`Local`}
                     </label>
                 </div>
-                <p class="pf-c-form__helper-text">${gettext("If enabled, use the local connection. Required Docker socket/Kubernetes Integration.")}</p>
+                <p class="pf-c-form__helper-text">${t`If enabled, use the local connection. Required Docker socket/Kubernetes Integration.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Docker URL")}
+                label=${t`Docker URL`}
                 ?required=${true}
                 name="url">
                 <input type="text" value="${ifDefined(this.sc?.url)}" class="pf-c-form-control" required>
-                <p class="pf-c-form__helper-text">${gettext("Can be in the format of 'unix://' when connecting to a local docker daemon, or 'https://:2376' when connecting to a remote system.")}</p>
+                <p class="pf-c-form__helper-text">${t`Can be in the format of 'unix://' when connecting to a local docker daemon, or 'https://:2376' when connecting to a remote system.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("TLS Verification Certificate")}
+                label=${t`TLS Verification Certificate`}
                 ?required=${true}
                 name="tlsVerification">
                 <select class="pf-c-form-control">
@@ -81,10 +81,10 @@ export class ServiceConnectionDockerForm extends Form<DockerServiceConnection> {
                         });
                     }))}
                 </select>
-                <p class="pf-c-form__helper-text">${gettext("CA which the endpoint's Certificate is verified against. Can be left empty for no validation.")}</p>
+                <p class="pf-c-form__helper-text">${t`CA which the endpoint's Certificate is verified against. Can be left empty for no validation.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("TLS Authentication Certificate")}
+                label=${t`TLS Authentication Certificate`}
                 ?required=${true}
                 name="tlsAuthentication">
                 <select class="pf-c-form-control">
@@ -97,7 +97,7 @@ export class ServiceConnectionDockerForm extends Form<DockerServiceConnection> {
                         });
                     }))}
                 </select>
-                <p class="pf-c-form__helper-text">${gettext("Certificate/Key used for authentication. Can be left empty for no authentication.")}</p>
+                <p class="pf-c-form__helper-text">${t`Certificate/Key used for authentication. Can be left empty for no authentication.`}</p>
             </ak-form-element-horizontal>
         </form>`;
     }

@@ -1,5 +1,5 @@
 import { KubernetesServiceConnection, OutpostsApi } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -25,9 +25,9 @@ export class ServiceConnectionKubernetesForm extends Form<KubernetesServiceConne
 
     getSuccessMessage(): string {
         if (this.sc) {
-            return gettext("Successfully updated service-connection.");
+            return t`Successfully updated service-connection.`;
         } else {
-            return gettext("Successfully created service-connection.");
+            return t`Successfully created service-connection.`;
         }
     }
 
@@ -47,7 +47,7 @@ export class ServiceConnectionKubernetesForm extends Form<KubernetesServiceConne
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Name")}
+                label=${t`Name`}
                 ?required=${true}
                 name="name">
                 <input type="text" value="${ifDefined(this.sc?.name)}" class="pf-c-form-control" required>
@@ -56,13 +56,13 @@ export class ServiceConnectionKubernetesForm extends Form<KubernetesServiceConne
                 <div class="pf-c-check">
                     <input type="checkbox" class="pf-c-check__input" ?checked=${this.sc?.local || false}>
                     <label class="pf-c-check__label">
-                        ${gettext("Local")}
+                        ${t`Local`}
                     </label>
                 </div>
-                <p class="pf-c-form__helper-text">${gettext("If enabled, use the local connection. Required Docker socket/Kubernetes Integration.")}</p>
+                <p class="pf-c-form__helper-text">${t`If enabled, use the local connection. Required Docker socket/Kubernetes Integration.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Kubeconfig")}
+                label=${t`Kubeconfig`}
                 name="kubeconfig">
                 <ak-codemirror mode="yaml" value="${YAML.stringify(this.sc?.kubeconfig)}">
                 </ak-codemirror>

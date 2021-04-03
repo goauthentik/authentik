@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
@@ -19,10 +19,10 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         return true;
     }
     pageTitle(): string {
-        return gettext("Notification Transports");
+        return t`Notification Transports`;
     }
     pageDescription(): string {
-        return gettext("Define how notifications are sent to users, like Email or Webhook.");
+        return t`Define how notifications are sent to users, like Email or Webhook.`;
     }
     pageIcon(): string {
         return "pf-icon pf-icon-export";
@@ -42,8 +42,8 @@ export class TransportListPage extends TablePage<NotificationTransport> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Name", "name"),
-            new TableColumn("Mode", "mode"),
+            new TableColumn(t`Name`, t`name`),
+            new TableColumn(t`Mode`, t`mode`),
             new TableColumn(""),
         ];
     }
@@ -59,31 +59,31 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                         uuid: item.pk || "",
                     });
                 }}>
-                ${gettext("Test")}
+                ${t`Test`}
             </ak-action-button>
             <ak-forms-modal>
                 <span slot="submit">
-                    ${gettext("Update")}
+                    ${t`Update`}
                 </span>
                 <span slot="header">
-                    ${gettext("Update Notification Transport")}
+                    ${t`Update Notification Transport`}
                 </span>
                 <ak-event-transport-form slot="form" .transport=${item}>
                 </ak-event-transport-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">
-                    ${gettext("Edit")}
+                    ${t`Edit`}
                 </button>
             </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
-                objectLabel=${gettext("Notifications Transport")}
+                objectLabel=${t`Notifications Transport`}
                 .delete=${() => {
                     return new EventsApi(DEFAULT_CONFIG).eventsTransportsDelete({
                         uuid: item.pk || ""
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${gettext("Delete")}
+                    ${t`Delete`}
                 </button>
             </ak-forms-delete>`,
         ];
@@ -93,15 +93,15 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         return html`
         <ak-forms-modal>
             <span slot="submit">
-                ${gettext("Create")}
+                ${t`Create`}
             </span>
             <span slot="header">
-                ${gettext("Create Notification Transport")}
+                ${t`Create Notification Transport`}
             </span>
             <ak-event-transport-form slot="form">
             </ak-event-transport-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${gettext("Create")}
+                ${t`Create`}
             </button>
         </ak-forms-modal>
         ${super.renderToolbar()}

@@ -1,5 +1,5 @@
 import { ExpressionPolicy, PoliciesApi } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
@@ -25,9 +25,9 @@ export class ExpressionPolicyForm extends Form<ExpressionPolicy> {
 
     getSuccessMessage(): string {
         if (this.policy) {
-            return gettext("Successfully updated policy.");
+            return t`Successfully updated policy.`;
         } else {
-            return gettext("Successfully created policy.");
+            return t`Successfully created policy.`;
         }
     }
 
@@ -47,7 +47,7 @@ export class ExpressionPolicyForm extends Form<ExpressionPolicy> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Name")}
+                label=${t`Name`}
                 ?required=${true}
                 name="name">
                 <input type="text" value="${ifDefined(this.policy?.name || "")}" class="pf-c-form-control" required>
@@ -56,18 +56,18 @@ export class ExpressionPolicyForm extends Form<ExpressionPolicy> {
                 <div class="pf-c-check">
                     <input type="checkbox" class="pf-c-check__input" ?checked=${this.policy?.executionLogging || false}>
                     <label class="pf-c-check__label">
-                        ${gettext("Execution logging")}
+                        ${t`Execution logging`}
                     </label>
                 </div>
-                <p class="pf-c-form__helper-text">${gettext("When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.")}</p>
+                <p class="pf-c-form__helper-text">${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}</p>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header">
-                    ${gettext("Policy-specific settings")}
+                    ${t`Policy-specific settings`}
                 </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${gettext("Expression")}
+                        label=${t`Expression`}
                         name="expression">
                         <ak-codemirror mode="python" value="${ifDefined(this.policy?.expression)}">
                         </ak-codemirror>

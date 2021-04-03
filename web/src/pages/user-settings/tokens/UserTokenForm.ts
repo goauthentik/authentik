@@ -1,5 +1,5 @@
 import { CoreApi, Token } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
@@ -15,9 +15,9 @@ export class UserTokenForm extends Form<Token> {
 
     getSuccessMessage(): string {
         if (this.token) {
-            return gettext("Successfully updated token.");
+            return t`Successfully updated token.`;
         } else {
-            return gettext("Successfully created token.");
+            return t`Successfully created token.`;
         }
     }
 
@@ -37,13 +37,13 @@ export class UserTokenForm extends Form<Token> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Identifier")}
+                label=${t`Identifier`}
                 ?required=${true}
                 name="identifier">
                 <input type="text" value="${ifDefined(this.token?.identifier)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Description")}
+                label=${t`Description`}
                 ?required=${true}
                 name="description">
                 <input type="text" value="${ifDefined(this.token?.description)}" class="pf-c-form-control" required>

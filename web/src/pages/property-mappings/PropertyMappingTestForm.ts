@@ -1,5 +1,5 @@
 import { CoreApi, PropertyMapping, PropertymappingsApi, PropertyMappingTestResult } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -20,7 +20,7 @@ export class PolicyTestForm extends Form<PolicyTest> {
     result?: PropertyMappingTestResult;
 
     getSuccessMessage(): string {
-        return gettext("Successfully sent test-request.");
+        return t`Successfully sent test-request.`;
     }
 
     send = (data: PolicyTest): Promise<PropertyMappingTestResult> => {
@@ -32,7 +32,7 @@ export class PolicyTestForm extends Form<PolicyTest> {
 
     renderResult(): TemplateResult {
         return html`<ak-form-element-horizontal
-                label=${gettext("Result")}>
+                label=${t`Result`}>
             ${this.result?.successful ?
                 html`<ak-codemirror mode="javascript" ?readOnly=${true} value="${ifDefined(this.result?.result)}">
                 </ak-codemirror>`:
@@ -48,7 +48,7 @@ export class PolicyTestForm extends Form<PolicyTest> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("User")}
+                label=${t`User`}
                 ?required=${true}
                 name="user">
                 <select class="pf-c-form-control">
@@ -62,7 +62,7 @@ export class PolicyTestForm extends Form<PolicyTest> {
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Context")}
+                label=${t`Context`}
                 name="context">
                 <ak-codemirror mode="yaml">
                 </ak-codemirror>

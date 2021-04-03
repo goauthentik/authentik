@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
@@ -87,7 +87,7 @@ export class LibraryPage extends LitElement {
     apps?: AKResponse<Application>;
 
     pageTitle(): string {
-        return gettext("Applications");
+        return t`Applications`;
     }
 
     static get styles(): CSSResult[] {
@@ -109,9 +109,9 @@ export class LibraryPage extends LitElement {
         return html` <div class="pf-c-empty-state pf-m-full-height">
             <div class="pf-c-empty-state__content">
                 <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
-                <h1 class="pf-c-title pf-m-lg">${gettext("No Applications available.")}</h1>
+                <h1 class="pf-c-title pf-m-lg">${t`No Applications available.`}</h1>
                 <div class="pf-c-empty-state__body">
-                    ${gettext("Either no applications are defined, or you don't have access to any.")}
+                    ${t`Either no applications are defined, or you don't have access to any.`}
                 </div>
             </div>
         </div>`;
@@ -129,7 +129,7 @@ export class LibraryPage extends LitElement {
                 <div class="pf-c-content">
                     <h1>
                         <i class="pf-icon pf-icon-applications"></i>
-                        ${gettext("Applications")}
+                        ${t`Applications`}
                     </h1>
                 </div>
             </section>

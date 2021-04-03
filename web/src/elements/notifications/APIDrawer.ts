@@ -5,7 +5,7 @@ import PFNotificationDrawer from "@patternfly/patternfly/components/Notification
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import AKGlobal from "../../authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { EVENT_API_DRAWER_REFRESH } from "../../constants";
 
 export interface RequestInfo {
@@ -71,7 +71,7 @@ export class APIDrawer extends LitElement {
             <div class="pf-c-notification-drawer">
                 <div class="pf-c-notification-drawer__header pf-c-content">
                     <h1>
-                        ${gettext("API Requests")}
+                        ${t`API Requests`}
                     </h1>
                 </div>
                 <div class="pf-c-notification-drawer__body">

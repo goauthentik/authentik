@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { LitElement, html, customElement, TemplateResult, property, CSSResult, css } from "lit-element";
 import "./Message";
 import { APIMessage, MessageLevel } from "./Message";
@@ -64,7 +64,7 @@ export class MessageContainer extends LitElement {
             if (this.retryDelay > 3000) {
                 showMessage({
                     level: MessageLevel.error,
-                    message: gettext("Connection error, reconnecting...")
+                    message: t`Connection error, reconnecting...`
                 });
             }
             setTimeout(() => {

@@ -1,5 +1,5 @@
 import { CryptoApi, FlowDesignationEnum, FlowsApi, ProvidersApi, ProxyProvider } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
@@ -26,9 +26,9 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
 
     getSuccessMessage(): string {
         if (this.provider) {
-            return gettext("Successfully updated provider.");
+            return t`Successfully updated provider.`;
         } else {
-            return gettext("Successfully created provider.");
+            return t`Successfully created provider.`;
         }
     }
 
@@ -48,13 +48,13 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Name")}
+                label=${t`Name`}
                 ?required=${true}
                 name="name">
                 <input type="text" value="${ifDefined(this.provider?.name)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Authorization flow")}
+                label=${t`Authorization flow`}
                 ?required=${true}
                 name="authorizationFlow">
                 <select class="pf-c-form-control">
@@ -67,16 +67,16 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
                         });
                     }))}
                 </select>
-                <p class="pf-c-form__helper-text">${gettext("Flow used when authorizing this provider.")}</p>
+                <p class="pf-c-form__helper-text">${t`Flow used when authorizing this provider.`}</p>
             </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>
                 <span slot="header">
-                    ${gettext("Protocol settings")}
+                    ${t`Protocol settings`}
                 </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${gettext("Internal host")}
+                        label=${t`Internal host`}
                         ?required=${true}
                         name="internalHost">
                         <input type="text" value="${ifDefined(this.provider?.internalHost)}" class="pf-c-form-control" required>
@@ -85,13 +85,13 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
                         <div class="pf-c-check">
                             <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.provider?.internalHostSslValidation, true)}>
                             <label class="pf-c-check__label">
-                                ${gettext("Internal host SSL Validation")}
+                                ${t`Internal host SSL Validation`}
                             </label>
                         </div>
-                        <p class="pf-c-form__helper-text">${gettext("Validate SSL Certificates of upstream servers.")}</p>
+                        <p class="pf-c-form__helper-text">${t`Validate SSL Certificates of upstream servers.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("External host")}
+                        label=${t`External host`}
                         ?required=${true}
                         name="externalHost">
                         <input type="text" value="${ifDefined(this.provider?.externalHost)}" class="pf-c-form-control" required>
@@ -101,10 +101,10 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
 
             <ak-form-group>
                 <span slot="header">
-                    ${gettext("Advanced protocol settings")}
+                    ${t`Advanced protocol settings`}
                 </span>
                     <ak-form-element-horizontal
-                        label=${gettext("Certificate")}
+                        label=${t`Certificate`}
                         name="certificate">
                         <select class="pf-c-form-control">
                             ${until(new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
@@ -119,32 +119,32 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
                     </ak-form-element-horizontal>
 
                     <ak-form-element-horizontal
-                        label=${gettext("Skip path regex")}
+                        label=${t`Skip path regex`}
                         name="skipPathRegex">
                         <textarea class="pf-c-form-control">${this.provider?.skipPathRegex}</textarea>
-                        <p class="pf-c-form__helper-text">${gettext("Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression.")}</p>
+                        <p class="pf-c-form__helper-text">${t`Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression.`}</p>
                     </ak-form-element-horizontal>
 
                     <ak-form-element-horizontal name="basicAuthEnabled">
                         <div class="pf-c-check">
                             <input type="checkbox" class="pf-c-check__input" ?checked=${this.provider?.basicAuthEnabled || false}>
                             <label class="pf-c-check__label">
-                                ${gettext("Set HTTP-Basic Authentication")}
+                                ${t`Set HTTP-Basic Authentication`}
                             </label>
                         </div>
-                        <p class="pf-c-form__helper-text">${gettext("Set a custom HTTP-Basic Authentication header based on values from authentik.")}</p>
+                        <p class="pf-c-form__helper-text">${t`Set a custom HTTP-Basic Authentication header based on values from authentik.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("HTTP-Basic Username Key")}
+                        label=${t`HTTP-Basic Username Key`}
                         name="basicAuthUserAttribute">
                         <input type="text" value="${ifDefined(this.provider?.basicAuthUserAttribute)}" class="pf-c-form-control">
-                        <p class="pf-c-form__helper-text">${gettext("User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.")}</p>
+                        <p class="pf-c-form__helper-text">${t`User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("HTTP-Basic Password Key")}
+                        label=${t`HTTP-Basic Password Key`}
                         name="basicAuthPasswordAttribute">
                         <input type="text" value="${ifDefined(this.provider?.basicAuthPasswordAttribute)}" class="pf-c-form-control">
-                        <p class="pf-c-form__helper-text">${gettext("User/Group Attribute used for the password part of the HTTP-Basic Header.")}</p>
+                        <p class="pf-c-form__helper-text">${t`User/Group Attribute used for the password part of the HTTP-Basic Header.`}</p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

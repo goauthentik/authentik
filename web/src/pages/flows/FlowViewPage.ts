@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 
 import "../../elements/Tabs";
@@ -59,7 +59,7 @@ export class FlowViewPage extends LitElement {
                 </div>
             </section>
             <ak-tabs>
-                <div slot="page-1" data-tab-title="${gettext("Flow Overview")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div slot="page-1" data-tab-title="${t`Flow Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-l-gallery pf-m-gutter">
                         <div class="pf-c-card pf-l-gallery__item" style="grid-column-end: span 3;grid-row-end: span 2;">
                             <div class="pf-c-card">
@@ -70,12 +70,12 @@ export class FlowViewPage extends LitElement {
                             </div>
                         </div>
                         <div class="pf-c-card pf-l-gallery__item">
-                            <div class="pf-c-card__title">${gettext("Related")}</div>
+                            <div class="pf-c-card__title">${t`Related`}</div>
                             <div class="pf-c-card__body">
                                 <dl class="pf-c-description-list">
                                     <div class="pf-c-description-list__group">
                                         <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text">${gettext("Execute flow")}</span>
+                                            <span class="pf-c-description-list__text">${t`Execute flow`}</span>
                                         </dt>
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">
@@ -88,7 +88,7 @@ export class FlowViewPage extends LitElement {
                                                         window.location.assign(`${link.link}?next=/%23${window.location.href}`);
                                                     });
                                                 }}>
-                                                    ${gettext("Execute")}
+                                                    ${t`Execute`}
                                                 </button>
                                             </div>
                                         </dd>
@@ -98,7 +98,7 @@ export class FlowViewPage extends LitElement {
                         </div>
                     </div>
                 </div>
-                <div slot="page-2" data-tab-title="${gettext("Stage Bindings")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div slot="page-2" data-tab-title="${t`Stage Bindings`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
                             <ak-bound-stages-list .target=${this.flow.pk}>
@@ -106,16 +106,16 @@ export class FlowViewPage extends LitElement {
                         </div>
                     </div>
                 </div>
-                <div slot="page-3" data-tab-title="${gettext("Policy Bindings")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div slot="page-3" data-tab-title="${t`Policy Bindings`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
-                        <div class="pf-c-card__title">${gettext("These policies control which users can access this flow.")}</div>
+                        <div class="pf-c-card__title">${t`These policies control which users can access this flow.`}</div>
                         <div class="pf-c-card__body">
                             <ak-bound-policies-list .target=${this.flow.policybindingmodelPtrId}>
                             </ak-bound-policies-list>
                         </div>
                     </div>
                 </div>
-                <div slot="page-4" data-tab-title="${gettext("Changelog")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div slot="page-4" data-tab-title="${t`Changelog`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
                             <ak-object-changelog

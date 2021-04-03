@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, TemplateResult } from "lit-element";
 import { DeleteForm } from "../../elements/forms/DeleteForm";
 import { MessageLevel } from "../../elements/messages/Message";
@@ -10,14 +10,14 @@ export class UserActiveForm extends DeleteForm {
 
     onSuccess(): void {
         showMessage({
-            message: gettext(`Successfully updated ${this.objectLabel} ${this.obj?.name}`),
+            message: t`Successfully updated ${this.objectLabel} ${this.obj?.name}`,
             level: MessageLevel.success,
         });
     }
 
     onError(e: Error): void {
         showMessage({
-            message: gettext(`Failed to update ${this.objectLabel}: ${e.toString()}`),
+            message: t`Failed to update ${this.objectLabel}: ${e.toString()}`,
             level: MessageLevel.error,
         });
     }
@@ -26,7 +26,7 @@ export class UserActiveForm extends DeleteForm {
         return html`<section class="pf-c-page__main-section pf-m-light">
             <div class="pf-c-content">
                 <h1 class="pf-c-title pf-m-2xl">
-                    ${gettext(`Update ${this.objectLabel}`)}
+                    ${t`Update ${this.objectLabel}`}
                 </h1>
             </div>
         </section>
@@ -37,9 +37,7 @@ export class UserActiveForm extends DeleteForm {
                         <div class="pf-c-card__body">
                             <form class="pf-c-form pf-m-horizontal">
                                 <p>
-                                    ${gettext(
-                                        `Are you sure you want to update ${this.objectLabel} '${this.obj?.name}'?`
-                                    )}
+                                    ${t`Are you sure you want to update ${this.objectLabel} '${this.obj?.name}'?`}
                                 </p>
                             </form>
                         </div>
@@ -53,14 +51,14 @@ export class UserActiveForm extends DeleteForm {
                     this.confirm();
                 }}
                 class="pf-m-warning">
-                ${gettext("Update")}
+                ${t`Update`}
             </ak-spinner-button>&nbsp;
             <ak-spinner-button
                 .callAction=${() => {
                     this.open = false;
                 }}
                 class="pf-m-secondary">
-                ${gettext("Cancel")}
+                ${t`Cancel`}
             </ak-spinner-button>
         </footer>`;
     }

@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
 
@@ -30,7 +30,7 @@ import { ifDefined } from "lit-html/directives/if-defined";
 @customElement("ak-provider-saml-view")
 export class SAMLProviderViewPage extends Page {
     pageTitle(): string {
-        return gettext(`SAML Provider ${this.provider?.name || ""}`);
+        return t`SAML Provider ${this.provider?.name || ""}`;
     }
     pageDescription(): string | undefined {
         return;
@@ -71,7 +71,7 @@ export class SAMLProviderViewPage extends Page {
             return html``;
         }
         return html`<ak-tabs>
-                <section slot="page-1" data-tab-title="${gettext("Overview")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-1" data-tab-title="${t`Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-u-display-flex pf-u-justify-content-center">
                         <div class="pf-u-w-75">
                             <div class="pf-c-card">
@@ -79,7 +79,7 @@ export class SAMLProviderViewPage extends Page {
                                     <dl class="pf-c-description-list pf-m-3-col-on-lg">
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Name")}</span>
+                                                <span class="pf-c-description-list__text">${t`Name`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">${this.provider.name}</div>
@@ -87,7 +87,7 @@ export class SAMLProviderViewPage extends Page {
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Assigned to application")}</span>
+                                                <span class="pf-c-description-list__text">${t`Assigned to application`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">
@@ -97,7 +97,7 @@ export class SAMLProviderViewPage extends Page {
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("ACS URL")}</span>
+                                                <span class="pf-c-description-list__text">${t`ACS URL`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">${this.provider.acsUrl}</div>
@@ -105,7 +105,7 @@ export class SAMLProviderViewPage extends Page {
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Audience")}</span>
+                                                <span class="pf-c-description-list__text">${t`Audience`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">${this.provider.audience}</div>
@@ -113,7 +113,7 @@ export class SAMLProviderViewPage extends Page {
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Issuer")}</span>
+                                                <span class="pf-c-description-list__text">${t`Issuer`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">${this.provider.issuer}</div>
@@ -124,17 +124,17 @@ export class SAMLProviderViewPage extends Page {
                                 <div class="pf-c-card__footer">
                                     <ak-forms-modal>
                                         <span slot="submit">
-                                            ${gettext("Update")}
+                                            ${t`Update`}
                                         </span>
                                         <span slot="header">
-                                            ${gettext("Update SAML Provider")}
+                                            ${t`Update SAML Provider`}
                                         </span>
                                         <ak-provider-saml-form
                                             slot="form"
                                             .providerUUID=${this.provider.pk || 0}>
                                         </ak-provider-saml-form>
                                         <button slot="trigger" class="pf-c-button pf-m-primary">
-                                            ${gettext("Edit")}
+                                            ${t`Edit`}
                                         </button>
                                     </ak-forms-modal>
                                 </div>
@@ -142,7 +142,7 @@ export class SAMLProviderViewPage extends Page {
                         </div>
                     </div>
                 </section>
-                <section slot="page-2" data-tab-title="${gettext("Changelog")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-2" data-tab-title="${t`Changelog`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
                             <ak-object-changelog
@@ -154,7 +154,7 @@ export class SAMLProviderViewPage extends Page {
                     </div>
                 </section>
                 ${this.provider.assignedApplicationName ? html`
-                <section slot="page-3" data-tab-title="${gettext("Metadata")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-3" data-tab-title="${t`Metadata`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-u-display-flex pf-u-justify-content-center">
                         <div class="pf-u-w-75">
                             <div class="pf-c-card">
@@ -168,7 +168,7 @@ export class SAMLProviderViewPage extends Page {
                                 <div class="pf-c-card__footer">
                                     <a class="pf-c-button pf-m-primary" target="_blank"
                                         href="/api/v2beta/providers/saml/${this.provider.pk}/metadata/?download">
-                                        ${gettext("Download")}
+                                        ${t`Download`}
                                     </a>
                                 </div>
                             </div>

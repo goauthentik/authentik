@@ -1,5 +1,5 @@
 import { CoreApi, EventsApi, NotificationRule, NotificationRuleSeverityEnum } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -16,9 +16,9 @@ export class RuleForm extends Form<NotificationRule> {
 
     getSuccessMessage(): string {
         if (this.rule) {
-            return gettext("Successfully updated rule.");
+            return t`Successfully updated rule.`;
         } else {
-            return gettext("Successfully created rule.");
+            return t`Successfully created rule.`;
         }
     }
 
@@ -38,13 +38,13 @@ export class RuleForm extends Form<NotificationRule> {
     renderSeverity(): TemplateResult {
         return html`
             <option value=${NotificationRuleSeverityEnum.Alert} ?selected=${this.rule?.severity === NotificationRuleSeverityEnum.Alert}>
-                ${gettext("Alert")}
+                ${t`Alert`}
             </option>
             <option value=${NotificationRuleSeverityEnum.Warning} ?selected=${this.rule?.severity === NotificationRuleSeverityEnum.Warning}>
-                ${gettext("Warning")}
+                ${t`Warning`}
             </option>
             <option value=${NotificationRuleSeverityEnum.Notice} ?selected=${this.rule?.severity === NotificationRuleSeverityEnum.Notice}>
-                ${gettext("Notice")}
+                ${t`Notice`}
             </option>
         `;
     }
@@ -52,13 +52,13 @@ export class RuleForm extends Form<NotificationRule> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Name")}
+                label=${t`Name`}
                 ?required=${true}
                 name="name">
                 <input type="text" value="${ifDefined(this.rule?.name)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Group")}
+                label=${t`Group`}
                 name="group">
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.rule?.group === undefined}>---------</option>
@@ -70,7 +70,7 @@ export class RuleForm extends Form<NotificationRule> {
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Transports")}
+                label=${t`Transports`}
                 ?required=${true}
                 name="transports">
                 <select name="users" class="pf-c-form-control" multiple>
@@ -83,11 +83,11 @@ export class RuleForm extends Form<NotificationRule> {
                         });
                     }))}
                 </select>
-                <p class="pf-c-form__helper-text">${gettext("Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.")}</p>
-                <p class="pf-c-form__helper-text">${gettext("Hold control/command to select multiple items.")}</p>
+                <p class="pf-c-form__helper-text">${t`Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.`}</p>
+                <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Severity")}
+                label=${t`Severity`}
                 ?required=${true}
                 name="severity">
                 <select class="pf-c-form-control">

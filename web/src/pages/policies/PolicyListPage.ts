@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
@@ -29,10 +29,10 @@ export class PolicyListPage extends TablePage<Policy> {
         return true;
     }
     pageTitle(): string {
-        return gettext("Policies");
+        return t`Policies`;
     }
     pageDescription(): string {
-        return gettext("Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages.");
+        return t`Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages.`;
     }
     pageIcon(): string {
         return "pf-icon pf-icon-infrastructure";
@@ -52,7 +52,7 @@ export class PolicyListPage extends TablePage<Policy> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Name", "name"),
+            new TableColumn(t`Name`, t`name`),
             new TableColumn("Type"),
             new TableColumn(""),
         ];
@@ -65,19 +65,19 @@ export class PolicyListPage extends TablePage<Policy> {
                 ${(item.boundTo || 0) > 0 ?
                         html`<i class="pf-icon pf-icon-ok"></i>
                         <small>
-                            ${gettext(`Assigned to ${item.boundTo} objects.`)}
+                            ${t`Assigned to ${item.boundTo} objects.`}
                         </small>`:
                     html`<i class="pf-icon pf-icon-warning-triangle"></i>
-                    <small>${gettext("Warning: Policy is not assigned.")}</small>`}
+                    <small>${t`Warning: Policy is not assigned.`}</small>`}
             </div>`,
             html`${item.verboseName}`,
             html`
             <ak-forms-modal>
                 <span slot="submit">
-                    ${gettext("Update")}
+                    ${t`Update`}
                 </span>
                 <span slot="header">
-                    ${gettext(`Update ${item.verboseName}`)}
+                    ${t`Update ${item.verboseName}`}
                 </span>
                 <ak-proxy-form
                     slot="form"
@@ -87,32 +87,32 @@ export class PolicyListPage extends TablePage<Policy> {
                     type=${ifDefined(item.component)}>
                 </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${gettext("Edit")}
+                    ${t`Edit`}
                 </button>
             </ak-forms-modal>
             <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
                 <span slot="submit">
-                    ${gettext("Test")}
+                    ${t`Test`}
                 </span>
                 <span slot="header">
-                    ${gettext("Test Policy")}
+                    ${t`Test Policy`}
                 </span>
                 <ak-policy-test-form slot="form" .policy=${item}>
                 </ak-policy-test-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${gettext("Test")}
+                    ${t`Test`}
                 </button>
             </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
-                objectLabel=${gettext("Policy")}
+                objectLabel=${t`Policy`}
                 .delete=${() => {
                     return new PoliciesApi(DEFAULT_CONFIG).policiesAllDelete({
                         policyUuid: item.pk || ""
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${gettext("Delete")}
+                    ${t`Delete`}
                 </button>
             </ak-forms-delete>`,
         ];
@@ -122,7 +122,7 @@ export class PolicyListPage extends TablePage<Policy> {
         return html`
             <ak-dropdown class="pf-c-dropdown">
                 <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
-                    <span class="pf-c-dropdown__toggle-text">${gettext("Create")}</span>
+                    <span class="pf-c-dropdown__toggle-text">${t`Create`}</span>
                     <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                 </button>
                 <ul class="pf-c-dropdown__menu" hidden>
@@ -131,10 +131,10 @@ export class PolicyListPage extends TablePage<Policy> {
                             return html`<li>
                                 <ak-forms-modal>
                                     <span slot="submit">
-                                        ${gettext("Create")}
+                                        ${t`Create`}
                                     </span>
                                     <span slot="header">
-                                        ${gettext(`Create ${type.name}`)}
+                                        ${t`Create ${type.name}`}
                                     </span>
                                     <ak-proxy-form
                                         slot="form"

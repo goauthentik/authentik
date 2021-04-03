@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { EventsApi, EventTopPerUser } from "authentik-api";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
@@ -43,8 +43,8 @@ export class TopApplicationsTable extends LitElement {
         return html`<table class="pf-c-table pf-m-compact" role="grid">
                 <thead>
                     <tr role="row">
-                        <th role="columnheader" scope="col">${gettext("Application")}</th>
-                        <th role="columnheader" scope="col">${gettext("Logins")}</th>
+                        <th role="columnheader" scope="col">${t`Application`}</th>
+                        <th role="columnheader" scope="col">${t`Logins`}</th>
                         <th role="columnheader" scope="col"></th>
                     </tr>
                 </thead>

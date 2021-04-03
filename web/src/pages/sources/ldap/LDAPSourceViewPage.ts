@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -29,7 +29,7 @@ import { EVENT_REFRESH } from "../../../constants";
 @customElement("ak-source-ldap-view")
 export class LDAPSourceViewPage extends Page {
     pageTitle(): string {
-        return gettext(`LDAP Source ${this.source?.name || ""}`);
+        return t`LDAP Source ${this.source?.name || ""}`;
     }
     pageDescription(): string | undefined {
         return;
@@ -67,7 +67,7 @@ export class LDAPSourceViewPage extends Page {
             return html``;
         }
         return html`<ak-tabs>
-                <section slot="page-1" data-tab-title="${gettext("Overview")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-1" data-tab-title="${t`Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-u-display-flex pf-u-justify-content-center">
                         <div class="pf-u-w-75">
                             <div class="pf-c-card">
@@ -75,7 +75,7 @@ export class LDAPSourceViewPage extends Page {
                                     <dl class="pf-c-description-list pf-m-2-col-on-lg">
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Name")}</span>
+                                                <span class="pf-c-description-list__text">${t`Name`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">${this.source.name}</div>
@@ -83,7 +83,7 @@ export class LDAPSourceViewPage extends Page {
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Server URI")}</span>
+                                                <span class="pf-c-description-list__text">${t`Server URI`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">${this.source.serverUri}</div>
@@ -91,7 +91,7 @@ export class LDAPSourceViewPage extends Page {
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Base DN")}</span>
+                                                <span class="pf-c-description-list__text">${t`Base DN`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">
@@ -106,17 +106,17 @@ export class LDAPSourceViewPage extends Page {
                                 <div class="pf-c-card__footer">
                                     <ak-forms-modal>
                                         <span slot="submit">
-                                            ${gettext("Update")}
+                                            ${t`Update`}
                                         </span>
                                         <span slot="header">
-                                            ${gettext("Update LDAP Source")}
+                                            ${t`Update LDAP Source`}
                                         </span>
                                         <ak-source-ldap-form
                                             slot="form"
                                             .sourceSlug=${this.source.slug}>
                                         </ak-source-ldap-form>
                                         <button slot="trigger" class="pf-c-button pf-m-primary">
-                                            ${gettext("Edit")}
+                                            ${t`Edit`}
                                         </button>
                                     </ak-forms-modal>
                                 </div>
@@ -124,7 +124,7 @@ export class LDAPSourceViewPage extends Page {
                         </div>
                     </div>
                 </section>
-                <section slot="page-2" data-tab-title="${gettext("Changelog")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-2" data-tab-title="${t`Changelog`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
                             <ak-object-changelog
@@ -135,12 +135,12 @@ export class LDAPSourceViewPage extends Page {
                         </div>
                     </div>
                 </section>
-                <section slot="page-3" data-tab-title="${gettext("Sync")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-3" data-tab-title="${t`Sync`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-u-display-flex pf-u-justify-content-center">
                         <div class="pf-u-w-75">
                             <div class="pf-c-card">
                                 <div class="pf-c-card__title">
-                                    <p>${gettext("Sync status")}</p>
+                                    <p>${t`Sync status`}</p>
                                 </div>
                                 <div class="pf-c-card__body">
                                     <p>
@@ -148,9 +148,9 @@ export class LDAPSourceViewPage extends Page {
                                         slug: this.source.slug
                                     }).then((ls) => {
                                         if (!ls.lastSync) {
-                                            return gettext("Not synced in the last hour, check System tasks.");
+                                            return t`Not synced in the last hour, check System tasks.`;
                                         }
-                                        return gettext(`Last sync: ${ls.lastSync.toLocaleString()}`);
+                                        return t`Last sync: ${ls.lastSync.toLocaleString()}`;
                                     }), "loading")}
                                     </p>
                                 </div>
@@ -162,7 +162,7 @@ export class LDAPSourceViewPage extends Page {
                                                 data: this.source,
                                             });
                                         }}>
-                                        ${gettext("Retry Task")}
+                                        ${t`Retry Task`}
                                     </ak-action-button>
                                 </div>
                             </div>

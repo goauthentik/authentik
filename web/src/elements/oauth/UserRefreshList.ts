@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { Table, TableColumn } from "../table/Table";
@@ -26,9 +26,9 @@ export class UserOAuthRefreshList extends Table<ExpiringBaseGrantModel> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Provider", "provider"),
-            new TableColumn("Expires", "expires"),
-            new TableColumn("Scopes", "scope"),
+            new TableColumn(t`Provider`, t`provider`),
+            new TableColumn(t`Expires`, t`expires`),
+            new TableColumn(t`Scopes`, t`scope`),
             new TableColumn(""),
         ];
     }
@@ -41,14 +41,14 @@ export class UserOAuthRefreshList extends Table<ExpiringBaseGrantModel> {
             html`
             <ak-forms-delete
                 .obj=${item}
-                objectLabel=${gettext("Refresh Code")}
+                objectLabel=${t`Refresh Code`}
                 .delete=${() => {
                     return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensDelete({
                         id: item.pk || 0,
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${gettext("Delete Refresh Code")}
+                    ${t`Delete Refresh Code`}
                 </button>
             </ak-forms-delete>`,
         ];

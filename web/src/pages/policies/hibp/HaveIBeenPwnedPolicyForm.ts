@@ -1,5 +1,5 @@
 import { HaveIBeenPwendPolicy, PoliciesApi } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
@@ -25,9 +25,9 @@ export class HaveIBeenPwnedPolicyForm extends Form<HaveIBeenPwendPolicy> {
 
     getSuccessMessage(): string {
         if (this.policy) {
-            return gettext("Successfully updated policy.");
+            return t`Successfully updated policy.`;
         } else {
-            return gettext("Successfully created policy.");
+            return t`Successfully created policy.`;
         }
     }
 
@@ -47,7 +47,7 @@ export class HaveIBeenPwnedPolicyForm extends Form<HaveIBeenPwendPolicy> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Name")}
+                label=${t`Name`}
                 ?required=${true}
                 name="name">
                 <input type="text" value="${ifDefined(this.policy?.name || "")}" class="pf-c-form-control" required>
@@ -56,29 +56,29 @@ export class HaveIBeenPwnedPolicyForm extends Form<HaveIBeenPwendPolicy> {
                 <div class="pf-c-check">
                     <input type="checkbox" class="pf-c-check__input" ?checked=${this.policy?.executionLogging || false}>
                     <label class="pf-c-check__label">
-                        ${gettext("Execution logging")}
+                        ${t`Execution logging`}
                     </label>
                 </div>
-                <p class="pf-c-form__helper-text">${gettext("When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.")}</p>
+                <p class="pf-c-form__helper-text">${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}</p>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header">
-                    ${gettext("Policy-specific settings")}
+                    ${t`Policy-specific settings`}
                 </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${gettext("Password field")}
+                        label=${t`Password field`}
                         ?required=${true}
                         name="passwordField">
                         <input type="text" value="${ifDefined(this.policy?.passwordField || "password")}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${gettext("Field key to check, field keys defined in Prompt stages are available.")}</p>
+                        <p class="pf-c-form__helper-text">${t`Field key to check, field keys defined in Prompt stages are available.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("Allowed count")}
+                        label=${t`Allowed count`}
                         ?required=${true}
                         name="allowedCount">
                         <input type="number" value="${first(this.policy?.allowedCount, 0)}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${gettext("Allow up to N occurrences in the HIBP database.")}</p>
+                        <p class="pf-c-form__helper-text">${t`Allow up to N occurrences in the HIBP database.`}</p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

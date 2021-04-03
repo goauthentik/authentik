@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { Table, TableColumn } from "../table/Table";
@@ -44,10 +44,10 @@ export class ObjectChangelog extends Table<Event> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Action", "action"),
-            new TableColumn("User", "enabled"),
-            new TableColumn("Creation Date", "created"),
-            new TableColumn("Client IP", "client_ip"),
+            new TableColumn(t`Action`, t`action`),
+            new TableColumn(t`User`, t`enabled`),
+            new TableColumn(t`Creation Date`, t`created`),
+            new TableColumn(t`Client IP`, t`client_ip`),
         ];
     }
 
@@ -56,7 +56,7 @@ export class ObjectChangelog extends Table<Event> {
             html`${item.action}`,
             html`<div>${item.user?.username}</div>
             ${item.user.on_behalf_of ? html`<small>
-                ${gettext(`On behalf of ${item.user.on_behalf_of.username}`)}
+                ${t`On behalf of ${item.user.on_behalf_of.username}`}
             </small>` : html``}`,
             html`<span>${item.created?.toLocaleString()}</span>`,
             html`<span>${item.clientIp}</span>`,
@@ -76,9 +76,9 @@ export class ObjectChangelog extends Table<Event> {
     }
 
     renderEmpty(): TemplateResult {
-        return super.renderEmpty(html`<ak-empty-state header=${gettext("No Events found.")} icon="pf-icon-module">
+        return super.renderEmpty(html`<ak-empty-state header=${t`No Events found.`} icon="pf-icon-module">
             <div slot="body">
-                ${gettext("No matching events could be found.")}
+                ${t`No matching events could be found.`}
             </div>
         </ak-empty-state>`);
     }

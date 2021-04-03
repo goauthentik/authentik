@@ -1,5 +1,5 @@
 import { CSSResult, customElement, html, TemplateResult } from "lit-element";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { AuthenticatorsApi, StagesApi, WebAuthnDevice } from "authentik-api";
 import { until } from "lit-html/directives/until";
 import { FlowURLManager } from "../../../api/legacy";
@@ -24,14 +24,14 @@ export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
     renderDelete(device: WebAuthnDevice): TemplateResult {
         return html`<ak-forms-delete
             .obj=${device}
-            objectLabel=${gettext("Authenticator")}
+            objectLabel=${t`Authenticator`}
             .delete=${() => {
                 return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsWebauthnDelete({
                     id: device.pk || 0
                 });
             }}>
             <button slot="trigger" class="pf-c-button pf-m-danger">
-                ${gettext("Delete")}
+                ${t`Delete`}
             </button>
         </ak-forms-delete>`;
     }
@@ -39,14 +39,14 @@ export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
     renderUpdate(device: WebAuthnDevice): TemplateResult {
         return html`<ak-forms-modal>
             <span slot="submit">
-                ${gettext("Update")}
+                ${t`Update`}
             </span>
             <span slot="header">
-                ${gettext("Update")}
+                ${t`Update`}
             </span>
             <ak-form
                 slot="form"
-                successMessage=${gettext("Successfully updated device.")}
+                successMessage=${t`Successfully updated device.`}
                 .send=${(data: unknown) => {
                     return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsWebauthnUpdate({
                         id: device.pk || 0,
@@ -55,7 +55,7 @@ export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
                 }}>
                 <form class="pf-c-form pf-m-horizontal">
                     <ak-form-element-horizontal
-                        label=${gettext("Device name")}
+                        label=${t`Device name`}
                         ?required=${true}
                         name="name">
                         <input type="text" value="${ifDefined(device.name)}" class="pf-c-form-control" required>
@@ -63,7 +63,7 @@ export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
                 </form>
             </ak-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${gettext("Update")}
+                ${t`Update`}
             </button>
         </ak-forms-modal>`;
     }
@@ -71,7 +71,7 @@ export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
     render(): TemplateResult {
         return html`<div class="pf-c-card">
             <div class="pf-c-card__title">
-                ${gettext("WebAuthn Devices")}
+                ${t`WebAuthn Devices`}
             </div>
             <div class="pf-c-card__body">
                 <ul class="pf-c-data-list" role="list">
@@ -82,7 +82,7 @@ export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
                                     <div class="pf-c-data-list__item-content">
                                         <div class="pf-c-data-list__cell">${device.name || "-"}</div>
                                         <div class="pf-c-data-list__cell">
-                                            ${gettext(`Created ${device.createdOn?.toLocaleString()}`)}
+                                            ${t`Created ${device.createdOn?.toLocaleString()}`}
                                         </div>
                                         <div class="pf-c-data-list__cell">
                                             ${this.renderUpdate(device)}
@@ -99,7 +99,7 @@ export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
                 ${until(new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnRead({ stageUuid: this.objectId}).then((stage) => {
                     if (stage.configureFlow) {
                         return html`<a href="${FlowURLManager.configure(stage.pk || "", "?next=/%23%2Fuser")}"
-                                class="pf-c-button pf-m-primary">${gettext("Configure WebAuthn")}
+                                class="pf-c-button pf-m-primary">${t`Configure WebAuthn`}
                             </a>`;
                     }
                     return html``;

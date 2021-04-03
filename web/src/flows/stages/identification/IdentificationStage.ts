@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { css, CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { BaseStage } from "../base";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -144,13 +144,13 @@ export class IdentificationStage extends BaseStage {
         return html`<div class="pf-c-login__main-footer-band">
                 ${this.challenge.enroll_url ? html`
                 <p class="pf-c-login__main-footer-band-item">
-                    ${gettext("Need an account?")}
-                    <a id="enroll" href="${this.challenge.enroll_url}">${gettext("Sign up.")}</a>
+                    ${t`Need an account?`}
+                    <a id="enroll" href="${this.challenge.enroll_url}">${t`Sign up.`}</a>
                 </p>` : html``}
                 ${this.challenge.recovery_url ? html`
                 <p class="pf-c-login__main-footer-band-item">
-                    ${gettext("Need an account?")}
-                    <a id="recovery" href="${this.challenge.recovery_url}">${gettext("Forgot username or password?")}</a>
+                    ${t`Need an account?`}
+                    <a id="recovery" href="${this.challenge.recovery_url}">${t`Forgot username or password?`}</a>
                 </p>` : html``}
             </div>`;
     }
@@ -159,7 +159,7 @@ export class IdentificationStage extends BaseStage {
         if (!this.challenge) {
             return html`<ak-empty-state
                 ?loading="${true}"
-                header=${gettext("Loading")}>
+                header=${t`Loading`}>
             </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
@@ -171,12 +171,12 @@ export class IdentificationStage extends BaseStage {
                 <form class="pf-c-form" @submit=${(e: Event) => {this.submitForm(e);}}>
                     ${this.challenge.application_pre ?
                         html`<p>
-                            ${gettext(`Login to continue to ${this.challenge.application_pre}.`)}
+                            ${t`Login to continue to ${this.challenge.application_pre}.`}
                         </p>`:
                         html``}
 
                     <ak-form-element
-                        label="${gettext("Email or Username")}"
+                        label="${t`Email or Username`}"
                         ?required="${true}"
                         class="pf-c-form__group"
                         .errors=${(this.challenge?.response_errors || {})["uid_field"]}>

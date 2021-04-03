@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { WithUserInfoChallenge } from "../../../api/Flows";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -64,7 +64,7 @@ export class CaptchaStage extends BaseStage {
         if (!this.challenge) {
             return html`<ak-empty-state
                     ?loading="${true}"
-                    header=${gettext("Loading")}>
+                    header=${t`Loading`}>
                 </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
@@ -79,7 +79,7 @@ export class CaptchaStage extends BaseStage {
                         userAvatar="${this.challenge.pending_user_avatar}"
                         user=${this.challenge.pending_user}>
                         <div slot="link">
-                            <a href="${FlowURLManager.cancel()}">${gettext("Not you?")}</a>
+                            <a href="${FlowURLManager.cancel()}">${t`Not you?`}</a>
                         </div>
                     </ak-form-static>
                     <div class="ak-loading">

@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { WithUserInfoChallenge } from "../../../api/Flows";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -35,7 +35,7 @@ export class AuthenticatorTOTPStage extends BaseStage {
         if (!this.challenge) {
             return html`<ak-empty-state
                 ?loading="${true}"
-                header=${gettext("Loading")}>
+                header=${t`Loading`}>
             </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
@@ -50,7 +50,7 @@ export class AuthenticatorTOTPStage extends BaseStage {
                         userAvatar="${this.challenge.pending_user_avatar}"
                         user=${this.challenge.pending_user}>
                         <div slot="link">
-                            <a href="${FlowURLManager.cancel()}">${gettext("Not you?")}</a>
+                            <a href="${FlowURLManager.cancel()}">${t`Not you?`}</a>
                         </div>
                     </ak-form-static>
                     <input type="hidden" name="otp_uri" value=${this.challenge.config_url} />
@@ -63,16 +63,16 @@ export class AuthenticatorTOTPStage extends BaseStage {
                             navigator.clipboard.writeText(this.challenge?.config_url).then(() => {
                                 showMessage({
                                     level: MessageLevel.success,
-                                    message: gettext("Successfully copied TOTP Config.")
+                                    message: t`Successfully copied TOTP Config.`
                                 });
                             });
                         }}>
                             <span class="pf-c-button__progress"><i class="fas fa-copy"></i></span>
-                            ${gettext("Copy")}
+                            ${t`Copy`}
                         </button>
                     </ak-form-element>
                     <ak-form-element
-                        label="${gettext("Code")}"
+                        label="${t`Code`}"
                         ?required="${true}"
                         class="pf-c-form__group"
                         .errors=${(this.challenge?.response_errors || {})["code"]}>
@@ -81,7 +81,7 @@ export class AuthenticatorTOTPStage extends BaseStage {
                             name="code"
                             inputmode="numeric"
                             pattern="[0-9]*"
-                            placeholder="${gettext("Please enter your TOTP Code")}"
+                            placeholder="${t`Please enter your TOTP Code`}"
                             autofocus=""
                             autocomplete="one-time-code"
                             class="pf-c-form-control"
@@ -90,7 +90,7 @@ export class AuthenticatorTOTPStage extends BaseStage {
 
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${gettext("Continue")}
+                            ${t`Continue`}
                         </button>
                     </div>
                 </form>

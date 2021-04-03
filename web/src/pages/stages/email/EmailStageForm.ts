@@ -1,5 +1,5 @@
 import { EmailStage, EmailStageTemplateEnum, StagesApi } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
@@ -28,9 +28,9 @@ export class EmailStageForm extends Form<EmailStage> {
 
     getSuccessMessage(): string {
         if (this.stage) {
-            return gettext("Successfully updated stage.");
+            return t`Successfully updated stage.`;
         } else {
-            return gettext("Successfully created stage.");
+            return t`Successfully created stage.`;
         }
     }
 
@@ -53,29 +53,29 @@ export class EmailStageForm extends Form<EmailStage> {
         }
         return html`<ak-form-group>
                 <span slot="header">
-                    ${gettext("Connection settings")}
+                    ${t`Connection settings`}
                 </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${gettext("SMTP Host")}
+                        label=${t`SMTP Host`}
                         ?required=${true}
                         name="host">
                         <input type="text" value="${ifDefined(this.stage?.host || "")}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("SMTP Port")}
+                        label=${t`SMTP Port`}
                         ?required=${true}
                         name="port">
                         <input type="number" value="${first(this.stage?.port, 25)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("SMTP Username")}
+                        label=${t`SMTP Username`}
                         ?required=${true}
                         name="username">
                         <input type="text" value="${ifDefined(this.stage?.username || "")}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("SMTP Password")}
+                        label=${t`SMTP Password`}
                         ?required=${true}
                         name="password">
                         <input type="text" value="${ifDefined(this.stage?.password || "")}" class="pf-c-form-control" required>
@@ -84,7 +84,7 @@ export class EmailStageForm extends Form<EmailStage> {
                         <div class="pf-c-check">
                             <input type="checkbox" class="pf-c-check__input" ?checked=${this.stage?.useTls || true}>
                             <label class="pf-c-check__label">
-                                ${gettext("Use TLS")}
+                                ${t`Use TLS`}
                             </label>
                         </div>
                     </ak-form-element-horizontal>
@@ -92,18 +92,18 @@ export class EmailStageForm extends Form<EmailStage> {
                         <div class="pf-c-check">
                             <input type="checkbox" class="pf-c-check__input" ?checked=${this.stage?.useSsl || true}>
                             <label class="pf-c-check__label">
-                                ${gettext("Use SSL")}
+                                ${t`Use SSL`}
                             </label>
                         </div>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("Timeout")}
+                        label=${t`Timeout`}
                         ?required=${true}
                         name="timeout">
                         <input type="number" value="${first(this.stage?.timeout, 30)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("From address")}
+                        label=${t`From address`}
                         ?required=${true}
                         name="fromAddress">
                         <input type="text" value="${ifDefined(this.stage?.fromAddress || "system@authentik.local")}" class="pf-c-form-control" required>
@@ -115,14 +115,14 @@ export class EmailStageForm extends Form<EmailStage> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Name")}
+                label=${t`Name`}
                 ?required=${true}
                 name="name">
                 <input type="text" value="${ifDefined(this.stage?.name || "")}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header">
-                    ${gettext("Stage-specific settings")}
+                    ${t`Stage-specific settings`}
                 </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="useGlobalSettings">
@@ -132,34 +132,34 @@ export class EmailStageForm extends Form<EmailStage> {
                                 this.showConnectionSettings = !target.checked;
                             }}>
                             <label class="pf-c-check__label">
-                                ${gettext("Use global settings")}
+                                ${t`Use global settings`}
                             </label>
                         </div>
-                        <p class="pf-c-form__helper-text">${gettext("When enabled, global Email connection settings will be used and connection settings below will be ignored.")}</p>
+                        <p class="pf-c-form__helper-text">${t`When enabled, global Email connection settings will be used and connection settings below will be ignored.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("Token expiry")}
+                        label=${t`Token expiry`}
                         ?required=${true}
                         name="tokenExpiry">
                         <input type="number" value="${first(this.stage?.tokenExpiry, 30)}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${gettext("Time in minutes the token sent is valid.")}</p>
+                        <p class="pf-c-form__helper-text">${t`Time in minutes the token sent is valid.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("Subject")}
+                        label=${t`Subject`}
                         ?required=${true}
                         name="subject">
                         <input type="text" value="${first(this.stage?.subject, "authentik")}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("Template")}
+                        label=${t`Template`}
                         ?required=${true}
                         name="subject">
                         <select name="users" class="pf-c-form-control">
                             <option value=${EmailStageTemplateEnum.AccountConfirmationHtml} ?selected=${this.stage?.template === EmailStageTemplateEnum.AccountConfirmationHtml}>
-                                ${gettext("Account confirmation")}
+                                ${t`Account confirmation`}
                             </option>
                             <option value=${EmailStageTemplateEnum.PasswordResetHtml} ?selected=${this.stage?.template === EmailStageTemplateEnum.PasswordResetHtml}>
-                                ${gettext("Password reset")}
+                                ${t`Password reset`}
                             </option>
                         </select>
                     </ak-form-element-horizontal>

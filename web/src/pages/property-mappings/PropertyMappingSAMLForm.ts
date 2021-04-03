@@ -1,5 +1,5 @@
 import { SAMLPropertyMapping, PropertymappingsApi } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -24,9 +24,9 @@ export class PropertyMappingLDAPForm extends Form<SAMLPropertyMapping> {
 
     getSuccessMessage(): string {
         if (this.mapping) {
-            return gettext("Successfully updated mapping.");
+            return t`Successfully updated mapping.`;
         } else {
-            return gettext("Successfully created mapping.");
+            return t`Successfully created mapping.`;
         }
     }
 
@@ -46,30 +46,30 @@ export class PropertyMappingLDAPForm extends Form<SAMLPropertyMapping> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Name")}
+                label=${t`Name`}
                 ?required=${true}
                 name="name">
                 <input type="text" value="${ifDefined(this.mapping?.name)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("SAML Attribute Name")}
+                label=${t`SAML Attribute Name`}
                 ?required=${true}
                 name="samlName">
                 <input type="text" value="${ifDefined(this.mapping?.samlName)}" class="pf-c-form-control" required>
                 <p class="pf-c-form__helper-text">
-                    ${gettext("Attribute name used for SAML Assertions. Can be a URN OID, a schema reference, or a any other string. If this property mapping is used for NameID Property, this field is discarded.")}
+                    ${t`Attribute name used for SAML Assertions. Can be a URN OID, a schema reference, or a any other string. If this property mapping is used for NameID Property, this field is discarded.`}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Friendly Name")}
+                label=${t`Friendly Name`}
                 name="friendlyName">
                 <input type="text" value="${ifDefined(this.mapping?.friendlyName || "")}" class="pf-c-form-control">
                 <p class="pf-c-form__helper-text">
-                    ${gettext("Optionally set the `FriendlyName` value of the Assertion attribute.")}
+                    ${t`Optionally set the 'FriendlyName' value of the Assertion attribute.`}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Expression")}
+                label=${t`Expression`}
                 name="expression">
                 <ak-codemirror mode="python" value="${ifDefined(this.mapping?.expression)}">
                 </ak-codemirror>

@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { EVENT_REFRESH } from "../../constants";
 import { ModalButton } from "../buttons/ModalButton";
@@ -35,14 +35,14 @@ export class DeleteForm extends ModalButton {
 
     onSuccess(): void {
         showMessage({
-            message: gettext(`Successfully deleted ${this.objectLabel} ${ this.obj?.name }`),
+            message: t`Successfully deleted ${this.objectLabel} ${ this.obj?.name }`,
             level: MessageLevel.success,
         });
     }
 
     onError(e: Error): void {
         showMessage({
-            message: gettext(`Failed to delete ${this.objectLabel}: ${e.toString()}`),
+            message: t`Failed to delete ${this.objectLabel}: ${e.toString()}`,
             level: MessageLevel.error,
         });
     }
@@ -51,7 +51,7 @@ export class DeleteForm extends ModalButton {
         return html`<section class="pf-c-page__main-section pf-m-light">
             <div class="pf-c-content">
                 <h1 class="pf-c-title pf-m-2xl">
-                    ${gettext(`Delete ${this.objectLabel}`)}
+                    ${t`Delete ${this.objectLabel}`}
                 </h1>
             </div>
         </section>
@@ -62,9 +62,7 @@ export class DeleteForm extends ModalButton {
                         <div class="pf-c-card__body">
                             <form class="pf-c-form pf-m-horizontal">
                                 <p>
-                                    ${gettext(
-                                        `Are you sure you want to delete ${this.objectLabel} '${this.obj?.name}'?`
-                                    )}
+                                    ${t`Are you sure you want to delete ${this.objectLabel} '${this.obj?.name}'?`}
                                 </p>
                             </form>
                         </div>
@@ -78,14 +76,14 @@ export class DeleteForm extends ModalButton {
                     this.confirm();
                 }}
                 class="pf-m-danger">
-                ${gettext("Delete")}
+                ${t`Delete`}
             </ak-spinner-button>&nbsp;
             <ak-spinner-button
                 .callAction=${() => {
                     this.open = false;
                 }}
                 class="pf-m-secondary">
-                ${gettext("Cancel")}
+                ${t`Cancel`}
             </ak-spinner-button>
         </footer>`;
     }

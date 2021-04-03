@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
@@ -18,10 +18,10 @@ export class GroupListPage extends TablePage<Group> {
         return true;
     }
     pageTitle(): string {
-        return gettext("Groups");
+        return t`Groups`;
     }
     pageDescription(): string {
-        return gettext("Group users together and give them permissions based on the membership.");
+        return t`Group users together and give them permissions based on the membership.`;
     }
     pageIcon(): string {
         return "pf-icon pf-icon-users";
@@ -41,8 +41,8 @@ export class GroupListPage extends TablePage<Group> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Name", "name"),
-            new TableColumn("Parent", "parent"),
+            new TableColumn(t`Name`, t`name`),
+            new TableColumn(t`Parent`, t`parent`),
             new TableColumn("Members"),
             new TableColumn("Superuser privileges?"),
             new TableColumn(""),
@@ -58,27 +58,27 @@ export class GroupListPage extends TablePage<Group> {
             html`
             <ak-forms-modal>
                 <span slot="submit">
-                    ${gettext("Update")}
+                    ${t`Update`}
                 </span>
                 <span slot="header">
-                    ${gettext("Update Group")}
+                    ${t`Update Group`}
                 </span>
                 <ak-group-form slot="form" .group=${item}>
                 </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${gettext("Edit")}
+                    ${t`Edit`}
                 </button>
             </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
-                objectLabel=${gettext("Group")}
+                objectLabel=${t`Group`}
                 .delete=${() => {
                     return new CoreApi(DEFAULT_CONFIG).coreGroupsDelete({
                         groupUuid: item.pk || ""
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${gettext("Delete")}
+                    ${t`Delete`}
                 </button>
             </ak-forms-delete>`,
         ];
@@ -88,15 +88,15 @@ export class GroupListPage extends TablePage<Group> {
         return html`
         <ak-forms-modal>
             <span slot="submit">
-                ${gettext("Create")}
+                ${t`Create`}
             </span>
             <span slot="header">
-                ${gettext("Create Group")}
+                ${t`Create Group`}
             </span>
             <ak-group-form slot="form">
             </ak-group-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${gettext("Create")}
+                ${t`Create`}
             </button>
         </ak-forms-modal>
         ${super.renderToolbar()}

@@ -1,5 +1,5 @@
 import { ScopeMapping, PropertymappingsApi } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -24,9 +24,9 @@ export class PropertyMappingScopeForm extends Form<ScopeMapping> {
 
     getSuccessMessage(): string {
         if (this.mapping) {
-            return gettext("Successfully updated mapping.");
+            return t`Successfully updated mapping.`;
         } else {
-            return gettext("Successfully created mapping.");
+            return t`Successfully created mapping.`;
         }
     }
 
@@ -46,27 +46,27 @@ export class PropertyMappingScopeForm extends Form<ScopeMapping> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Name")}
+                label=${t`Name`}
                 ?required=${true}
                 name="name">
                 <input type="text" value="${ifDefined(this.mapping?.name)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Scope name")}
+                label=${t`Scope name`}
                 ?required=${true}
                 name="scopeName">
                 <input type="text" value="${ifDefined(this.mapping?.scopeName)}" class="pf-c-form-control" required>
-                <p class="pf-c-form__helper-text">${gettext("Scope which the client can specify to access these properties.")}</p>
+                <p class="pf-c-form__helper-text">${t`Scope which the client can specify to access these properties.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Description")}
+                label=${t`Description`}
                 ?required=${true}
                 name="description">
                 <input type="text" value="${ifDefined(this.mapping?.description)}" class="pf-c-form-control" required>
-                <p class="pf-c-form__helper-text">${gettext("Description shown to the user when consenting. If left empty, the user won't be informed.")}</p>
+                <p class="pf-c-form__helper-text">${t`Description shown to the user when consenting. If left empty, the user won't be informed.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Expression")}
+                label=${t`Expression`}
                 name="expression">
                 <ak-codemirror mode="python" value="${ifDefined(this.mapping?.expression)}">
                 </ak-codemirror>

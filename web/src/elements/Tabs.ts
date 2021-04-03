@@ -4,7 +4,7 @@ import PFTabs from "@patternfly/patternfly/components/Tabs/tabs.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 import AKGlobal from "../authentik.css";
 import { CURRENT_CLASS } from "../constants";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 
 @customElement("ak-tabs")
 export class Tabs extends LitElement {
@@ -62,7 +62,7 @@ export class Tabs extends LitElement {
         const pages = Array.from(this.querySelectorAll("[slot^='page-']"));
         if (!this.currentPage) {
             if (pages.length < 1) {
-                return html`<h1>${gettext("no tabs defined")}</h1>`;
+                return html`<h1>${t`no tabs defined`}</h1>`;
             }
             this.currentPage = pages[0].attributes.getNamedItem("slot")?.value;
         }

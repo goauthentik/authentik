@@ -1,5 +1,5 @@
 import { ReputationPolicy, PoliciesApi } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
@@ -24,9 +24,9 @@ export class ReputationPolicyForm extends Form<ReputationPolicy> {
 
     getSuccessMessage(): string {
         if (this.policy) {
-            return gettext("Successfully updated policy.");
+            return t`Successfully updated policy.`;
         } else {
-            return gettext("Successfully created policy.");
+            return t`Successfully created policy.`;
         }
     }
 
@@ -46,7 +46,7 @@ export class ReputationPolicyForm extends Form<ReputationPolicy> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Name")}
+                label=${t`Name`}
                 ?required=${true}
                 name="name">
                 <input type="text" value="${ifDefined(this.policy?.name || "")}" class="pf-c-form-control" required>
@@ -55,21 +55,21 @@ export class ReputationPolicyForm extends Form<ReputationPolicy> {
                 <div class="pf-c-check">
                     <input type="checkbox" class="pf-c-check__input" ?checked=${this.policy?.executionLogging || false}>
                     <label class="pf-c-check__label">
-                        ${gettext("Execution logging")}
+                        ${t`Execution logging`}
                     </label>
                 </div>
-                <p class="pf-c-form__helper-text">${gettext("When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.")}</p>
+                <p class="pf-c-form__helper-text">${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}</p>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header">
-                    ${gettext("Policy-specific settings")}
+                    ${t`Policy-specific settings`}
                 </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="checkIp">
                         <div class="pf-c-check">
                             <input type="checkbox" class="pf-c-check__input" ?checked=${this.policy?.checkIp || false}>
                             <label class="pf-c-check__label">
-                                ${gettext("Check IP")}
+                                ${t`Check IP`}
                             </label>
                         </div>
                     </ak-form-element-horizontal>
@@ -77,12 +77,12 @@ export class ReputationPolicyForm extends Form<ReputationPolicy> {
                         <div class="pf-c-check">
                             <input type="checkbox" class="pf-c-check__input" ?checked=${this.policy?.checkUsername || false}>
                             <label class="pf-c-check__label">
-                                ${gettext("Check Username")}
+                                ${t`Check Username`}
                             </label>
                         </div>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("Threshold")}
+                        label=${t`Threshold`}
                         ?required=${true}
                         name="threshold">
                         <input type="number" value="${ifDefined(this.policy?.threshold || -5)}" class="pf-c-form-control" required>

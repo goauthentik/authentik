@@ -1,5 +1,5 @@
 import { CoreApi, Group } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -18,9 +18,9 @@ export class GroupForm extends Form<Group> {
 
     getSuccessMessage(): string {
         if (this.group) {
-            return gettext("Successfully updated group.");
+            return t`Successfully updated group.`;
         } else {
-            return gettext("Successfully created group.");
+            return t`Successfully created group.`;
         }
     }
 
@@ -40,7 +40,7 @@ export class GroupForm extends Form<Group> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Name")}
+                label=${t`Name`}
                 ?required=${true}
                 name="name">
                 <input type="text" value="${ifDefined(this.group?.name)}" class="pf-c-form-control" required>
@@ -49,13 +49,13 @@ export class GroupForm extends Form<Group> {
                 <div class="pf-c-check">
                     <input type="checkbox" class="pf-c-check__input" ?checked=${this.group?.isSuperuser || false}>
                     <label class="pf-c-check__label">
-                        ${gettext("Is superuser")}
+                        ${t`Is superuser`}
                     </label>
                 </div>
-                <p class="pf-c-form__helper-text">${gettext("Users added to this group will be superusers.")}</p>
+                <p class="pf-c-form__helper-text">${t`Users added to this group will be superusers.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Parent")}
+                label=${t`Parent`}
                 ?required=${true}
                 name="parent">
                 <select class="pf-c-form-control">
@@ -68,7 +68,7 @@ export class GroupForm extends Form<Group> {
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Members")}
+                label=${t`Members`}
                 ?required=${true}
                 name="users">
                 <select class="pf-c-form-control" multiple>
@@ -83,10 +83,10 @@ export class GroupForm extends Form<Group> {
                         });
                     }))}
                 </select>
-                <p class="pf-c-form__helper-text">${gettext("Hold control/command to select multiple items.")}</p>
+                <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Attributes")}
+                label=${t`Attributes`}
                 name="attributes">
                 <ak-codemirror mode="yaml" value="${YAML.stringify(this.group?.attributes)}">
                 </ak-codemirror>

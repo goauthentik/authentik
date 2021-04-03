@@ -1,5 +1,5 @@
 import { AuthenticatorsApi, StagesApi } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
@@ -17,7 +17,7 @@ export class UserSettingsAuthenticatorTOTP extends BaseUserSettings {
     renderEnabled(): TemplateResult {
         return html`<div class="pf-c-card__body">
                 <p>
-                    ${gettext("Status: Enabled")}
+                    ${t`Status: Enabled`}
                     <i class="pf-icon pf-icon-ok"></i>
                 </p>
                 <ul class="ak-otp-tokens">
@@ -45,7 +45,7 @@ export class UserSettingsAuthenticatorTOTP extends BaseUserSettings {
                             });
                         });
                     }}>
-                    ${gettext("Disable Static Tokens")}
+                    ${t`Disable Static Tokens`}
                 </button>
             </div>`;
     }
@@ -54,7 +54,7 @@ export class UserSettingsAuthenticatorTOTP extends BaseUserSettings {
         return html`
             <div class="pf-c-card__body">
                 <p>
-                    ${gettext("Status: Disabled")}
+                    ${t`Status: Disabled`}
                     <i class="pf-icon pf-icon-error-circle-o"></i>
                 </p>
             </div>
@@ -62,7 +62,7 @@ export class UserSettingsAuthenticatorTOTP extends BaseUserSettings {
                 ${until(new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticRead({ stageUuid: this.objectId}).then((stage) => {
                     if (stage.configureFlow) {
                         return html`<a href="${FlowURLManager.configure(stage.pk || "", "?next=/%23%2Fuser")}"
-                                class="pf-c-button pf-m-primary">${gettext("Enable Static Tokens")}
+                                class="pf-c-button pf-m-primary">${t`Enable Static Tokens`}
                             </a>`;
                     }
                     return html``;
@@ -73,7 +73,7 @@ export class UserSettingsAuthenticatorTOTP extends BaseUserSettings {
     render(): TemplateResult {
         return html`<div class="pf-c-card">
             <div class="pf-c-card__title">
-                ${gettext("Static Tokens")}
+                ${t`Static Tokens`}
             </div>
             ${until(new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsTotpList({}).then((devices) => {
                 return devices.results.length > 0 ? this.renderEnabled() : this.renderDisabled();

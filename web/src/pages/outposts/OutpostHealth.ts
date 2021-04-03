@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
 import { OutpostsApi } from "authentik-api";
@@ -28,7 +28,7 @@ export class OutpostHealth extends LitElement {
                 return html`<li>
                     <ul>
                         <li role="cell">
-                            <i class="fas fa-question-circle"></i>${gettext("Not available")}
+                            <i class="fas fa-question-circle"></i>${t`Not available`}
                         </li>
                     </ul>
                 </li>`;
@@ -37,13 +37,13 @@ export class OutpostHealth extends LitElement {
                 return html`<li>
                     <ul>
                         <li role="cell">
-                            <i class="fas fa-check pf-m-success"></i>${gettext(`Last seen: ${h.lastSeen?.toLocaleTimeString()}`)}
+                            <i class="fas fa-check pf-m-success"></i>${t`Last seen: ${h.lastSeen?.toLocaleTimeString()}`}
                         </li>
                         <li role="cell">
                             ${h.versionOutdated ?
                             html`<i class="fas fa-times pf-m-danger"></i>
-                                ${gettext(`${h.version}, should be ${h.versionShould}`)}` :
-                            html`<i class="fas fa-check pf-m-success"></i>${gettext(`Version: ${h.version || ""}`)}`}
+                                ${t`${h.version}, should be ${h.versionShould}`}` :
+                            html`<i class="fas fa-check pf-m-success"></i>${t`Version: ${h.version || ""}`}`}
                         </li>
                     </ul>
                 </li>`;

@@ -1,5 +1,5 @@
 import { LDAPPropertyMapping, PropertymappingsApi } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -24,9 +24,9 @@ export class PropertyMappingLDAPForm extends Form<LDAPPropertyMapping> {
 
     getSuccessMessage(): string {
         if (this.mapping) {
-            return gettext("Successfully updated mapping.");
+            return t`Successfully updated mapping.`;
         } else {
-            return gettext("Successfully created mapping.");
+            return t`Successfully created mapping.`;
         }
     }
 
@@ -46,20 +46,20 @@ export class PropertyMappingLDAPForm extends Form<LDAPPropertyMapping> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Name")}
+                label=${t`Name`}
                 ?required=${true}
                 name="name">
                 <input type="text" value="${ifDefined(this.mapping?.name)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Object field")}
+                label=${t`Object field`}
                 ?required=${true}
                 name="objectField">
                 <input type="text" value="${ifDefined(this.mapping?.objectField)}" class="pf-c-form-control" required>
-                <p class="pf-c-form__helper-text">${gettext("Field of the user object this value is written to.")}</p>
+                <p class="pf-c-form__helper-text">${t`Field of the user object this value is written to.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Expression")}
+                label=${t`Expression`}
                 name="expression">
                 <ak-codemirror mode="python" value="${ifDefined(this.mapping?.expression)}">
                 </ak-codemirror>

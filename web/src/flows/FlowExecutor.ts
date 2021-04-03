@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { LitElement, html, customElement, property, TemplateResult, CSSResult, css } from "lit-element";
 
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -152,11 +152,11 @@ export class FlowExecutor extends LitElement implements StageHost {
             type: ChallengeTypeEnum.Shell,
             body: `<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">
-                    ${gettext("Whoops!")}
+                    ${t`Whoops!`}
                 </h1>
             </header>
             <div class="pf-c-login__main-body">
-                <h3>${gettext("Something went wrong! Please try again later.")}</h3>
+                <h3>${t`Something went wrong! Please try again later.`}</h3>
                 <pre class="ak-exception">${error}</pre>
             </div>`
         };
@@ -178,7 +178,7 @@ export class FlowExecutor extends LitElement implements StageHost {
                 window.location.assign((this.challenge as RedirectChallenge).to);
                 return html`<ak-empty-state
                         ?loading=${true}
-                        header=${gettext("Loading")}>
+                        header=${t`Loading`}>
                     </ak-empty-state>`;
             case ChallengeTypeEnum.Shell:
                 return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
@@ -225,7 +225,7 @@ export class FlowExecutor extends LitElement implements StageHost {
         if (!this.challenge) {
             return html`<ak-empty-state
                     ?loading=${true}
-                    header=${gettext("Loading")}>
+                    header=${t`Loading`}>
             </ak-empty-state>`;
         }
         return html`
@@ -267,7 +267,7 @@ export class FlowExecutor extends LitElement implements StageHost {
                             </li>`;
                         }))}
                         ${this.config?.brandingTitle != "authentik" ? html`
-                        <li><a href="https://goauthentik.io">${gettext("Powered by authentik")}</a></li>
+                        <li><a href="https://goauthentik.io">${t`Powered by authentik`}</a></li>
                         ` : html``}
                     </ul>
                 </footer>

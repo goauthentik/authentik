@@ -5,12 +5,11 @@ import sourcemaps from "rollup-plugin-sourcemaps";
 import typescript from "@rollup/plugin-typescript";
 import cssimport from "rollup-plugin-cssimport";
 import copy from "rollup-plugin-copy";
-import externalGlobals from "rollup-plugin-external-globals";
-import babel from '@rollup/plugin-babel';
-import replace from '@rollup/plugin-replace';
+import babel from "@rollup/plugin-babel";
+import replace from "@rollup/plugin-replace";
 
 const extensions = [
-    '.js', '.jsx', '.ts', '.tsx',
+    ".js", ".jsx", ".ts", ".tsx",
 ];
 
 const resources = [
@@ -32,6 +31,11 @@ const resources = [
 const isProdBuild = process.env.NODE_ENV === "production";
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 function manualChunks(id) {
+    if (id.includes("locales")) {
+        const parts = id.split("/");
+        const file = parts[parts.length - 1];
+        return "locale-" + file.replace(".ts", "");
+    }
     if (id.includes("node_modules")) {
         if (id.includes("codemirror")) {
             return "vendor-cm";
@@ -105,15 +109,12 @@ export default [
             commonjs(),
             babel({
                 extensions,
-                babelHelpers: 'runtime',
-                include: ['src/**/*'],
+                babelHelpers: "runtime",
+                include: ["src/**/*"],
             }),
             replace({
-                'process.env.NODE_ENV': JSON.stringify(isProdBuild ? 'production' : "development"),
+                "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
                 preventAssignment: true
-            }),
-            externalGlobals({
-                django: "django",
             }),
             sourcemaps(),
             isProdBuild && terser(),
@@ -121,7 +122,6 @@ export default [
         watch: {
             clearScreen: false,
         },
-        external: ["django"]
     },
     // Flow executor
     {
@@ -140,15 +140,12 @@ export default [
             commonjs(),
             babel({
                 extensions,
-                babelHelpers: 'runtime',
-                include: ['src/**/*'],
+                babelHelpers: "runtime",
+                include: ["src/**/*"],
             }),
             replace({
-                'process.env.NODE_ENV': JSON.stringify(isProdBuild ? 'production' : "development"),
+                "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
                 preventAssignment: true
-            }),
-            externalGlobals({
-                django: "django"
             }),
             sourcemaps(),
             isProdBuild && terser(),
@@ -156,6 +153,5 @@ export default [
         watch: {
             clearScreen: false,
         },
-        external: ["django"]
     },
 ];

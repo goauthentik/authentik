@@ -12,9 +12,11 @@
     },
     "lingui": {
         "sourceLocale": "en",
-        "locales": [
-            "en"
-        ],
+        "locales": ["en", "pseudo-LOCALE"],
+        "pseudoLocale": "pseudo-LOCALE",
+        "fallbackLocales": {
+            "pseudo-LOCALE": "en"
+        },
         "compileNamespace": "ts",
         "catalogs": [
             {
@@ -68,7 +70,6 @@
         "rollup-plugin-commonjs": "^10.1.0",
         "rollup-plugin-copy": "^3.4.0",
         "rollup-plugin-cssimport": "^1.0.2",
-        "rollup-plugin-external-globals": "^0.6.1",
         "rollup-plugin-minify-html-literals": "^1.2.6",
         "rollup-plugin-node-resolve": "^5.2.0",
         "rollup-plugin-sourcemaps": "^0.6.3",

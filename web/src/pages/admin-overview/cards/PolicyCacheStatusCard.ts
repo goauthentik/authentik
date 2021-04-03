@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { TemplateResult, html } from "lit-html";
 import { AdminStatusCard, AdminStatus } from "./AdminStatusCard";
@@ -19,7 +19,7 @@ export class PolicyCacheStatusCard extends AdminStatusCard<number> {
         if (value < 1) {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
-                message: gettext("No policies cached. Users may experience slow response times."),
+                message: t`No policies cached. Users may experience slow response times.`,
             });
         } else {
             return Promise.resolve<AdminStatus>({
@@ -30,18 +30,18 @@ export class PolicyCacheStatusCard extends AdminStatusCard<number> {
 
     renderHeaderLink(): TemplateResult {
         return html`<ak-forms-confirm
-                successMessage="Successfully cleared policy cache"
-                errorMessage="Failed to delete policy cache"
-                action="Clear cache"
+                successMessage=${t`Successfully cleared policy cache`}
+                errorMessage=${t`Failed to delete policy cache`}
+                action=${t`Clear cache`}
                 .onConfirm=${() => {
                     return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheClear();
                 }}>
                 <span slot="header">
-                    ${gettext("Clear Policy cache")}
+                    ${t`Clear Policy cache`}
                 </span>
                 <p slot="body">
-                    ${gettext(`Are you sure you want to clear the policy cache?
-                    This will cause all policies to be re-evaluated on their next usage.`)}
+                    ${t`Are you sure you want to clear the policy cache?
+                    This will cause all policies to be re-evaluated on their next usage.`}
                 </p>
                 <a slot="trigger">
                     <i class="fa fa-trash"> </i>

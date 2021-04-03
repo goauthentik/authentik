@@ -1,5 +1,5 @@
 import { PasswordPolicy, PoliciesApi } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
@@ -25,9 +25,9 @@ export class PasswordPolicyForm extends Form<PasswordPolicy> {
 
     getSuccessMessage(): string {
         if (this.policy) {
-            return gettext("Successfully updated policy.");
+            return t`Successfully updated policy.`;
         } else {
-            return gettext("Successfully created policy.");
+            return t`Successfully created policy.`;
         }
     }
 
@@ -47,7 +47,7 @@ export class PasswordPolicyForm extends Form<PasswordPolicy> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Name")}
+                label=${t`Name`}
                 ?required=${true}
                 name="name">
                 <input type="text" value="${ifDefined(this.policy?.name || "")}" class="pf-c-form-control" required>
@@ -56,50 +56,50 @@ export class PasswordPolicyForm extends Form<PasswordPolicy> {
                 <div class="pf-c-check">
                     <input type="checkbox" class="pf-c-check__input" ?checked=${this.policy?.executionLogging || false}>
                     <label class="pf-c-check__label">
-                        ${gettext("Execution logging")}
+                        ${t`Execution logging`}
                     </label>
                 </div>
-                <p class="pf-c-form__helper-text">${gettext("When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.")}</p>
+                <p class="pf-c-form__helper-text">${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}</p>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header">
-                    ${gettext("Policy-specific settings")}
+                    ${t`Policy-specific settings`}
                 </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${gettext("Password field")}
+                        label=${t`Password field`}
                         ?required=${true}
                         name="passwordField">
                         <input type="text" value="${ifDefined(this.policy?.passwordField || "password")}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${gettext("Field key to check, field keys defined in Prompt stages are available.")}</p>
+                        <p class="pf-c-form__helper-text">${t`Field key to check, field keys defined in Prompt stages are available.`}</p>
                     </ak-form-element-horizontal>
 
                     <ak-form-element-horizontal
-                        label=${gettext("Minimum length")}
+                        label=${t`Minimum length`}
                         ?required=${true}
                         name="lengthMin">
                         <input type="number" value="${first(this.policy?.lengthMin, 10)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("Minimum amount of Uppercase Characters")}
+                        label=${t`Minimum amount of Uppercase Characters`}
                         ?required=${true}
                         name="amountUppercase">
                         <input type="number" value="${first(this.policy?.amountUppercase, 2)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("Minimum amount of Lowercase Characters")}
+                        label=${t`Minimum amount of Lowercase Characters`}
                         ?required=${true}
                         name="amountLowercase">
                         <input type="number" value="${first(this.policy?.amountLowercase, 2)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("Minimum amount of Symbols Characters")}
+                        label=${t`Minimum amount of Symbols Characters`}
                         ?required=${true}
                         name="amountSymbols">
                         <input type="number" value="${first(this.policy?.amountSymbols, 2)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("Error message")}
+                        label=${t`Error message`}
                         ?required=${true}
                         name="errorMessage">
                         <input type="text" value="${ifDefined(this.policy?.errorMessage)}" class="pf-c-form-control" required>
@@ -108,15 +108,15 @@ export class PasswordPolicyForm extends Form<PasswordPolicy> {
             </ak-form-group>
             <ak-form-group>
                 <span slot="header">
-                    ${gettext("Advanced settings")}
+                    ${t`Advanced settings`}
                 </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${gettext("Symbol charset")}
+                        label=${t`Symbol charset`}
                         ?required=${true}
                         name="symbolCharset">
                         <input type="text" value="${ifDefined(this.policy?.symbolCharset || "!\\\"#$%&'()*+,-./:;<=>?@[]^_`{|}~ ")}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${gettext("Characters which are considered as symbols.")}</p>
+                        <p class="pf-c-form__helper-text">${t`Characters which are considered as symbols.`}</p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

@@ -1,5 +1,5 @@
 import { customElement, html, TemplateResult } from "lit-element";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { FlowURLManager } from "../../../api/legacy";
 import { BaseUserSettings } from "./BaseUserSettings";
 
@@ -11,12 +11,12 @@ export class UserSettingsPassword extends BaseUserSettings {
         // as the stage won't return any UI Elements if no configureFlow is set.
         return html`<div class="pf-c-card">
             <div class="pf-c-card__title">
-                ${gettext("Change your password")}
+                ${t`Change your password`}
             </div>
             <div class="pf-c-card__body">
                 <a href="${FlowURLManager.configure(this.objectId, "?next=/%23%2Fuser")}"
                     class="pf-c-button pf-m-primary">
-                    ${gettext("Change password")}
+                    ${t`Change password`}
                 </a>
             </div>
         </div>`;
