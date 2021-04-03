@@ -168,7 +168,7 @@ export class UserViewPage extends Page {
                         </div>
                         <div class="pf-c-card pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 4;grid-row-end: span 2;">
                             <div class="pf-c-card__body">
-                                <ak-charts-user userId=${this.user.pk}>
+                                <ak-charts-user userId=${this.user.pk || 0}>
                                 </ak-charts-user>
                             </div>
                         </div>

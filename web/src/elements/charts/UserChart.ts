@@ -7,7 +7,7 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 @customElement("ak-charts-user")
 export class UserChart extends AKChart<UserMetrics> {
 
-    @property()
+    @property({type: Number})
     userId?: number;
 
     apiRequest(): Promise<UserMetrics> {

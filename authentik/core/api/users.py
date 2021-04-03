@@ -137,4 +137,3 @@ class UserViewSet(ModelViewSet):
             reverse_lazy("authentik_flows:default-recovery") + f"?{querystring}"
         )
         return Response({"link": link})
-

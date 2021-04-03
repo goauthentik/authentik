@@ -64,7 +64,10 @@ export class PropertyMappingLDAPForm extends Form<LDAPPropertyMapping> {
                 <ak-codemirror mode="python" value="${ifDefined(this.mapping?.expression)}">
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
-                    Expression using Python. See <a href="https://goauthentik.io/docs/property-mappings/expression/">here</a> for a list of all variables.
+                    ${t`Expression using Python.`}
+                    <a href="https://goauthentik.io/docs/property-mappings/expression/">
+                        ${t`See documentation for a list of all variables.`}
+                    </a>
                 </p>
             </ak-form-element-horizontal>
         </form>`;
