@@ -7,7 +7,6 @@ import { TablePage } from "../../elements/table/TablePage";
 
 import "./OutpostHealth";
 import "../../elements/buttons/SpinnerButton";
-import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/Dropdown";
 import "../../elements/forms/DeleteForm";
 import "../../elements/forms/ModalForm";

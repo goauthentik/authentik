@@ -8,7 +8,6 @@ import "../../elements/forms/ModalForm";
 import "../../elements/forms/ProxyForm";
 import "./StageBindingForm";
 import "../../elements/Tabs";
-import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
 import "../policies/BoundPoliciesList";
@@ -145,12 +144,22 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                 ${until(new StagesApi(DEFAULT_CONFIG).stagesAllTypes().then((types) => {
                     return types.map((type) => {
                         return html`<li>
-                            <ak-modal-button href="${type.component}">
-                                <button slot="trigger" class="pf-c-dropdown__menu-item">${type.name}<br>
+                            <ak-forms-modal>
+                                <span slot="submit">
+                                    ${gettext("Create")}
+                                </span>
+                                <span slot="header">
+                                    ${gettext(`Create ${type.name}`)}
+                                </span>
+                                <ak-proxy-form
+                                    slot="form"
+                                    type=${type.component}>
+                                </ak-proxy-form>
+                                <button slot="trigger" class="pf-c-dropdown__menu-item">
+                                    ${type.name}<br>
                                     <small>${type.description}</small>
                                 </button>
-                                <div slot="modal"></div>
-                            </ak-modal-button>
+                            </ak-forms-modal>
                         </li>`;
                     });
                 }), html`<ak-spinner></ak-spinner>`)}

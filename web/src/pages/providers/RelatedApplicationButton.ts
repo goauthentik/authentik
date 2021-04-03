@@ -4,7 +4,6 @@ import { Provider } from "authentik-api";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
-import "../../elements/buttons/ModalButton";
 import "../../elements/Spinner";
 import "../../elements/forms/ModalForm";
 import "../../pages/applications/ApplicationForm";

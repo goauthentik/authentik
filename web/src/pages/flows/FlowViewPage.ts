@@ -3,7 +3,6 @@ import { css, CSSResult, customElement, html, LitElement, property, TemplateResu
 
 import "../../elements/Tabs";
 import "../../elements/events/ObjectChangelog";
-import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../policies/BoundPoliciesList";
 import "./BoundStagesList";

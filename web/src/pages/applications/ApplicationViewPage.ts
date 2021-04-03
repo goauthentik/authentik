@@ -3,11 +3,10 @@ import { css, CSSResult, customElement, html, LitElement, property, TemplateResu
 
 import "../../elements/Tabs";
 import "../../elements/charts/ApplicationAuthorizeChart";
-import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
-import "../policies/BoundPoliciesList";
 import "../../elements/EmptyState";
 import "../../elements/events/ObjectChangelog";
+import "../policies/BoundPoliciesList";
 import { Application, CoreApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";

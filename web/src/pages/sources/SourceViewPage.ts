@@ -2,7 +2,6 @@ import { css, CSSResult, customElement, html, LitElement, property, TemplateResu
 import { Source, SourcesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 
-import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/EmptyState";
 

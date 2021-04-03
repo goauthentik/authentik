@@ -4,7 +4,6 @@ import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/forms/DeleteForm";
-import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";

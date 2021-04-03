@@ -179,12 +179,22 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 ${until(new PoliciesApi(DEFAULT_CONFIG).policiesAllTypes().then((types) => {
                     return types.map((type) => {
                         return html`<li>
-                            <ak-modal-button href="${type.component}">
-                                <button slot="trigger" class="pf-c-dropdown__menu-item">${type.name}<br>
+                            <ak-forms-modal>
+                                <span slot="submit">
+                                    ${gettext("Create")}
+                                </span>
+                                <span slot="header">
+                                    ${gettext(`Create ${type.name}`)}
+                                </span>
+                                <ak-proxy-form
+                                    slot="form"
+                                    type=${type.component}>
+                                </ak-proxy-form>
+                                <button slot="trigger" class="pf-c-dropdown__menu-item">
+                                    ${type.name}<br>
                                     <small>${type.description}</small>
                                 </button>
-                                <div slot="modal"></div>
-                            </ak-modal-button>
+                            </ak-forms-modal>
                         </li>`;
                     });
                 }), html`<ak-spinner></ak-spinner>`)}

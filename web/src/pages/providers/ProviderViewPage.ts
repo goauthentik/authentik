@@ -1,6 +1,5 @@
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 
-import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/EmptyState";
 
