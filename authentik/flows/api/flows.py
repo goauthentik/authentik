@@ -98,7 +98,7 @@ class FlowViewSet(ModelViewSet):
 
     @permission_required(None, ["authentik_flows.view_flow_cache"])
     @swagger_auto_schema(responses={200: CacheSerializer(many=False)})
-    @action(detail=False)
+    @action(detail=False, pagination_class=None, filter_backends=[])
     def cache_info(self, request: Request) -> Response:
         """Info about cached flows"""
         return Response(data={"count": len(cache.keys("flow_*"))})
@@ -178,7 +178,7 @@ class FlowViewSet(ModelViewSet):
             ),
         },
     )
-    @action(detail=True)
+    @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=unused-argument
     def export(self, request: Request, slug: str) -> Response:
         """Export flow to .akflow file"""
@@ -189,7 +189,7 @@ class FlowViewSet(ModelViewSet):
         return response
 
     @swagger_auto_schema(responses={200: FlowDiagramSerializer()})
-    @action(detail=True, methods=["get"])
+    @action(detail=True, pagination_class=None, filter_backends=[], methods=["get"])
     # pylint: disable=unused-argument
     def diagram(self, request: Request, slug: str) -> Response:
         """Return diagram for flow with slug `slug`, in the format used by flowchart.js"""
@@ -270,7 +270,13 @@ class FlowViewSet(ModelViewSet):
         ],
         responses={200: "Success"},
     )
-    @action(detail=True, methods=["POST"], parser_classes=(MultiPartParser,))
+    @action(
+        detail=True,
+        pagination_class=None,
+        filter_backends=[],
+        methods=["POST"],
+        parser_classes=(MultiPartParser,),
+    )
     # pylint: disable=unused-argument
     def set_background(self, request: Request, slug: str):
         """Set Flow background"""
@@ -285,7 +291,7 @@ class FlowViewSet(ModelViewSet):
     @swagger_auto_schema(
         responses={200: LinkSerializer(many=False)},
     )
-    @action(detail=True)
+    @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=unused-argument
     def execute(self, request: Request, slug: str):
         """Execute flow for current user"""

@@ -1,9 +1,7 @@
 """Policy base models"""
-from typing import Type
 from uuid import uuid4
 
 from django.db import models
-from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import BaseSerializer
@@ -147,8 +145,8 @@ class Policy(SerializerModel, CreatedUpdatedModel):
     objects = InheritanceAutoManager()
 
     @property
-    def form(self) -> Type[ModelForm]:
-        """Return Form class used to edit this object"""
+    def component(self) -> str:
+        """Return component used to edit this object"""
         raise NotImplementedError
 
     def __str__(self):

@@ -2,7 +2,6 @@
 from typing import Optional, Type
 
 from django.db import models
-from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from ldap3 import ALL, Connection, Server
 from rest_framework.serializers import Serializer
@@ -73,10 +72,8 @@ class LDAPSource(Source):
     )
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.sources.ldap.forms import LDAPSourceForm
-
-        return LDAPSourceForm
+    def component(self) -> str:
+        return "ak-source-ldap-form"
 
     @property
     def serializer(self) -> Type[Serializer]:
@@ -119,10 +116,8 @@ class LDAPPropertyMapping(PropertyMapping):
     object_field = models.TextField()
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.sources.ldap.forms import LDAPPropertyMappingForm
-
-        return LDAPPropertyMappingForm
+    def component(self) -> str:
+        return "ak-property-mapping-ldap-form"
 
     @property
     def serializer(self) -> Type[Serializer]:

@@ -2,7 +2,6 @@
 from typing import Optional, Type
 
 from django.db import models
-from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
@@ -33,12 +32,8 @@ class AuthenticatorStaticStage(ConfigurableStage, Stage):
         return AuthenticatorStaticStageView
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.stages.authenticator_static.forms import (
-            AuthenticatorStaticStageForm,
-        )
-
-        return AuthenticatorStaticStageForm
+    def component(self) -> str:
+        return "ak-stage-authenticator-static-form"
 
     @property
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:

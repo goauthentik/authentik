@@ -6,13 +6,12 @@ import { PoliciesApi, PolicyBinding } from "authentik-api";
 
 import "../../elements/forms/DeleteForm";
 import "../../elements/Tabs";
-import "../../elements/buttons/ModalButton";
+import "../../elements/forms/ProxyForm";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { AdminURLManager } from "../../api/legacy";
 
 import "../../elements/forms/ModalForm";
 import "../groups/GroupForm";
@@ -58,12 +57,25 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
 
     getObjectEditButton(item: PolicyBinding): TemplateResult {
         if (item.policy) {
-            return html`<ak-modal-button href="${AdminURLManager.policies(`${item.policy}/update/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
-                    ${gettext("Edit Policy")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>`;
+            return html`
+            <ak-forms-modal>
+                <span slot="submit">
+                    ${gettext("Update")}
+                </span>
+                <span slot="header">
+                    ${gettext(`Update ${item.policyObj?.name}`)}
+                </span>
+                <ak-proxy-form
+                    slot="form"
+                    .args=${{
+                        "policyUUID": item.pk
+                    }}
+                    type=${ifDefined(item.policyObj?.component)}>
+                </ak-proxy-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
+                    ${gettext("Edit")}
+                </button>
+            </ak-forms-modal>`;
         } else if (item.group) {
             return html`<ak-forms-modal>
                 <span slot="submit">
@@ -164,10 +176,10 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </button>
             <ul class="pf-c-dropdown__menu" hidden>
-                ${until(new PoliciesApi(DEFAULT_CONFIG).policiesAllTypes({}).then((types) => {
+                ${until(new PoliciesApi(DEFAULT_CONFIG).policiesAllTypes().then((types) => {
                     return types.map((type) => {
                         return html`<li>
-                            <ak-modal-button href="${type.link}">
+                            <ak-modal-button href="${type.component}">
                                 <button slot="trigger" class="pf-c-dropdown__menu-item">${type.name}<br>
                                     <small>${type.description}</small>
                                 </button>

@@ -1,9 +1,6 @@
 """authentik reputation request policy"""
-from typing import Type
-
 from django.core.cache import cache
 from django.db import models
-from django.forms import ModelForm
 from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
 
@@ -30,10 +27,8 @@ class ReputationPolicy(Policy):
         return ReputationPolicySerializer
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.policies.reputation.forms import ReputationPolicyForm
-
-        return ReputationPolicyForm
+    def component(self) -> str:
+        return "ak-policy-reputation-form"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         remote_ip = get_client_ip(request.http_request) or "255.255.255.255"

@@ -3,18 +3,25 @@ import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
-import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteForm";
 import "../../elements/forms/ModalForm";
+import "../../elements/forms/ProxyForm";
 import "./PolicyTestForm";
 import { TableColumn } from "../../elements/table/Table";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
 import { PoliciesApi, Policy } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { AdminURLManager } from "../../api/legacy";
+import { ifDefined } from "lit-html/directives/if-defined";
+import "./dummy/DummyPolicyForm";
+import "./event_matcher/EventMatcherPolicyForm";
+import "./expression/ExpressionPolicyForm";
+import "./expiry/ExpiryPolicyForm";
+import "./hibp/HaveIBeenPwnedPolicyForm";
+import "./password/PasswordPolicyForm";
+import "./reputation/ReputationPolicyForm";
 
 @customElement("ak-policy-list")
 export class PolicyListPage extends TablePage<Policy> {
@@ -65,12 +72,24 @@ export class PolicyListPage extends TablePage<Policy> {
             </div>`,
             html`${item.verboseName}`,
             html`
-            <ak-modal-button href="${AdminURLManager.policies(`${item.pk}/update/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            <ak-forms-modal>
+                <span slot="submit">
+                    ${gettext("Update")}
+                </span>
+                <span slot="header">
+                    ${gettext(`Update ${item.verboseName}`)}
+                </span>
+                <ak-proxy-form
+                    slot="form"
+                    .args=${{
+                        "policyUUID": item.pk
+                    }}
+                    type=${ifDefined(item.component)}>
+                </ak-proxy-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
+                </button>
+            </ak-forms-modal>
             <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
                 <span slot="submit">
                     ${gettext("Test")}
@@ -107,15 +126,25 @@ export class PolicyListPage extends TablePage<Policy> {
                     <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                 </button>
                 <ul class="pf-c-dropdown__menu" hidden>
-                    ${until(new PoliciesApi(DEFAULT_CONFIG).policiesAllTypes({}).then((types) => {
+                    ${until(new PoliciesApi(DEFAULT_CONFIG).policiesAllTypes().then((types) => {
                         return types.map((type) => {
                             return html`<li>
-                                <ak-modal-button href="${type.link}">
-                                    <button slot="trigger" class="pf-c-dropdown__menu-item">${type.name}<br>
+                                <ak-forms-modal>
+                                    <span slot="submit">
+                                        ${gettext("Create")}
+                                    </span>
+                                    <span slot="header">
+                                        ${gettext(`Create ${type.name}`)}
+                                    </span>
+                                    <ak-proxy-form
+                                        slot="form"
+                                        type=${type.component}>
+                                    </ak-proxy-form>
+                                    <button slot="trigger" class="pf-c-dropdown__menu-item">
+                                        ${type.name}<br>
                                         <small>${type.description}</small>
                                     </button>
-                                    <div slot="modal"></div>
-                                </ak-modal-button>
+                                </ak-forms-modal>
                             </li>`;
                         });
                     }), html`<ak-spinner></ak-spinner>`)}

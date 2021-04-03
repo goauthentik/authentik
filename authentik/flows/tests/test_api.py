@@ -37,7 +37,7 @@ class TestFlowsAPI(APITestCase):
     def test_api_serializer(self):
         """Test that stage serializer returns the correct type"""
         obj = DummyStage()
-        self.assertEqual(StageSerializer().get_object_type(obj), "dummy")
+        self.assertEqual(StageSerializer().get_component(obj), "ak-stage-dummy-form")
         self.assertEqual(StageSerializer().get_verbose_name(obj), "Dummy Stage")
 
     def test_api_viewset(self):
@@ -90,3 +90,13 @@ class TestFlowsAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(response.content, {"diagram": DIAGRAM_SHORT_EXPECTED})
+
+    def test_types(self):
+        """Test Stage's types endpoint"""
+        user = User.objects.get(username="akadmin")
+        self.client.force_login(user)
+
+        response = self.client.get(
+            reverse("authentik_api:stage-types"),
+        )
+        self.assertEqual(response.status_code, 200)

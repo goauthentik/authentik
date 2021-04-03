@@ -93,7 +93,7 @@ class UserViewSet(ModelViewSet):
         return User.objects.all().exclude(pk=get_anonymous_user().pk)
 
     @swagger_auto_schema(responses={200: SessionUserSerializer(many=False)})
-    @action(detail=False)
+    @action(detail=False, pagination_class=None, filter_backends=[])
     # pylint: disable=invalid-name
     def me(self, request: Request) -> Response:
         """Get information about current user"""
@@ -109,7 +109,7 @@ class UserViewSet(ModelViewSet):
 
     @permission_required("authentik_core.view_user", ["authentik_events.view_event"])
     @swagger_auto_schema(responses={200: UserMetricsSerializer(many=False)})
-    @action(detail=False)
+    @action(detail=False, pagination_class=None, filter_backends=[])
     def metrics(self, request: Request) -> Response:
         """User metrics per 1h"""
         serializer = UserMetricsSerializer(True)
@@ -120,7 +120,7 @@ class UserViewSet(ModelViewSet):
     @swagger_auto_schema(
         responses={"200": LinkSerializer(many=False)},
     )
-    @action(detail=True)
+    @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=invalid-name, unused-argument
     def recovery(self, request: Request, pk: int) -> Response:
         """Create a temporary link that a user can use to recover their accounts"""

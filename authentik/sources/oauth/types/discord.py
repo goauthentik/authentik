@@ -2,12 +2,11 @@
 from typing import Any
 
 from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
-from authentik.sources.oauth.types.manager import MANAGER, RequestKind
+from authentik.sources.oauth.types.manager import MANAGER, SourceType
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 
-@MANAGER.source(kind=RequestKind.REDIRECT, name="Discord")
 class DiscordOAuthRedirect(OAuthRedirect):
     """Discord OAuth2 Redirect"""
 
@@ -17,7 +16,6 @@ class DiscordOAuthRedirect(OAuthRedirect):
         }
 
 
-@MANAGER.source(kind=RequestKind.CALLBACK, name="Discord")
 class DiscordOAuth2Callback(OAuthCallback):
     """Discord OAuth2 Callback"""
 
@@ -32,3 +30,17 @@ class DiscordOAuth2Callback(OAuthCallback):
             "email": info.get("email", None),
             "name": info.get("username"),
         }
+
+
+@MANAGER.type()
+class DiscordType(SourceType):
+    """Discord Type definition"""
+
+    callback_view = DiscordOAuth2Callback
+    redirect_view = DiscordOAuthRedirect
+    name = "Discord"
+    slug = "discord"
+
+    authorization_url = "https://discord.com/api/oauth2/authorize"
+    access_token_url = "https://discord.com/api/oauth2/token"  # nosec
+    profile_url = "https://discord.com/api/users/@me"

@@ -2,12 +2,11 @@
 from typing import Any
 
 from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
-from authentik.sources.oauth.types.manager import MANAGER, RequestKind
+from authentik.sources.oauth.types.manager import MANAGER, SourceType
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 
-@MANAGER.source(kind=RequestKind.REDIRECT, name="Google")
 class GoogleOAuthRedirect(OAuthRedirect):
     """Google OAuth2 Redirect"""
 
@@ -17,7 +16,6 @@ class GoogleOAuthRedirect(OAuthRedirect):
         }
 
 
-@MANAGER.source(kind=RequestKind.CALLBACK, name="Google")
 class GoogleOAuth2Callback(OAuthCallback):
     """Google OAuth2 Callback"""
 
@@ -32,3 +30,17 @@ class GoogleOAuth2Callback(OAuthCallback):
             "email": info.get("email"),
             "name": info.get("name"),
         }
+
+
+@MANAGER.type()
+class GoogleType(SourceType):
+    """Google Type definition"""
+
+    callback_view = GoogleOAuth2Callback
+    redirect_view = GoogleOAuthRedirect
+    name = "Google"
+    slug = "google"
+
+    authorization_url = "https://accounts.google.com/o/oauth2/auth"
+    access_token_url = "https://accounts.google.com/o/oauth2/token"  # nosec
+    profile_url = "https://www.googleapis.com/oauth2/v1/userinfo"

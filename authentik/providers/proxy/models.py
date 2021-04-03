@@ -5,7 +5,6 @@ from typing import Iterable, Optional, Type
 from urllib.parse import urljoin
 
 from django.db import models
-from django.forms import ModelForm
 from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
 
@@ -102,10 +101,8 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     cookie_secret = models.TextField(default=get_cookie_secret)
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.providers.proxy.forms import ProxyProviderForm
-
-        return ProxyProviderForm
+    def component(self) -> str:
+        return "ak-provider-proxy-form"
 
     @property
     def serializer(self) -> Type[Serializer]:

@@ -1,8 +1,7 @@
 """OAuth Client models"""
-from typing import Optional, Type
+from typing import TYPE_CHECKING, Optional, Type
 
 from django.db import models
-from django.forms import ModelForm
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -10,6 +9,9 @@ from rest_framework.serializers import Serializer
 
 from authentik.core.models import Source, UserSourceConnection
 from authentik.core.types import UILoginButton, UserSettingSerializer
+
+if TYPE_CHECKING:
+    from authentik.sources.oauth.types.manager import SourceType
 
 
 class OAuthSource(Source):
@@ -43,10 +45,15 @@ class OAuthSource(Source):
     consumer_secret = models.TextField()
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.sources.oauth.forms import OAuthSourceForm
+    def type(self) -> "SourceType":
+        """Return the provider instance for this source"""
+        from authentik.sources.oauth.types.manager import MANAGER
 
-        return OAuthSourceForm
+        return MANAGER.find_type(self)
+
+    @property
+    def component(self) -> str:
+        return "ak-source-oauth-form"
 
     @property
     def serializer(self) -> Type[Serializer]:
@@ -79,18 +86,12 @@ class OAuthSource(Source):
 
     class Meta:
 
-        verbose_name = _("Generic OAuth Source")
-        verbose_name_plural = _("Generic OAuth Sources")
+        verbose_name = _("OAuth Source")
+        verbose_name_plural = _("OAuth Sources")
 
 
 class GitHubOAuthSource(OAuthSource):
     """Social Login using GitHub.com or a GitHub-Enterprise Instance."""
-
-    @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.sources.oauth.forms import GitHubOAuthSourceForm
-
-        return GitHubOAuthSourceForm
 
     class Meta:
 
@@ -102,12 +103,6 @@ class GitHubOAuthSource(OAuthSource):
 class TwitterOAuthSource(OAuthSource):
     """Social Login using Twitter.com"""
 
-    @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.sources.oauth.forms import TwitterOAuthSourceForm
-
-        return TwitterOAuthSourceForm
-
     class Meta:
 
         abstract = True
@@ -117,12 +112,6 @@ class TwitterOAuthSource(OAuthSource):
 
 class FacebookOAuthSource(OAuthSource):
     """Social Login using Facebook.com."""
-
-    @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.sources.oauth.forms import FacebookOAuthSourceForm
-
-        return FacebookOAuthSourceForm
 
     class Meta:
 
@@ -134,12 +123,6 @@ class FacebookOAuthSource(OAuthSource):
 class DiscordOAuthSource(OAuthSource):
     """Social Login using Discord."""
 
-    @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.sources.oauth.forms import DiscordOAuthSourceForm
-
-        return DiscordOAuthSourceForm
-
     class Meta:
 
         abstract = True
@@ -149,12 +132,6 @@ class DiscordOAuthSource(OAuthSource):
 
 class GoogleOAuthSource(OAuthSource):
     """Social Login using Google or Gsuite."""
-
-    @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.sources.oauth.forms import GoogleOAuthSourceForm
-
-        return GoogleOAuthSourceForm
 
     class Meta:
 
@@ -166,12 +143,6 @@ class GoogleOAuthSource(OAuthSource):
 class AzureADOAuthSource(OAuthSource):
     """Social Login using Azure AD."""
 
-    @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.sources.oauth.forms import AzureADOAuthSourceForm
-
-        return AzureADOAuthSourceForm
-
     class Meta:
 
         abstract = True
@@ -181,12 +152,6 @@ class AzureADOAuthSource(OAuthSource):
 
 class OpenIDOAuthSource(OAuthSource):
     """Login using a Generic OpenID-Connect compliant provider."""
-
-    @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.sources.oauth.forms import OAuthSourceForm
-
-        return OAuthSourceForm
 
     class Meta:
 

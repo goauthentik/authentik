@@ -10,7 +10,6 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.db import models
 from django.db.models import Q, QuerySet
-from django.forms import ModelForm
 from django.http import HttpRequest
 from django.templatetags.static import static
 from django.utils.functional import cached_property
@@ -188,8 +187,8 @@ class Provider(SerializerModel):
         return None
 
     @property
-    def form(self) -> Type[ModelForm]:
-        """Return Form class used to edit this object"""
+    def component(self) -> str:
+        """Return component used to edit this object"""
         raise NotImplementedError
 
     @property
@@ -276,8 +275,8 @@ class Source(SerializerModel, PolicyBindingModel):
     objects = InheritanceManager()
 
     @property
-    def form(self) -> Type[ModelForm]:
-        """Return Form class used to edit this object"""
+    def component(self) -> str:
+        """Return component used to edit this object"""
         raise NotImplementedError
 
     @property
@@ -382,8 +381,8 @@ class PropertyMapping(SerializerModel, ManagedModel):
     objects = InheritanceManager()
 
     @property
-    def form(self) -> Type[ModelForm]:
-        """Return Form class used to edit this object"""
+    def component(self) -> str:
+        """Return component used to edit this object"""
         raise NotImplementedError
 
     @property

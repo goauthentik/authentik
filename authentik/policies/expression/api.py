@@ -2,11 +2,18 @@
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.policies.api.policies import PolicySerializer
+from authentik.policies.expression.evaluator import PolicyEvaluator
 from authentik.policies.expression.models import ExpressionPolicy
 
 
 class ExpressionPolicySerializer(PolicySerializer):
     """Group Membership Policy Serializer"""
+
+    def validate_expression(self, expr: str) -> str:
+        """validate the syntax of the expression"""
+        name = "temp-policy" if not self.instance else self.instance.name
+        PolicyEvaluator(name).validate(expr)
+        return expr
 
     class Meta:
         model = ExpressionPolicy

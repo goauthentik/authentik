@@ -1,7 +1,6 @@
 """delete stage models"""
 from typing import Type
 
-from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
@@ -26,10 +25,8 @@ class UserDeleteStage(Stage):
         return UserDeleteStageView
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.stages.user_delete.forms import UserDeleteStageForm
-
-        return UserDeleteStageForm
+    def component(self) -> str:
+        return "ak-stage-user-delete-form"
 
     class Meta:
 

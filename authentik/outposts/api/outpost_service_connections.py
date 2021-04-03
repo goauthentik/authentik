@@ -1,9 +1,12 @@
 """Outpost API Views"""
 from dataclasses import asdict
 
-from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import mixins
+from kubernetes.client.configuration import Configuration
+from kubernetes.config.config_exception import ConfigException
+from kubernetes.config.kube_config import load_kube_config_from_dict
+from rest_framework import mixins, serializers
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, SerializerMethodField
 from rest_framework.request import Request
@@ -16,7 +19,6 @@ from authentik.core.api.utils import (
     PassiveSerializer,
     TypeCreateSerializer,
 )
-from authentik.lib.templatetags.authentik_utils import verbose_name
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.outposts.models import (
     DockerServiceConnection,
@@ -28,11 +30,11 @@ from authentik.outposts.models import (
 class ServiceConnectionSerializer(ModelSerializer, MetaNameSerializer):
     """ServiceConnection Serializer"""
 
-    object_type = SerializerMethodField()
+    component = SerializerMethodField()
 
-    def get_object_type(self, obj: OutpostServiceConnection) -> str:
-        """Get object type so that we know which API Endpoint to use to get the full object"""
-        return obj._meta.object_name.lower().replace("serviceconnection", "")
+    def get_component(self, obj: OutpostServiceConnection) -> str:
+        """Get object component so that we know how to edit the object"""
+        return obj.component
 
     class Meta:
 
@@ -41,7 +43,7 @@ class ServiceConnectionSerializer(ModelSerializer, MetaNameSerializer):
             "pk",
             "name",
             "local",
-            "object_type",
+            "component",
             "verbose_name",
             "verbose_name_plural",
         ]
@@ -68,23 +70,24 @@ class ServiceConnectionViewSet(
     filterset_fields = ["name"]
 
     @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
-    @action(detail=False)
+    @action(detail=False, pagination_class=None, filter_backends=[])
     def types(self, request: Request) -> Response:
         """Get all creatable service connection types"""
         data = []
         for subclass in all_subclasses(self.queryset.model):
+            subclass: OutpostServiceConnection
+            # pyright: reportGeneralTypeIssues=false
             data.append(
                 {
-                    "name": verbose_name(subclass),
+                    "name": subclass._meta.verbose_name,
                     "description": subclass.__doc__,
-                    "link": reverse("authentik_admin:outpost-service-connection-create")
-                    + f"?type={subclass.__name__}",
+                    "component": subclass().component,
                 }
             )
         return Response(TypeCreateSerializer(data, many=True).data)
 
     @swagger_auto_schema(responses={200: ServiceConnectionStateSerializer(many=False)})
-    @action(detail=True)
+    @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=unused-argument, invalid-name
     def state(self, request: Request, pk: str) -> Response:
         """Get the service connection's state"""
@@ -114,6 +117,24 @@ class DockerServiceConnectionViewSet(ModelViewSet):
 
 class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
     """KubernetesServiceConnection Serializer"""
+
+    def validate_kubeconfig(self, kubeconfig):
+        """Validate kubeconfig by attempting to load it"""
+        if kubeconfig == {}:
+            if not self.validated_data["local"]:
+                raise serializers.ValidationError(
+                    _(
+                        "You can only use an empty kubeconfig when connecting to a local cluster."
+                    )
+                )
+            # Empty kubeconfig is valid
+            return kubeconfig
+        config = Configuration()
+        try:
+            load_kube_config_from_dict(kubeconfig, client_configuration=config)
+        except ConfigException:
+            raise serializers.ValidationError(_("Invalid kubeconfig"))
+        return kubeconfig
 
     class Meta:
 

@@ -9,7 +9,6 @@ from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views import SESSION_KEY_PLAN
-from authentik.stages.deny.forms import DenyStageForm
 from authentik.stages.deny.models import DenyStage
 
 
@@ -52,8 +51,3 @@ class TestUserDenyStage(TestCase):
                 "type": ChallengeTypes.NATIVE.value,
             },
         )
-
-    def test_form(self):
-        """Test Form"""
-        data = {"name": "test"}
-        self.assertEqual(DenyStageForm(data).is_valid(), True)

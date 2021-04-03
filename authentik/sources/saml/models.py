@@ -2,7 +2,6 @@
 from typing import Type
 
 from django.db import models
-from django.forms import ModelForm
 from django.http import HttpRequest
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -146,10 +145,8 @@ class SAMLSource(Source):
     )
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.sources.saml.forms import SAMLSourceForm
-
-        return SAMLSourceForm
+    def component(self) -> str:
+        return "ak-source-saml-form"
 
     @property
     def serializer(self) -> Type[Serializer]:

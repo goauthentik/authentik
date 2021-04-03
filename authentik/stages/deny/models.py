@@ -1,7 +1,6 @@
 """deny stage models"""
 from typing import Type
 
-from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
@@ -25,10 +24,8 @@ class DenyStage(Stage):
         return DenyStageView
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.stages.deny.forms import DenyStageForm
-
-        return DenyStageForm
+    def component(self) -> str:
+        return "ak-stage-deny-form"
 
     class Meta:
 

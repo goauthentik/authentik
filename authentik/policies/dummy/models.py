@@ -1,10 +1,8 @@
 """Dummy policy"""
 from random import SystemRandom
 from time import sleep
-from typing import Type
 
 from django.db import models
-from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
@@ -32,10 +30,8 @@ class DummyPolicy(Policy):
         return DummyPolicySerializer
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.policies.dummy.forms import DummyPolicyForm
-
-        return DummyPolicyForm
+    def component(self) -> str:  # pragma: no cover
+        return "ak-policy-dummy-form"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Wait random time then return result"""

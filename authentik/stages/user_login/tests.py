@@ -13,7 +13,6 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests.test_views import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
-from authentik.stages.user_login.forms import UserLoginStageForm
 from authentik.stages.user_login.models import UserLoginStage
 
 
@@ -112,10 +111,3 @@ class TestUserLoginStage(TestCase):
                 "type": ChallengeTypes.NATIVE.value,
             },
         )
-
-    def test_form(self):
-        """Test Form"""
-        data = {"name": "test", "session_duration": "seconds=0"}
-        self.assertEqual(UserLoginStageForm(data).is_valid(), True)
-        data = {"name": "test", "session_duration": "123"}
-        self.assertEqual(UserLoginStageForm(data).is_valid(), False)

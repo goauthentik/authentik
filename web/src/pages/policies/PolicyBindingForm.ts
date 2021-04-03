@@ -6,7 +6,7 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 import { Form } from "../../elements/forms/Form";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
-import { groupBy } from "../../utils";
+import { first, groupBy } from "../../utils";
 import "../../elements/forms/HorizontalFormElement";
 
 @customElement("ak-policy-binding-form")
@@ -130,7 +130,7 @@ export class PolicyBindingForm extends Form<PolicyBinding> {
                 label=${gettext("Timeout")}
                 ?required=${true}
                 name="timeout">
-                <input type="number" value="${this.binding?.timeout || 30}" class="pf-c-form-control" required>
+                <input type="number" value="${first(this.binding?.timeout, 30)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
         </form>`;
     }

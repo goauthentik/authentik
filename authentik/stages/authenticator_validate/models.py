@@ -3,7 +3,6 @@ from typing import Type
 
 from django.contrib.postgres.fields.array import ArrayField
 from django.db import models
-from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
@@ -52,7 +51,7 @@ class AuthenticatorValidateStage(Stage):
     )
 
     device_classes = ArrayField(
-        models.TextField(),
+        models.TextField(choices=DeviceClasses.choices),
         help_text=_("Device classes which can be used to authenticate"),
         default=default_device_classes,
     )
@@ -74,12 +73,8 @@ class AuthenticatorValidateStage(Stage):
         return AuthenticatorValidateStageView
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.stages.authenticator_validate.forms import (
-            AuthenticatorValidateStageForm,
-        )
-
-        return AuthenticatorValidateStageForm
+    def component(self) -> str:
+        return "ak-stage-authenticator-validate-form"
 
     class Meta:
 

@@ -5,6 +5,7 @@ from drf_yasg.views import get_schema_view
 from rest_framework import routers
 from rest_framework.permissions import AllowAny
 
+from authentik.admin.api.meta import AppsViewSet
 from authentik.admin.api.metrics import AdministrationMetricsViewSet
 from authentik.admin.api.tasks import TaskViewSet
 from authentik.admin.api.version import VersionViewSet
@@ -103,6 +104,7 @@ router.register("admin/version", VersionViewSet, basename="admin_version")
 router.register("admin/workers", WorkerViewSet, basename="admin_workers")
 router.register("admin/metrics", AdministrationMetricsViewSet, basename="admin_metrics")
 router.register("admin/system_tasks", TaskViewSet, basename="admin_system_tasks")
+router.register("admin/apps", AppsViewSet, basename="apps")
 
 router.register("core/applications", ApplicationViewSet)
 router.register("core/groups", GroupViewSet)

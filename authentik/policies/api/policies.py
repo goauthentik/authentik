@@ -1,6 +1,5 @@
 """policy API Views"""
 from django.core.cache import cache
-from django.urls import reverse
 from drf_yasg.utils import no_body, swagger_auto_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins
@@ -19,7 +18,6 @@ from authentik.core.api.utils import (
     MetaNameSerializer,
     TypeCreateSerializer,
 )
-from authentik.lib.templatetags.authentik_utils import verbose_name
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.api.exec import PolicyTestResultSerializer, PolicyTestSerializer
 from authentik.policies.models import Policy, PolicyBinding
@@ -34,16 +32,16 @@ class PolicySerializer(ModelSerializer, MetaNameSerializer):
 
     _resolve_inheritance: bool
 
-    object_type = SerializerMethodField()
+    component = SerializerMethodField()
     bound_to = SerializerMethodField()
 
     def __init__(self, *args, resolve_inheritance: bool = True, **kwargs):
         super().__init__(*args, **kwargs)
         self._resolve_inheritance = resolve_inheritance
 
-    def get_object_type(self, obj: Policy) -> str:
-        """Get object type so that we know which API Endpoint to use to get the full object"""
-        return obj._meta.object_name.lower().replace("policy", "")
+    def get_component(self, obj: Policy) -> str:
+        """Get object component so that we know how to edit the object"""
+        return obj.component
 
     def get_bound_to(self, obj: Policy) -> int:
         """Return objects policy is bound to"""
@@ -66,7 +64,7 @@ class PolicySerializer(ModelSerializer, MetaNameSerializer):
             "pk",
             "name",
             "execution_logging",
-            "object_type",
+            "component",
             "verbose_name",
             "verbose_name_plural",
             "bound_to",
@@ -96,24 +94,24 @@ class PolicyViewSet(
         )
 
     @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
-    @action(detail=False)
+    @action(detail=False, pagination_class=None, filter_backends=[])
     def types(self, request: Request) -> Response:
         """Get all creatable policy types"""
         data = []
         for subclass in all_subclasses(self.queryset.model):
+            subclass: Policy
             data.append(
                 {
-                    "name": verbose_name(subclass),
+                    "name": subclass._meta.verbose_name,
                     "description": subclass.__doc__,
-                    "link": reverse("authentik_admin:policy-create")
-                    + f"?type={subclass.__name__}",
+                    "component": subclass().component,
                 }
             )
         return Response(TypeCreateSerializer(data, many=True).data)
 
     @permission_required("authentik_policies.view_policy_cache")
     @swagger_auto_schema(responses={200: CacheSerializer(many=False)})
-    @action(detail=False)
+    @action(detail=False, pagination_class=None, filter_backends=[])
     def cache_info(self, request: Request) -> Response:
         """Info about cached policies"""
         return Response(data={"count": len(cache.keys("policy_*"))})
@@ -139,7 +137,7 @@ class PolicyViewSet(
         request_body=PolicyTestSerializer(),
         responses={200: PolicyTestResultSerializer()},
     )
-    @action(detail=True, methods=["POST"])
+    @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
     # pylint: disable=unused-argument, invalid-name
     def test(self, request: Request, pk: str) -> Response:
         """Test policy"""

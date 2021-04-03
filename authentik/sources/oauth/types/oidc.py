@@ -2,12 +2,11 @@
 from typing import Any
 
 from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
-from authentik.sources.oauth.types.manager import MANAGER, RequestKind
+from authentik.sources.oauth.types.manager import MANAGER, SourceType
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 
-@MANAGER.source(kind=RequestKind.REDIRECT, name="OpenID Connect")
 class OpenIDConnectOAuthRedirect(OAuthRedirect):
     """OpenIDConnect OAuth2 Redirect"""
 
@@ -17,7 +16,6 @@ class OpenIDConnectOAuthRedirect(OAuthRedirect):
         }
 
 
-@MANAGER.source(kind=RequestKind.CALLBACK, name="OpenID Connect")
 class OpenIDConnectOAuth2Callback(OAuthCallback):
     """OpenIDConnect OAuth2 Callback"""
 
@@ -35,3 +33,15 @@ class OpenIDConnectOAuth2Callback(OAuthCallback):
             "email": info.get("email"),
             "name": info.get("name"),
         }
+
+
+@MANAGER.type()
+class OpenIDConnectType(SourceType):
+    """OpenIDConnect Type definition"""
+
+    callback_view = OpenIDConnectOAuth2Callback
+    redirect_view = OpenIDConnectOAuthRedirect
+    name = "OpenID Connect"
+    slug = "openid-connect"
+
+    urls_customizable = True

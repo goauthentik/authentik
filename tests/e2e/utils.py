@@ -49,7 +49,6 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     def setUp(self):
         super().setUp()
         self.wait_timeout = 60
-        makedirs("selenium_screenshots/", exist_ok=True)
         self.driver = self._get_driver()
         self.driver.maximize_window()
         self.driver.implicitly_wait(30)
@@ -85,6 +84,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
 
     def tearDown(self):
         if "TF_BUILD" in environ:
+            makedirs("selenium_screenshots/", exist_ok=True)
             screenshot_file = (
                 f"selenium_screenshots/{self.__class__.__name__}_{time()}.png"
             )

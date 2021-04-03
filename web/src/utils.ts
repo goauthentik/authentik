@@ -69,3 +69,13 @@ export function groupBy<T>(objects: T[], callback: (obj: T) => string): Array<[s
     });
     return Array.from(m);
 }
+
+export function first<T>(...args: Array<T | undefined | null>): T {
+    for (let index = 0; index < args.length; index++) {
+        const element = args[index];
+        if (element !== undefined && element !== null) {
+            return element;
+        }
+    }
+    throw new Error(`No compatible arg given: ${args}`);
+}

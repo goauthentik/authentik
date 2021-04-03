@@ -10,7 +10,7 @@ import "../../../elements/forms/ConfirmationForm";
 export class PolicyCacheStatusCard extends AdminStatusCard<number> {
 
     getPrimaryValue(): Promise<number> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheInfo({}).then((value) => {
+        return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheInfo().then((value) => {
             return value.count || 0;
         });
     }

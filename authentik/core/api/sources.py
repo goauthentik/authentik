@@ -1,7 +1,6 @@
 """Source API Views"""
 from typing import Iterable
 
-from django.urls import reverse
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
@@ -14,7 +13,6 @@ from structlog.stdlib import get_logger
 from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
 from authentik.core.models import Source
 from authentik.core.types import UserSettingSerializer
-from authentik.lib.templatetags.authentik_utils import verbose_name
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.engine import PolicyEngine
 
@@ -24,11 +22,11 @@ LOGGER = get_logger()
 class SourceSerializer(ModelSerializer, MetaNameSerializer):
     """Source Serializer"""
 
-    object_type = SerializerMethodField()
+    component = SerializerMethodField()
 
-    def get_object_type(self, obj):
-        """Get object type so that we know which API Endpoint to use to get the full object"""
-        return obj._meta.object_name.lower().replace("source", "")
+    def get_component(self, obj: Source):
+        """Get object component so that we know how to edit the object"""
+        return obj.component
 
     class Meta:
 
@@ -40,7 +38,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
             "enabled",
             "authentication_flow",
             "enrollment_flow",
-            "object_type",
+            "component",
             "verbose_name",
             "verbose_name_plural",
             "policy_engine_mode",
@@ -63,23 +61,24 @@ class SourceViewSet(
         return Source.objects.select_subclasses()
 
     @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
-    @action(detail=False)
+    @action(detail=False, pagination_class=None, filter_backends=[])
     def types(self, request: Request) -> Response:
         """Get all creatable source types"""
         data = []
         for subclass in all_subclasses(self.queryset.model):
+            subclass: Source
+            # pyright: reportGeneralTypeIssues=false
             data.append(
                 {
-                    "name": verbose_name(subclass),
+                    "name": subclass._meta.verbose_name,
                     "description": subclass.__doc__,
-                    "link": reverse("authentik_admin:source-create")
-                    + f"?type={subclass.__name__}",
+                    "component": subclass().component,
                 }
             )
         return Response(TypeCreateSerializer(data, many=True).data)
 
     @swagger_auto_schema(responses={200: UserSettingSerializer(many=True)})
-    @action(detail=False)
+    @action(detail=False, pagination_class=None, filter_backends=[])
     def user_settings(self, request: Request) -> Response:
         """Get all sources the user can configure"""
         _all_sources: Iterable[Source] = Source.objects.filter(

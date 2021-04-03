@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
+from authentik.core.api.utils import TypeCreateSerializer
 from authentik.events.models import Event, EventAction
 
 
@@ -144,3 +145,18 @@ class EventViewSet(ReadOnlyModelViewSet):
             .values("unique_users", "application", "counted_events")
             .order_by("-counted_events")[:top_n]
         )
+
+    @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
+    @action(detail=False, pagination_class=None, filter_backends=[])
+    def actions(self, request: Request) -> Response:
+        """Get all actions"""
+        data = []
+        for value, name in EventAction.choices:
+            data.append(
+                {
+                    "name": name,
+                    "description": "",
+                    "component": value,
+                }
+            )
+        return Response(TypeCreateSerializer(data, many=True).data)

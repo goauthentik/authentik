@@ -26,3 +26,10 @@ class TestPoliciesAPI(APITestCase):
         self.assertJSONEqual(
             response.content.decode(), {"passing": True, "messages": ["dummy"]}
         )
+
+    def test_types(self):
+        """Test Policy's types endpoint"""
+        response = self.client.get(
+            reverse("authentik_api:policy-types"),
+        )
+        self.assertEqual(response.status_code, 200)

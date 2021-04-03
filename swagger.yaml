@@ -20,6 +20,25 @@ securityDefinitions:
 security:
   - token: []
 paths:
+  /admin/apps/:
+    get:
+      operationId: admin_apps_list
+      description: List current messages and pass into Serializer
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/App'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+      tags:
+        - admin
+    parameters: []
   /admin/metrics/:
     get:
       operationId: admin_metrics_list
@@ -2055,42 +2074,7 @@ paths:
     get:
       operationId: core_users_me
       description: Get information about current user
-      parameters:
-        - name: username
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: name
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: is_active
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -2107,42 +2091,7 @@ paths:
     get:
       operationId: core_users_metrics
       description: User metrics per 1h
-      parameters:
-        - name: username
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: name
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: is_active
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -2290,6 +2239,16 @@ paths:
       operationId: crypto_certificatekeypairs_list
       description: CertificateKeyPair Viewset
       parameters:
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: has_key
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -2663,6 +2622,25 @@ paths:
                 type: array
                 items:
                   $ref: '#/definitions/Event'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+      tags:
+        - events
+    parameters: []
+  /events/events/actions/:
+    get:
+      operationId: events_events_actions
+      description: Get all actions
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TypeCreate'
         '403':
           description: Authentication credentials were invalid, absent or insufficient.
           schema:
@@ -3850,47 +3828,7 @@ paths:
     get:
       operationId: flows_instances_cache_info
       description: Info about cached flows
-      parameters:
-        - name: flow_uuid
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: name
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: slug
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: designation
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -4953,32 +4891,7 @@ paths:
     get:
       operationId: outposts_service_connections_all_types
       description: Get all creatable service connection types
-      parameters:
-        - name: name
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -5564,37 +5477,7 @@ paths:
     get:
       operationId: policies_all_cache_info
       description: Info about cached policies
-      parameters:
-        - name: bindings__isnull
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: promptstage__isnull
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -5611,37 +5494,7 @@ paths:
     get:
       operationId: policies_all_types
       description: Get all creatable policy types
-      parameters:
-        - name: bindings__isnull
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: promptstage__isnull
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -7821,32 +7674,7 @@ paths:
     get:
       operationId: propertymappings_all_types
       description: Get all creatable property-mapping types
-      parameters:
-        - name: managed__isnull
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -8617,32 +8445,7 @@ paths:
     get:
       operationId: providers_all_types
       description: Get all creatable provider types
-      parameters:
-        - name: application__isnull
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -9217,6 +9020,42 @@ paths:
       tags:
         - providers
     parameters: []
+  /providers/saml/import_metadata/:
+    post:
+      operationId: providers_saml_import_metadata
+      description: Create provider from SAML Metadata
+      parameters:
+        - name: name
+          in: formData
+          required: true
+          type: string
+          minLength: 1
+        - name: authorization_flow
+          in: formData
+          required: true
+          type: string
+          format: slug
+          pattern: ^[-a-zA-Z0-9_]+$
+        - name: file
+          in: formData
+          required: true
+          type: file
+      responses:
+        '204':
+          description: Successfully imported provider
+        '400':
+          description: Invalid input.
+          schema:
+            $ref: '#/definitions/ValidationError'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+      consumes:
+        - multipart/form-data
+      tags:
+        - providers
+    parameters: []
   /providers/saml/{id}/:
     get:
       operationId: providers_saml_read
@@ -9438,27 +9277,7 @@ paths:
     get:
       operationId: sources_all_types
       description: Get all creatable source types
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -9477,27 +9296,7 @@ paths:
     get:
       operationId: sources_all_user_settings
       description: Get all sources the user can configure
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -9874,6 +9673,25 @@ paths:
           description: Invalid input.
           schema:
             $ref: '#/definitions/ValidationError'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+      tags:
+        - sources
+    parameters: []
+  /sources/oauth/source_types/:
+    get:
+      operationId: sources_oauth_source_types
+      description: Get all creatable source types
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/SourceType'
         '403':
           description: Authentication credentials were invalid, absent or insufficient.
           schema:
@@ -10495,32 +10313,7 @@ paths:
     get:
       operationId: stages_all_types
       description: Get all creatable stage types
-      parameters:
-        - name: name
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -10539,32 +10332,7 @@ paths:
     get:
       operationId: stages_all_user_settings
       description: Get all stages the user can configure
-      parameters:
-        - name: name
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''
@@ -14457,6 +14225,20 @@ definitions:
       code:
         description: Error code
         type: string
+  App:
+    required:
+      - name
+      - label
+    type: object
+    properties:
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      label:
+        title: Label
+        type: string
+        minLength: 1
   Coordinate:
     type: object
     properties:
@@ -14642,7 +14424,6 @@ definitions:
   Provider:
     required:
       - name
-      - application
       - authorization_flow
     type: object
     properties:
@@ -14654,9 +14435,6 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      application:
-        title: Application
-        type: string
       authorization_flow:
         title: Authorization flow
         description: Flow used when authorizing this provider.
@@ -14668,8 +14446,8 @@ definitions:
           type: string
           format: uuid
         uniqueItems: true
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       assigned_application_slug:
@@ -14834,6 +14612,15 @@ definitions:
         type: string
         format: uuid
         readOnly: true
+      managed:
+        title: Managed by authentik
+        description: Objects which are managed by authentik. These objects are created
+          and updated automatically. This is flag only indicates that an object can
+          be overwritten by migrations. You can still modify the objects via the API,
+          but expect changes to be overwritten in a later update.
+        type: string
+        minLength: 1
+        x-nullable: true
       identifier:
         title: Identifier
         type: string
@@ -15030,6 +14817,25 @@ definitions:
         title: Expires
         type: string
         format: date-time
+  TypeCreate:
+    required:
+      - name
+      - description
+      - component
+    type: object
+    properties:
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      description:
+        title: Description
+        type: string
+        minLength: 1
+      component:
+        title: Component
+        type: string
+        minLength: 1
   EventTopPerUser:
     required:
       - application
@@ -15318,8 +15124,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -15446,7 +15252,6 @@ definitions:
   OAuth2Provider:
     required:
       - name
-      - application
       - authorization_flow
     type: object
     properties:
@@ -15458,9 +15263,6 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      application:
-        title: Application
-        type: string
       authorization_flow:
         title: Authorization flow
         description: Flow used when authorizing this provider.
@@ -15472,8 +15274,8 @@ definitions:
           type: string
           format: uuid
         uniqueItems: true
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       assigned_application_slug:
@@ -15804,8 +15606,8 @@ definitions:
         description: If enabled, use the local connection. Required Docker socket/Kubernetes
           Integration
         type: boolean
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -15816,25 +15618,6 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
-  TypeCreate:
-    required:
-      - name
-      - description
-      - link
-    type: object
-    properties:
-      name:
-        title: Name
-        type: string
-        minLength: 1
-      description:
-        title: Description
-        type: string
-        minLength: 1
-      link:
-        title: Link
-        type: string
-        minLength: 1
   ServiceConnectionState:
     type: object
     properties:
@@ -15867,8 +15650,8 @@ definitions:
         description: If enabled, use the local connection. Required Docker socket/Kubernetes
           Integration
         type: boolean
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -15919,8 +15702,8 @@ definitions:
         description: If enabled, use the local connection. Required Docker socket/Kubernetes
           Integration
         type: boolean
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -15953,8 +15736,8 @@ definitions:
         description: When this option is enabled, all executions of this policy will
           be logged. By default, only execution errors are logged.
         type: boolean
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -16060,8 +15843,8 @@ definitions:
         description: When this option is enabled, all executions of this policy will
           be logged. By default, only execution errors are logged.
         type: boolean
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -16106,8 +15889,8 @@ definitions:
         description: When this option is enabled, all executions of this policy will
           be logged. By default, only execution errors are logged.
         type: boolean
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -16222,8 +16005,8 @@ definitions:
         description: When this option is enabled, all executions of this policy will
           be logged. By default, only execution errors are logged.
         type: boolean
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -16259,8 +16042,8 @@ definitions:
         description: When this option is enabled, all executions of this policy will
           be logged. By default, only execution errors are logged.
         type: boolean
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -16304,8 +16087,8 @@ definitions:
         description: When this option is enabled, all executions of this policy will
           be logged. By default, only execution errors are logged.
         type: boolean
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -16372,8 +16155,8 @@ definitions:
         description: When this option is enabled, all executions of this policy will
           be logged. By default, only execution errors are logged.
         type: boolean
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -16413,8 +16196,8 @@ definitions:
         description: When this option is enabled, all executions of this policy will
           be logged. By default, only execution errors are logged.
         type: boolean
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -16496,6 +16279,15 @@ definitions:
         type: string
         format: uuid
         readOnly: true
+      managed:
+        title: Managed by authentik
+        description: Objects which are managed by authentik. These objects are created
+          and updated automatically. This is flag only indicates that an object can
+          be overwritten by migrations. You can still modify the objects via the API,
+          but expect changes to be overwritten in a later update.
+        type: string
+        minLength: 1
+        x-nullable: true
       name:
         title: Name
         type: string
@@ -16504,8 +16296,8 @@ definitions:
         title: Expression
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -16540,6 +16332,15 @@ definitions:
         type: string
         format: uuid
         readOnly: true
+      managed:
+        title: Managed by authentik
+        description: Objects which are managed by authentik. These objects are created
+          and updated automatically. This is flag only indicates that an object can
+          be overwritten by migrations. You can still modify the objects via the API,
+          but expect changes to be overwritten in a later update.
+        type: string
+        minLength: 1
+        x-nullable: true
       name:
         title: Name
         type: string
@@ -16548,10 +16349,10 @@ definitions:
         title: Expression
         type: string
         minLength: 1
-      object_field:
-        title: Object field
+      component:
+        title: Component
         type: string
-        minLength: 1
+        readOnly: true
       verbose_name:
         title: Verbose name
         type: string
@@ -16560,11 +16361,15 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      object_field:
+        title: Object field
+        type: string
+        minLength: 1
   SAMLPropertyMapping:
     required:
       - name
-      - saml_name
       - expression
+      - saml_name
     type: object
     properties:
       pk:
@@ -16572,10 +16377,35 @@ definitions:
         type: string
         format: uuid
         readOnly: true
+      managed:
+        title: Managed by authentik
+        description: Objects which are managed by authentik. These objects are created
+          and updated automatically. This is flag only indicates that an object can
+          be overwritten by migrations. You can still modify the objects via the API,
+          but expect changes to be overwritten in a later update.
+        type: string
+        minLength: 1
+        x-nullable: true
       name:
         title: Name
         type: string
         minLength: 1
+      expression:
+        title: Expression
+        type: string
+        minLength: 1
+      component:
+        title: Component
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       saml_name:
         title: SAML Name
         type: string
@@ -16584,10 +16414,39 @@ definitions:
         title: Friendly name
         type: string
         x-nullable: true
+  ScopeMapping:
+    required:
+      - name
+      - expression
+      - scope_name
+    type: object
+    properties:
+      pk:
+        title: Pm uuid
+        type: string
+        format: uuid
+        readOnly: true
+      managed:
+        title: Managed by authentik
+        description: Objects which are managed by authentik. These objects are created
+          and updated automatically. This is flag only indicates that an object can
+          be overwritten by migrations. You can still modify the objects via the API,
+          but expect changes to be overwritten in a later update.
+        type: string
+        minLength: 1
+        x-nullable: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
       expression:
         title: Expression
         type: string
         minLength: 1
+      component:
+        title: Component
+        type: string
+        readOnly: true
       verbose_name:
         title: Verbose name
         type: string
@@ -16596,22 +16455,6 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
-  ScopeMapping:
-    required:
-      - name
-      - scope_name
-      - expression
-    type: object
-    properties:
-      pk:
-        title: Pm uuid
-        type: string
-        format: uuid
-        readOnly: true
-      name:
-        title: Name
-        type: string
-        minLength: 1
       scope_name:
         title: Scope name
         description: Scope used by the client
@@ -16622,18 +16465,6 @@ definitions:
         description: Description shown to the user when consenting. If left empty,
           the user won't be informed.
         type: string
-      expression:
-        title: Expression
-        type: string
-        minLength: 1
-      verbose_name:
-        title: Verbose name
-        type: string
-        readOnly: true
-      verbose_name_plural:
-        title: Verbose name plural
-        type: string
-        readOnly: true
   OAuth2ProviderSetupURLs:
     type: object
     properties:
@@ -16664,7 +16495,6 @@ definitions:
   ProxyProvider:
     required:
       - name
-      - application
       - authorization_flow
       - internal_host
       - external_host
@@ -16678,9 +16508,6 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      application:
-        title: Application
-        type: string
       authorization_flow:
         title: Authorization flow
         description: Flow used when authorizing this provider.
@@ -16692,8 +16519,8 @@ definitions:
           type: string
           format: uuid
         uniqueItems: true
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       assigned_application_slug:
@@ -16752,7 +16579,6 @@ definitions:
   SAMLProvider:
     required:
       - name
-      - application
       - authorization_flow
       - acs_url
     type: object
@@ -16765,9 +16591,6 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      application:
-        title: Application
-        type: string
       authorization_flow:
         title: Authorization flow
         description: Flow used when authorizing this provider.
@@ -16779,8 +16602,8 @@ definitions:
           type: string
           format: uuid
         uniqueItems: true
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       assigned_application_slug:
@@ -16870,6 +16693,14 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+      sp_binding:
+        title: Service Provider Binding
+        description: This determines how authentik sends the response back to the
+          Service Provider.
+        type: string
+        enum:
+          - redirect
+          - post
   SAMLMetadata:
     type: object
     properties:
@@ -16960,8 +16791,8 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17040,8 +16871,8 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17143,6 +16974,49 @@ definitions:
         type: string
         format: date-time
         readOnly: true
+  SourceType:
+    description: Get source's type configuration
+    required:
+      - name
+      - slug
+      - urls_customizable
+    type: object
+    properties:
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      slug:
+        title: Slug
+        type: string
+        minLength: 1
+      urls_customizable:
+        title: Urls customizable
+        type: boolean
+      request_token_url:
+        title: Request token url
+        type: string
+        readOnly: true
+        minLength: 1
+        x-nullable: true
+      authorization_url:
+        title: Authorization url
+        type: string
+        readOnly: true
+        minLength: 1
+        x-nullable: true
+      access_token_url:
+        title: Access token url
+        type: string
+        readOnly: true
+        minLength: 1
+        x-nullable: true
+      profile_url:
+        title: Profile url
+        type: string
+        readOnly: true
+        minLength: 1
+        x-nullable: true
   OAuthSource:
     required:
       - name
@@ -17188,8 +17062,8 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17247,6 +17121,8 @@ definitions:
         title: Callback url
         type: string
         readOnly: true
+      type:
+        $ref: '#/definitions/SourceType'
   UserOAuthSourceConnection:
     required:
       - user
@@ -17310,8 +17186,8 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17419,8 +17295,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17462,8 +17338,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17505,8 +17381,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17534,7 +17410,10 @@ definitions:
         items:
           title: Device classes
           type: string
-          minLength: 1
+          enum:
+            - static
+            - totp
+            - webauthn
       configuration_stage:
         title: Configuration stage
         description: Stage used to configure Authenticator when user doesn't have
@@ -17557,8 +17436,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17596,8 +17475,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17636,8 +17515,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17678,8 +17557,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17708,8 +17587,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17738,8 +17617,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17822,8 +17701,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -18114,8 +17993,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -18151,8 +18030,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -18173,7 +18052,9 @@ definitions:
         items:
           title: Backends
           type: string
-          minLength: 1
+          enum:
+            - django.contrib.auth.backends.ModelBackend
+            - authentik.sources.ldap.auth.LDAPBackend
       configure_flow:
         title: Configure flow
         description: Flow used by an authenticated user to configure this Stage. If
@@ -18257,8 +18138,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -18299,8 +18180,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -18329,8 +18210,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -18365,8 +18246,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -18395,8 +18276,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:

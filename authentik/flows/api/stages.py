@@ -1,7 +1,6 @@
 """Flow Stage API Views"""
 from typing import Iterable
 
-from django.urls import reverse
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
@@ -15,7 +14,6 @@ from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.api.flows import FlowSerializer
 from authentik.flows.models import Stage
-from authentik.lib.templatetags.authentik_utils import verbose_name
 from authentik.lib.utils.reflection import all_subclasses
 
 LOGGER = get_logger()
@@ -24,12 +22,15 @@ LOGGER = get_logger()
 class StageSerializer(ModelSerializer, MetaNameSerializer):
     """Stage Serializer"""
 
-    object_type = SerializerMethodField()
+    component = SerializerMethodField()
     flow_set = FlowSerializer(many=True, required=False)
 
-    def get_object_type(self, obj: Stage) -> str:
-        """Get object type so that we know which API Endpoint to use to get the full object"""
-        return obj._meta.object_name.lower().replace("stage", "")
+    def get_component(self, obj: Stage) -> str:
+        """Get object type so that we know how to edit the object"""
+        # pyright: reportGeneralTypeIssues=false
+        if obj.__class__ == Stage:
+            return ""
+        return obj.component
 
     class Meta:
 
@@ -37,7 +38,7 @@ class StageSerializer(ModelSerializer, MetaNameSerializer):
         fields = [
             "pk",
             "name",
-            "object_type",
+            "component",
             "verbose_name",
             "verbose_name_plural",
             "flow_set",
@@ -61,24 +62,24 @@ class StageViewSet(
         return Stage.objects.select_subclasses()
 
     @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
-    @action(detail=False)
+    @action(detail=False, pagination_class=None, filter_backends=[])
     def types(self, request: Request) -> Response:
         """Get all creatable stage types"""
         data = []
         for subclass in all_subclasses(self.queryset.model, False):
+            subclass: Stage
             data.append(
                 {
-                    "name": verbose_name(subclass),
+                    "name": subclass._meta.verbose_name,
                     "description": subclass.__doc__,
-                    "link": reverse("authentik_admin:stage-create")
-                    + f"?type={subclass.__name__}",
+                    "component": subclass().component,
                 }
             )
         data = sorted(data, key=lambda x: x["name"])
         return Response(TypeCreateSerializer(data, many=True).data)
 
     @swagger_auto_schema(responses={200: UserSettingSerializer(many=True)})
-    @action(detail=False)
+    @action(detail=False, pagination_class=None, filter_backends=[])
     def user_settings(self, request: Request) -> Response:
         """Get all stages the user can configure"""
         _all_stages: Iterable[Stage] = Stage.objects.all().select_subclasses()

@@ -1,7 +1,6 @@
 """PropertyMapping API Views"""
 from json import dumps
 
-from django.urls import reverse
 from drf_yasg.utils import swagger_auto_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins
@@ -19,9 +18,10 @@ from authentik.core.api.utils import (
     PassiveSerializer,
     TypeCreateSerializer,
 )
+from authentik.core.expression import PropertyMappingEvaluator
 from authentik.core.models import PropertyMapping
-from authentik.lib.templatetags.authentik_utils import verbose_name
 from authentik.lib.utils.reflection import all_subclasses
+from authentik.managed.api import ManagedSerializer
 from authentik.policies.api.exec import PolicyTestSerializer
 
 
@@ -32,29 +32,30 @@ class PropertyMappingTestResultSerializer(PassiveSerializer):
     successful = BooleanField(read_only=True)
 
 
-class PropertyMappingSerializer(ModelSerializer, MetaNameSerializer):
+class PropertyMappingSerializer(ManagedSerializer, ModelSerializer, MetaNameSerializer):
     """PropertyMapping Serializer"""
 
-    object_type = SerializerMethodField(method_name="get_type")
+    component = SerializerMethodField()
 
-    def get_type(self, obj):
-        """Get object type so that we know which API Endpoint to use to get the full object"""
-        return obj._meta.object_name.lower().replace("propertymapping", "")
+    def get_component(self, obj: PropertyMapping) -> str:
+        """Get object's component so that we know how to edit the object"""
+        return obj.component
 
-    def to_representation(self, instance: PropertyMapping):
-        # pyright: reportGeneralTypeIssues=false
-        if instance.__class__ == PropertyMapping:
-            return super().to_representation(instance)
-        return instance.serializer(instance=instance).data
+    def validate_expression(self, expression: str) -> str:
+        """Test Syntax"""
+        evaluator = PropertyMappingEvaluator()
+        evaluator.validate(expression)
+        return expression
 
     class Meta:
 
         model = PropertyMapping
         fields = [
             "pk",
+            "managed",
             "name",
             "expression",
-            "object_type",
+            "component",
             "verbose_name",
             "verbose_name_plural",
         ]
@@ -80,17 +81,17 @@ class PropertyMappingViewSet(
         return PropertyMapping.objects.select_subclasses()
 
     @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
-    @action(detail=False)
+    @action(detail=False, pagination_class=None, filter_backends=[])
     def types(self, request: Request) -> Response:
         """Get all creatable property-mapping types"""
         data = []
         for subclass in all_subclasses(self.queryset.model):
+            subclass: PropertyMapping
             data.append(
                 {
-                    "name": verbose_name(subclass),
+                    "name": subclass._meta.verbose_name,
                     "description": subclass.__doc__,
-                    "link": reverse("authentik_admin:property-mapping-create")
-                    + f"?type={subclass.__name__}",
+                    "component": subclass.component,
                 }
             )
         return Response(TypeCreateSerializer(data, many=True).data)
@@ -100,7 +101,7 @@ class PropertyMappingViewSet(
         request_body=PolicyTestSerializer(),
         responses={200: PropertyMappingTestResultSerializer},
     )
-    @action(detail=True, methods=["POST"])
+    @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
     # pylint: disable=unused-argument, invalid-name
     def test(self, request: Request, pk: str) -> Response:
         """Test Property Mapping"""
@@ -116,7 +117,7 @@ class PropertyMappingViewSet(
         if not users.exists():
             raise PermissionDenied()
 
-        response_data = {"successful": True}
+        response_data = {"successful": True, "result": ""}
         try:
             result = mapping.evaluate(
                 users.first(),

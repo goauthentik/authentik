@@ -37,3 +37,5 @@ class EmailStageViewSet(ModelViewSet):
 
     queryset = EmailStage.objects.all()
     serializer_class = EmailStageSerializer
+
+    # TODO: Validate connection settings when use_global_settings is unchecked

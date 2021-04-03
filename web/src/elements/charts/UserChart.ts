@@ -8,7 +8,7 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 export class UserChart extends AKChart<UserMetrics> {
 
     apiRequest(): Promise<UserMetrics> {
-        return new CoreApi(DEFAULT_CONFIG).coreUsersMetrics({});
+        return new CoreApi(DEFAULT_CONFIG).coreUsersMetrics();
     }
 
     getDatasets(data: UserMetrics): Chart.ChartDataSets[] {

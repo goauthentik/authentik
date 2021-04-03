@@ -72,12 +72,14 @@ export class GroupForm extends Form<Group> {
                 ?required=${true}
                 name="users">
                 <select class="pf-c-form-control" multiple>
-                    ${until(new CoreApi(DEFAULT_CONFIG).coreUsersList({}).then(users => {
+                    ${until(new CoreApi(DEFAULT_CONFIG).coreUsersList({
+                        ordering: "username",
+                    }).then(users => {
                         return users.results.map(user => {
                             const selected = Array.from(this.group?.users || []).some(su => {
                                 return su == user.pk;
                             });
-                            return html`<option value=${ifDefined(user.pk)} ?selected=${selected}>${user.username}</option>`;
+                            return html`<option value=${ifDefined(user.pk)} ?selected=${selected}>${user.username} (${user.name})</option>`;
                         });
                     }))}
                 </select>

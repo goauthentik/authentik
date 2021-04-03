@@ -1,0 +1,31 @@
+"""Meta API"""
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework.fields import CharField
+from rest_framework.permissions import IsAdminUser
+from rest_framework.request import Request
+from rest_framework.response import Response
+from rest_framework.viewsets import ViewSet
+
+from authentik.core.api.utils import PassiveSerializer
+from authentik.lib.utils.reflection import get_apps
+
+
+class AppSerializer(PassiveSerializer):
+    """Serialize Application info"""
+
+    name = CharField()
+    label = CharField()
+
+
+class AppsViewSet(ViewSet):
+    """Read-only view set list all installed apps"""
+
+    permission_classes = [IsAdminUser]
+
+    @swagger_auto_schema(responses={200: AppSerializer(many=True)})
+    def list(self, request: Request) -> Response:
+        """List current messages and pass into Serializer"""
+        data = []
+        for app in get_apps():
+            data.append({"name": app.name, "label": app.verbose_name})
+        return Response(AppSerializer(data, many=True).data)

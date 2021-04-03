@@ -1,9 +1,6 @@
 """Event Matcher models"""
-from typing import Type
-
 from django.apps import apps
 from django.db import models
-from django.forms import ModelForm
 from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
 
@@ -63,10 +60,8 @@ class EventMatcherPolicy(Policy):
         return EventMatcherPolicySerializer
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.policies.event_matcher.forms import EventMatcherPolicyForm
-
-        return EventMatcherPolicyForm
+    def component(self) -> str:
+        return "ak-policy-event-matcher-form"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         if "event" not in request.context:

@@ -7,7 +7,6 @@ from django.conf import settings
 from django.core.mail import get_connection
 from django.core.mail.backends.base import BaseEmailBackend
 from django.db import models
-from django.forms import ModelForm
 from django.utils.translation import gettext as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
@@ -31,6 +30,7 @@ class EmailTemplates(models.TextChoices):
     )
 
 
+# TODO: Create api for choices
 def get_template_choices():
     """Get all available Email templates, including dynamically mounted ones.
     Directories are taken from TEMPLATES.DIR setting"""
@@ -95,10 +95,8 @@ class EmailStage(Stage):
         return EmailStageView
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.stages.email.forms import EmailStageForm
-
-        return EmailStageForm
+    def component(self) -> str:
+        return "ak-stage-email-form"
 
     @property
     def backend(self) -> BaseEmailBackend:

@@ -3,8 +3,8 @@ import re
 from textwrap import indent
 from typing import Any, Iterable, Optional
 
-from django.core.exceptions import ValidationError
 from requests import Session
+from rest_framework.serializers import ValidationError
 from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger

@@ -34,7 +34,7 @@ class TypeCreateSerializer(PassiveSerializer):
 
     name = CharField(required=True)
     description = CharField(required=True)
-    link = CharField(required=True)
+    component = CharField(required=True)
 
 
 class CacheSerializer(PassiveSerializer):

@@ -4,15 +4,19 @@ import { AKResponse } from "../../api/Client";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
 
-import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
 import "../../elements/forms/DeleteForm";
+import "../../elements/forms/ModalForm";
+import "../../elements/forms/ProxyForm";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
 import { Source, SourcesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { AdminURLManager } from "../../api/legacy";
+import { ifDefined } from "lit-html/directives/if-defined";
+import "./ldap/LDAPSourceForm";
+import "./saml/SAMLSourceForm";
+import "./oauth/OAuthSourceForm";
 
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {
@@ -57,12 +61,24 @@ export class SourceListPage extends TablePage<Source> {
             </a>`,
             html`${item.verboseName}`,
             html`
-            <ak-modal-button href="${AdminURLManager.sources(`${item.pk}/update/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            <ak-forms-modal>
+                <span slot="submit">
+                    ${gettext("Update")}
+                </span>
+                <span slot="header">
+                    ${gettext(`Update ${item.verboseName}`)}
+                </span>
+                <ak-proxy-form
+                    slot="form"
+                    .args=${{
+                        "sourceSlug": item.slug
+                    }}
+                    type=${ifDefined(item.component)}>
+                </ak-proxy-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
+                </button>
+            </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${gettext("Source")}
@@ -86,15 +102,25 @@ export class SourceListPage extends TablePage<Source> {
                 <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </button>
             <ul class="pf-c-dropdown__menu" hidden>
-                ${until(new SourcesApi(DEFAULT_CONFIG).sourcesAllTypes({}).then((types) => {
+                ${until(new SourcesApi(DEFAULT_CONFIG).sourcesAllTypes().then((types) => {
                     return types.map((type) => {
                         return html`<li>
-                            <ak-modal-button href="${type.link}">
-                                <button slot="trigger" class="pf-c-dropdown__menu-item">${type.name}<br>
+                            <ak-forms-modal>
+                                <span slot="submit">
+                                    ${gettext("Create")}
+                                </span>
+                                <span slot="header">
+                                    ${gettext(`Create ${type.name}`)}
+                                </span>
+                                <ak-proxy-form
+                                    slot="form"
+                                    type=${type.component}>
+                                </ak-proxy-form>
+                                <button slot="trigger" class="pf-c-dropdown__menu-item">
+                                    ${type.name}<br>
                                     <small>${type.description}</small>
                                 </button>
-                                <div slot="modal"></div>
-                            </ak-modal-button>
+                            </ak-forms-modal>
                         </li>`;
                     });
                 }), html`<ak-spinner></ak-spinner>`)}

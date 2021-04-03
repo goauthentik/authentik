@@ -6,9 +6,9 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/EmptyState";
 
-import "./LDAPSourceViewPage";
-import "./OAuthSourceViewPage";
-import "./SAMLSourceViewPage";
+import "./ldap/LDAPSourceViewPage";
+import "./oauth/OAuthSourceViewPage";
+import "./saml/SAMLSourceViewPage";
 
 @customElement("ak-source-view")
 export class SourceViewPage extends LitElement {
@@ -37,15 +37,15 @@ export class SourceViewPage extends LitElement {
         if (!this.source) {
             return html`<ak-empty-state ?loading=${true} ?fullHeight=${true}></ak-empty-state>`;
         }
-        switch (this.source?.objectType) {
-            case "ldap":
+        switch (this.source?.component) {
+            case "ak-source-ldap-form":
                 return html`<ak-source-ldap-view sourceSlug=${this.source.slug}></ak-source-ldap-view>`;
-            case "oauth":
+            case "ak-source-oauth-form":
                 return html`<ak-source-oauth-view sourceSlug=${this.source.slug}></ak-source-oauth-view>`;
-            case "saml":
+            case "ak-source-saml-form":
                 return html`<ak-source-saml-view sourceSlug=${this.source.slug}></ak-source-saml-view>`;
             default:
-                return html`<p>Invalid source type ${this.source.objectType}</p>`;
+                return html`<p>Invalid source type ${this.source.component}</p>`;
         }
     }
 }

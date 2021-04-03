@@ -1,9 +1,7 @@
 """user field matcher models"""
 import re
-from typing import Type
 
 from django.db import models
-from django.forms import ModelForm
 from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
@@ -38,10 +36,8 @@ class PasswordPolicy(Policy):
         return PasswordPolicySerializer
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.policies.password.forms import PasswordPolicyForm
-
-        return PasswordPolicyForm
+    def component(self) -> str:
+        return "ak-policy-password-form"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         if self.password_field not in request.context:

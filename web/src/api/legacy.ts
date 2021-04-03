@@ -1,31 +1,3 @@
-export class AdminURLManager {
-
-    static policies(rest: string): string {
-        return `/administration/policies/${rest}`;
-    }
-
-    static providers(rest: string): string {
-        return `/administration/providers/${rest}`;
-    }
-
-    static propertyMappings(rest: string): string {
-        return `/administration/property-mappings/${rest}`;
-    }
-
-    static outpostServiceConnections(rest: string): string {
-        return `/administration/outpost_service_connections/${rest}`;
-    }
-
-    static stages(rest: string): string {
-        return `/administration/stages/${rest}`;
-    }
-
-    static sources(rest: string): string {
-        return `/administration/sources/${rest}`;
-    }
-
-}
-
 export class AppURLManager {
 
     static sourceSAML(slug: string, rest: string): string {
@@ -33,9 +5,6 @@ export class AppURLManager {
     }
     static sourceOAuth(slug: string, action: string): string {
         return `/source/oauth/${action}/${slug}/`;
-    }
-    static providerSAML(rest: string): string {
-        return `/application/saml/${rest}`;
     }
 
 }

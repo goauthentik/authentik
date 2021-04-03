@@ -3,7 +3,6 @@ from typing import Type
 from uuid import uuid4
 
 from django.db import models
-from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.fields import (
@@ -144,10 +143,8 @@ class PromptStage(Stage):
         return PromptStageView
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.stages.prompt.forms import PromptStageForm
-
-        return PromptStageForm
+    def component(self) -> str:
+        return "ak-stage-prompt-form"
 
     class Meta:
 

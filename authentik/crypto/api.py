@@ -1,4 +1,5 @@
 """Crypto API Views"""
+import django_filters
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import load_pem_x509_certificate
@@ -95,11 +96,29 @@ class CertificateGenerationSerializer(PassiveSerializer):
     validity_days = IntegerField(initial=365)
 
 
+class CertificateKeyPairFilter(django_filters.FilterSet):
+    """Filter for certificates"""
+
+    has_key = django_filters.BooleanFilter(
+        label="Only return certificate-key pairs with keys", method="filter_has_key"
+    )
+
+    # pylint: disable=unused-argument
+    def filter_has_key(self, queryset, name, value):  # pragma: no cover
+        """Only return certificate-key pairs with keys"""
+        return queryset.exclude(key_data__exact="")
+
+    class Meta:
+        model = CertificateKeyPair
+        fields = ["name"]
+
+
 class CertificateKeyPairViewSet(ModelViewSet):
     """CertificateKeyPair Viewset"""
 
     queryset = CertificateKeyPair.objects.all()
     serializer_class = CertificateKeyPairSerializer
+    filterset_class = CertificateKeyPairFilter
 
     @permission_required(None, ["authentik_crypto.add_certificatekeypair"])
     @swagger_auto_schema(
@@ -125,7 +144,7 @@ class CertificateKeyPairViewSet(ModelViewSet):
         return Response(serializer.data)
 
     @swagger_auto_schema(responses={200: CertificateDataSerializer(many=False)})
-    @action(detail=True)
+    @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=invalid-name, unused-argument
     def view_certificate(self, request: Request, pk: str) -> Response:
         """Return certificate-key pairs certificate and log access"""
@@ -140,7 +159,7 @@ class CertificateKeyPairViewSet(ModelViewSet):
         )
 
     @swagger_auto_schema(responses={200: CertificateDataSerializer(many=False)})
-    @action(detail=True)
+    @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=invalid-name, unused-argument
     def view_private_key(self, request: Request, pk: str) -> Response:
         """Return certificate-key pairs private key and log access"""

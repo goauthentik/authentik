@@ -8,11 +8,11 @@ from rest_framework.decorators import action
 from rest_framework.fields import DateTimeField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.propertymappings import PropertyMappingSerializer
 from authentik.core.api.sources import SourceSerializer
-from authentik.core.api.utils import MetaNameSerializer, PassiveSerializer
+from authentik.core.api.utils import PassiveSerializer
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 
 
@@ -70,18 +70,13 @@ class LDAPSourceViewSet(ModelViewSet):
         )
 
 
-class LDAPPropertyMappingSerializer(ModelSerializer, MetaNameSerializer):
+class LDAPPropertyMappingSerializer(PropertyMappingSerializer):
     """LDAP PropertyMapping Serializer"""
 
     class Meta:
         model = LDAPPropertyMapping
-        fields = [
-            "pk",
-            "name",
-            "expression",
+        fields = PropertyMappingSerializer.Meta.fields + [
             "object_field",
-            "verbose_name",
-            "verbose_name_plural",
         ]
 
 

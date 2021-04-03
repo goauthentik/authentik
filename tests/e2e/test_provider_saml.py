@@ -56,9 +56,10 @@ class TestProviderSAML(SeleniumTestCase):
                 "SP_SSO_BINDING": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
                 "SP_METADATA_URL": (
                     self.url(
-                        "authentik_providers_saml:metadata",
-                        application_slug=provider.application.slug,
+                        "authentik_api:samlprovider-metadata",
+                        pk=provider.pk,
                     )
+                    + "?download"
                 ),
             },
         )

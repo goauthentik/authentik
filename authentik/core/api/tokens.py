@@ -13,9 +13,10 @@ from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Token
 from authentik.events.models import Event, EventAction
+from authentik.managed.api import ManagedSerializer
 
 
-class TokenSerializer(ModelSerializer):
+class TokenSerializer(ManagedSerializer, ModelSerializer):
     """Token Serializer"""
 
     user = UserSerializer(required=False)
@@ -25,6 +26,7 @@ class TokenSerializer(ModelSerializer):
         model = Token
         fields = [
             "pk",
+            "managed",
             "identifier",
             "intent",
             "user",
@@ -66,7 +68,7 @@ class TokenViewSet(ModelViewSet):
 
     @permission_required("authentik_core.view_token_key")
     @swagger_auto_schema(responses={200: TokenViewSerializer(many=False)})
-    @action(detail=True)
+    @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=unused-argument
     def view_key(self, request: Request, identifier: str) -> Response:
         """Return token key and log access"""

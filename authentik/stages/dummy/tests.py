@@ -5,7 +5,6 @@ from django.utils.encoding import force_str
 
 from authentik.core.models import User
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
-from authentik.stages.dummy.forms import DummyStageForm
 from authentik.stages.dummy.models import DummyStage
 
 
@@ -49,8 +48,3 @@ class TestDummyStage(TestCase):
             force_str(response.content),
             {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
         )
-
-    def test_form(self):
-        """Test Form"""
-        data = {"name": "test"}
-        self.assertEqual(DummyStageForm(data).is_valid(), True)

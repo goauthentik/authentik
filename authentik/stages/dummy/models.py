@@ -1,7 +1,6 @@
 """dummy stage models"""
 from typing import Type
 
-from django.forms import ModelForm
 from django.utils.translation import gettext as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
@@ -27,10 +26,8 @@ class DummyStage(Stage):
         return DummyStageView
 
     @property
-    def form(self) -> Type[ModelForm]:
-        from authentik.stages.dummy.forms import DummyStageForm
-
-        return DummyStageForm
+    def component(self) -> str:
+        return "ak-stage-dummy-form"
 
     class Meta:
 

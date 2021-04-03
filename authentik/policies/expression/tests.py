@@ -1,9 +1,11 @@
 """evaluator tests"""
-from django.core.exceptions import ValidationError
 from django.test import TestCase
 from guardian.shortcuts import get_anonymous_user
+from rest_framework.serializers import ValidationError
+from rest_framework.test import APITestCase
 
 from authentik.policies.exceptions import PolicyException
+from authentik.policies.expression.api import ExpressionPolicySerializer
 from authentik.policies.expression.evaluator import PolicyEvaluator
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.types import PolicyRequest
@@ -60,3 +62,16 @@ class TestEvaluator(TestCase):
         evaluator = PolicyEvaluator("test")
         with self.assertRaises(ValidationError):
             evaluator.validate(template)
+
+
+class TestExpressionPolicyAPI(APITestCase):
+    """Test expression policy's API"""
+
+    def test_validate(self):
+        """Test ExpressionPolicy's validation"""
+        # Because the root property-mapping has no write operation, we just instantiate
+        # a serializer and test inline
+        expr = "return True"
+        self.assertEqual(ExpressionPolicySerializer().validate_expression(expr), expr)
+        with self.assertRaises(ValidationError):
+            print(ExpressionPolicySerializer().validate_expression("/"))

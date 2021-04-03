@@ -5,12 +5,11 @@ from facebook import GraphAPI
 
 from authentik.sources.oauth.clients.oauth2 import OAuth2Client
 from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
-from authentik.sources.oauth.types.manager import MANAGER, RequestKind
+from authentik.sources.oauth.types.manager import MANAGER, SourceType
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 
-@MANAGER.source(kind=RequestKind.REDIRECT, name="Facebook")
 class FacebookOAuthRedirect(OAuthRedirect):
     """Facebook OAuth2 Redirect"""
 
@@ -28,7 +27,6 @@ class FacebookOAuth2Client(OAuth2Client):
         return api.get_object("me", fields="id,name,email")
 
 
-@MANAGER.source(kind=RequestKind.CALLBACK, name="Facebook")
 class FacebookOAuth2Callback(OAuthCallback):
     """Facebook OAuth2 Callback"""
 
@@ -45,3 +43,17 @@ class FacebookOAuth2Callback(OAuthCallback):
             "email": info.get("email"),
             "name": info.get("name"),
         }
+
+
+@MANAGER.type()
+class FacebookType(SourceType):
+    """Facebook Type definition"""
+
+    callback_view = FacebookOAuth2Callback
+    redirect_view = FacebookOAuthRedirect
+    name = "Facebook"
+    slug = "facebook"
+
+    authorization_url = "https://www.facebook.com/v7.0/dialog/oauth"
+    access_token_url = "https://graph.facebook.com/v7.0/oauth/access_token"  # nosec
+    profile_url = "https://graph.facebook.com/v7.0/me?fields=id,name,email"
