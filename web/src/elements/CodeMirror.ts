@@ -24,11 +24,15 @@ export class CodeMirrorTextarea extends LitElement {
 
     editor?: CodeMirror.EditorFromTextArea;
 
+    _value?: string;
+
     @property()
     set value(v: string) {
         if (v === null) return;
         if (this.editor) {
             this.editor.setValue(v);
+        } else {
+            this._value = v;
         }
     }
 
@@ -70,6 +74,7 @@ export class CodeMirrorTextarea extends LitElement {
             readOnly: this.readOnly,
             autoRefresh: true,
             lineWrapping: true,
+            value: this._value
         });
         this.editor.on("blur", () => {
             this.editor?.save();
@@ -77,6 +82,6 @@ export class CodeMirrorTextarea extends LitElement {
     }
 
     render(): TemplateResult {
-        return html`<textarea name=${ifDefined(this.name)}></textarea>`;
+        return html`<textarea name=${ifDefined(this.name)}>${ifDefined(this._value)}</textarea>`;
     }
 }
