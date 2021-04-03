@@ -7,6 +7,7 @@ import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
+import { first } from "../../../utils";
 
 @customElement("ak-policy-password-form")
 export class PasswordPolicyForm extends Form<PasswordPolicy> {
@@ -77,25 +78,25 @@ export class PasswordPolicyForm extends Form<PasswordPolicy> {
                         label=${gettext("Minimum length")}
                         ?required=${true}
                         name="lengthMin">
-                        <input type="number" value="${ifDefined(this.policy?.lengthMin || 10)}" class="pf-c-form-control" required>
+                        <input type="number" value="${first(this.policy?.lengthMin, 10)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${gettext("Minimum amount of Uppercase Characters")}
                         ?required=${true}
                         name="amountUppercase">
-                        <input type="number" value="${ifDefined(this.policy?.amountUppercase || 2)}" class="pf-c-form-control" required>
+                        <input type="number" value="${first(this.policy?.amountUppercase, 2)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${gettext("Minimum amount of Lowercase Characters")}
                         ?required=${true}
                         name="amountLowercase">
-                        <input type="number" value="${ifDefined(this.policy?.amountLowercase || 2)}" class="pf-c-form-control" required>
+                        <input type="number" value="${first(this.policy?.amountLowercase, 2)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${gettext("Minimum amount of Symbols Characters")}
                         ?required=${true}
                         name="amountSymbols">
-                        <input type="number" value="${ifDefined(this.policy?.amountSymbols || 2)}" class="pf-c-form-control" required>
+                        <input type="number" value="${first(this.policy?.amountSymbols, 2)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${gettext("Error message")}

@@ -7,6 +7,7 @@ import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
+import { first } from "../../../utils";
 
 @customElement("ak-policy-hibp-form")
 export class HaveIBeenPwnedPolicyForm extends Form<HaveIBeenPwendPolicy> {
@@ -76,7 +77,7 @@ export class HaveIBeenPwnedPolicyForm extends Form<HaveIBeenPwendPolicy> {
                         label=${gettext("Allowed count")}
                         ?required=${true}
                         name="allowedCount">
-                        <input type="number" value="${ifDefined(this.policy?.allowedCount || 0)}" class="pf-c-form-control" required>
+                        <input type="number" value="${first(this.policy?.allowedCount, 0)}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${gettext("Allow up to N occurrences in the HIBP database.")}</p>
                     </ak-form-element-horizontal>
                 </div>

@@ -7,6 +7,7 @@ import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
+import { first } from "../../../utils";
 
 @customElement("ak-policy-dummy-form")
 export class DummyPolicyForm extends Form<DummyPolicy> {
@@ -78,14 +79,14 @@ export class DummyPolicyForm extends Form<DummyPolicy> {
                         label=${gettext("Wait (min)")}
                         ?required=${true}
                         name="waitMin">
-                        <input type="number" value="${this.policy?.waitMin || 1}" class="pf-c-form-control" required>
+                        <input type="number" value="${first(this.policy?.waitMin, 1)}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${gettext("The policy takes a random time to execute. This controls the minimum time it will take.")}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${gettext("Wait (max)")}
                         ?required=${true}
                         name="waitMax">
-                        <input type="number" value="${this.policy?.waitMax || 5}" class="pf-c-form-control" required>
+                        <input type="number" value="${first(this.policy?.waitMax, 5)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

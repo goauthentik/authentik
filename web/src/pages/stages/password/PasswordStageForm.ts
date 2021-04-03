@@ -8,6 +8,7 @@ import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
 import { until } from "lit-html/directives/until";
+import { first } from "../../../utils";
 
 @customElement("ak-stage-password-form")
 export class PasswordStageForm extends Form<PasswordStage> {
@@ -103,7 +104,7 @@ export class PasswordStageForm extends Form<PasswordStage> {
                         label=${gettext("Failed attempts before cancel")}
                         ?required=${true}
                         name="failedAttemptsBeforeCancel">
-                        <input type="number" value="${ifDefined(this.stage?.failedAttemptsBeforeCancel || 5)}" class="pf-c-form-control" required>
+                        <input type="number" value="${first(this.stage?.failedAttemptsBeforeCancel, 5)}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${gettext("How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.")}</p>
                     </ak-form-element-horizontal>
                 </div>

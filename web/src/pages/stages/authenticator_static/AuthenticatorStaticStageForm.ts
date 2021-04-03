@@ -8,6 +8,7 @@ import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
 import { until } from "lit-html/directives/until";
+import { first } from "../../../utils";
 
 @customElement("ak-stage-authenticator-static-form")
 export class AuthenticatorStaticStageForm extends Form<AuthenticatorStaticStage> {
@@ -61,7 +62,7 @@ export class AuthenticatorStaticStageForm extends Form<AuthenticatorStaticStage>
                         label=${gettext("Token count")}
                         ?required=${true}
                         name="tokenCount">
-                        <input type="text" value="${ifDefined(this.stage?.tokenCount || 6)}" class="pf-c-form-control" required>
+                        <input type="text" value="${first(this.stage?.tokenCount, 6)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${gettext("Configuration flow")}

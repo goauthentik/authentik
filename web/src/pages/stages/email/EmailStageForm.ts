@@ -7,6 +7,7 @@ import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
+import { first } from "../../../utils";
 
 @customElement("ak-stage-email-form")
 export class EmailStageForm extends Form<EmailStage> {
@@ -65,7 +66,7 @@ export class EmailStageForm extends Form<EmailStage> {
                         label=${gettext("SMTP Port")}
                         ?required=${true}
                         name="port">
-                        <input type="number" value="${ifDefined(this.stage?.port || 25)}" class="pf-c-form-control" required>
+                        <input type="number" value="${first(this.stage?.port, 25)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${gettext("SMTP Username")}
@@ -99,7 +100,7 @@ export class EmailStageForm extends Form<EmailStage> {
                         label=${gettext("Timeout")}
                         ?required=${true}
                         name="timeout">
-                        <input type="number" value="${ifDefined(this.stage?.timeout || 30)}" class="pf-c-form-control" required>
+                        <input type="number" value="${first(this.stage?.timeout, 30)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${gettext("From address")}
@@ -140,14 +141,14 @@ export class EmailStageForm extends Form<EmailStage> {
                         label=${gettext("Token expiry")}
                         ?required=${true}
                         name="tokenExpiry">
-                        <input type="number" value="${ifDefined(this.stage?.tokenExpiry || 30)}" class="pf-c-form-control" required>
+                        <input type="number" value="${first(this.stage?.tokenExpiry, 30)}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${gettext("Time in minutes the token sent is valid.")}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${gettext("Subject")}
                         ?required=${true}
                         name="subject">
-                        <input type="text" value="${ifDefined(this.stage?.subject || "authentik")}" class="pf-c-form-control" required>
+                        <input type="text" value="${first(this.stage?.subject, "authentik")}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${gettext("Template")}
