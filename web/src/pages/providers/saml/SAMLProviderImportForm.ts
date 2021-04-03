@@ -1,5 +1,5 @@
 import { FlowDesignationEnum, FlowsApi, ProvidersApi, SAMLProvider } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { ifDefined } from "lit-html/directives/if-defined";
@@ -12,7 +12,7 @@ import "../../../elements/forms/HorizontalFormElement";
 export class SAMLProviderImportForm extends Form<SAMLProvider> {
 
     getSuccessMessage(): string {
-        return gettext("Successfully imported provider.");
+        return t`Successfully imported provider.`;
     }
 
     // eslint-disable-next-line
@@ -31,13 +31,13 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Name")}
+                label=${t`Name`}
                 ?required=${true}
                 name="name">
                 <input type="text" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Authorization flow")}
+                label=${t`Authorization flow`}
                 ?required=${true}
                 name="authorizationFlow">
                 <select class="pf-c-form-control">
@@ -50,11 +50,11 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
                         });
                     }))}
                 </select>
-                <p class="pf-c-form__helper-text">${gettext("Flow used when authorizing this provider.")}</p>
+                <p class="pf-c-form__helper-text">${t`Flow used when authorizing this provider.`}</p>
             </ak-form-element-horizontal>
 
             <ak-form-element-horizontal
-                label=${gettext("Metadata")}
+                label=${t`Metadata`}
                 name="flow">
                 <input type="file" value="" class="pf-c-form-control">
             </ak-form-element-horizontal>

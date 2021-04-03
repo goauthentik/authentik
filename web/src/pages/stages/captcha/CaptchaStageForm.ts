@@ -1,5 +1,5 @@
 import { CaptchaStage, StagesApi } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
@@ -24,9 +24,9 @@ export class CaptchaStageForm extends Form<CaptchaStage> {
 
     getSuccessMessage(): string {
         if (this.stage) {
-            return gettext("Successfully updated stage.");
+            return t`Successfully updated stage.`;
         } else {
-            return gettext("Successfully created stage.");
+            return t`Successfully created stage.`;
         }
     }
 
@@ -46,29 +46,29 @@ export class CaptchaStageForm extends Form<CaptchaStage> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Name")}
+                label=${t`Name`}
                 ?required=${true}
                 name="name">
                 <input type="text" value="${ifDefined(this.stage?.name || "")}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header">
-                    ${gettext("Stage-specific settings")}
+                    ${t`Stage-specific settings`}
                 </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${gettext("Public Key")}
+                        label=${t`Public Key`}
                         ?required=${true}
                         name="publicKey">
                         <input type="text" value="${ifDefined(this.stage?.publicKey || "")}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${gettext("Public key, acquired from https://www.google.com/recaptcha/intro/v3.html.")}</p>
+                        <p class="pf-c-form__helper-text">${t`Public key, acquired from https://www.google.com/recaptcha/intro/v3.html.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("Private Key")}
+                        label=${t`Private Key`}
                         ?required=${true}
                         name="privateKey">
                         <input type="text" value="${ifDefined(this.stage?.privateKey || "")}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${gettext("Private key, acquired from https://www.google.com/recaptcha/intro/v3.html.")}</p>
+                        <p class="pf-c-form__helper-text">${t`Private key, acquired from https://www.google.com/recaptcha/intro/v3.html.`}</p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

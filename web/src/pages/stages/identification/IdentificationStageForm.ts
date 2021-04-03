@@ -1,5 +1,5 @@
 import { FlowDesignationEnum, FlowsApi, IdentificationStage, IdentificationStageUserFieldsEnum, StagesApi } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
@@ -25,9 +25,9 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
 
     getSuccessMessage(): string {
         if (this.stage) {
-            return gettext("Successfully updated stage.");
+            return t`Successfully updated stage.`;
         } else {
-            return gettext("Successfully created stage.");
+            return t`Successfully created stage.`;
         }
     }
 
@@ -53,51 +53,51 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Name")}
+                label=${t`Name`}
                 ?required=${true}
                 name="name">
                 <input type="text" value="${ifDefined(this.stage?.name || "")}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header">
-                    ${gettext("Stage-specific settings")}
+                    ${t`Stage-specific settings`}
                 </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${gettext("User fields")}
+                        label=${t`User fields`}
                         ?required=${true}
                         name="transports">
                         <select name="users" class="pf-c-form-control" multiple>
                             <option value=${IdentificationStageUserFieldsEnum.Username} ?selected=${this.isUserFieldSelected(IdentificationStageUserFieldsEnum.Username)}>
-                                ${gettext("Username")}
+                                ${t`Username`}
                             </option>
                             <option value=${IdentificationStageUserFieldsEnum.Email} ?selected=${this.isUserFieldSelected(IdentificationStageUserFieldsEnum.Email)}>
-                                ${gettext("Email")}
+                                ${t`Email`}
                             </option>
                         </select>
-                        <p class="pf-c-form__helper-text">${gettext("Fields a user can identify themselves with.")}</p>
-                        <p class="pf-c-form__helper-text">${gettext("Hold control/command to select multiple items.")}</p>
+                        <p class="pf-c-form__helper-text">${t`Fields a user can identify themselves with.`}</p>
+                        <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="caseInsensitiveMatching">
                         <div class="pf-c-check">
                             <input type="checkbox" class="pf-c-check__input" ?checked=${this.stage?.caseInsensitiveMatching || true}>
                             <label class="pf-c-check__label">
-                                ${gettext("Case insensitive matching")}
+                                ${t`Case insensitive matching`}
                             </label>
                         </div>
-                        <p class="pf-c-form__helper-text">${gettext("When enabled, user fields are matched regardless of their casing.")}</p>
+                        <p class="pf-c-form__helper-text">${t`When enabled, user fields are matched regardless of their casing.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="showMatchedUser">
                         <div class="pf-c-check">
                             <input type="checkbox" class="pf-c-check__input" ?checked=${this.stage?.showMatchedUser || true}>
                             <label class="pf-c-check__label">
-                                ${gettext("Show matched user")}
+                                ${t`Show matched user`}
                             </label>
                         </div>
-                        <p class="pf-c-form__helper-text">${gettext("When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown.")}</p>
+                        <p class="pf-c-form__helper-text">${t`When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("Enrollment flow")}
+                        label=${t`Enrollment flow`}
                         name="enrollmentFlow">
                         <select class="pf-c-form-control">
                             <option value="" ?selected=${this.stage?.enrollmentFlow === undefined}>---------</option>
@@ -111,10 +111,10 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
                                 });
                             }))}
                         </select>
-                        <p class="pf-c-form__helper-text">${gettext("Optional enrollment flow, which is linked at the bottom of the page.")}</p>
+                        <p class="pf-c-form__helper-text">${t`Optional enrollment flow, which is linked at the bottom of the page.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("Recovery flow")}
+                        label=${t`Recovery flow`}
                         name="recoveryFlow">
                         <select class="pf-c-form-control">
                             <option value="" ?selected=${this.stage?.recoveryFlow === undefined}>---------</option>
@@ -128,7 +128,7 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
                                 });
                             }))}
                         </select>
-                        <p class="pf-c-form__helper-text">${gettext("Optional recovery flow, which is linked at the bottom of the page.")}</p>
+                        <p class="pf-c-form__helper-text">${t`Optional recovery flow, which is linked at the bottom of the page.`}</p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

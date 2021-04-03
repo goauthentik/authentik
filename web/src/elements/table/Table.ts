@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 
@@ -54,7 +54,7 @@ export class TableColumn {
         return html`
             <button class="pf-c-table__button" @click=${() => this.headerClickHandler(table)}>
                 <div class="pf-c-table__button-content">
-                    <span class="pf-c-table__text">${gettext(this.title)}</span>
+                    <span class="pf-c-table__text">${this.title}</span>
                     <span class="pf-c-table__sort-indicator">
                         <i class="fas ${this.getSortIndicator(table)}"></i>
                     </span>
@@ -70,7 +70,7 @@ export class TableColumn {
                 ${this.orderBy ? "pf-c-table__sort " : " "}
                 ${(table.order === this.orderBy || table.order === `-${this.orderBy}`) ? "pf-m-selected " : ""}
             ">
-            ${this.orderBy ? this.renderSortable(table) : html`${gettext(this.title)}`}
+            ${this.orderBy ? this.renderSortable(table) : html`${this.title}`}
         </th>`;
     }
 
@@ -147,7 +147,7 @@ export abstract class Table<T> extends LitElement {
                 <div class="pf-l-bullseye">
                     <ak-empty-state
                         ?loading="${true}"
-                        header=${gettext("Loading")}>
+                        header=${t`Loading`}>
                     </ak-empty-state>
                 </div>
             </td>
@@ -159,7 +159,7 @@ export abstract class Table<T> extends LitElement {
             <tr role="row">
                 <td role="cell" colspan="8">
                     <div class="pf-l-bullseye">
-                        ${inner ? inner : html`<ak-empty-state header="${gettext("No elements found.")}"></ak-empty-state>`}
+                        ${inner ? inner : html`<ak-empty-state header="${t`No elements found.`}"></ak-empty-state>`}
                     </div>
                 </td>
             </tr>
@@ -218,7 +218,7 @@ export abstract class Table<T> extends LitElement {
         return html`<button
             @click=${() => { this.fetch(); }}
             class="pf-c-button pf-m-primary">
-            ${gettext("Refresh")}
+            ${t`Refresh`}
         </button>`;
     }
 
@@ -253,7 +253,7 @@ export abstract class Table<T> extends LitElement {
                 <thead>
                     <tr role="row">
                         ${this.checkbox ? html`<td class="pf-c-table__check" role="cell">
-                            <input type="checkbox" aria-label=${gettext("Select all rows")} @input=${(ev: InputEvent) => {
+                            <input type="checkbox" aria-label=${t`Select all rows`} @input=${(ev: InputEvent) => {
                                 if ((ev.target as HTMLInputElement).checked) {
                                     this.selectedElements = this.data?.results || [];
                                 } else {

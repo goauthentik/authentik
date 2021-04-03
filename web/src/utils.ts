@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { html, TemplateResult } from "lit-html";
 import "./elements/EmptyState";
 
@@ -46,7 +46,7 @@ export function loading<T>(v: T, actual: TemplateResult): TemplateResult {
     if (!v) {
         return html`<ak-empty-state
             ?loading="${true}"
-            header=${gettext("Loading")}>
+            header=${t`Loading`}>
         </ak-empty-state>`;
     }
     return actual;

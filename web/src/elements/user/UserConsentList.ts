@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { Table, TableColumn } from "../table/Table";
@@ -26,8 +26,8 @@ export class UserConsentList extends Table<UserConsent> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Application", "application"),
-            new TableColumn("Expires", "expires"),
+            new TableColumn(t`Application`, t`application`),
+            new TableColumn(t`Expires`, t`expires`),
             new TableColumn(""),
         ];
     }
@@ -39,14 +39,14 @@ export class UserConsentList extends Table<UserConsent> {
             html`
             <ak-forms-delete
                 .obj=${item}
-                objectLabel=${gettext("Consent")}
+                objectLabel=${t`Consent`}
                 .delete=${() => {
                     return new CoreApi(DEFAULT_CONFIG).coreUserConsentDelete({
                         id: item.pk || 0,
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${gettext("Delete Consent")}
+                    ${t`Delete Consent`}
                 </button>
             </ak-forms-delete>`,
         ];

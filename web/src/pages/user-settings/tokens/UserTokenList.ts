@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../../api/Client";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -36,7 +36,7 @@ export class UserTokenList extends Table<Token> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Identifier", "identifier"),
+            new TableColumn(t`Identifier`, t`identifier`),
             new TableColumn(""),
         ];
     }
@@ -49,15 +49,15 @@ export class UserTokenList extends Table<Token> {
         return html`
         <ak-forms-modal>
             <span slot="submit">
-                ${gettext("Create")}
+                ${t`Create`}
             </span>
             <span slot="header">
-                ${gettext("Create Token")}
+                ${t`Create Token`}
             </span>
             <ak-user-token-form slot="form">
             </ak-user-token-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${gettext("Create")}
+                ${t`Create`}
             </button>
         </ak-forms-modal>
         ${super.renderToolbar()}
@@ -71,7 +71,7 @@ export class UserTokenList extends Table<Token> {
                 <dl class="pf-c-description-list pf-m-horizontal">
                     <div class="pf-c-description-list__group">
                         <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${gettext("User")}</span>
+                            <span class="pf-c-description-list__text">${t`User`}</span>
                         </dt>
                         <dd class="pf-c-description-list__description">
                             <div class="pf-c-description-list__text">${item.user?.username}</div>
@@ -79,15 +79,15 @@ export class UserTokenList extends Table<Token> {
                     </div>
                     <div class="pf-c-description-list__group">
                         <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${gettext("Expiring")}</span>
+                            <span class="pf-c-description-list__text">${t`Expiring`}</span>
                         </dt>
                         <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">${item.expiring ? "Yes" : "No"}</div>
+                            <div class="pf-c-description-list__text">${item.expiring ? t`Yes` : t`No`}</div>
                         </dd>
                     </div>
                     <div class="pf-c-description-list__group">
                         <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${gettext("Expiring")}</span>
+                            <span class="pf-c-description-list__text">${t`Expiring`}</span>
                         </dt>
                         <dd class="pf-c-description-list__description">
                             <div class="pf-c-description-list__text">${item.expiring ? item.expires?.toLocaleString() : "-"}</div>
@@ -105,31 +105,31 @@ export class UserTokenList extends Table<Token> {
             html`
             <ak-forms-modal>
                 <span slot="submit">
-                    ${gettext("Update")}
+                    ${t`Update`}
                 </span>
                 <span slot="header">
-                    ${gettext("Update Token")}
+                    ${t`Update Token`}
                 </span>
                 <ak-user-token-form slot="form" .token=${item}>
                 </ak-user-token-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${gettext("Edit")}
+                    ${t`Edit`}
                 </button>
             </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
-                objectLabel=${gettext("Token")}
+                objectLabel=${t`Token`}
                 .delete=${() => {
                     return new CoreApi(DEFAULT_CONFIG).coreTokensDelete({
                         identifier: item.identifier
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${gettext("Delete")}
+                    ${t`Delete`}
                 </button>
             </ak-forms-delete>
             <ak-token-copy-button identifier="${item.identifier}">
-                ${gettext("Copy Key")}
+                ${t`Copy Key`}
             </ak-token-copy-button>
             `,
         ];

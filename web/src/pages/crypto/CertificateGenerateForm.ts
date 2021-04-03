@@ -1,6 +1,6 @@
 import { CertificateGeneration, CryptoApi } from "authentik-api";
 import { CertificateKeyPair } from "authentik-api/src";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -11,7 +11,7 @@ import "../../elements/forms/HorizontalFormElement";
 export class CertificateKeyPairForm extends Form<CertificateGeneration> {
 
     getSuccessMessage(): string {
-        return gettext("Successfully generated certificate-key pair.");
+        return t`Successfully generated certificate-key pair.`;
     }
 
     send = (data: CertificateGeneration): Promise<CertificateKeyPair> => {
@@ -23,19 +23,19 @@ export class CertificateKeyPairForm extends Form<CertificateGeneration> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Common Name")}
+                label=${t`Common Name`}
                 name="commonName"
                 ?required=${true}>
                 <input type="text" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Subject-alt name")}
+                label=${t`Subject-alt name`}
                 name="subjectAltName">
                 <input class="pf-c-form-control" type="text">
-                <p class="pf-c-form__helper-text">${gettext("Optional, comma-separated SubjectAlt Names.")}</p>
+                <p class="pf-c-form__helper-text">${t`Optional, comma-separated SubjectAlt Names.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Validity days")}
+                label=${t`Validity days`}
                 name="validityDays"
                 ?required=${true}>
                 <input class="pf-c-form-control" type="number" value="365">

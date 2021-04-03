@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { Table, TableColumn } from "../../elements/table/Table";
@@ -36,22 +36,22 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     columns(): TableColumn[] {
         return [
             new TableColumn("Policy / User / Group"),
-            new TableColumn("Enabled", "enabled"),
-            new TableColumn("Order", "order"),
-            new TableColumn("Timeout", "timeout"),
+            new TableColumn(t`Enabled`, t`enabled`),
+            new TableColumn(t`Order`, t`order`),
+            new TableColumn(t`Timeout`, t`timeout`),
             new TableColumn(""),
         ];
     }
 
     getPolicyUserGroupRow(item: PolicyBinding): string {
         if (item.policy) {
-            return gettext(`Policy ${item.policyObj?.name}`);
+            return t`Policy ${item.policyObj?.name}`;
         } else if (item.group) {
-            return gettext(`Group ${item.groupObj?.name}`);
+            return t`Group ${item.groupObj?.name}`;
         } else if (item.user) {
-            return gettext(`User ${item.userObj?.name}`);
+            return t`User ${item.userObj?.name}`;
         } else {
-            return gettext("");
+            return t`-`;
         }
     }
 
@@ -60,10 +60,10 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             return html`
             <ak-forms-modal>
                 <span slot="submit">
-                    ${gettext("Update")}
+                    ${t`Update`}
                 </span>
                 <span slot="header">
-                    ${gettext(`Update ${item.policyObj?.name}`)}
+                    ${t`Update ${item.policyObj?.name}`}
                 </span>
                 <ak-proxy-form
                     slot="form"
@@ -73,35 +73,35 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                     type=${ifDefined(item.policyObj?.component)}>
                 </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${gettext("Edit")}
+                    ${t`Edit`}
                 </button>
             </ak-forms-modal>`;
         } else if (item.group) {
             return html`<ak-forms-modal>
                 <span slot="submit">
-                    ${gettext("Update")}
+                    ${t`Update`}
                 </span>
                 <span slot="header">
-                    ${gettext("Update Group")}
+                    ${t`Update Group`}
                 </span>
                 <ak-group-form slot="form" .group=${item.groupObj}>
                 </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">
-                    ${gettext("Edit Group")}
+                    ${t`Edit Group`}
                 </button>
             </ak-forms-modal>`;
         } else if (item.user) {
             return html`<ak-forms-modal>
                 <span slot="submit">
-                    ${gettext("Update")}
+                    ${t`Update`}
                 </span>
                 <span slot="header">
-                    ${gettext("Update User")}
+                    ${t`Update User`}
                 </span>
                 <ak-user-form slot="form" .user=${item.userObj}>
                 </ak-user-form>
                 <button slot="trigger" class="pf-m-secondary pf-c-button">
-                    ${gettext("Edit")}
+                    ${t`Edit`}
                 </button>
             </ak-forms-modal>`;
         } else {
@@ -112,56 +112,56 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     row(item: PolicyBinding): TemplateResult[] {
         return [
             html`${this.getPolicyUserGroupRow(item)}`,
-            html`${item.enabled ? "Yes" : "No"}`,
+            html`${item.enabled ? t`Yes` : t`No`}`,
             html`${item.order}`,
             html`${item.timeout}`,
             html`
             ${this.getObjectEditButton(item)}
             <ak-forms-modal>
                 <span slot="submit">
-                    ${gettext("Update")}
+                    ${t`Update`}
                 </span>
                 <span slot="header">
-                    ${gettext("Update Binding")}
+                    ${t`Update Binding`}
                 </span>
                 <ak-policy-binding-form slot="form" .binding=${item} targetPk=${ifDefined(this.target)}>
                 </ak-policy-binding-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${gettext("Edit Binding")}
+                    ${t`Edit Binding`}
                 </button>
             </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
-                objectLabel=${gettext("Policy binding")}
+                objectLabel=${t`Policy binding`}
                 .delete=${() => {
                     return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsDelete({
                         policyBindingUuid: item.pk || "",
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${gettext("Delete Binding")}
+                    ${t`Delete Binding`}
                 </button>
             </ak-forms-delete>`,
         ];
     }
 
     renderEmpty(): TemplateResult {
-        return super.renderEmpty(html`<ak-empty-state header=${gettext("No Policies bound.")} icon="pf-icon-module">
+        return super.renderEmpty(html`<ak-empty-state header=${t`No Policies bound.`} icon="pf-icon-module">
             <div slot="body">
-                ${gettext("No policies are currently bound to this object.")}
+                ${t`No policies are currently bound to this object.`}
             </div>
             <div slot="primary">
                 <ak-forms-modal>
                     <span slot="submit">
-                        ${gettext("Create")}
+                        ${t`Create`}
                     </span>
                     <span slot="header">
-                        ${gettext("Create Binding")}
+                        ${t`Create Binding`}
                     </span>
                     <ak-policy-binding-form slot="form" targetPk=${ifDefined(this.target)}>
                     </ak-policy-binding-form>
                     <button slot="trigger" class="pf-c-button pf-m-primary">
-                        ${gettext("Create Binding")}
+                        ${t`Create Binding`}
                     </button>
                 </ak-forms-modal>
             </div>
@@ -172,7 +172,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         return html`
         <ak-dropdown class="pf-c-dropdown">
             <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
-                <span class="pf-c-dropdown__toggle-text">${gettext("Create Policy")}</span>
+                <span class="pf-c-dropdown__toggle-text">${t`Create Policy`}</span>
                 <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </button>
             <ul class="pf-c-dropdown__menu" hidden>
@@ -181,10 +181,10 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                         return html`<li>
                             <ak-forms-modal>
                                 <span slot="submit">
-                                    ${gettext("Create")}
+                                    ${t`Create`}
                                 </span>
                                 <span slot="header">
-                                    ${gettext(`Create ${type.name}`)}
+                                    ${t`Create ${type.name}`}
                                 </span>
                                 <ak-proxy-form
                                     slot="form"
@@ -202,15 +202,15 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         </ak-dropdown>
         <ak-forms-modal>
             <span slot="submit">
-                ${gettext("Create")}
+                ${t`Create`}
             </span>
             <span slot="header">
-                ${gettext("Create Binding")}
+                ${t`Create Binding`}
             </span>
             <ak-policy-binding-form slot="form" targetPk=${ifDefined(this.target)}>
             </ak-policy-binding-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${gettext("Create Binding")}
+                ${t`Create Binding`}
             </button>
         </ak-forms-modal>
         ${super.renderToolbar()}

@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
@@ -17,10 +17,10 @@ export class TokenListPage extends TablePage<Token> {
         return true;
     }
     pageTitle(): string {
-        return gettext("Tokens");
+        return t`Tokens`;
     }
     pageDescription(): string {
-        return gettext("Tokens are used throughout authentik for Email validation stages, Recovery keys and API access.");
+        return t`Tokens are used throughout authentik for Email validation stages, Recovery keys and API access.`;
     }
     pageIcon(): string {
         return "pf-icon pf-icon-security";
@@ -40,10 +40,10 @@ export class TokenListPage extends TablePage<Token> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Identifier", "identifier"),
-            new TableColumn("User", "user"),
-            new TableColumn("Expires?", "expiring"),
-            new TableColumn("Expiry date", "expires"),
+            new TableColumn(t`Identifier`, t`identifier`),
+            new TableColumn(t`User`, t`user`),
+            new TableColumn(t`Expires?`, t`expiring`),
+            new TableColumn(t`Expiry date`, t`expires`),
             new TableColumn(""),
         ];
     }
@@ -52,23 +52,23 @@ export class TokenListPage extends TablePage<Token> {
         return [
             html`${item.identifier}`,
             html`${item.user?.username}`,
-            html`${item.expiring ? "Yes" : "No"}`,
+            html`${item.expiring ? t`Yes` : t`No`}`,
             html`${item.expiring ? item.expires?.toLocaleString() : "-"}`,
             html`
             <ak-forms-delete
                 .obj=${item}
-                objectLabel=${gettext("Token")}
+                objectLabel=${t`Token`}
                 .delete=${() => {
                     return new CoreApi(DEFAULT_CONFIG).coreTokensDelete({
                         identifier: item.identifier
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${gettext("Delete")}
+                    ${t`Delete`}
                 </button>
             </ak-forms-delete>
             <ak-token-copy-button identifier="${item.identifier}">
-                ${gettext("Copy Key")}
+                ${t`Copy Key`}
             </ak-token-copy-button>
             `,
         ];

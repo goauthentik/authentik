@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import PFExpandableSection from "../../node_modules/@patternfly/patternfly/components/ExpandableSection/expandable-section.css";
 
@@ -26,7 +26,7 @@ export class Expand extends LitElement {
                 <span class="pf-c-expandable-section__toggle-icon">
                     <i class="fas fa-angle-right" aria-hidden="true"></i>
                 </span>
-                <span class="pf-c-expandable-section__toggle-text">${gettext(this.expanded ? this.textOpen : this.textClosed)}</span>
+                <span class="pf-c-expandable-section__toggle-text">${this.expanded ? t`${this.textOpen}` : t`${this.textClosed}`}</span>
             </button>
             <slot ?hidden=${!this.expanded} class="pf-c-expandable-section__content"></slot>
         </div>`;

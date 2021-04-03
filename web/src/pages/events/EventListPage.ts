@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { Event, EventsApi } from "authentik-api";
 import { AKResponse } from "../../api/Client";
@@ -40,10 +40,10 @@ export class EventListPage extends TablePage<Event> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Action", "action"),
-            new TableColumn("User", "user"),
-            new TableColumn("Creation Date", "created"),
-            new TableColumn("Client IP", "client_ip"),
+            new TableColumn(t`Action`, t`action`),
+            new TableColumn(t`User`, t`user`),
+            new TableColumn(t`Creation Date`, t`created`),
+            new TableColumn(t`Client IP`, t`client_ip`),
         ];
     }
     row(item: EventWithContext): TemplateResult[] {
@@ -52,7 +52,7 @@ export class EventListPage extends TablePage<Event> {
             <small>${item.app}</small>`,
             html`<div>${item.user?.username}</div>
             ${item.user.on_behalf_of ? html`<small>
-                ${gettext(`On behalf of ${item.user.on_behalf_of.username}`)}
+                ${t`On behalf of ${item.user.on_behalf_of.username}`}
             </small>` : html``}`,
             html`<span>${item.created?.toLocaleString()}</span>`,
             html`<span>${item.clientIp}</span>`,

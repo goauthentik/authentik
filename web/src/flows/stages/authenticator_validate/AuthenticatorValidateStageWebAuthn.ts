@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -48,10 +48,10 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage {
                 publicKey: transformedCredentialRequestOptions,
             });
             if (!assertion) {
-                throw new Error(gettext("Assertions is empty"));
+                throw new Error(t`Assertions is empty`);
             }
         } catch (err) {
-            throw new Error(gettext(`Error when creating credential: ${err}`));
+            throw new Error(t`Error when creating credential: ${err}`);
         }
 
         // we now have an authentication assertion! encode the byte arrays contained
@@ -64,7 +64,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage {
             formData.set("webauthn", JSON.stringify(transformedAssertionForServer));
             await this.host?.submit(formData);
         } catch (err) {
-            throw new Error(gettext(`Error when validating assertion on server: ${err}`));
+            throw new Error(t`Error when validating assertion on server: ${err}`);
         }
     }
 
@@ -78,7 +78,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage {
         }
         this.authenticateRunning = true;
         this.authenticate().catch((e) => {
-            console.error(gettext(e));
+            console.error(e);
             this.authenticateMessage = e.toString();
         }).finally(() => {
             this.authenticateRunning = false;
@@ -101,7 +101,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage {
                     <button class="pf-c-button pf-m-primary pf-m-block" @click=${() => {
                         this.authenticateWrapper();
                     }}>
-                        ${gettext("Retry authentication")}
+                        ${t`Retry authentication`}
                     </button>
                 </div>`}
         </div>
@@ -113,7 +113,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage {
                             if (!this.host) return;
                             (this.host as AuthenticatorValidateStage).selectedDeviceChallenge = undefined;
                         }}>
-                            ${gettext("Return to device picker")}
+                            ${t`Return to device picker`}
                         </button>
                     </li>`:
                     html``}

@@ -1,4 +1,3 @@
-import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { ifDefined } from "lit-html/directives/if-defined";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -47,7 +46,7 @@ export class AggregateCard extends LitElement {
         return html`<div class="pf-c-card pf-c-card-aggregate">
             <div class="pf-c-card__header pf-l-flex pf-m-justify-content-space-between">
                 <div class="pf-c-card__header-main">
-                    <i class="${ifDefined(this.icon)}"></i> ${this.header ? gettext(this.header) : ""}
+                    <i class="${ifDefined(this.icon)}"></i> ${this.header ? this.header : ""}
                 </div>
                 ${this.renderHeaderLink()}
             </div>

@@ -6,6 +6,7 @@ import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import AKGlobal from "../../authentik.css";
+import { t } from "@lingui/macro";
 
 @customElement("ak-table-search")
 export class TableSearch extends LitElement {
@@ -31,7 +32,7 @@ export class TableSearch extends LitElement {
                         if (el.value === "") return;
                         this.onSearch(el?.value);
                     }}>
-                        <input class="pf-c-form-control" name="search" type="search" placeholder="Search..." value="${ifDefined(this.value)}" @search=${(ev: Event) => {
+                        <input class="pf-c-form-control" name="search" type="search" placeholder=${t`Search...`} value="${ifDefined(this.value)}" @search=${(ev: Event) => {
                             if (!this.onSearch) return;
                             this.onSearch((ev.target as HTMLInputElement).value);
                         }}>

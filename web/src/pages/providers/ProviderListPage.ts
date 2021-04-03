@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
@@ -25,10 +25,10 @@ export class ProviderListPage extends TablePage<Provider> {
         return true;
     }
     pageTitle(): string {
-        return gettext("Provider");
+        return t`Provider`;
     }
     pageDescription(): string {
-        return gettext("Provide support for protocols like SAML and OAuth to assigned applications.");
+        return t`Provide support for protocols like SAML and OAuth to assigned applications.`;
     }
     pageIcon(): string {
         return "pf-icon pf-icon-integration";
@@ -48,9 +48,9 @@ export class ProviderListPage extends TablePage<Provider> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Name", "name"),
+            new TableColumn(t`Name`, t`name`),
             new TableColumn("Application"),
-            new TableColumn("Type", "type"),
+            new TableColumn(t`Type`, t`type`),
             new TableColumn(""),
         ];
     }
@@ -62,18 +62,18 @@ export class ProviderListPage extends TablePage<Provider> {
             </a>`,
             item.assignedApplicationName ?
                 html`<i class="pf-icon pf-icon-ok"></i>
-                    ${gettext("Assigned to application ")}
+                    ${t`Assigned to application `}
                     <a href="#/core/applications/${item.assignedApplicationSlug}">${item.assignedApplicationName}</a>` :
                 html`<i class="pf-icon pf-icon-warning-triangle"></i>
-                ${gettext("Warning: Provider not assigned to any application.")}`,
+                ${t`Warning: Provider not assigned to any application.`}`,
             html`${item.verboseName}`,
             html`
             <ak-forms-modal>
                 <span slot="submit">
-                    ${gettext("Update")}
+                    ${t`Update`}
                 </span>
                 <span slot="header">
-                    ${gettext(`Update ${item.verboseName}`)}
+                    ${t`Update ${item.verboseName}`}
                 </span>
                 <ak-proxy-form
                     slot="form"
@@ -83,19 +83,19 @@ export class ProviderListPage extends TablePage<Provider> {
                     type=${ifDefined(item.component)}>
                 </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${gettext("Edit")}
+                    ${t`Edit`}
                 </button>
             </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
-                objectLabel=${gettext("Source")}
+                objectLabel=${t`Source`}
                 .delete=${() => {
                     return new ProvidersApi(DEFAULT_CONFIG).providersAllDelete({
                         id: item.pk || 0
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${gettext("Delete")}
+                    ${t`Delete`}
                 </button>
             </ak-forms-delete>`,
         ];
@@ -105,7 +105,7 @@ export class ProviderListPage extends TablePage<Provider> {
         return html`
         <ak-dropdown class="pf-c-dropdown">
             <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
-                <span class="pf-c-dropdown__toggle-text">${gettext("Create")}</span>
+                <span class="pf-c-dropdown__toggle-text">${t`Create`}</span>
                 <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </button>
             <ul class="pf-c-dropdown__menu" hidden>
@@ -114,10 +114,10 @@ export class ProviderListPage extends TablePage<Provider> {
                         return html`<li>
                             <ak-forms-modal>
                                 <span slot="submit">
-                                    ${gettext("Create")}
+                                    ${t`Create`}
                                 </span>
                                 <span slot="header">
-                                    ${gettext(`Create ${type.name}`)}
+                                    ${t`Create ${type.name}`}
                                 </span>
                                 <ak-proxy-form
                                     slot="form"

@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -10,6 +10,7 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import AKGlobal from "../../authentik.css";
 
 import "../../elements/forms/ModalForm";
@@ -33,7 +34,7 @@ import { MessageLevel } from "../../elements/messages/Message";
 @customElement("ak-user-view")
 export class UserViewPage extends Page {
     pageTitle(): string {
-        return gettext(`User ${this.user?.username || ""}`);
+        return t`User ${this.user?.username || ""}`;
     }
     pageDescription(): string | undefined {
         return this.user?.name || "";
@@ -55,7 +56,7 @@ export class UserViewPage extends Page {
     user?: User;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, AKGlobal];
+        return [PFBase, PFPage, PFFlex, PFButton, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, AKGlobal];
     }
 
     constructor() {
@@ -71,17 +72,17 @@ export class UserViewPage extends Page {
             return html``;
         }
         return html`<ak-tabs>
-                <section slot="page-1" data-tab-title="${gettext("Overview")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-1" data-tab-title="${t`Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-l-gallery pf-m-gutter">
                         <div class="pf-c-card pf-l-gallery__item pf-m-4-col">
                             <div class="pf-c-card__title">
-                                ${gettext("User Info")}
+                                ${t`User Info`}
                             </div>
                             <div class="pf-c-card__body">
                                 <dl class="pf-c-description-list">
                                     <div class="pf-c-description-list__group">
                                         <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text">${gettext("Username")}</span>
+                                            <span class="pf-c-description-list__text">${t`Username`}</span>
                                         </dt>
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">${this.user.username}</div>
@@ -89,7 +90,7 @@ export class UserViewPage extends Page {
                                     </div>
                                     <div class="pf-c-description-list__group">
                                         <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text">${gettext("Name")}</span>
+                                            <span class="pf-c-description-list__text">${t`Name`}</span>
                                         </dt>
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">${this.user.name}</div>
@@ -97,7 +98,7 @@ export class UserViewPage extends Page {
                                     </div>
                                     <div class="pf-c-description-list__group">
                                         <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text">${gettext("Email")}</span>
+                                            <span class="pf-c-description-list__text">${t`Email`}</span>
                                         </dt>
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">${this.user.email}</div>
@@ -105,7 +106,7 @@ export class UserViewPage extends Page {
                                     </div>
                                     <div class="pf-c-description-list__group">
                                         <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text">${gettext("Last login")}</span>
+                                            <span class="pf-c-description-list__text">${t`Last login`}</span>
                                         </dt>
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">${this.user.lastLogin?.toLocaleString()}</div>
@@ -113,7 +114,7 @@ export class UserViewPage extends Page {
                                     </div>
                                     <div class="pf-c-description-list__group">
                                         <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text">${gettext("Active")}</span>
+                                            <span class="pf-c-description-list__text">${t`Active`}</span>
                                         </dt>
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">
@@ -123,7 +124,7 @@ export class UserViewPage extends Page {
                                     </div>
                                     <div class="pf-c-description-list__group">
                                         <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text">${gettext("Superuser")}</span>
+                                            <span class="pf-c-description-list__text">${t`Superuser`}</span>
                                         </dt>
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">
@@ -136,15 +137,15 @@ export class UserViewPage extends Page {
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
                                     <span slot="submit">
-                                        ${gettext("Update")}
+                                        ${t`Update`}
                                     </span>
                                     <span slot="header">
-                                        ${gettext("Update User")}
+                                        ${t`Update User`}
                                     </span>
                                     <ak-user-form slot="form" .user=${this.user}>
                                     </ak-user-form>
                                     <button slot="trigger" class="pf-m-primary pf-c-button">
-                                        ${gettext("Edit")}
+                                        ${t`Edit`}
                                     </button>
                                 </ak-forms-modal>
                             </div>
@@ -156,35 +157,35 @@ export class UserViewPage extends Page {
                                         }).then(rec => {
                                             showMessage({
                                                 level: MessageLevel.success,
-                                                message: gettext("Successfully generated recovery link"),
+                                                message: t`Successfully generated recovery link`,
                                                 description: rec.link
                                             });
                                         });
                                     }}>
-                                    ${gettext("Reset Password")}
+                                    ${t`Reset Password`}
                                 </ak-action-button>
                             </div>
                         </div>
                         <div class="pf-c-card pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 4;grid-row-end: span 2;">
                             <div class="pf-c-card__body">
-                                <ak-charts-user>
+                                <ak-charts-user userId=${this.user.pk || 0}>
                                 </ak-charts-user>
                             </div>
                         </div>
                     </div>
                 </section>
-                <section slot="page-2" data-tab-title="${gettext("Changelog")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-2" data-tab-title="${t`Changelog`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
                             <ak-object-changelog
-                                targetModelPk=${this.user.pk || ""}
+                                targetModelPk=${this.user.pk || 0}
                                 targetModelApp="authentik_core"
                                 targetModelName="user">
                             </ak-object-changelog>
                         </div>
                     </div>
                 </section>
-                <section slot="page-3" data-tab-title="${gettext("Explicit Consent")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-3" data-tab-title="${t`Explicit Consent`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
                             <ak-user-consent-list .userId="${(this.user.pk || 0).toString()}">
@@ -192,7 +193,7 @@ export class UserViewPage extends Page {
                         </div>
                     </div>
                 </section>
-                <section slot="page-4" data-tab-title="${gettext("OAuth Authorization Codes")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-4" data-tab-title="${t`OAuth Authorization Codes`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
                             <ak-user-oauth-code-list .userId="${(this.user.pk || 0).toString()}">
@@ -200,7 +201,7 @@ export class UserViewPage extends Page {
                         </div>
                     </div>
                 </section>
-                <section slot="page-5" data-tab-title="${gettext("OAuth Refresh Codes")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-5" data-tab-title="${t`OAuth Refresh Codes`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
                             <ak-user-oauth-refresh-list .userId="${(this.user.pk || 0).toString()}">

@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TableColumn } from "../../elements/table/Table";
@@ -47,8 +47,8 @@ export class SourceListPage extends TablePage<Source> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Name", "name"),
-            new TableColumn("Type", "verboseName"),
+            new TableColumn(t`Name`, t`name`),
+            new TableColumn(t`Type`, t`verboseName`),
             new TableColumn(""),
         ];
     }
@@ -57,16 +57,16 @@ export class SourceListPage extends TablePage<Source> {
         return [
             html`<a href="#/core/sources/${item.slug}">
                 <div>${item.name}</div>
-                ${item.enabled ? html`` : html`<small>${gettext("Disabled")}</small>`}
+                ${item.enabled ? html`` : html`<small>${t`Disabled`}</small>`}
             </a>`,
             html`${item.verboseName}`,
             html`
             <ak-forms-modal>
                 <span slot="submit">
-                    ${gettext("Update")}
+                    ${t`Update`}
                 </span>
                 <span slot="header">
-                    ${gettext(`Update ${item.verboseName}`)}
+                    ${t`Update ${item.verboseName}`}
                 </span>
                 <ak-proxy-form
                     slot="form"
@@ -76,19 +76,19 @@ export class SourceListPage extends TablePage<Source> {
                     type=${ifDefined(item.component)}>
                 </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${gettext("Edit")}
+                    ${t`Edit`}
                 </button>
             </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
-                objectLabel=${gettext("Source")}
+                objectLabel=${t`Source`}
                 .delete=${() => {
                     return new SourcesApi(DEFAULT_CONFIG).sourcesAllDelete({
                         slug: item.slug || ""
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${gettext("Delete")}
+                    ${t`Delete`}
                 </button>
             </ak-forms-delete>`,
         ];
@@ -98,7 +98,7 @@ export class SourceListPage extends TablePage<Source> {
         return html`
         <ak-dropdown class="pf-c-dropdown">
             <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
-                <span class="pf-c-dropdown__toggle-text">${gettext("Create")}</span>
+                <span class="pf-c-dropdown__toggle-text">${t`Create`}</span>
                 <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </button>
             <ul class="pf-c-dropdown__menu" hidden>
@@ -107,10 +107,10 @@ export class SourceListPage extends TablePage<Source> {
                         return html`<li>
                             <ak-forms-modal>
                                 <span slot="submit">
-                                    ${gettext("Create")}
+                                    ${t`Create`}
                                 </span>
                                 <span slot="header">
-                                    ${gettext(`Create ${type.name}`)}
+                                    ${t`Create ${type.name}`}
                                 </span>
                                 <ak-proxy-form
                                     slot="form"

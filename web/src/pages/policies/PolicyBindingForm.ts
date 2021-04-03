@@ -1,5 +1,5 @@
 import { CoreApi, PoliciesApi, Policy, PolicyBinding } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -20,9 +20,9 @@ export class PolicyBindingForm extends Form<PolicyBinding> {
 
     getSuccessMessage(): string {
         if (this.binding) {
-            return gettext("Successfully updated binding.");
+            return t`Successfully updated binding.`;
         } else {
-            return gettext("Successfully created binding.");
+            return t`Successfully created binding.`;
         }
     }
 
@@ -72,7 +72,7 @@ export class PolicyBindingForm extends Form<PolicyBinding> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Policy")}
+                label=${t`Policy`}
                 name="policy">
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.binding?.policy === undefined}>---------</option>
@@ -84,7 +84,7 @@ export class PolicyBindingForm extends Form<PolicyBinding> {
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Group")}
+                label=${t`Group`}
                 name="group">
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.binding?.group === undefined}>---------</option>
@@ -98,7 +98,7 @@ export class PolicyBindingForm extends Form<PolicyBinding> {
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("User")}
+                label=${t`User`}
                 name="user">
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.binding?.user === undefined}>---------</option>
@@ -116,18 +116,18 @@ export class PolicyBindingForm extends Form<PolicyBinding> {
                 <div class="pf-c-check">
                     <input type="checkbox" class="pf-c-check__input" ?checked=${this.binding?.enabled || true}>
                     <label class="pf-c-check__label">
-                        ${gettext("Enabled")}
+                        ${t`Enabled`}
                     </label>
                 </div>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Order")}
+                label=${t`Order`}
                 ?required=${true}
                 name="order">
                 <input type="number" value="${until(this.getOrder(), this.binding?.order)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Timeout")}
+                label=${t`Timeout`}
                 ?required=${true}
                 name="timeout">
                 <input type="number" value="${first(this.binding?.timeout, 30)}" class="pf-c-form-control" required>

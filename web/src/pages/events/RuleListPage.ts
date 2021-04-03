@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
@@ -21,10 +21,10 @@ export class RuleListPage extends TablePage<NotificationRule> {
         return true;
     }
     pageTitle(): string {
-        return gettext("Notification Rules");
+        return t`Notification Rules`;
     }
     pageDescription(): string {
-        return gettext("Send notifications whenever a specific Event is created and matched by policies.");
+        return t`Send notifications whenever a specific Event is created and matched by policies.`;
     }
     pageIcon(): string {
         return "pf-icon pf-icon-attention-bell";
@@ -44,9 +44,9 @@ export class RuleListPage extends TablePage<NotificationRule> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Name", "name"),
-            new TableColumn("Severity", "severity"),
-            new TableColumn("Sent to group", "group"),
+            new TableColumn(t`Name`, t`name`),
+            new TableColumn(t`Severity`, t`severity`),
+            new TableColumn(t`Sent to group`, t`group`),
             new TableColumn(""),
         ];
     }
@@ -55,31 +55,31 @@ export class RuleListPage extends TablePage<NotificationRule> {
         return [
             html`${item.name}`,
             html`${item.severity}`,
-            html`${item.group?.name || gettext("None (rule disabled)")}`,
+            html`${item.group?.name || t`None (rule disabled)`}`,
             html`
             <ak-forms-modal>
                 <span slot="submit">
-                    ${gettext("Update")}
+                    ${t`Update`}
                 </span>
                 <span slot="header">
-                    ${gettext("Update Notification Rule")}
+                    ${t`Update Notification Rule`}
                 </span>
                 <ak-event-rule-form slot="form" .rule=${item}>
                 </ak-event-rule-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">
-                    ${gettext("Edit")}
+                    ${t`Edit`}
                 </button>
             </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
-                objectLabel=${gettext("Notification rule")}
+                objectLabel=${t`Notification rule`}
                 .delete=${() => {
                     return new EventsApi(DEFAULT_CONFIG).eventsRulesDelete({
                         pbmUuid: item.pk || ""
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${gettext("Delete")}
+                    ${t`Delete`}
                 </button>
             </ak-forms-delete>`,
         ];
@@ -89,15 +89,15 @@ export class RuleListPage extends TablePage<NotificationRule> {
         return html`
         <ak-forms-modal>
             <span slot="submit">
-                ${gettext("Create")}
+                ${t`Create`}
             </span>
             <span slot="header">
-                ${gettext("Create Notification Rule")}
+                ${t`Create Notification Rule`}
             </span>
             <ak-event-rule-form slot="form">
             </ak-event-rule-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${gettext("Create")}
+                ${t`Create`}
             </button>
         </ak-forms-modal>
         ${super.renderToolbar()}

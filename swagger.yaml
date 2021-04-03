@@ -2087,23 +2087,6 @@ paths:
       tags:
         - core
     parameters: []
-  /core/users/metrics/:
-    get:
-      operationId: core_users_metrics
-      description: User metrics per 1h
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/UserMetrics'
-        '403':
-          description: Authentication credentials were invalid, absent or insufficient.
-          schema:
-            $ref: '#/definitions/GenericError'
-      tags:
-        - core
-    parameters: []
   /core/users/{id}/:
     get:
       operationId: core_users_read
@@ -2190,6 +2173,33 @@ paths:
       responses:
         '204':
           description: ''
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+        '404':
+          description: Object does not exist or caller has insufficient permissions
+            to access it.
+          schema:
+            $ref: '#/definitions/APIException'
+      tags:
+        - core
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this User.
+        required: true
+        type: integer
+  /core/users/{id}/metrics/:
+    get:
+      operationId: core_users_metrics
+      description: User metrics per 1h
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserMetrics'
         '403':
           description: Authentication credentials were invalid, absent or insufficient.
           schema:

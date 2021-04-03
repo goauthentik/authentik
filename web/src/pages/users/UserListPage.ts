@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
@@ -22,7 +22,7 @@ export class UserListPage extends TablePage<User> {
         return true;
     }
     pageTitle(): string {
-        return gettext("Users");
+        return t`Users`;
     }
     pageDescription(): string {
         return "";
@@ -45,9 +45,9 @@ export class UserListPage extends TablePage<User> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Name", "username"),
-            new TableColumn("Active", "active"),
-            new TableColumn("Last login", "last_login"),
+            new TableColumn(t`Name`, t`username`),
+            new TableColumn(t`Active`, t`active`),
+            new TableColumn(t`Last login`, t`last_login`),
             new TableColumn(""),
         ];
     }
@@ -58,32 +58,32 @@ export class UserListPage extends TablePage<User> {
                 <div>${item.username}</div>
                 <small>${item.name}</small>
             </a>`,
-            html`${item.isActive ? "Yes" : "No"}`,
+            html`${item.isActive ? t`Yes` : t`No`}`,
             html`${item.lastLogin?.toLocaleString()}`,
             html`
             <ak-forms-modal>
                 <span slot="submit">
-                    ${gettext("Update")}
+                    ${t`Update`}
                 </span>
                 <span slot="header">
-                    ${gettext("Update User")}
+                    ${t`Update User`}
                 </span>
                 <ak-user-form slot="form" .user=${item}>
                 </ak-user-form>
                 <button slot="trigger" class="pf-m-secondary pf-c-button">
-                    ${gettext("Edit")}
+                    ${t`Edit`}
                 </button>
             </ak-forms-modal>
             <ak-dropdown class="pf-c-dropdown">
                 <button class="pf-c-dropdown__toggle pf-m-primary" type="button">
-                    <span class="pf-c-dropdown__toggle-text">${gettext(item.isActive ? "Disable" : "Enable")}</span>
+                    <span class="pf-c-dropdown__toggle-text">${item.isActive ? t`Disable` : t`Enable`}</span>
                     <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                 </button>
                 <ul class="pf-c-dropdown__menu" hidden>
                     <li>
                         <ak-user-active-form
                             .obj=${item}
-                            objectLabel=${gettext("User")}
+                            objectLabel=${t`User`}
                             .delete=${() => {
                                 return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
                                     id: item.pk || 0,
@@ -95,7 +95,7 @@ export class UserListPage extends TablePage<User> {
                                 });
                             }}>
                             <button slot="trigger" class="pf-c-dropdown__menu-item">
-                                ${item.isActive ? gettext("Disable") : gettext("Enable")}
+                                ${item.isActive ? t`Disable` : t`Enable`}
                             </button>
                         </ak-user-active-form>
                     </li>
@@ -103,14 +103,14 @@ export class UserListPage extends TablePage<User> {
                     <li>
                         <ak-forms-delete
                             .obj=${item}
-                            objectLabel=${gettext("User")}
+                            objectLabel=${t`User`}
                             .delete=${() => {
                                 return new CoreApi(DEFAULT_CONFIG).coreUsersDelete({
                                     id: item.pk || 0
                                 });
                             }}>
                             <button slot="trigger" class="pf-c-dropdown__menu-item">
-                                ${gettext("Delete")}
+                                ${t`Delete`}
                             </button>
                         </ak-forms-delete>
                     </li>
@@ -123,15 +123,15 @@ export class UserListPage extends TablePage<User> {
                     }).then(rec => {
                         showMessage({
                             level: MessageLevel.success,
-                            message: gettext("Successfully generated recovery link"),
+                            message: t`Successfully generated recovery link`,
                             description: rec.link
                         });
                     });
                 }}>
-                ${gettext("Reset Password")}
+                ${t`Reset Password`}
             </ak-action-button>
             <a class="pf-c-button pf-m-tertiary" href="${`/-/impersonation/${item.pk}/`}">
-                ${gettext("Impersonate")}
+                ${t`Impersonate`}
             </a>`,
         ];
     }
@@ -140,15 +140,15 @@ export class UserListPage extends TablePage<User> {
         return html`
         <ak-forms-modal>
             <span slot="submit">
-                ${gettext("Create")}
+                ${t`Create`}
             </span>
             <span slot="header">
-                ${gettext("Create User")}
+                ${t`Create User`}
             </span>
             <ak-user-form slot="form">
             </ak-user-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${gettext("Create")}
+                ${t`Create`}
             </button>
         </ak-forms-modal>
         ${super.renderToolbar()}

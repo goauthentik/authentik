@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { Provider } from "authentik-api";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -26,15 +26,15 @@ export class RelatedApplicationButton extends LitElement {
         }
         return html`<ak-forms-modal>
             <span slot="submit">
-                ${gettext("Create")}
+                ${t`Create`}
             </span>
             <span slot="header">
-                ${gettext("Create Application")}
+                ${t`Create Application`}
             </span>
             <ak-application-form slot="form" .provider=${this.provider?.pk}>
             </ak-application-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${gettext("Create")}
+                ${t`Create`}
             </button>
         </ak-forms-modal>`;
     }

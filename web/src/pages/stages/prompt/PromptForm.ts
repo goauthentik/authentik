@@ -1,5 +1,5 @@
 import { Prompt, PromptTypeEnum, StagesApi } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
@@ -15,9 +15,9 @@ export class PromptForm extends Form<Prompt> {
 
     getSuccessMessage(): string {
         if (this.prompt) {
-            return gettext("Successfully updated prompt.");
+            return t`Successfully updated prompt.`;
         } else {
-            return gettext("Successfully created prompt.");
+            return t`Successfully created prompt.`;
         }
     }
 
@@ -37,37 +37,37 @@ export class PromptForm extends Form<Prompt> {
     renderTypes(): TemplateResult {
         return html`
             <option value=${PromptTypeEnum.Text} ?selected=${this.prompt?.type === PromptTypeEnum.Text}>
-                ${gettext("Text: Simple Text input")}
+                ${t`Text: Simple Text input`}
             </option>
             <option value=${PromptTypeEnum.Username} ?selected=${this.prompt?.type === PromptTypeEnum.Username}>
-                ${gettext("Username: Same as Text input, but checks for and prevents duplicate usernames.")}
+                ${t`Username: Same as Text input, but checks for and prevents duplicate usernames.`}
             </option>
             <option value=${PromptTypeEnum.Email} ?selected=${this.prompt?.type === PromptTypeEnum.Email}>
-                ${gettext("Email: Text field with Email type.")}
+                ${t`Email: Text field with Email type.`}
             </option>
             <option value=${PromptTypeEnum.Password} ?selected=${this.prompt?.type === PromptTypeEnum.Password}>
-                ${gettext("Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical.")}
+                ${t`Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical.`}
             </option>
             <option value=${PromptTypeEnum.Number} ?selected=${this.prompt?.type === PromptTypeEnum.Number}>
-                ${gettext("Number")}
+                ${t`Number`}
             </option>
             <option value=${PromptTypeEnum.Checkbox} ?selected=${this.prompt?.type === PromptTypeEnum.Checkbox}>
-                ${gettext("Checkbox")}
+                ${t`Checkbox`}
             </option>
             <option value=${PromptTypeEnum.Date} ?selected=${this.prompt?.type === PromptTypeEnum.Date}>
-                ${gettext("Date")}
+                ${t`Date`}
             </option>
             <option value=${PromptTypeEnum.DateTime} ?selected=${this.prompt?.type === PromptTypeEnum.DateTime}>
-                ${gettext("Date Time")}
+                ${t`Date Time`}
             </option>
             <option value=${PromptTypeEnum.Separator} ?selected=${this.prompt?.type === PromptTypeEnum.Separator}>
-                ${gettext("Separator: Static Separator Line")}
+                ${t`Separator: Static Separator Line`}
             </option>
             <option value=${PromptTypeEnum.Hidden} ?selected=${this.prompt?.type === PromptTypeEnum.Hidden}>
-                ${gettext("Hidden: Hidden field, can be used to insert data into form.")}
+                ${t`Hidden: Hidden field, can be used to insert data into form.`}
             </option>
             <option value=${PromptTypeEnum.Static} ?selected=${this.prompt?.type === PromptTypeEnum.Static}>
-                ${gettext("Static: Static value, displayed as-is.")}
+                ${t`Static: Static value, displayed as-is.`}
             </option>
         `;
     }
@@ -75,21 +75,21 @@ export class PromptForm extends Form<Prompt> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Field Key")}
+                label=${t`Field Key`}
                 ?required=${true}
                 name="fieldKey">
                 <input type="text" value="${ifDefined(this.prompt?.fieldKey)}" class="pf-c-form-control" required>
-                <p class="pf-c-form__helper-text">${gettext("Name of the form field, also used to store the value.")}</p>
+                <p class="pf-c-form__helper-text">${t`Name of the form field, also used to store the value.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Label")}
+                label=${t`Label`}
                 ?required=${true}
                 name="label">
                 <input type="text" value="${ifDefined(this.prompt?.label)}" class="pf-c-form-control" required>
-                <p class="pf-c-form__helper-text">${gettext("Label shown next to/above the prompt.")}</p>
+                <p class="pf-c-form__helper-text">${t`Label shown next to/above the prompt.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Type")}
+                label=${t`Type`}
                 ?required=${true}
                 name="type">
                 <select class="pf-c-form-control">
@@ -100,18 +100,18 @@ export class PromptForm extends Form<Prompt> {
                 <div class="pf-c-check">
                     <input type="checkbox" class="pf-c-check__input" ?checked=${this.prompt?.required || false}>
                     <label class="pf-c-check__label">
-                        ${gettext("Required")}
+                        ${t`Required`}
                     </label>
                 </div>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Placeholder")}
+                label=${t`Placeholder`}
                 name="placeholder">
                 <input type="text" value="${ifDefined(this.prompt?.placeholder)}" class="pf-c-form-control" required>
-                <p class="pf-c-form__helper-text">${gettext("Optionally pre-fill the input value")}</p>
+                <p class="pf-c-form__helper-text">${t`Optionally pre-fill the input value`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Order")}
+                label=${t`Order`}
                 ?required=${true}
                 name="order">
                 <input type="number" value="${ifDefined(this.prompt?.order)}" class="pf-c-form-control" required>

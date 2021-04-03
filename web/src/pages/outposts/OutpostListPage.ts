@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { AKResponse } from "../../api/Client";
@@ -40,7 +40,7 @@ export class OutpostListPage extends TablePage<Outpost> {
     }
     columns(): TableColumn[] {
         return [
-            new TableColumn("Name", "name"),
+            new TableColumn(t`Name`, t`name`),
             new TableColumn("Providers"),
             new TableColumn("Health and Version"),
             new TableColumn(""),
@@ -60,39 +60,39 @@ export class OutpostListPage extends TablePage<Outpost> {
             html`
             <ak-forms-modal>
                 <span slot="submit">
-                    ${gettext("Update")}
+                    ${t`Update`}
                 </span>
                 <span slot="header">
-                    ${gettext("Update Outpost")}
+                    ${t`Update Outpost`}
                 </span>
                 <ak-outpost-form slot="form" .outpost=${item}>
                 </ak-outpost-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${gettext("Edit")}
+                    ${t`Edit`}
                 </button>
             </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
-                objectLabel=${gettext("Outpost")}
+                objectLabel=${t`Outpost`}
                 .delete=${() => {
                     return new OutpostsApi(DEFAULT_CONFIG).outpostsOutpostsDelete({
                         uuid: item.pk || ""
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${gettext("Delete")}
+                    ${t`Delete`}
                 </button>
             </ak-forms-delete>
             <ak-modal-button>
                 <button slot="trigger" class="pf-c-button pf-m-tertiary">
-                    ${gettext("View Deployment Info")}
+                    ${t`View Deployment Info`}
                 </button>
                 <div slot="modal">
                     <div class="pf-c-modal-box__header">
-                        <h1 class="pf-c-title pf-m-2xl" id="modal-title">${gettext("Outpost Deployment Info")}</h1>
+                        <h1 class="pf-c-title pf-m-2xl" id="modal-title">${t`Outpost Deployment Info`}</h1>
                     </div>
                     <div class="pf-c-modal-box__body" id="modal-description">
-                        <p><a href="https://goauthentik.io/docs/outposts/outposts/#deploy">${gettext("View deployment documentation")}</a></p>
+                        <p><a href="https://goauthentik.io/docs/outposts/outposts/#deploy">${t`View deployment documentation`}</a></p>
                         <form class="pf-c-form">
                             <div class="pf-c-form__group">
                                 <label class="pf-c-form__label" for="help-text-simple-form-name">
@@ -106,11 +106,11 @@ export class OutpostListPage extends TablePage<Outpost> {
                                 </label>
                                 <div>
                                     <ak-token-copy-button identifier="${ifDefined(item.tokenIdentifier)}">
-                                        ${gettext("Click to copy token")}
+                                        ${t`Click to copy token`}
                                     </ak-token-copy-button>
                                 </div>
                             </div>
-                            <h3>${gettext("If your authentik Instance is using a self-signed certificate, set this value.")}</h3>
+                            <h3>${t`If your authentik Instance is using a self-signed certificate, set this value.`}</h3>
                             <div class="pf-c-form__group">
                                 <label class="pf-c-form__label" for="help-text-simple-form-name">
                                     <span class="pf-c-form__label-text">AUTHENTIK_INSECURE</span>
@@ -120,7 +120,7 @@ export class OutpostListPage extends TablePage<Outpost> {
                         </form>
                     </div>
                     <footer class="pf-c-modal-box__footer pf-m-align-left">
-                        <a class="pf-c-button pf-m-primary">${gettext("Close")}</a>
+                        <a class="pf-c-button pf-m-primary">${t`Close`}</a>
                     </footer>
                 </div>
             </ak-modal-button>`,
@@ -131,15 +131,15 @@ export class OutpostListPage extends TablePage<Outpost> {
         return html`
         <ak-forms-modal>
             <span slot="submit">
-                ${gettext("Create")}
+                ${t`Create`}
             </span>
             <span slot="header">
-                ${gettext("Create Outpost")}
+                ${t`Create Outpost`}
             </span>
             <ak-outpost-form slot="form">
             </ak-outpost-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${gettext("Create")}
+                ${t`Create`}
             </button>
         </ak-forms-modal>
         ${super.renderToolbar()}

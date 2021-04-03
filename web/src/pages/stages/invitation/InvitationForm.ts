@@ -1,5 +1,5 @@
 import { Invitation, StagesApi } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
@@ -16,9 +16,9 @@ export class InvitationForm extends Form<Invitation> {
 
     getSuccessMessage(): string {
         if (this.invitation) {
-            return gettext("Successfully updated invitation.");
+            return t`Successfully updated invitation.`;
         } else {
-            return gettext("Successfully created invitation.");
+            return t`Successfully created invitation.`;
         }
     }
 
@@ -38,17 +38,17 @@ export class InvitationForm extends Form<Invitation> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Expires")}
+                label=${t`Expires`}
                 ?required=${true}
                 name="expires">
                 <input type="date" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Attributes")}
+                label=${t`Attributes`}
                 name="fixedData">
                 <ak-codemirror mode="yaml" value="${YAML.stringify(this.invitation?.fixedData)}">
                 </ak-codemirror>
-                <p class="pf-c-form__helper-text">${gettext("Optional data which is loaded into the flow's 'prompt_data' context variable.")}</p>
+                <p class="pf-c-form__helper-text">${t`Optional data which is loaded into the flow's 'prompt_data' context variable.`}</p>
             </ak-form-element-horizontal>
         </form>`;
     }

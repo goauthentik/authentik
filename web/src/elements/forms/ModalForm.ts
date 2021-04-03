@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { EVENT_REFRESH } from "../../constants";
 import { ModalButton } from "../buttons/ModalButton";
@@ -66,7 +66,7 @@ export class ModalForm extends ModalButton {
                     this.open = false;
                 }}
                 class="pf-m-secondary">
-                ${gettext("Cancel")}
+                ${t`Cancel`}
             </ak-spinner-button>
         </footer>`;
     }

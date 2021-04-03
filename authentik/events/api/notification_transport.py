@@ -1,5 +1,4 @@
 """NotificationTransport API Views"""
-from django.http.response import Http404
 from drf_yasg.utils import no_body, swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, ListField, SerializerMethodField
@@ -68,10 +67,7 @@ class NotificationTransportViewSet(ModelViewSet):
     def test(self, request: Request, pk=None) -> Response:
         """Send example notification using selected transport. Requires
         Modify permissions."""
-        transports = self.get_object()
-        if not transports.exists():
-            raise Http404
-        transport: NotificationTransport = transports.first()
+        transport: NotificationTransport = self.get_object()
         notification = Notification(
             severity=NotificationSeverity.NOTICE,
             body=f"Test Notification from transport {transport.name}",

@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { EventsApi, Notification } from "authentik-api";
 import { AKResponse } from "../../api/Client";
@@ -100,10 +100,10 @@ export class NotificationDrawer extends LitElement {
             <div class="pf-c-notification-drawer">
                 <div class="pf-c-notification-drawer__header pf-c-content">
                     <h1>
-                        ${gettext("Notifications")}
+                        ${t`Notifications`}
                     </h1>
                     <p>
-                        ${gettext(`${this.unread} unread`)}
+                        ${t`${this.unread} unread`}
                     </p>
                 </div>
                 <div class="pf-c-notification-drawer__body">

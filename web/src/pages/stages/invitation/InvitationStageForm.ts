@@ -1,5 +1,5 @@
 import { InvitationStage, StagesApi } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
@@ -24,9 +24,9 @@ export class InvitationStageForm extends Form<InvitationStage> {
 
     getSuccessMessage(): string {
         if (this.stage) {
-            return gettext("Successfully updated stage.");
+            return t`Successfully updated stage.`;
         } else {
-            return gettext("Successfully created stage.");
+            return t`Successfully created stage.`;
         }
     }
 
@@ -46,24 +46,24 @@ export class InvitationStageForm extends Form<InvitationStage> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Name")}
+                label=${t`Name`}
                 ?required=${true}
                 name="name">
                 <input type="text" value="${ifDefined(this.stage?.name || "")}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header">
-                    ${gettext("Stage-specific settings")}
+                    ${t`Stage-specific settings`}
                 </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="continueFlowWithoutInvitation">
                         <div class="pf-c-check">
                             <input type="checkbox" class="pf-c-check__input" ?checked=${this.stage?.continueFlowWithoutInvitation || true}>
                             <label class="pf-c-check__label">
-                                ${gettext("Continue flow without invitation")}
+                                ${t`Continue flow without invitation`}
                             </label>
                         </div>
-                        <p class="pf-c-form__helper-text">${gettext("If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.")}</p>
+                        <p class="pf-c-form__helper-text">${t`If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.`}</p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

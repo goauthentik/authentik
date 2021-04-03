@@ -1,4 +1,3 @@
-import "construct-style-sheets-polyfill";
-
+import "./locale";
 import "../elements/messages/MessageContainer";
 import "../flows/FlowExecutor";

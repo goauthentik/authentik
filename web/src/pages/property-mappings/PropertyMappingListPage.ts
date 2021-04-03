@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
@@ -25,10 +25,10 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         return true;
     }
     pageTitle(): string {
-        return gettext("Property Mappings");
+        return t`Property Mappings`;
     }
     pageDescription(): string {
-        return gettext("Control how authentik exposes and interprets information.");
+        return t`Control how authentik exposes and interprets information.`;
     }
     pageIcon(): string {
         return "pf-icon pf-icon-blueprint";
@@ -52,8 +52,8 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Name", "name"),
-            new TableColumn("Type", "type"),
+            new TableColumn(t`Name`, t`name`),
+            new TableColumn(t`Type`, t`type`),
             new TableColumn(""),
         ];
     }
@@ -65,10 +65,10 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
             html`
             <ak-forms-modal>
                 <span slot="submit">
-                    ${gettext("Update")}
+                    ${t`Update`}
                 </span>
                 <span slot="header">
-                    ${gettext(`Update ${item.verboseName}`)}
+                    ${t`Update ${item.verboseName}`}
                 </span>
                 <ak-proxy-form
                     slot="form"
@@ -78,32 +78,32 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                     type=${ifDefined(item.component)}>
                 </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${gettext("Edit")}
+                    ${t`Edit`}
                 </button>
             </ak-forms-modal>
             <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
                 <span slot="submit">
-                    ${gettext("Test")}
+                    ${t`Test`}
                 </span>
                 <span slot="header">
-                    ${gettext("Test Property Mapping")}
+                    ${t`Test Property Mapping`}
                 </span>
                 <ak-property-mapping-test-form slot="form" .mapping=${item}>
                 </ak-property-mapping-test-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${gettext("Test")}
+                    ${t`Test`}
                 </button>
             </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
-                objectLabel=${gettext("Property Mapping")}
+                objectLabel=${t`Property Mapping`}
                 .delete=${() => {
                     return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllDelete({
                         pmUuid: item.pk || ""
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${gettext("Delete")}
+                    ${t`Delete`}
                 </button>
             </ak-forms-delete>`,
         ];
@@ -113,7 +113,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         return html`
         <ak-dropdown class="pf-c-dropdown">
             <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
-                <span class="pf-c-dropdown__toggle-text">${gettext("Create")}</span>
+                <span class="pf-c-dropdown__toggle-text">${t`Create`}</span>
                 <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </button>
             <ul class="pf-c-dropdown__menu" hidden>
@@ -122,10 +122,10 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                         return html`<li>
                             <ak-forms-modal>
                                 <span slot="submit">
-                                    ${gettext("Create")}
+                                    ${t`Create`}
                                 </span>
                                 <span slot="header">
-                                    ${gettext(`Create ${type.name}`)}
+                                    ${t`Create ${type.name}`}
                                 </span>
                                 <ak-proxy-form
                                     slot="form"
@@ -154,7 +154,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                             this.page = 1;
                             this.fetch();
                         }} />
-                        <label class="pf-c-check__label" for="hide-managed">${gettext("Hide managed mappings")}</label>
+                        <label class="pf-c-check__label" for="hide-managed">${t`Hide managed mappings`}</label>
                     </div>
                 </div>
             </div>

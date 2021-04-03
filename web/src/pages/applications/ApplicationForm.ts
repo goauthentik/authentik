@@ -1,5 +1,5 @@
 import { CoreApi, Application, ProvidersApi, Provider, ApplicationPolicyEngineModeEnum } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -20,9 +20,9 @@ export class ApplicationForm extends Form<Application> {
 
     getSuccessMessage(): string {
         if (this.application) {
-            return gettext("Successfully updated application.");
+            return t`Successfully updated application.`;
         } else {
-            return gettext("Successfully created application.");
+            return t`Successfully created application.`;
         }
     }
 
@@ -74,21 +74,21 @@ export class ApplicationForm extends Form<Application> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Name")}
+                label=${t`Name`}
                 ?required=${true}
                 name="name">
                 <input type="text" value="${ifDefined(this.application?.name)}" class="pf-c-form-control" required>
-                <p class="pf-c-form__helper-text">${gettext("Application's display Name.")}</p>
+                <p class="pf-c-form__helper-text">${t`Application's display Name.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Slug")}
+                label=${t`Slug`}
                 ?required=${true}
                 name="slug">
                 <input type="text" value="${ifDefined(this.application?.slug)}" class="pf-c-form-control" required>
-                <p class="pf-c-form__helper-text">${gettext("Internal application name, used in URLs.")}</p>
+                <p class="pf-c-form__helper-text">${t`Internal application name, used in URLs.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Provider")}
+                label=${t`Provider`}
                 name="parent">
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.application?.provider === undefined}>---------</option>
@@ -98,36 +98,36 @@ export class ApplicationForm extends Form<Application> {
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Policy engine mode")}
+                label=${t`Policy engine mode`}
                 ?required=${true}
                 name="policyEngineMode">
                 <select class="pf-c-form-control">
                     <option value=${ApplicationPolicyEngineModeEnum.Any} ?selected=${this.application?.policyEngineMode === ApplicationPolicyEngineModeEnum.Any}>
-                        ${gettext("ANY, any policy must match to grant access.")}
+                        ${t`ANY, any policy must match to grant access.`}
                     </option>
                     <option value=${ApplicationPolicyEngineModeEnum.All} ?selected=${this.application?.policyEngineMode === ApplicationPolicyEngineModeEnum.All}>
-                        ${gettext("ALL, all policies must match to grant access.")}
+                        ${t`ALL, all policies must match to grant access.`}
                     </option>
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Launch URL")}
+                label=${t`Launch URL`}
                 name="launchUrl">
                 <input type="text" value="${ifDefined(this.application?.launchUrl)}" class="pf-c-form-control">
-                <p class="pf-c-form__helper-text">${gettext("If left empty, authentik will try to extract the launch URL based on the selected provider.")}</p>
+                <p class="pf-c-form__helper-text">${t`If left empty, authentik will try to extract the launch URL based on the selected provider.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Icon")}
+                label=${t`Icon`}
                 name="metaIcon">
                 <input type="file" value="${ifDefined(this.application?.metaIcon)}" class="pf-c-form-control">
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Description")}
+                label=${t`Description`}
                 name="metaDescription">
                 <textarea class="pf-c-form-control">${ifDefined(this.application?.metaDescription)}</textarea>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Publisher")}
+                label=${t`Publisher`}
                 name="metaPublisher">
                 <input type="text" value="${ifDefined(this.application?.metaPublisher)}" class="pf-c-form-control">
             </ak-form-element-horizontal>

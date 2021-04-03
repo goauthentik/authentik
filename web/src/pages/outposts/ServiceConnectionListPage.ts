@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { AKResponse } from "../../api/Client";
@@ -45,9 +45,9 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Name", "name"),
+            new TableColumn(t`Name`, t`name`),
             new TableColumn("Type"),
-            new TableColumn("Local", "local"),
+            new TableColumn(t`Local`, t`local`),
             new TableColumn("State"),
             new TableColumn(""),
         ];
@@ -60,7 +60,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
         return [
             html`${item.name}`,
             html`${item.verboseName}`,
-            html`${item.local ? "Yes" : "No"}`,
+            html`${item.local ? t`Yes` : t`No`}`,
             html`${until(
                 new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllState({
                     uuid: item.pk || ""
@@ -68,15 +68,15 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                     if (state.healthy) {
                         return html`<i class="fas fa-check pf-m-success"></i> ${state.version}`;
                     }
-                    return html`<i class="fas fa-times pf-m-danger"></i> ${gettext("Unhealthy")}`;
+                    return html`<i class="fas fa-times pf-m-danger"></i> ${t`Unhealthy`}`;
                 }), html`<ak-spinner></ak-spinner>`)}`,
             html`
             <ak-forms-modal>
                 <span slot="submit">
-                    ${gettext("Update")}
+                    ${t`Update`}
                 </span>
                 <span slot="header">
-                    ${gettext(`Update ${item.verboseName}`)}
+                    ${t`Update ${item.verboseName}`}
                 </span>
                 <ak-proxy-form
                     slot="form"
@@ -86,19 +86,19 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                     type=${ifDefined(item.component)}>
                 </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${gettext("Edit")}
+                    ${t`Edit`}
                 </button>
             </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
-                objectLabel=${gettext("Outpost Service-connection")}
+                objectLabel=${t`Outpost Service-connection`}
                 .delete=${() => {
                     return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllDelete({
                         uuid: item.pk || ""
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${gettext("Delete")}
+                    ${t`Delete`}
                 </button>
             </ak-forms-delete>`,
         ];
@@ -108,7 +108,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
         return html`
         <ak-dropdown class="pf-c-dropdown">
             <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
-                <span class="pf-c-dropdown__toggle-text">${gettext("Create")}</span>
+                <span class="pf-c-dropdown__toggle-text">${t`Create`}</span>
                 <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </button>
             <ul class="pf-c-dropdown__menu" hidden>
@@ -117,10 +117,10 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                         return html`<li>
                             <ak-forms-modal>
                                 <span slot="submit">
-                                    ${gettext("Create")}
+                                    ${t`Create`}
                                 </span>
                                 <span slot="header">
-                                    ${gettext(`Create ${type.name}`)}
+                                    ${t`Create ${type.name}`}
                                 </span>
                                 <ak-proxy-form
                                     slot="form"

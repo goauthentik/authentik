@@ -1,5 +1,5 @@
 import { OAuthSource, SourcesApi, FlowsApi, FlowDesignationEnum } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
@@ -29,9 +29,9 @@ export class OAuthSourceForm extends Form<OAuthSource> {
 
     getSuccessMessage(): string {
         if (this.source) {
-            return gettext("Successfully updated source.");
+            return t`Successfully updated source.`;
         } else {
-            return gettext("Successfully created source.");
+            return t`Successfully created source.`;
         }
     }
 
@@ -55,35 +55,35 @@ export class OAuthSourceForm extends Form<OAuthSource> {
         return html`
             <ak-form-group>
                 <span slot="header">
-                    ${gettext("URL settings")}
+                    ${t`URL settings`}
                 </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${gettext("Authorization URL")}
+                        label=${t`Authorization URL`}
                         ?required=${true}
                         name="authorizationUrl">
                         <input type="text" value="${ifDefined(this.source?.authorizationUrl)}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${gettext("URL the user is redirect to to consent the authorization.")}</p>
+                        <p class="pf-c-form__helper-text">${t`URL the user is redirect to to consent the authorization.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("Access token URL")}
+                        label=${t`Access token URL`}
                         ?required=${true}
                         name="accessTokenUrl">
                         <input type="text" value="${ifDefined(this.source?.accessTokenUrl)}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${gettext("URL used by authentik to retrieve tokens.")}</p>
+                        <p class="pf-c-form__helper-text">${t`URL used by authentik to retrieve tokens.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("Profile URL")}
+                        label=${t`Profile URL`}
                         ?required=${true}
                         name="profileUrl">
                         <input type="text" value="${ifDefined(this.source?.profileUrl)}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${gettext("URL used by authentik to get user information.")}</p>
+                        <p class="pf-c-form__helper-text">${t`URL used by authentik to get user information.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("Request token URL")}
+                        label=${t`Request token URL`}
                         name="requestTokenUrl">
                         <input type="text" value="${ifDefined(this.source?.requestTokenUrl)}" class="pf-c-form-control">
-                        <p class="pf-c-form__helper-text">${gettext("URL used to request the initial token. This URL is only required for OAuth 1.")}</p>
+                        <p class="pf-c-form__helper-text">${t`URL used to request the initial token. This URL is only required for OAuth 1.`}</p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
@@ -92,13 +92,13 @@ export class OAuthSourceForm extends Form<OAuthSource> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Name")}
+                label=${t`Name`}
                 ?required=${true}
                 name="name">
                 <input type="text" value="${ifDefined(this.source?.name)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Slug")}
+                label=${t`Slug`}
                 ?required=${true}
                 name="slug">
                 <input type="text" value="${ifDefined(this.source?.slug)}" class="pf-c-form-control" required>
@@ -107,30 +107,30 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                 <div class="pf-c-check">
                     <input type="checkbox" class="pf-c-check__input" ?checked=${this.source?.enabled || true}>
                     <label class="pf-c-check__label">
-                        ${gettext("Enabled")}
+                        ${t`Enabled`}
                     </label>
                 </div>
             </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>
                 <span slot="header">
-                    ${gettext("Protocol settings")}
+                    ${t`Protocol settings`}
                 </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${gettext("Consumer key")}
+                        label=${t`Consumer key`}
                         ?required=${true}
                         name="consumerKey">
                         <input type="text" value="${ifDefined(this.source?.consumerKey)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("Consumer secret")}
+                        label=${t`Consumer secret`}
                         ?required=${true}
                         name="consumerSecret">
                         <input type="text" value="${ifDefined(this.source?.consumerSecret)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("Provider type")}
+                        label=${t`Provider type`}
                         name="providerType">
                         <select class="pf-c-form-control" @change=${(ev: Event) => {
                             const el = (ev.target as HTMLSelectElement);
@@ -147,18 +147,18 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                                 });
                             }))}
                         </select>
-                        <p class="pf-c-form__helper-text">${gettext("Keypair which is used to sign outgoing requests. Leave empty to disable signing.")}</p>
+                        <p class="pf-c-form__helper-text">${t`Keypair which is used to sign outgoing requests. Leave empty to disable signing.`}</p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             ${this.renderUrlOptions()}
             <ak-form-group>
                 <span slot="header">
-                    ${gettext("Flow settings")}
+                    ${t`Flow settings`}
                 </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${gettext("Authentication flow")}
+                        label=${t`Authentication flow`}
                         ?required=${true}
                         name="authenticationFlow">
                         <select class="pf-c-form-control">
@@ -175,10 +175,10 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                                 });
                             }))}
                         </select>
-                        <p class="pf-c-form__helper-text">${gettext("Flow to use when authenticating existing users.")}</p>
+                        <p class="pf-c-form__helper-text">${t`Flow to use when authenticating existing users.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${gettext("Enrollment flow")}
+                        label=${t`Enrollment flow`}
                         ?required=${true}
                         name="enrollmentFlow">
                         <select class="pf-c-form-control">
@@ -195,7 +195,7 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                                 });
                             }))}
                         </select>
-                        <p class="pf-c-form__helper-text">${gettext("Flow to use when enrolling new users.")}</p>
+                        <p class="pf-c-form__helper-text">${t`Flow to use when enrolling new users.`}</p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

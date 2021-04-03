@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, TemplateResult } from "lit-element";
 import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
 import { FlowsApi } from "authentik-api";
@@ -18,7 +18,7 @@ export class FlowCacheStatusCard extends AdminStatusCard<number> {
         if (value < 1) {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
-                message: gettext("No flows cached."),
+                message: t`No flows cached.`,
             });
         } else {
             return Promise.resolve<AdminStatus>({
@@ -29,18 +29,18 @@ export class FlowCacheStatusCard extends AdminStatusCard<number> {
 
     renderHeaderLink(): TemplateResult {
         return html`<ak-forms-confirm
-                successMessage="Successfully cleared flow cache"
-                errorMessage="Failed to delete flow cache"
-                action="Clear cache"
+                successMessage=${t`Successfully cleared flow cache`}
+                errorMessage=${t`Failed to delete flow cache`}
+                action=${t`Clear cache`}
                 .onConfirm=${() => {
                     return new FlowsApi(DEFAULT_CONFIG).flowsInstancesCacheClear();
                 }}>
                 <span slot="header">
-                    ${gettext("Clear Flow cache")}
+                    ${t`Clear Flow cache`}
                 </span>
                 <p slot="body">
-                    ${gettext(`Are you sure you want to clear the flow cache?
-                        This will cause all flows to be re-evaluated on their next usage.`)}
+                    ${t`Are you sure you want to clear the flow cache?
+                        This will cause all flows to be re-evaluated on their next usage.`}
                 </p>
                 <a slot="trigger">
                     <i class="fa fa-trash"> </i>

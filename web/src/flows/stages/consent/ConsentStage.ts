@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { WithUserInfoChallenge } from "../../../api/Flows";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -39,7 +39,7 @@ export class ConsentStage extends BaseStage {
         if (!this.challenge) {
             return html`<ak-empty-state
                 ?loading="${true}"
-                header=${gettext("Loading")}>
+                header=${t`Loading`}>
             </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
@@ -54,14 +54,14 @@ export class ConsentStage extends BaseStage {
                         userAvatar="${this.challenge.pending_user_avatar}"
                         user=${this.challenge.pending_user}>
                         <div slot="link">
-                            <a href="${FlowURLManager.cancel()}">${gettext("Not you?")}</a>
+                            <a href="${FlowURLManager.cancel()}">${t`Not you?`}</a>
                         </div>
                     </ak-form-static>
                     <div class="pf-c-form__group">
                         <p id="header-text">
                             ${this.challenge.header_text}
                         </p>
-                        <p>${gettext("Application requires following permissions")}</p>
+                        <p>${t`Application requires following permissions`}</p>
                         <ul class="pf-c-list" id="permmissions">
                             ${(this.challenge.permissions || []).map((permission) => {
                                 return html`<li data-permission-code="${permission.id}">${permission.name}</li>`;
@@ -71,7 +71,7 @@ export class ConsentStage extends BaseStage {
 
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${gettext("Continue")}
+                            ${t`Continue`}
                         </button>
                     </div>
                 </form>

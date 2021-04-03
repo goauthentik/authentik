@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -27,7 +27,7 @@ import { EVENT_REFRESH } from "../../../constants";
 @customElement("ak-source-oauth-view")
 export class OAuthSourceViewPage extends Page {
     pageTitle(): string {
-        return gettext(`OAuth Source ${this.source?.name || ""}`);
+        return t`OAuth Source ${this.source?.name || ""}`;
     }
     pageDescription(): string | undefined {
         return;
@@ -65,7 +65,7 @@ export class OAuthSourceViewPage extends Page {
             return html``;
         }
         return html`<ak-tabs>
-                <section slot="page-1" data-tab-title="${gettext("Overview")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-1" data-tab-title="${t`Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-u-display-flex pf-u-justify-content-center">
                         <div class="pf-u-w-75">
                             <div class="pf-c-card">
@@ -73,7 +73,7 @@ export class OAuthSourceViewPage extends Page {
                                     <dl class="pf-c-description-list pf-m-2-col-on-lg">
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Name")}</span>
+                                                <span class="pf-c-description-list__text">${t`Name`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">${this.source.name}</div>
@@ -81,7 +81,7 @@ export class OAuthSourceViewPage extends Page {
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Provider Type")}</span>
+                                                <span class="pf-c-description-list__text">${t`Provider Type`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">${this.source.providerType}</div>
@@ -89,7 +89,7 @@ export class OAuthSourceViewPage extends Page {
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Callback URL")}</span>
+                                                <span class="pf-c-description-list__text">${t`Callback URL`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <code class="pf-c-description-list__text">${this.source.callbackUrl}</code>
@@ -97,7 +97,7 @@ export class OAuthSourceViewPage extends Page {
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Access Key")}</span>
+                                                <span class="pf-c-description-list__text">${t`Access Key`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">${this.source.consumerKey}</div>
@@ -105,7 +105,7 @@ export class OAuthSourceViewPage extends Page {
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Authorization URL")}</span>
+                                                <span class="pf-c-description-list__text">${t`Authorization URL`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">${this.source.authorizationUrl}</div>
@@ -113,7 +113,7 @@ export class OAuthSourceViewPage extends Page {
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Token URL")}</span>
+                                                <span class="pf-c-description-list__text">${t`Token URL`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">${this.source.accessTokenUrl}</div>
@@ -124,17 +124,17 @@ export class OAuthSourceViewPage extends Page {
                                 <div class="pf-c-card__footer">
                                     <ak-forms-modal>
                                         <span slot="submit">
-                                            ${gettext("Update")}
+                                            ${t`Update`}
                                         </span>
                                         <span slot="header">
-                                            ${gettext("Update OAuth Source")}
+                                            ${t`Update OAuth Source`}
                                         </span>
                                         <ak-source-oauth-form
                                             slot="form"
                                             .sourceSlug=${this.source.slug}>
                                         </ak-source-oauth-form>
                                         <button slot="trigger" class="pf-c-button pf-m-primary">
-                                            ${gettext("Edit")}
+                                            ${t`Edit`}
                                         </button>
                                     </ak-forms-modal>
                                 </div>
@@ -142,7 +142,7 @@ export class OAuthSourceViewPage extends Page {
                         </div>
                     </div>
                 </section>
-                <section slot="page-2" data-tab-title="${gettext("Changelog")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-2" data-tab-title="${t`Changelog`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
                             <ak-object-changelog

@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { PoliciesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
@@ -20,7 +20,7 @@ export class PolicyUnboundStatusCard extends AdminStatusCard<number> {
         if (value > 0) {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
-                message: gettext("Policies without binding exist."),
+                message: t`Policies without binding exist.`,
             });
         } else {
             return Promise.resolve<AdminStatus>({

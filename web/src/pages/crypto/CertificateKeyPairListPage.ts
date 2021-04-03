@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
@@ -23,10 +23,10 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         return true;
     }
     pageTitle(): string {
-        return gettext("Certificate-Key Pairs");
+        return t`Certificate-Key Pairs`;
     }
     pageDescription(): string {
-        return gettext("Import certificates of external providers or create certificates to sign requests with.");
+        return t`Import certificates of external providers or create certificates to sign requests with.`;
     }
     pageIcon(): string {
         return "pf-icon pf-icon-key";
@@ -50,7 +50,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Name", "name"),
+            new TableColumn(t`Name`, t`name`),
             new TableColumn("Private key available?"),
             new TableColumn("Expiry date"),
             new TableColumn(""),
@@ -60,32 +60,32 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     row(item: CertificateKeyPair): TemplateResult[] {
         return [
             html`${item.name}`,
-            html`${gettext(item.privateKeyAvailable ? "Yes" : "No")}`,
+            html`${item.privateKeyAvailable ? t`Yes` : t`No`}`,
             html`${item.certExpiry?.toLocaleString()}`,
             html`
             <ak-forms-modal>
                 <span slot="submit">
-                    ${gettext("Update")}
+                    ${t`Update`}
                 </span>
                 <span slot="header">
-                    ${gettext("Update Certificate-Key Pair")}
+                    ${t`Update Certificate-Key Pair`}
                 </span>
                 <ak-crypto-certificate-form slot="form" .keyPair=${item}>
                 </ak-crypto-certificate-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${gettext("Edit")}
+                    ${t`Edit`}
                 </button>
             </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
-                objectLabel=${gettext("Certificate-Key Pair")}
+                objectLabel=${t`Certificate-Key Pair`}
                 .delete=${() => {
                     return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsDelete({
                         kpUuid: item.pk || ""
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${gettext("Delete")}
+                    ${t`Delete`}
                 </button>
             </ak-forms-delete>`,
         ];
@@ -98,7 +98,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                 <dl class="pf-c-description-list pf-m-horizontal">
                     <div class="pf-c-description-list__group">
                         <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${gettext("Certificate Fingerprint")}</span>
+                            <span class="pf-c-description-list__text">${t`Certificate Fingerprint`}</span>
                         </dt>
                         <dd class="pf-c-description-list__description">
                             <div class="pf-c-description-list__text">${item.fingerprint}</div>
@@ -106,7 +106,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                     </div>
                     <div class="pf-c-description-list__group">
                         <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${gettext("Certificate Subjet")}</span>
+                            <span class="pf-c-description-list__text">${t`Certificate Subjet`}</span>
                         </dt>
                         <dd class="pf-c-description-list__description">
                             <div class="pf-c-description-list__text">${item.certSubject}</div>
@@ -123,28 +123,28 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         return html`
         <ak-forms-modal>
             <span slot="submit">
-                ${gettext("Create")}
+                ${t`Create`}
             </span>
             <span slot="header">
-                ${gettext("Create Certificate-Key Pair")}
+                ${t`Create Certificate-Key Pair`}
             </span>
             <ak-crypto-certificate-form slot="form">
             </ak-crypto-certificate-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${gettext("Create")}
+                ${t`Create`}
             </button>
         </ak-forms-modal>
         <ak-forms-modal>
             <span slot="submit">
-                ${gettext("Generate")}
+                ${t`Generate`}
             </span>
             <span slot="header">
-                ${gettext("Generate Certificate-Key Pair")}
+                ${t`Generate Certificate-Key Pair`}
             </span>
             <ak-crypto-certificate-generate-form slot="form">
             </ak-crypto-certificate-generate-form>
             <button slot="trigger" class="pf-c-button pf-m-secondary">
-                ${gettext("Generate")}
+                ${t`Generate`}
             </button>
         </ak-forms-modal>
         ${super.renderToolbar()}

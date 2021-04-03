@@ -1,5 +1,5 @@
 import { AuthenticatorsApi, StagesApi } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
@@ -12,7 +12,7 @@ export class UserSettingsAuthenticatorStatic extends BaseUserSettings {
     renderEnabled(): TemplateResult {
         return html`<div class="pf-c-card__body">
                 <p>
-                    ${gettext("Status: Enabled")}
+                    ${t`Status: Enabled`}
                     <i class="pf-icon pf-icon-ok"></i>
                 </p>
             </div>
@@ -30,7 +30,7 @@ export class UserSettingsAuthenticatorStatic extends BaseUserSettings {
                             });
                         });
                     }}>
-                    ${gettext("Disable Time-based OTP")}
+                    ${t`Disable Time-based OTP`}
                 </button>
             </div>`;
     }
@@ -39,7 +39,7 @@ export class UserSettingsAuthenticatorStatic extends BaseUserSettings {
         return html`
             <div class="pf-c-card__body">
                 <p>
-                    ${gettext("Status: Disabled")}
+                    ${t`Status: Disabled`}
                     <i class="pf-icon pf-icon-error-circle-o"></i>
                 </p>
             </div>
@@ -47,7 +47,7 @@ export class UserSettingsAuthenticatorStatic extends BaseUserSettings {
                 ${until(new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorTotpRead({ stageUuid: this.objectId}).then((stage) => {
                     if (stage.configureFlow) {
                         return html`<a href="${FlowURLManager.configure(stage.pk || "", "?next=/%23%2Fuser")}"
-                                class="pf-c-button pf-m-primary">${gettext("Enable Time-based OTP")}
+                                class="pf-c-button pf-m-primary">${t`Enable Time-based OTP`}
                             </a>`;
                     }
                     return html``;
@@ -58,7 +58,7 @@ export class UserSettingsAuthenticatorStatic extends BaseUserSettings {
     render(): TemplateResult {
         return html`<div class="pf-c-card">
             <div class="pf-c-card__title">
-                ${gettext("Time-based One-Time Passwords")}
+                ${t`Time-based One-Time Passwords`}
             </div>
             ${until(new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsTotpList({}).then((devices) => {
                 return devices.results.length > 0 ? this.renderEnabled() : this.renderDisabled();

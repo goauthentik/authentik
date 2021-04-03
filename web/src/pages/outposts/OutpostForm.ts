@@ -1,5 +1,5 @@
 import { Outpost, OutpostsApi, ProvidersApi } from "authentik-api";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -18,9 +18,9 @@ export class OutpostForm extends Form<Outpost> {
 
     getSuccessMessage(): string {
         if (this.outpost) {
-            return gettext("Successfully updated outpost.");
+            return t`Successfully updated outpost.`;
         } else {
-            return gettext("Successfully created outpost.");
+            return t`Successfully created outpost.`;
         }
     }
 
@@ -40,21 +40,21 @@ export class OutpostForm extends Form<Outpost> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${gettext("Name")}
+                label=${t`Name`}
                 ?required=${true}
                 name="name">
                 <input type="text" value="${ifDefined(this.outpost?.name)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Type")}
+                label=${t`Type`}
                 ?required=${true}
                 name="type">
                 <select class="pf-c-form-control">
-                    <option value="proxy" ?selected=${true}>${gettext("Proxy")}</option>s
+                    <option value="proxy" ?selected=${true}>${t`Proxy`}</option>s
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Service connection")}
+                label=${t`Service connection`}
                 name="serviceConnection">
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.outpost?.serviceConnection === undefined}>---------</option>
@@ -66,13 +66,13 @@ export class OutpostForm extends Form<Outpost> {
                         });
                     }), html``)}
                 </select>
-                <p class="pf-c-form__helper-text">${gettext("Selecting a service-connection enables the management of the outpost by authentik.")}</p>
+                <p class="pf-c-form__helper-text">${t`Selecting a service-connection enables the management of the outpost by authentik.`}</p>
                 <p class="pf-c-form__helper-text">
-                    See <a _target="blank" href="https://goauthentik.io/docs/outposts/outposts">documentation</a>.
+                    See <a target="_blank" href="https://goauthentik.io/docs/outposts/outposts">documentation</a>.
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${gettext("Providers")}
+                label=${t`Providers`}
                 ?required=${true}
                 name="providers">
                 <select class="pf-c-form-control" multiple>
@@ -87,7 +87,7 @@ export class OutpostForm extends Form<Outpost> {
                         });
                     }))}
                 </select>
-                <p class="pf-c-form__helper-text">${gettext("Hold control/command to select multiple items.")}</p>
+                <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
             </ak-form-element-horizontal>
             ${until(new OutpostsApi(DEFAULT_CONFIG).outpostsOutpostsDefaultSettings({}).then(config => {
                 let fc = config.config;
@@ -95,7 +95,7 @@ export class OutpostForm extends Form<Outpost> {
                     fc = this.outpost.config;
                 }
                 return html`<ak-form-element-horizontal
-                    label=${gettext("Configuration")}
+                    label=${t`Configuration`}
                     name="config">
                     <ak-codemirror mode="yaml" value="${YAML.stringify(fc)}"></ak-codemirror>
                 </ak-form-element-horizontal>`;

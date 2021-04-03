@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -35,7 +35,7 @@ export class AuthenticatorValidateStageWebCode extends BaseStage {
         if (!this.challenge) {
             return html`<ak-empty-state
                 ?loading="${true}"
-                header=${gettext("Loading")}>
+                header=${t`Loading`}>
             </ak-empty-state>`;
         }
         return html`<div class="pf-c-login__main-body">
@@ -45,11 +45,11 @@ export class AuthenticatorValidateStageWebCode extends BaseStage {
                     userAvatar="${this.challenge.pending_user_avatar}"
                     user=${this.challenge.pending_user}>
                     <div slot="link">
-                        <a href="${FlowURLManager.cancel()}">${gettext("Not you?")}</a>
+                        <a href="${FlowURLManager.cancel()}">${t`Not you?`}</a>
                     </div>
                 </ak-form-static>
                 <ak-form-element
-                    label="${gettext("Code")}"
+                    label="${t`Code`}"
                     ?required="${true}"
                     class="pf-c-form__group"
                     .errors=${(this.challenge?.response_errors || {})["code"]}>
@@ -58,7 +58,7 @@ export class AuthenticatorValidateStageWebCode extends BaseStage {
                         name="code"
                         inputmode="numeric"
                         pattern="[0-9]*"
-                        placeholder="${gettext("Please enter your TOTP Code")}"
+                        placeholder="${t`Please enter your TOTP Code`}"
                         autofocus=""
                         autocomplete="one-time-code"
                         class="pf-c-form-control"
@@ -68,7 +68,7 @@ export class AuthenticatorValidateStageWebCode extends BaseStage {
 
                 <div class="pf-c-form__group pf-m-action">
                     <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                        ${gettext("Continue")}
+                        ${t`Continue`}
                     </button>
                 </div>
             </form>
@@ -81,7 +81,7 @@ export class AuthenticatorValidateStageWebCode extends BaseStage {
                             if (!this.host) return;
                             (this.host as AuthenticatorValidateStage).selectedDeviceChallenge = undefined;
                         }}>
-                            ${gettext("Return to device picker")}
+                            ${t`Return to device picker`}
                         </button>
                     </li>`:
                     html``}

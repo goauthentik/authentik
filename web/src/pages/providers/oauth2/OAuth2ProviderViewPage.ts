@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -30,7 +30,7 @@ import { EVENT_REFRESH } from "../../../constants";
 @customElement("ak-provider-oauth2-view")
 export class OAuth2ProviderViewPage extends Page {
     pageTitle(): string {
-        return gettext(`OAuth Provider ${this.provider?.name || ""}`);
+        return t`OAuth Provider ${this.provider?.name || ""}`;
     }
     pageDescription(): string | undefined {
         return;
@@ -77,7 +77,7 @@ export class OAuth2ProviderViewPage extends Page {
             return html``;
         }
         return html`<ak-tabs>
-                <section slot="page-1" data-tab-title="${gettext("Overview")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-1" data-tab-title="${t`Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-u-display-flex pf-u-justify-content-center">
                         <div class="pf-u-w-75">
                             <div class="pf-c-card">
@@ -85,7 +85,7 @@ export class OAuth2ProviderViewPage extends Page {
                                     <dl class="pf-c-description-list pf-m-2-col-on-lg">
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Name")}</span>
+                                                <span class="pf-c-description-list__text">${t`Name`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">${this.provider.name}</div>
@@ -93,7 +93,7 @@ export class OAuth2ProviderViewPage extends Page {
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Assigned to application")}</span>
+                                                <span class="pf-c-description-list__text">${t`Assigned to application`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">
@@ -103,7 +103,7 @@ export class OAuth2ProviderViewPage extends Page {
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Client type")}</span>
+                                                <span class="pf-c-description-list__text">${t`Client type`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">${convertToTitle(this.provider.clientType || "")}</div>
@@ -111,7 +111,7 @@ export class OAuth2ProviderViewPage extends Page {
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Client ID")}</span>
+                                                <span class="pf-c-description-list__text">${t`Client ID`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">${this.provider.clientId}</div>
@@ -119,7 +119,7 @@ export class OAuth2ProviderViewPage extends Page {
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Redirect URIs")}</span>
+                                                <span class="pf-c-description-list__text">${t`Redirect URIs`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">${this.provider.redirectUris}</div>
@@ -130,17 +130,17 @@ export class OAuth2ProviderViewPage extends Page {
                                 <div class="pf-c-card__footer">
                                     <ak-forms-modal>
                                         <span slot="submit">
-                                            ${gettext("Update")}
+                                            ${t`Update`}
                                         </span>
                                         <span slot="header">
-                                            ${gettext("Update OAuth2 Provider")}
+                                            ${t`Update OAuth2 Provider`}
                                         </span>
                                         <ak-provider-oauth2-form
                                             slot="form"
                                             .providerUUID=${this.provider.pk || 0}>
                                         </ak-provider-oauth2-form>
                                         <button slot="trigger" class="pf-c-button pf-m-primary">
-                                            ${gettext("Edit")}
+                                            ${t`Edit`}
                                         </button>
                                     </ak-forms-modal>
                                 </div>
@@ -148,7 +148,7 @@ export class OAuth2ProviderViewPage extends Page {
                         </div>
                     </div>
                 </section>
-                <section slot="page-2" data-tab-title="${gettext("Changelog")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-2" data-tab-title="${t`Changelog`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
                             <ak-object-changelog
@@ -159,7 +159,7 @@ export class OAuth2ProviderViewPage extends Page {
                         </div>
                     </div>
                 </section>
-                <section slot="page-3" data-tab-title="${gettext("Metadata")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-3" data-tab-title="${t`Metadata`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-u-display-flex pf-u-justify-content-center">
                         <div class="pf-u-w-75">
                             <div class="pf-c-card">
@@ -167,38 +167,38 @@ export class OAuth2ProviderViewPage extends Page {
                                     <form class="pf-c-form">
                                         <div class="pf-c-form__group">
                                             <label class="pf-c-form__label" for="help-text-simple-form-name">
-                                                <span class="pf-c-form__label-text">${gettext("OpenID Configuration URL")}</span>
+                                                <span class="pf-c-form__label-text">${t`OpenID Configuration URL`}</span>
                                             </label>
                                             <input class="pf-c-form-control" readonly type="text" value="${this.providerUrls?.providerInfo || "-"}" />
                                         </div>
                                         <div class="pf-c-form__group">
                                             <label class="pf-c-form__label" for="help-text-simple-form-name">
-                                                <span class="pf-c-form__label-text">${gettext("OpenID Configuration Issuer")}</span>
+                                                <span class="pf-c-form__label-text">${t`OpenID Configuration Issuer`}</span>
                                             </label>
                                             <input class="pf-c-form-control" readonly type="text" value="${this.providerUrls?.issuer || "-"}" />
                                         </div>
                                         <hr>
                                         <div class="pf-c-form__group">
                                             <label class="pf-c-form__label" for="help-text-simple-form-name">
-                                                <span class="pf-c-form__label-text">${gettext("Authorize URL")}</span>
+                                                <span class="pf-c-form__label-text">${t`Authorize URL`}</span>
                                             </label>
                                             <input class="pf-c-form-control" readonly type="text" value="${this.providerUrls?.authorize || "-"}" />
                                         </div>
                                         <div class="pf-c-form__group">
                                             <label class="pf-c-form__label" for="help-text-simple-form-name">
-                                                <span class="pf-c-form__label-text">${gettext("Token URL")}</span>
+                                                <span class="pf-c-form__label-text">${t`Token URL`}</span>
                                             </label>
                                             <input class="pf-c-form-control" readonly type="text" value="${this.providerUrls?.token || "-"}" />
                                         </div>
                                         <div class="pf-c-form__group">
                                             <label class="pf-c-form__label" for="help-text-simple-form-name">
-                                                <span class="pf-c-form__label-text">${gettext("Userinfo URL")}</span>
+                                                <span class="pf-c-form__label-text">${t`Userinfo URL`}</span>
                                             </label>
                                             <input class="pf-c-form-control" readonly type="text" value="${this.providerUrls?.userInfo || "-"}" />
                                         </div>
                                         <div class="pf-c-form__group">
                                             <label class="pf-c-form__label" for="help-text-simple-form-name">
-                                                <span class="pf-c-form__label-text">${gettext("Logout URL")}</span>
+                                                <span class="pf-c-form__label-text">${t`Logout URL`}</span>
                                             </label>
                                             <input class="pf-c-form-control" readonly type="text" value="${this.providerUrls?.logout || "-"}" />
                                         </div>

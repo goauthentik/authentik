@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { EVENT_REFRESH } from "../../constants";
 import { ModalButton } from "../buttons/ModalButton";
@@ -37,14 +37,14 @@ export class ConfirmationForm extends ModalButton {
 
     onSuccess(): void {
         showMessage({
-            message: gettext(this.successMessage),
+            message: this.successMessage,
             level: MessageLevel.success,
         });
     }
 
     onError(e: Error): void {
         showMessage({
-            message: gettext(`${this.errorMessage}: ${e.toString()}`),
+            message: t`${this.errorMessage}: ${e.toString()}`,
             level: MessageLevel.error,
         });
     }
@@ -76,14 +76,14 @@ export class ConfirmationForm extends ModalButton {
                     this.confirm();
                 }}
                 class="pf-m-danger">
-                ${gettext(this.action)}
+                ${this.action}
             </ak-spinner-button>&nbsp;
             <ak-spinner-button
                 .callAction=${() => {
                     this.open = false;
                 }}
                 class="pf-m-secondary">
-                ${gettext("Cancel")}
+                ${t`Cancel`}
             </ak-spinner-button>
         </footer>`;
     }

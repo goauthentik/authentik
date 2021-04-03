@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { css, CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { WithUserInfoChallenge } from "../../../api/Flows";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -47,7 +47,7 @@ export class AuthenticatorStaticStage extends BaseStage {
         if (!this.challenge) {
             return html`<ak-empty-state
                 ?loading="${true}"
-                header=${gettext("Loading")}>
+                header=${t`Loading`}>
             </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
@@ -62,11 +62,11 @@ export class AuthenticatorStaticStage extends BaseStage {
                         userAvatar="${this.challenge.pending_user_avatar}"
                         user=${this.challenge.pending_user}>
                         <div slot="link">
-                            <a href="${FlowURLManager.cancel()}">${gettext("Not you?")}</a>
+                            <a href="${FlowURLManager.cancel()}">${t`Not you?`}</a>
                         </div>
                     </ak-form-static>
                     <ak-form-element
-                        label="${gettext("Tokens")}"
+                        label="${t`Tokens`}"
                         ?required="${true}"
                         class="pf-c-form__group">
                         <ul class="ak-otp-tokens">
@@ -78,7 +78,7 @@ export class AuthenticatorStaticStage extends BaseStage {
 
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${gettext("Continue")}
+                            ${t`Continue`}
                         </button>
                     </div>
                 </form>

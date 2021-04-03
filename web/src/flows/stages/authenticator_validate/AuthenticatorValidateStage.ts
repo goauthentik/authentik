@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { css, CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { WithUserInfoChallenge } from "../../../api/Flows";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -80,8 +80,8 @@ export class AuthenticatorValidateStage extends BaseStage implements StageHost {
             case DeviceClasses.WEBAUTHN:
                 return html`<i class="fas fa-mobile-alt"></i>
                     <div class="right">
-                        <p>${gettext("Authenticator")}</p>
-                        <small>${gettext("Use a security key to prove your identity.")}</small>
+                        <p>${t`Authenticator`}</p>
+                        <small>${t`Use a security key to prove your identity.`}</small>
                     </div>`;
             case DeviceClasses.TOTP:
                 // TOTP is a bit special, assuming that TOTP is allowed from the backend,
@@ -97,14 +97,14 @@ export class AuthenticatorValidateStage extends BaseStage implements StageHost {
                 }
                 return html`<i class="fas fa-clock"></i>
                     <div class="right">
-                        <p>${gettext("Traditional authenticator")}</p>
-                        <small>${gettext("Use a code-based authenticator.")}</small>
+                        <p>${t`Traditional authenticator`}</p>
+                        <small>${t`Use a code-based authenticator.`}</small>
                     </div>`;
             case DeviceClasses.STATIC:
                 return html`<i class="fas fa-key"></i>
                     <div class="right">
-                        <p>${gettext("Recovery keys")}</p>
-                        <small>${gettext("In case you can't access any other method.")}</small>
+                        <p>${t`Recovery keys`}</p>
+                        <small>${t`In case you can't access any other method.`}</small>
                     </div>`;
             default:
                 break;
@@ -154,7 +154,7 @@ export class AuthenticatorValidateStage extends BaseStage implements StageHost {
         if (!this.challenge) {
             return html`<ak-empty-state
                 ?loading="${true}"
-                header=${gettext("Loading")}>
+                header=${t`Loading`}>
             </ak-empty-state>`;
         }
         // User only has a single device class, so we don't show a picker
@@ -166,7 +166,7 @@ export class AuthenticatorValidateStage extends BaseStage implements StageHost {
                     ${this.challenge.title}
                 </h1>
                 ${this.selectedDeviceChallenge ? "" : html`<p class="pf-c-login__main-header-desc">
-                    ${gettext("Select an identification method.")}
+                    ${t`Select an identification method.`}
                     </p>`}
             </header>
             ${this.selectedDeviceChallenge ?

@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { LitElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 
@@ -15,9 +15,9 @@ export abstract class Page extends LitElement {
                 <div class="pf-c-content">
                     <h1>
                         <i class="${this.pageIcon()}"></i>
-                        ${gettext(this.pageTitle())}
+                        ${t`${this.pageTitle()}`}
                     </h1>
-                    ${description ? html`<p>${gettext(description)}</p>` : html``}
+                    ${description ? html`<p>${t`${description}`}</p>` : html``}
                 </div>
             </section>
             ${this.renderContent()}`;

@@ -1,4 +1,4 @@
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { Challenge } from "authentik-api";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -27,7 +27,7 @@ export class EmailStage extends BaseStage {
         if (!this.challenge) {
             return html`<ak-empty-state
                 ?loading="${true}"
-                header=${gettext("Loading")}>
+                header=${t`Loading`}>
             </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
@@ -39,13 +39,13 @@ export class EmailStage extends BaseStage {
                 <form class="pf-c-form" @submit=${(e: Event) => { this.submitForm(e); }}>
                     <div class="pf-c-form__group">
                         <p>
-                            ${gettext("Check your Emails for a password reset link.")}
+                            ${t`Check your Emails for a password reset link.`}
                         </p>
                     </div>
 
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${gettext("Send Email again.")}
+                            ${t`Send Email again.`}
                         </button>
                     </div>
                 </form>

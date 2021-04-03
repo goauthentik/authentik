@@ -13,7 +13,7 @@ import "../elements/notifications/NotificationDrawer";
 import "../elements/Banner";
 import { until } from "lit-html/directives/until";
 import { me } from "../api/Users";
-import { gettext } from "django";
+import { t } from "@lingui/macro";
 import { EVENT_NOTIFICATION_TOGGLE, EVENT_SIDEBAR_TOGGLE } from "../constants";
 
 export abstract class Interface extends LitElement {
@@ -52,9 +52,9 @@ export abstract class Interface extends LitElement {
             ${until(me().then((u) => {
                 if (u.original) {
                     return html`<ak-banner>
-                        ${gettext(`You're currently impersonating ${u.user.username}.`)}
+                        ${t`You're currently impersonating ${u.user.username}.`}
                         <a href=${`/-/impersonation/end/?back=${window.location.pathname}%23${window.location.hash}`}>
-                            ${gettext("Stop impersonation")}
+                            ${t`Stop impersonation`}
                         </a>
                     </ak-banner>`;
                 }
