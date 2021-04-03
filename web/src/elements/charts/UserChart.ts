@@ -1,4 +1,4 @@
-import { customElement } from "lit-element";
+import { customElement, property } from "lit-element";
 import Chart from "chart.js";
 import { CoreApi, UserMetrics } from "authentik-api";
 import { AKChart } from "./Chart";
@@ -7,8 +7,13 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 @customElement("ak-charts-user")
 export class UserChart extends AKChart<UserMetrics> {
 
+    @property()
+    userId?: number;
+
     apiRequest(): Promise<UserMetrics> {
-        return new CoreApi(DEFAULT_CONFIG).coreUsersMetrics();
+        return new CoreApi(DEFAULT_CONFIG).coreUsersMetrics({
+            id: this.userId || 0,
+        });
     }
 
     getDatasets(data: UserMetrics): Chart.ChartDataSets[] {

@@ -61,23 +61,23 @@ class UserMetricsSerializer(PassiveSerializer):
     @swagger_serializer_method(serializer_or_field=CoordinateSerializer(many=True))
     def get_logins_per_1h(self, _):
         """Get successful logins per hour for the last 24 hours"""
-        request = self.context["request"]._request
-        return get_events_per_1h(action=EventAction.LOGIN, user__pk=request.user.pk)
+        user = self.context["user"]
+        return get_events_per_1h(action=EventAction.LOGIN, user__pk=user.pk)
 
     @swagger_serializer_method(serializer_or_field=CoordinateSerializer(many=True))
     def get_logins_failed_per_1h(self, _):
         """Get failed logins per hour for the last 24 hours"""
-        request = self.context["request"]._request
+        user = self.context["user"]
         return get_events_per_1h(
-            action=EventAction.LOGIN_FAILED, context__username=request.user.username
+            action=EventAction.LOGIN_FAILED, context__username=user.username
         )
 
     @swagger_serializer_method(serializer_or_field=CoordinateSerializer(many=True))
     def get_authorizations_per_1h(self, _):
         """Get failed logins per hour for the last 24 hours"""
-        request = self.context["request"]._request
+        user = self.context["user"]
         return get_events_per_1h(
-            action=EventAction.AUTHORIZE_APPLICATION, user__pk=request.user.pk
+            action=EventAction.AUTHORIZE_APPLICATION, user__pk=user.pk
         )
 
 
@@ -109,11 +109,13 @@ class UserViewSet(ModelViewSet):
 
     @permission_required("authentik_core.view_user", ["authentik_events.view_event"])
     @swagger_auto_schema(responses={200: UserMetricsSerializer(many=False)})
-    @action(detail=False, pagination_class=None, filter_backends=[])
-    def metrics(self, request: Request) -> Response:
+    @action(detail=True, pagination_class=None, filter_backends=[])
+    # pylint: disable=invalid-name, unused-argument
+    def metrics(self, request: Request, pk: int) -> Response:
         """User metrics per 1h"""
+        user: User = self.get_object()
         serializer = UserMetricsSerializer(True)
-        serializer.context["request"] = request
+        serializer.context["user"] = user
         return Response(serializer.data)
 
     @permission_required("authentik_core.reset_user_password")
@@ -135,3 +137,4 @@ class UserViewSet(ModelViewSet):
             reverse_lazy("authentik_flows:default-recovery") + f"?{querystring}"
         )
         return Response({"link": link})
+
