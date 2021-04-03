@@ -13,7 +13,6 @@ from structlog.stdlib import get_logger
 from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
 from authentik.core.models import Source
 from authentik.core.types import UserSettingSerializer
-from authentik.lib.templatetags.authentik_utils import verbose_name
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.engine import PolicyEngine
 
@@ -67,9 +66,11 @@ class SourceViewSet(
         """Get all creatable source types"""
         data = []
         for subclass in all_subclasses(self.queryset.model):
+            subclass: Source
+            # pyright: reportGeneralTypeIssues=false
             data.append(
                 {
-                    "name": verbose_name(subclass),
+                    "name": subclass._meta.verbose_name,
                     "description": subclass.__doc__,
                     "component": subclass().component,
                 }

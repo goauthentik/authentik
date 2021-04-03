@@ -19,7 +19,6 @@ from authentik.core.api.utils import (
     PassiveSerializer,
     TypeCreateSerializer,
 )
-from authentik.lib.templatetags.authentik_utils import verbose_name
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.outposts.models import (
     DockerServiceConnection,
@@ -76,9 +75,11 @@ class ServiceConnectionViewSet(
         """Get all creatable service connection types"""
         data = []
         for subclass in all_subclasses(self.queryset.model):
+            subclass: OutpostServiceConnection
+            # pyright: reportGeneralTypeIssues=false
             data.append(
                 {
-                    "name": verbose_name(subclass),
+                    "name": subclass._meta.verbose_name,
                     "description": subclass.__doc__,
                     "component": subclass().component,
                 }

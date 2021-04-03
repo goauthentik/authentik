@@ -18,7 +18,6 @@ from authentik.core.api.utils import (
     MetaNameSerializer,
     TypeCreateSerializer,
 )
-from authentik.lib.templatetags.authentik_utils import verbose_name
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.api.exec import PolicyTestResultSerializer, PolicyTestSerializer
 from authentik.policies.models import Policy, PolicyBinding
@@ -100,9 +99,10 @@ class PolicyViewSet(
         """Get all creatable policy types"""
         data = []
         for subclass in all_subclasses(self.queryset.model):
+            subclass: Policy
             data.append(
                 {
-                    "name": verbose_name(subclass),
+                    "name": subclass._meta.verbose_name,
                     "description": subclass.__doc__,
                     "component": subclass().component,
                 }

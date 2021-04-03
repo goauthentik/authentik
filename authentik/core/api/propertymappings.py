@@ -20,7 +20,6 @@ from authentik.core.api.utils import (
 )
 from authentik.core.expression import PropertyMappingEvaluator
 from authentik.core.models import PropertyMapping
-from authentik.lib.templatetags.authentik_utils import verbose_name
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.managed.api import ManagedSerializer
 from authentik.policies.api.exec import PolicyTestSerializer
@@ -87,9 +86,10 @@ class PropertyMappingViewSet(
         """Get all creatable property-mapping types"""
         data = []
         for subclass in all_subclasses(self.queryset.model):
+            subclass: PropertyMapping
             data.append(
                 {
-                    "name": verbose_name(subclass),
+                    "name": subclass._meta.verbose_name,
                     "description": subclass.__doc__,
                     "component": subclass.component,
                 }

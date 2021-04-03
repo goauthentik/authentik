@@ -14,7 +14,6 @@ from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.api.flows import FlowSerializer
 from authentik.flows.models import Stage
-from authentik.lib.templatetags.authentik_utils import verbose_name
 from authentik.lib.utils.reflection import all_subclasses
 
 LOGGER = get_logger()
@@ -68,9 +67,10 @@ class StageViewSet(
         """Get all creatable stage types"""
         data = []
         for subclass in all_subclasses(self.queryset.model, False):
+            subclass: Stage
             data.append(
                 {
-                    "name": verbose_name(subclass),
+                    "name": subclass._meta.verbose_name,
                     "description": subclass.__doc__,
                     "component": subclass().component,
                 }
