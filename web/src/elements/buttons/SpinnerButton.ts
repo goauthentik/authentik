@@ -12,7 +12,7 @@ export class SpinnerButton extends LitElement {
     isRunning = false;
 
     @property()
-    callAction: () => void = () => {};
+    callAction?: () => void;
 
     static get styles(): CSSResult[] {
         return [
@@ -51,9 +51,6 @@ export class SpinnerButton extends LitElement {
         }, 1000);
     }
 
-    defaultCallAction(): void {
-    }
-
     render(): TemplateResult {
         return html`<button
             class="pf-c-button pf-m-progress ${this.classList.toString()}"
@@ -62,7 +59,9 @@ export class SpinnerButton extends LitElement {
                     return;
                 }
                 this.setLoading();
-                this.callAction();
+                if (this.callAction) {
+                    this.callAction();
+                }
             }}>
             ${this.isRunning
                 ? html` <span class="pf-c-button__progress">
