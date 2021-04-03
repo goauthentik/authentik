@@ -30,7 +30,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     ).when((): Promise<boolean> => {
         return me().then(u => u.user.isSuperuser||false);
     }),
-    new SidebarItem(`Events`).children(
+    new SidebarItem(t`Events`).children(
         new SidebarItem(t`Logs`, "/events/log").activeWhen(
             `^/events/log/(?<id>${UUID_REGEX})$`
         ),

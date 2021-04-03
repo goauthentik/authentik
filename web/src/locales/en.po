@@ -1071,6 +1071,10 @@ msgstr "Evaluate policies when the Stage is present to the user."
 msgid "Event {0}"
 msgstr "Event {0}"
 
+#: src/interfaces/AdminInterface.ts:23
+msgid "Events"
+msgstr "Events"
+
 #: src/pages/events/EventInfo.ts:129
 #: src/pages/events/EventInfo.ts:152
 msgid "Exception"

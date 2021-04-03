@@ -1067,6 +1067,10 @@ msgstr ""
 msgid "Event {0}"
 msgstr ""
 
+#: src/interfaces/AdminInterface.ts:23
+msgid "Events"
+msgstr ""
+
 #: src/pages/events/EventInfo.ts:129
 #: src/pages/events/EventInfo.ts:152
 msgid "Exception"
