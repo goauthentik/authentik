@@ -10,10 +10,15 @@
         "lit-analyse": "lit-analyzer src"
     },
     "dependencies": {
+        "@babel/core": "^7.13.14",
+        "@babel/plugin-proposal-decorators": "^7.13.5",
+        "@babel/preset-env": "^7.13.12",
+        "@babel/preset-typescript": "^7.13.0",
         "@fortawesome/fontawesome-free": "^5.15.3",
         "@patternfly/patternfly": "^4.96.2",
         "@polymer/iron-form": "^3.0.1",
         "@polymer/paper-input": "^3.2.1",
+        "@rollup/plugin-babel": "^5.3.0",
         "@sentry/browser": "^6.2.5",
         "@sentry/tracing": "^6.2.5",
         "@types/chart.js": "^2.9.31",
@@ -37,6 +42,7 @@
         "yaml": "^1.10.2"
     },
     "devDependencies": {
+        "@babel/plugin-transform-runtime": "^7.13.10",
         "@rollup/plugin-typescript": "^8.2.1",
         "@typescript-eslint/eslint-plugin": "^4.20.0",
         "@typescript-eslint/parser": "^4.20.0",

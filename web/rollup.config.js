@@ -6,6 +6,11 @@ import typescript from "@rollup/plugin-typescript";
 import cssimport from "rollup-plugin-cssimport";
 import copy from "rollup-plugin-copy";
 import externalGlobals from "rollup-plugin-external-globals";
+import babel from '@rollup/plugin-babel';
+
+const extensions = [
+    '.js', '.jsx', '.ts', '.tsx',
+];
 
 const resources = [
     { src: "node_modules/rapidoc/dist/rapidoc-min.js", dest: "dist/" },
@@ -67,20 +72,15 @@ export default [
         ],
         output: [
             {
-                format: "es",
-                dir: "dist",
+                format: "iife",
+                file: "dist/poly.js",
                 sourcemap: true,
             }
         ],
         plugins: [
             cssimport(),
-            typescript(),
-            externalGlobals({
-                django: "django",
-            }),
             resolve({ browser: true }),
             commonjs(),
-            sourcemaps(),
             isProdBuild && terser(),
         ].filter(p => p),
         watch: {
@@ -100,12 +100,16 @@ export default [
         ],
         plugins: [
             cssimport(),
-            typescript(),
+            resolve({ extensions, browser: true }),
+            commonjs(),
+            babel({
+                extensions,
+                babelHelpers: 'runtime',
+                include: ['src/**/*'],
+            }),
             externalGlobals({
                 django: "django",
             }),
-            resolve({ browser: true }),
-            commonjs(),
             sourcemaps(),
             isProdBuild && terser(),
         ].filter(p => p),
@@ -127,12 +131,16 @@ export default [
         ],
         plugins: [
             cssimport(),
-            typescript(),
+            resolve({ extensions, browser: true }),
+            commonjs(),
+            babel({
+                extensions,
+                babelHelpers: 'runtime',
+                include: ['src/**/*'],
+            }),
             externalGlobals({
                 django: "django"
             }),
-            resolve({ browser: true }),
-            commonjs(),
             sourcemaps(),
             isProdBuild && terser(),
         ].filter(p => p),
