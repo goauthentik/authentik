@@ -109,14 +109,14 @@ class PolicyViewSet(
             )
         return Response(TypeCreateSerializer(data, many=True).data)
 
-    @permission_required("authentik_policies.view_policy_cache")
+    @permission_required(None, ["authentik_policies.view_policy_cache"])
     @swagger_auto_schema(responses={200: CacheSerializer(many=False)})
     @action(detail=False, pagination_class=None, filter_backends=[])
     def cache_info(self, request: Request) -> Response:
         """Info about cached policies"""
         return Response(data={"count": len(cache.keys("policy_*"))})
 
-    @permission_required("authentik_policies.clear_policy_cache")
+    @permission_required(None, ["authentik_policies.clear_policy_cache"])
     @swagger_auto_schema(
         request_body=no_body,
         responses={204: "Successfully cleared cache", 400: "Bad request"},
