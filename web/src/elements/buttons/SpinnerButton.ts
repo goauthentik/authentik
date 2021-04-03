@@ -12,10 +12,7 @@ export class SpinnerButton extends LitElement {
     isRunning = false;
 
     @property()
-    form?: string;
-
-    @property()
-    callAction: () => void = this.defaultCallAction;
+    callAction: () => void = () => {};
 
     static get styles(): CSSResult[] {
         return [
@@ -55,25 +52,18 @@ export class SpinnerButton extends LitElement {
     }
 
     defaultCallAction(): void {
-        if (this.isRunning === true) {
-            return;
-        }
-        if (this.form) {
-            // Since the form= attribute is only used within a modal button,
-            // we can assume the form is always two levels up
-            this.parentElement?.parentElement?.querySelector<HTMLFormElement>(`#${this.form}`)?.dispatchEvent(new Event("submit", {
-                bubbles: true,
-                cancelable: true,
-            }));
-        }
-        this.setLoading();
     }
 
     render(): TemplateResult {
         return html`<button
             class="pf-c-button pf-m-progress ${this.classList.toString()}"
-            @click=${() => this.callAction()}
-        >
+            @click=${() => {
+                if (this.isRunning === true) {
+                    return;
+                }
+                this.setLoading();
+                this.callAction();
+            }}>
             ${this.isRunning
                 ? html` <span class="pf-c-button__progress">
                             <ak-spinner size=${SpinnerSize.Medium}></ak-spinner>
