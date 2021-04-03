@@ -2,6 +2,7 @@ import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { EVENT_REFRESH } from "../../constants";
 import { ModalButton } from "../buttons/ModalButton";
+import "../buttons/SpinnerButton";
 import { MessageLevel } from "../messages/Message";
 import { showMessage } from "../messages/MessageContainer";
 

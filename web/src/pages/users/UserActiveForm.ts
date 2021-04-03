@@ -3,6 +3,7 @@ import { customElement, html, TemplateResult } from "lit-element";
 import { DeleteForm } from "../../elements/forms/DeleteForm";
 import { MessageLevel } from "../../elements/messages/Message";
 import { showMessage } from "../../elements/messages/MessageContainer";
+import "../../elements/buttons/SpinnerButton";
 
 @customElement("ak-user-active-form")
 export class UserActiveForm extends DeleteForm {

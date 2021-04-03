@@ -79,3 +79,17 @@ export function first<T>(...args: Array<T | undefined | null>): T {
     }
     throw new Error(`No compatible arg given: ${args}`);
 }
+
+export function hexEncode(buf: Uint8Array): string {
+    return Array.from(buf)
+        .map(function (x) {
+            return ("0" + x.toString(16)).substr(-2);
+        })
+        .join("");
+}
+
+export function randomString(len: number): string {
+    const arr = new Uint8Array(len / 2);
+    window.crypto.getRandomValues(arr);
+    return hexEncode(arr);
+}

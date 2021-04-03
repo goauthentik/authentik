@@ -4,6 +4,7 @@ import { EVENT_REFRESH } from "../../constants";
 import { ModalButton } from "../buttons/ModalButton";
 import { MessageLevel } from "../messages/Message";
 import { showMessage } from "../messages/MessageContainer";
+import "../buttons/SpinnerButton";
 
 @customElement("ak-forms-delete")
 export class DeleteForm extends ModalButton {

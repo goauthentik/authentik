@@ -3,6 +3,7 @@ import { customElement, html, property, TemplateResult } from "lit-element";
 import { EVENT_REFRESH } from "../../constants";
 import { ModalButton } from "../buttons/ModalButton";
 import { Form } from "./Form";
+import "../buttons/SpinnerButton";
 
 @customElement("ak-forms-modal")
 export class ModalForm extends ModalButton {

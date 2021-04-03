@@ -8,6 +8,7 @@ import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
+import { first, randomString } from "../../../utils";
 
 @customElement("ak-provider-oauth2-form")
 export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
@@ -92,12 +93,12 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                         label=${gettext("Client ID")}
                         ?required=${true}
                         name="clientId">
-                        <input type="text" value="${ifDefined(this.provider?.clientId)}" class="pf-c-form-control" required>
+                        <input type="text" value="${first(this.provider?.clientId, randomString(40))}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${gettext("Client Secret")}
                         name="clientSecret">
-                        <input type="text" value="${ifDefined(this.provider?.clientSecret /* TODO: Generate secret */)}" class="pf-c-form-control">
+                        <input type="text" value="${first(this.provider?.clientSecret, randomString(128))}" class="pf-c-form-control">
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${gettext("Redirect URIs")}
