@@ -2,10 +2,18 @@ import * as Sentry from "@sentry/browser";
 import { Integrations } from "@sentry/tracing";
 import { VERSION } from "../constants";
 import { SentryIgnoredError } from "../common/errors";
-import { Config, Configuration, RootApi } from "authentik-api";
+import { Config, Configuration, Middleware, ResponseContext, RootApi } from "authentik-api";
 import { getCookie } from "../utils";
 import { API_DRAWER_MIDDLEWARE } from "../elements/notifications/APIDrawer";
 import { MessageMiddleware } from "../elements/messages/Middleware";
+
+export class LoggingMiddleware implements Middleware {
+
+    post(context: ResponseContext): Promise<Response | void> {
+        console.debug(`authentik/api: ${context.init.method} ${context.url} => ${context.response.status}`);
+        return Promise.resolve(context.response);
+    }
+}
 
 export const DEFAULT_CONFIG = new Configuration({
     basePath: "/api/v2beta",
@@ -16,6 +24,7 @@ export const DEFAULT_CONFIG = new Configuration({
     middleware: [
         API_DRAWER_MIDDLEWARE,
         new MessageMiddleware(),
+        new LoggingMiddleware(),
     ],
 });
 
