@@ -1,17 +1,11 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2021-04-03 19:38+0200\n"
+"POT-Creation-Date: 2021-04-03 20:37+0200\n"
 "Mime-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
 "Language: pseudo-LOCALE\n"
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Plural-Forms: \n"
 
 #: src/pages/policies/BoundPoliciesList.ts:54
 msgid "-"
@@ -69,7 +63,7 @@ msgid "Action"
 msgstr ""
 
 #: src/pages/users/UserListPage.ts:50
-#: src/pages/users/UserViewPage.ts:115
+#: src/pages/users/UserViewPage.ts:116
 msgid "Active"
 msgstr ""
 
@@ -427,7 +421,7 @@ msgstr ""
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:124
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:142
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:129
-#: src/pages/users/UserViewPage.ts:176
+#: src/pages/users/UserViewPage.ts:177
 msgid "Changelog"
 msgstr ""
 
@@ -947,7 +941,7 @@ msgstr ""
 #: src/pages/stages/prompt/PromptListPage.ts:75
 #: src/pages/user-settings/tokens/UserTokenList.ts:113
 #: src/pages/users/UserListPage.ts:75
-#: src/pages/users/UserViewPage.ts:146
+#: src/pages/users/UserViewPage.ts:147
 msgid "Edit"
 msgstr ""
 
@@ -971,7 +965,7 @@ msgstr ""
 #: src/pages/events/TransportForm.ts:45
 #: src/pages/stages/identification/IdentificationStageForm.ts:78
 #: src/pages/users/UserForm.ts:60
-#: src/pages/users/UserViewPage.ts:99
+#: src/pages/users/UserViewPage.ts:100
 msgid "Email"
 msgstr ""
 
@@ -1115,7 +1109,7 @@ msgstr ""
 msgid "Expiry date"
 msgstr ""
 
-#: src/pages/users/UserViewPage.ts:187
+#: src/pages/users/UserViewPage.ts:188
 msgid "Explicit Consent"
 msgstr ""
 
@@ -1503,7 +1497,7 @@ msgid "Label shown next to/above the prompt."
 msgstr ""
 
 #: src/pages/users/UserListPage.ts:51
-#: src/pages/users/UserViewPage.ts:107
+#: src/pages/users/UserViewPage.ts:108
 msgid "Last login"
 msgstr ""
 
@@ -1710,7 +1704,7 @@ msgstr ""
 #: src/pages/user-settings/UserDetailsPage.ts:65
 #: src/pages/users/UserForm.ts:53
 #: src/pages/users/UserListPage.ts:49
-#: src/pages/users/UserViewPage.ts:91
+#: src/pages/users/UserViewPage.ts:92
 msgid "Name"
 msgstr ""
 
@@ -1858,7 +1852,7 @@ msgstr ""
 msgid "Number"
 msgstr ""
 
-#: src/pages/users/UserViewPage.ts:195
+#: src/pages/users/UserViewPage.ts:196
 msgid "OAuth Authorization Codes"
 msgstr ""
 
@@ -1866,7 +1860,7 @@ msgstr ""
 msgid "OAuth Provider {0}"
 msgstr ""
 
-#: src/pages/users/UserViewPage.ts:203
+#: src/pages/users/UserViewPage.ts:204
 msgid "OAuth Refresh Codes"
 msgstr ""
 
@@ -1984,7 +1978,7 @@ msgstr ""
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:67
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:65
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:68
-#: src/pages/users/UserViewPage.ts:73
+#: src/pages/users/UserViewPage.ts:74
 msgid "Overview"
 msgstr ""
 
@@ -2307,7 +2301,7 @@ msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr ""
 
 #: src/pages/users/UserListPage.ts:132
-#: src/pages/users/UserViewPage.ts:164
+#: src/pages/users/UserViewPage.ts:165
 msgid "Reset Password"
 msgstr ""
 
@@ -2770,7 +2764,7 @@ msgid "Successfully generated certificate-key pair."
 msgstr ""
 
 #: src/pages/users/UserListPage.ts:127
-#: src/pages/users/UserViewPage.ts:159
+#: src/pages/users/UserViewPage.ts:160
 msgid "Successfully generated recovery link"
 msgstr ""
 
@@ -2901,7 +2895,7 @@ msgstr ""
 msgid "Successfully updated {0} {1}"
 msgstr ""
 
-#: src/pages/users/UserViewPage.ts:125
+#: src/pages/users/UserViewPage.ts:126
 msgid "Superuser"
 msgstr ""
 
@@ -3155,7 +3149,7 @@ msgstr ""
 #: src/pages/user-settings/tokens/UserTokenList.ts:105
 #: src/pages/users/UserActiveForm.ts:57
 #: src/pages/users/UserListPage.ts:67
-#: src/pages/users/UserViewPage.ts:138
+#: src/pages/users/UserViewPage.ts:139
 msgid "Update"
 msgstr ""
 
@@ -3230,7 +3224,7 @@ msgstr ""
 
 #: src/pages/policies/BoundPoliciesList.ts:101
 #: src/pages/users/UserListPage.ts:70
-#: src/pages/users/UserViewPage.ts:141
+#: src/pages/users/UserViewPage.ts:142
 msgid "Update User"
 msgstr ""
 
@@ -3283,7 +3277,7 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: src/pages/users/UserViewPage.ts:77
+#: src/pages/users/UserViewPage.ts:78
 msgid "User Info"
 msgstr ""
 
@@ -3309,7 +3303,7 @@ msgid "User object filter"
 msgstr ""
 
 #: src/pages/policies/BoundPoliciesList.ts:51
-#: src/pages/users/UserViewPage.ts:48
+#: src/pages/users/UserViewPage.ts:49
 msgid "User {0}"
 msgstr ""
 
@@ -3337,7 +3331,7 @@ msgstr ""
 #: src/pages/stages/identification/IdentificationStageForm.ts:75
 #: src/pages/user-settings/UserDetailsPage.ts:58
 #: src/pages/users/UserForm.ts:46
-#: src/pages/users/UserViewPage.ts:83
+#: src/pages/users/UserViewPage.ts:84
 msgid "Username"
 msgstr ""
 

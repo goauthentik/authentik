@@ -10,6 +10,7 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import AKGlobal from "../../authentik.css";
 
 import "../../elements/forms/ModalForm";
@@ -55,7 +56,7 @@ export class UserViewPage extends Page {
     user?: User;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, AKGlobal];
+        return [PFBase, PFPage, PFFlex, PFButton, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, AKGlobal];
     }
 
     constructor() {

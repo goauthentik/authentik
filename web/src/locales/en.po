@@ -1,17 +1,11 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2021-04-03 18:44+0200\n"
+"POT-Creation-Date: 2021-04-03 20:37+0200\n"
 "Mime-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
 "Language: en\n"
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Plural-Forms: \n"
 
 #: src/pages/policies/BoundPoliciesList.ts:54
 msgid "-"
@@ -69,7 +63,7 @@ msgid "Action"
 msgstr "Action"
 
 #: src/pages/users/UserListPage.ts:50
-#: src/pages/users/UserViewPage.ts:115
+#: src/pages/users/UserViewPage.ts:116
 msgid "Active"
 msgstr "Active"
 
@@ -431,7 +425,7 @@ msgstr "Change your password"
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:124
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:142
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:129
-#: src/pages/users/UserViewPage.ts:176
+#: src/pages/users/UserViewPage.ts:177
 msgid "Changelog"
 msgstr "Changelog"
 
@@ -951,7 +945,7 @@ msgstr "Each provider has a different issuer, based on the application slug."
 #: src/pages/stages/prompt/PromptListPage.ts:75
 #: src/pages/user-settings/tokens/UserTokenList.ts:113
 #: src/pages/users/UserListPage.ts:75
-#: src/pages/users/UserViewPage.ts:146
+#: src/pages/users/UserViewPage.ts:147
 msgid "Edit"
 msgstr "Edit"
 
@@ -975,7 +969,7 @@ msgstr "Either no applications are defined, or you don't have access to any."
 #: src/pages/events/TransportForm.ts:45
 #: src/pages/stages/identification/IdentificationStageForm.ts:78
 #: src/pages/users/UserForm.ts:60
-#: src/pages/users/UserViewPage.ts:99
+#: src/pages/users/UserViewPage.ts:100
 msgid "Email"
 msgstr "Email"
 
@@ -1119,7 +1113,7 @@ msgstr "Expiring"
 msgid "Expiry date"
 msgstr "Expiry date"
 
-#: src/pages/users/UserViewPage.ts:187
+#: src/pages/users/UserViewPage.ts:188
 msgid "Explicit Consent"
 msgstr "Explicit Consent"
 
@@ -1335,10 +1329,6 @@ msgstr "HTTP-Basic Password Key"
 msgid "HTTP-Basic Username Key"
 msgstr "HTTP-Basic Username Key"
 
-#: src/interfaces/AdminInterface.ts:14
-#~ msgid "Hello World!"
-#~ msgstr "Hello World!"
-
 #: src/pages/stages/prompt/PromptForm.ts:71
 msgid "Hidden: Hidden field, can be used to insert data into form."
 msgstr "Hidden: Hidden field, can be used to insert data into form."
@@ -1511,7 +1501,7 @@ msgid "Label shown next to/above the prompt."
 msgstr "Label shown next to/above the prompt."
 
 #: src/pages/users/UserListPage.ts:51
-#: src/pages/users/UserViewPage.ts:107
+#: src/pages/users/UserViewPage.ts:108
 msgid "Last login"
 msgstr "Last login"
 
@@ -1718,7 +1708,7 @@ msgstr "Monitor"
 #: src/pages/user-settings/UserDetailsPage.ts:65
 #: src/pages/users/UserForm.ts:53
 #: src/pages/users/UserListPage.ts:49
-#: src/pages/users/UserViewPage.ts:91
+#: src/pages/users/UserViewPage.ts:92
 msgid "Name"
 msgstr "Name"
 
@@ -1866,7 +1856,7 @@ msgstr "Notifications Transport"
 msgid "Number"
 msgstr "Number"
 
-#: src/pages/users/UserViewPage.ts:195
+#: src/pages/users/UserViewPage.ts:196
 msgid "OAuth Authorization Codes"
 msgstr "OAuth Authorization Codes"
 
@@ -1874,7 +1864,7 @@ msgstr "OAuth Authorization Codes"
 msgid "OAuth Provider {0}"
 msgstr "OAuth Provider {0}"
 
-#: src/pages/users/UserViewPage.ts:203
+#: src/pages/users/UserViewPage.ts:204
 msgid "OAuth Refresh Codes"
 msgstr "OAuth Refresh Codes"
 
@@ -1992,7 +1982,7 @@ msgstr "Outposts"
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:67
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:65
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:68
-#: src/pages/users/UserViewPage.ts:73
+#: src/pages/users/UserViewPage.ts:74
 msgid "Overview"
 msgstr "Overview"
 
@@ -2315,7 +2305,7 @@ msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 
 #: src/pages/users/UserListPage.ts:132
-#: src/pages/users/UserViewPage.ts:164
+#: src/pages/users/UserViewPage.ts:165
 msgid "Reset Password"
 msgstr "Reset Password"
 
@@ -2778,7 +2768,7 @@ msgid "Successfully generated certificate-key pair."
 msgstr "Successfully generated certificate-key pair."
 
 #: src/pages/users/UserListPage.ts:127
-#: src/pages/users/UserViewPage.ts:159
+#: src/pages/users/UserViewPage.ts:160
 msgid "Successfully generated recovery link"
 msgstr "Successfully generated recovery link"
 
@@ -2909,7 +2899,7 @@ msgstr "Successfully updated user."
 msgid "Successfully updated {0} {1}"
 msgstr "Successfully updated {0} {1}"
 
-#: src/pages/users/UserViewPage.ts:125
+#: src/pages/users/UserViewPage.ts:126
 msgid "Superuser"
 msgstr "Superuser"
 
@@ -3163,7 +3153,7 @@ msgstr "Up-to-date!"
 #: src/pages/user-settings/tokens/UserTokenList.ts:105
 #: src/pages/users/UserActiveForm.ts:57
 #: src/pages/users/UserListPage.ts:67
-#: src/pages/users/UserViewPage.ts:138
+#: src/pages/users/UserViewPage.ts:139
 msgid "Update"
 msgstr "Update"
 
@@ -3238,7 +3228,7 @@ msgstr "Update Token"
 
 #: src/pages/policies/BoundPoliciesList.ts:101
 #: src/pages/users/UserListPage.ts:70
-#: src/pages/users/UserViewPage.ts:141
+#: src/pages/users/UserViewPage.ts:142
 msgid "Update User"
 msgstr "Update User"
 
@@ -3291,7 +3281,7 @@ msgstr "Use global settings"
 msgid "User"
 msgstr "User"
 
-#: src/pages/users/UserViewPage.ts:77
+#: src/pages/users/UserViewPage.ts:78
 msgid "User Info"
 msgstr "User Info"
 
@@ -3317,7 +3307,7 @@ msgid "User object filter"
 msgstr "User object filter"
 
 #: src/pages/policies/BoundPoliciesList.ts:51
-#: src/pages/users/UserViewPage.ts:48
+#: src/pages/users/UserViewPage.ts:49
 msgid "User {0}"
 msgstr "User {0}"
 
@@ -3345,7 +3335,7 @@ msgstr "Userinfo URL"
 #: src/pages/stages/identification/IdentificationStageForm.ts:75
 #: src/pages/user-settings/UserDetailsPage.ts:58
 #: src/pages/users/UserForm.ts:46
-#: src/pages/users/UserViewPage.ts:83
+#: src/pages/users/UserViewPage.ts:84
 msgid "Username"
 msgstr "Username"
 
