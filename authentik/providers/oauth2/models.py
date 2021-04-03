@@ -112,7 +112,7 @@ class ScopeMapping(PropertyMapping):
 
     @property
     def component(self) -> str:
-        return "ak-service-connection-docker-form"
+        return "ak-property-mapping-scope-form"
 
     @property
     def serializer(self) -> Type[Serializer]:
