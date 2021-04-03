@@ -1275,11 +1275,11 @@ msgstr ""
 msgid "Generate Certificate-Key Pair"
 msgstr ""
 
-#: src/elements/table/TablePagination.ts:51
+#: src/elements/table/TablePagination.ts:49
 msgid "Go to next page"
 msgstr ""
 
-#: src/elements/table/TablePagination.ts:41
+#: src/elements/table/TablePagination.ts:39
 msgid "Go to previous page"
 msgstr ""
 
@@ -2408,6 +2408,10 @@ msgstr ""
 #: src/elements/oauth/UserRefreshList.ts:31
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:152
 msgid "Scopes"
+msgstr ""
+
+#: src/elements/table/TableSearch.ts:35
+msgid "Search..."
 msgstr ""
 
 #: src/pages/events/EventInfo.ts:124
@@ -3671,6 +3675,10 @@ msgstr ""
 
 #: src/pages/stages/prompt/PromptStageForm.ts:97
 msgid "{0} ({1})"
+msgstr ""
+
+#: src/elements/table/TablePagination.ts:29
+msgid "{0} - {1} of {2}"
 msgstr ""
 
 #: src/pages/admin-overview/cards/VersionStatusCard.ts:27

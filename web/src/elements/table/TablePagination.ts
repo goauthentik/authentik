@@ -25,9 +25,7 @@ export class TablePagination extends LitElement {
                 <div class="pf-c-options-menu">
                     <div class="pf-c-options-menu__toggle pf-m-text pf-m-plain">
                         <span class="pf-c-options-menu__toggle-text">
-                            ${this.pages?.startIndex} -
-                            ${this.pages?.endIndex} of
-                            ${this.pages?.count}
+                            ${t`${this.pages?.startIndex} - ${this.pages?.endIndex} of ${this.pages?.count}`}
                         </span>
                     </div>
                 </div>

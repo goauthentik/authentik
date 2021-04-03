@@ -1279,11 +1279,11 @@ msgstr "Generate"
 msgid "Generate Certificate-Key Pair"
 msgstr "Generate Certificate-Key Pair"
 
-#: src/elements/table/TablePagination.ts:51
+#: src/elements/table/TablePagination.ts:49
 msgid "Go to next page"
 msgstr "Go to next page"
 
-#: src/elements/table/TablePagination.ts:41
+#: src/elements/table/TablePagination.ts:39
 msgid "Go to previous page"
 msgstr "Go to previous page"
 
@@ -2417,6 +2417,10 @@ msgstr "Scope which the client can specify to access these properties."
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:152
 msgid "Scopes"
 msgstr "Scopes"
+
+#: src/elements/table/TableSearch.ts:35
+msgid "Search..."
+msgstr "Search..."
 
 #: src/pages/events/EventInfo.ts:124
 msgid "Secret:"
@@ -3680,6 +3684,10 @@ msgstr "{0} ('{1}', Type {2})"
 #: src/pages/stages/prompt/PromptStageForm.ts:97
 msgid "{0} ({1})"
 msgstr "{0} ({1})"
+
+#: src/elements/table/TablePagination.ts:29
+msgid "{0} - {1} of {2}"
+msgstr "{0} - {1} of {2}"
 
 #: src/pages/admin-overview/cards/VersionStatusCard.ts:27
 msgid "{0} is available!"
