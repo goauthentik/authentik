@@ -66,6 +66,10 @@ export class OutpostForm extends Form<Outpost> {
                         });
                     }), html``)}
                 </select>
+                <p class="pf-c-form__helper-text">${gettext("Selecting a service-connection enables the management of the outpost by authentik.")}</p>
+                <p class="pf-c-form__helper-text">
+                    See <a _target="blank" href="https://goauthentik.io/docs/outposts/outposts">documentation</a>.
+                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${gettext("Providers")}

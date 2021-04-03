@@ -18,11 +18,15 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
             id: value,
         }).then(provider => {
             this.provider = provider;
+            this.showClientSecret = provider.clientType === OAuth2ProviderClientTypeEnum.Confidential;
         });
     }
 
     @property({attribute: false})
     provider?: OAuth2Provider;
+
+    @property({type: Boolean})
+    showClientSecret = true;
 
     getSuccessMessage(): string {
         if (this.provider) {
@@ -79,7 +83,14 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                         label=${gettext("Client type")}
                         ?required=${true}
                         name="clientType">
-                        <select class="pf-c-form-control">
+                        <select class="pf-c-form-control" @change=${(ev: Event) => {
+                            const target = ev.target as HTMLSelectElement;
+                            if (target.selectedOptions[0].value === OAuth2ProviderClientTypeEnum.Public) {
+                                this.showClientSecret = false;
+                            } else {
+                                this.showClientSecret = true;
+                            }
+                        }}>
                             <option value=${OAuth2ProviderClientTypeEnum.Confidential} ?selected=${this.provider?.clientType === OAuth2ProviderClientTypeEnum.Confidential}>
                                 ${gettext("Confidential")}
                             </option>
@@ -96,6 +107,7 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                         <input type="text" value="${first(this.provider?.clientId, randomString(40))}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
+                        ?hidden=${!this.showClientSecret}
                         label=${gettext("Client Secret")}
                         name="clientSecret">
                         <input type="text" value="${first(this.provider?.clientSecret, randomString(128))}" class="pf-c-form-control">
