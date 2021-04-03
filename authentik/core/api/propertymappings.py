@@ -36,11 +36,11 @@ class PropertyMappingTestResultSerializer(PassiveSerializer):
 class PropertyMappingSerializer(ManagedSerializer, ModelSerializer, MetaNameSerializer):
     """PropertyMapping Serializer"""
 
-    object_type = SerializerMethodField()
+    component = SerializerMethodField()
 
-    def get_object_type(self, obj: PropertyMapping) -> str:
-        """Get object type so that we know which API Endpoint to use to get the full object"""
-        return obj._meta.object_name.lower().replace("propertymapping", "")
+    def get_component(self, obj: PropertyMapping) -> str:
+        """Get object's component so that we know how to edit the object"""
+        return obj.component
 
     def validate_expression(self, expression: str) -> str:
         """Test Syntax"""
@@ -56,7 +56,7 @@ class PropertyMappingSerializer(ManagedSerializer, ModelSerializer, MetaNameSeri
             "managed",
             "name",
             "expression",
-            "object_type",
+            "component",
             "verbose_name",
             "verbose_name_plural",
         ]

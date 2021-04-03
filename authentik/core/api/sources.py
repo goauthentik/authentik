@@ -23,11 +23,11 @@ LOGGER = get_logger()
 class SourceSerializer(ModelSerializer, MetaNameSerializer):
     """Source Serializer"""
 
-    object_type = SerializerMethodField()
+    component = SerializerMethodField()
 
-    def get_object_type(self, obj):
-        """Get object type so that we know which API Endpoint to use to get the full object"""
-        return obj._meta.object_name.lower().replace("source", "")
+    def get_component(self, obj: Source):
+        """Get object component so that we know how to edit the object"""
+        return obj.component
 
     class Meta:
 
@@ -39,7 +39,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
             "enabled",
             "authentication_flow",
             "enrollment_flow",
-            "object_type",
+            "component",
             "verbose_name",
             "verbose_name_plural",
             "policy_engine_mode",

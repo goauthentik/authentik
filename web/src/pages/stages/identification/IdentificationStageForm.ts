@@ -106,7 +106,7 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
                                 designation: FlowDesignationEnum.Enrollment,
                             }).then(flows => {
                                 return flows.results.map(flow => {
-                                    let selected = this.stage?.enrollmentFlow === flow.pk;
+                                    const selected = this.stage?.enrollmentFlow === flow.pk;
                                     return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
                                 });
                             }))}
@@ -123,7 +123,7 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
                                 designation: FlowDesignationEnum.Recovery,
                             }).then(flows => {
                                 return flows.results.map(flow => {
-                                    let selected = this.stage?.recoveryFlow === flow.pk;
+                                    const selected = this.stage?.recoveryFlow === flow.pk;
                                     return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
                                 });
                             }))}

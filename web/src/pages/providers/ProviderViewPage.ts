@@ -36,15 +36,15 @@ export class ProviderViewPage extends LitElement {
         if (!this.provider) {
             return html`<ak-empty-state ?loading=${true} ?fullHeight=${true}></ak-empty-state>`;
         }
-        switch (this.provider?.objectType) {
-            case "saml":
+        switch (this.provider?.component) {
+            case "ak-provider-saml-form":
                 return html`<ak-provider-saml-view providerID=${ifDefined(this.provider.pk)}></ak-provider-saml-view>`;
-            case "oauth2":
+            case "ak-provider-oauth2-form":
                 return html`<ak-provider-oauth2-view providerID=${ifDefined(this.provider.pk)}></ak-provider-oauth2-view>`;
-            case "proxy":
+            case "ak-provider-proxy-form":
                 return html`<ak-provider-proxy-view providerID=${ifDefined(this.provider.pk)}></ak-provider-proxy-view>`;
             default:
-                return html`<p>Invalid provider type ${this.provider?.objectType}</p>`;
+                return html`<p>Invalid provider type ${this.provider?.component}</p>`;
         }
     }
 }

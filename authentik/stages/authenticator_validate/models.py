@@ -51,7 +51,7 @@ class AuthenticatorValidateStage(Stage):
     )
 
     device_classes = ArrayField(
-        models.TextField(),
+        models.TextField(choices=DeviceClasses.choices),
         help_text=_("Device classes which can be used to authenticate"),
         default=default_device_classes,
     )

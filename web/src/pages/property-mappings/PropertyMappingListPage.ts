@@ -76,12 +76,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                     .args=${{
                         "mappingUUID": item.pk
                     }}
-                    type=${ifDefined(item.objectType)}
-                    .typeMap=${{
-                        "scopemapping": "ak-property-mapping-scope-form",
-                        "ldap": "ak-property-mapping-ldap-form",
-                        "saml": "ak-property-mapping-saml-form",
-                    }}>
+                    type=${ifDefined(item.component)}>
                 </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit")}

@@ -84,11 +84,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                     .args=${{
                         "scUUID": item.pk
                     }}
-                    type=${ifDefined(item.objectType)}
-                    .typeMap=${{
-                        "docker": "ak-service-connection-docker-form",
-                        "kubernetes": "ak-service-connection-kubernetes-form"
-                    }}>
+                    type=${ifDefined(item.component)}>
                 </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit")}

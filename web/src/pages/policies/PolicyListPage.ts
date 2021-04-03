@@ -84,16 +84,7 @@ export class PolicyListPage extends TablePage<Policy> {
                     .args=${{
                         "policyUUID": item.pk
                     }}
-                    type=${ifDefined(item.objectType)}
-                    .typeMap=${{
-                        "dummy": "ak-policy-dummy-form",
-                        "eventmatcher": "ak-policy-event-matcher-form",
-                        "expression": "ak-policy-expression-form",
-                        "passwordexpiry": "ak-policy-password-expiry-form",
-                        "haveibeenpwend": "ak-policy-hibp-form",
-                        "password": "ak-policy-password-form",
-                        "reputation": "ak-policy-reputation-form",
-                    }}>
+                    type=${ifDefined(item.component)}>
                 </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit")}

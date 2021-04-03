@@ -21,11 +21,11 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
     assigned_application_slug = ReadOnlyField(source="application.slug")
     assigned_application_name = ReadOnlyField(source="application.name")
 
-    object_type = SerializerMethodField()
+    component = SerializerMethodField()
 
-    def get_object_type(self, obj):  # pragma: no cover
-        """Get object type so that we know which API Endpoint to use to get the full object"""
-        return obj._meta.object_name.lower().replace("provider", "")
+    def get_component(self, obj: Provider):  # pragma: no cover
+        """Get object component so that we know how to edit the object"""
+        return obj.component
 
     class Meta:
 
@@ -35,7 +35,7 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
             "name",
             "authorization_flow",
             "property_mappings",
-            "object_type",
+            "component",
             "assigned_application_slug",
             "assigned_application_name",
             "verbose_name",

@@ -80,12 +80,7 @@ export class ProviderListPage extends TablePage<Provider> {
                     .args=${{
                         "providerUUID": item.pk
                     }}
-                    type=${ifDefined(item.objectType)}
-                    .typeMap=${{
-                        "oauth2": "ak-provider-oauth2-form",
-                        "saml": "ak-provider-saml-form",
-                        "proxy": "ak-provider-proxy-form",
-                    }}>
+                    type=${ifDefined(item.component)}>
                 </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit")}

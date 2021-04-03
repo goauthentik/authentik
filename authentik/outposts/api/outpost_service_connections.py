@@ -31,11 +31,11 @@ from authentik.outposts.models import (
 class ServiceConnectionSerializer(ModelSerializer, MetaNameSerializer):
     """ServiceConnection Serializer"""
 
-    object_type = SerializerMethodField()
+    component = SerializerMethodField()
 
-    def get_object_type(self, obj: OutpostServiceConnection) -> str:
-        """Get object type so that we know which API Endpoint to use to get the full object"""
-        return obj._meta.object_name.lower().replace("serviceconnection", "")
+    def get_component(self, obj: OutpostServiceConnection) -> str:
+        """Get object component so that we know how to edit the object"""
+        return obj.component
 
     class Meta:
 
@@ -44,7 +44,7 @@ class ServiceConnectionSerializer(ModelSerializer, MetaNameSerializer):
             "pk",
             "name",
             "local",
-            "object_type",
+            "component",
             "verbose_name",
             "verbose_name_plural",
         ]

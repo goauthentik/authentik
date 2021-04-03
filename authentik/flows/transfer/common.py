@@ -22,7 +22,7 @@ def get_attrs(obj: SerializerModel) -> dict[str, Any]:
         "user",
         "verbose_name",
         "verbose_name_plural",
-        "object_type",
+        "component",
         "flow_set",
         "promptstage_set",
     )

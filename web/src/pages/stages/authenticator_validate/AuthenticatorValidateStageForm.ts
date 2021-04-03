@@ -1,4 +1,4 @@
-import { AuthenticatorValidateStage, AuthenticatorValidateStageNotConfiguredActionEnum, StagesApi } from "authentik-api";
+import { AuthenticatorValidateStage, AuthenticatorValidateStageNotConfiguredActionEnum, AuthenticatorValidateStageDeviceClassesEnum, StagesApi } from "authentik-api";
 import { gettext } from "django";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -7,7 +7,6 @@ import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
-import { DeviceClasses } from "authentik-api/dist/src/flows/stages/authenticator_validate/AuthenticatorValidateStage";
 import { until } from "lit-html/directives/until";
 
 @customElement("ak-stage-authenticator-validate-form")
@@ -49,7 +48,7 @@ export class AuthenticatorValidateStageForm extends Form<AuthenticatorValidateSt
         }
     };
 
-    isDeviceClassSelected(field: DeviceClasses): boolean {
+    isDeviceClassSelected(field: AuthenticatorValidateStageDeviceClassesEnum): boolean {
         return (this.stage?.deviceClasses || []).filter(isField => {
             return field === isField;
         }).length > 0;
@@ -96,13 +95,13 @@ export class AuthenticatorValidateStageForm extends Form<AuthenticatorValidateSt
                         ?required=${true}
                         name="transports">
                         <select name="users" class="pf-c-form-control" multiple>
-                            <option value=${DeviceClasses.STATIC} ?selected=${this.isDeviceClassSelected(DeviceClasses.STATIC)}>
+                            <option value=${AuthenticatorValidateStageDeviceClassesEnum.Static} ?selected=${this.isDeviceClassSelected(AuthenticatorValidateStageDeviceClassesEnum.Static)}>
                                 ${gettext("Static Tokens")}
                             </option>
-                            <option value=${DeviceClasses.TOTP} ?selected=${this.isDeviceClassSelected(DeviceClasses.TOTP)}>
+                            <option value=${AuthenticatorValidateStageDeviceClassesEnum.Totp} ?selected=${this.isDeviceClassSelected(AuthenticatorValidateStageDeviceClassesEnum.Totp)}>
                                 ${gettext("TOTP Authenticators")}
                             </option>
-                            <option value=${DeviceClasses.WEBAUTHN} ?selected=${this.isDeviceClassSelected(DeviceClasses.WEBAUTHN)}>
+                            <option value=${AuthenticatorValidateStageDeviceClassesEnum.Webauthn} ?selected=${this.isDeviceClassSelected(AuthenticatorValidateStageDeviceClassesEnum.Webauthn)}>
                                 ${gettext("WebAuthn Authenticators")}
                             </option>
                         </select>
@@ -120,8 +119,8 @@ export class AuthenticatorValidateStageForm extends Form<AuthenticatorValidateSt
                                 ordering: "pk",
                             }).then(stages => {
                                 return stages.results.map(stage => {
-                                    let selected = this.stage?.configurationStage === stage.pk;
-                                    return html`<option value=${ifDefined(stage.pk)} ?selected=${selected}>${stage.name} (${stage.objectType})</option>`;
+                                    const selected = this.stage?.configurationStage === stage.pk;
+                                    return html`<option value=${ifDefined(stage.pk)} ?selected=${selected}>${stage.name} (${stage.verboseName})</option>`;
                                 });
                             }))}
                         </select>

@@ -23,12 +23,15 @@ LOGGER = get_logger()
 class StageSerializer(ModelSerializer, MetaNameSerializer):
     """Stage Serializer"""
 
-    object_type = SerializerMethodField()
+    component = SerializerMethodField()
     flow_set = FlowSerializer(many=True, required=False)
 
-    def get_object_type(self, obj: Stage) -> str:
-        """Get object type so that we know which API Endpoint to use to get the full object"""
-        return obj._meta.object_name.lower().replace("stage", "")
+    def get_component(self, obj: Stage) -> str:
+        """Get object type so that we know how to edit the object"""
+        # pyright: reportGeneralTypeIssues=false
+        if obj.__class__ == Stage:
+            return ""
+        return obj.component
 
     class Meta:
 
@@ -36,7 +39,7 @@ class StageSerializer(ModelSerializer, MetaNameSerializer):
         fields = [
             "pk",
             "name",
-            "object_type",
+            "component",
             "verbose_name",
             "verbose_name_plural",
             "flow_set",

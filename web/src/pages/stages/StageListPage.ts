@@ -15,23 +15,23 @@ import { Stage, StagesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 
-import "./pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts";
-import "./pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts";
-import "./pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts";
-import "./pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts";
-import "./pages/stages/captcha/CaptchaStageForm.ts";
-import "./pages/stages/consent/ConsentStageForm.ts";
-import "./pages/stages/deny/DenyStageForm.ts";
-import "./pages/stages/dummy/DummyStageForm.ts";
-import "./pages/stages/email/EmailStageForm.ts";
-import "./pages/stages/identification/IdentificationStageForm.ts";
-import "./pages/stages/invitation/InvitationStageForm.ts";
-import "./pages/stages/password/PasswordStageForm.ts";
-import "./pages/stages/prompt/PromptStageForm.ts";
-import "./pages/stages/user_delete/UserDeleteStageForm.ts";
-import "./pages/stages/user_login/UserLoginStageForm.ts";
-import "./pages/stages/user_logout/UserLogoutStageForm.ts";
-import "./pages/stages/user_write/UserWriteStageForm.ts";
+import "./authenticator_static/AuthenticatorStaticStageForm.ts";
+import "./authenticator_totp/AuthenticatorTOTPStageForm.ts";
+import "./authenticator_validate/AuthenticatorValidateStageForm.ts";
+import "./authenticator_webauthn/AuthenticateWebAuthnStageForm.ts";
+import "./captcha/CaptchaStageForm.ts";
+import "./consent/ConsentStageForm.ts";
+import "./deny/DenyStageForm.ts";
+import "./dummy/DummyStageForm.ts";
+import "./email/EmailStageForm.ts";
+import "./identification/IdentificationStageForm.ts";
+import "./invitation/InvitationStageForm.ts";
+import "./password/PasswordStageForm.ts";
+import "./prompt/PromptStageForm.ts";
+import "./user_delete/UserDeleteStageForm.ts";
+import "./user_login/UserLoginStageForm.ts";
+import "./user_logout/UserLogoutStageForm.ts";
+import "./user_write/UserWriteStageForm.ts";
 
 @customElement("ak-stage-list")
 export class StageListPage extends TablePage<Stage> {
@@ -92,16 +92,7 @@ export class StageListPage extends TablePage<Stage> {
                     .args=${{
                         "stageUUID": item.pk
                     }}
-                    type=${ifDefined(item.objectType)}
-                    .typeMap=${{
-                        "dummy": "ak-policy-dummy-form",
-                        "eventmatcher": "ak-policy-event-matcher-form",
-                        "expression": "ak-policy-expression-form",
-                        "passwordexpiry": "ak-policy-password-expiry-form",
-                        "haveibeenpwend": "ak-policy-hibp-form",
-                        "password": "ak-policy-password-form",
-                        "reputation": "ak-policy-reputation-form",
-                    }}>
+                    type=${ifDefined(item.component)}>
                 </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit")}
@@ -148,6 +139,7 @@ export class StageListPage extends TablePage<Stage> {
                                     ${type.name}<br>
                                     <small>${type.description}</small>
                                 </button>
+                            </ak-forms-modal>
                         </li>`;
                     });
                 }), html`<ak-spinner></ak-spinner>`)}

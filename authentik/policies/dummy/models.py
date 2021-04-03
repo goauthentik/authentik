@@ -30,7 +30,7 @@ class DummyPolicy(Policy):
         return DummyPolicySerializer
 
     @property
-    def component(self) -> str:
+    def component(self) -> str:  # pragma: no cover
         return "ak-policy-dummy-form"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:

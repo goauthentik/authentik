@@ -73,12 +73,7 @@ export class SourceListPage extends TablePage<Source> {
                     .args=${{
                         "sourceSlug": item.slug
                     }}
-                    type=${ifDefined(item.objectType)}
-                    .typeMap=${{
-                        "ldap": "ak-source-ldap-form",
-                        "saml": "ak-source-saml-form",
-                        "oauth": "ak-source-oauth-form",
-                    }}>
+                    type=${ifDefined(item.component)}>
                 </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit")}

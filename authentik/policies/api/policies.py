@@ -33,16 +33,16 @@ class PolicySerializer(ModelSerializer, MetaNameSerializer):
 
     _resolve_inheritance: bool
 
-    object_type = SerializerMethodField()
+    component = SerializerMethodField()
     bound_to = SerializerMethodField()
 
     def __init__(self, *args, resolve_inheritance: bool = True, **kwargs):
         super().__init__(*args, **kwargs)
         self._resolve_inheritance = resolve_inheritance
 
-    def get_object_type(self, obj: Policy) -> str:
-        """Get object type so that we know which API Endpoint to use to get the full object"""
-        return obj._meta.object_name.lower().replace("policy", "")
+    def get_component(self, obj: Policy) -> str:
+        """Get object component so that we know how to edit the object"""
+        return obj.component
 
     def get_bound_to(self, obj: Policy) -> int:
         """Return objects policy is bound to"""
@@ -65,7 +65,7 @@ class PolicySerializer(ModelSerializer, MetaNameSerializer):
             "pk",
             "name",
             "execution_logging",
-            "object_type",
+            "component",
             "verbose_name",
             "verbose_name_plural",
             "bound_to",

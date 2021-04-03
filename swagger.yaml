@@ -14446,8 +14446,8 @@ definitions:
           type: string
           format: uuid
         uniqueItems: true
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       assigned_application_slug:
@@ -15124,8 +15124,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -15274,8 +15274,8 @@ definitions:
           type: string
           format: uuid
         uniqueItems: true
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       assigned_application_slug:
@@ -15606,8 +15606,8 @@ definitions:
         description: If enabled, use the local connection. Required Docker socket/Kubernetes
           Integration
         type: boolean
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -15650,8 +15650,8 @@ definitions:
         description: If enabled, use the local connection. Required Docker socket/Kubernetes
           Integration
         type: boolean
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -15702,8 +15702,8 @@ definitions:
         description: If enabled, use the local connection. Required Docker socket/Kubernetes
           Integration
         type: boolean
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -15736,8 +15736,8 @@ definitions:
         description: When this option is enabled, all executions of this policy will
           be logged. By default, only execution errors are logged.
         type: boolean
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -15843,8 +15843,8 @@ definitions:
         description: When this option is enabled, all executions of this policy will
           be logged. By default, only execution errors are logged.
         type: boolean
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -15889,8 +15889,8 @@ definitions:
         description: When this option is enabled, all executions of this policy will
           be logged. By default, only execution errors are logged.
         type: boolean
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -16005,8 +16005,8 @@ definitions:
         description: When this option is enabled, all executions of this policy will
           be logged. By default, only execution errors are logged.
         type: boolean
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -16042,8 +16042,8 @@ definitions:
         description: When this option is enabled, all executions of this policy will
           be logged. By default, only execution errors are logged.
         type: boolean
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -16087,8 +16087,8 @@ definitions:
         description: When this option is enabled, all executions of this policy will
           be logged. By default, only execution errors are logged.
         type: boolean
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -16155,8 +16155,8 @@ definitions:
         description: When this option is enabled, all executions of this policy will
           be logged. By default, only execution errors are logged.
         type: boolean
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -16196,8 +16196,8 @@ definitions:
         description: When this option is enabled, all executions of this policy will
           be logged. By default, only execution errors are logged.
         type: boolean
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -16296,8 +16296,8 @@ definitions:
         title: Expression
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -16349,8 +16349,8 @@ definitions:
         title: Expression
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -16394,8 +16394,8 @@ definitions:
         title: Expression
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -16443,8 +16443,8 @@ definitions:
         title: Expression
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -16519,8 +16519,8 @@ definitions:
           type: string
           format: uuid
         uniqueItems: true
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       assigned_application_slug:
@@ -16602,8 +16602,8 @@ definitions:
           type: string
           format: uuid
         uniqueItems: true
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       assigned_application_slug:
@@ -16791,8 +16791,8 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -16871,8 +16871,8 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17062,8 +17062,8 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17186,8 +17186,8 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17295,8 +17295,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17338,8 +17338,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17381,8 +17381,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17410,7 +17410,10 @@ definitions:
         items:
           title: Device classes
           type: string
-          minLength: 1
+          enum:
+            - static
+            - totp
+            - webauthn
       configuration_stage:
         title: Configuration stage
         description: Stage used to configure Authenticator when user doesn't have
@@ -17433,8 +17436,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17472,8 +17475,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17512,8 +17515,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17554,8 +17557,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17584,8 +17587,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17614,8 +17617,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17698,8 +17701,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -17990,8 +17993,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -18027,8 +18030,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -18135,8 +18138,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -18177,8 +18180,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -18207,8 +18210,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -18243,8 +18246,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:
@@ -18273,8 +18276,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      object_type:
-        title: Object type
+      component:
+        title: Component
         type: string
         readOnly: true
       verbose_name:

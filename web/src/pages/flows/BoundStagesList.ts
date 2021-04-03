@@ -5,6 +5,7 @@ import { Table, TableColumn } from "../../elements/table/Table";
 
 import "../../elements/forms/DeleteForm";
 import "../../elements/forms/ModalForm";
+import "../../elements/forms/ProxyForm";
 import "./StageBindingForm";
 import "../../elements/Tabs";
 import "../../elements/buttons/ModalButton";
@@ -15,7 +16,6 @@ import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
 import { FlowsApi, FlowStageBinding, StagesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { AdminURLManager } from "../../api/legacy";
 import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-bound-stages-list")
@@ -49,12 +49,24 @@ export class BoundStagesList extends Table<FlowStageBinding> {
             html`${item.stageObj?.name}`,
             html`${item.stageObj?.verboseName}`,
             html`
-            <ak-modal-button href="${AdminURLManager.stages(`${item.stage}/update/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            <ak-forms-modal>
+                <span slot="submit">
+                    ${gettext("Update")}
+                </span>
+                <span slot="header">
+                    ${gettext(`Update ${item.stageObj?.verboseName}`)}
+                </span>
+                <ak-proxy-form
+                    slot="form"
+                    .args=${{
+                        "stageUUID": item.pk
+                    }}
+                    type=${ifDefined(item.stageObj?.component)}>
+                </ak-proxy-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit Stage")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
+                </button>
+            </ak-forms-modal>
             <ak-forms-modal>
                 <span slot="submit">
                     ${gettext("Update")}
