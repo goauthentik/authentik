@@ -21,10 +21,10 @@ import "./oauth/OAuthSourceForm";
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {
     pageTitle(): string {
-        return "Sources";
+        return t`Sources`;
     }
     pageDescription(): string | undefined {
-        return "External Sources which can be used to get Identities into authentik, for example Social Providers like Twiter and GitHub or Enterprise Providers like ADFS and LDAP.";
+        return t`External Sources which can be used to get Identities into authentik, for example Social Providers like Twiter and GitHub or Enterprise Providers like ADFS and LDAP.`;
     }
     pageIcon(): string {
         return "pf-icon pf-icon-middleware";

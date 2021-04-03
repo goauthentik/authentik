@@ -14,7 +14,7 @@ export class EventListPage extends TablePage<Event> {
     expandable = true;
 
     pageTitle(): string {
-        return "Event Log";
+        return t`Event Log`;
     }
     pageDescription(): string | undefined {
         return;

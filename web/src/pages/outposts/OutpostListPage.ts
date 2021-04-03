@@ -19,10 +19,10 @@ import { ifDefined } from "lit-html/directives/if-defined";
 @customElement("ak-outpost-list")
 export class OutpostListPage extends TablePage<Outpost> {
     pageTitle(): string {
-        return "Outposts";
+        return t`Outposts`;
     }
     pageDescription(): string | undefined {
-        return "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies.";
+        return t`Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies.`;
     }
     pageIcon(): string {
         return "pf-icon pf-icon-zone";

@@ -36,10 +36,10 @@ import "./user_write/UserWriteStageForm.ts";
 @customElement("ak-stage-list")
 export class StageListPage extends TablePage<Stage> {
     pageTitle(): string {
-        return "Stages";
+        return t`Stages`;
     }
     pageDescription(): string | undefined {
-        return "Stages are single steps of a Flow that a user is guided through.";
+        return t`Stages are single steps of a Flow that a user is guided through.`;
     }
     pageIcon(): string {
         return "pf-icon pf-icon-plugged";
