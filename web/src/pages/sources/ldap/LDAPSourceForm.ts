@@ -153,7 +153,7 @@ export class LDAPSourceForm extends Form<LDAPSource> {
                                     }
                                     return html`<option value=${ifDefined(mapping.pk)} ?selected=${selected}>${mapping.name}</option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Property mappings used to user creation.`}</p>
                         <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
@@ -177,7 +177,7 @@ export class LDAPSourceForm extends Form<LDAPSource> {
                                     }
                                     return html`<option value=${ifDefined(mapping.pk)} ?selected=${selected}>${mapping.name}</option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Property mappings used to group creation.`}</p>
                         <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>

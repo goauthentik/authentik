@@ -94,7 +94,7 @@ export class ApplicationForm extends Form<Application> {
                     <option value="" ?selected=${this.application?.provider === undefined}>---------</option>
                     ${until(new ProvidersApi(DEFAULT_CONFIG).providersAllList({}).then(providers => {
                         return this.groupProviders(providers.results);
-                    }), html``)}
+                    }), html`<option>${t`Loading...`}</option>`)}
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal

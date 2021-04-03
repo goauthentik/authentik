@@ -64,7 +64,7 @@ export class GroupForm extends Form<Group> {
                         return groups.results.map(group => {
                             return html`<option value=${ifDefined(group.pk)} ?selected=${this.group?.parent === group.pk}>${group.name}</option>`;
                         });
-                    }), html``)}
+                    }), html`<option>${t`Loading...`}</option>`)}
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
@@ -81,7 +81,7 @@ export class GroupForm extends Form<Group> {
                             });
                             return html`<option value=${ifDefined(user.pk)} ?selected=${selected}>${user.username} (${user.name})</option>`;
                         });
-                    }))}
+                    }), html`<option>${t`Loading...`}</option>`)}
                 </select>
                 <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
             </ak-form-element-horizontal>

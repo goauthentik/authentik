@@ -118,7 +118,7 @@ export class SAMLSourceForm extends Form<SAMLSource> {
                                 return keys.results.map(key => {
                                     return html`<option value=${ifDefined(key.pk)} ?selected=${this.source?.signingKp === key.pk}>${key.name}</option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Keypair which is used to sign outgoing requests. Leave empty to disable signing.`}</p>
                     </ak-form-element-horizontal>
@@ -231,7 +231,7 @@ export class SAMLSourceForm extends Form<SAMLSource> {
                                     }
                                     return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Flow used before authentication.`}</p>
                     </ak-form-element-horizontal>
@@ -251,7 +251,7 @@ export class SAMLSourceForm extends Form<SAMLSource> {
                                     }
                                     return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Flow to use when authenticating existing users.`}</p>
                     </ak-form-element-horizontal>
@@ -271,7 +271,7 @@ export class SAMLSourceForm extends Form<SAMLSource> {
                                     }
                                     return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Flow to use when enrolling new users.`}</p>
                     </ak-form-element-horizontal>

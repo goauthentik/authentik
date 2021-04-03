@@ -122,7 +122,7 @@ export class AuthenticatorValidateStageForm extends Form<AuthenticatorValidateSt
                                     const selected = this.stage?.configurationStage === stage.pk;
                                     return html`<option value=${ifDefined(stage.pk)} ?selected=${selected}>${stage.name} (${stage.verboseName})</option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.`}</p>
                     </ak-form-element-horizontal>

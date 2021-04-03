@@ -145,7 +145,7 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                                 return types.map(type => {
                                     return html`<option ?data-urls-custom=${type.urlsCustomizable} value=${type.slug} ?selected=${this.source?.providerType === type.slug}>${type.name}</option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Keypair which is used to sign outgoing requests. Leave empty to disable signing.`}</p>
                     </ak-form-element-horizontal>
@@ -173,7 +173,7 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                                     }
                                     return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Flow to use when authenticating existing users.`}</p>
                     </ak-form-element-horizontal>
@@ -193,7 +193,7 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                                     }
                                     return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Flow to use when enrolling new users.`}</p>
                     </ak-form-element-horizontal>

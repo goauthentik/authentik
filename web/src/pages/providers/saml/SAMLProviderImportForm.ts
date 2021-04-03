@@ -48,7 +48,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
                         return flows.results.map(flow => {
                             return html`<option value=${ifDefined(flow.pk)}>${flow.name} (${flow.slug})</option>`;
                         });
-                    }))}
+                    }), html`<option>${t`Loading...`}</option>`)}
                 </select>
                 <p class="pf-c-form__helper-text">${t`Flow used when authorizing this provider.`}</p>
             </ak-form-element-horizontal>

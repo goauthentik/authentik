@@ -109,7 +109,7 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
                                     const selected = this.stage?.enrollmentFlow === flow.pk;
                                     return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Optional enrollment flow, which is linked at the bottom of the page.`}</p>
                     </ak-form-element-horizontal>
@@ -126,7 +126,7 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
                                     const selected = this.stage?.recoveryFlow === flow.pk;
                                     return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Optional recovery flow, which is linked at the bottom of the page.`}</p>
                     </ak-form-element-horizontal>

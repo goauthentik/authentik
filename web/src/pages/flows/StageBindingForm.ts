@@ -82,7 +82,7 @@ export class StageBindingForm extends Form<FlowStageBinding> {
                         // No ?selected check here, as this input isnt shown on update forms
                         return html`<option value=${ifDefined(flow.pk)}>${flow.name} (${flow.slug})</option>`;
                     });
-                }), html``)}
+                }), html`<option>${t`Loading...`}</option>`)}
             </select>
         </ak-form-element-horizontal>`;
     }
@@ -99,7 +99,7 @@ export class StageBindingForm extends Form<FlowStageBinding> {
                         ordering: "pk"
                     }).then(stages => {
                         return this.groupStages(stages.results);
-                    }), html``)}
+                    }), html`<option>${t`Loading...`}</option>`)}
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="evaluateOnPlan">

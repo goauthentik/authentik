@@ -75,7 +75,7 @@ export class EventMatcherPolicyForm extends Form<EventMatcherPolicy> {
                                 return actions.map(action => {
                                     return html`<option value=${action.component} ?selected=${this.policy?.action === action.component}>${action.name}</option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Match created events with this action type. When left empty, all action types will be matched.`}</p>
                     </ak-form-element-horizontal>
@@ -94,7 +94,7 @@ export class EventMatcherPolicyForm extends Form<EventMatcherPolicy> {
                                 return apps.map(app => {
                                     return html`<option value=${app.name} ?selected=${this.policy?.app === app.name}>${app.label}</option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Match events created by selected application. When left empty, all applications are matched.`}</p>
                     </ak-form-element-horizontal>

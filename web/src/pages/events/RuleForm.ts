@@ -66,7 +66,7 @@ export class RuleForm extends Form<NotificationRule> {
                         return groups.results.map(group => {
                             return html`<option value=${ifDefined(group.pk)} ?selected=${this.rule?.group?.groupUuid === group.pk}>${group.name}</option>`;
                         });
-                    }), html``)}
+                    }), html`<option>${t`Loading...`}</option>`)}
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
@@ -81,7 +81,7 @@ export class RuleForm extends Form<NotificationRule> {
                             });
                             return html`<option value=${ifDefined(transport.pk)} ?selected=${selected}>${transport.name}</option>`;
                         });
-                    }))}
+                    }), html`<option>${t`Loading...`}</option>`)}
                 </select>
                 <p class="pf-c-form__helper-text">${t`Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.`}</p>
                 <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>

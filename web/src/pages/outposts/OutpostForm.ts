@@ -64,7 +64,7 @@ export class OutpostForm extends Form<Outpost> {
                         return scs.results.map(sc => {
                             return html`<option value=${ifDefined(sc.pk)} ?selected=${this.outpost?.serviceConnection === sc.pk}>${sc.name}</option>`;
                         });
-                    }), html``)}
+                    }), html`<option>${t`Loading...`}</option>`)}
                 </select>
                 <p class="pf-c-form__helper-text">${t`Selecting a service-connection enables the management of the outpost by authentik.`}</p>
                 <p class="pf-c-form__helper-text">
@@ -85,7 +85,7 @@ export class OutpostForm extends Form<Outpost> {
                             });
                             return html`<option value=${ifDefined(provider.pk)} ?selected=${selected}>${provider.verboseName} ${provider.name}</option>`;
                         });
-                    }))}
+                    }), html`<option>${t`Loading...`}</option>`)}
                 </select>
                 <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
             </ak-form-element-horizontal>

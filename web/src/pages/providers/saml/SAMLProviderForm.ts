@@ -64,7 +64,7 @@ export class SAMLProviderFormPage extends Form<SAMLProvider> {
                         return flows.results.map(flow => {
                             return html`<option value=${ifDefined(flow.pk)} ?selected=${this.provider?.authorizationFlow === flow.pk}>${flow.name} (${flow.slug})</option>`;
                         });
-                    }))}
+                    }), html`<option>${t`Loading...`}</option>`)}
                 </select>
                 <p class="pf-c-form__helper-text">${t`Flow used when authorizing this provider.`}</p>
             </ak-form-element-horizontal>
@@ -125,7 +125,7 @@ export class SAMLProviderFormPage extends Form<SAMLProvider> {
                                 return keys.results.map(key => {
                                     return html`<option value=${ifDefined(key.pk)} ?selected=${this.provider?.signingKp === key.pk}>${key.name}</option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Keypair used to sign outgoing Responses going to the Service Provider.`}</p>
                     </ak-form-element-horizontal>
@@ -140,7 +140,7 @@ export class SAMLProviderFormPage extends Form<SAMLProvider> {
                                 return keys.results.map(key => {
                                     return html`<option value=${ifDefined(key.pk)} ?selected=${this.provider?.verificationKp === key.pk}>${key.name}</option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.`}</p>
                     </ak-form-element-horizontal>
@@ -159,7 +159,7 @@ export class SAMLProviderFormPage extends Form<SAMLProvider> {
                                     });
                                     return html`<option value=${ifDefined(mapping.pk)} ?selected=${selected}>${mapping.name}</option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
                     </ak-form-element-horizontal>
@@ -174,7 +174,7 @@ export class SAMLProviderFormPage extends Form<SAMLProvider> {
                                 return mappings.results.map(mapping => {
                                     return html`<option value=${ifDefined(mapping.pk)} ?selected=${this.provider?.nameIdMapping === mapping.pk}>${mapping.name}</option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected.`}</p>
                     </ak-form-element-horizontal>

@@ -69,7 +69,7 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                         return flows.results.map(flow => {
                             return html`<option value=${ifDefined(flow.pk)} ?selected=${this.provider?.authorizationFlow === flow.pk}>${flow.name} (${flow.slug})</option>`;
                         });
-                    }))}
+                    }), html`<option>${t`Loading...`}</option>`)}
                 </select>
                 <p class="pf-c-form__helper-text">${t`Flow used when authorizing this provider.`}</p>
             </ak-form-element-horizontal>
@@ -159,7 +159,7 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                                     });
                                     return html`<option value=${ifDefined(scope.pk)} ?selected=${selected}>${scope.name}</option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Select which scopes can be used by the client. The client stil has to specify the scope to access the data.`}</p>
                         <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
@@ -177,7 +177,7 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                                 return keys.results.map(key => {
                                     return html`<option value=${ifDefined(key.pk)} ?selected=${this.provider?.rsaKey === key.pk}>${key.name}</option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Key used to sign the tokens. Only required when JWT Algorithm is set to RS256.`}</p>
                     </ak-form-element-horizontal>

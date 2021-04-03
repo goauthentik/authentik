@@ -80,7 +80,7 @@ export class PolicyBindingForm extends Form<PolicyBinding> {
                         ordering: "pk"
                     }).then(policies => {
                         return this.groupPolicies(policies.results);
-                    }), html``)}
+                    }), html`<option>${t`Loading...`}</option>`)}
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
@@ -94,7 +94,7 @@ export class PolicyBindingForm extends Form<PolicyBinding> {
                         return groups.results.map(group => {
                             return html`<option value=${ifDefined(group.pk)} ?selected=${group.pk === this.binding?.group}>${group.name}</option>`;
                         });
-                    }), html``)}
+                    }), html`<option>${t`Loading...`}</option>`)}
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
@@ -108,7 +108,7 @@ export class PolicyBindingForm extends Form<PolicyBinding> {
                         return users.results.map(user => {
                             return html`<option value=${ifDefined(user.pk)} ?selected=${user.pk === this.binding?.user}>${user.name}</option>`;
                         });
-                    }), html``)}
+                    }), html`<option>${t`Loading...`}</option>`)}
                 </select>
             </ak-form-element-horizontal>
             <input required name="target" type="hidden" value=${ifDefined(this.binding?.target || this.targetPk)}>

@@ -79,7 +79,7 @@ export class ServiceConnectionDockerForm extends Form<DockerServiceConnection> {
                         return certs.results.map(cert => {
                             return html`<option value=${ifDefined(cert.pk)} ?selected=${this.sc?.tlsVerification === cert.pk}>${cert.name}</option>`;
                         });
-                    }))}
+                    }), html`<option>${t`Loading...`}</option>`)}
                 </select>
                 <p class="pf-c-form__helper-text">${t`CA which the endpoint's Certificate is verified against. Can be left empty for no validation.`}</p>
             </ak-form-element-horizontal>
@@ -95,7 +95,7 @@ export class ServiceConnectionDockerForm extends Form<DockerServiceConnection> {
                         return certs.results.map(cert => {
                             return html`<option value=${ifDefined(cert.pk)} ?selected=${this.sc?.tlsAuthentication === cert.pk}>${cert.name}</option>`;
                         });
-                    }))}
+                    }), html`<option>${t`Loading...`}</option>`)}
                 </select>
                 <p class="pf-c-form__helper-text">${t`Certificate/Key used for authentication. Can be left empty for no authentication.`}</p>
             </ak-form-element-horizontal>

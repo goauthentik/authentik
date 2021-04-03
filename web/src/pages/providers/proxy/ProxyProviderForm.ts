@@ -65,7 +65,7 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
                         return flows.results.map(flow => {
                             return html`<option value=${ifDefined(flow.pk)} ?selected=${this.provider?.authorizationFlow === flow.pk}>${flow.name} (${flow.slug})</option>`;
                         });
-                    }))}
+                    }), html`<option>${t`Loading...`}</option>`)}
                 </select>
                 <p class="pf-c-form__helper-text">${t`Flow used when authorizing this provider.`}</p>
             </ak-form-element-horizontal>
@@ -114,7 +114,7 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
                                 return keys.results.map(key => {
                                     return html`<option value=${ifDefined(key.pk)} ?selected=${this.provider?.certificate === key.pk}>${key.name}</option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                     </ak-form-element-horizontal>
 

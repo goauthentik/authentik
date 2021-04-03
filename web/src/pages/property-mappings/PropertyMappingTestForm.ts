@@ -58,7 +58,7 @@ export class PolicyTestForm extends Form<PolicyTest> {
                         return users.results.map(user => {
                             return html`<option value=${ifDefined(user.pk)}>${user.username}</option>`;
                         });
-                    }), html``)}
+                    }), html`<option>${t`Loading...`}</option>`)}
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal

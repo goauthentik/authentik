@@ -73,7 +73,7 @@ export class PromptStageForm extends Form<PromptStage> {
                                         ${t`${prompt.fieldKey} ('${prompt.label}', Type ${prompt.type})`}
                                     </option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
                     </ak-form-element-horizontal>
@@ -92,7 +92,7 @@ export class PromptStageForm extends Form<PromptStage> {
                                         ${t`${policy.name} (${policy.verboseName})`}
                                     </option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Selected policies are executed when the stage is submitted to validate the data.`}</p>
                         <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>

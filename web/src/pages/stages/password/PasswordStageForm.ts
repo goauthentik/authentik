@@ -96,7 +96,7 @@ export class PasswordStageForm extends Form<PasswordStage> {
                                     }
                                     return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
                                 });
-                            }))}
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Flow used by an authenticated user to configure their password. If empty, user will not be able to configure change their password.`}</p>
                     </ak-form-element-horizontal>
