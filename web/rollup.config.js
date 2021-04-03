@@ -7,6 +7,7 @@ import cssimport from "rollup-plugin-cssimport";
 import copy from "rollup-plugin-copy";
 import externalGlobals from "rollup-plugin-external-globals";
 import babel from '@rollup/plugin-babel';
+import replace from '@rollup/plugin-replace';
 
 const extensions = [
     '.js', '.jsx', '.ts', '.tsx',
@@ -107,6 +108,10 @@ export default [
                 babelHelpers: 'runtime',
                 include: ['src/**/*'],
             }),
+            replace({
+                'process.env.NODE_ENV': JSON.stringify(isProdBuild ? 'production' : "development"),
+                preventAssignment: true
+            }),
             externalGlobals({
                 django: "django",
             }),
@@ -137,6 +142,10 @@ export default [
                 extensions,
                 babelHelpers: 'runtime',
                 include: ['src/**/*'],
+            }),
+            replace({
+                'process.env.NODE_ENV': JSON.stringify(isProdBuild ? 'production' : "development"),
+                preventAssignment: true
             }),
             externalGlobals({
                 django: "django"

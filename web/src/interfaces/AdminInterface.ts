@@ -4,6 +4,7 @@ import { me } from "../api/Users";
 import { SidebarItem } from "../elements/sidebar/Sidebar";
 import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "../elements/router/Route";
 import { Interface } from "./Interface";
+import "./locale";
 
 export const SIDEBAR_ITEMS: SidebarItem[] = [
     new SidebarItem("Library", "/library"),

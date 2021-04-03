@@ -21,6 +21,7 @@
             {
                 "regenerator": true
             }
-        ]
+        ],
+        "macros"
     ]
 }
