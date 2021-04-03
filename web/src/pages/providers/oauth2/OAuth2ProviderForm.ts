@@ -205,7 +205,7 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="includeClaimsInIdToken">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${this.provider?.includeClaimsInIdToken || false}>
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.provider?.includeClaimsInIdToken, true)}>
                             <label class="pf-c-check__label">
                                 ${t`Include claims in id_token`}
                             </label>

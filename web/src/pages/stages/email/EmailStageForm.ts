@@ -82,7 +82,7 @@ export class EmailStageForm extends Form<EmailStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="useTls">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${this.stage?.useTls || true}>
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.stage?.useTls, true)}>
                             <label class="pf-c-check__label">
                                 ${t`Use TLS`}
                             </label>
@@ -90,7 +90,7 @@ export class EmailStageForm extends Form<EmailStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="useSsl">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${this.stage?.useSsl || true}>
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.stage?.useSsl, true)}>
                             <label class="pf-c-check__label">
                                 ${t`Use SSL`}
                             </label>
@@ -127,7 +127,7 @@ export class EmailStageForm extends Form<EmailStage> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="useGlobalSettings">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${this.stage?.useGlobalSettings || true} @change=${(ev: Event) => {
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.stage?.useGlobalSettings, true)} @change=${(ev: Event) => {
                                 const target = ev.target as HTMLInputElement;
                                 this.showConnectionSettings = !target.checked;
                             }}>

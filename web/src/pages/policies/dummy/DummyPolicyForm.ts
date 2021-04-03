@@ -54,7 +54,7 @@ export class DummyPolicyForm extends Form<DummyPolicy> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="executionLogging">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${this.policy?.executionLogging || false}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.policy?.executionLogging, false)}>
                     <label class="pf-c-check__label">
                         ${t`Execution logging`}
                     </label>
@@ -68,7 +68,7 @@ export class DummyPolicyForm extends Form<DummyPolicy> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="result">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${this.policy?.result || false}>
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.policy?.result, false)}>
                             <label class="pf-c-check__label">
                                 ${t`Pass policy?`}
                             </label>

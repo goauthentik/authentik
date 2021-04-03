@@ -8,6 +8,7 @@ import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
 import { until } from "lit-html/directives/until";
+import { first } from "../../../utils";
 
 @customElement("ak-stage-identification-form")
 export class IdentificationStageForm extends Form<IdentificationStage> {
@@ -80,7 +81,7 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="caseInsensitiveMatching">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${this.stage?.caseInsensitiveMatching || true}>
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.stage?.caseInsensitiveMatching, true)}>
                             <label class="pf-c-check__label">
                                 ${t`Case insensitive matching`}
                             </label>
@@ -89,7 +90,7 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="showMatchedUser">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${this.stage?.showMatchedUser || true}>
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.stage?.showMatchedUser, true)}>
                             <label class="pf-c-check__label">
                                 ${t`Show matched user`}
                             </label>

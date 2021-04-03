@@ -6,6 +6,7 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 import { Form } from "../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
+import { first } from "../../utils";
 
 @customElement("ak-event-transport-form")
 export class TransportForm extends Form<NotificationTransport> {
@@ -92,7 +93,7 @@ export class TransportForm extends Form<NotificationTransport> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="sendOnce">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${this.transport?.sendOnce || false}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.transport?.sendOnce, false)}>
                     <label class="pf-c-check__label">
                         ${t`Send once`}
                     </label>

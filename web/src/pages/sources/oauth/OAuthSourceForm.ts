@@ -8,6 +8,7 @@ import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
+import { first } from "../../../utils";
 
 @customElement("ak-source-oauth-form")
 export class OAuthSourceForm extends Form<OAuthSource> {
@@ -17,7 +18,7 @@ export class OAuthSourceForm extends Form<OAuthSource> {
             slug: value,
         }).then(source => {
             this.source = source;
-            this.showUrlOptions = source.type?.urlsCustomizable || false;
+            this.showUrlOptions = first(source.type?.urlsCustomizable, false);
         });
     }
 
@@ -105,7 +106,7 @@ export class OAuthSourceForm extends Form<OAuthSource> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="enabled">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${this.source?.enabled || true}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.source?.enabled, true)}>
                     <label class="pf-c-check__label">
                         ${t`Enabled`}
                     </label>

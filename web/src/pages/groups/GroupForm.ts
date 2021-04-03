@@ -9,6 +9,7 @@ import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
 import "../../elements/CodeMirror";
 import YAML from "yaml";
+import { first } from "../../utils";
 
 @customElement("ak-group-form")
 export class GroupForm extends Form<Group> {
@@ -47,7 +48,7 @@ export class GroupForm extends Form<Group> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="isSuperuser">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${this.group?.isSuperuser || false}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.group?.isSuperuser, false)}>
                     <label class="pf-c-check__label">
                         ${t`Is superuser`}
                     </label>

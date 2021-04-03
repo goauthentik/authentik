@@ -54,7 +54,7 @@ export class HaveIBeenPwnedPolicyForm extends Form<HaveIBeenPwendPolicy> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="executionLogging">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${this.policy?.executionLogging || false}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.policy?.executionLogging, false)}>
                     <label class="pf-c-check__label">
                         ${t`Execution logging`}
                     </label>

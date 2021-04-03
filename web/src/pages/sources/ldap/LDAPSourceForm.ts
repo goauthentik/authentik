@@ -8,6 +8,7 @@ import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
+import { first } from "../../../utils";
 
 @customElement("ak-source-ldap-form")
 export class LDAPSourceForm extends Form<LDAPSource> {
@@ -60,7 +61,7 @@ export class LDAPSourceForm extends Form<LDAPSource> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="enabled">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${this.source?.enabled || true}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.source?.enabled, true)}>
                     <label class="pf-c-check__label">
                         ${t`Enabled`}
                     </label>
@@ -68,7 +69,7 @@ export class LDAPSourceForm extends Form<LDAPSource> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="syncUsers">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${this.source?.syncUsers || true}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.source?.syncUsers, true)}>
                     <label class="pf-c-check__label">
                         ${t`Sync users`}
                     </label>
@@ -76,7 +77,7 @@ export class LDAPSourceForm extends Form<LDAPSource> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="syncUsersPassword">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${this.source?.syncUsersPassword || true}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.source?.syncUsersPassword, true)}>
                     <label class="pf-c-check__label">
                         ${t`Sync users' passwords`}
                     </label>
@@ -84,7 +85,7 @@ export class LDAPSourceForm extends Form<LDAPSource> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="syncGroups">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${this.source?.syncGroups || true}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.source?.syncGroups, true)}>
                     <label class="pf-c-check__label">
                         ${t`Sync groups`}
                     </label>
@@ -103,7 +104,7 @@ export class LDAPSourceForm extends Form<LDAPSource> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="startTls">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${this.source?.startTls || true}>
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.source?.startTls, true)}>
                             <label class="pf-c-check__label">
                                 ${t`Enable StartTLS`}
                             </label>
@@ -140,7 +141,7 @@ export class LDAPSourceForm extends Form<LDAPSource> {
                         name="propertyMappings">
                         <select class="pf-c-form-control" multiple>
                             ${until(new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapList({
-                                ordering: "object_field"
+                                ordering: "managed,object_field"
                             }).then(mappings => {
                                 return mappings.results.map(mapping => {
                                     let selected = false;

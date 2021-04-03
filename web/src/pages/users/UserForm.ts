@@ -8,6 +8,7 @@ import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
 import "../../elements/CodeMirror";
 import YAML from "yaml";
+import { first } from "../../utils";
 
 @customElement("ak-user-form")
 export class UserForm extends Form<User> {
@@ -61,7 +62,7 @@ export class UserForm extends Form<User> {
             <ak-form-element-horizontal
                 name="isActive">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${this.user?.isActive || false}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.user?.isActive, false)}>
                     <label class="pf-c-check__label">
                         ${t`Is active`}
                     </label>

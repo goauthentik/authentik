@@ -7,6 +7,7 @@ import { Form } from "../../elements/forms/Form";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
+import { first } from "../../utils";
 
 @customElement("ak-service-connection-docker-form")
 export class ServiceConnectionDockerForm extends Form<DockerServiceConnection> {
@@ -53,7 +54,7 @@ export class ServiceConnectionDockerForm extends Form<DockerServiceConnection> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="local">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${this.sc?.local || false}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.sc?.local, false)}>
                     <label class="pf-c-check__label">
                         ${t`Local`}
                     </label>

@@ -8,6 +8,7 @@ import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
+import { first } from "../../../utils";
 
 @customElement("ak-source-saml-form")
 export class SAMLSourceForm extends Form<SAMLSource> {
@@ -60,7 +61,7 @@ export class SAMLSourceForm extends Form<SAMLSource> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="enabled">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${this.source?.enabled || true}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.source?.enabled, true)}>
                     <label class="pf-c-check__label">
                         ${t`Enabled`}
                     </label>
@@ -131,7 +132,7 @@ export class SAMLSourceForm extends Form<SAMLSource> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="allowIdpInitiated">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${this.source?.allowIdpInitiated || false}>
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.source?.allowIdpInitiated, false)}>
                             <label class="pf-c-check__label">
                                 ${t` Allow IDP-initiated logins`}
                             </label>

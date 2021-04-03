@@ -7,6 +7,7 @@ import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
+import { first } from "../../../utils";
 
 @customElement("ak-stage-invitation-form")
 export class InvitationStageForm extends Form<InvitationStage> {
@@ -58,7 +59,7 @@ export class InvitationStageForm extends Form<InvitationStage> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="continueFlowWithoutInvitation">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${this.stage?.continueFlowWithoutInvitation || true}>
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.stage?.continueFlowWithoutInvitation, true)}>
                             <label class="pf-c-check__label">
                                 ${t`Continue flow without invitation`}
                             </label>

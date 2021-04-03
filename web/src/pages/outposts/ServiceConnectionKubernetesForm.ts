@@ -8,6 +8,7 @@ import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
 import "../../elements/CodeMirror";
 import YAML from "yaml";
+import { first } from "../../utils";
 
 @customElement("ak-service-connection-kubernetes-form")
 export class ServiceConnectionKubernetesForm extends Form<KubernetesServiceConnection> {
@@ -54,7 +55,7 @@ export class ServiceConnectionKubernetesForm extends Form<KubernetesServiceConne
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="local">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${this.sc?.local || false}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.sc?.local, false)}>
                     <label class="pf-c-check__label">
                         ${t`Local`}
                     </label>

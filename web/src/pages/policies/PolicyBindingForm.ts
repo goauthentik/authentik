@@ -114,7 +114,7 @@ export class PolicyBindingForm extends Form<PolicyBinding> {
             <input required name="target" type="hidden" value=${ifDefined(this.binding?.target || this.targetPk)}>
             <ak-form-element-horizontal name="enabled">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${this.binding?.enabled || true}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.binding?.enabled, true)}>
                     <label class="pf-c-check__label">
                         ${t`Enabled`}
                     </label>

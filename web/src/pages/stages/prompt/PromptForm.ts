@@ -6,6 +6,7 @@ import { DEFAULT_CONFIG } from "../../../api/Config";
 import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
+import { first } from "../../../utils";
 
 @customElement("ak-prompt-form")
 export class PromptForm extends Form<Prompt> {
@@ -98,7 +99,7 @@ export class PromptForm extends Form<Prompt> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="required">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${this.prompt?.required || false}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.prompt?.required, false)}>
                     <label class="pf-c-check__label">
                         ${t`Required`}
                     </label>

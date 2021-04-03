@@ -7,7 +7,7 @@ import { Form } from "../../elements/forms/Form";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
-import { groupBy } from "../../utils";
+import { first, groupBy } from "../../utils";
 
 @customElement("ak-stage-binding-form")
 export class StageBindingForm extends Form<FlowStageBinding> {
@@ -104,7 +104,7 @@ export class StageBindingForm extends Form<FlowStageBinding> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="evaluateOnPlan">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${this.fsb?.evaluateOnPlan || true}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.fsb?.evaluateOnPlan, true)}>
                     <label class="pf-c-check__label">
                         ${t`Evaluate on plan`}
                     </label>
@@ -113,7 +113,7 @@ export class StageBindingForm extends Form<FlowStageBinding> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="reEvaluatePolicies">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${this.fsb?.reEvaluatePolicies || false}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.fsb?.reEvaluatePolicies, false)}>
                     <label class="pf-c-check__label">
                         ${t`Re-evaluate policies`}
                     </label>

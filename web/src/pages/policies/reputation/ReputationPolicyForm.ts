@@ -7,6 +7,7 @@ import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
+import { first } from "../../../utils";
 
 @customElement("ak-policy-reputation-form")
 export class ReputationPolicyForm extends Form<ReputationPolicy> {
@@ -53,7 +54,7 @@ export class ReputationPolicyForm extends Form<ReputationPolicy> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="executionLogging">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${this.policy?.executionLogging || false}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.policy?.executionLogging, false)}>
                     <label class="pf-c-check__label">
                         ${t`Execution logging`}
                     </label>
@@ -67,7 +68,7 @@ export class ReputationPolicyForm extends Form<ReputationPolicy> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="checkIp">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${this.policy?.checkIp || false}>
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.policy?.checkIp, false)}>
                             <label class="pf-c-check__label">
                                 ${t`Check IP`}
                             </label>
@@ -75,7 +76,7 @@ export class ReputationPolicyForm extends Form<ReputationPolicy> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="checkUsername">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${this.policy?.checkUsername || false}>
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.policy?.checkUsername, false)}>
                             <label class="pf-c-check__label">
                                 ${t`Check Username`}
                             </label>

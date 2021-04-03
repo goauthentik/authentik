@@ -7,6 +7,7 @@ import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
+import { first } from "../../../utils";
 
 @customElement("ak-policy-password-expiry-form")
 export class PasswordExpiryPolicyForm extends Form<PasswordExpiryPolicy> {
@@ -53,7 +54,7 @@ export class PasswordExpiryPolicyForm extends Form<PasswordExpiryPolicy> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="executionLogging">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${this.policy?.executionLogging || false}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.policy?.executionLogging, false)}>
                     <label class="pf-c-check__label">
                         ${t`Execution logging`}
                     </label>
@@ -73,7 +74,7 @@ export class PasswordExpiryPolicyForm extends Form<PasswordExpiryPolicy> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="denyOnly">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${this.policy?.denyOnly || false}>
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.policy?.denyOnly, false)}>
                             <label class="pf-c-check__label">
                                 ${t`Only fail the policy, don't set user's password.`}
                             </label>

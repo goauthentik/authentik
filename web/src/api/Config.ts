@@ -10,7 +10,7 @@ import { MessageMiddleware } from "../elements/messages/Middleware";
 export class LoggingMiddleware implements Middleware {
 
     post(context: ResponseContext): Promise<Response | void> {
-        console.debug(`authentik/api: ${context.init.method} ${context.url} => ${context.response.status}`);
+        console.debug(`authentik/api: ${context.response.status} ${context.init.method} ${context.url}`);
         return Promise.resolve(context.response);
     }
 }

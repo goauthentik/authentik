@@ -8,6 +8,7 @@ import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
 import { until } from "lit-html/directives/until";
+import { first } from "../../../utils";
 
 @customElement("ak-policy-event-matcher-form")
 export class EventMatcherPolicyForm extends Form<EventMatcherPolicy> {
@@ -54,7 +55,7 @@ export class EventMatcherPolicyForm extends Form<EventMatcherPolicy> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="executionLogging">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${this.policy?.executionLogging || false}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.policy?.executionLogging, false)}>
                     <label class="pf-c-check__label">
                         ${t`Execution logging`}
                     </label>
