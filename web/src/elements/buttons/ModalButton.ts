@@ -13,12 +13,6 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import AKGlobal from "../../authentik.css";
 
-import { convertToSlug } from "../../utils";
-import { SpinnerButton } from "./SpinnerButton";
-import { PRIMARY_CLASS, EVENT_REFRESH } from "../../constants";
-import { showMessage } from "../messages/MessageContainer";
-import { MessageLevel } from "../messages/Message";
-
 @customElement("ak-modal-button")
 export class ModalButton extends LitElement {
     @property()
@@ -66,107 +60,13 @@ export class ModalButton extends LitElement {
         });
     }
 
-    updateHandlers(): void {
-        // Ensure links close the modal
-        this.shadowRoot?.querySelectorAll<HTMLAnchorElement>("a").forEach((a) => {
-            if (a.target == "_blank") {
-                return;
-            }
-            // Make click on a close the modal
-            a.addEventListener("click", (e) => {
-                e.preventDefault();
-                this.open = false;
-            });
-        });
-        // Make name field update slug field
-        this.shadowRoot?.querySelectorAll<HTMLInputElement>("input[name=name]").forEach((input) => {
-            const form = input.closest("form");
-            if (form === null) {
-                return;
-            }
-            const slugField = form.querySelector<HTMLInputElement>("input[name=slug]");
-            if (!slugField) {
-                return;
-            }
-            // Only attach handler if the slug is already equal to the name
-            // if not, they are probably completely different and shouldn't update
-            // each other
-            if (convertToSlug(input.value) !== slugField.value) {
-                return;
-            }
-            input.addEventListener("input", () => {
-                slugField.value = convertToSlug(input.value);
-            });
-        });
-        // Ensure forms sends in AJAX
-        this.shadowRoot?.querySelectorAll<HTMLFormElement>("form").forEach((form) => {
-            form.addEventListener("submit", (e) => {
-                e.preventDefault();
-                const formData = new FormData(form);
-                fetch(this.href ? this.href : form.action, {
-                    method: form.method,
-                    body: formData,
-                    redirect: "manual",
-                })
-                    .then((response) => {
-                        return response.text();
-                    })
-                    .then((responseData) => {
-                        if (responseData.indexOf("csrfmiddlewaretoken") !== -1) {
-                            this.modal = responseData;
-                            console.debug("authentik/modalbutton: re-showing form");
-                        } else {
-                            this.open = false;
-                            console.debug("authentik/modalbutton: successful submit");
-                            this.dispatchEvent(
-                                new CustomEvent(EVENT_REFRESH, {
-                                    bubbles: true,
-                                    composed: true,
-                                })
-                            );
-                        }
-                    })
-                    .catch((e) => {
-                        showMessage({
-                            level: MessageLevel.error,
-                            message: "Unexpected error"
-                        });
-                        console.error(e);
-                    });
-            });
-        });
-    }
-
     onClick(): void {
-        if (!this.href) {
-            this.updateHandlers();
-            this.open = true;
-            this.querySelectorAll("*").forEach(child => {
-                if ("requestUpdate" in child) {
-                    (child as LitElement).requestUpdate();
-                }
-            });
-        } else {
-            const request = new Request(this.href);
-            fetch(request, {
-                mode: "same-origin",
-            })
-                .then((response) => response.text())
-                .then((responseData) => {
-                    this.modal = responseData;
-                    this.open = true;
-                    this.querySelectorAll<SpinnerButton>("ak-spinner-button").forEach((sb) => {
-                        sb.setDone(PRIMARY_CLASS);
-                    });
-                })
-                .catch((e) => {
-                    showMessage({
-                        level: MessageLevel.error,
-                        message: "Unexpected error"
-                    });
-                    console.error(e);
-                });
-        }
+        this.open = true;
+        this.querySelectorAll("*").forEach(child => {
+            if ("requestUpdate" in child) {
+                (child as LitElement).requestUpdate();
+            }
+        });
     }
 
     renderModalInner(): TemplateResult {
@@ -202,7 +102,4 @@ export class ModalButton extends LitElement {
             ${this.open ? this.renderModal() : ""}`;
     }
 
-    updated(): void {
-        this.updateHandlers();
-    }
 }
