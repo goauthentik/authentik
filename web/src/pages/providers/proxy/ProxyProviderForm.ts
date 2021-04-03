@@ -18,11 +18,15 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
             id: value,
         }).then(provider => {
             this.provider = provider;
+            this.showHttpBasic = first(provider.basicAuthEnabled, true);
         });
     }
 
     @property({attribute: false})
     provider?: ProxyProvider;
+
+    @property({type: Boolean})
+    showHttpBasic = true;
 
     getSuccessMessage(): string {
         if (this.provider) {
@@ -44,6 +48,24 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
             });
         }
     };
+
+    renderHttpBasic(): TemplateResult {
+        if (!this.showHttpBasic) {
+            return html``;
+        }
+        return html`<ak-form-element-horizontal
+                label=${t`HTTP-Basic Username Key`}
+                name="basicAuthUserAttribute">
+                <input type="text" value="${ifDefined(this.provider?.basicAuthUserAttribute)}" class="pf-c-form-control">
+                <p class="pf-c-form__helper-text">${t`User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.`}</p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${t`HTTP-Basic Password Key`}
+                name="basicAuthPasswordAttribute">
+                <input type="text" value="${ifDefined(this.provider?.basicAuthPasswordAttribute)}" class="pf-c-form-control">
+                <p class="pf-c-form__helper-text">${t`User/Group Attribute used for the password part of the HTTP-Basic Header.`}</p>
+            </ak-form-element-horizontal>`;
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
@@ -103,6 +125,7 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
                 <span slot="header">
                     ${t`Advanced protocol settings`}
                 </span>
+                <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${t`Certificate`}
                         name="certificate">
@@ -127,25 +150,17 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
 
                     <ak-form-element-horizontal name="basicAuthEnabled">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${this.provider?.basicAuthEnabled || false}>
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.provider?.basicAuthEnabled, false)} @change=${(ev: Event) => {
+                                const el = ev.target as HTMLInputElement;
+                                this.showHttpBasic = el.checked;
+                            }}>
                             <label class="pf-c-check__label">
                                 ${t`Set HTTP-Basic Authentication`}
                             </label>
                         </div>
                         <p class="pf-c-form__helper-text">${t`Set a custom HTTP-Basic Authentication header based on values from authentik.`}</p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`HTTP-Basic Username Key`}
-                        name="basicAuthUserAttribute">
-                        <input type="text" value="${ifDefined(this.provider?.basicAuthUserAttribute)}" class="pf-c-form-control">
-                        <p class="pf-c-form__helper-text">${t`User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.`}</p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`HTTP-Basic Password Key`}
-                        name="basicAuthPasswordAttribute">
-                        <input type="text" value="${ifDefined(this.provider?.basicAuthPasswordAttribute)}" class="pf-c-form-control">
-                        <p class="pf-c-form__helper-text">${t`User/Group Attribute used for the password part of the HTTP-Basic Header.`}</p>
-                    </ak-form-element-horizontal>
+                    ${this.renderHttpBasic()}
                 </div>
             </ak-form-group>
         </form>`;

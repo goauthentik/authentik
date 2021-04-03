@@ -61,10 +61,10 @@ export class ProviderListPage extends TablePage<Provider> {
                 ${item.name}
             </a>`,
             item.assignedApplicationName ?
-                html`<i class="pf-icon pf-icon-ok"></i>
+                html`<i class="pf-icon pf-icon-ok pf-m-success"></i>
                     ${t`Assigned to application `}
                     <a href="#/core/applications/${item.assignedApplicationSlug}">${item.assignedApplicationName}</a>` :
-                html`<i class="pf-icon pf-icon-warning-triangle"></i>
+                html`<i class="pf-icon pf-icon-warning-triangle pf-m-warning"></i>
                 ${t`Warning: Provider not assigned to any application.`}`,
             html`${item.verboseName}`,
             html`
