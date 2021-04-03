@@ -60,7 +60,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
         return [
             html`${item.name}`,
             html`${item.verboseName}`,
-            html`${item.local ? "Yes" : "No"}`,
+            html`${item.local ? t`Yes` : t`No`}`,
             html`${until(
                 new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllState({
                     uuid: item.pk || ""

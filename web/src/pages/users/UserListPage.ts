@@ -58,7 +58,7 @@ export class UserListPage extends TablePage<User> {
                 <div>${item.username}</div>
                 <small>${item.name}</small>
             </a>`,
-            html`${item.isActive ? "Yes" : "No"}`,
+            html`${item.isActive ? t`Yes` : t`No`}`,
             html`${item.lastLogin?.toLocaleString()}`,
             html`
             <ak-forms-modal>

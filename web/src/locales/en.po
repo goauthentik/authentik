@@ -164,6 +164,7 @@ msgstr "Application requires following permissions"
 msgid "Application's display Name."
 msgstr "Application's display Name."
 
+#: src/interfaces/AdminInterface.ts:20
 #: src/pages/LibraryPage.ts:92
 #: src/pages/LibraryPage.ts:131
 #: src/pages/applications/ApplicationListPage.ts:28
@@ -409,6 +410,10 @@ msgstr "Certificate-Key Pairs"
 #: src/pages/outposts/ServiceConnectionDockerForm.ts:105
 msgid "Certificate/Key used for authentication. Can be left empty for no authentication."
 msgstr "Certificate/Key used for authentication. Can be left empty for no authentication."
+
+#: src/interfaces/AdminInterface.ts:32
+msgid "Certificates"
+msgstr "Certificates"
 
 #: src/pages/user-settings/settings/UserSettingsPassword.ts:22
 msgid "Change password"
@@ -762,6 +767,10 @@ msgstr "Created {0}"
 #: src/pages/events/EventListPage.ts:45
 msgid "Creation Date"
 msgstr "Creation Date"
+
+#: src/interfaces/AdminInterface.ts:26
+msgid "Customisation"
+msgstr "Customisation"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts:249
 #: src/pages/sources/saml/SAMLSourceForm.ts:211
@@ -1231,6 +1240,8 @@ msgstr "Flow used by an authenticated user to configure this Stage. If empty, us
 msgid "Flow used when authorizing this provider."
 msgstr "Flow used when authorizing this provider."
 
+#: src/interfaces/AdminInterface.ts:29
+#: src/interfaces/AdminInterface.ts:29
 #: src/pages/flows/FlowListPage.ts:28
 msgid "Flows"
 msgstr "Flows"
@@ -1303,6 +1314,7 @@ msgstr "Group users together and give them permissions based on the membership."
 msgid "Group {0}"
 msgstr "Group {0}"
 
+#: src/interfaces/AdminInterface.ts:32
 #: src/pages/groups/GroupListPage.ts:27
 msgid "Groups"
 msgstr "Groups"
@@ -1365,6 +1377,10 @@ msgstr "Icon"
 #: src/pages/user-settings/tokens/UserTokenList.ts:39
 msgid "Identifier"
 msgstr "Identifier"
+
+#: src/interfaces/AdminInterface.ts:32
+msgid "Identity & Cryptography"
+msgstr "Identity & Cryptography"
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts:64
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts:65
@@ -1432,6 +1448,7 @@ msgstr "Internal host SSL Validation"
 msgid "Invalidation"
 msgstr "Invalidation"
 
+#: src/interfaces/AdminInterface.ts:29
 #: src/pages/stages/invitation/InvitationListPage.ts:28
 msgid "Invitations"
 msgstr "Invitations"
@@ -1506,6 +1523,10 @@ msgstr "Last sync: {0}"
 msgid "Launch URL"
 msgstr "Launch URL"
 
+#: src/interfaces/AdminInterface.ts:16
+msgid "Library"
+msgstr "Library"
+
 #: src/elements/table/Table.ts:113
 #: src/flows/FlowExecutor.ts:154
 #: src/flows/FlowExecutor.ts:200
@@ -1555,6 +1576,10 @@ msgstr "Logins over the last 24 hours"
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:196
 msgid "Logout URL"
 msgstr "Logout URL"
+
+#: src/interfaces/AdminInterface.ts:23
+msgid "Logs"
+msgstr "Logs"
 
 #: src/pages/system-tasks/SystemTaskListPage.ts:27
 msgid "Long-running operations which authentik executes in the background."
@@ -1617,6 +1642,10 @@ msgstr "Mode"
 #: src/pages/events/EventInfo.ts:67
 msgid "Model Name"
 msgstr "Model Name"
+
+#: src/interfaces/AdminInterface.ts:17
+msgid "Monitor"
+msgstr "Monitor"
 
 #: src/pages/applications/ApplicationForm.ts:78
 #: src/pages/applications/ApplicationListPage.ts:57
@@ -1711,8 +1740,14 @@ msgid "New version available!"
 msgstr "New version available!"
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts:61
+#: src/pages/groups/GroupListPage.ts:58
+#: src/pages/outposts/ServiceConnectionListPage.ts:63
+#: src/pages/policies/BoundPoliciesList.ts:117
 #: src/pages/policies/PolicyTestForm.ts:38
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:118
+#: src/pages/tokens/TokenListPage.ts:56
+#: src/pages/user-settings/tokens/UserTokenList.ts:83
+#: src/pages/users/UserListPage.ts:62
 msgid "No"
 msgstr "No"
 
@@ -1801,10 +1836,12 @@ msgstr "Not you?"
 msgid "Notice"
 msgstr "Notice"
 
+#: src/interfaces/AdminInterface.ts:23
 #: src/pages/events/RuleListPage.ts:29
 msgid "Notification Rules"
 msgstr "Notification Rules"
 
+#: src/interfaces/AdminInterface.ts:23
 #: src/pages/events/TransportListPage.ts:28
 msgid "Notification Transports"
 msgstr "Notification Transports"
@@ -1931,10 +1968,19 @@ msgstr "Outpost"
 msgid "Outpost Deployment Info"
 msgstr "Outpost Deployment Info"
 
+#: src/interfaces/AdminInterface.ts:20
+msgid "Outpost Service Connections"
+msgstr "Outpost Service Connections"
+
 #: src/pages/outposts/ServiceConnectionListPage.ts:93
 msgid "Outpost Service-connection"
 msgstr "Outpost Service-connection"
 
+#: src/interfaces/AdminInterface.ts:20
+msgid "Outposts"
+msgstr "Outposts"
+
+#: src/interfaces/AdminInterface.ts:17
 #: src/pages/applications/ApplicationViewPage.ts:66
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:75
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:66
@@ -1998,6 +2044,7 @@ msgstr "Please enter your TOTP Code"
 msgid "Please enter your password"
 msgstr "Please enter your password"
 
+#: src/interfaces/AdminInterface.ts:26
 #: src/pages/admin-overview/AdminOverviewPage.ts:44
 #: src/pages/policies/PolicyListPage.ts:38
 msgid "Policies"
@@ -2079,6 +2126,7 @@ msgstr "Profile URL"
 msgid "Prompt"
 msgstr "Prompt"
 
+#: src/interfaces/AdminInterface.ts:29
 #: src/pages/stages/prompt/PromptListPage.ts:28
 msgid "Prompts"
 msgstr "Prompts"
@@ -2087,6 +2135,7 @@ msgstr "Prompts"
 msgid "Property Mapping"
 msgstr "Property Mapping"
 
+#: src/interfaces/AdminInterface.ts:26
 #: src/pages/property-mappings/PropertyMappingListPage.ts:35
 msgid "Property Mappings"
 msgstr "Property Mappings"
@@ -2131,6 +2180,7 @@ msgstr "Provider Type"
 msgid "Provider type"
 msgstr "Provider type"
 
+#: src/interfaces/AdminInterface.ts:20
 #: src/pages/admin-overview/AdminOverviewPage.ts:42
 #: src/pages/outposts/OutpostForm.ts:80
 msgid "Providers"
@@ -2264,6 +2314,10 @@ msgstr "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 #: src/pages/users/UserViewPage.ts:164
 msgid "Reset Password"
 msgstr "Reset Password"
+
+#: src/interfaces/AdminInterface.ts:20
+msgid "Resources"
+msgstr "Resources"
 
 #: src/pages/events/EventInfo.ts:171
 #: src/pages/property-mappings/PropertyMappingTestForm.ts:34
@@ -2512,6 +2566,10 @@ msgstr "Source"
 msgid "Source {0}"
 msgstr "Source {0}"
 
+#: src/interfaces/AdminInterface.ts:20
+msgid "Sources"
+msgstr "Sources"
+
 #: src/pages/flows/StageBindingForm.ts:94
 msgid "Stage"
 msgstr "Stage"
@@ -2545,6 +2603,10 @@ msgstr "Stage used to configure Authenticator when user doesn't have any compati
 #: src/pages/stages/user_login/UserLoginStageForm.ts:59
 msgid "Stage-specific settings"
 msgstr "Stage-specific settings"
+
+#: src/interfaces/AdminInterface.ts:29
+msgid "Stages"
+msgstr "Stages"
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:101
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts:77
@@ -2871,6 +2933,7 @@ msgstr "Sync users' passwords"
 msgid "System Overview"
 msgstr "System Overview"
 
+#: src/interfaces/AdminInterface.ts:17
 #: src/pages/system-tasks/SystemTaskListPage.ts:24
 msgid "System Tasks"
 msgstr "System Tasks"
@@ -2984,6 +3047,7 @@ msgid "Token validity"
 msgstr "Token validity"
 
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts:62
+#: src/interfaces/AdminInterface.ts:32
 #: src/pages/tokens/TokenListPage.ts:26
 #: src/pages/user-settings/UserSettingsPage.ts:80
 msgid "Tokens"
@@ -3281,6 +3345,7 @@ msgstr "Username"
 msgid "Username: Same as Text input, but checks for and prevents duplicate usernames."
 msgstr "Username: Same as Text input, but checks for and prevents duplicate usernames."
 
+#: src/interfaces/AdminInterface.ts:32
 #: src/pages/admin-overview/AdminOverviewPage.ts:46
 #: src/pages/users/UserListPage.ts:31
 msgid "Users"
@@ -3423,8 +3488,14 @@ msgid "X509 Subject"
 msgstr "X509 Subject"
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts:61
+#: src/pages/groups/GroupListPage.ts:58
+#: src/pages/outposts/ServiceConnectionListPage.ts:63
+#: src/pages/policies/BoundPoliciesList.ts:117
 #: src/pages/policies/PolicyTestForm.ts:38
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:115
+#: src/pages/tokens/TokenListPage.ts:56
+#: src/pages/user-settings/tokens/UserTokenList.ts:83
+#: src/pages/users/UserListPage.ts:62
 msgid "Yes"
 msgstr "Yes"
 

@@ -112,7 +112,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     row(item: PolicyBinding): TemplateResult[] {
         return [
             html`${this.getPolicyUserGroupRow(item)}`,
-            html`${item.enabled ? "Yes" : "No"}`,
+            html`${item.enabled ? t`Yes` : t`No`}`,
             html`${item.order}`,
             html`${item.timeout}`,
             html`

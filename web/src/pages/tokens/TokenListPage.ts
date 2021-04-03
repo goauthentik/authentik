@@ -52,7 +52,7 @@ export class TokenListPage extends TablePage<Token> {
         return [
             html`${item.identifier}`,
             html`${item.user?.username}`,
-            html`${item.expiring ? "Yes" : "No"}`,
+            html`${item.expiring ? t`Yes` : t`No`}`,
             html`${item.expiring ? item.expires?.toLocaleString() : "-"}`,
             html`
             <ak-forms-delete

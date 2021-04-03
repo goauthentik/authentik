@@ -82,7 +82,7 @@ export class UserTokenList extends Table<Token> {
                             <span class="pf-c-description-list__text">${t`Expiring`}</span>
                         </dt>
                         <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">${item.expiring ? "Yes" : "No"}</div>
+                            <div class="pf-c-description-list__text">${item.expiring ? t`Yes` : t`No`}</div>
                         </dd>
                     </div>
                     <div class="pf-c-description-list__group">

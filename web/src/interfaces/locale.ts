@@ -7,7 +7,11 @@ i18n.loadLocaleData("en", {
 });
 i18n.load("en", localeEN);
 i18n.activate("en");
+
 // Uncomment to debug localisation
 // import { messages as localeDEBUG } from "../locales/pseudo-LOCALE";
 // i18n.load("debug", localeDEBUG);
 // i18n.activate("debug");
+// i18n.loadLocaleData("debug", {
+//     plurals: en
+// });
