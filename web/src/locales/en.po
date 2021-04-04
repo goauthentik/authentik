@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/pages/policies/BoundPoliciesList.ts:54
+#: src/pages/policies/BoundPoliciesList.ts:55
 msgid "-"
 msgstr "-"
 
@@ -189,12 +189,12 @@ msgstr ""
 "This will cause all policies to be re-evaluated on their next usage."
 
 #: src/elements/forms/DeleteForm.ts:62
-msgid "Are you sure you want to delete {0} '{1}'?"
-msgstr "Are you sure you want to delete {0} '{1}'?"
+msgid "Are you sure you want to delete {0} \"{1}\"?"
+msgstr "Are you sure you want to delete {0} \"{1}\"?"
 
 #: src/pages/users/UserActiveForm.ts:52
-msgid "Are you sure you want to update {0} '{1}'?"
-msgstr "Are you sure you want to update {0} '{1}'?"
+msgid "Are you sure you want to update {0} \"{1}\"?"
+msgstr "Are you sure you want to update {0} \"{1}\"?"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts:202
 msgid "Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
@@ -654,9 +654,9 @@ msgstr "Copy Key"
 #: src/pages/outposts/OutpostListPage.ts:144
 #: src/pages/outposts/ServiceConnectionListPage.ts:109
 #: src/pages/outposts/ServiceConnectionListPage.ts:118
-#: src/pages/policies/BoundPoliciesList.ts:157
-#: src/pages/policies/BoundPoliciesList.ts:184
-#: src/pages/policies/BoundPoliciesList.ts:205
+#: src/pages/policies/BoundPoliciesList.ts:158
+#: src/pages/policies/BoundPoliciesList.ts:185
+#: src/pages/policies/BoundPoliciesList.ts:206
 #: src/pages/policies/PolicyListPage.ts:124
 #: src/pages/policies/PolicyListPage.ts:133
 #: src/pages/property-mappings/PropertyMappingListPage.ts:113
@@ -685,10 +685,10 @@ msgstr "Create"
 msgid "Create Application"
 msgstr "Create Application"
 
-#: src/pages/policies/BoundPoliciesList.ts:160
-#: src/pages/policies/BoundPoliciesList.ts:165
-#: src/pages/policies/BoundPoliciesList.ts:208
-#: src/pages/policies/BoundPoliciesList.ts:213
+#: src/pages/policies/BoundPoliciesList.ts:161
+#: src/pages/policies/BoundPoliciesList.ts:166
+#: src/pages/policies/BoundPoliciesList.ts:209
+#: src/pages/policies/BoundPoliciesList.ts:214
 msgid "Create Binding"
 msgstr "Create Binding"
 
@@ -724,7 +724,7 @@ msgstr "Create Notification Transport"
 msgid "Create Outpost"
 msgstr "Create Outpost"
 
-#: src/pages/policies/BoundPoliciesList.ts:175
+#: src/pages/policies/BoundPoliciesList.ts:176
 msgid "Create Policy"
 msgstr "Create Policy"
 
@@ -751,7 +751,7 @@ msgstr "Create User"
 
 #: src/pages/flows/BoundStagesList.ts:149
 #: src/pages/outposts/ServiceConnectionListPage.ts:121
-#: src/pages/policies/BoundPoliciesList.ts:187
+#: src/pages/policies/BoundPoliciesList.ts:188
 #: src/pages/policies/PolicyListPage.ts:136
 #: src/pages/property-mappings/PropertyMappingListPage.ts:125
 #: src/pages/providers/ProviderListPage.ts:119
@@ -826,7 +826,7 @@ msgid "Delete Authorization Code"
 msgstr "Delete Authorization Code"
 
 #: src/pages/flows/BoundStagesList.ts:91
-#: src/pages/policies/BoundPoliciesList.ts:144
+#: src/pages/policies/BoundPoliciesList.ts:145
 msgid "Delete Binding"
 msgstr "Delete Binding"
 
@@ -962,15 +962,15 @@ msgid "Edit"
 msgstr "Edit"
 
 #: src/pages/flows/BoundStagesList.ts:79
-#: src/pages/policies/BoundPoliciesList.ts:132
+#: src/pages/policies/BoundPoliciesList.ts:133
 msgid "Edit Binding"
 msgstr "Edit Binding"
 
-#: src/pages/policies/BoundPoliciesList.ts:91
+#: src/pages/policies/BoundPoliciesList.ts:92
 msgid "Edit Group"
 msgstr "Edit Group"
 
-#: src/pages/policies/BoundPoliciesList.ts:76
+#: src/pages/policies/BoundPoliciesList.ts:77
 msgid "Edit Policy"
 msgstr "Edit Policy"
 
@@ -978,7 +978,7 @@ msgstr "Edit Policy"
 msgid "Edit Stage"
 msgstr "Edit Stage"
 
-#: src/pages/policies/BoundPoliciesList.ts:106
+#: src/pages/policies/BoundPoliciesList.ts:107
 msgid "Edit User"
 msgstr "Edit User"
 
@@ -1023,8 +1023,8 @@ msgstr "Enable Static Tokens"
 msgid "Enable Time-based OTP"
 msgstr "Enable Time-based OTP"
 
-#: src/pages/policies/BoundPoliciesList.ts:36
-#: src/pages/policies/PolicyBindingForm.ts:156
+#: src/pages/policies/BoundPoliciesList.ts:37
+#: src/pages/policies/PolicyBindingForm.ts:197
 #: src/pages/sources/ldap/LDAPSourceForm.ts:69
 #: src/pages/sources/oauth/OAuthSourceForm.ts:113
 #: src/pages/sources/saml/SAMLSourceForm.ts:69
@@ -1336,8 +1336,8 @@ msgstr "Go to previous page"
 
 #: src/pages/events/RuleForm.ts:65
 #: src/pages/groups/GroupListPage.ts:75
-#: src/pages/policies/PolicyBindingForm.ts:122
-#: src/pages/stages/StageListPage.ts:103
+#: src/pages/policies/PolicyBindingForm.ts:131
+#: src/pages/policies/PolicyBindingForm.ts:159
 msgid "Group"
 msgstr "Group"
 
@@ -1357,7 +1357,7 @@ msgstr "Group object filter"
 msgid "Group users together and give them permissions based on the membership."
 msgstr "Group users together and give them permissions based on the membership."
 
-#: src/pages/policies/BoundPoliciesList.ts:48
+#: src/pages/policies/BoundPoliciesList.ts:49
 msgid "Group {0}"
 msgstr "Group {0}"
 
@@ -1527,10 +1527,6 @@ msgstr "JWT Algorithm"
 msgid "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
 msgstr "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:135
-#~ msgid "Keypair used to sign outgoing Responses going to the Service Provider."
-#~ msgstr "Keypair used to sign outgoing Responses going to the Service Provider."
-
 #: src/pages/sources/saml/SAMLSourceForm.ts:128
 msgid "Keypair which is used to sign outgoing requests. Leave empty to disable signing."
 msgstr "Keypair which is used to sign outgoing requests. Leave empty to disable signing."
@@ -1612,9 +1608,9 @@ msgstr "Loading"
 #: src/pages/outposts/OutpostForm.ts:96
 #: src/pages/outposts/ServiceConnectionDockerForm.ts:87
 #: src/pages/outposts/ServiceConnectionDockerForm.ts:104
-#: src/pages/policies/PolicyBindingForm.ts:118
-#: src/pages/policies/PolicyBindingForm.ts:133
-#: src/pages/policies/PolicyBindingForm.ts:148
+#: src/pages/policies/PolicyBindingForm.ts:155
+#: src/pages/policies/PolicyBindingForm.ts:171
+#: src/pages/policies/PolicyBindingForm.ts:187
 #: src/pages/policies/PolicyTestForm.ts:70
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:83
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:103
@@ -1841,7 +1837,7 @@ msgstr "New version available!"
 #: src/pages/crypto/CertificateKeyPairListPage.ts:61
 #: src/pages/groups/GroupListPage.ts:58
 #: src/pages/outposts/ServiceConnectionListPage.ts:63
-#: src/pages/policies/BoundPoliciesList.ts:117
+#: src/pages/policies/BoundPoliciesList.ts:118
 #: src/pages/policies/PolicyTestForm.ts:38
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:119
 #: src/pages/tokens/TokenListPage.ts:56
@@ -1858,7 +1854,7 @@ msgstr "No Applications available."
 msgid "No Events found."
 msgstr "No Events found."
 
-#: src/pages/policies/BoundPoliciesList.ts:150
+#: src/pages/policies/BoundPoliciesList.ts:151
 msgid "No Policies bound."
 msgstr "No Policies bound."
 
@@ -1886,7 +1882,7 @@ msgstr "No form found"
 msgid "No matching events could be found."
 msgstr "No matching events could be found."
 
-#: src/pages/policies/BoundPoliciesList.ts:152
+#: src/pages/policies/BoundPoliciesList.ts:153
 msgid "No policies are currently bound to this object."
 msgstr "No policies are currently bound to this object."
 
@@ -2003,10 +1999,6 @@ msgstr "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3
 msgid "On behalf of {0}"
 msgstr "On behalf of {0}"
 
-#: src/pages/crypto/CertificateKeyPairForm.ts:51
-#~ msgid "Only change the fields below if you want to overwrite their values."
-#~ msgstr "Only change the fields below if you want to overwrite their values."
-
 #: src/pages/policies/expiry/ExpiryPolicyForm.ts:82
 msgid "Only fail the policy, don't set user's password."
 msgstr "Only fail the policy, don't set user's password."
@@ -2057,8 +2049,8 @@ msgstr "Optionally set the 'FriendlyName' value of the Assertion attribute."
 
 #: src/pages/flows/BoundStagesList.ts:38
 #: src/pages/flows/StageBindingForm.ts:128
-#: src/pages/policies/BoundPoliciesList.ts:37
-#: src/pages/policies/PolicyBindingForm.ts:161
+#: src/pages/policies/BoundPoliciesList.ts:38
+#: src/pages/policies/PolicyBindingForm.ts:202
 #: src/pages/stages/prompt/PromptForm.ts:119
 #: src/pages/stages/prompt/PromptListPage.ts:49
 msgid "Order"
@@ -2160,12 +2152,13 @@ msgstr "Policies"
 msgid "Policies without binding exist."
 msgstr "Policies without binding exist."
 
-#: src/pages/policies/PolicyBindingForm.ts:110
+#: src/pages/policies/PolicyBindingForm.ts:123
+#: src/pages/policies/PolicyBindingForm.ts:146
 #: src/pages/policies/PolicyListPage.ts:108
 msgid "Policy"
 msgstr "Policy"
 
-#: src/pages/policies/BoundPoliciesList.ts:35
+#: src/pages/policies/BoundPoliciesList.ts:36
 msgid "Policy / User / Group"
 msgstr "Policy / User / Group"
 
@@ -2176,7 +2169,7 @@ msgstr "Policy / User / Group"
 msgid "Policy Bindings"
 msgstr "Policy Bindings"
 
-#: src/pages/policies/BoundPoliciesList.ts:137
+#: src/pages/policies/BoundPoliciesList.ts:138
 msgid "Policy binding"
 msgstr "Policy binding"
 
@@ -2186,7 +2179,7 @@ msgstr "Policy binding"
 msgid "Policy engine mode"
 msgstr "Policy engine mode"
 
-#: src/pages/policies/BoundPoliciesList.ts:45
+#: src/pages/policies/BoundPoliciesList.ts:46
 msgid "Policy {0}"
 msgstr "Policy {0}"
 
@@ -2663,10 +2656,6 @@ msgstr "Signature algorithm"
 msgid "Signing Certificate"
 msgstr "Signing Certificate"
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:121
-#~ msgid "Signing Keypair"
-#~ msgstr "Signing Keypair"
-
 #: src/pages/sources/saml/SAMLSourceForm.ts:115
 msgid "Signing keypair"
 msgstr "Signing keypair"
@@ -2815,7 +2804,7 @@ msgid "Successfully created application."
 msgstr "Successfully created application."
 
 #: src/pages/flows/StageBindingForm.ts:39
-#: src/pages/policies/PolicyBindingForm.ts:49
+#: src/pages/policies/PolicyBindingForm.ts:71
 msgid "Successfully created binding."
 msgstr "Successfully created binding."
 
@@ -2943,7 +2932,7 @@ msgid "Successfully updated application."
 msgstr "Successfully updated application."
 
 #: src/pages/flows/StageBindingForm.ts:36
-#: src/pages/policies/PolicyBindingForm.ts:46
+#: src/pages/policies/PolicyBindingForm.ts:68
 msgid "Successfully updated binding."
 msgstr "Successfully updated binding."
 
@@ -3134,16 +3123,12 @@ msgid "Text: Simple Text input"
 msgstr "Text: Simple Text input"
 
 #: src/elements/router/Router404.ts:26
-msgid "The URL '{0}' was not found."
-msgstr "The URL '{0}' was not found."
+msgid "The URL \"{0}\" was not found."
+msgstr "The URL \"{0}\" was not found."
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts:86
 msgid "The policy takes a random time to execute. This controls the minimum time it will take."
 msgstr "The policy takes a random time to execute. This controls the minimum time it will take."
-
-#: src/pages/events/RuleListPage.ts:109
-#~ msgid "These policies control upon which events this rule triggers."
-#~ msgstr "These policies control upon which events this rule triggers."
 
 #: src/pages/events/RuleListPage.ts:109
 msgid ""
@@ -3186,8 +3171,8 @@ msgstr "Time offset when temporary users should be deleted. This only applies if
 msgid "Time-based One-Time Passwords"
 msgstr "Time-based One-Time Passwords"
 
-#: src/pages/policies/BoundPoliciesList.ts:38
-#: src/pages/policies/PolicyBindingForm.ts:167
+#: src/pages/policies/BoundPoliciesList.ts:39
+#: src/pages/policies/PolicyBindingForm.ts:208
 #: src/pages/stages/email/EmailStageForm.ts:103
 msgid "Timeout"
 msgstr "Timeout"
@@ -3312,10 +3297,10 @@ msgstr "Up-to-date!"
 #: src/pages/groups/GroupListPage.ts:62
 #: src/pages/outposts/OutpostListPage.ts:66
 #: src/pages/outposts/ServiceConnectionListPage.ts:75
-#: src/pages/policies/BoundPoliciesList.ts:63
-#: src/pages/policies/BoundPoliciesList.ts:83
-#: src/pages/policies/BoundPoliciesList.ts:98
-#: src/pages/policies/BoundPoliciesList.ts:124
+#: src/pages/policies/BoundPoliciesList.ts:64
+#: src/pages/policies/BoundPoliciesList.ts:84
+#: src/pages/policies/BoundPoliciesList.ts:99
+#: src/pages/policies/BoundPoliciesList.ts:125
 #: src/pages/policies/PolicyListPage.ts:77
 #: src/pages/property-mappings/PropertyMappingListPage.ts:66
 #: src/pages/providers/ProviderListPage.ts:73
@@ -3344,7 +3329,7 @@ msgstr "Update"
 msgid "Update Application"
 msgstr "Update Application"
 
-#: src/pages/policies/BoundPoliciesList.ts:127
+#: src/pages/policies/BoundPoliciesList.ts:128
 msgid "Update Binding"
 msgstr "Update Binding"
 
@@ -3357,7 +3342,7 @@ msgid "Update Flow"
 msgstr "Update Flow"
 
 #: src/pages/groups/GroupListPage.ts:65
-#: src/pages/policies/BoundPoliciesList.ts:86
+#: src/pages/policies/BoundPoliciesList.ts:87
 msgid "Update Group"
 msgstr "Update Group"
 
@@ -3409,7 +3394,7 @@ msgstr "Update Stage binding"
 msgid "Update Token"
 msgstr "Update Token"
 
-#: src/pages/policies/BoundPoliciesList.ts:101
+#: src/pages/policies/BoundPoliciesList.ts:102
 #: src/pages/users/UserListPage.ts:70
 #: src/pages/users/UserViewPage.ts:142
 msgid "Update User"
@@ -3421,7 +3406,7 @@ msgstr "Update details"
 
 #: src/pages/flows/BoundStagesList.ts:56
 #: src/pages/outposts/ServiceConnectionListPage.ts:78
-#: src/pages/policies/BoundPoliciesList.ts:66
+#: src/pages/policies/BoundPoliciesList.ts:67
 #: src/pages/policies/PolicyListPage.ts:80
 #: src/pages/property-mappings/PropertyMappingListPage.ts:69
 #: src/pages/providers/ProviderListPage.ts:76
@@ -3454,7 +3439,8 @@ msgstr "Use global settings"
 #: src/elements/events/ObjectChangelog.ts:39
 #: src/pages/events/EventInfo.ts:83
 #: src/pages/events/EventListPage.ts:44
-#: src/pages/policies/PolicyBindingForm.ts:137
+#: src/pages/policies/PolicyBindingForm.ts:139
+#: src/pages/policies/PolicyBindingForm.ts:175
 #: src/pages/policies/PolicyTestForm.ts:60
 #: src/pages/property-mappings/PropertyMappingTestForm.ts:49
 #: src/pages/tokens/TokenListPage.ts:45
@@ -3489,7 +3475,7 @@ msgstr "User fields"
 msgid "User object filter"
 msgstr "User object filter"
 
-#: src/pages/policies/BoundPoliciesList.ts:51
+#: src/pages/policies/BoundPoliciesList.ts:52
 #: src/pages/users/UserViewPage.ts:49
 msgid "User {0}"
 msgstr "User {0}"
@@ -3671,7 +3657,7 @@ msgstr "X509 Subject"
 #: src/pages/crypto/CertificateKeyPairListPage.ts:61
 #: src/pages/groups/GroupListPage.ts:58
 #: src/pages/outposts/ServiceConnectionListPage.ts:63
-#: src/pages/policies/BoundPoliciesList.ts:117
+#: src/pages/policies/BoundPoliciesList.ts:118
 #: src/pages/policies/PolicyTestForm.ts:38
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:116
 #: src/pages/tokens/TokenListPage.ts:56
@@ -3692,7 +3678,7 @@ msgstr "authentik Builtin Database"
 msgid "authentik LDAP Backend"
 msgstr "authentik LDAP Backend"
 
-#: src/elements/Tabs.ts:62
+#: src/elements/Tabs.ts:68
 msgid "no tabs defined"
 msgstr "no tabs defined"
 
@@ -3704,8 +3690,8 @@ msgid "{0}"
 msgstr "{0}"
 
 #: src/pages/stages/prompt/PromptStageForm.ts:77
-msgid "{0} ('{1}', Type {2})"
-msgstr "{0} ('{1}', Type {2})"
+msgid "{0} (\"{1}\", Type {2})"
+msgstr "{0} (\"{1}\", Type {2})"
 
 #: src/pages/stages/prompt/PromptStageForm.ts:97
 msgid "{0} ({1})"

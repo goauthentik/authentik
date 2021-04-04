@@ -37,7 +37,7 @@ export class UserActiveForm extends DeleteForm {
                         <div class="pf-c-card__body">
                             <form class="pf-c-form pf-m-horizontal">
                                 <p>
-                                    ${t`Are you sure you want to update ${this.objectLabel} '${this.obj?.name}'?`}
+                                    ${t`Are you sure you want to update ${this.objectLabel} "${this.obj?.name}"?`}
                                 </p>
                             </form>
                         </div>
