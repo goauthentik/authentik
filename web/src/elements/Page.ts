@@ -14,7 +14,7 @@ export abstract class Page extends LitElement {
         return html`<section class="pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1>
-                        <i class="${this.pageIcon()}"></i>
+                        <i class="${this.pageIcon()}"></i>&nbsp;
                         ${t`${this.pageTitle()}`}
                     </h1>
                     ${description ? html`<p>${t`${description}`}</p>` : html``}

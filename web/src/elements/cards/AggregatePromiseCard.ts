@@ -14,7 +14,7 @@ export class AggregatePromiseCard extends AggregateCard {
             return new Promise<TemplateResult>(() => html``);
         }
         return this.promise.then(s => {
-            return html`<i class="fa fa-check-circle"></i> ${s.toString()}`;
+            return html`<i class="fa fa-check-circle"></i>&nbsp;${s.toString()}`;
         });
     }
 

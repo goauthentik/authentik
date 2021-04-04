@@ -199,7 +199,7 @@ export abstract class Table<T> extends LitElement {
                         this.expandedRows[idx] = !this.expandedRows[idx];
                         this.requestUpdate();
                     }}>
-                        <div class="pf-c-table__toggle-icon"> <i class="fas fa-angle-down" aria-hidden="true"></i> </div>
+                        <div class="pf-c-table__toggle-icon">&nbsp;<i class="fas fa-angle-down" aria-hidden="true"></i>&nbsp;</div>
                     </button>
                     </td>` : html``}
                     ${this.row(item).map((col) => {

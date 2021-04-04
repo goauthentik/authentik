@@ -7,7 +7,7 @@ import { Form } from "../../elements/forms/Form";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
-import "../../elements/CodeMirror";
+import "../../elements/forms/FormGroup";
 
 @customElement("ak-application-form")
 export class ApplicationForm extends Form<Application> {
@@ -110,27 +110,34 @@ export class ApplicationForm extends Form<Application> {
                     </option>
                 </select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${t`Launch URL`}
-                name="launchUrl">
-                <input type="text" value="${ifDefined(this.application?.launchUrl)}" class="pf-c-form-control">
-                <p class="pf-c-form__helper-text">${t`If left empty, authentik will try to extract the launch URL based on the selected provider.`}</p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${t`Icon`}
-                name="metaIcon">
-                <input type="file" value="${ifDefined(this.application?.metaIcon)}" class="pf-c-form-control">
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${t`Description`}
-                name="metaDescription">
-                <textarea class="pf-c-form-control">${ifDefined(this.application?.metaDescription)}</textarea>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${t`Publisher`}
-                name="metaPublisher">
-                <input type="text" value="${ifDefined(this.application?.metaPublisher)}" class="pf-c-form-control">
-            </ak-form-element-horizontal>
+            <ak-form-group .expanded=${true}>
+                <span slot="header">
+                    ${t`UI settings`}
+                </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${t`Launch URL`}
+                        name="launchUrl">
+                        <input type="text" value="${ifDefined(this.application?.launchUrl)}" class="pf-c-form-control">
+                        <p class="pf-c-form__helper-text">${t`If left empty, authentik will try to extract the launch URL based on the selected provider.`}</p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Icon`}
+                        name="metaIcon">
+                        <input type="file" value="${ifDefined(this.application?.metaIcon)}" class="pf-c-form-control">
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Description`}
+                        name="metaDescription">
+                        <textarea class="pf-c-form-control">${ifDefined(this.application?.metaDescription)}</textarea>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Publisher`}
+                        name="metaPublisher">
+                        <input type="text" value="${ifDefined(this.application?.metaPublisher)}" class="pf-c-form-control">
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
         </form>`;
     }
 

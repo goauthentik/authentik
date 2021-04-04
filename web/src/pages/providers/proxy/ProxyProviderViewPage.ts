@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
@@ -52,7 +52,7 @@ export class ProxyProviderViewPage extends Page {
     provider?: ProxyProvider;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, AKGlobal];
+        return [PFBase, PFButton, PFPage, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, AKGlobal];
     }
 
     constructor() {
@@ -116,10 +116,10 @@ export class ProxyProviderViewPage extends Page {
                                                 <div class="pf-c-description-list__text">
                                                     ${this.provider.basicAuthEnabled ?
                                                         html`<span class="pf-c-button__icon pf-m-start">
-                                                            <i class="fas fa-check-circle" aria-hidden="true"></i>
+                                                            <i class="fas fa-check-circle" aria-hidden="true"></i>&nbsp;
                                                             </span>${t`Yes`}`:
                                                         html`<span class="pf-c-button__icon pf-m-start">
-                                                            <i class="fas fa-times-circle" aria-hidden="true"></i>
+                                                            <i class="fas fa-times-circle" aria-hidden="true"></i>&nbsp;
                                                             </span>${t`No`}`
                                                     }
                                                 </div>

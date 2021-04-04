@@ -62,13 +62,13 @@ export class SystemTaskListPage extends TablePage<Task> {
     taskStatus(task: Task): TemplateResult {
         switch (task.status) {
             case TaskStatusEnum.Successful:
-                return html`<i class="fas fa-check pf-m-success" > </i> ${t`Successful`}`;
+                return html`<i class="fas fa-check pf-m-success"></i>&nbsp;${t`Successful`}`;
             case TaskStatusEnum.Warning:
-                return html`<i class="fas fa-exclamation-triangle pf-m-warning" > </i> ${t`Warning`}`;
+                return html`<i class="fas fa-exclamation-triangle pf-m-warning"></i>&nbsp;${t`Warning`}`;
             case TaskStatusEnum.Error:
-                return html`<i class="fas fa-times pf-m-danger" > </i> ${t`Error`}`;
+                return html`<i class="fas fa-times pf-m-danger"></i>&nbsp;${t`Error`}`;
             default:
-                return html`<i class="fas fa-question-circle" > </i> ${t`Unknown`}`;
+                return html`<i class="fas fa-question-circle"></i>&nbsp;${t`Unknown`}`;
         }
     }
 

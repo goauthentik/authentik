@@ -66,9 +66,9 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                     uuid: item.pk || ""
                 }).then((state) => {
                     if (state.healthy) {
-                        return html`<i class="fas fa-check pf-m-success"></i> ${state.version}`;
+                        return html`<i class="fas fa-check pf-m-success"></i>&nbsp;${state.version}`;
                     }
-                    return html`<i class="fas fa-times pf-m-danger"></i> ${t`Unhealthy`}`;
+                    return html`<i class="fas fa-times pf-m-danger"></i>&nbsp;${t`Unhealthy`}`;
                 }), html`<ak-spinner></ak-spinner>`)}`,
             html`
             <ak-forms-modal>

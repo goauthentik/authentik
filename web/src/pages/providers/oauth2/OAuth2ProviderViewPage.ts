@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
@@ -61,7 +61,7 @@ export class OAuth2ProviderViewPage extends Page {
     providerUrls?: OAuth2ProviderSetupURLs;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, PFForm, PFFormControl, AKGlobal];
+        return [PFBase, PFButton, PFPage, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, PFForm, PFFormControl, AKGlobal];
     }
 
     constructor() {

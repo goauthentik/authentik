@@ -62,7 +62,9 @@ export class OutpostForm extends Form<Outpost> {
                         ordering: "pk"
                     }).then(scs => {
                         return scs.results.map(sc => {
-                            return html`<option value=${ifDefined(sc.pk)} ?selected=${this.outpost?.serviceConnection === sc.pk}>${sc.name}</option>`;
+                            return html`<option value=${ifDefined(sc.pk)} ?selected=${this.outpost?.serviceConnection === sc.pk}>
+                                ${sc.name} (${sc.verboseName})
+                            </option>`;
                         });
                     }), html`<option>${t`Loading...`}</option>`)}
                 </select>

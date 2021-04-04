@@ -28,7 +28,7 @@ export class OutpostHealth extends LitElement {
                 return html`<li>
                     <ul>
                         <li role="cell">
-                            <i class="fas fa-question-circle"></i>${t`Not available`}
+                            <i class="fas fa-question-circle"></i>&nbsp;${t`Not available`}
                         </li>
                     </ul>
                 </li>`;
@@ -37,13 +37,13 @@ export class OutpostHealth extends LitElement {
                 return html`<li>
                     <ul>
                         <li role="cell">
-                            <i class="fas fa-check pf-m-success"></i>${t`Last seen: ${h.lastSeen?.toLocaleTimeString()}`}
+                            <i class="fas fa-check pf-m-success"></i>&nbsp;${t`Last seen: ${h.lastSeen?.toLocaleTimeString()}`}
                         </li>
                         <li role="cell">
                             ${h.versionOutdated ?
-                            html`<i class="fas fa-times pf-m-danger"></i>
+                            html`<i class="fas fa-times pf-m-danger"></i>&nbsp;
                                 ${t`${h.version}, should be ${h.versionShould}`}` :
-                            html`<i class="fas fa-check pf-m-success"></i>${t`Version: ${h.version || ""}`}`}
+                            html`<i class="fas fa-check pf-m-success"></i>&nbsp;${t`Version: ${h.version || ""}`}`}
                         </li>
                     </ul>
                 </li>`;

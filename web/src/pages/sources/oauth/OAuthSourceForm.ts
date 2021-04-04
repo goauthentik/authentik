@@ -148,7 +148,6 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                                 });
                             }), html`<option>${t`Loading...`}</option>`)}
                         </select>
-                        <p class="pf-c-form__helper-text">${t`Keypair which is used to sign outgoing requests. Leave empty to disable signing.`}</p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

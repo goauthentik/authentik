@@ -6,6 +6,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
 "Language: pseudo-LOCALE\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
 
 #: src/pages/policies/BoundPoliciesList.ts:54
 msgid "-"
@@ -207,8 +213,8 @@ msgid "Assertions is empty"
 msgstr ""
 
 #: src/pages/providers/ProviderListPage.ts:65
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:91
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:82
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:92
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:83
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:85
 msgid "Assigned to application"
 msgstr ""
@@ -240,7 +246,7 @@ msgstr ""
 msgid "Authentication"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:166
+#: src/pages/sources/oauth/OAuthSourceForm.ts:165
 #: src/pages/sources/saml/SAMLSourceForm.ts:245
 msgid "Authentication flow"
 msgstr ""
@@ -270,7 +276,7 @@ msgstr ""
 msgid "Authorization flow"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:178
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:179
 msgid "Authorize URL"
 msgstr ""
 
@@ -312,7 +318,7 @@ msgstr ""
 msgid "Based on the username"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:108
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:109
 msgid "Basic-Auth"
 msgstr ""
 
@@ -386,6 +392,10 @@ msgstr ""
 msgid "Certificate Subjet"
 msgstr ""
 
+#: src/pages/providers/saml/SAMLProviderForm.ts:135
+msgid "Certificate used to sign outgoing Responses going to the Service Provider."
+msgstr ""
+
 #: src/pages/crypto/CertificateKeyPairListPage.ts:79
 msgid "Certificate-Key Pair"
 msgstr ""
@@ -412,8 +422,8 @@ msgstr ""
 
 #: src/pages/applications/ApplicationViewPage.ts:122
 #: src/pages/flows/FlowViewPage.ts:113
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:146
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:145
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:147
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:146
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:140
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:124
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:142
@@ -460,7 +470,7 @@ msgid "Click to copy token"
 msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:107
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:109
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:110
 msgid "Client ID"
 msgstr ""
 
@@ -475,7 +485,7 @@ msgid "Client Secret"
 msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:85
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:101
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:102
 msgid "Client type"
 msgstr ""
 
@@ -500,7 +510,7 @@ msgstr ""
 msgid "Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable."
 msgstr ""
 
-#: src/pages/outposts/OutpostForm.ts:104
+#: src/pages/outposts/OutpostForm.ts:106
 msgid "Configuration"
 msgstr ""
 
@@ -836,7 +846,7 @@ msgstr ""
 msgid "Deny the user access"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:126
+#: src/pages/applications/ApplicationForm.ts:131
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts:65
 #: src/pages/system-tasks/SystemTaskListPage.ts:54
 #: src/pages/user-settings/tokens/UserTokenForm.ts:50
@@ -928,8 +938,8 @@ msgstr ""
 #: src/pages/policies/PolicyListPage.ts:90
 #: src/pages/property-mappings/PropertyMappingListPage.ts:79
 #: src/pages/providers/ProviderListPage.ts:86
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:138
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:137
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:139
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:138
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:132
 #: src/pages/sources/SourcesListPage.ts:79
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:116
@@ -1017,7 +1027,7 @@ msgstr ""
 msgid "Enrollment"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:187
+#: src/pages/sources/oauth/OAuthSourceForm.ts:186
 #: src/pages/sources/saml/SAMLSourceForm.ts:266
 #: src/pages/stages/identification/IdentificationStageForm.ts:104
 msgid "Enrollment flow"
@@ -1155,7 +1165,7 @@ msgstr ""
 msgid "External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML."
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:100
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:101
 msgid "External Host"
 msgstr ""
 
@@ -1229,17 +1239,17 @@ msgstr ""
 msgid "Flow Overview"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:162
+#: src/pages/sources/oauth/OAuthSourceForm.ts:161
 #: src/pages/sources/saml/SAMLSourceForm.ts:220
 msgid "Flow settings"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:184
+#: src/pages/sources/oauth/OAuthSourceForm.ts:183
 #: src/pages/sources/saml/SAMLSourceForm.ts:263
 msgid "Flow to use when authenticating existing users."
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:205
+#: src/pages/sources/oauth/OAuthSourceForm.ts:204
 #: src/pages/sources/saml/SAMLSourceForm.ts:284
 msgid "Flow to use when enrolling new users."
 msgstr ""
@@ -1370,7 +1380,7 @@ msgstr ""
 
 #: src/pages/events/RuleForm.ts:93
 #: src/pages/groups/GroupForm.ts:93
-#: src/pages/outposts/OutpostForm.ts:96
+#: src/pages/outposts/OutpostForm.ts:98
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:169
 #: src/pages/providers/saml/SAMLProviderForm.ts:171
 #: src/pages/sources/ldap/LDAPSourceForm.ts:165
@@ -1391,7 +1401,7 @@ msgstr ""
 msgid "ID"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:121
+#: src/pages/applications/ApplicationForm.ts:126
 msgid "Icon"
 msgstr ""
 
@@ -1412,7 +1422,7 @@ msgstr ""
 msgid "If enabled, use the local connection. Required Docker socket/Kubernetes Integration."
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:118
+#: src/pages/applications/ApplicationForm.ts:123
 msgid "If left empty, authentik will try to extract the launch URL based on the selected provider."
 msgstr ""
 
@@ -1453,7 +1463,7 @@ msgstr ""
 msgid "Include claims in id_token"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:92
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:93
 msgid "Internal Host"
 msgstr ""
 
@@ -1506,10 +1516,9 @@ msgid "Key used to sign the tokens. Only required when JWT Algorithm is set to R
 msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts:135
-msgid "Keypair used to sign outgoing Responses going to the Service Provider."
-msgstr ""
+#~ msgid "Keypair used to sign outgoing Responses going to the Service Provider."
+#~ msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:155
 #: src/pages/sources/saml/SAMLSourceForm.ts:128
 msgid "Keypair which is used to sign outgoing requests. Leave empty to disable signing."
 msgstr ""
@@ -1548,7 +1557,7 @@ msgstr ""
 msgid "Last sync: {0}"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:115
+#: src/pages/applications/ApplicationForm.ts:120
 msgid "Launch URL"
 msgstr ""
 
@@ -1587,8 +1596,8 @@ msgstr ""
 #: src/pages/flows/StageBindingForm.ts:106
 #: src/pages/groups/GroupForm.ts:73
 #: src/pages/groups/GroupForm.ts:91
-#: src/pages/outposts/OutpostForm.ts:72
-#: src/pages/outposts/OutpostForm.ts:94
+#: src/pages/outposts/OutpostForm.ts:74
+#: src/pages/outposts/OutpostForm.ts:96
 #: src/pages/outposts/ServiceConnectionDockerForm.ts:87
 #: src/pages/outposts/ServiceConnectionDockerForm.ts:104
 #: src/pages/policies/PolicyBindingForm.ts:95
@@ -1612,8 +1621,8 @@ msgstr ""
 #: src/pages/sources/ldap/LDAPSourceForm.ts:162
 #: src/pages/sources/ldap/LDAPSourceForm.ts:188
 #: src/pages/sources/oauth/OAuthSourceForm.ts:153
-#: src/pages/sources/oauth/OAuthSourceForm.ts:182
-#: src/pages/sources/oauth/OAuthSourceForm.ts:203
+#: src/pages/sources/oauth/OAuthSourceForm.ts:181
+#: src/pages/sources/oauth/OAuthSourceForm.ts:202
 #: src/pages/sources/saml/SAMLSourceForm.ts:126
 #: src/pages/sources/saml/SAMLSourceForm.ts:240
 #: src/pages/sources/saml/SAMLSourceForm.ts:261
@@ -1649,7 +1658,7 @@ msgstr ""
 msgid "Logins over the last 24 hours"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:196
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:197
 msgid "Logout URL"
 msgstr ""
 
@@ -1688,7 +1697,7 @@ msgstr ""
 msgid "Messages"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:157
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:158
 #: src/pages/providers/saml/SAMLProviderImportForm.ts:61
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:152
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:140
@@ -1758,9 +1767,9 @@ msgstr ""
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts:52
 #: src/pages/providers/ProviderListPage.ts:52
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:56
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:83
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:84
 #: src/pages/providers/proxy/ProxyProviderForm.ts:74
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:74
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:75
 #: src/pages/providers/saml/SAMLProviderForm.ts:53
 #: src/pages/providers/saml/SAMLProviderImportForm.ts:38
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:77
@@ -1822,7 +1831,7 @@ msgstr ""
 #: src/pages/outposts/ServiceConnectionListPage.ts:63
 #: src/pages/policies/BoundPoliciesList.ts:117
 #: src/pages/policies/PolicyTestForm.ts:38
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:118
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:119
 #: src/pages/tokens/TokenListPage.ts:56
 #: src/pages/user-settings/tokens/UserTokenList.ts:83
 #: src/pages/users/UserListPage.ts:62
@@ -1944,7 +1953,7 @@ msgstr ""
 msgid "OAuth Authorization Codes"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:45
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:46
 msgid "OAuth Provider {0}"
 msgstr ""
 
@@ -1990,11 +1999,11 @@ msgstr ""
 msgid "Only send notification once, for example when sending a webhook into a chat channel."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:171
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:172
 msgid "OpenID Configuration Issuer"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:165
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:166
 msgid "OpenID Configuration URL"
 msgstr ""
 
@@ -2066,8 +2075,8 @@ msgstr ""
 
 #: src/interfaces/AdminInterface.ts:17
 #: src/pages/applications/ApplicationViewPage.ts:68
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:75
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:66
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:76
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:67
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:69
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:67
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:65
@@ -2273,7 +2282,7 @@ msgstr ""
 
 #: src/interfaces/AdminInterface.ts:20
 #: src/pages/admin-overview/AdminOverviewPage.ts:42
-#: src/pages/outposts/OutpostForm.ts:80
+#: src/pages/outposts/OutpostForm.ts:82
 #: src/pages/outposts/OutpostListPage.ts:50
 msgid "Providers"
 msgstr ""
@@ -2282,7 +2291,7 @@ msgstr ""
 msgid "Proxy"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:42
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:43
 msgid "Proxy Provider {0}"
 msgstr ""
 
@@ -2298,7 +2307,7 @@ msgstr ""
 msgid "Public key, acquired from https://www.google.com/recaptcha/intro/v3.html."
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:131
+#: src/pages/applications/ApplicationForm.ts:136
 msgid "Publisher"
 msgstr ""
 
@@ -2351,7 +2360,7 @@ msgid "Redirect"
 msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:119
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:117
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:118
 msgid "Redirect URIs"
 msgstr ""
 
@@ -2545,7 +2554,7 @@ msgstr ""
 msgid "Selected policies are executed when the stage is submitted to validate the data."
 msgstr ""
 
-#: src/pages/outposts/OutpostForm.ts:74
+#: src/pages/outposts/OutpostForm.ts:76
 msgid "Selecting a service-connection enables the management of the outpost by authentik."
 msgstr ""
 
@@ -2633,8 +2642,12 @@ msgid "Signature algorithm"
 msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts:121
-msgid "Signing Keypair"
+msgid "Signing Certificate"
 msgstr ""
+
+#: src/pages/providers/saml/SAMLProviderForm.ts:121
+#~ msgid "Signing Keypair"
+#~ msgstr ""
 
 #: src/pages/sources/saml/SAMLSourceForm.ts:115
 msgid "Signing keypair"
@@ -3110,6 +3123,10 @@ msgstr ""
 msgid "The policy takes a random time to execute. This controls the minimum time it will take."
 msgstr ""
 
+#: src/pages/events/RuleListPage.ts:109
+msgid "These policies control upon which events this rule triggers."
+msgstr ""
+
 #: src/pages/flows/BoundStagesList.ts:102
 msgid "These policies control when this stage will be applied to the flow."
 msgstr ""
@@ -3153,7 +3170,7 @@ msgstr ""
 msgid "Token"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:184
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:185
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:113
 msgid "Token URL"
 msgstr ""
@@ -3203,6 +3220,10 @@ msgstr ""
 #: src/pages/stages/prompt/PromptForm.ts:97
 #: src/pages/stages/prompt/PromptListPage.ts:48
 msgid "Type"
+msgstr ""
+
+#: src/pages/applications/ApplicationForm.ts:116
+msgid "UI settings"
 msgstr ""
 
 #: src/pages/events/EventInfo.ts:43
@@ -3267,8 +3288,8 @@ msgstr ""
 #: src/pages/policies/PolicyListPage.ts:77
 #: src/pages/property-mappings/PropertyMappingListPage.ts:66
 #: src/pages/providers/ProviderListPage.ts:73
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:128
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:127
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:129
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:128
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:122
 #: src/pages/sources/SourcesListPage.ts:66
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:106
@@ -3325,7 +3346,7 @@ msgstr ""
 msgid "Update OAuth Source"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:131
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:132
 msgid "Update OAuth2 Provider"
 msgstr ""
 
@@ -3337,7 +3358,7 @@ msgstr ""
 msgid "Update Prompt"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:130
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:131
 msgid "Update Proxy Provider"
 msgstr ""
 
@@ -3459,7 +3480,7 @@ msgstr ""
 msgid "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:190
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:191
 msgid "Userinfo URL"
 msgstr ""
 
@@ -3621,7 +3642,7 @@ msgstr ""
 #: src/pages/outposts/ServiceConnectionListPage.ts:63
 #: src/pages/policies/BoundPoliciesList.ts:117
 #: src/pages/policies/PolicyTestForm.ts:38
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:115
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:116
 #: src/pages/tokens/TokenListPage.ts:56
 #: src/pages/user-settings/tokens/UserTokenList.ts:83
 #: src/pages/users/UserListPage.ts:62

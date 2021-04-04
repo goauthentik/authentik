@@ -114,7 +114,7 @@ export class SAMLProviderFormPage extends Form<SAMLProvider> {
                 </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Signing Keypair`}
+                        label=${t`Signing Certificate`}
                         name="signingKp">
                         <select class="pf-c-form-control">
                             <option value="" ?selected=${this.provider?.signingKp === undefined}>---------</option>
@@ -127,7 +127,7 @@ export class SAMLProviderFormPage extends Form<SAMLProvider> {
                                 });
                             }), html`<option>${t`Loading...`}</option>`)}
                         </select>
-                        <p class="pf-c-form__helper-text">${t`Keypair used to sign outgoing Responses going to the Service Provider.`}</p>
+                        <p class="pf-c-form__helper-text">${t`Certificate used to sign outgoing Responses going to the Service Provider.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Verification Certificate`}

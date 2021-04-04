@@ -108,6 +108,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
         return html`
         <td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">
+                <p>${t`These policies control upon which events this rule triggers.`}</p>
                 <ak-bound-policies-list .target=${item.pk}>
                 </ak-bound-policies-list>
             </div>
