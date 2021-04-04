@@ -41,6 +41,7 @@ export class StageBindingForm extends Form<FlowStageBinding> {
 
     groupStages(stages: Stage[]): TemplateResult {
         return html`
+            <option value="">---------</option>
             ${groupBy<Stage>(stages, (s => s.verboseName || "")).map(([group, stages]) => {
                 return html`<optgroup label=${group}>
                     ${stages.map(stage => {
@@ -60,6 +61,9 @@ export class StageBindingForm extends Form<FlowStageBinding> {
             target: this.targetPk || "",
         }).then(bindings => {
             const orders = bindings.results.map(binding => binding.order);
+            if (orders.length < 1) {
+                return 0;
+            }
             return Math.max(...orders) + 1;
         });
     }

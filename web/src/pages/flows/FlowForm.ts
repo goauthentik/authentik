@@ -87,7 +87,7 @@ export class FlowForm extends Form<Flow> {
                 <p class="pf-c-form__helper-text">${t`Shown as the Title in Flow pages.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Name`}
+                label=${t`Slug`}
                 ?required=${true}
                 name="slug">
                 <input type="text" value="${ifDefined(this.flow?.slug)}" class="pf-c-form-control" required>
