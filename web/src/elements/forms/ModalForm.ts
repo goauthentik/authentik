@@ -42,16 +42,8 @@ export class ModalForm extends ModalButton {
                 </h1>
             </div>
         </section>
-        <section class="pf-c-page__main-section">
-            <div class="pf-l-stack">
-                <div class="pf-l-stack__item">
-                    <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <slot name="form"></slot>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <section class="pf-c-page__main-section pf-m-light">
+            <slot name="form"></slot>
         </section>
         <footer class="pf-c-modal-box__footer">
             <ak-spinner-button
