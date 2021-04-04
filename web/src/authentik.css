@@ -1,3 +1,7 @@
+:root {
+    --ak-accent: #fd4b2d;
+}
+
 html {
     --pf-c-nav__link--PaddingTop: 0.5rem;
     --pf-c-nav__link--PaddingRight: 0.5rem;
@@ -88,7 +92,6 @@ body {
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --ak-accent: #fd4b2d;
         --ak-dark-foreground: #fafafa;
         --ak-dark-foreground-darker: #bebebe;
         --ak-dark-foreground-link: #5a5cb9;

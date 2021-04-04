@@ -18,6 +18,7 @@ import "../groups/GroupForm";
 import "../users/UserForm";
 import "./PolicyBindingForm";
 import { ifDefined } from "lit-html/directives/if-defined";
+import { PFSize } from "../../elements/Spinner";
 
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList extends Table<PolicyBinding> {
@@ -117,7 +118,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             html`${item.timeout}`,
             html`
             ${this.getObjectEditButton(item)}
-            <ak-forms-modal>
+            <ak-forms-modal size=${PFSize.Medium}>
                 <span slot="submit">
                     ${t`Update`}
                 </span>
