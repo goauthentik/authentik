@@ -18,6 +18,7 @@ import "../../../elements/CodeMirror";
 import "../../../elements/Tabs";
 import "../../../elements/events/ObjectChangelog";
 import "../../../elements/forms/ModalForm";
+import "../../policies/BoundPoliciesList";
 import "./OAuthSourceForm";
 import { Page } from "../../../elements/Page";
 import { OAuthSource, SourcesApi } from "authentik-api";
@@ -153,6 +154,15 @@ export class OAuthSourceViewPage extends Page {
                         </div>
                     </div>
                 </section>
+                <div slot="page-3" data-tab-title="${t`Policy Bindings`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__title">${t`These policies control which users can access this source.`}</div>
+                        <div class="pf-c-card__body">
+                            <ak-bound-policies-list .target=${this.source.pk}>
+                            </ak-bound-policies-list>
+                        </div>
+                    </div>
+                </div>
             </ak-tabs>`;
     }
 }

@@ -50,7 +50,7 @@ msgstr "API Requests"
 msgid "API request failed"
 msgstr "API request failed"
 
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:97
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:98
 msgid "Access Key"
 msgstr "Access Key"
 
@@ -269,7 +269,7 @@ msgid "Authorization Code"
 msgstr "Authorization Code"
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts:65
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:105
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:106
 msgid "Authorization URL"
 msgstr "Authorization URL"
 
@@ -364,7 +364,7 @@ msgstr "Cached Flows"
 msgid "Cached Policies"
 msgstr "Cached Policies"
 
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:89
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:90
 msgid "Callback URL"
 msgstr "Callback URL"
 
@@ -430,8 +430,8 @@ msgstr "Change your password"
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:146
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:140
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:124
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:142
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:129
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:143
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:130
 #: src/pages/users/UserViewPage.ts:177
 msgid "Changelog"
 msgstr "Changelog"
@@ -925,7 +925,7 @@ msgid "Docker URL"
 msgstr "Docker URL"
 
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:166
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:153
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:154
 msgid "Download"
 msgstr "Download"
 
@@ -951,8 +951,8 @@ msgstr "Each provider has a different issuer, based on the application slug."
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:132
 #: src/pages/sources/SourcesListPage.ts:79
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:116
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:134
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:121
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:135
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:122
 #: src/pages/stages/StageListPage.ts:98
 #: src/pages/stages/prompt/PromptListPage.ts:75
 #: src/pages/user-settings/tokens/UserTokenList.ts:113
@@ -1024,7 +1024,7 @@ msgid "Enable Time-based OTP"
 msgstr "Enable Time-based OTP"
 
 #: src/pages/policies/BoundPoliciesList.ts:36
-#: src/pages/policies/PolicyBindingForm.ts:133
+#: src/pages/policies/PolicyBindingForm.ts:156
 #: src/pages/sources/ldap/LDAPSourceForm.ts:69
 #: src/pages/sources/oauth/OAuthSourceForm.ts:113
 #: src/pages/sources/saml/SAMLSourceForm.ts:69
@@ -1336,7 +1336,7 @@ msgstr "Go to previous page"
 
 #: src/pages/events/RuleForm.ts:65
 #: src/pages/groups/GroupListPage.ts:75
-#: src/pages/policies/PolicyBindingForm.ts:99
+#: src/pages/policies/PolicyBindingForm.ts:122
 #: src/pages/stages/StageListPage.ts:103
 msgid "Group"
 msgstr "Group"
@@ -1511,7 +1511,7 @@ msgstr "Is superuser"
 #: src/pages/providers/saml/SAMLProviderForm.ts:88
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:111
 #: src/pages/sources/saml/SAMLSourceForm.ts:93
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:100
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:101
 msgid "Issuer"
 msgstr "Issuer"
 
@@ -1612,9 +1612,9 @@ msgstr "Loading"
 #: src/pages/outposts/OutpostForm.ts:96
 #: src/pages/outposts/ServiceConnectionDockerForm.ts:87
 #: src/pages/outposts/ServiceConnectionDockerForm.ts:104
-#: src/pages/policies/PolicyBindingForm.ts:95
-#: src/pages/policies/PolicyBindingForm.ts:110
-#: src/pages/policies/PolicyBindingForm.ts:125
+#: src/pages/policies/PolicyBindingForm.ts:118
+#: src/pages/policies/PolicyBindingForm.ts:133
+#: src/pages/policies/PolicyBindingForm.ts:148
 #: src/pages/policies/PolicyTestForm.ts:70
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:83
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:103
@@ -1712,7 +1712,7 @@ msgstr "Messages"
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:158
 #: src/pages/providers/saml/SAMLProviderImportForm.ts:61
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:152
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:140
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:141
 msgid "Metadata"
 msgstr "Metadata"
 
@@ -1789,9 +1789,9 @@ msgstr "Monitor"
 #: src/pages/sources/ldap/LDAPSourceForm.ts:54
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:75
 #: src/pages/sources/oauth/OAuthSourceForm.ts:98
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:73
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:74
 #: src/pages/sources/saml/SAMLSourceForm.ts:54
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:76
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:77
 #: src/pages/stages/StageListPage.ts:65
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:54
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:53
@@ -1977,7 +1977,7 @@ msgstr "OAuth Provider {0}"
 msgid "OAuth Refresh Codes"
 msgstr "OAuth Refresh Codes"
 
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:42
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:43
 msgid "OAuth Source {0}"
 msgstr "OAuth Source {0}"
 
@@ -2058,7 +2058,7 @@ msgstr "Optionally set the 'FriendlyName' value of the Assertion attribute."
 #: src/pages/flows/BoundStagesList.ts:38
 #: src/pages/flows/StageBindingForm.ts:128
 #: src/pages/policies/BoundPoliciesList.ts:37
-#: src/pages/policies/PolicyBindingForm.ts:138
+#: src/pages/policies/PolicyBindingForm.ts:161
 #: src/pages/stages/prompt/PromptForm.ts:119
 #: src/pages/stages/prompt/PromptListPage.ts:49
 msgid "Order"
@@ -2095,8 +2095,8 @@ msgstr "Outposts are deployments of authentik components to support different en
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:67
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:69
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:67
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:65
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:68
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:66
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:69
 #: src/pages/users/UserViewPage.ts:74
 msgid "Overview"
 msgstr "Overview"
@@ -2160,7 +2160,7 @@ msgstr "Policies"
 msgid "Policies without binding exist."
 msgstr "Policies without binding exist."
 
-#: src/pages/policies/PolicyBindingForm.ts:87
+#: src/pages/policies/PolicyBindingForm.ts:110
 #: src/pages/policies/PolicyListPage.ts:108
 msgid "Policy"
 msgstr "Policy"
@@ -2171,6 +2171,8 @@ msgstr "Policy / User / Group"
 
 #: src/pages/applications/ApplicationViewPage.ts:133
 #: src/pages/flows/FlowViewPage.ts:104
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:154
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:161
 msgid "Policy Bindings"
 msgstr "Policy Bindings"
 
@@ -2288,7 +2290,7 @@ msgid "Provider"
 msgstr "Provider"
 
 #: src/pages/applications/ApplicationListPage.ts:60
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:81
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:82
 msgid "Provider Type"
 msgstr "Provider Type"
 
@@ -2467,7 +2469,7 @@ msgstr "SAML Attribute Name"
 msgid "SAML Provider {0}"
 msgstr "SAML Provider {0}"
 
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:45
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:46
 msgid "SAML Source {0}"
 msgstr "SAML Source {0}"
 
@@ -2492,7 +2494,7 @@ msgid "SHA512"
 msgstr "SHA512"
 
 #: src/pages/sources/saml/SAMLSourceForm.ts:87
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:92
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:93
 msgid "SLO URL"
 msgstr "SLO URL"
 
@@ -2513,7 +2515,7 @@ msgid "SMTP Username"
 msgstr "SMTP Username"
 
 #: src/pages/sources/saml/SAMLSourceForm.ts:80
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:84
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:85
 msgid "SSO URL"
 msgstr "SSO URL"
 
@@ -2813,7 +2815,7 @@ msgid "Successfully created application."
 msgstr "Successfully created application."
 
 #: src/pages/flows/StageBindingForm.ts:39
-#: src/pages/policies/PolicyBindingForm.ts:48
+#: src/pages/policies/PolicyBindingForm.ts:49
 msgid "Successfully created binding."
 msgstr "Successfully created binding."
 
@@ -2941,7 +2943,7 @@ msgid "Successfully updated application."
 msgstr "Successfully updated application."
 
 #: src/pages/flows/StageBindingForm.ts:36
-#: src/pages/policies/PolicyBindingForm.ts:45
+#: src/pages/policies/PolicyBindingForm.ts:46
 msgid "Successfully updated binding."
 msgstr "Successfully updated binding."
 
@@ -3163,6 +3165,11 @@ msgstr "These policies control which users can access this application."
 msgid "These policies control which users can access this flow."
 msgstr "These policies control which users can access this flow."
 
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:156
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:163
+msgid "These policies control which users can access this source."
+msgstr "These policies control which users can access this source."
+
 #: src/pages/policies/reputation/ReputationPolicyForm.ts:89
 msgid "Threshold"
 msgstr "Threshold"
@@ -3180,7 +3187,7 @@ msgid "Time-based One-Time Passwords"
 msgstr "Time-based One-Time Passwords"
 
 #: src/pages/policies/BoundPoliciesList.ts:38
-#: src/pages/policies/PolicyBindingForm.ts:144
+#: src/pages/policies/PolicyBindingForm.ts:167
 #: src/pages/stages/email/EmailStageForm.ts:103
 msgid "Timeout"
 msgstr "Timeout"
@@ -3195,7 +3202,7 @@ msgid "Token"
 msgstr "Token"
 
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:185
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:113
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:114
 msgid "Token URL"
 msgstr "Token URL"
 
@@ -3317,8 +3324,8 @@ msgstr "Up-to-date!"
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:122
 #: src/pages/sources/SourcesListPage.ts:66
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:106
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:124
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:111
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:125
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:112
 #: src/pages/stages/StageListPage.ts:85
 #: src/pages/stages/prompt/PromptListPage.ts:67
 #: src/pages/user-settings/UserDetailsPage.ts:81
@@ -3366,7 +3373,7 @@ msgstr "Update Notification Rule"
 msgid "Update Notification Transport"
 msgstr "Update Notification Transport"
 
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:127
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:128
 msgid "Update OAuth Source"
 msgstr "Update OAuth Source"
 
@@ -3390,7 +3397,7 @@ msgstr "Update Proxy Provider"
 msgid "Update SAML Provider"
 msgstr "Update SAML Provider"
 
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:114
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:115
 msgid "Update SAML Source"
 msgstr "Update SAML Source"
 
@@ -3447,7 +3454,7 @@ msgstr "Use global settings"
 #: src/elements/events/ObjectChangelog.ts:39
 #: src/pages/events/EventInfo.ts:83
 #: src/pages/events/EventListPage.ts:44
-#: src/pages/policies/PolicyBindingForm.ts:114
+#: src/pages/policies/PolicyBindingForm.ts:137
 #: src/pages/policies/PolicyTestForm.ts:60
 #: src/pages/property-mappings/PropertyMappingTestForm.ts:49
 #: src/pages/tokens/TokenListPage.ts:45
