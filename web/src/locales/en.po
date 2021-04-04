@@ -984,13 +984,13 @@ msgstr "Either no applications are defined, or you don't have access to any."
 
 #: src/pages/events/TransportForm.ts:46
 #: src/pages/stages/identification/IdentificationStageForm.ts:79
+#: src/pages/user-settings/UserDetailsPage.ts:71
 #: src/pages/users/UserForm.ts:61
 #: src/pages/users/UserViewPage.ts:100
 msgid "Email"
 msgstr "Email"
 
 #: src/pages/sources/saml/SAMLSourceForm.ts:155
-#: src/pages/user-settings/UserDetailsPage.ts:73
 msgid "Email address"
 msgstr "Email address"
 
@@ -1583,7 +1583,7 @@ msgstr "Library"
 #: src/flows/stages/password/PasswordStage.ts:31
 #: src/flows/stages/prompt/PromptStage.ts:108
 #: src/pages/applications/ApplicationViewPage.ts:55
-#: src/pages/user-settings/UserDetailsPage.ts:37
+#: src/pages/user-settings/UserDetailsPage.ts:38
 #: src/utils.ts:40
 msgid "Loading"
 msgstr "Loading"
@@ -1799,7 +1799,7 @@ msgstr "Monitor"
 #: src/pages/stages/user_login/UserLoginStageForm.ts:52
 #: src/pages/stages/user_logout/UserLogoutStageForm.ts:51
 #: src/pages/stages/user_write/UserWriteStageForm.ts:51
-#: src/pages/user-settings/UserDetailsPage.ts:65
+#: src/pages/user-settings/UserDetailsPage.ts:64
 #: src/pages/users/UserForm.ts:54
 #: src/pages/users/UserListPage.ts:49
 #: src/pages/users/UserViewPage.ts:92
@@ -2934,7 +2934,7 @@ msgstr "Successfully updated binding."
 msgid "Successfully updated certificate-key pair."
 msgstr "Successfully updated certificate-key pair."
 
-#: src/pages/user-settings/UserDetailsPage.ts:46
+#: src/pages/user-settings/UserDetailsPage.ts:47
 msgid "Successfully updated details."
 msgstr "Successfully updated details."
 
@@ -3377,7 +3377,7 @@ msgstr "Update Token"
 msgid "Update User"
 msgstr "Update User"
 
-#: src/pages/user-settings/UserDetailsPage.ts:42
+#: src/pages/user-settings/UserDetailsPage.ts:43
 msgid "Update details"
 msgstr "Update details"
 
@@ -3478,7 +3478,7 @@ msgid "Userinfo URL"
 msgstr "Userinfo URL"
 
 #: src/pages/stages/identification/IdentificationStageForm.ts:76
-#: src/pages/user-settings/UserDetailsPage.ts:58
+#: src/pages/user-settings/UserDetailsPage.ts:57
 #: src/pages/users/UserForm.ts:47
 #: src/pages/users/UserViewPage.ts:84
 msgid "Username"
@@ -3746,7 +3746,7 @@ msgstr "mode"
 msgid "name"
 msgstr "name"
 
-#: src/elements/Tabs.ts:59
+#: src/elements/Tabs.ts:62
 msgid "no tabs defined"
 msgstr "no tabs defined"
 
