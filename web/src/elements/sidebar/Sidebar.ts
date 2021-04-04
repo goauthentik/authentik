@@ -8,6 +8,7 @@ import { until } from "lit-html/directives/until";
 
 import "./SidebarBrand";
 import "./SidebarUser";
+import { ROUTE_SEPARATOR } from "../../constants";
 
 export class SidebarItem {
     name: string;
@@ -145,9 +146,9 @@ export class Sidebar extends LitElement {
 
     constructor() {
         super();
-        this.activePath = window.location.hash.slice(1, Infinity);
+        this.activePath = window.location.hash.slice(1, Infinity).split(ROUTE_SEPARATOR)[0];
         window.addEventListener("hashchange", () => {
-            this.activePath = window.location.hash.slice(1, Infinity);
+            this.activePath = window.location.hash.slice(1, Infinity).split(ROUTE_SEPARATOR)[0];
         });
     }
 
