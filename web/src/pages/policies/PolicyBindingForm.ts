@@ -64,6 +64,9 @@ export class PolicyBindingForm extends Form<PolicyBinding> {
             target: this.targetPk || "",
         }).then(bindings => {
             const orders = bindings.results.map(binding => binding.order);
+            if (orders.length < 1) {
+                return 0;
+            }
             return Math.max(...orders) + 1;
         });
     }

@@ -74,7 +74,7 @@ export class ExpressionPolicyForm extends Form<ExpressionPolicy> {
                         </ak-codemirror>
                         <p class="pf-c-form__helper-text">
                             ${t`Expression using Python.`}
-                            <a href="https://goauthentik.io/docs/property-mappings/expression/">
+                            <a target="_blank" href="https://goauthentik.io/docs/policies/expression">
                                 ${t`See documentation for a list of all variables.`}
                             </a>
                         </p>

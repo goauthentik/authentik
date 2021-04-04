@@ -72,8 +72,8 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                     }}
                     type=${ifDefined(item.policyObj?.component)}>
                 </ak-proxy-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${t`Edit`}
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${t`Edit Policy`}
                 </button>
             </ak-forms-modal>`;
         } else if (item.group) {
@@ -100,8 +100,8 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 </span>
                 <ak-user-form slot="form" .user=${item.userObj}>
                 </ak-user-form>
-                <button slot="trigger" class="pf-m-secondary pf-c-button">
-                    ${t`Edit`}
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${t`Edit User`}
                 </button>
             </ak-forms-modal>`;
         } else {
