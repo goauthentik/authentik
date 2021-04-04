@@ -1,7 +1,8 @@
 import { t } from "@lingui/macro";
-import { customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/ActionButton";
@@ -24,8 +25,14 @@ export class SystemTaskListPage extends TablePage<Task> {
         return "pf-icon pf-icon-automation";
     }
 
+    expandable = true;
+
     @property()
     order = "slug";
+
+    static get styles(): CSSResult[] {
+        return super.styles.concat(PFDescriptionList);
+    }
 
     apiEndpoint(page: number): Promise<AKResponse<Task>> {
         return new AdminApi(DEFAULT_CONFIG).adminSystemTasksList().then((tasks) => {
@@ -48,7 +55,6 @@ export class SystemTaskListPage extends TablePage<Task> {
             new TableColumn("Description"),
             new TableColumn("Last run"),
             new TableColumn("Status"),
-            new TableColumn("Messages"),
             new TableColumn(""),
         ];
     }
@@ -66,15 +72,36 @@ export class SystemTaskListPage extends TablePage<Task> {
         }
     }
 
+    renderExpanded(item: Task): TemplateResult {
+        return html`
+        <td role="cell" colspan="3">
+            <div class="pf-c-table__expandable-row-content">
+                <dl class="pf-c-description-list pf-m-horizontal">
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${t`Messages`}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">
+                                ${item.messages.map(m => {
+                                    return html`<li>${m}</li>`;
+                                })}
+                            </div>
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </td>
+        <td></td>
+        <td></td>`;
+    }
+
     row(item: Task): TemplateResult[] {
         return [
             html`${item.taskName}`,
             html`${item.taskDescription}`,
             html`${item.taskFinishTimestamp.toLocaleString()}`,
             this.taskStatus(item),
-            html`${item.messages.map(m => {
-                return html`<li>${m}</li>`;
-            })}`,
             html`<ak-action-button
                 .apiRequest=${() => {
                     return new AdminApi(DEFAULT_CONFIG).adminSystemTasksRetry({
