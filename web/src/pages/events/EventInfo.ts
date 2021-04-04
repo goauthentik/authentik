@@ -4,7 +4,7 @@ import { until } from "lit-html/directives/until";
 import { FlowsApi } from "authentik-api";
 import "../../elements/Spinner";
 import "../../elements/Expand";
-import { SpinnerSize } from "../../elements/Spinner";
+import { PFSize } from "../../elements/Spinner";
 import { EventContext, EventWithContext } from "../../api/Events";
 import { DEFAULT_CONFIG } from "../../api/Config";
 
@@ -91,7 +91,7 @@ export class EventInfo extends LitElement {
 
     render(): TemplateResult {
         if (!this.event) {
-            return html`<ak-spinner size=${SpinnerSize.Medium}></ak-spinner>`;
+            return html`<ak-spinner size=${PFSize.Medium}></ak-spinner>`;
         }
         switch (this.event?.action) {
         case "model_created":
@@ -113,7 +113,7 @@ export class EventInfo extends LitElement {
                             flowUuid: this.event.context.flow as string,
                         }).then(resp => {
                             return html`<a href="#/flow/flows/${resp.results[0].slug}">${resp.results[0].name}</a>`;
-                        }), html`<ak-spinner size=${SpinnerSize.Medium}></ak-spinner>`)}
+                        }), html`<ak-spinner size=${PFSize.Medium}></ak-spinner>`)}
                         </span>
                     </div>
                 </div>

@@ -4,7 +4,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import AKGlobal from "../authentik.css";
 
-import { SpinnerSize } from "./Spinner";
+import { PFSize } from "./Spinner";
 
 @customElement("ak-empty-state")
 export class EmptyState extends LitElement {
@@ -30,7 +30,7 @@ export class EmptyState extends LitElement {
             <div class="pf-c-empty-state__content">
                 ${this.loading ?
                     html`<div class="pf-c-empty-state__icon">
-                        <ak-spinner size=${SpinnerSize.XLarge}></ak-spinner>
+                        <ak-spinner size=${PFSize.XLarge}></ak-spinner>
                     </div>`:
                     html`<i class="pf-icon fa ${this.icon || "fa-question-circle"} pf-c-empty-state__icon" aria-hidden="true"></i>`}
                 <h1 class="pf-c-title pf-m-lg">

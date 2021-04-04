@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 
-export enum SpinnerSize {
+export enum PFSize {
     Small = "pf-m-sm",
     Medium = "pf-m-md",
     Large = "pf-m-lg",
@@ -12,7 +12,7 @@ export enum SpinnerSize {
 @customElement("ak-spinner")
 export class Spinner extends LitElement {
     @property()
-    size: SpinnerSize = SpinnerSize.Medium;
+    size: PFSize = PFSize.Medium;
 
     static get styles(): CSSResult[] {
         return [PFSpinner];

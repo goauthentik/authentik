@@ -7,7 +7,7 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import AKGlobal from "../../../authentik.css";
-import { SpinnerSize } from "../../../elements/Spinner";
+import { PFSize } from "../../../elements/Spinner";
 import { transformAssertionForServer, transformCredentialRequestOptions } from "../authenticator_webauthn/utils";
 import { BaseStage } from "../base";
 import { AuthenticatorValidateStage, AuthenticatorValidateStageChallenge, DeviceChallenge } from "./AuthenticatorValidateStage";
@@ -91,7 +91,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage {
                 html`<div class="pf-c-empty-state__content">
                         <div class="pf-l-bullseye">
                             <div class="pf-l-bullseye__item">
-                                <ak-spinner size="${SpinnerSize.XLarge}"></ak-spinner>
+                                <ak-spinner size="${PFSize.XLarge}"></ak-spinner>
                             </div>
                         </div>
                     </div>`:

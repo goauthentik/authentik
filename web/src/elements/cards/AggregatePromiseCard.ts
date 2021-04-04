@@ -2,7 +2,7 @@ import { customElement, html, property, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
 import { AggregateCard } from "./AggregateCard";
 import "../Spinner";
-import { SpinnerSize } from "../Spinner";
+import { PFSize } from "../Spinner";
 
 @customElement("ak-aggregate-card-promise")
 export class AggregatePromiseCard extends AggregateCard {
@@ -20,7 +20,7 @@ export class AggregatePromiseCard extends AggregateCard {
 
     renderInner(): TemplateResult {
         return html`<p class="center-value">
-            ${until(this.promiseProxy(), html`<ak-spinner size="${SpinnerSize.Large}"></ak-spinner>`)}
+            ${until(this.promiseProxy(), html`<ak-spinner size="${PFSize.Large}"></ak-spinner>`)}
         </p>`;
     }
 

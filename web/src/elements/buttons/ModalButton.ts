@@ -12,11 +12,12 @@ import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import AKGlobal from "../../authentik.css";
+import { PFSize } from "../Spinner";
 
 @customElement("ak-modal-button")
 export class ModalButton extends LitElement {
     @property()
-    href?: string;
+    size: PFSize = PFSize.Large;
 
     @property({type: Boolean})
     open = false;
@@ -78,7 +79,7 @@ export class ModalButton extends LitElement {
         return html`<div class="pf-c-backdrop">
             <div class="pf-l-bullseye">
                 <div
-                    class="pf-c-modal-box pf-m-lg"
+                    class="pf-c-modal-box ${this.size}"
                     role="dialog"
                     aria-modal="true"
                 >

@@ -2,7 +2,7 @@ import { html, TemplateResult } from "lit-html";
 import { until } from "lit-html/directives/until";
 import { EVENT_REFRESH } from "../../../constants";
 import { AggregateCard } from "../../../elements/cards/AggregateCard";
-import { SpinnerSize } from "../../../elements/Spinner";
+import { PFSize } from "../../../elements/Spinner";
 
 export interface AdminStatus {
     icon: string;
@@ -38,7 +38,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
                         <i class="${status.icon}"></i>&nbsp;${this.renderValue()}
                     </p>
                     ${status.message ? html`<p class="subtext">${status.message}</p>` : html``}`;
-            }), html`<ak-spinner size="${SpinnerSize.Large}"></ak-spinner>`)}
+            }), html`<ak-spinner size="${PFSize.Large}"></ak-spinner>`)}
         </p>`;
     }
 }

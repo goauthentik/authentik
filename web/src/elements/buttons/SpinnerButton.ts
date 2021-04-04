@@ -3,7 +3,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 import AKGlobal from "../../authentik.css";
-import { SpinnerSize } from "../Spinner";
+import { PFSize } from "../Spinner";
 import { ERROR_CLASS, PRIMARY_CLASS, PROGRESS_CLASS, SUCCESS_CLASS } from "../../constants";
 
 @customElement("ak-spinner-button")
@@ -69,7 +69,7 @@ export class SpinnerButton extends LitElement {
             }}>
             ${this.isRunning
                 ? html` <span class="pf-c-button__progress">
-                            <ak-spinner size=${SpinnerSize.Medium}></ak-spinner>
+                            <ak-spinner size=${PFSize.Medium}></ak-spinner>
                         </span>`
                 : ""}
             <slot></slot>

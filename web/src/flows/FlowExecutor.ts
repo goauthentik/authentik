@@ -40,7 +40,7 @@ import { DEFAULT_CONFIG } from "../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
 import { AccessDeniedChallenge } from "./access_denied/FlowAccessDenied";
-import { SpinnerSize } from "../elements/Spinner";
+import { PFSize } from "../elements/Spinner";
 import { TITLE_SUFFIX } from "../constants";
 
 @customElement("ak-flow-executor")
@@ -164,7 +164,7 @@ export class FlowExecutor extends LitElement implements StageHost {
 
     renderLoading(): TemplateResult {
         return html`<div class="ak-loading">
-            <ak-spinner size=${SpinnerSize.XLarge}></ak-spinner>
+            <ak-spinner size=${PFSize.XLarge}></ak-spinner>
         </div>`;
     }
 

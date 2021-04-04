@@ -8,7 +8,7 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import AKGlobal from "../../../authentik.css";
-import { SpinnerSize } from "../../../elements/Spinner";
+import { PFSize } from "../../../elements/Spinner";
 import { BaseStage } from "../base";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
@@ -83,7 +83,7 @@ export class CaptchaStage extends BaseStage {
                         </div>
                     </ak-form-static>
                     <div class="ak-loading">
-                        <ak-spinner size=${SpinnerSize.XLarge}></ak-spinner>
+                        <ak-spinner size=${PFSize.XLarge}></ak-spinner>
                     </div>
                 </form>
             </div>
