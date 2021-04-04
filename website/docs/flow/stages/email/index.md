@@ -4,7 +4,7 @@ title: Email stage
 
 This stage can be used for email verification. authentik's background worker will send an email using the specified connection details. When an email can't be delivered, delivery is automatically retried periodically.
 
-![](email-recovery.png)
+![](email_recovery.png)
 
 ## Custom Templates
 
@@ -20,4 +20,4 @@ This is currently only supported for docker-compose installs, and supported star
 If you've add the line and created a file, and can't see if, check the logs using `docker-compose logs -f worker`.
 :::
 
-![](custom-template.png)
+![](custom_template.png)
