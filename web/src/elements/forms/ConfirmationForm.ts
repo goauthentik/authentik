@@ -57,18 +57,10 @@ export class ConfirmationForm extends ModalButton {
                 </h1>
             </div>
         </section>
-        <section class="pf-c-page__main-section">
-            <div class="pf-l-stack">
-                <div class="pf-l-stack__item">
-                    <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <form class="pf-c-form pf-m-horizontal">
-                                <slot name="body"></slot>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <section class="pf-c-page__main-section pf-m-light">
+            <form class="pf-c-form pf-m-horizontal">
+                <slot name="body"></slot>
+            </form>
         </section>
         <footer class="pf-c-modal-box__footer">
             <ak-spinner-button

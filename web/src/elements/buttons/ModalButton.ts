@@ -29,6 +29,7 @@ export class ModalButton extends LitElement {
             css`
                 :host {
                     text-align: left;
+                    font-size: var(--pf-global--FontSize--md);
                 }
                 .pf-c-modal-box.pf-m-lg {
                     overflow-y: auto;

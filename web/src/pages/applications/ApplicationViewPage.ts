@@ -7,6 +7,7 @@ import "../../elements/buttons/SpinnerButton";
 import "../../elements/EmptyState";
 import "../../elements/events/ObjectChangelog";
 import "../policies/BoundPoliciesList";
+import "./ApplicationForm";
 import { Application, CoreApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -15,6 +16,7 @@ import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import AKGlobal from "../../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 @customElement("ak-application-view")
 export class ApplicationViewPage extends LitElement {
@@ -32,7 +34,7 @@ export class ApplicationViewPage extends LitElement {
     application!: Application;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFContent, PFGallery, PFCard, AKGlobal].concat(
+        return [PFBase, PFPage, PFContent, PFButton, PFGallery, PFCard, AKGlobal].concat(
             css`
                 img.pf-icon {
                     max-height: 24px;
@@ -96,6 +98,28 @@ export class ApplicationViewPage extends LitElement {
                                             </dd>
                                         </div>`:
                                     html``}
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text">${t`Edit`}</span>
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                <ak-forms-modal>
+                                                    <span slot="submit">
+                                                        ${t`Update`}
+                                                    </span>
+                                                    <span slot="header">
+                                                        ${t`Update Application`}
+                                                    </span>
+                                                    <ak-application-form slot="form" .application=${this.application}>
+                                                    </ak-application-form>
+                                                    <button slot="trigger" class="pf-c-button pf-m-secondary">
+                                                        ${t`Edit`}
+                                                    </button>
+                                                </ak-forms-modal>
+                                            </div>
+                                        </dd>
+                                    </div>
                                 </dl>
                             </div>
                         </div>
