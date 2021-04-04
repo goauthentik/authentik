@@ -52,9 +52,9 @@ export class SystemTaskListPage extends TablePage<Task> {
     columns(): TableColumn[] {
         return [
             new TableColumn(t`Identifier`, t`task_name`),
-            new TableColumn("Description"),
-            new TableColumn("Last run"),
-            new TableColumn("Status"),
+            new TableColumn(t`Description`),
+            new TableColumn(t`Last run`),
+            new TableColumn(t`Status`),
             new TableColumn(""),
         ];
     }

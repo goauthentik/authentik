@@ -35,7 +35,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Policy / User / Group"),
+            new TableColumn(t`Policy / User / Group`),
             new TableColumn(t`Enabled`, t`enabled`),
             new TableColumn(t`Order`, t`order`),
             new TableColumn(t`Timeout`, t`timeout`),
