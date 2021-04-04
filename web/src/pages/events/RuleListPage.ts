@@ -66,7 +66,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
                 </span>
                 <ak-event-rule-form slot="form" .rule=${item}>
                 </ak-event-rule-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${t`Edit`}
                 </button>
             </ak-forms-modal>
@@ -108,7 +108,8 @@ export class RuleListPage extends TablePage<NotificationRule> {
         return html`
         <td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">
-                <p>${t`These policies control upon which events this rule triggers.`}</p>
+                <p>${t`These policies control upon which events this rule triggers. Bindings to
+                groups/users are checked against the user of the event.`}</p>
                 <ak-bound-policies-list .target=${item.pk}>
                 </ak-bound-policies-list>
             </div>

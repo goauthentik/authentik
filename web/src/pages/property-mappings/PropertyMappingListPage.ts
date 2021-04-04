@@ -145,7 +145,8 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     }
 
     renderToolbarAfter(): TemplateResult {
-        return html`<div class="pf-c-toolbar__group pf-m-filter-group">
+        return html`&nbsp;
+        <div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
                 <div class="pf-c-input-group">
                     <div class="pf-c-check">

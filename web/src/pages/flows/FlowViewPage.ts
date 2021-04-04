@@ -61,7 +61,7 @@ export class FlowViewPage extends LitElement {
             <ak-tabs>
                 <div slot="page-1" data-tab-title="${t`Flow Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-l-gallery pf-m-gutter">
-                        <div class="pf-c-card pf-l-gallery__item" style="grid-column-end: span 3;grid-row-end: span 2;">
+                        <div class="pf-c-card pf-l-gallery__item" style="grid-column-end: span 4;grid-row-end: span 2;">
                             <div class="pf-c-card">
                                 <div class="pf-c-card__body">
                                     <ak-flow-diagram flowSlug=${this.flow.slug}>

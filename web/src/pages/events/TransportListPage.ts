@@ -70,7 +70,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                 </span>
                 <ak-event-transport-form slot="form" .transport=${item}>
                 </ak-event-transport-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${t`Edit`}
                 </button>
             </ak-forms-modal>
