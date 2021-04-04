@@ -78,9 +78,7 @@ class EmailStage(Stage):
         default=30, help_text=_("Time in minutes the token sent is valid.")
     )
     subject = models.TextField(default="authentik")
-    template = models.TextField(
-        choices=get_template_choices(), default=EmailTemplates.PASSWORD_RESET
-    )
+    template = models.TextField(default=EmailTemplates.PASSWORD_RESET)
 
     @property
     def serializer(self) -> BaseSerializer:

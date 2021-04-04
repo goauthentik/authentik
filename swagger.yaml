@@ -12081,6 +12081,25 @@ paths:
       tags:
         - stages
     parameters: []
+  /stages/email/templates/:
+    get:
+      operationId: stages_email_templates
+      description: Get all available templates, including custom templates
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TypeCreate'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+      tags:
+        - stages
+    parameters: []
   /stages/email/{stage_uuid}/:
     get:
       operationId: stages_email_read
@@ -17693,9 +17712,7 @@ definitions:
       template:
         title: Template
         type: string
-        enum:
-          - email/password_reset.html
-          - email/account_confirmation.html
+        minLength: 1
   IdentificationStage:
     required:
       - name

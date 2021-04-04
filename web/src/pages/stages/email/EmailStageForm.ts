@@ -1,4 +1,4 @@
-import { EmailStage, EmailStageTemplateEnum, StagesApi } from "authentik-api";
+import { EmailStage, StagesApi } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -8,6 +8,7 @@ import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
 import { first } from "../../../utils";
+import { until } from "lit-html/directives/until";
 
 @customElement("ak-stage-email-form")
 export class EmailStageForm extends Form<EmailStage> {
@@ -153,14 +154,16 @@ export class EmailStageForm extends Form<EmailStage> {
                     <ak-form-element-horizontal
                         label=${t`Template`}
                         ?required=${true}
-                        name="subject">
+                        name="template">
                         <select name="users" class="pf-c-form-control">
-                            <option value=${EmailStageTemplateEnum.AccountConfirmationHtml} ?selected=${this.stage?.template === EmailStageTemplateEnum.AccountConfirmationHtml}>
-                                ${t`Account confirmation`}
-                            </option>
-                            <option value=${EmailStageTemplateEnum.PasswordResetHtml} ?selected=${this.stage?.template === EmailStageTemplateEnum.PasswordResetHtml}>
-                                ${t`Password reset`}
-                            </option>
+                            ${until(new StagesApi(DEFAULT_CONFIG).stagesEmailTemplates().then(templates => {
+                                return templates.map(template => {
+                                    const selected = this.stage?.template === template.name;
+                                    return html`<option value=${ifDefined(template.name)} ?selected=${selected}>
+                                        ${template.description}
+                                    </option>`;
+                                });
+                            }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                     </ak-form-element-horizontal>
                 </div>
