@@ -32,7 +32,7 @@ export class CaptchaStageForm extends Form<CaptchaStage> {
 
     send = (data: CaptchaStage): Promise<CaptchaStage> => {
         if (this.stage) {
-            return new StagesApi(DEFAULT_CONFIG).stagesCaptchaUpdate({
+            return new StagesApi(DEFAULT_CONFIG).stagesCaptchaPartialUpdate({
                 stageUuid: this.stage.pk || "",
                 data: data
             });
@@ -66,6 +66,7 @@ export class CaptchaStageForm extends Form<CaptchaStage> {
                     <ak-form-element-horizontal
                         label=${t`Private Key`}
                         ?required=${true}
+                        ?writeOnly=${true}
                         name="privateKey">
                         <input type="text" value="${ifDefined(this.stage?.privateKey || "")}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`Private key, acquired from https://www.google.com/recaptcha/intro/v3.html.`}</p>

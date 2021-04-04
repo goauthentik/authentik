@@ -108,6 +108,9 @@ export class Form<T> extends LitElement {
         const json: { [key: string]: unknown } = {};
         elements.forEach(element => {
             const values = form._serializeElementValues(element);
+            if (element.hidden) {
+                return;
+            }
             if (element.tagName.toLowerCase() === "select" && "multiple" in element.attributes) {
                 json[element.name] = values;
             } else if (element.tagName.toLowerCase() === "input" && element.type === "date") {

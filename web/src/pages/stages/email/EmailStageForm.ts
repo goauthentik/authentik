@@ -37,7 +37,7 @@ export class EmailStageForm extends Form<EmailStage> {
 
     send = (data: EmailStage): Promise<EmailStage> => {
         if (this.stage) {
-            return new StagesApi(DEFAULT_CONFIG).stagesEmailUpdate({
+            return new StagesApi(DEFAULT_CONFIG).stagesEmailPartialUpdate({
                 stageUuid: this.stage.pk || "",
                 data: data
             });
@@ -78,6 +78,7 @@ export class EmailStageForm extends Form<EmailStage> {
                     <ak-form-element-horizontal
                         label=${t`SMTP Password`}
                         ?required=${true}
+                        ?writeOnly=${true}
                         name="password">
                         <input type="text" value="${ifDefined(this.stage?.password || "")}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>

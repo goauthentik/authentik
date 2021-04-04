@@ -210,6 +210,9 @@ body {
         --pf-c-form-control--BackgroundColor: var(--ak-dark-background-light);
         color: var(--ak-dark-foreground);
     }
+    .pf-c-form-control:disabled {
+        background-color: var(--ak-dark-background-light);
+    }
     .pf-c-form-control[readonly] {
         background-color: var(--ak-dark-background-light);
     }

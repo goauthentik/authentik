@@ -34,7 +34,7 @@ export class LDAPSourceForm extends Form<LDAPSource> {
 
     send = (data: LDAPSource): Promise<LDAPSource> => {
         if (this.source) {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesLdapUpdate({
+            return new SourcesApi(DEFAULT_CONFIG).sourcesLdapPartialUpdate({
                 slug: this.source.slug,
                 data: data
             });
@@ -119,6 +119,7 @@ export class LDAPSourceForm extends Form<LDAPSource> {
                     <ak-form-element-horizontal
                         label=${t`Bind Password`}
                         ?required=${true}
+                        ?writeOnly=${true}
                         name="bindPassword">
                         <input type="text" value="${ifDefined(this.source?.bindPassword)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>

@@ -1,13 +1,16 @@
 import { customElement, LitElement, CSSResult, property, css } from "lit-element";
 import { TemplateResult, html } from "lit-html";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import AKGlobal from "../../authentik.css";
+import { t } from "@lingui/macro";
 
 @customElement("ak-form-element-horizontal")
 export class HorizontalFormElement extends LitElement {
 
     static get styles(): CSSResult[] {
-        return [PFForm, PFFormControl, css`
+        return [PFBase, PFForm, PFFormControl, AKGlobal, css`
             .pf-c-form__group {
                 display: grid;
                 grid-template-columns: var(--pf-c-form--m-horizontal__group-label--md--GridColumnWidth) var(--pf-c-form--m-horizontal__group-control--md--GridColumnWidth);
@@ -23,6 +26,12 @@ export class HorizontalFormElement extends LitElement {
 
     @property({ type: Boolean })
     required = false;
+
+    @property({ type: Boolean })
+    writeOnly = false;
+
+    @property({ type: Boolean })
+    writeOnlyActivated = false;
 
     @property()
     errorMessage = "";
@@ -46,7 +55,17 @@ export class HorizontalFormElement extends LitElement {
                     (input as HTMLInputElement).name = this.name;
                     break;
                 default:
-                    break;
+                    return;
+            }
+            if (this.writeOnly && !this.writeOnlyActivated) {
+                const i = (input as HTMLInputElement);
+                i.setAttribute("hidden", "true");
+                const handler = (ev: Event) => {
+                    i.removeAttribute("hidden");
+                    this.writeOnlyActivated = true;
+                    i.parentElement?.removeEventListener("click", handler);
+                };
+                i.parentElement?.addEventListener("click", handler);
             }
         });
     }
@@ -60,8 +79,16 @@ export class HorizontalFormElement extends LitElement {
                 </label>
             </div>
             <div class="pf-c-form__group-control">
+                ${this.writeOnly && !this.writeOnlyActivated ?
+                    html`<div class="pf-c-form__horizontal-group">
+                        <input class="pf-c-form-control" type="password" disabled value="**************">
+                    </div>` :
+                    html``}
                 <slot class="pf-c-form__horizontal-group"></slot>
                 <div class="pf-c-form__horizontal-group">
+                    ${this.writeOnly ? html`<p class="pf-c-form__helper-text" aria-live="polite">${
+                        t`Click to change value`
+                    }</p>` : html``}
                     ${this.invalid ? html`<p class="pf-c-form__helper-text pf-m-error" aria-live="polite">${this.errorMessage}</p>` : html``}
                 </div>
             </div>
