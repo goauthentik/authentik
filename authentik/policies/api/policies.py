@@ -39,8 +39,11 @@ class PolicySerializer(ModelSerializer, MetaNameSerializer):
         super().__init__(*args, **kwargs)
         self._resolve_inheritance = resolve_inheritance
 
-    def get_component(self, obj: Policy) -> str:
+    def get_component(self, obj: Policy) -> str:  # pragma: no cover
         """Get object component so that we know how to edit the object"""
+        # pyright: reportGeneralTypeIssues=false
+        if obj.__class__ == Policy:
+            return ""
         return obj.component
 
     def get_bound_to(self, obj: Policy) -> int:

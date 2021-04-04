@@ -149,6 +149,7 @@ class PolicyEngine:
         if self.mode == PolicyEngineMode.MODE_ANY:
             passing = any(x.passing for x in all_results)
         result = PolicyResult(passing)
+        result.source_results = all_results
         result.messages = tuple(y for x in all_results for y in x.messages)
         return result
 

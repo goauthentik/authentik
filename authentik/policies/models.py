@@ -112,10 +112,17 @@ class PolicyBinding(SerializerModel):
         return PolicyBindingSerializer
 
     def __str__(self) -> str:
+        suffix = ""
+        if self.policy:
+            suffix = f"Policy {self.policy.name}"
+        if self.group:
+            suffix = f"Group {self.group.name}"
+        if self.user:
+            suffix = f"User {self.user.name}"
         try:
-            return f"Policy Binding {self.target} #{self.order} {self.policy}"
+            return f"Binding from {self.target} #{self.order} to {suffix}"
         except PolicyBinding.target.RelatedObjectDoesNotExist:  # pylint: disable=no-member
-            return f"Policy Binding - #{self.order} {self.policy}"
+            return f"Binding - #{self.order} to {suffix}"
 
     class Meta:
 

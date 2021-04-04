@@ -100,7 +100,7 @@ class PolicyProcess(PROCESS_CLASS):
                 self.create_event(EventAction.POLICY_EXCEPTION, message=error_string)
             LOGGER.debug("P_ENG(proc): error", exc=src_exc)
             policy_result = PolicyResult(False, str(src_exc))
-        policy_result.source_policy = self.binding.policy
+        policy_result.source_binding = self.binding
         # Invert result if policy.negate is set
         if self.binding.negate:
             policy_result.passing = not policy_result.passing

@@ -14,7 +14,7 @@ from authentik.lib.utils.http import get_client_ip
 
 if TYPE_CHECKING:
     from authentik.core.models import User
-    from authentik.policies.models import Policy
+    from authentik.policies.models import PolicyBinding
 
 LOGGER = get_logger()
 
@@ -61,14 +61,14 @@ class PolicyResult:
     passing: bool
     messages: tuple[str, ...]
 
-    source_policy: Optional[Policy]
+    source_binding: Optional["PolicyBinding"]
     source_results: Optional[list["PolicyResult"]]
 
     def __init__(self, passing: bool, *messages: str):
         super().__init__()
         self.passing = passing
         self.messages = messages
-        self.source_policy = None
+        self.source_binding = None
         self.source_results = []
 
     def __repr__(self):
