@@ -15,7 +15,6 @@ const extensions = [
 const resources = [
     { src: "node_modules/rapidoc/dist/rapidoc-min.js", dest: "dist/" },
 
-    { src: "node_modules/@patternfly/patternfly/patternfly-base.css", dest: "dist/" },
     { src: "node_modules/@patternfly/patternfly/patternfly.min.css", dest: "dist/" },
     { src: "node_modules/@patternfly/patternfly/patternfly.min.css.map", dest: "dist/" },
     { src: "src/authentik.css", dest: "dist/" },
