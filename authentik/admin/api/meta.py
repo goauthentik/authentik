@@ -26,6 +26,6 @@ class AppsViewSet(ViewSet):
     def list(self, request: Request) -> Response:
         """List current messages and pass into Serializer"""
         data = []
-        for app in get_apps():
+        for app in sorted(get_apps(), key=lambda app: app.name):
             data.append({"name": app.name, "label": app.verbose_name})
         return Response(AppSerializer(data, many=True).data)
