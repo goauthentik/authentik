@@ -44,6 +44,7 @@ export class EventListPage extends TablePage<Event> {
             new TableColumn(t`User`, t`user`),
             new TableColumn(t`Creation Date`, t`created`),
             new TableColumn(t`Client IP`, t`client_ip`),
+            new TableColumn(""),
         ];
     }
     row(item: EventWithContext): TemplateResult[] {
@@ -56,6 +57,9 @@ export class EventListPage extends TablePage<Event> {
             </small>` : html``}`,
             html`<span>${item.created?.toLocaleString()}</span>`,
             html`<span>${item.clientIp}</span>`,
+            html`<a href="#/events/log/${item.pk}">
+                <i class="fas fas fa-share-square"></i>
+            </a>`,
         ];
     }
 
