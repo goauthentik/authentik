@@ -8,11 +8,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.utils import TypeCreateSerializer
 from authentik.flows.api.stages import StageSerializer
-from authentik.stages.email.models import (
-    EmailStage,
-    EmailTemplates,
-    get_template_choices,
-)
+from authentik.stages.email.models import EmailStage, get_template_choices
 
 
 class EmailStageSerializer(StageSerializer):
@@ -23,6 +19,7 @@ class EmailStageSerializer(StageSerializer):
         self.fields["template"].choices = get_template_choices()
 
     def validate_template(self, value: str) -> str:
+        """Check validity of template"""
         choices = get_template_choices()
         for path, _ in choices:
             if path == value:
