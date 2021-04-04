@@ -60,7 +60,7 @@ export class HorizontalFormElement extends LitElement {
             if (this.writeOnly && !this.writeOnlyActivated) {
                 const i = (input as HTMLInputElement);
                 i.setAttribute("hidden", "true");
-                const handler = (ev: Event) => {
+                const handler = () => {
                     i.removeAttribute("hidden");
                     this.writeOnlyActivated = true;
                     i.parentElement?.removeEventListener("click", handler);

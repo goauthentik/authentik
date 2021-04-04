@@ -48,14 +48,14 @@ export class CertificateKeyPairForm extends Form<CertificateKeyPair> {
             <ak-form-element-horizontal
                 label=${t`Certificate`}
                 name="certificateData"
-                ?writeOnly=${true}
+                ?writeOnly=${this.keyPair !== undefined}
                 ?required=${true}>
                 <textarea class="pf-c-form-control" required>${ifDefined(this.keyPair?.certificateData)}</textarea>
                 <p class="pf-c-form__helper-text">${t`PEM-encoded Certificate data.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 name="keyData"
-                ?writeOnly=${true}
+                ?writeOnly=${this.keyPair !== undefined}
                 label=${t`Private Key`}>
                 <textarea class="pf-c-form-control" >${ifDefined(this.keyPair?.keyData)}</textarea>
                 <p class="pf-c-form__helper-text">${t`Optional Private Key. If this is set, you can use this keypair for encryption.`}</p>

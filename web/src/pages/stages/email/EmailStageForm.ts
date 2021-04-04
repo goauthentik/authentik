@@ -78,7 +78,7 @@ export class EmailStageForm extends Form<EmailStage> {
                     <ak-form-element-horizontal
                         label=${t`SMTP Password`}
                         ?required=${true}
-                        ?writeOnly=${true}
+                        ?writeOnly=${this.stage !== undefined}
                         name="password">
                         <input type="text" value="${ifDefined(this.stage?.password || "")}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>

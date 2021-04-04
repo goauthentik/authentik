@@ -119,7 +119,7 @@ export class LDAPSourceForm extends Form<LDAPSource> {
                     <ak-form-element-horizontal
                         label=${t`Bind Password`}
                         ?required=${true}
-                        ?writeOnly=${true}
+                        ?writeOnly=${this.source !== undefined}
                         name="bindPassword">
                         <input type="text" value="${ifDefined(this.source?.bindPassword)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
