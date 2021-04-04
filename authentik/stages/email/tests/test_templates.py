@@ -1,10 +1,8 @@
 """email tests"""
 from os import unlink
 from pathlib import Path
-from sys import platform
 from tempfile import gettempdir, mkstemp
 from typing import Any
-from unittest.case import skipUnless
 
 from django.conf import settings
 from django.test import TestCase
@@ -19,7 +17,6 @@ def get_templates_setting(temp_dir: str) -> dict[str, Any]:
     return templates_setting
 
 
-@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestEmailStageTemplates(TestCase):
     """Email tests"""
 

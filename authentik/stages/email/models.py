@@ -30,7 +30,6 @@ class EmailTemplates(models.TextChoices):
     )
 
 
-# TODO: Create api for choices
 def get_template_choices():
     """Get all available Email templates, including dynamically mounted ones.
     Directories are taken from TEMPLATES.DIR setting"""
