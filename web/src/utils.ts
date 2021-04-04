@@ -67,7 +67,7 @@ export function groupBy<T>(objects: T[], callback: (obj: T) => string): Array<[s
         const tProviders = m.get(group) || [];
         tProviders.push(obj);
     });
-    return Array.from(m);
+    return Array.from(m).sort();
 }
 
 export function first<T>(...args: Array<T | undefined | null>): T {
