@@ -22,6 +22,9 @@ export class Tabs extends LitElement {
             :host([vertical]) {
                 display: flex;
             }
+            :host([vertical]) .pf-c-tabs {
+                width: auto !important;
+            }
             :host([vertical]) .pf-c-tabs__list {
                 height: 100%;
             }
