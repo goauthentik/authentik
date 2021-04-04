@@ -14,7 +14,7 @@ export class SourceSettingsOAuth extends BaseUserSettings {
             slug: this.objectId
         }).then((source) => {
             return html`<div class="pf-c-card">
-                <div class="pf-pf-c-card__title">
+                <div class="pf-c-card__title">
                     ${t`Source ${source.name}`}
                 </div>
                 <div class="pf-c-card__body">
