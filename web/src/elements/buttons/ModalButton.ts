@@ -81,8 +81,6 @@ export class ModalButton extends LitElement {
                     class="pf-c-modal-box pf-m-lg"
                     role="dialog"
                     aria-modal="true"
-                    aria-labelledby="modal-md-title"
-                    aria-describedby="modal-md-description"
                 >
                     <button
                         @click=${() => (this.open = false)}

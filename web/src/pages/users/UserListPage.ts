@@ -75,7 +75,7 @@ export class UserListPage extends TablePage<User> {
                 </button>
             </ak-forms-modal>
             <ak-dropdown class="pf-c-dropdown">
-                <button class="pf-c-dropdown__toggle pf-m-secondary" type="button">
+                <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
                     <span class="pf-c-dropdown__toggle-text">${item.isActive ? t`Disable` : t`Enable`}</span>
                     <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                 </button>
