@@ -6,7 +6,20 @@ import AKGlobal from "../../authentik.css";
 
 import "./Router404";
 import { Page } from "../Page";
-import { TITLE_SUFFIX } from "../../constants";
+import { ROUTE_SEPARATOR, TITLE_SUFFIX } from "../../constants";
+
+// Poliyfill for hashchange.newURL,
+// https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onhashchange
+window.addEventListener("load", () => {
+    if (!window.HashChangeEvent) (function () {
+        let lastURL = document.URL;
+        window.addEventListener("hashchange", function (event) {
+            Object.defineProperty(event, "oldURL", { enumerable: true, configurable: true, value: lastURL });
+            Object.defineProperty(event, "newURL", { enumerable: true, configurable: true, value: document.URL });
+            lastURL = document.URL;
+        });
+    }());
+});
 
 @customElement("ak-router-outlet")
 export class RouterOutlet extends LitElement {
@@ -34,7 +47,7 @@ export class RouterOutlet extends LitElement {
 
     constructor() {
         super();
-        window.addEventListener("hashchange", () => this.navigate());
+        window.addEventListener("hashchange", (ev: HashChangeEvent) => this.navigate(ev));
     }
 
     firstUpdated(): void {
@@ -53,8 +66,13 @@ export class RouterOutlet extends LitElement {
         });
     }
 
-    navigate(): void {
-        let activeUrl = window.location.hash.slice(1, Infinity);
+    navigate(ev?: HashChangeEvent): void {
+        let activeUrl = window.location.hash.slice(1, Infinity).split(ROUTE_SEPARATOR)[0];
+        if (ev) {
+            // Check if we've actually changed paths
+            const oldPath = new URL(ev.oldURL).hash.slice(1, Infinity).split(ROUTE_SEPARATOR)[0];
+            if (oldPath === activeUrl) return;
+        }
         if (activeUrl === "") {
             activeUrl = this.defaultUrl || "/";
             window.location.hash = `#${activeUrl}`;

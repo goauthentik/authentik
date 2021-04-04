@@ -13,7 +13,7 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 enum target {
     policy, group, user
-};
+}
 
 @customElement("ak-policy-binding-form")
 export class PolicyBindingForm extends Form<PolicyBinding> {
@@ -41,7 +41,7 @@ export class PolicyBindingForm extends Form<PolicyBinding> {
     @property()
     targetPk?: string;
 
-    @property()
+    @property({type: Number})
     policyGroupUser?: target;
 
     getSuccessMessage(): string {

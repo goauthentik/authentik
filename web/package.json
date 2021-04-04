@@ -12,7 +12,10 @@
     },
     "lingui": {
         "sourceLocale": "en",
-        "locales": ["en", "pseudo-LOCALE"],
+        "locales": [
+            "en",
+            "pseudo-LOCALE"
+        ],
         "pseudoLocale": "pseudo-LOCALE",
         "fallbackLocales": {
             "pseudo-LOCALE": "en"
