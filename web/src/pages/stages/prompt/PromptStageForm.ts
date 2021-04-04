@@ -70,7 +70,7 @@ export class PromptStageForm extends Form<PromptStage> {
                                         return su == prompt.pk;
                                     });
                                     return html`<option value=${ifDefined(prompt.pk)} ?selected=${selected}>
-                                        ${t`${prompt.fieldKey} ('${prompt.label}', Type ${prompt.type})`}
+                                        ${t`${prompt.fieldKey} ("${prompt.label}", Type ${prompt.type})`}
                                     </option>`;
                                 });
                             }), html`<option>${t`Loading...`}</option>`)}

@@ -189,12 +189,12 @@ msgstr ""
 "This will cause all policies to be re-evaluated on their next usage."
 
 #: src/elements/forms/DeleteForm.ts:62
-msgid "Are you sure you want to delete {0} '{1}'?"
-msgstr "Are you sure you want to delete {0} '{1}'?"
+msgid "Are you sure you want to delete {0} \"{1}\"?"
+msgstr "Are you sure you want to delete {0} \"{1}\"?"
 
 #: src/pages/users/UserActiveForm.ts:52
-msgid "Are you sure you want to update {0} '{1}'?"
-msgstr "Are you sure you want to update {0} '{1}'?"
+msgid "Are you sure you want to update {0} \"{1}\"?"
+msgstr "Are you sure you want to update {0} \"{1}\"?"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts:202
 msgid "Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
@@ -3123,8 +3123,8 @@ msgid "Text: Simple Text input"
 msgstr "Text: Simple Text input"
 
 #: src/elements/router/Router404.ts:26
-msgid "The URL '{0}' was not found."
-msgstr "The URL '{0}' was not found."
+msgid "The URL \"{0}\" was not found."
+msgstr "The URL \"{0}\" was not found."
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts:86
 msgid "The policy takes a random time to execute. This controls the minimum time it will take."
@@ -3690,8 +3690,8 @@ msgid "{0}"
 msgstr "{0}"
 
 #: src/pages/stages/prompt/PromptStageForm.ts:77
-msgid "{0} ('{1}', Type {2})"
-msgstr "{0} ('{1}', Type {2})"
+msgid "{0} (\"{1}\", Type {2})"
+msgstr "{0} (\"{1}\", Type {2})"
 
 #: src/pages/stages/prompt/PromptStageForm.ts:97
 msgid "{0} ({1})"

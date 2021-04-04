@@ -185,11 +185,11 @@ msgid ""
 msgstr ""
 
 #: src/elements/forms/DeleteForm.ts:62
-msgid "Are you sure you want to delete {0} '{1}'?"
+msgid "Are you sure you want to delete {0} \"{1}\"?"
 msgstr ""
 
 #: src/pages/users/UserActiveForm.ts:52
-msgid "Are you sure you want to update {0} '{1}'?"
+msgid "Are you sure you want to update {0} \"{1}\"?"
 msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts:202
@@ -3119,7 +3119,7 @@ msgid "Text: Simple Text input"
 msgstr ""
 
 #: src/elements/router/Router404.ts:26
-msgid "The URL '{0}' was not found."
+msgid "The URL \"{0}\" was not found."
 msgstr ""
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts:86
@@ -3684,7 +3684,7 @@ msgid "{0}"
 msgstr ""
 
 #: src/pages/stages/prompt/PromptStageForm.ts:77
-msgid "{0} ('{1}', Type {2})"
+msgid "{0} (\"{1}\", Type {2})"
 msgstr ""
 
 #: src/pages/stages/prompt/PromptStageForm.ts:97

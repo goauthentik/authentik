@@ -100,7 +100,7 @@ export class StageListPage extends TablePage<Stage> {
             </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
-                objectLabel=${item.verboseName}
+                objectLabel=${item.verboseName || ""}
                 .delete=${() => {
                     return new StagesApi(DEFAULT_CONFIG).stagesAllDelete({
                         stageUuid: item.pk || ""
