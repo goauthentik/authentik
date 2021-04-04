@@ -69,19 +69,19 @@ msgstr "Action"
 msgid "Active"
 msgstr "Active"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:200
+#: src/pages/sources/ldap/LDAPSourceForm.ts:201
 msgid "Addition Group DN"
 msgstr "Addition Group DN"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:194
+#: src/pages/sources/ldap/LDAPSourceForm.ts:195
 msgid "Addition User DN"
 msgstr "Addition User DN"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:203
+#: src/pages/sources/ldap/LDAPSourceForm.ts:204
 msgid "Additional group DN, prepended to the Base DN."
 msgstr "Additional group DN, prepended to the Base DN."
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:197
+#: src/pages/sources/ldap/LDAPSourceForm.ts:198
 msgid "Additional user DN, prepended to the Base DN."
 msgstr "Additional user DN, prepended to the Base DN."
 
@@ -93,7 +93,7 @@ msgid "Advanced protocol settings"
 msgstr "Advanced protocol settings"
 
 #: src/pages/policies/password/PasswordPolicyForm.ts:114
-#: src/pages/sources/ldap/LDAPSourceForm.ts:138
+#: src/pages/sources/ldap/LDAPSourceForm.ts:139
 msgid "Advanced settings"
 msgstr "Advanced settings"
 
@@ -188,11 +188,11 @@ msgstr ""
 "Are you sure you want to clear the policy cache?\n"
 "This will cause all policies to be re-evaluated on their next usage."
 
-#: src/elements/forms/DeleteForm.ts:52
+#: src/elements/forms/DeleteForm.ts:62
 msgid "Are you sure you want to delete {0} '{1}'?"
 msgstr "Are you sure you want to delete {0} '{1}'?"
 
-#: src/pages/users/UserActiveForm.ts:43
+#: src/pages/users/UserActiveForm.ts:52
 msgid "Are you sure you want to update {0} '{1}'?"
 msgstr "Are you sure you want to update {0} '{1}'?"
 
@@ -301,7 +301,7 @@ msgstr "Background"
 msgid "Background shown during execution."
 msgstr "Background shown during execution."
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:129
+#: src/pages/sources/ldap/LDAPSourceForm.ts:130
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:91
 msgid "Base DN"
 msgstr "Base DN"
@@ -372,10 +372,10 @@ msgstr "Callback URL"
 msgid "Can be in the format of 'unix://' when connecting to a local docker daemon, or 'https://:2376' when connecting to a remote system."
 msgstr "Can be in the format of 'unix://' when connecting to a local docker daemon, or 'https://:2376' when connecting to a remote system."
 
-#: src/elements/forms/ConfirmationForm.ts:65
-#: src/elements/forms/DeleteForm.ts:69
-#: src/elements/forms/ModalForm.ts:61
-#: src/pages/users/UserActiveForm.ts:64
+#: src/elements/forms/ConfirmationForm.ts:75
+#: src/elements/forms/DeleteForm.ts:79
+#: src/elements/forms/ModalForm.ts:71
+#: src/pages/users/UserActiveForm.ts:73
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -383,7 +383,7 @@ msgstr "Cancel"
 msgid "Case insensitive matching"
 msgstr "Case insensitive matching"
 
-#: src/pages/crypto/CertificateKeyPairForm.ts:53
+#: src/pages/crypto/CertificateKeyPairForm.ts:51
 #: src/pages/providers/proxy/ProxyProviderForm.ts:132
 msgid "Certificate"
 msgstr "Certificate"
@@ -468,6 +468,10 @@ msgstr "Clear Policy cache"
 #: src/pages/admin-overview/cards/PolicyCacheStatusCard.ts:37
 msgid "Clear cache"
 msgstr "Clear cache"
+
+#: src/elements/forms/HorizontalFormElement.ts:81
+msgid "Click to change value"
+msgstr "Click to change value"
 
 #: src/pages/outposts/OutpostListPage.ts:112
 msgid "Click to copy token"
@@ -578,11 +582,11 @@ msgstr "Consent expires."
 msgid "Consent given last indefinitely"
 msgstr "Consent given last indefinitely"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:217
+#: src/pages/sources/ldap/LDAPSourceForm.ts:218
 msgid "Consider Objects matching this filter to be Groups."
 msgstr "Consider Objects matching this filter to be Groups."
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:210
+#: src/pages/sources/ldap/LDAPSourceForm.ts:211
 msgid "Consider Objects matching this filter to be Users."
 msgstr "Consider Objects matching this filter to be Users."
 
@@ -794,7 +798,7 @@ msgstr "Decides what this Flow is used for. For example, the Authentication flow
 msgid "Define how notifications are sent to users, like Email or Webhook."
 msgstr "Define how notifications are sent to users, like Email or Webhook."
 
-#: src/elements/forms/DeleteForm.ts:62
+#: src/elements/forms/DeleteForm.ts:72
 #: src/pages/applications/ApplicationListPage.ts:102
 #: src/pages/crypto/CertificateKeyPairListPage.ts:86
 #: src/pages/events/RuleListPage.ts:82
@@ -842,7 +846,7 @@ msgstr "Delete account"
 msgid "Delete temporary users after"
 msgstr "Delete temporary users after"
 
-#: src/elements/forms/DeleteForm.ts:45
+#: src/elements/forms/DeleteForm.ts:55
 msgid "Delete {0}"
 msgstr "Delete {0}"
 
@@ -1193,11 +1197,11 @@ msgstr "Failed to delete flow cache"
 msgid "Failed to delete policy cache"
 msgstr "Failed to delete policy cache"
 
-#: src/elements/forms/DeleteForm.ts:36
+#: src/elements/forms/DeleteForm.ts:46
 msgid "Failed to delete {0}: {1}"
 msgstr "Failed to delete {0}: {1}"
 
-#: src/pages/users/UserActiveForm.ts:23
+#: src/pages/users/UserActiveForm.ts:32
 msgid "Failed to update {0}: {1}"
 msgstr "Failed to update {0}: {1}"
 
@@ -1218,11 +1222,11 @@ msgstr "Field key to check, field keys defined in Prompt stages are available."
 msgid "Field of the user object this value is written to."
 msgstr "Field of the user object this value is written to."
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:231
+#: src/pages/sources/ldap/LDAPSourceForm.ts:232
 msgid "Field which contains a unique Identifier."
 msgstr "Field which contains a unique Identifier."
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:224
+#: src/pages/sources/ldap/LDAPSourceForm.ts:225
 msgid "Field which contains members of a group."
 msgstr "Field which contains members of a group."
 
@@ -1301,11 +1305,15 @@ msgstr "Forgot password?"
 msgid "Forgot username or password?"
 msgstr "Forgot username or password?"
 
+#: src/elements/forms/ModalForm.ts:33
+msgid "Form didn't return a promise for submitting"
+msgstr "Form didn't return a promise for submitting"
+
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts:67
 msgid "Friendly Name"
 msgstr "Friendly Name"
 
-#: src/pages/stages/email/EmailStageForm.ts:108
+#: src/pages/stages/email/EmailStageForm.ts:109
 msgid "From address"
 msgstr "From address"
 
@@ -1333,15 +1341,15 @@ msgstr "Go to previous page"
 msgid "Group"
 msgstr "Group"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:168
+#: src/pages/sources/ldap/LDAPSourceForm.ts:169
 msgid "Group Property Mappings"
 msgstr "Group Property Mappings"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:220
+#: src/pages/sources/ldap/LDAPSourceForm.ts:221
 msgid "Group membership field"
 msgstr "Group membership field"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:213
+#: src/pages/sources/ldap/LDAPSourceForm.ts:214
 msgid "Group object filter"
 msgstr "Group object filter"
 
@@ -1378,7 +1386,7 @@ msgstr "Health and Version"
 msgid "Hidden: Hidden field, can be used to insert data into form."
 msgstr "Hidden: Hidden field, can be used to insert data into form."
 
-#: src/pages/property-mappings/PropertyMappingListPage.ts:153
+#: src/pages/property-mappings/PropertyMappingListPage.ts:154
 msgid "Hide managed mappings"
 msgstr "Hide managed mappings"
 
@@ -1387,8 +1395,8 @@ msgstr "Hide managed mappings"
 #: src/pages/outposts/OutpostForm.ts:98
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:169
 #: src/pages/providers/saml/SAMLProviderForm.ts:171
-#: src/pages/sources/ldap/LDAPSourceForm.ts:165
-#: src/pages/sources/ldap/LDAPSourceForm.ts:191
+#: src/pages/sources/ldap/LDAPSourceForm.ts:166
+#: src/pages/sources/ldap/LDAPSourceForm.ts:192
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:111
 #: src/pages/stages/identification/IdentificationStageForm.ts:83
 #: src/pages/stages/password/PasswordStageForm.ts:83
@@ -1622,8 +1630,8 @@ msgstr "Loading"
 #: src/pages/providers/saml/SAMLProviderForm.ts:169
 #: src/pages/providers/saml/SAMLProviderForm.ts:185
 #: src/pages/providers/saml/SAMLProviderImportForm.ts:55
-#: src/pages/sources/ldap/LDAPSourceForm.ts:162
-#: src/pages/sources/ldap/LDAPSourceForm.ts:188
+#: src/pages/sources/ldap/LDAPSourceForm.ts:163
+#: src/pages/sources/ldap/LDAPSourceForm.ts:189
 #: src/pages/sources/oauth/OAuthSourceForm.ts:153
 #: src/pages/sources/oauth/OAuthSourceForm.ts:181
 #: src/pages/sources/oauth/OAuthSourceForm.ts:202
@@ -1634,7 +1642,7 @@ msgstr "Loading"
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:87
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:93
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:128
-#: src/pages/stages/email/EmailStageForm.ts:168
+#: src/pages/stages/email/EmailStageForm.ts:169
 #: src/pages/stages/identification/IdentificationStageForm.ts:117
 #: src/pages/stages/identification/IdentificationStageForm.ts:135
 #: src/pages/stages/password/PasswordStageForm.ts:103
@@ -1740,7 +1748,7 @@ msgstr "Monitor"
 
 #: src/pages/applications/ApplicationForm.ts:78
 #: src/pages/applications/ApplicationListPage.ts:57
-#: src/pages/crypto/CertificateKeyPairForm.ts:46
+#: src/pages/crypto/CertificateKeyPairForm.ts:45
 #: src/pages/crypto/CertificateKeyPairListPage.ts:51
 #: src/pages/events/EventInfo.ts:51
 #: src/pages/events/RuleForm.ts:59
@@ -1793,7 +1801,7 @@ msgstr "Monitor"
 #: src/pages/stages/consent/ConsentStageForm.ts:54
 #: src/pages/stages/deny/DenyStageForm.ts:51
 #: src/pages/stages/dummy/DummyStageForm.ts:51
-#: src/pages/stages/email/EmailStageForm.ts:120
+#: src/pages/stages/email/EmailStageForm.ts:121
 #: src/pages/stages/identification/IdentificationStageForm.ts:60
 #: src/pages/stages/invitation/InvitationStageForm.ts:53
 #: src/pages/stages/password/PasswordStageForm.ts:60
@@ -1869,6 +1877,10 @@ msgstr "No elements found."
 #: src/pages/admin-overview/cards/FlowCacheStatusCard.ts:23
 msgid "No flows cached."
 msgstr "No flows cached."
+
+#: src/elements/forms/ModalForm.ts:29
+msgid "No form found"
+msgstr "No form found"
 
 #: src/elements/events/ObjectChangelog.ts:70
 msgid "No matching events could be found."
@@ -1978,7 +1990,7 @@ msgstr "Object"
 msgid "Object field"
 msgstr "Object field"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:227
+#: src/pages/sources/ldap/LDAPSourceForm.ts:228
 msgid "Object uniqueness field"
 msgstr "Object uniqueness field"
 
@@ -1992,8 +2004,8 @@ msgid "On behalf of {0}"
 msgstr "On behalf of {0}"
 
 #: src/pages/crypto/CertificateKeyPairForm.ts:51
-msgid "Only change the fields below if you want to overwrite their values."
-msgstr "Only change the fields below if you want to overwrite their values."
+#~ msgid "Only change the fields below if you want to overwrite their values."
+#~ msgstr "Only change the fields below if you want to overwrite their values."
 
 #: src/pages/policies/expiry/ExpiryPolicyForm.ts:82
 msgid "Only fail the policy, don't set user's password."
@@ -2089,7 +2101,7 @@ msgstr "Outposts are deployments of authentik components to support different en
 msgid "Overview"
 msgstr "Overview"
 
-#: src/pages/crypto/CertificateKeyPairForm.ts:57
+#: src/pages/crypto/CertificateKeyPairForm.ts:56
 msgid "PEM-encoded Certificate data."
 msgstr "PEM-encoded Certificate data."
 
@@ -2215,7 +2227,7 @@ msgstr "Private Key"
 msgid "Private key available?"
 msgstr "Private key available?"
 
-#: src/pages/stages/captcha/CaptchaStageForm.ts:74
+#: src/pages/stages/captcha/CaptchaStageForm.ts:75
 msgid "Private key, acquired from https://www.google.com/recaptcha/intro/v3.html."
 msgstr "Private key, acquired from https://www.google.com/recaptcha/intro/v3.html."
 
@@ -2246,11 +2258,11 @@ msgstr "Property Mappings"
 msgid "Property mappings"
 msgstr "Property mappings"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:190
+#: src/pages/sources/ldap/LDAPSourceForm.ts:191
 msgid "Property mappings used to group creation."
 msgstr "Property mappings used to group creation."
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:164
+#: src/pages/sources/ldap/LDAPSourceForm.ts:165
 msgid "Property mappings used to user creation."
 msgstr "Property mappings used to user creation."
 
@@ -2717,7 +2729,7 @@ msgstr "Stage used to configure Authenticator when user doesn't have any compati
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:68
 #: src/pages/stages/captcha/CaptchaStageForm.ts:59
 #: src/pages/stages/consent/ConsentStageForm.ts:61
-#: src/pages/stages/email/EmailStageForm.ts:127
+#: src/pages/stages/email/EmailStageForm.ts:128
 #: src/pages/stages/identification/IdentificationStageForm.ts:67
 #: src/pages/stages/invitation/InvitationStageForm.ts:60
 #: src/pages/stages/password/PasswordStageForm.ts:67
@@ -2768,7 +2780,7 @@ msgstr "Status: Enabled"
 msgid "Stop impersonation"
 msgstr "Stop impersonation"
 
-#: src/pages/stages/email/EmailStageForm.ts:150
+#: src/pages/stages/email/EmailStageForm.ts:151
 msgid "Subject"
 msgstr "Subject"
 
@@ -2805,7 +2817,7 @@ msgstr "Successfully created application."
 msgid "Successfully created binding."
 msgstr "Successfully created binding."
 
-#: src/pages/crypto/CertificateKeyPairForm.ts:39
+#: src/pages/crypto/CertificateKeyPairForm.ts:38
 msgid "Successfully created certificate-key pair."
 msgstr "Successfully created certificate-key pair."
 
@@ -2898,7 +2910,7 @@ msgstr "Successfully created transport."
 msgid "Successfully created user."
 msgstr "Successfully created user."
 
-#: src/elements/forms/DeleteForm.ts:30
+#: src/elements/forms/DeleteForm.ts:40
 msgid "Successfully deleted {0} {1}"
 msgstr "Successfully deleted {0} {1}"
 
@@ -2933,7 +2945,7 @@ msgstr "Successfully updated application."
 msgid "Successfully updated binding."
 msgstr "Successfully updated binding."
 
-#: src/pages/crypto/CertificateKeyPairForm.ts:36
+#: src/pages/crypto/CertificateKeyPairForm.ts:35
 msgid "Successfully updated certificate-key pair."
 msgstr "Successfully updated certificate-key pair."
 
@@ -3034,7 +3046,7 @@ msgstr "Successfully updated transport."
 msgid "Successfully updated user."
 msgstr "Successfully updated user."
 
-#: src/pages/users/UserActiveForm.ts:17
+#: src/pages/users/UserActiveForm.ts:26
 msgid "Successfully updated {0} {1}"
 msgstr "Successfully updated {0} {1}"
 
@@ -3095,7 +3107,7 @@ msgstr "TOTP Authenticators"
 msgid "Target"
 msgstr "Target"
 
-#: src/pages/stages/email/EmailStageForm.ts:156
+#: src/pages/stages/email/EmailStageForm.ts:157
 msgid "Template"
 msgstr "Template"
 
@@ -3128,8 +3140,16 @@ msgid "The policy takes a random time to execute. This controls the minimum time
 msgstr "The policy takes a random time to execute. This controls the minimum time it will take."
 
 #: src/pages/events/RuleListPage.ts:109
-msgid "These policies control upon which events this rule triggers."
-msgstr "These policies control upon which events this rule triggers."
+#~ msgid "These policies control upon which events this rule triggers."
+#~ msgstr "These policies control upon which events this rule triggers."
+
+#: src/pages/events/RuleListPage.ts:109
+msgid ""
+"These policies control upon which events this rule triggers. Bindings to\n"
+"groups/users are checked against the user of the event."
+msgstr ""
+"These policies control upon which events this rule triggers. Bindings to\n"
+"groups/users are checked against the user of the event."
 
 #: src/pages/flows/BoundStagesList.ts:102
 msgid "These policies control when this stage will be applied to the flow."
@@ -3147,7 +3167,7 @@ msgstr "These policies control which users can access this flow."
 msgid "Threshold"
 msgstr "Threshold"
 
-#: src/pages/stages/email/EmailStageForm.ts:147
+#: src/pages/stages/email/EmailStageForm.ts:148
 msgid "Time in minutes the token sent is valid."
 msgstr "Time in minutes the token sent is valid."
 
@@ -3161,7 +3181,7 @@ msgstr "Time-based One-Time Passwords"
 
 #: src/pages/policies/BoundPoliciesList.ts:38
 #: src/pages/policies/PolicyBindingForm.ts:144
-#: src/pages/stages/email/EmailStageForm.ts:102
+#: src/pages/stages/email/EmailStageForm.ts:103
 msgid "Timeout"
 msgstr "Timeout"
 
@@ -3183,7 +3203,7 @@ msgstr "Token URL"
 msgid "Token count"
 msgstr "Token count"
 
-#: src/pages/stages/email/EmailStageForm.ts:143
+#: src/pages/stages/email/EmailStageForm.ts:144
 msgid "Token expiry"
 msgstr "Token expiry"
 
@@ -3306,7 +3326,7 @@ msgstr "Up-to-date!"
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:46
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:67
 #: src/pages/user-settings/tokens/UserTokenList.ts:105
-#: src/pages/users/UserActiveForm.ts:57
+#: src/pages/users/UserActiveForm.ts:66
 #: src/pages/users/UserListPage.ts:67
 #: src/pages/users/UserViewPage.ts:139
 msgid "Update"
@@ -3400,15 +3420,15 @@ msgstr "Update details"
 #: src/pages/providers/ProviderListPage.ts:76
 #: src/pages/sources/SourcesListPage.ts:69
 #: src/pages/stages/StageListPage.ts:88
-#: src/pages/users/UserActiveForm.ts:32
+#: src/pages/users/UserActiveForm.ts:41
 msgid "Update {0}"
 msgstr "Update {0}"
 
-#: src/pages/stages/email/EmailStageForm.ts:97
+#: src/pages/stages/email/EmailStageForm.ts:98
 msgid "Use SSL"
 msgstr "Use SSL"
 
-#: src/pages/stages/email/EmailStageForm.ts:89
+#: src/pages/stages/email/EmailStageForm.ts:90
 msgid "Use TLS"
 msgstr "Use TLS"
 
@@ -3420,7 +3440,7 @@ msgstr "Use a code-based authenticator."
 msgid "Use a security key to prove your identity."
 msgstr "Use a security key to prove your identity."
 
-#: src/pages/stages/email/EmailStageForm.ts:137
+#: src/pages/stages/email/EmailStageForm.ts:138
 msgid "Use global settings"
 msgstr "Use global settings"
 
@@ -3441,7 +3461,7 @@ msgstr "User"
 msgid "User Info"
 msgstr "User Info"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:142
+#: src/pages/sources/ldap/LDAPSourceForm.ts:143
 msgid "User Property Mappings"
 msgstr "User Property Mappings"
 
@@ -3458,7 +3478,7 @@ msgstr "User details"
 msgid "User fields"
 msgstr "User fields"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:206
+#: src/pages/sources/ldap/LDAPSourceForm.ts:207
 msgid "User object filter"
 msgstr "User object filter"
 
@@ -3602,7 +3622,7 @@ msgstr "Webhook URL"
 msgid "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown."
 msgstr "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown."
 
-#: src/pages/stages/email/EmailStageForm.ts:140
+#: src/pages/stages/email/EmailStageForm.ts:141
 msgid "When enabled, global Email connection settings will be used and connection settings below will be ignored."
 msgstr "When enabled, global Email connection settings will be used and connection settings below will be ignored."
 
@@ -3700,7 +3720,7 @@ msgstr "{0} unread"
 msgid "{0}, should be {1}"
 msgstr "{0}, should be {1}"
 
-#: src/elements/forms/ConfirmationForm.ts:35
+#: src/elements/forms/ConfirmationForm.ts:45
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 

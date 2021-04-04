@@ -7,7 +7,6 @@ import { Form } from "../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
 import "../../elements/CodeMirror";
-import "../../elements/Divider";
 
 @customElement("ak-crypto-certificate-form")
 export class CertificateKeyPairForm extends Form<CertificateKeyPair> {
@@ -44,7 +43,6 @@ export class CertificateKeyPairForm extends Form<CertificateKeyPair> {
                 ?required=${true}>
                 <input type="text" value="${ifDefined(this.keyPair?.name)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
-            ${this.keyPair ? html`<ak-divider>${t`Only change the fields below if you want to overwrite their values.`}</ak-divider>` : html``}
             <ak-form-element-horizontal
                 label=${t`Certificate`}
                 name="certificateData"
