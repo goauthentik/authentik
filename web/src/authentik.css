@@ -237,7 +237,7 @@ body {
         color: var(--ak-dark-foreground);
     }
     /* inputs help text */
-    .pf-c-form__helper-text {
+    .pf-c-form__helper-text:not(.pf-m-error) {
         color: var(--ak-dark-foreground);
     }
     /* modal */
