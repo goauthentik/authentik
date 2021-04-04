@@ -33,7 +33,7 @@ class Challenge(PassiveSerializer):
     is currently active"""
 
     type = ChoiceField(
-        choices=[(x.name, x.name) for x in ChallengeTypes],
+        choices=[(x.value, x.name) for x in ChallengeTypes],
     )
     component = CharField(required=False)
     title = CharField(required=False)

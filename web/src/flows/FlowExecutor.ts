@@ -172,7 +172,7 @@ export class FlowExecutor extends LitElement implements StageHost {
         if (!this.challenge) {
             return html``;
         }
-        switch (this.challenge.type.toUpperCase()) {
+        switch (this.challenge.type) {
             case ChallengeTypeEnum.Redirect:
                 console.debug("authentik/flows: redirecting to url from server", (this.challenge as RedirectChallenge).to);
                 window.location.assign((this.challenge as RedirectChallenge).to);

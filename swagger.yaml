@@ -15238,9 +15238,9 @@ definitions:
         title: Type
         type: string
         enum:
-          - NATIVE
-          - SHELL
-          - REDIRECT
+          - native
+          - shell
+          - redirect
       component:
         title: Component
         type: string

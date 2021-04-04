@@ -26,7 +26,7 @@ class UILoginButtonSerializer(PassiveSerializer):
 
     name = CharField()
     url = CharField()
-    icon_url = CharField(required=False)
+    icon_url = CharField(required=False, allow_null=True)
 
 
 class UserSettingSerializer(PassiveSerializer):
