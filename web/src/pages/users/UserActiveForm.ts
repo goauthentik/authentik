@@ -48,13 +48,13 @@ export class UserActiveForm extends DeleteForm {
         <footer class="pf-c-modal-box__footer">
             <ak-spinner-button
                 .callAction=${() => {
-                    this.confirm();
+                    return this.confirm();
                 }}
                 class="pf-m-warning">
                 ${t`Update`}
             </ak-spinner-button>&nbsp;
             <ak-spinner-button
-                .callAction=${() => {
+                .callAction=${async () => {
                     this.open = false;
                 }}
                 class="pf-m-secondary">

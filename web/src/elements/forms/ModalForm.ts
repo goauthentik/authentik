@@ -11,26 +11,26 @@ export class ModalForm extends ModalButton {
     @property({ type: Boolean })
     closeAfterSuccessfulSubmit = true;
 
-    confirm(): void {
-        this.querySelectorAll<Form<unknown>>("[slot=form]").forEach(form => {
-            const formPromise = form.submit(new Event("submit"));
-            if (!formPromise) {
-                return;
+    confirm(): Promise<void>  {
+        const form = this.querySelector<Form<unknown>>("[slot=form]");
+        if (!form) {
+            return Promise.reject(t`No form found`);
+        }
+        const formPromise = form.submit(new Event("submit"));
+        if (!formPromise) {
+            return Promise.reject(t`Form didn't return a promise for submitting`);
+        }
+        return formPromise.then(() => {
+            if (this.closeAfterSuccessfulSubmit) {
+                this.open = false;
+                form.reset();
             }
-            formPromise.then(() => {
-                if (this.closeAfterSuccessfulSubmit) {
-                    this.open = false;
-                    form.reset();
-                }
-                this.dispatchEvent(
-                    new CustomEvent(EVENT_REFRESH, {
-                        bubbles: true,
-                        composed: true,
-                    })
-                );
-            }).catch((e) => {
-                console.log(e);
-            });
+            this.dispatchEvent(
+                new CustomEvent(EVENT_REFRESH, {
+                    bubbles: true,
+                    composed: true,
+                })
+            );
         });
     }
 
@@ -48,13 +48,14 @@ export class ModalForm extends ModalButton {
         <footer class="pf-c-modal-box__footer">
             <ak-spinner-button
                 .callAction=${() => {
-                    this.confirm();
+                    return this.confirm();
                 }}
                 class="pf-m-primary">
                 <slot name="submit"></slot>
             </ak-spinner-button>&nbsp;
             <ak-spinner-button
-                .callAction=${() => {
+                .callAction=${async () => {
+                    this.resetForms();
                     this.open = false;
                 }}
                 class="pf-m-secondary">

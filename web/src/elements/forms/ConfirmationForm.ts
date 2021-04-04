@@ -20,8 +20,8 @@ export class ConfirmationForm extends ModalButton {
     @property({attribute: false})
     onConfirm!: () => Promise<unknown>;
 
-    confirm(): void {
-        this.onConfirm().then(() => {
+    confirm(): Promise<void> {
+        return this.onConfirm().then(() => {
             this.onSuccess();
             this.open = false;
             this.dispatchEvent(
@@ -32,6 +32,7 @@ export class ConfirmationForm extends ModalButton {
             );
         }).catch((e) => {
             this.onError(e);
+            throw e;
         });
     }
 
@@ -65,13 +66,13 @@ export class ConfirmationForm extends ModalButton {
         <footer class="pf-c-modal-box__footer">
             <ak-spinner-button
                 .callAction=${() => {
-                    this.confirm();
+                    return this.confirm();
                 }}
                 class="pf-m-danger">
                 ${this.action}
             </ak-spinner-button>&nbsp;
             <ak-spinner-button
-                .callAction=${() => {
+                .callAction=${async () => {
                     this.open = false;
                 }}
                 class="pf-m-secondary">

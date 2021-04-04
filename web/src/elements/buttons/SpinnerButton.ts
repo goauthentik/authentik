@@ -4,7 +4,7 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 import AKGlobal from "../../authentik.css";
 import { SpinnerSize } from "../Spinner";
-import { PRIMARY_CLASS, PROGRESS_CLASS } from "../../constants";
+import { ERROR_CLASS, PRIMARY_CLASS, PROGRESS_CLASS, SUCCESS_CLASS } from "../../constants";
 
 @customElement("ak-spinner-button")
 export class SpinnerButton extends LitElement {
@@ -12,7 +12,7 @@ export class SpinnerButton extends LitElement {
     isRunning = false;
 
     @property()
-    callAction?: () => void;
+    callAction?: () => Promise<void>;
 
     static get styles(): CSSResult[] {
         return [
@@ -60,7 +60,11 @@ export class SpinnerButton extends LitElement {
                 }
                 this.setLoading();
                 if (this.callAction) {
-                    this.callAction();
+                    this.callAction().then(() => {
+                        this.setDone(SUCCESS_CLASS);
+                    }).catch(() => {
+                        this.setDone(ERROR_CLASS);
+                    });
                 }
             }}>
             ${this.isRunning

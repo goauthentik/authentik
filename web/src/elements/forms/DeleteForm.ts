@@ -18,8 +18,8 @@ export class DeleteForm extends ModalButton {
     @property({attribute: false})
     delete!: () => Promise<unknown>;
 
-    confirm(): void {
-        this.delete().then(() => {
+    confirm(): Promise<void> {
+        return this.delete().then(() => {
             this.onSuccess();
             this.open = false;
             this.dispatchEvent(
@@ -30,6 +30,7 @@ export class DeleteForm extends ModalButton {
             );
         }).catch((e) => {
             this.onError(e);
+            throw e;
         });
     }
 
@@ -65,13 +66,13 @@ export class DeleteForm extends ModalButton {
         <footer class="pf-c-modal-box__footer">
             <ak-spinner-button
                 .callAction=${() => {
-                    this.confirm();
+                    return this.confirm();
                 }}
                 class="pf-m-danger">
                 ${t`Delete`}
             </ak-spinner-button>&nbsp;
             <ak-spinner-button
-                .callAction=${() => {
+                .callAction=${async () => {
                     this.open = false;
                 }}
                 class="pf-m-secondary">

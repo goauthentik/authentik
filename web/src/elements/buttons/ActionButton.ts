@@ -1,5 +1,4 @@
 import { customElement, property } from "lit-element";
-import { ERROR_CLASS, SUCCESS_CLASS } from "../../constants";
 import { SpinnerButton } from "./SpinnerButton";
 import { showMessage } from "../messages/MessageContainer";
 import { MessageLevel } from "../messages/Message";
@@ -16,14 +15,9 @@ export class ActionButton extends SpinnerButton {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     apiRequest: () => Promise<any> = () => { throw new Error(); };
 
-    callAction = (): void => {
-        if (this.isRunning === true) {
-            return;
-        }
+    callAction = (): Promise<void> => {
         this.setLoading();
-        this.apiRequest().then(() => {
-            this.setDone(SUCCESS_CLASS);
-        }).catch((e: Error | Response) => {
+        return this.apiRequest().catch((e: Error | Response) => {
             if (e instanceof Error) {
                 showMessage({
                     level: MessageLevel.error,
@@ -37,7 +31,7 @@ export class ActionButton extends SpinnerButton {
                     });
                 });
             }
-            this.setDone(ERROR_CLASS);
+            throw e;
         });
     };
 }
