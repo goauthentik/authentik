@@ -1,17 +1,11 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2021-04-03 20:37+0200\n"
+"POT-Creation-Date: 2021-04-04 16:55+0200\n"
 "Mime-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
 "Language: pseudo-LOCALE\n"
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Plural-Forms: \n"
 
 #: src/pages/policies/BoundPoliciesList.ts:54
 msgid "-"
@@ -57,10 +51,6 @@ msgstr ""
 #: src/pages/sources/oauth/OAuthSourceForm.ts:72
 msgid "Access token URL"
 msgstr ""
-
-#: src/pages/stages/email/EmailStageForm.ts:160
-#~ msgid "Account confirmation"
-#~ msgstr ""
 
 #: src/elements/events/ObjectChangelog.ts:38
 #: src/pages/events/EventListPage.ts:43
@@ -1077,7 +1067,11 @@ msgstr ""
 msgid "Event Log"
 msgstr ""
 
-#: src/pages/events/EventInfoPage.ts:37
+#: src/pages/events/EventInfoPage.ts:45
+msgid "Event info"
+msgstr ""
+
+#: src/pages/events/EventInfoPage.ts:38
 msgid "Event {0}"
 msgstr ""
 
@@ -1980,7 +1974,7 @@ msgid "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)
 msgstr ""
 
 #: src/elements/events/ObjectChangelog.ts:50
-#: src/pages/events/EventListPage.ts:56
+#: src/pages/events/EventListPage.ts:57
 msgid "On behalf of {0}"
 msgstr ""
 
@@ -2108,10 +2102,6 @@ msgstr ""
 #: src/pages/policies/password/PasswordPolicyForm.ts:73
 msgid "Password field"
 msgstr ""
-
-#: src/pages/stages/email/EmailStageForm.ts:163
-#~ msgid "Password reset"
-#~ msgstr ""
 
 #: src/pages/stages/prompt/PromptForm.ts:54
 msgid "Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical."
@@ -3642,19 +3632,6 @@ msgstr ""
 msgid "You're currently impersonating {0}."
 msgstr ""
 
-#: src/elements/events/ObjectChangelog.ts:38
-#: src/pages/events/EventListPage.ts:43
-msgid "action"
-msgstr ""
-
-#: src/pages/users/UserListPage.ts:50
-msgid "active"
-msgstr ""
-
-#: src/elements/user/UserConsentList.ts:29
-msgid "application"
-msgstr ""
-
 #: src/pages/stages/password/PasswordStageForm.ts:76
 msgid "authentik Builtin Database"
 msgstr ""
@@ -3663,146 +3640,8 @@ msgstr ""
 msgid "authentik LDAP Backend"
 msgstr ""
 
-#: src/elements/events/ObjectChangelog.ts:41
-#: src/pages/events/EventListPage.ts:46
-msgid "client_ip"
-msgstr ""
-
-#: src/elements/events/ObjectChangelog.ts:40
-#: src/pages/events/EventListPage.ts:45
-msgid "created"
-msgstr ""
-
-#: src/pages/stages/invitation/InvitationListPage.ts:47
-msgid "created_by"
-msgstr ""
-
-#: src/pages/flows/FlowListPage.ts:48
-msgid "designation"
-msgstr ""
-
-#: src/elements/events/ObjectChangelog.ts:39
-#: src/pages/policies/BoundPoliciesList.ts:36
-msgid "enabled"
-msgstr ""
-
-#: src/elements/oauth/UserCodeList.ts:30
-#: src/elements/oauth/UserRefreshList.ts:30
-#: src/elements/user/UserConsentList.ts:30
-#: src/pages/tokens/TokenListPage.ts:47
-msgid "expires"
-msgstr ""
-
-#: src/pages/tokens/TokenListPage.ts:46
-msgid "expiring"
-msgstr ""
-
-#: src/pages/stages/prompt/PromptListPage.ts:46
-msgid "field_key"
-msgstr ""
-
-#: src/pages/events/RuleListPage.ts:49
-msgid "group"
-msgstr ""
-
-#: src/pages/tokens/TokenListPage.ts:44
-#: src/pages/user-settings/tokens/UserTokenList.ts:39
-msgid "identifier"
-msgstr ""
-
-#: src/pages/stages/prompt/PromptListPage.ts:47
-msgid "label"
-msgstr ""
-
-#: src/pages/users/UserListPage.ts:51
-msgid "last_login"
-msgstr ""
-
-#: src/pages/outposts/ServiceConnectionListPage.ts:54
-msgid "local"
-msgstr ""
-
-#: src/pages/events/TransportListPage.ts:47
-msgid "mode"
-msgstr ""
-
-#: src/pages/applications/ApplicationListPage.ts:57
-#: src/pages/crypto/CertificateKeyPairListPage.ts:51
-#: src/pages/events/RuleListPage.ts:47
-#: src/pages/events/TransportListPage.ts:46
-#: src/pages/flows/FlowListPage.ts:47
-#: src/pages/groups/GroupListPage.ts:45
-#: src/pages/outposts/OutpostListPage.ts:49
-#: src/pages/outposts/ServiceConnectionListPage.ts:52
-#: src/pages/policies/PolicyListPage.ts:56
-#: src/pages/property-mappings/PropertyMappingListPage.ts:54
-#: src/pages/providers/ProviderListPage.ts:52
-#: src/pages/sources/SourcesListPage.ts:51
-#: src/pages/stages/StageListPage.ts:65
-msgid "name"
-msgstr ""
-
 #: src/elements/Tabs.ts:62
 msgid "no tabs defined"
-msgstr ""
-
-#: src/pages/policies/BoundPoliciesList.ts:37
-#: src/pages/stages/prompt/PromptListPage.ts:49
-msgid "order"
-msgstr ""
-
-#: src/pages/groups/GroupListPage.ts:46
-msgid "parent"
-msgstr ""
-
-#: src/pages/stages/invitation/InvitationListPage.ts:46
-msgid "pk"
-msgstr ""
-
-#: src/elements/oauth/UserCodeList.ts:29
-#: src/elements/oauth/UserRefreshList.ts:29
-msgid "provider"
-msgstr ""
-
-#: src/elements/oauth/UserCodeList.ts:31
-#: src/elements/oauth/UserRefreshList.ts:31
-msgid "scope"
-msgstr ""
-
-#: src/pages/events/RuleListPage.ts:48
-msgid "severity"
-msgstr ""
-
-#: src/pages/applications/ApplicationListPage.ts:58
-#: src/pages/flows/FlowListPage.ts:46
-msgid "slug"
-msgstr ""
-
-#: src/pages/system-tasks/SystemTaskListPage.ts:53
-msgid "task_name"
-msgstr ""
-
-#: src/pages/policies/BoundPoliciesList.ts:38
-msgid "timeout"
-msgstr ""
-
-#: src/pages/property-mappings/PropertyMappingListPage.ts:55
-#: src/pages/providers/ProviderListPage.ts:54
-#: src/pages/stages/prompt/PromptListPage.ts:48
-msgid "type"
-msgstr ""
-
-#: src/pages/events/EventListPage.ts:44
-#: src/pages/tokens/TokenListPage.ts:45
-msgid "user"
-msgstr ""
-
-#: src/pages/users/UserListPage.ts:49
-msgid "username"
-msgstr ""
-
-#: src/pages/sources/SourcesListPage.ts:52
-msgid "verboseName"
 msgstr ""
 
 #: src/elements/Expand.ts:28

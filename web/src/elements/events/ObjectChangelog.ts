@@ -44,10 +44,10 @@ export class ObjectChangelog extends Table<Event> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Action`, t`action`),
-            new TableColumn(t`User`, t`enabled`),
-            new TableColumn(t`Creation Date`, t`created`),
-            new TableColumn(t`Client IP`, t`client_ip`),
+            new TableColumn(t`Action`, "action"),
+            new TableColumn(t`User`, "enabled"),
+            new TableColumn(t`Creation Date`, "created"),
+            new TableColumn(t`Client IP`, "client_ip"),
         ];
     }
 

@@ -42,10 +42,10 @@ export class PromptListPage extends TablePage<Prompt> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Field`, t`field_key`),
-            new TableColumn(t`Label`, t`label`),
-            new TableColumn(t`Type`, t`type`),
-            new TableColumn(t`Order`, t`order`),
+            new TableColumn(t`Field`, "field_key"),
+            new TableColumn(t`Label`, "label"),
+            new TableColumn(t`Type`, "type"),
+            new TableColumn(t`Order`, "order"),
             new TableColumn(t`Stages`),
             new TableColumn(""),
         ];

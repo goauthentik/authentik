@@ -45,9 +45,9 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Name`, t`name`),
+            new TableColumn(t`Name`, "name"),
             new TableColumn(t`Type`),
-            new TableColumn(t`Local`, t`local`),
+            new TableColumn(t`Local`, "local"),
             new TableColumn(t`State`),
             new TableColumn(""),
         ];

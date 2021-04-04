@@ -51,7 +51,7 @@ export class SystemTaskListPage extends TablePage<Task> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Identifier`, t`task_name`),
+            new TableColumn(t`Identifier`, "task_name"),
             new TableColumn(t`Description`),
             new TableColumn(t`Last run`),
             new TableColumn(t`Status`),

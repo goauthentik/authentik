@@ -52,7 +52,7 @@ export class PolicyListPage extends TablePage<Policy> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Name`, t`name`),
+            new TableColumn(t`Name`, "name"),
             new TableColumn(t`Type`),
             new TableColumn(""),
         ];

@@ -40,10 +40,10 @@ export class EventListPage extends TablePage<Event> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Action`, t`action`),
-            new TableColumn(t`User`, t`user`),
-            new TableColumn(t`Creation Date`, t`created`),
-            new TableColumn(t`Client IP`, t`client_ip`),
+            new TableColumn(t`Action`, "action"),
+            new TableColumn(t`User`, "user"),
+            new TableColumn(t`Creation Date`, "created"),
+            new TableColumn(t`Client IP`, "client_ip"),
             new TableColumn(""),
         ];
     }

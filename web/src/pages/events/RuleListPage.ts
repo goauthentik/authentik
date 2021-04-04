@@ -44,9 +44,9 @@ export class RuleListPage extends TablePage<NotificationRule> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Name`, t`name`),
-            new TableColumn(t`Severity`, t`severity`),
-            new TableColumn(t`Sent to group`, t`group`),
+            new TableColumn(t`Name`, "name"),
+            new TableColumn(t`Severity`, "severity"),
+            new TableColumn(t`Sent to group`, "group"),
             new TableColumn(""),
         ];
     }

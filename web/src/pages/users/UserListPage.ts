@@ -45,9 +45,9 @@ export class UserListPage extends TablePage<User> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Name`, t`username`),
-            new TableColumn(t`Active`, t`active`),
-            new TableColumn(t`Last login`, t`last_login`),
+            new TableColumn(t`Name`, "username"),
+            new TableColumn(t`Active`, "active"),
+            new TableColumn(t`Last login`, "last_login"),
             new TableColumn(""),
         ];
     }

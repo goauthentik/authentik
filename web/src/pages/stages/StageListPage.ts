@@ -62,7 +62,7 @@ export class StageListPage extends TablePage<Stage> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Name`, t`name`),
+            new TableColumn(t`Name`, "name"),
             new TableColumn(t`Flows`),
             new TableColumn(""),
         ];

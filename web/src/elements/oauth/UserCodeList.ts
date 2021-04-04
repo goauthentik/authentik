@@ -26,9 +26,9 @@ export class UserOAuthCodeList extends Table<ExpiringBaseGrantModel> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Provider`, t`provider`),
-            new TableColumn(t`Expires`, t`expires`),
-            new TableColumn(t`Scopes`, t`scope`),
+            new TableColumn(t`Provider`, "provider"),
+            new TableColumn(t`Expires`, "expires"),
+            new TableColumn(t`Scopes`, "scope"),
             new TableColumn(""),
         ];
     }

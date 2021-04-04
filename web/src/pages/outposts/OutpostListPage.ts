@@ -40,7 +40,7 @@ export class OutpostListPage extends TablePage<Outpost> {
     }
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Name`, t`name`),
+            new TableColumn(t`Name`, "name"),
             new TableColumn(t`Providers`),
             new TableColumn(t`Health and Version`),
             new TableColumn(""),

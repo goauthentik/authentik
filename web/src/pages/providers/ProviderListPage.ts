@@ -48,9 +48,9 @@ export class ProviderListPage extends TablePage<Provider> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Name`, t`name`),
+            new TableColumn(t`Name`, "name"),
             new TableColumn(t`Application`),
-            new TableColumn(t`Type`, t`type`),
+            new TableColumn(t`Type`, "type"),
             new TableColumn(""),
         ];
     }

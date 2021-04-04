@@ -36,7 +36,7 @@ export class UserTokenList extends Table<Token> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Identifier`, t`identifier`),
+            new TableColumn(t`Identifier`, "identifier"),
             new TableColumn(""),
         ];
     }

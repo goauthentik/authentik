@@ -42,8 +42,8 @@ export class InvitationListPage extends TablePage<Invitation> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`ID`, t`pk`),
-            new TableColumn(t`Created by`, t`created_by`),
+            new TableColumn(t`ID`, "pk"),
+            new TableColumn(t`Created by`, "created_by"),
             new TableColumn(t`Expiry`),
             new TableColumn(""),
         ];

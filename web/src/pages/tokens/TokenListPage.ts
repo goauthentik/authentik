@@ -40,10 +40,10 @@ export class TokenListPage extends TablePage<Token> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Identifier`, t`identifier`),
-            new TableColumn(t`User`, t`user`),
-            new TableColumn(t`Expires?`, t`expiring`),
-            new TableColumn(t`Expiry date`, t`expires`),
+            new TableColumn(t`Identifier`, "identifier"),
+            new TableColumn(t`User`, "user"),
+            new TableColumn(t`Expires?`, "expiring"),
+            new TableColumn(t`Expiry date`, "expires"),
             new TableColumn(""),
         ];
     }

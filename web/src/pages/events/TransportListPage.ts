@@ -42,8 +42,8 @@ export class TransportListPage extends TablePage<NotificationTransport> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Name`, t`name`),
-            new TableColumn(t`Mode`, t`mode`),
+            new TableColumn(t`Name`, "name"),
+            new TableColumn(t`Mode`, "mode"),
             new TableColumn(""),
         ];
     }

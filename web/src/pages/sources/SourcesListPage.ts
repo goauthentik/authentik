@@ -47,8 +47,8 @@ export class SourceListPage extends TablePage<Source> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Name`, t`name`),
-            new TableColumn(t`Type`, t`verboseName`),
+            new TableColumn(t`Name`, "name"),
+            new TableColumn(t`Type`),
             new TableColumn(""),
         ];
     }

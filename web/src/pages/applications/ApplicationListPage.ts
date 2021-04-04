@@ -54,8 +54,8 @@ export class ApplicationListPage extends TablePage<Application> {
     columns(): TableColumn[] {
         return [
             new TableColumn(""),
-            new TableColumn(t`Name`, t`name`),
-            new TableColumn(t`Slug`, t`slug`),
+            new TableColumn(t`Name`, "name"),
+            new TableColumn(t`Slug`, "slug"),
             new TableColumn(t`Provider`),
             new TableColumn(t`Provider Type`),
             new TableColumn(""),
