@@ -30,6 +30,9 @@ const resources = [
 const isProdBuild = process.env.NODE_ENV === "production";
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 function manualChunks(id) {
+    if (id.endsWith("web/api/dist/index.js")) {
+        return "api";
+    }
     if (id.includes("locales")) {
         const parts = id.split("/");
         const file = parts[parts.length - 1];

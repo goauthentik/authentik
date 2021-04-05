@@ -1,5 +1,5 @@
 import { customElement } from "lit-element";
-import Chart from "chart.js";
+import { ChartDataset } from "chart.js";
 import { AdminApi, LoginMetrics } from "authentik-api";
 import { AKChart } from "./Chart";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -11,7 +11,7 @@ export class AdminLoginsChart extends AKChart<LoginMetrics> {
         return new AdminApi(DEFAULT_CONFIG).adminMetricsList();
     }
 
-    getDatasets(data: LoginMetrics): Chart.ChartDataSets[] {
+    getDatasets(data: LoginMetrics): ChartDataset[] {
         return [
             {
                 label: "Failed Logins",
@@ -19,10 +19,10 @@ export class AdminLoginsChart extends AKChart<LoginMetrics> {
                 spanGaps: true,
                 data: data.loginsFailedPer1h?.map((cord) => {
                     return {
-                        x: cord.xCord,
-                        y: cord.yCord,
+                        x: cord.xCord || 0,
+                        y: cord.yCord || 0,
                     };
-                }),
+                }) || [],
             },
             {
                 label: "Successful Logins",
@@ -30,10 +30,10 @@ export class AdminLoginsChart extends AKChart<LoginMetrics> {
                 spanGaps: true,
                 data: data.loginsPer1h?.map((cord) => {
                     return {
-                        x: cord.xCord,
-                        y: cord.yCord,
+                        x: cord.xCord || 0,
+                        y: cord.yCord || 0,
                     };
-                }),
+                }) || [],
             },
         ];
     }
