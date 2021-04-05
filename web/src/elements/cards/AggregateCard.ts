@@ -45,7 +45,7 @@ export class AggregateCard extends LitElement {
     render(): TemplateResult {
         return html`<div class="pf-c-card pf-c-card-aggregate">
             <div class="pf-c-card__header pf-l-flex pf-m-justify-content-space-between">
-                <div class="pf-c-card__header-main">
+                <div class="pf-c-card__title">
                     <i class="${ifDefined(this.icon)}"></i>&nbsp;${this.header ? this.header : ""}
                 </div>
                 ${this.renderHeaderLink()}

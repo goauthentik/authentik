@@ -2,6 +2,7 @@ import { customElement, property } from "lit-element";
 import { Coordinate, CoreApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AKChart } from "./Chart";
+import { ChartDataset } from "chart.js";
 
 @customElement("ak-charts-application-authorize")
 export class ApplicationAuthorizeChart extends AKChart<Coordinate[]> {
@@ -13,7 +14,7 @@ export class ApplicationAuthorizeChart extends AKChart<Coordinate[]> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationsMetrics({ slug: this.applicationSlug });
     }
 
-    getDatasets(data: Coordinate[]): Chart.ChartDataSets[] {
+    getDatasets(data: Coordinate[]): ChartDataset[] {
         return [
             {
                 label: "Authorizations",
@@ -21,10 +22,10 @@ export class ApplicationAuthorizeChart extends AKChart<Coordinate[]> {
                 spanGaps: true,
                 data: data.map((cord) => {
                     return {
-                        x: cord.xCord,
-                        y: cord.yCord,
+                        x: cord.xCord || 0,
+                        y: cord.yCord || 0,
                     };
-                }),
+                }) || [],
             },
         ];
     }

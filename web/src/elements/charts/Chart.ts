@@ -1,15 +1,13 @@
 import { css, CSSResult, html, LitElement, TemplateResult } from "lit-element";
-import Chart from "chart.js";
+import { Chart, ChartDataset, Tick, LineController, TimeScale, LinearScale, BarController, BarElement, ChartConfiguration, Legend } from "chart.js";
+import "chartjs-adapter-moment";
 
-interface TickValue {
-    value: number;
-    major: boolean;
-}
+Chart.register(LineController, TimeScale, LinearScale, BarController, BarElement, Legend);
 
 export abstract class AKChart<T> extends LitElement {
 
     abstract apiRequest(): Promise<T>;
-    abstract getDatasets(data: T): Chart.ChartDataSets[];
+    abstract getDatasets(data: T): ChartDataset[];
 
     chart?: Chart;
 
@@ -39,46 +37,45 @@ export abstract class AKChart<T> extends LitElement {
     }
 
     configureChart(data: T, ctx: CanvasRenderingContext2D): Chart {
-        return new Chart(ctx, {
+        const config = {
             type: "bar",
             data: {
                 datasets: this.getDatasets(data),
             },
             options: {
                 maintainAspectRatio: false,
-                spanGaps: true,
                 scales: {
-                    xAxes: [
-                        {
-                            stacked: true,
-                            gridLines: {
-                                color: "rgba(0, 0, 0, 0)",
+                    x: {
+                        type: "time",
+                        display: true,
+                        ticks: {
+                            callback: function (tickValue: string | number, index: number, ticks: Tick[]): string {
+                                const valueStamp = (ticks[index]);
+                                const delta = Date.now() - valueStamp.value;
+                                const ago = Math.round(delta / 1000 / 3600);
+                                return `${ago} Hours ago`;
                             },
-                            type: "time",
-                            offset: true,
-                            ticks: {
-                                callback: function (value, index: number, values) {
-                                    const valueStamp = <TickValue>(<unknown>values[index]);
-                                    const delta = Date.now() - valueStamp.value;
-                                    const ago = Math.round(delta / 1000 / 3600);
-                                    return `${ago} Hours ago`;
-                                },
-                                autoSkip: true,
-                                maxTicksLimit: 8,
-                            },
+                            autoSkip: true,
+                            maxTicksLimit: 8,
                         },
-                    ],
-                    yAxes: [
-                        {
-                            stacked: true,
-                            gridLines: {
-                                color: "rgba(0, 0, 0, 0)",
-                            },
+                        stacked: true,
+                        grid: {
+                            color: "rgba(0, 0, 0, 0)",
                         },
-                    ],
+                        offset: true
+                    },
+                    y: {
+                        type: "linear",
+                        display: true,
+                        stacked: true,
+                        grid: {
+                            color: "rgba(0, 0, 0, 0)",
+                        },
+                    }
                 },
             },
-        });
+        };
+        return new Chart(ctx, config as ChartConfiguration);
     }
 
     firstUpdated(): void {
