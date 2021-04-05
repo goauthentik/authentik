@@ -59,7 +59,7 @@ paths:
   /admin/system_tasks/:
     get:
       operationId: admin_system_tasks_list
-      description: List current messages and pass into Serializer
+      description: List system tasks
       parameters: []
       responses:
         '200':
@@ -75,6 +75,32 @@ paths:
       tags:
         - admin
     parameters: []
+  /admin/system_tasks/{id}/:
+    get:
+      operationId: admin_system_tasks_read
+      description: Get a single system task
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Task'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+        '404':
+          description: Object does not exist or caller has insufficient permissions
+            to access it.
+          schema:
+            $ref: '#/definitions/APIException'
+      tags:
+        - admin
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
   /admin/system_tasks/{id}/retry/:
     post:
       operationId: admin_system_tasks_retry

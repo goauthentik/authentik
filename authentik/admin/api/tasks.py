@@ -35,9 +35,18 @@ class TaskViewSet(ViewSet):
 
     permission_classes = [IsAdminUser]
 
+    @swagger_auto_schema(responses={200: TaskSerializer(many=False)})
+    # pylint: disable=invalid-name
+    def retrieve(self, request: Request, pk=None) -> Response:
+        """Get a single system task"""
+        task = TaskInfo.by_name(pk)
+        if not task:
+            raise Http404
+        return Response(TaskSerializer(task, many=False).data)
+
     @swagger_auto_schema(responses={200: TaskSerializer(many=True)})
     def list(self, request: Request) -> Response:
-        """List current messages and pass into Serializer"""
+        """List system tasks"""
         tasks = sorted(TaskInfo.all().values(), key=lambda task: task.task_name)
         return Response(TaskSerializer(tasks, many=True).data)
 
