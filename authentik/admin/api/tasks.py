@@ -38,7 +38,8 @@ class TaskViewSet(ViewSet):
     @swagger_auto_schema(responses={200: TaskSerializer(many=True)})
     def list(self, request: Request) -> Response:
         """List current messages and pass into Serializer"""
-        return Response(TaskSerializer(TaskInfo.all().values(), many=True).data)
+        tasks = sorted(TaskInfo.all().values(), key=lambda task: task.task_name)
+        return Response(TaskSerializer(tasks, many=True).data)
 
     @action(detail=True, methods=["post"])
     # pylint: disable=invalid-name
