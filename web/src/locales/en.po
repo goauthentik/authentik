@@ -168,7 +168,7 @@ msgstr "Application's display Name."
 msgid "Applications"
 msgstr "Applications"
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:40
+#: src/pages/admin-overview/AdminOverviewPage.ts:41
 msgid "Apps with most usage"
 msgstr "Apps with most usage"
 
@@ -301,6 +301,18 @@ msgstr "Background"
 msgid "Background shown during execution."
 msgstr "Background shown during execution."
 
+#: src/pages/admin-overview/cards/BackupStatusCard.ts:35
+msgid "Backup finished with errors."
+msgstr "Backup finished with errors."
+
+#: src/pages/admin-overview/cards/BackupStatusCard.ts:30
+msgid "Backup finished with warnings."
+msgstr "Backup finished with warnings."
+
+#: src/pages/admin-overview/AdminOverviewPage.ts:58
+msgid "Backup status"
+msgstr "Backup status"
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts:130
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:91
 msgid "Base DN"
@@ -356,11 +368,11 @@ msgstr "Build hash: {0}"
 msgid "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 msgstr "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:55
+#: src/pages/admin-overview/AdminOverviewPage.ts:56
 msgid "Cached Flows"
 msgstr "Cached Flows"
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:53
+#: src/pages/admin-overview/AdminOverviewPage.ts:54
 msgid "Cached Policies"
 msgstr "Cached Policies"
 
@@ -1565,6 +1577,7 @@ msgstr "Last run"
 msgid "Last seen: {0}"
 msgstr "Last seen: {0}"
 
+#: src/pages/admin-overview/cards/LDAPSyncStatusCard.ts:23
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:150
 msgid "Last sync: {0}"
 msgstr "Last sync: {0}"
@@ -1665,7 +1678,7 @@ msgstr "Login to continue to {0}."
 msgid "Logins"
 msgstr "Logins"
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:37
+#: src/pages/admin-overview/AdminOverviewPage.ts:38
 #: src/pages/applications/ApplicationViewPage.ts:71
 msgid "Logins over the last 24 hours"
 msgstr "Logins over the last 24 hours"
@@ -1926,7 +1939,7 @@ msgstr "Not found"
 msgid "Not synced in the last hour, check System tasks."
 msgstr "Not synced in the last hour, check System tasks."
 
-#: src/pages/admin-overview/cards/LDAPSyncStatusCard.ts:28
+#: src/pages/admin-overview/cards/LDAPSyncStatusCard.ts:32
 msgid "Not synced."
 msgstr "Not synced."
 
@@ -2150,7 +2163,7 @@ msgid "Please enter your password"
 msgstr "Please enter your password"
 
 #: src/interfaces/AdminInterface.ts:26
-#: src/pages/admin-overview/AdminOverviewPage.ts:45
+#: src/pages/admin-overview/AdminOverviewPage.ts:46
 #: src/pages/flows/FlowListPage.ts:50
 #: src/pages/policies/PolicyListPage.ts:38
 msgid "Policies"
@@ -2300,7 +2313,7 @@ msgid "Provider type"
 msgstr "Provider type"
 
 #: src/interfaces/AdminInterface.ts:20
-#: src/pages/admin-overview/AdminOverviewPage.ts:43
+#: src/pages/admin-overview/AdminOverviewPage.ts:44
 #: src/pages/outposts/OutpostForm.ts:82
 #: src/pages/outposts/OutpostListPage.ts:50
 msgid "Providers"
@@ -3081,11 +3094,7 @@ msgstr "Sync users"
 msgid "Sync users' passwords"
 msgstr "Sync users' passwords"
 
-#: src/pages/admin-overview/cards/LDAPSyncStatusCard.ts:34
-msgid "Synced {0}:{1}:{2}"
-msgstr "Synced {0}:{1}:{2}"
-
-#: src/pages/admin-overview/AdminOverviewPage.ts:32
+#: src/pages/admin-overview/AdminOverviewPage.ts:33
 msgid "System Overview"
 msgstr "System Overview"
 
@@ -3525,7 +3534,7 @@ msgid "Username: Same as Text input, but checks for and prevents duplicate usern
 msgstr "Username: Same as Text input, but checks for and prevents duplicate usernames."
 
 #: src/interfaces/AdminInterface.ts:32
-#: src/pages/admin-overview/AdminOverviewPage.ts:47
+#: src/pages/admin-overview/AdminOverviewPage.ts:48
 #: src/pages/users/UserListPage.ts:31
 msgid "Users"
 msgstr "Users"
@@ -3558,7 +3567,7 @@ msgstr "Validity days"
 msgid "Verification Certificate"
 msgstr "Verification Certificate"
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:49
+#: src/pages/admin-overview/AdminOverviewPage.ts:50
 msgid "Version"
 msgstr "Version"
 
@@ -3658,7 +3667,7 @@ msgstr "Whoops!"
 msgid "Windows"
 msgstr "Windows"
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:51
+#: src/pages/admin-overview/AdminOverviewPage.ts:52
 msgid "Workers"
 msgstr "Workers"
 

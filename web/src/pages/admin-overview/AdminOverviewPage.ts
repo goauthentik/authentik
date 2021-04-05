@@ -6,6 +6,7 @@ import "../../elements/cards/AggregatePromiseCard";
 import "./TopApplicationsTable";
 
 import "./cards/AdminStatusCard";
+import "./cards/BackupStatusCard";
 import "./cards/FlowCacheStatusCard";
 import "./cards/LDAPSyncStatusCardContainer";
 import "./cards/PolicyCacheStatusCard";
@@ -55,6 +56,8 @@ export class AdminOverviewPage extends LitElement {
                 </ak-admin-status-card-policy-cache>
                 <ak-admin-status-card-flow-cache class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header=${t`Cached Flows`}>
                 </ak-admin-status-card-flow-cache>
+                <ak-admin-status-card-backup class="pf-l-gallery__item pf-m-4-col" icon="fa fa-database" header=${t`Backup status`} headerLink="#/administration/system-tasks">
+                </ak-admin-status-card-backup>
                 <ak-admin-status-card-ldap-sync-container >
                 </ak-admin-status-card-ldap-sync-container>
             </div>
