@@ -21,6 +21,9 @@ export class AggregateCard extends LitElement {
             .pf-c-card.pf-c-card-aggregate {
                 height: 100%;
             }
+            .pf-c-card__header {
+                flex-wrap: nowrap;
+            }
             .center-value {
                 font-size: var(--pf-global--icon--FontSize--lg);
                 text-align: center;

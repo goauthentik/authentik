@@ -168,7 +168,7 @@ msgstr ""
 msgid "Applications"
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:39
+#: src/pages/admin-overview/AdminOverviewPage.ts:40
 msgid "Apps with most usage"
 msgstr ""
 
@@ -352,11 +352,11 @@ msgstr ""
 msgid "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:54
+#: src/pages/admin-overview/AdminOverviewPage.ts:55
 msgid "Cached Flows"
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:52
+#: src/pages/admin-overview/AdminOverviewPage.ts:53
 msgid "Cached Policies"
 msgstr ""
 
@@ -1535,6 +1535,10 @@ msgstr ""
 msgid "LDAP Source {0}"
 msgstr ""
 
+#: src/pages/admin-overview/cards/LDAPSyncStatusCardContainer.ts:24
+msgid "LDAP Sync status {0}"
+msgstr ""
+
 #: src/pages/stages/prompt/PromptForm.ts:90
 #: src/pages/stages/prompt/PromptListPage.ts:47
 msgid "Label"
@@ -1657,7 +1661,7 @@ msgstr ""
 msgid "Logins"
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:36
+#: src/pages/admin-overview/AdminOverviewPage.ts:37
 #: src/pages/applications/ApplicationViewPage.ts:71
 msgid "Logins over the last 24 hours"
 msgstr ""
@@ -1918,6 +1922,10 @@ msgstr ""
 msgid "Not synced in the last hour, check System tasks."
 msgstr ""
 
+#: src/pages/admin-overview/cards/LDAPSyncStatusCard.ts:28
+msgid "Not synced."
+msgstr ""
+
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts:58
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts:48
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts:45
@@ -2138,7 +2146,7 @@ msgid "Please enter your password"
 msgstr ""
 
 #: src/interfaces/AdminInterface.ts:26
-#: src/pages/admin-overview/AdminOverviewPage.ts:44
+#: src/pages/admin-overview/AdminOverviewPage.ts:45
 #: src/pages/flows/FlowListPage.ts:50
 #: src/pages/policies/PolicyListPage.ts:38
 msgid "Policies"
@@ -2288,7 +2296,7 @@ msgid "Provider type"
 msgstr ""
 
 #: src/interfaces/AdminInterface.ts:20
-#: src/pages/admin-overview/AdminOverviewPage.ts:42
+#: src/pages/admin-overview/AdminOverviewPage.ts:43
 #: src/pages/outposts/OutpostForm.ts:82
 #: src/pages/outposts/OutpostListPage.ts:50
 msgid "Providers"
@@ -3069,7 +3077,11 @@ msgstr ""
 msgid "Sync users' passwords"
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:31
+#: src/pages/admin-overview/cards/LDAPSyncStatusCard.ts:34
+msgid "Synced {0}:{1}:{2}"
+msgstr ""
+
+#: src/pages/admin-overview/AdminOverviewPage.ts:32
 msgid "System Overview"
 msgstr ""
 
@@ -3507,7 +3519,7 @@ msgid "Username: Same as Text input, but checks for and prevents duplicate usern
 msgstr ""
 
 #: src/interfaces/AdminInterface.ts:32
-#: src/pages/admin-overview/AdminOverviewPage.ts:46
+#: src/pages/admin-overview/AdminOverviewPage.ts:47
 #: src/pages/users/UserListPage.ts:31
 msgid "Users"
 msgstr ""
@@ -3540,7 +3552,7 @@ msgstr ""
 msgid "Verification Certificate"
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:48
+#: src/pages/admin-overview/AdminOverviewPage.ts:49
 msgid "Version"
 msgstr ""
 
@@ -3640,7 +3652,7 @@ msgstr ""
 msgid "Windows"
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:50
+#: src/pages/admin-overview/AdminOverviewPage.ts:51
 msgid "Workers"
 msgstr ""
 
