@@ -152,7 +152,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 ${t`No policies are currently bound to this object.`}
             </div>
             <div slot="primary">
-                <ak-forms-modal>
+                <ak-forms-modal size=${PFSize.Medium}>
                     <span slot="submit">
                         ${t`Create`}
                     </span>
@@ -201,7 +201,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 }), html`<ak-spinner></ak-spinner>`)}
             </ul>
         </ak-dropdown>
-        <ak-forms-modal>
+        <ak-forms-modal size=${PFSize.Medium}>
             <span slot="submit">
                 ${t`Create`}
             </span>

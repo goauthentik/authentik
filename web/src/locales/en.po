@@ -301,11 +301,11 @@ msgstr "Background"
 msgid "Background shown during execution."
 msgstr "Background shown during execution."
 
-#: src/pages/admin-overview/cards/BackupStatusCard.ts:35
+#: src/pages/admin-overview/cards/BackupStatusCard.ts:37
 msgid "Backup finished with errors."
 msgstr "Backup finished with errors."
 
-#: src/pages/admin-overview/cards/BackupStatusCard.ts:30
+#: src/pages/admin-overview/cards/BackupStatusCard.ts:32
 msgid "Backup finished with warnings."
 msgstr "Backup finished with warnings."
 
@@ -1036,7 +1036,7 @@ msgid "Enable Time-based OTP"
 msgstr "Enable Time-based OTP"
 
 #: src/pages/policies/BoundPoliciesList.ts:37
-#: src/pages/policies/PolicyBindingForm.ts:197
+#: src/pages/policies/PolicyBindingForm.ts:198
 #: src/pages/sources/ldap/LDAPSourceForm.ts:69
 #: src/pages/sources/oauth/OAuthSourceForm.ts:113
 #: src/pages/sources/saml/SAMLSourceForm.ts:69
@@ -1348,8 +1348,8 @@ msgstr "Go to previous page"
 
 #: src/pages/events/RuleForm.ts:65
 #: src/pages/groups/GroupListPage.ts:75
-#: src/pages/policies/PolicyBindingForm.ts:131
-#: src/pages/policies/PolicyBindingForm.ts:159
+#: src/pages/policies/PolicyBindingForm.ts:132
+#: src/pages/policies/PolicyBindingForm.ts:160
 msgid "Group"
 msgstr "Group"
 
@@ -1625,9 +1625,9 @@ msgstr "Loading"
 #: src/pages/outposts/OutpostForm.ts:96
 #: src/pages/outposts/ServiceConnectionDockerForm.ts:87
 #: src/pages/outposts/ServiceConnectionDockerForm.ts:104
-#: src/pages/policies/PolicyBindingForm.ts:155
-#: src/pages/policies/PolicyBindingForm.ts:171
-#: src/pages/policies/PolicyBindingForm.ts:187
+#: src/pages/policies/PolicyBindingForm.ts:156
+#: src/pages/policies/PolicyBindingForm.ts:172
+#: src/pages/policies/PolicyBindingForm.ts:188
 #: src/pages/policies/PolicyTestForm.ts:70
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:83
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:103
@@ -2071,7 +2071,7 @@ msgstr "Optionally set the 'FriendlyName' value of the Assertion attribute."
 #: src/pages/flows/BoundStagesList.ts:38
 #: src/pages/flows/StageBindingForm.ts:128
 #: src/pages/policies/BoundPoliciesList.ts:38
-#: src/pages/policies/PolicyBindingForm.ts:202
+#: src/pages/policies/PolicyBindingForm.ts:203
 #: src/pages/stages/prompt/PromptForm.ts:119
 #: src/pages/stages/prompt/PromptListPage.ts:49
 msgid "Order"
@@ -2173,8 +2173,8 @@ msgstr "Policies"
 msgid "Policies without binding exist."
 msgstr "Policies without binding exist."
 
-#: src/pages/policies/PolicyBindingForm.ts:123
-#: src/pages/policies/PolicyBindingForm.ts:146
+#: src/pages/policies/PolicyBindingForm.ts:124
+#: src/pages/policies/PolicyBindingForm.ts:147
 #: src/pages/policies/PolicyListPage.ts:108
 msgid "Policy"
 msgstr "Policy"
@@ -2825,7 +2825,7 @@ msgid "Successfully created application."
 msgstr "Successfully created application."
 
 #: src/pages/flows/StageBindingForm.ts:39
-#: src/pages/policies/PolicyBindingForm.ts:71
+#: src/pages/policies/PolicyBindingForm.ts:72
 msgid "Successfully created binding."
 msgstr "Successfully created binding."
 
@@ -2953,7 +2953,7 @@ msgid "Successfully updated application."
 msgstr "Successfully updated application."
 
 #: src/pages/flows/StageBindingForm.ts:36
-#: src/pages/policies/PolicyBindingForm.ts:68
+#: src/pages/policies/PolicyBindingForm.ts:69
 msgid "Successfully updated binding."
 msgstr "Successfully updated binding."
 
@@ -3193,7 +3193,7 @@ msgid "Time-based One-Time Passwords"
 msgstr "Time-based One-Time Passwords"
 
 #: src/pages/policies/BoundPoliciesList.ts:39
-#: src/pages/policies/PolicyBindingForm.ts:208
+#: src/pages/policies/PolicyBindingForm.ts:209
 #: src/pages/stages/email/EmailStageForm.ts:103
 msgid "Timeout"
 msgstr "Timeout"
@@ -3460,8 +3460,8 @@ msgstr "Use global settings"
 #: src/elements/events/ObjectChangelog.ts:39
 #: src/pages/events/EventInfo.ts:83
 #: src/pages/events/EventListPage.ts:44
-#: src/pages/policies/PolicyBindingForm.ts:139
-#: src/pages/policies/PolicyBindingForm.ts:175
+#: src/pages/policies/PolicyBindingForm.ts:140
+#: src/pages/policies/PolicyBindingForm.ts:176
 #: src/pages/policies/PolicyTestForm.ts:60
 #: src/pages/property-mappings/PropertyMappingTestForm.ts:49
 #: src/pages/tokens/TokenListPage.ts:45
