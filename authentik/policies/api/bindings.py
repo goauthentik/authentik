@@ -102,8 +102,8 @@ class PolicyBindingViewSet(ModelViewSet):
     """PolicyBinding Viewset"""
 
     queryset = PolicyBinding.objects.all().select_related(
-        "policy", "target", "group", "user"
-    )
+        "target", "group", "user"
+    ).prefetch_related("policy") # prefetching policy so we resolve the subclass
     serializer_class = PolicyBindingSerializer
     filterset_fields = ["policy", "target", "enabled", "order", "timeout"]
     search_fields = ["policy__name"]
