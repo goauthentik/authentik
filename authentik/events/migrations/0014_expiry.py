@@ -57,11 +57,12 @@ def progress_bar(
 
 def update_expires(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     db_alias = schema_editor.connection.alias
-
-    print("\nAdding expiry to events, this might take a couple of minutes...")
-
     Event = apps.get_model("authentik_events", "event")
     all_events = Event.objects.using(db_alias).all()
+    if all_events.count() < 1:
+        return
+
+    print("\nAdding expiry to events, this might take a couple of minutes...")
     for event in progress_bar(all_events):
         event.expires = event.created + timedelta(days=365)
         event.save()

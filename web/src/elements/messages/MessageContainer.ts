@@ -78,7 +78,7 @@ export class MessageContainer extends LitElement {
             this.addMessage(data);
             this.requestUpdate();
         });
-        this.messageSocket.addEventListener("error", (e) => {
+        this.messageSocket.addEventListener("error", () => {
             this.retryDelay = this.retryDelay * 2;
         });
     }

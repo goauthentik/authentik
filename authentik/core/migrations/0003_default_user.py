@@ -2,6 +2,7 @@
 from os import environ
 
 from django.apps.registry import Apps
+from django.conf import settings
 from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
@@ -15,7 +16,7 @@ def create_default_user(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     akadmin, _ = User.objects.using(db_alias).get_or_create(
         username="akadmin", email="root@localhost", name="authentik Default Admin"
     )
-    if "TF_BUILD" in environ or "AK_ADMIN_PASS" in environ:
+    if "TF_BUILD" in environ or "AK_ADMIN_PASS" in environ or settings.TEST:
         akadmin.set_password(
             environ.get("AK_ADMIN_PASS", "akadmin"), signal=False
         )  # noqa # nosec

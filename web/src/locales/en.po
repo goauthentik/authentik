@@ -32,15 +32,21 @@ msgstr "ACS URL"
 
 #: src/pages/applications/ApplicationForm.ts:110
 #: src/pages/flows/FlowForm.ts:109
-#: src/pages/flows/StageBindingForm.ts:144
 msgid "ALL, all policies must match to grant access."
 msgstr "ALL, all policies must match to grant access."
 
+#: src/pages/flows/StageBindingForm.ts:144
+msgid "ALL, all policies must match to include this stage access."
+msgstr "ALL, all policies must match to include this stage access."
+
 #: src/pages/applications/ApplicationForm.ts:107
 #: src/pages/flows/FlowForm.ts:106
-#: src/pages/flows/StageBindingForm.ts:141
 msgid "ANY, any policy must match to grant access."
 msgstr "ANY, any policy must match to grant access."
+
+#: src/pages/flows/StageBindingForm.ts:141
+msgid "ANY, any policy must match to include this stage access."
+msgstr "ANY, any policy must match to include this stage access."
 
 #: src/elements/notifications/APIDrawer.ts:61
 msgid "API Requests"
@@ -1084,15 +1090,15 @@ msgstr "Error: unsupported source settings: {0}"
 msgid "Error: unsupported stage settings: {0}"
 msgstr "Error: unsupported stage settings: {0}"
 
-#: src/pages/flows/StageBindingForm.ts:113
+#: src/pages/flows/StageBindingForm.ts:119
 msgid "Evaluate on plan"
 msgstr "Evaluate on plan"
 
-#: src/pages/flows/StageBindingForm.ts:127
+#: src/pages/flows/StageBindingForm.ts:133
 msgid "Evaluate policies before the Stage is present to the user."
 msgstr "Evaluate policies before the Stage is present to the user."
 
-#: src/pages/flows/StageBindingForm.ts:117
+#: src/pages/flows/StageBindingForm.ts:123
 msgid "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with this option disabled, policies are **not** evaluated."
 msgstr "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with this option disabled, policies are **not** evaluated."
 
@@ -2072,7 +2078,7 @@ msgid "Optionally set the 'FriendlyName' value of the Assertion attribute."
 msgstr "Optionally set the 'FriendlyName' value of the Assertion attribute."
 
 #: src/pages/flows/BoundStagesList.ts:38
-#: src/pages/flows/StageBindingForm.ts:130
+#: src/pages/flows/StageBindingForm.ts:110
 #: src/pages/policies/BoundPoliciesList.ts:38
 #: src/pages/policies/PolicyBindingForm.ts:203
 #: src/pages/stages/prompt/PromptForm.ts:119
@@ -2374,7 +2380,7 @@ msgstr "RSA-SHA384"
 msgid "RSA-SHA512"
 msgstr "RSA-SHA512"
 
-#: src/pages/flows/StageBindingForm.ts:124
+#: src/pages/flows/StageBindingForm.ts:130
 msgid "Re-evaluate policies"
 msgstr "Re-evaluate policies"
 

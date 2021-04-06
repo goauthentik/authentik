@@ -78,4 +78,4 @@ The compose file statically references the latest version available at the time 
 
 authentik will then be reachable HTTPS on port 443. You can optionally configure the packaged traefik to use Let's Encrypt certificates for TLS Encryption.
 
-The initial setup process also creates a default admin user, the username and password for which is `akadmin`. It is highly recommended to change this password as soon as you log in.
+To start the initial setup, navigate to `https://<your server>/if/flow/initial-setup/`. There you will be prompted to set a password for the akadmin user.

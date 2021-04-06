@@ -106,6 +106,12 @@ export class StageBindingForm extends Form<FlowStageBinding> {
                     }), html`<option>${t`Loading...`}</option>`)}
                 </select>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${t`Order`}
+                ?required=${true}
+                name="order">
+                <input type="number" value="${until(this.getOrder())}" class="pf-c-form-control" required>
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal name="evaluateOnPlan">
                 <div class="pf-c-check">
                     <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.fsb?.evaluateOnPlan, true)}>
@@ -127,21 +133,15 @@ export class StageBindingForm extends Form<FlowStageBinding> {
                 <p class="pf-c-form__helper-text">${t`Evaluate policies before the Stage is present to the user.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Order`}
-                ?required=${true}
-                name="order">
-                <input type="number" value="${until(this.getOrder())}" class="pf-c-form-control" required>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
                 label=${t`Policy engine mode`}
                 ?required=${true}
                 name="policyEngineMode">
                 <select class="pf-c-form-control">
                     <option value=${FlowStageBindingPolicyEngineModeEnum.Any} ?selected=${this.fsb?.policyEngineMode === FlowStageBindingPolicyEngineModeEnum.Any}>
-                        ${t`ANY, any policy must match to grant access.`}
+                        ${t`ANY, any policy must match to include this stage access.`}
                     </option>
                     <option value=${FlowStageBindingPolicyEngineModeEnum.All} ?selected=${this.fsb?.policyEngineMode === FlowStageBindingPolicyEngineModeEnum.All}>
-                        ${t`ALL, all policies must match to grant access.`}
+                        ${t`ALL, all policies must match to include this stage access.`}
                     </option>
                 </select>
             </ak-form-element-horizontal>
