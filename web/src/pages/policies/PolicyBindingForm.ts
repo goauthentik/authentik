@@ -42,7 +42,7 @@ export class PolicyBindingForm extends Form<PolicyBinding> {
     targetPk?: string;
 
     @property({type: Number})
-    policyGroupUser?: target;
+    policyGroupUser: target = target.policy;
 
     getSuccessMessage(): string {
         if (this.binding) {
