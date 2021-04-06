@@ -6,6 +6,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import AKGlobal from "../authentik.css";
 
 import { unsafeHTML } from "lit-html/directives/unsafe-html";
@@ -58,7 +59,7 @@ export class FlowExecutor extends LitElement implements StageHost {
     config?: Config;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFTitle, PFList, PFBackgroundImage, AKGlobal].concat(css`
+        return [PFBase, PFLogin, PFButton, PFTitle, PFList, PFBackgroundImage, AKGlobal].concat(css`
             .ak-loading {
                 display: flex;
                 height: 100%;
@@ -115,8 +116,8 @@ export class FlowExecutor extends LitElement implements StageHost {
         }).then((data) => {
             this.challenge = data;
             this.postUpdate();
-        }).catch((e) => {
-            this.errorMessage(e);
+        }).catch((e: Response) => {
+            this.errorMessage(e.statusText);
         }).finally(() => {
             this.loading = false;
         });
@@ -139,9 +140,9 @@ export class FlowExecutor extends LitElement implements StageHost {
                 this.setBackground(this.challenge.background);
             }
             this.postUpdate();
-        }).catch((e) => {
+        }).catch((e: Response) => {
             // Catch JSON or Update errors
-            this.errorMessage(e);
+            this.errorMessage(e.statusText);
         }).finally(() => {
             this.loading = false;
         });
@@ -158,7 +159,16 @@ export class FlowExecutor extends LitElement implements StageHost {
             <div class="pf-c-login__main-body">
                 <h3>${t`Something went wrong! Please try again later.`}</h3>
                 <pre class="ak-exception">${error}</pre>
-            </div>`
+            </div>
+            <footer class="pf-c-login__main-footer">
+                <ul class="pf-c-login__main-footer-links">
+                        <li class="pf-c-login__main-footer-links-item">
+                            <a class="pf-c-button pf-m-primary pf-m-block" href="/">
+                                ${t`Return`}
+                            </a>
+                        </li>
+                </ul>
+            </footer>`
         };
     }
 
