@@ -134,3 +134,36 @@ class TestUserWriteStage(TestCase):
                 "type": ChallengeTypes.NATIVE.value,
             },
         )
+
+    @patch(
+        "authentik.flows.views.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
+    )
+    def test_with_blank_username(self):
+        """Test with blank username results in error"""
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
+        session = self.client.session
+        plan.context[PLAN_CONTEXT_PROMPT] = {
+            "username": "",
+            "attribute_some-custom-attribute": "test",
+            "some_ignored_attribute": "bar",
+        }
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_str(response.content),
+            {
+                "component": "ak-stage-access-denied",
+                "error_message": None,
+                "title": "",
+                "type": ChallengeTypes.NATIVE.value,
+            },
+        )
