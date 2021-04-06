@@ -11,6 +11,7 @@ import AKGlobal from "../../../authentik.css";
 import { BaseStage } from "../base";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
+import "../../../elements/Divider";
 import { Challenge } from "../../../api/Flows";
 
 export interface Prompt {
@@ -101,7 +102,7 @@ export class PromptStage extends BaseStage {
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
             case "separator":
-                return "<hr>";
+                return `<ak-divider>${prompt.placeholder}</ak-divider>`;
             case "hidden":
                 return `<input
                     type="hidden"
@@ -110,9 +111,7 @@ export class PromptStage extends BaseStage {
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
             case "static":
-                return `<p
-                    class="pf-c-form-control">${prompt.placeholder}
-                </p>`;
+                return `<p>${prompt.placeholder}</p>`;
         }
         return "";
     }
@@ -132,6 +131,10 @@ export class PromptStage extends BaseStage {
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form" @submit=${(e: Event) => {this.submitForm(e);}}>
                     ${this.challenge.fields.map((prompt) => {
+                        // Special types that aren't rendered in a wrapper
+                        if (prompt.type === "static" || prompt.type === "hidden" || prompt.type === "separator") {
+                            return unsafeHTML(this.renderPromptInner(prompt));
+                        }
                         return html`<ak-form-element
                             label="${prompt.label}"
                             ?required="${prompt.required}"
