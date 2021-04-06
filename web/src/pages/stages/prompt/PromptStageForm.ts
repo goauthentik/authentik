@@ -7,6 +7,8 @@ import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
+import "../../../elements/forms/ModalForm";
+import "./PromptForm";
 import { until } from "lit-html/directives/until";
 
 @customElement("ak-stage-prompt-form")
@@ -70,12 +72,25 @@ export class PromptStageForm extends Form<PromptStage> {
                                         return su == prompt.pk;
                                     });
                                     return html`<option value=${ifDefined(prompt.pk)} ?selected=${selected}>
-                                        ${t`${prompt.fieldKey} ("${prompt.label}", Type ${prompt.type})`}
+                                        ${t`${prompt.fieldKey} ("${prompt.label}", of type ${prompt.type})`}
                                     </option>`;
                                 });
                             }), html`<option>${t`Loading...`}</option>`)}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
+                        <ak-forms-modal>
+                            <span slot="submit">
+                                ${t`Create`}
+                            </span>
+                            <span slot="header">
+                                ${t`Create Prompt`}
+                            </span>
+                            <ak-prompt-form slot="form">
+                            </ak-prompt-form>
+                            <button type="button" slot="trigger" class="pf-c-button pf-m-primary">
+                                ${t`Create`}
+                            </button>
+                        </ak-forms-modal>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Validation Policies`}

@@ -437,7 +437,7 @@ msgid "Change your password"
 msgstr "Change your password"
 
 #: src/pages/applications/ApplicationViewPage.ts:122
-#: src/pages/flows/FlowViewPage.ts:113
+#: src/pages/flows/FlowViewPage.ts:114
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:147
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:146
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:140
@@ -685,6 +685,8 @@ msgstr "Copy Key"
 #: src/pages/stages/invitation/InvitationListPage.ts:85
 #: src/pages/stages/prompt/PromptListPage.ts:96
 #: src/pages/stages/prompt/PromptListPage.ts:104
+#: src/pages/stages/prompt/PromptStageForm.ts:87
+#: src/pages/stages/prompt/PromptStageForm.ts:95
 #: src/pages/user-settings/tokens/UserTokenList.ts:50
 #: src/pages/user-settings/tokens/UserTokenList.ts:58
 #: src/pages/users/UserListPage.ts:143
@@ -741,6 +743,7 @@ msgid "Create Policy"
 msgstr "Create Policy"
 
 #: src/pages/stages/prompt/PromptListPage.ts:99
+#: src/pages/stages/prompt/PromptStageForm.ts:90
 msgid "Create Prompt"
 msgstr "Create Prompt"
 
@@ -1115,7 +1118,7 @@ msgid "Exception"
 msgstr "Exception"
 
 #: src/pages/flows/FlowListPage.ts:98
-#: src/pages/flows/FlowViewPage.ts:86
+#: src/pages/flows/FlowViewPage.ts:87
 msgid "Execute"
 msgstr "Execute"
 
@@ -1242,7 +1245,7 @@ msgstr "Field which contains a unique Identifier."
 msgid "Field which contains members of a group."
 msgstr "Field which contains members of a group."
 
-#: src/pages/stages/prompt/PromptStageForm.ts:64
+#: src/pages/stages/prompt/PromptStageForm.ts:66
 msgid "Fields"
 msgstr "Fields"
 
@@ -1412,8 +1415,8 @@ msgstr "Hide managed mappings"
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:111
 #: src/pages/stages/identification/IdentificationStageForm.ts:83
 #: src/pages/stages/password/PasswordStageForm.ts:83
-#: src/pages/stages/prompt/PromptStageForm.ts:82
-#: src/pages/stages/prompt/PromptStageForm.ts:103
+#: src/pages/stages/prompt/PromptStageForm.ts:84
+#: src/pages/stages/prompt/PromptStageForm.ts:118
 msgid "Hold control/command to select multiple items."
 msgstr "Hold control/command to select multiple items."
 
@@ -1659,8 +1662,8 @@ msgstr "Loading"
 #: src/pages/stages/identification/IdentificationStageForm.ts:117
 #: src/pages/stages/identification/IdentificationStageForm.ts:135
 #: src/pages/stages/password/PasswordStageForm.ts:103
-#: src/pages/stages/prompt/PromptStageForm.ts:80
-#: src/pages/stages/prompt/PromptStageForm.ts:100
+#: src/pages/stages/prompt/PromptStageForm.ts:82
+#: src/pages/stages/prompt/PromptStageForm.ts:115
 msgid "Loading..."
 msgstr "Loading..."
 
@@ -1818,7 +1821,7 @@ msgstr "Monitor"
 #: src/pages/stages/identification/IdentificationStageForm.ts:60
 #: src/pages/stages/invitation/InvitationStageForm.ts:53
 #: src/pages/stages/password/PasswordStageForm.ts:60
-#: src/pages/stages/prompt/PromptStageForm.ts:53
+#: src/pages/stages/prompt/PromptStageForm.ts:55
 #: src/pages/stages/user_delete/UserDeleteStageForm.ts:51
 #: src/pages/stages/user_login/UserLoginStageForm.ts:52
 #: src/pages/stages/user_logout/UserLogoutStageForm.ts:51
@@ -2184,7 +2187,7 @@ msgid "Policy / User / Group"
 msgstr "Policy / User / Group"
 
 #: src/pages/applications/ApplicationViewPage.ts:133
-#: src/pages/flows/FlowViewPage.ts:104
+#: src/pages/flows/FlowViewPage.ts:105
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:154
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:161
 msgid "Policy Bindings"
@@ -2582,7 +2585,7 @@ msgstr "Select which scopes can be used by the client. The client stil has to sp
 msgid "Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI."
 msgstr "Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI."
 
-#: src/pages/stages/prompt/PromptStageForm.ts:102
+#: src/pages/stages/prompt/PromptStageForm.ts:117
 msgid "Selected policies are executed when the stage is submitted to validate the data."
 msgstr "Selected policies are executed when the stage is submitted to validate the data."
 
@@ -2720,7 +2723,7 @@ msgstr "Sources"
 msgid "Stage"
 msgstr "Stage"
 
-#: src/pages/flows/FlowViewPage.ts:96
+#: src/pages/flows/FlowViewPage.ts:97
 msgid "Stage Bindings"
 msgstr "Stage Bindings"
 
@@ -2745,7 +2748,7 @@ msgstr "Stage used to configure Authenticator when user doesn't have any compati
 #: src/pages/stages/identification/IdentificationStageForm.ts:67
 #: src/pages/stages/invitation/InvitationStageForm.ts:60
 #: src/pages/stages/password/PasswordStageForm.ts:67
-#: src/pages/stages/prompt/PromptStageForm.ts:60
+#: src/pages/stages/prompt/PromptStageForm.ts:62
 #: src/pages/stages/user_login/UserLoginStageForm.ts:59
 msgid "Stage-specific settings"
 msgstr "Stage-specific settings"
@@ -2902,7 +2905,7 @@ msgstr "Successfully created source."
 #: src/pages/stages/identification/IdentificationStageForm.ts:47
 #: src/pages/stages/invitation/InvitationStageForm.ts:46
 #: src/pages/stages/password/PasswordStageForm.ts:47
-#: src/pages/stages/prompt/PromptStageForm.ts:46
+#: src/pages/stages/prompt/PromptStageForm.ts:48
 #: src/pages/stages/user_delete/UserDeleteStageForm.ts:44
 #: src/pages/stages/user_login/UserLoginStageForm.ts:45
 #: src/pages/stages/user_logout/UserLogoutStageForm.ts:44
@@ -3038,7 +3041,7 @@ msgstr "Successfully updated source."
 #: src/pages/stages/identification/IdentificationStageForm.ts:44
 #: src/pages/stages/invitation/InvitationStageForm.ts:43
 #: src/pages/stages/password/PasswordStageForm.ts:44
-#: src/pages/stages/prompt/PromptStageForm.ts:43
+#: src/pages/stages/prompt/PromptStageForm.ts:45
 #: src/pages/stages/user_delete/UserDeleteStageForm.ts:41
 #: src/pages/stages/user_login/UserLoginStageForm.ts:42
 #: src/pages/stages/user_logout/UserLogoutStageForm.ts:41
@@ -3167,7 +3170,7 @@ msgstr "These policies control when this stage will be applied to the flow."
 msgid "These policies control which users can access this application."
 msgstr "These policies control which users can access this application."
 
-#: src/pages/flows/FlowViewPage.ts:106
+#: src/pages/flows/FlowViewPage.ts:107
 msgid "These policies control which users can access this flow."
 msgstr "These policies control which users can access this flow."
 
@@ -3555,7 +3558,7 @@ msgstr "Using source"
 msgid "Validate SSL Certificates of upstream servers."
 msgstr "Validate SSL Certificates of upstream servers."
 
-#: src/pages/stages/prompt/PromptStageForm.ts:85
+#: src/pages/stages/prompt/PromptStageForm.ts:100
 msgid "Validation Policies"
 msgstr "Validation Policies"
 
@@ -3710,11 +3713,11 @@ msgstr "no tabs defined"
 msgid "{0}"
 msgstr "{0}"
 
-#: src/pages/stages/prompt/PromptStageForm.ts:77
-msgid "{0} (\"{1}\", Type {2})"
-msgstr "{0} (\"{1}\", Type {2})"
+#: src/pages/stages/prompt/PromptStageForm.ts:79
+msgid "{0} (\"{1}\", of type {2})"
+msgstr "{0} (\"{1}\", of type {2})"
 
-#: src/pages/stages/prompt/PromptStageForm.ts:97
+#: src/pages/stages/prompt/PromptStageForm.ts:112
 msgid "{0} ({1})"
 msgstr "{0} ({1})"
 
