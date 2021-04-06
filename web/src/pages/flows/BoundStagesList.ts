@@ -58,7 +58,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                 <ak-proxy-form
                     slot="form"
                     .args=${{
-                        "stageUUID": item.pk
+                        "stageUUID": item.stage
                     }}
                     type=${ifDefined(item.stageObj?.component)}>
                 </ak-proxy-form>
