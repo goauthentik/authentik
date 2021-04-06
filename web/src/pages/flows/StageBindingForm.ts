@@ -113,7 +113,9 @@ export class StageBindingForm extends Form<FlowStageBinding> {
                         ${t`Evaluate on plan`}
                     </label>
                 </div>
-                <p class="pf-c-form__helper-text">${t`Evaluate policies during the Flow planning process. Disable this for input-based policies.`}</p>
+                <p class="pf-c-form__helper-text">
+                    ${t`Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with this option disabled, policies are **not** evaluated.`}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="reEvaluatePolicies">
                 <div class="pf-c-check">
@@ -122,7 +124,7 @@ export class StageBindingForm extends Form<FlowStageBinding> {
                         ${t`Re-evaluate policies`}
                     </label>
                 </div>
-                <p class="pf-c-form__helper-text">${t`Evaluate policies when the Stage is present to the user.`}</p>
+                <p class="pf-c-form__helper-text">${t`Evaluate policies before the Stage is present to the user.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Order`}

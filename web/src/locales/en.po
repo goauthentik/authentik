@@ -32,13 +32,13 @@ msgstr "ACS URL"
 
 #: src/pages/applications/ApplicationForm.ts:110
 #: src/pages/flows/FlowForm.ts:109
-#: src/pages/flows/StageBindingForm.ts:142
+#: src/pages/flows/StageBindingForm.ts:144
 msgid "ALL, all policies must match to grant access."
 msgstr "ALL, all policies must match to grant access."
 
 #: src/pages/applications/ApplicationForm.ts:107
 #: src/pages/flows/FlowForm.ts:106
-#: src/pages/flows/StageBindingForm.ts:139
+#: src/pages/flows/StageBindingForm.ts:141
 msgid "ANY, any policy must match to grant access."
 msgstr "ANY, any policy must match to grant access."
 
@@ -625,7 +625,7 @@ msgstr "Context"
 #: src/flows/stages/consent/ConsentStage.ts:60
 #: src/flows/stages/dummy/DummyStage.ts:39
 #: src/flows/stages/password/PasswordStage.ts:71
-#: src/flows/stages/prompt/PromptStage.ts:130
+#: src/flows/stages/prompt/PromptStage.ts:155
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:91
 msgid "Continue"
 msgstr "Continue"
@@ -1088,13 +1088,13 @@ msgstr "Error: unsupported stage settings: {0}"
 msgid "Evaluate on plan"
 msgstr "Evaluate on plan"
 
-#: src/pages/flows/StageBindingForm.ts:116
-msgid "Evaluate policies during the Flow planning process. Disable this for input-based policies."
-msgstr "Evaluate policies during the Flow planning process. Disable this for input-based policies."
+#: src/pages/flows/StageBindingForm.ts:127
+msgid "Evaluate policies before the Stage is present to the user."
+msgstr "Evaluate policies before the Stage is present to the user."
 
-#: src/pages/flows/StageBindingForm.ts:125
-msgid "Evaluate policies when the Stage is present to the user."
-msgstr "Evaluate policies when the Stage is present to the user."
+#: src/pages/flows/StageBindingForm.ts:117
+msgid "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with this option disabled, policies are **not** evaluated."
+msgstr "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with this option disabled, policies are **not** evaluated."
 
 #: src/pages/events/EventListPage.ts:22
 msgid "Event Log"
@@ -1594,8 +1594,8 @@ msgid "Library"
 msgstr "Library"
 
 #: src/elements/table/Table.ts:113
-#: src/flows/FlowExecutor.ts:154
-#: src/flows/FlowExecutor.ts:200
+#: src/flows/FlowExecutor.ts:164
+#: src/flows/FlowExecutor.ts:210
 #: src/flows/access_denied/FlowAccessDenied.ts:27
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts:43
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts:33
@@ -1608,7 +1608,7 @@ msgstr "Library"
 #: src/flows/stages/email/EmailStage.ts:26
 #: src/flows/stages/identification/IdentificationStage.ts:134
 #: src/flows/stages/password/PasswordStage.ts:31
-#: src/flows/stages/prompt/PromptStage.ts:108
+#: src/flows/stages/prompt/PromptStage.ts:126
 #: src/pages/applications/ApplicationViewPage.ts:55
 #: src/pages/user-settings/UserDetailsPage.ts:38
 #: src/utils.ts:40
@@ -2072,7 +2072,7 @@ msgid "Optionally set the 'FriendlyName' value of the Assertion attribute."
 msgstr "Optionally set the 'FriendlyName' value of the Assertion attribute."
 
 #: src/pages/flows/BoundStagesList.ts:38
-#: src/pages/flows/StageBindingForm.ts:128
+#: src/pages/flows/StageBindingForm.ts:130
 #: src/pages/policies/BoundPoliciesList.ts:38
 #: src/pages/policies/PolicyBindingForm.ts:203
 #: src/pages/stages/prompt/PromptForm.ts:119
@@ -2199,7 +2199,7 @@ msgstr "Policy binding"
 
 #: src/pages/applications/ApplicationForm.ts:102
 #: src/pages/flows/FlowForm.ts:101
-#: src/pages/flows/StageBindingForm.ts:134
+#: src/pages/flows/StageBindingForm.ts:136
 msgid "Policy engine mode"
 msgstr "Policy engine mode"
 
@@ -2229,7 +2229,7 @@ msgstr "Post binding"
 msgid "Post binding (auto-submit)"
 msgstr "Post binding (auto-submit)"
 
-#: src/flows/FlowExecutor.ts:242
+#: src/flows/FlowExecutor.ts:252
 msgid "Powered by authentik"
 msgstr "Powered by authentik"
 
@@ -2374,7 +2374,7 @@ msgstr "RSA-SHA384"
 msgid "RSA-SHA512"
 msgstr "RSA-SHA512"
 
-#: src/pages/flows/StageBindingForm.ts:122
+#: src/pages/flows/StageBindingForm.ts:124
 msgid "Re-evaluate policies"
 msgstr "Re-evaluate policies"
 
@@ -2468,6 +2468,10 @@ msgstr "Retry Task"
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn.ts:106
 msgid "Retry authentication"
 msgstr "Retry authentication"
+
+#: src/flows/FlowExecutor.ts:142
+msgid "Return"
+msgstr "Return"
 
 #: src/elements/router/Router404.ts:28
 msgid "Return home"
@@ -2701,7 +2705,7 @@ msgstr "Skip path regex"
 msgid "Slug"
 msgstr "Slug"
 
-#: src/flows/FlowExecutor.ts:134
+#: src/flows/FlowExecutor.ts:135
 msgid "Something went wrong! Please try again later."
 msgstr "Something went wrong! Please try again later."
 
@@ -3662,7 +3666,7 @@ msgstr "When selected, incoming assertion's Signatures will be validated against
 msgid "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
 msgstr "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
 
-#: src/flows/FlowExecutor.ts:130
+#: src/flows/FlowExecutor.ts:131
 msgid "Whoops!"
 msgstr "Whoops!"
 
