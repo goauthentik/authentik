@@ -188,9 +188,9 @@ msgstr ""
 "Are you sure you want to clear the policy cache?\n"
 "This will cause all policies to be re-evaluated on their next usage."
 
-#: src/elements/forms/DeleteForm.ts:62
-msgid "Are you sure you want to delete {0} \"{1}\"?"
-msgstr "Are you sure you want to delete {0} \"{1}\"?"
+#: src/elements/forms/DeleteForm.ts:69
+msgid "Are you sure you want to delete {0} {objName} ?"
+msgstr "Are you sure you want to delete {0} {objName} ?"
 
 #: src/pages/users/UserActiveForm.ts:52
 msgid "Are you sure you want to update {0} \"{1}\"?"
@@ -385,7 +385,7 @@ msgid "Can be in the format of 'unix://' when connecting to a local docker daemo
 msgstr "Can be in the format of 'unix://' when connecting to a local docker daemon, or 'https://:2376' when connecting to a remote system."
 
 #: src/elements/forms/ConfirmationForm.ts:75
-#: src/elements/forms/DeleteForm.ts:79
+#: src/elements/forms/DeleteForm.ts:86
 #: src/elements/forms/ModalForm.ts:71
 #: src/pages/users/UserActiveForm.ts:73
 msgid "Cancel"
@@ -813,7 +813,7 @@ msgstr "Decides what this Flow is used for. For example, the Authentication flow
 msgid "Define how notifications are sent to users, like Email or Webhook."
 msgstr "Define how notifications are sent to users, like Email or Webhook."
 
-#: src/elements/forms/DeleteForm.ts:72
+#: src/elements/forms/DeleteForm.ts:79
 #: src/pages/applications/ApplicationListPage.ts:102
 #: src/pages/crypto/CertificateKeyPairListPage.ts:86
 #: src/pages/events/RuleListPage.ts:82
@@ -861,7 +861,7 @@ msgstr "Delete account"
 msgid "Delete temporary users after"
 msgstr "Delete temporary users after"
 
-#: src/elements/forms/DeleteForm.ts:55
+#: src/elements/forms/DeleteForm.ts:62
 msgid "Delete {0}"
 msgstr "Delete {0}"
 

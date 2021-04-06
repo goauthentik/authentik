@@ -184,8 +184,8 @@ msgid ""
 "This will cause all policies to be re-evaluated on their next usage."
 msgstr ""
 
-#: src/elements/forms/DeleteForm.ts:62
-msgid "Are you sure you want to delete {0} \"{1}\"?"
+#: src/elements/forms/DeleteForm.ts:69
+msgid "Are you sure you want to delete {0} {objName} ?"
 msgstr ""
 
 #: src/pages/users/UserActiveForm.ts:52
@@ -381,7 +381,7 @@ msgid "Can be in the format of 'unix://' when connecting to a local docker daemo
 msgstr ""
 
 #: src/elements/forms/ConfirmationForm.ts:75
-#: src/elements/forms/DeleteForm.ts:79
+#: src/elements/forms/DeleteForm.ts:86
 #: src/elements/forms/ModalForm.ts:71
 #: src/pages/users/UserActiveForm.ts:73
 msgid "Cancel"
@@ -809,7 +809,7 @@ msgstr ""
 msgid "Define how notifications are sent to users, like Email or Webhook."
 msgstr ""
 
-#: src/elements/forms/DeleteForm.ts:72
+#: src/elements/forms/DeleteForm.ts:79
 #: src/pages/applications/ApplicationListPage.ts:102
 #: src/pages/crypto/CertificateKeyPairListPage.ts:86
 #: src/pages/events/RuleListPage.ts:82
@@ -857,7 +857,7 @@ msgstr ""
 msgid "Delete temporary users after"
 msgstr ""
 
-#: src/elements/forms/DeleteForm.ts:55
+#: src/elements/forms/DeleteForm.ts:62
 msgid "Delete {0}"
 msgstr ""
 
