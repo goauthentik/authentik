@@ -56,7 +56,7 @@
         "@types/codemirror": "0.0.108",
         "@types/grecaptcha": "^3.0.1",
         "@typescript-eslint/eslint-plugin": "^4.21.0",
-        "@typescript-eslint/parser": "^4.20.0",
+        "@typescript-eslint/parser": "^4.21.0",
         "authentik-api": "file:api",
         "babel-plugin-macros": "^3.0.1",
         "base64-js": "^1.5.1",
