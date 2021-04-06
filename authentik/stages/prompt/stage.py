@@ -30,7 +30,7 @@ class PromptSerializer(PassiveSerializer):
     """Serializer for a single Prompt field"""
 
     field_key = CharField()
-    label = CharField()
+    label = CharField(allow_blank=True)
     type = CharField()
     required = BooleanField()
     placeholder = CharField()
