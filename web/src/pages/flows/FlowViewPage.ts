@@ -86,7 +86,7 @@ export class FlowViewPage extends LitElement {
                                                         slug: this.flow.slug
                                                     }).then(link => {
                                                         const finalURL = `${link.link}?next=/%23${window.location.href}`;
-                                                        window.open(finalURL, '_blank');
+                                                        window.open(finalURL, "_blank");
                                                     });
                                                 }}>
                                                     ${t`Execute`}

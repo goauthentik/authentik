@@ -128,7 +128,7 @@ export class StageBindingForm extends Form<FlowStageBinding> {
                 label=${t`Order`}
                 ?required=${true}
                 name="order">
-                <input type="number" value="${until(this.getOrder(), this.fsb?.order)}" class="pf-c-form-control" required>
+                <input type="number" value="${until(this.getOrder())}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Policy engine mode`}
