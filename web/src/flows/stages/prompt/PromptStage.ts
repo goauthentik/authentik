@@ -7,12 +7,13 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import AKGlobal from "../../../authentik.css";
 import { BaseStage } from "../base";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import "../../../elements/Divider";
-import { Challenge } from "../../../api/Flows";
+import { Challenge, Error } from "../../../api/Flows";
 
 export interface Prompt {
     field_key: string;
@@ -34,7 +35,7 @@ export class PromptStage extends BaseStage {
     challenge?: PromptChallenge;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
+        return [PFBase, PFLogin, PFAlert, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
     }
 
     renderPromptInner(prompt: Prompt): string {
@@ -116,6 +117,24 @@ export class PromptStage extends BaseStage {
         return "";
     }
 
+    renderNonFieldErrors(errors: Error[]): TemplateResult {
+        if (!errors) {
+            return html``;
+        }
+        return html`<div class="pf-c-form__alert">
+        ${errors.map(err => {
+            return html`<div class="pf-c-alert pf-m-inline pf-m-danger">
+                <div class="pf-c-alert__icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <h4 class="pf-c-alert__title">
+                    ${err.string}
+                </h4>
+            </div>`;
+        })}
+        </div>`;
+    }
+
     render(): TemplateResult {
         if (!this.challenge) {
             return html`<ak-empty-state
@@ -143,6 +162,9 @@ export class PromptStage extends BaseStage {
                             ${unsafeHTML(this.renderPromptInner(prompt))}
                         </ak-form-element>`;
                     })}
+                    ${"non_field_errors" in (this.challenge?.response_errors || {}) ?
+                        this.renderNonFieldErrors(this.challenge?.response_errors?.non_field_errors || []):
+                        html``}
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                             ${t`Continue`}

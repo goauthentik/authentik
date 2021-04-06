@@ -79,7 +79,6 @@ export class MessageContainer extends LitElement {
             this.requestUpdate();
         });
         this.messageSocket.addEventListener("error", (e) => {
-            console.warn(`authentik/messages: error ${e}`);
             this.retryDelay = this.retryDelay * 2;
         });
     }
