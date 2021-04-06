@@ -12,7 +12,7 @@ helm repo update
 helm install authentik/authentik --devel -f values.yaml
 ```
 
-This installation automatically applies database migrations on startup. After the installation is done, you can use `akadmin` as username and password.
+This installation automatically applies database migrations on startup. After the installation is done, navigate to the `https://<ingress you've specified>/if/flow/initial-setup/`, to set a password for the akadmin user.
 
 It is also recommended to configure global email credentials. These are used by authentik to notify you about alerts, configuration issues. They can also be used by [Email stages](flow/stages/email/index.md) to send verification/recovery emails.
 

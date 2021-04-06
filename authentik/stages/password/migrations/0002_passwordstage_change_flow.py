@@ -36,7 +36,7 @@ def create_default_password_change(apps: Apps, schema_editor: BaseDatabaseSchema
             "type": FieldTypes.PASSWORD,
             "required": True,
             "placeholder": "Password",
-            "order": 0,
+            "order": 300,
         },
     )
     password_rep_prompt, _ = Prompt.objects.using(db_alias).update_or_create(
@@ -46,7 +46,7 @@ def create_default_password_change(apps: Apps, schema_editor: BaseDatabaseSchema
             "type": FieldTypes.PASSWORD,
             "required": True,
             "placeholder": "Password (repeat)",
-            "order": 1,
+            "order": 301,
         },
     )
 

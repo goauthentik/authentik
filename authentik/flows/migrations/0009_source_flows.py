@@ -45,7 +45,7 @@ def create_default_source_enrollment_flow(
         slug="default-source-enrollment",
         designation=FlowDesignation.ENROLLMENT,
         defaults={
-            "name": "Welcome to authentik!",
+            "name": "Welcome to authentik! Please select a username.",
         },
     )
     PolicyBinding.objects.using(db_alias).update_or_create(
@@ -54,7 +54,7 @@ def create_default_source_enrollment_flow(
 
     # PromptStage to ask user for their username
     prompt_stage, _ = PromptStage.objects.using(db_alias).update_or_create(
-        name="Welcome to authentik! Please select a username.",
+        name="default-source-enrollment-prompt",
     )
     prompt, _ = Prompt.objects.using(db_alias).update_or_create(
         field_key="username",
@@ -63,6 +63,7 @@ def create_default_source_enrollment_flow(
             "type": FieldTypes.TEXT,
             "required": True,
             "placeholder": "Username",
+            "order": 100,
         },
     )
     prompt_stage.fields.add(prompt)

@@ -7,11 +7,13 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import AKGlobal from "../../../authentik.css";
 import { BaseStage } from "../base";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
-import { Challenge } from "../../../api/Flows";
+import "../../../elements/Divider";
+import { Challenge, Error } from "../../../api/Flows";
 
 export interface Prompt {
     field_key: string;
@@ -33,7 +35,7 @@ export class PromptStage extends BaseStage {
     challenge?: PromptChallenge;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
+        return [PFBase, PFLogin, PFAlert, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
     }
 
     renderPromptInner(prompt: Prompt): string {
@@ -101,7 +103,7 @@ export class PromptStage extends BaseStage {
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
             case "separator":
-                return "<hr>";
+                return `<ak-divider>${prompt.placeholder}</ak-divider>`;
             case "hidden":
                 return `<input
                     type="hidden"
@@ -110,11 +112,27 @@ export class PromptStage extends BaseStage {
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
             case "static":
-                return `<p
-                    class="pf-c-form-control">${prompt.placeholder}
-                </p>`;
+                return `<p>${prompt.placeholder}</p>`;
         }
         return "";
+    }
+
+    renderNonFieldErrors(errors: Error[]): TemplateResult {
+        if (!errors) {
+            return html``;
+        }
+        return html`<div class="pf-c-form__alert">
+        ${errors.map(err => {
+            return html`<div class="pf-c-alert pf-m-inline pf-m-danger">
+                <div class="pf-c-alert__icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <h4 class="pf-c-alert__title">
+                    ${err.string}
+                </h4>
+            </div>`;
+        })}
+        </div>`;
     }
 
     render(): TemplateResult {
@@ -132,6 +150,10 @@ export class PromptStage extends BaseStage {
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form" @submit=${(e: Event) => {this.submitForm(e);}}>
                     ${this.challenge.fields.map((prompt) => {
+                        // Special types that aren't rendered in a wrapper
+                        if (prompt.type === "static" || prompt.type === "hidden" || prompt.type === "separator") {
+                            return unsafeHTML(this.renderPromptInner(prompt));
+                        }
                         return html`<ak-form-element
                             label="${prompt.label}"
                             ?required="${prompt.required}"
@@ -140,6 +162,9 @@ export class PromptStage extends BaseStage {
                             ${unsafeHTML(this.renderPromptInner(prompt))}
                         </ak-form-element>`;
                     })}
+                    ${"non_field_errors" in (this.challenge?.response_errors || {}) ?
+                        this.renderNonFieldErrors(this.challenge?.response_errors?.non_field_errors || []):
+                        html``}
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                             ${t`Continue`}
