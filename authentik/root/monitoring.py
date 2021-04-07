@@ -7,6 +7,8 @@ from django.db.utils import OperationalError
 from django.http import HttpRequest, HttpResponse
 from django.views import View
 from django_prometheus.exports import ExportToDjangoView
+from django_redis import get_redis_connection
+from redis.exceptions import RedisError
 
 
 class MetricsView(View):
@@ -35,12 +37,17 @@ class LiveView(View):
 
 
 class ReadyView(View):
-    """View for liveness probe, always returns Http 201"""
+    """View for readiness probe, always returns Http 201, unless sql or redis is down"""
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
-        db_conn = connections["default"]
         try:
+            db_conn = connections["default"]
             _ = db_conn.cursor()
         except OperationalError:
+            return HttpResponse(status=503)
+        try:
+            redis_conn = get_redis_connection()
+            redis_conn.ping()
+        except RedisError:
             return HttpResponse(status=503)
         return HttpResponse(status=201)

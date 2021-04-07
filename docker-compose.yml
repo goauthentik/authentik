@@ -27,7 +27,7 @@ services:
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
-      # AUTHENTIK_ERROR_REPORTING__ENABLED: true
+      # AUTHENTIK_ERROR_REPORTING__ENABLED: "true"
     volumes:
       - ./media:/media
       - ./custom-templates:/templates
@@ -57,7 +57,7 @@ services:
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
-      # AUTHENTIK_ERROR_REPORTING__ENABLED: true
+      # AUTHENTIK_ERROR_REPORTING__ENABLED: "true"
     volumes:
       - ./backups:/backups
       - /var/run/docker.sock:/var/run/docker.sock
@@ -75,7 +75,8 @@ services:
       traefik.http.routers.static-router.rule: PathPrefix(`/static`, `/if`, `/media`, `/robots.txt`, `/favicon.ico`)
       traefik.http.routers.static-router.tls: 'true'
       traefik.http.routers.static-router.service: static-service
-      traefik.http.services.static-service.loadbalancer.healthcheck.path: /
+      traefik.http.services.static-service.loadbalancer.healthcheck.path: /-/health/ready/
+      traefik.http.services.static-service.loadbalancer.healthcheck.interval: 30s
       traefik.http.services.static-service.loadbalancer.server.port: '80'
     volumes:
       - ./media:/usr/share/nginx/html/media

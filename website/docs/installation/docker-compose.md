@@ -24,6 +24,8 @@ If this is a fresh authentik install run the following commands to generate a pa
 sudo apt-get install -y pwgen
 echo "PG_PASS=$(pwgen 40 1)" >> .env
 echo "AUTHENTIK_SECRET_KEY=$(pwgen 50 1)" >> .env
+# Skip if you don't want to enable error reporting
+echo "AUTHENTIK_ERROR_REPORTING__ENABLED=true" >> .env
 ```
 
 ## Email configuration (optional, but recommended)
