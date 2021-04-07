@@ -1,6 +1,7 @@
 """authentik core tasks"""
 from datetime import datetime
 from io import StringIO
+from pathlib import Path
 
 from boto3.exceptions import Boto3Error
 from botocore.exceptions import BotoCoreError, ClientError
@@ -12,6 +13,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import ExpiringModel
 from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
+from authentik.lib.config import CONFIG
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
@@ -38,6 +40,22 @@ def clean_expired_models(self: MonitoredTask):
 def backup_database(self: MonitoredTask):  # pragma: no cover
     """Database backup"""
     self.result_timeout_hours = 25
+    if Path("/var/run/secrets/kubernetes.io").exists() and not CONFIG.y(
+        "postgresql.s3_backup"
+    ):
+        LOGGER.info("Running in k8s and s3 backups are not configured, skipping")
+        self.set_status(
+            TaskResult(
+                TaskResultStatus.WARNING,
+                [
+                    (
+                        "Skipping backup as authentik is running in Kubernetes "
+                        "without S3 backups configured."
+                    ),
+                ],
+            )
+        )
+        return
     try:
         start = datetime.now()
         out = StringIO()
