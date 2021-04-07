@@ -2,9 +2,9 @@
 import os
 import warnings
 from multiprocessing import cpu_count
-from pathlib import Path
 
 import structlog
+from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
 
 bind = "0.0.0.0:8000"
 
@@ -48,7 +48,7 @@ logconfig_dict = {
 
 # if we're running in kubernetes, use fixed workers because we can scale with more pods
 # otherwise (assume docker-compose), use as much as we can
-if Path("/var/run/secrets/kubernetes.io").exists():
+if SERVICE_HOST_ENV_NAME in os.environ:
     workers = 2
 else:
     workers = cpu_count() * 2 + 1

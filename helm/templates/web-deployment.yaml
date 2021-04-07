@@ -22,6 +22,7 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         k8s.goauthentik.io/component: web
     spec:
+      automountServiceAccountToken: false
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:

@@ -39,6 +39,8 @@ class AuthentikOutpostConfig(AppConfig):
             KubernetesServiceConnection,
         )
 
+        # Explicitly check against token filename, as thats
+        # only present when the integration is enabled
         if Path(SERVICE_TOKEN_FILENAME).exists():
             LOGGER.debug("Detected in-cluster Kubernetes Config")
             if not KubernetesServiceConnection.objects.filter(local=True).exists():

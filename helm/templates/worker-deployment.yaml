@@ -24,6 +24,8 @@ spec:
     spec:
       {{- if .Values.kubernetesIntegration }}
       serviceAccountName: {{ include "authentik.fullname" . }}-sa
+      {{- else }}
+      automountServiceAccountToken: false
       {{- end }}
       affinity:
         podAntiAffinity:

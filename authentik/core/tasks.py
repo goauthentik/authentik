@@ -1,7 +1,7 @@
 """authentik core tasks"""
 from datetime import datetime
 from io import StringIO
-from pathlib import Path
+from os import environ
 
 from boto3.exceptions import Boto3Error
 from botocore.exceptions import BotoCoreError, ClientError
@@ -9,6 +9,7 @@ from dbbackup.db.exceptions import CommandConnectorError
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.core import management
 from django.utils.timezone import now
+from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
 from structlog.stdlib import get_logger
 
 from authentik.core.models import ExpiringModel
@@ -40,9 +41,7 @@ def clean_expired_models(self: MonitoredTask):
 def backup_database(self: MonitoredTask):  # pragma: no cover
     """Database backup"""
     self.result_timeout_hours = 25
-    if Path("/var/run/secrets/kubernetes.io").exists() and not CONFIG.y(
-        "postgresql.s3_backup"
-    ):
+    if SERVICE_HOST_ENV_NAME in environ and not CONFIG.y("postgresql.s3_backup"):
         LOGGER.info("Running in k8s and s3 backups are not configured, skipping")
         self.set_status(
             TaskResult(
