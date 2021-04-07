@@ -1,11 +1,11 @@
 """authentik ldap source signals"""
 from typing import Any
 
-from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from ldap3.core.exceptions import LDAPException
+from rest_framework.serializers import ValidationError
 
 from authentik.core.models import User
 from authentik.core.signals import password_changed

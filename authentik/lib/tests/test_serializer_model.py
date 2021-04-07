@@ -17,9 +17,13 @@ def model_tester_factory(test_model: Type[Stage]) -> Callable:
     """Test a form"""
 
     def tester(self: TestModels):
-        model_inst = test_model()
         try:
-            self.assertTrue(issubclass(model_inst.serializer, BaseSerializer))
+            model_class = None
+            if test_model._meta.abstract:
+                model_class = test_model.__bases__[0]()
+            else:
+                model_class = test_model()
+            self.assertTrue(issubclass(model_class.serializer, BaseSerializer))
         except NotImplementedError:
             pass
 

@@ -67,12 +67,17 @@ class SourceViewSet(
         data = []
         for subclass in all_subclasses(self.queryset.model):
             subclass: Source
+            component = ""
+            if subclass._meta.abstract:
+                component = subclass.__bases__[0]().component
+            else:
+                component = subclass().component
             # pyright: reportGeneralTypeIssues=false
             data.append(
                 {
                     "name": subclass._meta.verbose_name,
                     "description": subclass.__doc__,
-                    "component": subclass().component,
+                    "component": component,
                 }
             )
         return Response(TypeCreateSerializer(data, many=True).data)
