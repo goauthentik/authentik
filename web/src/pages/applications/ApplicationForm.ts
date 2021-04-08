@@ -1,13 +1,18 @@
 import { CoreApi, Application, ProvidersApi, Provider, ApplicationPolicyEngineModeEnum } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { CSSResult, customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { Form } from "../../elements/forms/Form";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
+import "../../elements/buttons/Dropdown";
+import "../../elements/Spinner";
+import "../../elements/forms/ProxyForm";
+import "../../elements/forms/ModalForm";
 import "../../elements/forms/HorizontalFormElement";
 import "../../elements/forms/FormGroup";
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 
 @customElement("ak-application-form")
 export class ApplicationForm extends Form<Application> {
@@ -24,6 +29,10 @@ export class ApplicationForm extends Form<Application> {
         } else {
             return t`Successfully created application.`;
         }
+    }
+
+    static get styles(): CSSResult[] {
+        return super.styles.concat(PFDropdown);
     }
 
     send = (data: Application): Promise<Application | void> => {
@@ -96,6 +105,37 @@ export class ApplicationForm extends Form<Application> {
                         return this.groupProviders(providers.results);
                     }), html`<option>${t`Loading...`}</option>`)}
                 </select>
+                <p class="pf-c-form__helper-text">${t`Select a provider that this application should use. Alternatively, create a new provider.`}</p>
+                <ak-dropdown class="pf-c-dropdown">
+                    <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
+                        <span class="pf-c-dropdown__toggle-text">${t`Create provider`}</span>
+                        <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
+                    </button>
+                    <ul class="pf-c-dropdown__menu" hidden>
+                        ${until(new ProvidersApi(DEFAULT_CONFIG).providersAllTypes().then((types) => {
+                            return types.map((type) => {
+                                return html`<li>
+                                    <ak-forms-modal>
+                                        <span slot="submit">
+                                            ${t`Create`}
+                                        </span>
+                                        <span slot="header">
+                                            ${t`Create ${type.name}`}
+                                        </span>
+                                        <ak-proxy-form
+                                            slot="form"
+                                            type=${type.component}>
+                                        </ak-proxy-form>
+                                        <button type="button" slot="trigger" class="pf-c-dropdown__menu-item">
+                                            ${type.name}<br>
+                                            <small>${type.description}</small>
+                                        </button>
+                                    </ak-forms-modal>
+                                </li>`;
+                            });
+                        }), html`<ak-spinner></ak-spinner>`)}
+                    </ul>
+                </ak-dropdown>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Policy engine mode`}

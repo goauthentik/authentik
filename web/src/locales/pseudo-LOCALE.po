@@ -30,7 +30,7 @@ msgstr ""
 msgid "ACS URL"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:110
+#: src/pages/applications/ApplicationForm.ts:149
 #: src/pages/flows/FlowForm.ts:109
 msgid "ALL, all policies must match to grant access."
 msgstr ""
@@ -39,7 +39,7 @@ msgstr ""
 msgid "ALL, all policies must match to include this stage access."
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:107
+#: src/pages/applications/ApplicationForm.ts:146
 #: src/pages/flows/FlowForm.ts:106
 msgid "ANY, any policy must match to grant access."
 msgstr ""
@@ -163,7 +163,7 @@ msgstr ""
 msgid "Application requires following permissions"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:82
+#: src/pages/applications/ApplicationForm.ts:90
 msgid "Application's display Name."
 msgstr ""
 
@@ -649,6 +649,7 @@ msgstr ""
 msgid "Copy Key"
 msgstr ""
 
+#: src/pages/applications/ApplicationForm.ts:120
 #: src/pages/applications/ApplicationListPage.ts:111
 #: src/pages/applications/ApplicationListPage.ts:119
 #: src/pages/crypto/CertificateKeyPairListPage.ts:122
@@ -766,6 +767,11 @@ msgstr ""
 msgid "Create User"
 msgstr ""
 
+#: src/pages/applications/ApplicationForm.ts:111
+msgid "Create provider"
+msgstr ""
+
+#: src/pages/applications/ApplicationForm.ts:123
 #: src/pages/flows/BoundStagesList.ts:149
 #: src/pages/outposts/ServiceConnectionListPage.ts:121
 #: src/pages/policies/BoundPoliciesList.ts:188
@@ -871,7 +877,7 @@ msgstr ""
 msgid "Deny the user access"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:131
+#: src/pages/applications/ApplicationForm.ts:170
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts:65
 #: src/pages/system-tasks/SystemTaskListPage.ts:54
 #: src/pages/user-settings/tokens/UserTokenForm.ts:50
@@ -1430,7 +1436,7 @@ msgstr ""
 msgid "ID"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:126
+#: src/pages/applications/ApplicationForm.ts:165
 msgid "Icon"
 msgstr ""
 
@@ -1451,7 +1457,7 @@ msgstr ""
 msgid "If enabled, use the local connection. Required Docker socket/Kubernetes Integration."
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:123
+#: src/pages/applications/ApplicationForm.ts:162
 msgid "If left empty, authentik will try to extract the launch URL based on the selected provider."
 msgstr ""
 
@@ -1496,7 +1502,7 @@ msgstr ""
 msgid "Internal Host"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:89
+#: src/pages/applications/ApplicationForm.ts:97
 msgid "Internal application name, used in URLs."
 msgstr ""
 
@@ -1587,7 +1593,7 @@ msgstr ""
 msgid "Last sync: {0}"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:120
+#: src/pages/applications/ApplicationForm.ts:159
 msgid "Launch URL"
 msgstr ""
 
@@ -1618,7 +1624,7 @@ msgid "Loading"
 msgstr ""
 
 #: src/elements/Spinner.ts:29
-#: src/pages/applications/ApplicationForm.ts:98
+#: src/pages/applications/ApplicationForm.ts:106
 #: src/pages/applications/ApplicationViewPage.ts:49
 #: src/pages/events/RuleForm.ts:74
 #: src/pages/events/RuleForm.ts:90
@@ -1764,7 +1770,7 @@ msgstr ""
 msgid "Monitor"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:78
+#: src/pages/applications/ApplicationForm.ts:86
 #: src/pages/applications/ApplicationListPage.ts:57
 #: src/pages/crypto/CertificateKeyPairForm.ts:45
 #: src/pages/crypto/CertificateKeyPairListPage.ts:51
@@ -2199,7 +2205,7 @@ msgstr ""
 msgid "Policy binding"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:102
+#: src/pages/applications/ApplicationForm.ts:141
 #: src/pages/flows/FlowForm.ts:101
 #: src/pages/flows/StageBindingForm.ts:136
 msgid "Policy engine mode"
@@ -2301,7 +2307,7 @@ msgstr ""
 
 #: src/elements/oauth/UserCodeList.ts:29
 #: src/elements/oauth/UserRefreshList.ts:29
-#: src/pages/applications/ApplicationForm.ts:92
+#: src/pages/applications/ApplicationForm.ts:100
 #: src/pages/applications/ApplicationListPage.ts:59
 #: src/pages/applications/ApplicationViewPage.ts:85
 #: src/pages/providers/ProviderListPage.ts:34
@@ -2344,7 +2350,7 @@ msgstr ""
 msgid "Public key, acquired from https://www.google.com/recaptcha/intro/v3.html."
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:136
+#: src/pages/applications/ApplicationForm.ts:175
 msgid "Publisher"
 msgstr ""
 
@@ -2575,6 +2581,10 @@ msgstr ""
 msgid "See documentation for a list of all variables."
 msgstr ""
 
+#: src/pages/applications/ApplicationForm.ts:108
+msgid "Select a provider that this application should use. Alternatively, create a new provider."
+msgstr ""
+
 #: src/elements/table/Table.ts:215
 msgid "Select all rows"
 msgstr ""
@@ -2698,7 +2708,7 @@ msgstr ""
 msgid "Skip path regex"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:85
+#: src/pages/applications/ApplicationForm.ts:93
 #: src/pages/applications/ApplicationListPage.ts:58
 #: src/pages/flows/FlowForm.ts:94
 #: src/pages/sources/ldap/LDAPSourceForm.ts:60
@@ -2829,7 +2839,7 @@ msgstr ""
 msgid "Successfully copied TOTP Config."
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:50
+#: src/pages/applications/ApplicationForm.ts:55
 msgid "Successfully created application."
 msgstr ""
 
@@ -2957,7 +2967,7 @@ msgstr ""
 msgid "Successfully sent test-request."
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:47
+#: src/pages/applications/ApplicationForm.ts:52
 msgid "Successfully updated application."
 msgstr ""
 
@@ -3266,7 +3276,7 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:116
+#: src/pages/applications/ApplicationForm.ts:155
 msgid "UI settings"
 msgstr ""
 
