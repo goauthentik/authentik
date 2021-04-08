@@ -1,4 +1,6 @@
 """Application API Views"""
+from typing import Optional
+
 from django.core.cache import cache
 from django.db.models import QuerySet
 from django.http.response import HttpResponseBadRequest
@@ -35,9 +37,9 @@ class ApplicationSerializer(ModelSerializer):
     launch_url = SerializerMethodField()
     provider = ProviderSerializer(source="get_provider", required=False)
 
-    def get_launch_url(self, instance: Application) -> str:
+    def get_launch_url(self, instance: Application) -> Optional[str]:
         """Get generated launch URL"""
-        return instance.get_launch_url() or ""
+        return instance.get_launch_url()
 
     class Meta:
 
