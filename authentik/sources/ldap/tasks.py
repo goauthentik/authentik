@@ -1,7 +1,4 @@
 """LDAP Sync tasks"""
-from time import time
-
-from django.core.cache import cache
 from django.utils.text import slugify
 from ldap3.core.exceptions import LDAPException
 from structlog.stdlib import get_logger
@@ -26,6 +23,7 @@ def ldap_sync_all():
 @CELERY_APP.task(bind=True, base=MonitoredTask)
 def ldap_sync(self: MonitoredTask, source_pk: str):
     """Synchronization of an LDAP Source"""
+    self.result_timeout_hours = 2
     try:
         source: LDAPSource = LDAPSource.objects.get(pk=source_pk)
     except LDAPSource.DoesNotExist:
@@ -43,8 +41,6 @@ def ldap_sync(self: MonitoredTask, source_pk: str):
             sync_inst = sync_class(source)
             count = sync_inst.sync()
             messages.append(f"Synced {count} objects from {sync_class.__name__}")
-        cache_key = source.state_cache_prefix("last_sync")
-        cache.set(cache_key, time(), timeout=60 * 60)
         self.set_status(
             TaskResult(
                 TaskResultStatus.SUCCESSFUL,

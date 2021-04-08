@@ -35,7 +35,9 @@ class TaskViewSet(ViewSet):
 
     permission_classes = [IsAdminUser]
 
-    @swagger_auto_schema(responses={200: TaskSerializer(many=False)})
+    @swagger_auto_schema(
+        responses={200: TaskSerializer(many=False), 404: "Task not found"}
+    )
     # pylint: disable=invalid-name
     def retrieve(self, request: Request, pk=None) -> Response:
         """Get a single system task"""

@@ -22,7 +22,7 @@ import "../../../elements/forms/ModalForm";
 import "./LDAPSourceForm";
 import { Page } from "../../../elements/Page";
 import { until } from "lit-html/directives/until";
-import { LDAPSource, SourcesApi } from "authentik-api";
+import { LDAPSource, SourcesApi, TaskStatusEnum } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";
 
@@ -143,16 +143,28 @@ export class LDAPSourceViewPage extends Page {
                                     <p>${t`Sync status`}</p>
                                 </div>
                                 <div class="pf-c-card__body">
-                                    <p>
                                     ${until(new SourcesApi(DEFAULT_CONFIG).sourcesLdapSyncStatus({
                                         slug: this.source.slug
                                     }).then((ls) => {
-                                        if (!ls.lastSync) {
-                                            return t`Not synced in the last hour, check System tasks.`;
+                                        let header = html``;
+                                        if (ls.status === TaskStatusEnum.Warning) {
+                                            header = html`<p>${t`Task finished with warnings`}</p>`;
+                                        } else if (status === TaskStatusEnum.Error) {
+                                            header = html`<p>${t`Task finished with errors`}</p>`;
+                                        } else {
+                                            header = html`<p>${t`Last sync: ${ls.taskFinishTimestamp.toLocaleString()}`}</p>`;
                                         }
-                                        return t`Last sync: ${ls.lastSync.toLocaleString()}`;
+                                        return html`
+                                            ${header}
+                                            <ul>
+                                                ${ls.messages.map(m => {
+                                                    return html`<li>${m}</li>`;
+                                                })}
+                                            </ul>
+                                        `;
+                                    }).catch(() => {
+                                        return html`<p>${t`Not synced yet.`}</p>`;
                                     }), "loading")}
-                                    </p>
                                 </div>
                                 <div class="pf-c-card__footer">
                                     <ak-action-button

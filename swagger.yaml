@@ -85,15 +85,15 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/Task'
-        '403':
-          description: Authentication credentials were invalid, absent or insufficient.
-          schema:
-            $ref: '#/definitions/GenericError'
         '404':
           description: Object does not exist or caller has insufficient permissions
             to access it.
           schema:
             $ref: '#/definitions/APIException'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
       tags:
         - admin
     parameters:
@@ -9602,16 +9602,16 @@ paths:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/LDAPSourceSyncStatus'
-        '403':
-          description: Authentication credentials were invalid, absent or insufficient.
-          schema:
-            $ref: '#/definitions/GenericError'
+            $ref: '#/definitions/Task'
         '404':
           description: Object does not exist or caller has insufficient permissions
             to access it.
           schema:
             $ref: '#/definitions/APIException'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
       tags:
         - sources
     parameters:
@@ -17021,14 +17021,6 @@ definitions:
           type: string
           format: uuid
         uniqueItems: true
-  LDAPSourceSyncStatus:
-    type: object
-    properties:
-      last_sync:
-        title: Last sync
-        type: string
-        format: date-time
-        readOnly: true
   SourceType:
     description: Get source's type configuration
     required:

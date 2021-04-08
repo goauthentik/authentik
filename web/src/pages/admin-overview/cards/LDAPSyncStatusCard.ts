@@ -1,32 +1,40 @@
 import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
-import { SourcesApi } from "authentik-api";
+import { SourcesApi, Task, TaskStatusEnum } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import "../../../elements/forms/ConfirmationForm";
 
 @customElement("ak-admin-status-card-ldap-sync")
-export class LDAPSyncStatusCard extends AdminStatusCard<Date | undefined> {
+export class LDAPSyncStatusCard extends AdminStatusCard<Task> {
 
     @property()
     slug!: string;
 
-    getPrimaryValue(): Promise<Date | undefined> {
+    getPrimaryValue(): Promise<Task> {
         return new SourcesApi(DEFAULT_CONFIG).sourcesLdapSyncStatus({
             slug: this.slug
         }).then((value) => {
-            return value.lastSync;
+            return value;
+        }).catch(() => {
+            return { status: TaskStatusEnum.Error } as Task;
         });
     }
 
     renderValue(): TemplateResult {
-        return html`${t`Last sync: ${this.value?.toLocaleTimeString()}`}`;
+        return html`${t`Last sync: ${this.value?.taskFinishTimestamp.toLocaleTimeString()}`}`;
     }
 
-    getStatus(value: Date | undefined): Promise<AdminStatus> {
+    getStatus(value: Task): Promise<AdminStatus> {
+        if (value.status !== TaskStatusEnum.Successful) {
+            return Promise.resolve<AdminStatus>({
+                icon: "fa fas fa-times-circle pf-m-danger",
+                message: t`Sync failed.`,
+            });
+        }
         const now = new Date().getTime();
         const maxDelta = 3600000; // 1 hour
-        if (!value || (now - value.getTime()) > maxDelta) {
+        if (!value || (now - value.taskFinishTimestamp.getTime()) > maxDelta) {
             // No sync or last sync was over maxDelta ago
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",

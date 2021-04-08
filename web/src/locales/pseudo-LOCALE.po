@@ -150,7 +150,7 @@ msgstr ""
 
 #: src/elements/user/UserConsentList.ts:29
 #: src/pages/admin-overview/TopApplicationsTable.ts:42
-#: src/pages/applications/ApplicationListPage.ts:95
+#: src/pages/applications/ApplicationListPage.ts:100
 #: src/pages/providers/ProviderListPage.ts:53
 msgid "Application"
 msgstr ""
@@ -364,6 +364,10 @@ msgstr ""
 
 #: src/pages/admin-overview/cards/VersionStatusCard.ts:21
 msgid "Build hash: {0}"
+msgstr ""
+
+#: src/pages/sources/SourcesListPage.ts:62
+msgid "Built-in"
 msgstr ""
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts:89
@@ -650,8 +654,8 @@ msgid "Copy Key"
 msgstr ""
 
 #: src/pages/applications/ApplicationForm.ts:120
-#: src/pages/applications/ApplicationListPage.ts:111
-#: src/pages/applications/ApplicationListPage.ts:119
+#: src/pages/applications/ApplicationListPage.ts:116
+#: src/pages/applications/ApplicationListPage.ts:124
 #: src/pages/crypto/CertificateKeyPairListPage.ts:122
 #: src/pages/crypto/CertificateKeyPairListPage.ts:130
 #: src/pages/events/RuleListPage.ts:91
@@ -680,8 +684,8 @@ msgstr ""
 #: src/pages/providers/ProviderListPage.ts:116
 #: src/pages/providers/RelatedApplicationButton.ts:27
 #: src/pages/providers/RelatedApplicationButton.ts:35
-#: src/pages/sources/SourcesListPage.ts:100
-#: src/pages/sources/SourcesListPage.ts:109
+#: src/pages/sources/SourcesListPage.ts:115
+#: src/pages/sources/SourcesListPage.ts:124
 #: src/pages/stages/StageListPage.ts:119
 #: src/pages/stages/StageListPage.ts:128
 #: src/pages/stages/invitation/InvitationListPage.ts:77
@@ -697,7 +701,7 @@ msgstr ""
 msgid "Create"
 msgstr ""
 
-#: src/pages/applications/ApplicationListPage.ts:114
+#: src/pages/applications/ApplicationListPage.ts:119
 #: src/pages/providers/RelatedApplicationButton.ts:30
 msgid "Create Application"
 msgstr ""
@@ -778,7 +782,7 @@ msgstr ""
 #: src/pages/policies/PolicyListPage.ts:136
 #: src/pages/property-mappings/PropertyMappingListPage.ts:125
 #: src/pages/providers/ProviderListPage.ts:119
-#: src/pages/sources/SourcesListPage.ts:112
+#: src/pages/sources/SourcesListPage.ts:127
 #: src/pages/stages/StageListPage.ts:131
 msgid "Create {0}"
 msgstr ""
@@ -822,7 +826,7 @@ msgid "Define how notifications are sent to users, like Email or Webhook."
 msgstr ""
 
 #: src/elements/forms/DeleteForm.ts:79
-#: src/pages/applications/ApplicationListPage.ts:102
+#: src/pages/applications/ApplicationListPage.ts:107
 #: src/pages/crypto/CertificateKeyPairListPage.ts:86
 #: src/pages/events/RuleListPage.ts:82
 #: src/pages/events/TransportListPage.ts:86
@@ -833,7 +837,7 @@ msgstr ""
 #: src/pages/policies/PolicyListPage.ts:115
 #: src/pages/property-mappings/PropertyMappingListPage.ts:104
 #: src/pages/providers/ProviderListPage.ts:98
-#: src/pages/sources/SourcesListPage.ts:91
+#: src/pages/sources/SourcesListPage.ts:106
 #: src/pages/stages/StageListPage.ts:110
 #: src/pages/stages/invitation/InvitationListPage.ts:68
 #: src/pages/stages/prompt/PromptListPage.ts:87
@@ -935,7 +939,7 @@ msgstr ""
 msgid "Disable Time-based OTP"
 msgstr ""
 
-#: src/pages/sources/SourcesListPage.ts:60
+#: src/pages/sources/SourcesListPage.ts:75
 msgid "Disabled"
 msgstr ""
 
@@ -972,7 +976,7 @@ msgstr ""
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:139
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:138
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:132
-#: src/pages/sources/SourcesListPage.ts:79
+#: src/pages/sources/SourcesListPage.ts:94
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:116
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:135
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:122
@@ -1588,8 +1592,8 @@ msgstr ""
 msgid "Last seen: {0}"
 msgstr ""
 
-#: src/pages/admin-overview/cards/LDAPSyncStatusCard.ts:23
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:150
+#: src/pages/admin-overview/cards/LDAPSyncStatusCard.ts:25
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts:154
 msgid "Last sync: {0}"
 msgstr ""
 
@@ -1946,11 +1950,11 @@ msgstr ""
 msgid "Not found"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:148
-msgid "Not synced in the last hour, check System tasks."
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts:165
+msgid "Not synced yet."
 msgstr ""
 
-#: src/pages/admin-overview/cards/LDAPSyncStatusCard.ts:32
+#: src/pages/admin-overview/cards/LDAPSyncStatusCard.ts:40
 msgid "Not synced."
 msgstr ""
 
@@ -2037,6 +2041,10 @@ msgstr ""
 
 #: src/pages/events/TransportForm.ts:102
 msgid "Only send notification once, for example when sending a webhook into a chat channel."
+msgstr ""
+
+#: src/pages/applications/ApplicationListPage.ts:95
+msgid "Open application"
 msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:172
@@ -2468,7 +2476,7 @@ msgstr ""
 msgid "Result"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:163
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts:177
 #: src/pages/system-tasks/SystemTaskListPage.ts:107
 msgid "Retry Task"
 msgstr ""
@@ -2585,7 +2593,7 @@ msgstr ""
 msgid "Select a provider that this application should use. Alternatively, create a new provider."
 msgstr ""
 
-#: src/elements/table/Table.ts:215
+#: src/elements/table/Table.ts:218
 msgid "Select all rows"
 msgstr ""
 
@@ -2722,7 +2730,7 @@ msgid "Something went wrong! Please try again later."
 msgstr ""
 
 #: src/pages/providers/ProviderListPage.ts:91
-#: src/pages/sources/SourcesListPage.ts:84
+#: src/pages/sources/SourcesListPage.ts:99
 msgid "Source"
 msgstr ""
 
@@ -3097,6 +3105,10 @@ msgstr ""
 msgid "Sync"
 msgstr ""
 
+#: src/pages/admin-overview/cards/LDAPSyncStatusCard.ts:31
+msgid "Sync failed."
+msgstr ""
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts:93
 msgid "Sync groups"
 msgstr ""
@@ -3136,6 +3148,14 @@ msgstr ""
 
 #: src/pages/flows/StageBindingForm.ts:78
 msgid "Target"
+msgstr ""
+
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts:151
+msgid "Task finished with errors"
+msgstr ""
+
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts:148
+msgid "Task finished with warnings"
 msgstr ""
 
 #: src/pages/stages/email/EmailStageForm.ts:157
@@ -3345,7 +3365,7 @@ msgstr ""
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:129
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:128
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:122
-#: src/pages/sources/SourcesListPage.ts:66
+#: src/pages/sources/SourcesListPage.ts:81
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:106
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:125
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:112
@@ -3448,7 +3468,7 @@ msgstr ""
 #: src/pages/policies/PolicyListPage.ts:80
 #: src/pages/property-mappings/PropertyMappingListPage.ts:69
 #: src/pages/providers/ProviderListPage.ts:76
-#: src/pages/sources/SourcesListPage.ts:69
+#: src/pages/sources/SourcesListPage.ts:84
 #: src/pages/stages/StageListPage.ts:88
 #: src/pages/users/UserActiveForm.ts:41
 msgid "Update {0}"
@@ -3706,6 +3726,10 @@ msgstr ""
 
 #: src/interfaces/Interface.ts:50
 msgid "You're currently impersonating {0}."
+msgstr ""
+
+#: src/pages/sources/SourcesListPage.ts:61
+msgid "authentik Built-in"
 msgstr ""
 
 #: src/pages/stages/password/PasswordStageForm.ts:76

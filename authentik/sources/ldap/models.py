@@ -81,10 +81,6 @@ class LDAPSource(Source):
 
         return LDAPSourceSerializer
 
-    def state_cache_prefix(self, suffix: str) -> str:
-        """Key by which the ldap source status is saved"""
-        return f"source_ldap_{self.pk}_state_{suffix}"
-
     _connection: Optional[Connection] = None
 
     @property
