@@ -9,6 +9,7 @@ from rest_framework.serializers import ValidationError
 
 from authentik.core.models import User
 from authentik.core.signals import password_changed
+from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.sources.ldap.models import LDAPSource
 from authentik.sources.ldap.password import LDAPPasswordChanger
@@ -46,8 +47,7 @@ def ldap_password_validate(sender, password: str, plan_context: dict[str, Any], 
 @receiver(password_changed)
 # pylint: disable=unused-argument
 def ldap_sync_password(sender, user: User, password: str, **_):
-    """Connect to ldap and update password. We do this in the background to get
-    automatic retries on error."""
+    """Connect to ldap and update password."""
     sources = LDAPSource.objects.filter(sync_users_password=True)
     if not sources.exists():
         return
@@ -56,4 +56,9 @@ def ldap_sync_password(sender, user: User, password: str, **_):
     try:
         changer.change_password(user, password)
     except LDAPException as exc:
+        Event.new(
+            EventAction.CONFIGURATION_ERROR,
+            message=str(exc),
+            source=source,
+        ).set_user(user).save()
         raise ValidationError("Failed to set password") from exc

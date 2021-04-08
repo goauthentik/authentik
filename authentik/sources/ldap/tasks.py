@@ -52,5 +52,6 @@ def ldap_sync(self: MonitoredTask, source_pk: str):
             )
         )
     except LDAPException as exc:
+        # No explicit event is created here as .set_status with an error will do that
         LOGGER.debug(exc)
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
