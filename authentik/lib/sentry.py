@@ -7,6 +7,7 @@ from channels_redis.core import ChannelFull
 from django.core.exceptions import DisallowedHost, ValidationError
 from django.db import InternalError, OperationalError, ProgrammingError
 from django_redis.exceptions import ConnectionInterrupted
+from docker.errors import DockerException
 from ldap3.core.exceptions import LDAPException
 from redis.exceptions import ConnectionError as RedisConnectionError
 from redis.exceptions import RedisError, ResponseError
@@ -28,6 +29,7 @@ def before_send(event, hint):
         KeyboardInterrupt,
         ConnectionResetError,
         OSError,
+        PermissionError,
         # Django DB Errors
         OperationalError,
         InternalError,
@@ -55,6 +57,8 @@ def before_send(event, hint):
         SentryIgnoredException,
         # ldap errors
         LDAPException,
+        # Docker errors
+        DockerException,
     )
     if "exc_info" in hint:
         _, exc_value, _ = hint["exc_info"]
