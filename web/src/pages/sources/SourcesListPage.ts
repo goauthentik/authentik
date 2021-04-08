@@ -53,6 +53,22 @@ export class SourceListPage extends TablePage<Source> {
         ];
     }
 
+    renderRowsAbove(): TemplateResult {
+        return html`<tbody role="rowgroup">
+                <tr role="row">
+                    <td role="cell">
+                        <span>
+                            <div>${t`authentik Built-in`}</div>
+                            <small>${t`Built-in`}</small>
+                        </span>
+                    </td>
+                    <td role="cell">-</td>
+                    <td role="cell">
+                    </td>
+                </tr>
+            </tbody>`;
+    }
+
     row(item: Source): TemplateResult[] {
         return [
             html`<a href="#/core/sources/${item.slug}">
