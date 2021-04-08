@@ -26,6 +26,11 @@ module.exports = {
                     label: "GitHub",
                     position: "right",
                 },
+                {
+                    href: "https://discord.gg/jg33eMhnj6",
+                    label: "Discord",
+                    position: "right",
+                },
             ],
         },
         footer: {
@@ -49,6 +54,10 @@ module.exports = {
                         {
                             label: "GitHub",
                             href: "https://github.com/beryju/authentik",
+                        },
+                        {
+                            label: "Discord",
+                            href: "https://discord.gg/jg33eMhnj6",
                         },
                     ],
                 },
