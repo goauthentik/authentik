@@ -90,6 +90,11 @@ export class ApplicationListPage extends TablePage<Application> {
                     ${t`Edit`}
                 </button>
             </ak-forms-modal>
+            ${item.launchUrl ?
+                html`<a href=${item.launchUrl} target="_blank" class="pf-c-button pf-m-secondary">
+                    ${t`Open application`}
+                </a>`:
+                html``}
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Application`}
