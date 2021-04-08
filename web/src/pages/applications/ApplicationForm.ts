@@ -157,8 +157,8 @@ export class ApplicationForm extends Form<Application> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${t`Launch URL`}
-                        name="launchUrl">
-                        <input type="text" value="${ifDefined(this.application?.launchUrl)}" class="pf-c-form-control">
+                        name="metaLaunchUrl">
+                        <input type="text" value="${ifDefined(this.application?.metaLaunchUrl)}" class="pf-c-form-control">
                         <p class="pf-c-form__helper-text">${t`If left empty, authentik will try to extract the launch URL based on the selected provider.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
