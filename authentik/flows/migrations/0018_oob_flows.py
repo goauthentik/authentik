@@ -71,13 +71,24 @@ def create_default_oob_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEditor)
             "order": 100,
         },
     )
+    prompt_email, _ = Prompt.objects.using(db_alias).update_or_create(
+        field_key="email",
+        defaults={
+            "label": "Email",
+            "type": FieldTypes.EMAIL,
+            "placeholder": "Admin email",
+            "order": 101,
+        },
+    )
     password_first = Prompt.objects.using(db_alias).get(field_key="password")
     password_second = Prompt.objects.using(db_alias).get(field_key="password_repeat")
 
     prompt_stage, _ = PromptStage.objects.using(db_alias).update_or_create(
         name="default-oob-password",
     )
-    prompt_stage.fields.set([prompt_header, password_first, password_second])
+    prompt_stage.fields.set(
+        [prompt_header, prompt_email, password_first, password_second]
+    )
     prompt_stage.save()
 
     user_write, _ = UserWriteStage.objects.using(db_alias).update_or_create(
