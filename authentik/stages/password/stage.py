@@ -8,7 +8,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpRequest, HttpResponse
 from django.urls import reverse
 from django.utils.translation import gettext as _
-from rest_framework.exceptions import ErrorDetail
+from rest_framework.exceptions import ErrorDetail, ValidationError
 from rest_framework.fields import CharField
 from structlog.stdlib import get_logger
 
@@ -126,6 +126,12 @@ class PasswordStageView(ChallengeStageView):
             del auth_kwargs["password"]
             # User was found, but permission was denied (i.e. user is not active)
             LOGGER.debug("Denied access", **auth_kwargs)
+            return self.executor.stage_invalid()
+        except ValidationError as exc:
+            del auth_kwargs["password"]
+            # User was found, authentication succeeded, but another signal raised an error
+            # (most likely LDAP)
+            LOGGER.debug("Validation error from signal", exc=exc, **auth_kwargs)
             return self.executor.stage_invalid()
         else:
             if not user:
