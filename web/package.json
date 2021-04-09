@@ -41,7 +41,7 @@
         "@babel/preset-env": "^7.13.15",
         "@babel/preset-typescript": "^7.13.0",
         "@fortawesome/fontawesome-free": "^5.15.3",
-        "@lingui/cli": "^3.8.3",
+        "@lingui/cli": "^3.8.6",
         "@lingui/core": "^3.8.6",
         "@lingui/macro": "^3.8.6",
         "@patternfly/patternfly": "^4.96.2",
