@@ -4,7 +4,7 @@ from typing import Any
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-from ldap3.core.exceptions import LDAPException, LDAPOperationResult
+from ldap3.core.exceptions import LDAPOperationResult
 from rest_framework.serializers import ValidationError
 
 from authentik.core.models import User
