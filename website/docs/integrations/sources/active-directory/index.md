@@ -19,7 +19,7 @@ The following placeholders will be used:
 
 3. Give the User a password, generated using for example `pwgen 64 1`.
 
-4. Open the Delegation of Control Wizard by right-clicking the domain.
+4. Open the Delegation of Control Wizard by right-clicking the domain and selecting "All Tasks".
 
 5. Select the authentik service user you've just created.
 
@@ -27,8 +27,13 @@ The following placeholders will be used:
 
     ![](./02_delegate.png)
 
-## authentik Setup
+7. Grant these additional permissions (only required when *Sync users' password* is enabled, and dependant on your AD Domain)
 
+    ![](./03_additional_perms.png)
+
+Additional infos: https://support.microfocus.com/kb/doc.php?id=7023371
+
+## authentik Setup
 In authentik, create a new LDAP Source in Administration -> Sources.
 
 Use these settings:
@@ -55,8 +60,8 @@ The other settings might need to be adjusted based on the setup of your domain.
 
 After you save the source, a synchronization will start in the background. When its done, you cen see the summary on the System Tasks page.
 
-![](./03_ak_status.png)
+![](./10_ak_status.png)
 
 To finalise the Active Directory setup, you need to enable the backend "authentik LDAP" in the Password Stage.
 
-![](./04_ak_stage.png)
+![](./11_ak_stage.png)
