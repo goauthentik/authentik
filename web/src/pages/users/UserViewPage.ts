@@ -30,6 +30,7 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 import { EVENT_REFRESH } from "../../constants";
 import { showMessage } from "../../elements/messages/MessageContainer";
 import { MessageLevel } from "../../elements/messages/Message";
+import { PFColor } from "../../elements/Label";
 
 @customElement("ak-user-view")
 export class UserViewPage extends Page {
@@ -118,7 +119,7 @@ export class UserViewPage extends Page {
                                         </dt>
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">
-                                                <i class="fa ${this.user.isActive ? "fa-check-circle pf-m-success" : "fa-exclamation-triangle pf-m-warning"}"></i>
+                                                <ak-label color=${this.user.isActive ? PFColor.Green : PFColor.Orange} text=""></ak-label>
                                             </div>
                                         </dd>
                                     </div>
@@ -128,7 +129,7 @@ export class UserViewPage extends Page {
                                         </dt>
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">
-                                                <i class="fa ${this.user.isSuperuser ? "fa-check-circle pf-m-success" : "fa-exclamation-triangle pf-m-warning"}"></i>
+                                                <ak-label color=${this.user.isActive ? PFColor.Green : PFColor.Orange} text=""></ak-label>
                                             </div>
                                         </dd>
                                     </div>

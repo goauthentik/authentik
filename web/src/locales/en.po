@@ -71,7 +71,7 @@ msgid "Action"
 msgstr "Action"
 
 #: src/pages/users/UserListPage.ts:50
-#: src/pages/users/UserViewPage.ts:116
+#: src/pages/users/UserViewPage.ts:117
 msgid "Active"
 msgstr "Active"
 
@@ -174,7 +174,7 @@ msgstr "Application's display Name."
 msgid "Applications"
 msgstr "Applications"
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:41
+#: src/pages/admin-overview/AdminOverviewPage.ts:47
 msgid "Apps with most usage"
 msgstr "Apps with most usage"
 
@@ -315,7 +315,7 @@ msgstr "Backup finished with errors."
 msgid "Backup finished with warnings."
 msgstr "Backup finished with warnings."
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:58
+#: src/pages/admin-overview/AdminOverviewPage.ts:64
 msgid "Backup status"
 msgstr "Backup status"
 
@@ -379,11 +379,11 @@ msgstr "Built-in"
 msgid "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 msgstr "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:56
+#: src/pages/admin-overview/AdminOverviewPage.ts:62
 msgid "Cached Flows"
 msgstr "Cached Flows"
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:54
+#: src/pages/admin-overview/AdminOverviewPage.ts:60
 msgid "Cached Policies"
 msgstr "Cached Policies"
 
@@ -455,7 +455,7 @@ msgstr "Change your password"
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:124
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:143
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:130
-#: src/pages/users/UserViewPage.ts:177
+#: src/pages/users/UserViewPage.ts:178
 msgid "Changelog"
 msgstr "Changelog"
 
@@ -676,8 +676,8 @@ msgstr "Copy Key"
 #: src/pages/groups/GroupListPage.ts:99
 #: src/pages/outposts/OutpostListPage.ts:136
 #: src/pages/outposts/OutpostListPage.ts:144
-#: src/pages/outposts/ServiceConnectionListPage.ts:109
-#: src/pages/outposts/ServiceConnectionListPage.ts:118
+#: src/pages/outposts/ServiceConnectionListPage.ts:110
+#: src/pages/outposts/ServiceConnectionListPage.ts:119
 #: src/pages/policies/BoundPoliciesList.ts:158
 #: src/pages/policies/BoundPoliciesList.ts:185
 #: src/pages/policies/BoundPoliciesList.ts:206
@@ -782,7 +782,7 @@ msgstr "Create provider"
 
 #: src/pages/applications/ApplicationForm.ts:123
 #: src/pages/flows/BoundStagesList.ts:149
-#: src/pages/outposts/ServiceConnectionListPage.ts:121
+#: src/pages/outposts/ServiceConnectionListPage.ts:122
 #: src/pages/policies/BoundPoliciesList.ts:188
 #: src/pages/policies/PolicyListPage.ts:136
 #: src/pages/property-mappings/PropertyMappingListPage.ts:125
@@ -838,7 +838,7 @@ msgstr "Define how notifications are sent to users, like Email or Webhook."
 #: src/pages/flows/FlowListPage.ts:86
 #: src/pages/groups/GroupListPage.ts:82
 #: src/pages/outposts/OutpostListPage.ts:86
-#: src/pages/outposts/ServiceConnectionListPage.ts:100
+#: src/pages/outposts/ServiceConnectionListPage.ts:101
 #: src/pages/policies/PolicyListPage.ts:115
 #: src/pages/property-mappings/PropertyMappingListPage.ts:104
 #: src/pages/providers/ProviderListPage.ts:98
@@ -888,7 +888,7 @@ msgstr "Deny the user access"
 
 #: src/pages/applications/ApplicationForm.ts:170
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts:65
-#: src/pages/system-tasks/SystemTaskListPage.ts:54
+#: src/pages/system-tasks/SystemTaskListPage.ts:55
 #: src/pages/user-settings/tokens/UserTokenForm.ts:50
 msgid "Description"
 msgstr "Description"
@@ -974,7 +974,7 @@ msgstr "Each provider has a different issuer, based on the application slug."
 #: src/pages/flows/FlowListPage.ts:74
 #: src/pages/groups/GroupListPage.ts:70
 #: src/pages/outposts/OutpostListPage.ts:74
-#: src/pages/outposts/ServiceConnectionListPage.ts:88
+#: src/pages/outposts/ServiceConnectionListPage.ts:89
 #: src/pages/policies/PolicyListPage.ts:90
 #: src/pages/property-mappings/PropertyMappingListPage.ts:79
 #: src/pages/providers/ProviderListPage.ts:86
@@ -989,7 +989,7 @@ msgstr "Each provider has a different issuer, based on the application slug."
 #: src/pages/stages/prompt/PromptListPage.ts:75
 #: src/pages/user-settings/tokens/UserTokenList.ts:113
 #: src/pages/users/UserListPage.ts:75
-#: src/pages/users/UserViewPage.ts:147
+#: src/pages/users/UserViewPage.ts:148
 msgid "Edit"
 msgstr "Edit"
 
@@ -1022,7 +1022,7 @@ msgstr "Either no applications are defined, or you don't have access to any."
 #: src/pages/stages/identification/IdentificationStageForm.ts:79
 #: src/pages/user-settings/UserDetailsPage.ts:71
 #: src/pages/users/UserForm.ts:61
-#: src/pages/users/UserViewPage.ts:100
+#: src/pages/users/UserViewPage.ts:101
 msgid "Email"
 msgstr "Email"
 
@@ -1073,7 +1073,7 @@ msgstr "Enrollment"
 msgid "Enrollment flow"
 msgstr "Enrollment flow"
 
-#: src/pages/system-tasks/SystemTaskListPage.ts:67
+#: src/pages/system-tasks/SystemTaskListPage.ts:68
 msgid "Error"
 msgstr "Error"
 
@@ -1178,7 +1178,7 @@ msgstr "Expiry"
 msgid "Expiry date"
 msgstr "Expiry date"
 
-#: src/pages/users/UserViewPage.ts:188
+#: src/pages/users/UserViewPage.ts:189
 msgid "Explicit Consent"
 msgstr "Explicit Consent"
 
@@ -1446,7 +1446,7 @@ msgid "Icon"
 msgstr "Icon"
 
 #: src/pages/flows/FlowListPage.ts:46
-#: src/pages/system-tasks/SystemTaskListPage.ts:53
+#: src/pages/system-tasks/SystemTaskListPage.ts:54
 #: src/pages/tokens/TokenListPage.ts:44
 #: src/pages/user-settings/tokens/UserTokenForm.ts:44
 #: src/pages/user-settings/tokens/UserTokenList.ts:39
@@ -1581,15 +1581,15 @@ msgid "Label shown next to/above the prompt."
 msgstr "Label shown next to/above the prompt."
 
 #: src/pages/users/UserListPage.ts:51
-#: src/pages/users/UserViewPage.ts:108
+#: src/pages/users/UserViewPage.ts:109
 msgid "Last login"
 msgstr "Last login"
 
-#: src/pages/system-tasks/SystemTaskListPage.ts:55
+#: src/pages/system-tasks/SystemTaskListPage.ts:56
 msgid "Last run"
 msgstr "Last run"
 
-#: src/pages/outposts/OutpostHealth.ts:40
+#: src/pages/outposts/OutpostHealth.ts:41
 msgid "Last seen: {0}"
 msgstr "Last seen: {0}"
 
@@ -1682,7 +1682,7 @@ msgstr "Loading..."
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts:62
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts:63
-#: src/pages/outposts/ServiceConnectionListPage.ts:54
+#: src/pages/outposts/ServiceConnectionListPage.ts:55
 msgid "Local"
 msgstr "Local"
 
@@ -1698,7 +1698,7 @@ msgstr "Login to continue to {0}."
 msgid "Logins"
 msgstr "Logins"
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:38
+#: src/pages/admin-overview/AdminOverviewPage.ts:44
 #: src/pages/applications/ApplicationViewPage.ts:71
 msgid "Logins over the last 24 hours"
 msgstr "Logins over the last 24 hours"
@@ -1711,7 +1711,7 @@ msgstr "Logout URL"
 msgid "Logs"
 msgstr "Logs"
 
-#: src/pages/system-tasks/SystemTaskListPage.ts:29
+#: src/pages/system-tasks/SystemTaskListPage.ts:30
 msgid "Long-running operations which authentik executes in the background."
 msgstr "Long-running operations which authentik executes in the background."
 
@@ -1738,7 +1738,7 @@ msgstr "Members"
 
 #: src/pages/events/EventInfo.ts:174
 #: src/pages/policies/PolicyTestForm.ts:43
-#: src/pages/system-tasks/SystemTaskListPage.ts:79
+#: src/pages/system-tasks/SystemTaskListPage.ts:80
 msgid "Messages"
 msgstr "Messages"
 
@@ -1797,7 +1797,7 @@ msgstr "Monitor"
 #: src/pages/outposts/OutpostListPage.ts:49
 #: src/pages/outposts/ServiceConnectionDockerForm.ts:53
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts:54
-#: src/pages/outposts/ServiceConnectionListPage.ts:52
+#: src/pages/outposts/ServiceConnectionListPage.ts:53
 #: src/pages/policies/PolicyListPage.ts:56
 #: src/pages/policies/dummy/DummyPolicyForm.ts:53
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:54
@@ -1846,7 +1846,7 @@ msgstr "Monitor"
 #: src/pages/user-settings/UserDetailsPage.ts:64
 #: src/pages/users/UserForm.ts:54
 #: src/pages/users/UserListPage.ts:49
-#: src/pages/users/UserViewPage.ts:92
+#: src/pages/users/UserViewPage.ts:93
 msgid "Name"
 msgstr "Name"
 
@@ -1873,7 +1873,7 @@ msgstr "New version available!"
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts:61
 #: src/pages/groups/GroupListPage.ts:58
-#: src/pages/outposts/ServiceConnectionListPage.ts:63
+#: src/pages/outposts/ServiceConnectionListPage.ts:64
 #: src/pages/policies/BoundPoliciesList.ts:118
 #: src/pages/policies/PolicyTestForm.ts:38
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:119
@@ -1939,7 +1939,7 @@ msgstr "No workers connected. Background tasks will not run."
 msgid "None (rule disabled)"
 msgstr "None (rule disabled)"
 
-#: src/pages/outposts/OutpostHealth.ts:30
+#: src/pages/outposts/OutpostHealth.ts:31
 msgid "Not available"
 msgstr "Not available"
 
@@ -2002,7 +2002,7 @@ msgstr "Notifications Transport"
 msgid "Number"
 msgstr "Number"
 
-#: src/pages/users/UserViewPage.ts:196
+#: src/pages/users/UserViewPage.ts:197
 msgid "OAuth Authorization Codes"
 msgstr "OAuth Authorization Codes"
 
@@ -2010,7 +2010,7 @@ msgstr "OAuth Authorization Codes"
 msgid "OAuth Provider {0}"
 msgstr "OAuth Provider {0}"
 
-#: src/pages/users/UserViewPage.ts:204
+#: src/pages/users/UserViewPage.ts:205
 msgid "OAuth Refresh Codes"
 msgstr "OAuth Refresh Codes"
 
@@ -2113,7 +2113,7 @@ msgstr "Outpost Deployment Info"
 msgid "Outpost Service Connections"
 msgstr "Outpost Service Connections"
 
-#: src/pages/outposts/ServiceConnectionListPage.ts:93
+#: src/pages/outposts/ServiceConnectionListPage.ts:94
 msgid "Outpost Service-connection"
 msgstr "Outpost Service-connection"
 
@@ -2134,7 +2134,7 @@ msgstr "Outposts are deployments of authentik components to support different en
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:67
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:66
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:69
-#: src/pages/users/UserViewPage.ts:74
+#: src/pages/users/UserViewPage.ts:75
 msgid "Overview"
 msgstr "Overview"
 
@@ -2187,7 +2187,7 @@ msgid "Please enter your password"
 msgstr "Please enter your password"
 
 #: src/interfaces/AdminInterface.ts:26
-#: src/pages/admin-overview/AdminOverviewPage.ts:46
+#: src/pages/admin-overview/AdminOverviewPage.ts:52
 #: src/pages/flows/FlowListPage.ts:50
 #: src/pages/policies/PolicyListPage.ts:38
 msgid "Policies"
@@ -2337,7 +2337,7 @@ msgid "Provider type"
 msgstr "Provider type"
 
 #: src/interfaces/AdminInterface.ts:20
-#: src/pages/admin-overview/AdminOverviewPage.ts:44
+#: src/pages/admin-overview/AdminOverviewPage.ts:50
 #: src/pages/outposts/OutpostForm.ts:82
 #: src/pages/outposts/OutpostListPage.ts:50
 msgid "Providers"
@@ -2468,7 +2468,7 @@ msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 
 #: src/pages/users/UserListPage.ts:132
-#: src/pages/users/UserViewPage.ts:165
+#: src/pages/users/UserViewPage.ts:166
 msgid "Reset Password"
 msgstr "Reset Password"
 
@@ -2482,7 +2482,7 @@ msgid "Result"
 msgstr "Result"
 
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:177
-#: src/pages/system-tasks/SystemTaskListPage.ts:107
+#: src/pages/system-tasks/SystemTaskListPage.ts:108
 msgid "Retry Task"
 msgstr "Retry Task"
 
@@ -2805,7 +2805,7 @@ msgstr "Stages"
 msgid "Stages are single steps of a Flow that a user is guided through."
 msgstr "Stages are single steps of a Flow that a user is guided through."
 
-#: src/pages/outposts/ServiceConnectionListPage.ts:55
+#: src/pages/outposts/ServiceConnectionListPage.ts:56
 msgid "State"
 msgstr "State"
 
@@ -2818,7 +2818,7 @@ msgstr "Static Tokens"
 msgid "Static: Static value, displayed as-is."
 msgstr "Static: Static value, displayed as-is."
 
-#: src/pages/system-tasks/SystemTaskListPage.ts:56
+#: src/pages/system-tasks/SystemTaskListPage.ts:57
 msgid "Status"
 msgstr "Status"
 
@@ -2848,7 +2848,7 @@ msgstr "Subject mode"
 msgid "Subject-alt name"
 msgstr "Subject-alt name"
 
-#: src/pages/system-tasks/SystemTaskListPage.ts:63
+#: src/pages/system-tasks/SystemTaskListPage.ts:64
 msgid "Successful"
 msgstr "Successful"
 
@@ -2975,7 +2975,7 @@ msgid "Successfully generated certificate-key pair."
 msgstr "Successfully generated certificate-key pair."
 
 #: src/pages/users/UserListPage.ts:127
-#: src/pages/users/UserViewPage.ts:160
+#: src/pages/users/UserViewPage.ts:161
 msgid "Successfully generated recovery link"
 msgstr "Successfully generated recovery link"
 
@@ -3106,7 +3106,7 @@ msgstr "Successfully updated user."
 msgid "Successfully updated {0} {1}"
 msgstr "Successfully updated {0} {1}"
 
-#: src/pages/users/UserViewPage.ts:126
+#: src/pages/users/UserViewPage.ts:127
 msgid "Superuser"
 msgstr "Superuser"
 
@@ -3138,12 +3138,12 @@ msgstr "Sync status"
 msgid "Sync users"
 msgstr "Sync users"
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:33
+#: src/pages/admin-overview/AdminOverviewPage.ts:29
 msgid "System Overview"
 msgstr "System Overview"
 
 #: src/interfaces/AdminInterface.ts:17
-#: src/pages/system-tasks/SystemTaskListPage.ts:26
+#: src/pages/system-tasks/SystemTaskListPage.ts:27
 msgid "System Tasks"
 msgstr "System Tasks"
 
@@ -3301,7 +3301,7 @@ msgstr "Transports"
 
 #: src/pages/flows/BoundStagesList.ts:40
 #: src/pages/outposts/OutpostForm.ts:53
-#: src/pages/outposts/ServiceConnectionListPage.ts:53
+#: src/pages/outposts/ServiceConnectionListPage.ts:54
 #: src/pages/policies/PolicyListPage.ts:57
 #: src/pages/property-mappings/PropertyMappingListPage.ts:55
 #: src/pages/providers/ProviderListPage.ts:54
@@ -3347,11 +3347,11 @@ msgstr "URL used to request the initial token. This URL is only required for OAu
 msgid "Unenrollment"
 msgstr "Unenrollment"
 
-#: src/pages/outposts/ServiceConnectionListPage.ts:70
+#: src/pages/outposts/ServiceConnectionListPage.ts:71
 msgid "Unhealthy"
 msgstr "Unhealthy"
 
-#: src/pages/system-tasks/SystemTaskListPage.ts:69
+#: src/pages/system-tasks/SystemTaskListPage.ts:70
 msgid "Unknown"
 msgstr "Unknown"
 
@@ -3369,7 +3369,7 @@ msgstr "Up-to-date!"
 #: src/pages/flows/FlowListPage.ts:66
 #: src/pages/groups/GroupListPage.ts:62
 #: src/pages/outposts/OutpostListPage.ts:66
-#: src/pages/outposts/ServiceConnectionListPage.ts:75
+#: src/pages/outposts/ServiceConnectionListPage.ts:76
 #: src/pages/policies/BoundPoliciesList.ts:64
 #: src/pages/policies/BoundPoliciesList.ts:84
 #: src/pages/policies/BoundPoliciesList.ts:99
@@ -3393,7 +3393,7 @@ msgstr "Up-to-date!"
 #: src/pages/user-settings/tokens/UserTokenList.ts:105
 #: src/pages/users/UserActiveForm.ts:66
 #: src/pages/users/UserListPage.ts:67
-#: src/pages/users/UserViewPage.ts:139
+#: src/pages/users/UserViewPage.ts:140
 msgid "Update"
 msgstr "Update"
 
@@ -3469,7 +3469,7 @@ msgstr "Update Token"
 
 #: src/pages/policies/BoundPoliciesList.ts:102
 #: src/pages/users/UserListPage.ts:70
-#: src/pages/users/UserViewPage.ts:142
+#: src/pages/users/UserViewPage.ts:143
 msgid "Update User"
 msgstr "Update User"
 
@@ -3478,7 +3478,7 @@ msgid "Update details"
 msgstr "Update details"
 
 #: src/pages/flows/BoundStagesList.ts:56
-#: src/pages/outposts/ServiceConnectionListPage.ts:78
+#: src/pages/outposts/ServiceConnectionListPage.ts:79
 #: src/pages/policies/BoundPoliciesList.ts:67
 #: src/pages/policies/PolicyListPage.ts:80
 #: src/pages/property-mappings/PropertyMappingListPage.ts:69
@@ -3523,7 +3523,7 @@ msgstr "Use global settings"
 msgid "User"
 msgstr "User"
 
-#: src/pages/users/UserViewPage.ts:78
+#: src/pages/users/UserViewPage.ts:79
 msgid "User Info"
 msgstr "User Info"
 
@@ -3553,7 +3553,7 @@ msgid "User password writeback"
 msgstr "User password writeback"
 
 #: src/pages/policies/BoundPoliciesList.ts:52
-#: src/pages/users/UserViewPage.ts:49
+#: src/pages/users/UserViewPage.ts:50
 msgid "User {0}"
 msgstr "User {0}"
 
@@ -3581,7 +3581,7 @@ msgstr "Userinfo URL"
 #: src/pages/stages/identification/IdentificationStageForm.ts:76
 #: src/pages/user-settings/UserDetailsPage.ts:57
 #: src/pages/users/UserForm.ts:47
-#: src/pages/users/UserViewPage.ts:84
+#: src/pages/users/UserViewPage.ts:85
 msgid "Username"
 msgstr "Username"
 
@@ -3590,7 +3590,7 @@ msgid "Username: Same as Text input, but checks for and prevents duplicate usern
 msgstr "Username: Same as Text input, but checks for and prevents duplicate usernames."
 
 #: src/interfaces/AdminInterface.ts:32
-#: src/pages/admin-overview/AdminOverviewPage.ts:48
+#: src/pages/admin-overview/AdminOverviewPage.ts:54
 #: src/pages/users/UserListPage.ts:31
 msgid "Users"
 msgstr "Users"
@@ -3623,11 +3623,11 @@ msgstr "Validity days"
 msgid "Verification Certificate"
 msgstr "Verification Certificate"
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:50
+#: src/pages/admin-overview/AdminOverviewPage.ts:56
 msgid "Version"
 msgstr "Version"
 
-#: src/pages/outposts/OutpostHealth.ts:46
+#: src/pages/outposts/OutpostHealth.ts:47
 msgid "Version: {0}"
 msgstr "Version: {0}"
 
@@ -3652,7 +3652,7 @@ msgid "Wait (min)"
 msgstr "Wait (min)"
 
 #: src/pages/events/RuleForm.ts:48
-#: src/pages/system-tasks/SystemTaskListPage.ts:65
+#: src/pages/system-tasks/SystemTaskListPage.ts:66
 msgid "Warning"
 msgstr "Warning"
 
@@ -3723,7 +3723,7 @@ msgstr "Whoops!"
 msgid "Windows"
 msgstr "Windows"
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:52
+#: src/pages/admin-overview/AdminOverviewPage.ts:58
 msgid "Workers"
 msgstr "Workers"
 
@@ -3733,7 +3733,7 @@ msgstr "X509 Subject"
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts:61
 #: src/pages/groups/GroupListPage.ts:58
-#: src/pages/outposts/ServiceConnectionListPage.ts:63
+#: src/pages/outposts/ServiceConnectionListPage.ts:64
 #: src/pages/policies/BoundPoliciesList.ts:118
 #: src/pages/policies/PolicyTestForm.ts:38
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:116
@@ -3786,7 +3786,7 @@ msgstr "{0} is available!"
 msgid "{0} unread"
 msgstr "{0} unread"
 
-#: src/pages/outposts/OutpostHealth.ts:45
+#: src/pages/outposts/OutpostHealth.ts:46
 msgid "{0}, should be {1}"
 msgstr "{0}, should be {1}"
 

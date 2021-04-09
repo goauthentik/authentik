@@ -6,6 +6,7 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import "../../elements/Spinner";
 import AKGlobal from "../../authentik.css";
+import { PFColor } from "../../elements/Label";
 
 @customElement("ak-outpost-health")
 export class OutpostHealth extends LitElement {
@@ -28,7 +29,7 @@ export class OutpostHealth extends LitElement {
                 return html`<li>
                     <ul>
                         <li role="cell">
-                            <i class="fas fa-question-circle"></i>&nbsp;${t`Not available`}
+                            <ak-label color=${PFColor.Grey} text=${t`Not available`}></ak-label>
                         </li>
                     </ul>
                 </li>`;
@@ -37,13 +38,13 @@ export class OutpostHealth extends LitElement {
                 return html`<li>
                     <ul>
                         <li role="cell">
-                            <i class="fas fa-check pf-m-success"></i>&nbsp;${t`Last seen: ${h.lastSeen?.toLocaleTimeString()}`}
+                            <ak-label color=${PFColor.Green} text=${t`Last seen: ${h.lastSeen?.toLocaleTimeString()}`}></ak-label>
                         </li>
                         <li role="cell">
                             ${h.versionOutdated ?
-                            html`<i class="fas fa-times pf-m-danger"></i>&nbsp;
-                                ${t`${h.version}, should be ${h.versionShould}`}` :
-                            html`<i class="fas fa-check pf-m-success"></i>&nbsp;${t`Version: ${h.version || ""}`}`}
+                            html`<ak-label color=${PFColor.Red}
+                                text=${t`${h.version}, should be ${h.versionShould}`}></ak-label>` :
+                            html`<ak-label color=${PFColor.Green} text=${t`Version: ${h.version || ""}`}></ak-label>`}
                         </li>
                     </ul>
                 </li>`;

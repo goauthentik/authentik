@@ -18,6 +18,7 @@ import { OutpostsApi, ServiceConnection } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/forms/ProxyForm";
 import { ifDefined } from "lit-html/directives/if-defined";
+import { PFColor } from "../../elements/Label";
 
 @customElement("ak-outpost-service-connection-list")
 export class OutpostServiceConnectionListPage extends TablePage<ServiceConnection> {
@@ -66,9 +67,9 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                     uuid: item.pk || ""
                 }).then((state) => {
                     if (state.healthy) {
-                        return html`<i class="fas fa-check pf-m-success"></i>&nbsp;${state.version}`;
+                        return html`<ak-label color=${PFColor.Green} text=${ifDefined(state.version)}></ak-label>`;
                     }
-                    return html`<i class="fas fa-times pf-m-danger"></i>&nbsp;${t`Unhealthy`}`;
+                    return html`<ak-label color=${PFColor.Red} text=${t`Unhealthy`}></ak-label>`;
                 }), html`<ak-spinner></ak-spinner>`)}`,
             html`
             <ak-forms-modal>

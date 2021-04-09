@@ -34,7 +34,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
                 this.value = v;
                 return this.getStatus(v);
             }).then((status) => {
-                return html`<p class="ak-aggregate-card">
+                return html`<p>
                         <i class="${status.icon}"></i>&nbsp;${this.renderValue()}
                     </p>
                     ${status.message ? html`<p class="subtext">${status.message}</p>` : html``}`;

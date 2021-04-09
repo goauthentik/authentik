@@ -9,6 +9,7 @@ import "../../elements/buttons/ActionButton";
 import { TableColumn } from "../../elements/table/Table";
 import { AdminApi, Task, TaskStatusEnum } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
+import { PFColor } from "../../elements/Label";
 
 @customElement("ak-system-task-list")
 export class SystemTaskListPage extends TablePage<Task> {
@@ -62,13 +63,13 @@ export class SystemTaskListPage extends TablePage<Task> {
     taskStatus(task: Task): TemplateResult {
         switch (task.status) {
             case TaskStatusEnum.Successful:
-                return html`<i class="fas fa-check pf-m-success"></i>&nbsp;${t`Successful`}`;
+                return html`<ak-label color=${PFColor.Green} text=${t`Successful`}></ak-label>`;
             case TaskStatusEnum.Warning:
-                return html`<i class="fas fa-exclamation-triangle pf-m-warning"></i>&nbsp;${t`Warning`}`;
+                return html`<ak-label color=${PFColor.Orange} text=${t`Warning`}></ak-label>`;
             case TaskStatusEnum.Error:
-                return html`<i class="fas fa-times pf-m-danger"></i>&nbsp;${t`Error`}`;
+                return html`<ak-label color=${PFColor.Red} text=${t`Error`}></ak-label>`;
             default:
-                return html`<i class="fas fa-question-circle"></i>&nbsp;${t`Unknown`}`;
+                return html`<ak-label color=${PFColor.Grey} text=${t`Unknown`}></ak-label>`;
         }
     }
 
