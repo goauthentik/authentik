@@ -230,10 +230,6 @@ export abstract class Table<T> extends LitElement {
         return html``;
     }
 
-    renderRowsAbove(): TemplateResult {
-        return html``;
-    }
-
     firstUpdated(): void {
         this.fetch();
     }
@@ -269,7 +265,6 @@ export abstract class Table<T> extends LitElement {
                         ${this.columns().map((col) => col.render(this))}
                     </tr>
                 </thead>
-                ${this.renderRowsAbove()}
                 ${(this.isLoading || !this.data) ? this.renderLoading() : this.renderRows()}
             </table>
             <div class="pf-c-pagination pf-m-bottom">

@@ -16039,8 +16039,8 @@ definitions:
           - authentik.stages.user_login
           - authentik.stages.user_logout
           - authentik.stages.user_write
-          - authentik.managed
           - authentik.core
+          - authentik.managed
   ExpressionPolicy:
     required:
       - expression
@@ -17950,6 +17950,16 @@ definitions:
                   enum:
                     - all
                     - any
+                managed:
+                  title: Managed by authentik
+                  description: Objects which are managed by authentik. These objects
+                    are created and updated automatically. This is flag only indicates
+                    that an object can be overwritten by migrations. You can still
+                    modify the objects via the API, but expect changes to be overwritten
+                    in a later update.
+                  type: string
+                  minLength: 1
+                  x-nullable: true
                 name:
                   title: Name
                   description: Source's display Name.

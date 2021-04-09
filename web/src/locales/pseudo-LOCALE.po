@@ -366,7 +366,8 @@ msgstr ""
 msgid "Build hash: {0}"
 msgstr ""
 
-#: src/pages/sources/SourcesListPage.ts:62
+#: src/pages/sources/SourcesListPage.ts:103
+#: src/pages/sources/SourcesListPage.ts:105
 msgid "Built-in"
 msgstr ""
 
@@ -684,8 +685,8 @@ msgstr ""
 #: src/pages/providers/ProviderListPage.ts:116
 #: src/pages/providers/RelatedApplicationButton.ts:27
 #: src/pages/providers/RelatedApplicationButton.ts:35
-#: src/pages/sources/SourcesListPage.ts:115
-#: src/pages/sources/SourcesListPage.ts:124
+#: src/pages/sources/SourcesListPage.ts:113
+#: src/pages/sources/SourcesListPage.ts:122
 #: src/pages/stages/StageListPage.ts:119
 #: src/pages/stages/StageListPage.ts:128
 #: src/pages/stages/invitation/InvitationListPage.ts:77
@@ -782,7 +783,7 @@ msgstr ""
 #: src/pages/policies/PolicyListPage.ts:136
 #: src/pages/property-mappings/PropertyMappingListPage.ts:125
 #: src/pages/providers/ProviderListPage.ts:119
-#: src/pages/sources/SourcesListPage.ts:127
+#: src/pages/sources/SourcesListPage.ts:125
 #: src/pages/stages/StageListPage.ts:131
 msgid "Create {0}"
 msgstr ""
@@ -837,7 +838,7 @@ msgstr ""
 #: src/pages/policies/PolicyListPage.ts:115
 #: src/pages/property-mappings/PropertyMappingListPage.ts:104
 #: src/pages/providers/ProviderListPage.ts:98
-#: src/pages/sources/SourcesListPage.ts:106
+#: src/pages/sources/SourcesListPage.ts:94
 #: src/pages/stages/StageListPage.ts:110
 #: src/pages/stages/invitation/InvitationListPage.ts:68
 #: src/pages/stages/prompt/PromptListPage.ts:87
@@ -939,7 +940,7 @@ msgstr ""
 msgid "Disable Time-based OTP"
 msgstr ""
 
-#: src/pages/sources/SourcesListPage.ts:75
+#: src/pages/sources/SourcesListPage.ts:63
 msgid "Disabled"
 msgstr ""
 
@@ -976,7 +977,7 @@ msgstr ""
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:139
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:138
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:132
-#: src/pages/sources/SourcesListPage.ts:94
+#: src/pages/sources/SourcesListPage.ts:82
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:116
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:135
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:122
@@ -1202,10 +1203,6 @@ msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:101
 msgid "External Host"
-msgstr ""
-
-#: src/pages/sources/SourcesListPage.ts:33
-msgid "External Sources which can be used to get Identities into authentik, for example Social Providers like Twiter and GitHub or Enterprise Providers like ADFS and LDAP."
 msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts:118
@@ -2597,7 +2594,7 @@ msgstr ""
 msgid "Select a provider that this application should use. Alternatively, create a new provider."
 msgstr ""
 
-#: src/elements/table/Table.ts:218
+#: src/elements/table/Table.ts:215
 msgid "Select all rows"
 msgstr ""
 
@@ -2742,7 +2739,7 @@ msgid "Something went wrong! Please try again later."
 msgstr ""
 
 #: src/pages/providers/ProviderListPage.ts:91
-#: src/pages/sources/SourcesListPage.ts:99
+#: src/pages/sources/SourcesListPage.ts:87
 msgid "Source"
 msgstr ""
 
@@ -2753,6 +2750,10 @@ msgstr ""
 #: src/interfaces/AdminInterface.ts:20
 #: src/pages/sources/SourcesListPage.ts:30
 msgid "Sources"
+msgstr ""
+
+#: src/pages/sources/SourcesListPage.ts:33
+msgid "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
 msgstr ""
 
 #: src/pages/flows/StageBindingForm.ts:98
@@ -3373,7 +3374,7 @@ msgstr ""
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:129
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:128
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:122
-#: src/pages/sources/SourcesListPage.ts:81
+#: src/pages/sources/SourcesListPage.ts:69
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:106
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:125
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:112
@@ -3476,7 +3477,7 @@ msgstr ""
 #: src/pages/policies/PolicyListPage.ts:80
 #: src/pages/property-mappings/PropertyMappingListPage.ts:69
 #: src/pages/providers/ProviderListPage.ts:76
-#: src/pages/sources/SourcesListPage.ts:84
+#: src/pages/sources/SourcesListPage.ts:72
 #: src/pages/stages/StageListPage.ts:88
 #: src/pages/users/UserActiveForm.ts:41
 msgid "Update {0}"
@@ -3738,10 +3739,6 @@ msgstr ""
 
 #: src/interfaces/Interface.ts:50
 msgid "You're currently impersonating {0}."
-msgstr ""
-
-#: src/pages/sources/SourcesListPage.ts:61
-msgid "authentik Built-in"
 msgstr ""
 
 #: src/pages/stages/password/PasswordStageForm.ts:76

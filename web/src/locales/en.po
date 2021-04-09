@@ -370,7 +370,8 @@ msgstr "Binding Type"
 msgid "Build hash: {0}"
 msgstr "Build hash: {0}"
 
-#: src/pages/sources/SourcesListPage.ts:62
+#: src/pages/sources/SourcesListPage.ts:103
+#: src/pages/sources/SourcesListPage.ts:105
 msgid "Built-in"
 msgstr "Built-in"
 
@@ -688,8 +689,8 @@ msgstr "Copy Key"
 #: src/pages/providers/ProviderListPage.ts:116
 #: src/pages/providers/RelatedApplicationButton.ts:27
 #: src/pages/providers/RelatedApplicationButton.ts:35
-#: src/pages/sources/SourcesListPage.ts:115
-#: src/pages/sources/SourcesListPage.ts:124
+#: src/pages/sources/SourcesListPage.ts:113
+#: src/pages/sources/SourcesListPage.ts:122
 #: src/pages/stages/StageListPage.ts:119
 #: src/pages/stages/StageListPage.ts:128
 #: src/pages/stages/invitation/InvitationListPage.ts:77
@@ -786,7 +787,7 @@ msgstr "Create provider"
 #: src/pages/policies/PolicyListPage.ts:136
 #: src/pages/property-mappings/PropertyMappingListPage.ts:125
 #: src/pages/providers/ProviderListPage.ts:119
-#: src/pages/sources/SourcesListPage.ts:127
+#: src/pages/sources/SourcesListPage.ts:125
 #: src/pages/stages/StageListPage.ts:131
 msgid "Create {0}"
 msgstr "Create {0}"
@@ -841,7 +842,7 @@ msgstr "Define how notifications are sent to users, like Email or Webhook."
 #: src/pages/policies/PolicyListPage.ts:115
 #: src/pages/property-mappings/PropertyMappingListPage.ts:104
 #: src/pages/providers/ProviderListPage.ts:98
-#: src/pages/sources/SourcesListPage.ts:106
+#: src/pages/sources/SourcesListPage.ts:94
 #: src/pages/stages/StageListPage.ts:110
 #: src/pages/stages/invitation/InvitationListPage.ts:68
 #: src/pages/stages/prompt/PromptListPage.ts:87
@@ -943,7 +944,7 @@ msgstr "Disable Static Tokens"
 msgid "Disable Time-based OTP"
 msgstr "Disable Time-based OTP"
 
-#: src/pages/sources/SourcesListPage.ts:75
+#: src/pages/sources/SourcesListPage.ts:63
 msgid "Disabled"
 msgstr "Disabled"
 
@@ -980,7 +981,7 @@ msgstr "Each provider has a different issuer, based on the application slug."
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:139
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:138
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:132
-#: src/pages/sources/SourcesListPage.ts:94
+#: src/pages/sources/SourcesListPage.ts:82
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:116
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:135
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:122
@@ -1207,10 +1208,6 @@ msgstr "External Applications which use authentik as Identity-Provider, utilizin
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:101
 msgid "External Host"
 msgstr "External Host"
-
-#: src/pages/sources/SourcesListPage.ts:33
-msgid "External Sources which can be used to get Identities into authentik, for example Social Providers like Twiter and GitHub or Enterprise Providers like ADFS and LDAP."
-msgstr "External Sources which can be used to get Identities into authentik, for example Social Providers like Twiter and GitHub or Enterprise Providers like ADFS and LDAP."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts:118
 msgid "External host"
@@ -2601,7 +2598,7 @@ msgstr "See documentation for a list of all variables."
 msgid "Select a provider that this application should use. Alternatively, create a new provider."
 msgstr "Select a provider that this application should use. Alternatively, create a new provider."
 
-#: src/elements/table/Table.ts:218
+#: src/elements/table/Table.ts:215
 msgid "Select all rows"
 msgstr "Select all rows"
 
@@ -2746,7 +2743,7 @@ msgid "Something went wrong! Please try again later."
 msgstr "Something went wrong! Please try again later."
 
 #: src/pages/providers/ProviderListPage.ts:91
-#: src/pages/sources/SourcesListPage.ts:99
+#: src/pages/sources/SourcesListPage.ts:87
 msgid "Source"
 msgstr "Source"
 
@@ -2758,6 +2755,10 @@ msgstr "Source {0}"
 #: src/pages/sources/SourcesListPage.ts:30
 msgid "Sources"
 msgstr "Sources"
+
+#: src/pages/sources/SourcesListPage.ts:33
+msgid "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
+msgstr "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
 
 #: src/pages/flows/StageBindingForm.ts:98
 msgid "Stage"
@@ -3379,7 +3380,7 @@ msgstr "Up-to-date!"
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:129
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:128
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:122
-#: src/pages/sources/SourcesListPage.ts:81
+#: src/pages/sources/SourcesListPage.ts:69
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:106
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:125
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:112
@@ -3482,7 +3483,7 @@ msgstr "Update details"
 #: src/pages/policies/PolicyListPage.ts:80
 #: src/pages/property-mappings/PropertyMappingListPage.ts:69
 #: src/pages/providers/ProviderListPage.ts:76
-#: src/pages/sources/SourcesListPage.ts:84
+#: src/pages/sources/SourcesListPage.ts:72
 #: src/pages/stages/StageListPage.ts:88
 #: src/pages/users/UserActiveForm.ts:41
 msgid "Update {0}"
@@ -3745,10 +3746,6 @@ msgstr "Yes"
 #: src/interfaces/Interface.ts:50
 msgid "You're currently impersonating {0}."
 msgstr "You're currently impersonating {0}."
-
-#: src/pages/sources/SourcesListPage.ts:61
-msgid "authentik Built-in"
-msgstr "authentik Built-in"
 
 #: src/pages/stages/password/PasswordStageForm.ts:76
 msgid "authentik Builtin Database"

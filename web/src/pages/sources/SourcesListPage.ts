@@ -24,7 +24,7 @@ export class SourceListPage extends TablePage<Source> {
         return t`Sources`;
     }
     pageDescription(): string | undefined {
-        return t`External Sources which can be used to get Identities into authentik, for example Social Providers like Twiter and GitHub or Enterprise Providers like ADFS and LDAP.`;
+        return t`Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins`;
     }
     pageIcon(): string {
         return "pf-icon pf-icon-middleware";
@@ -53,23 +53,10 @@ export class SourceListPage extends TablePage<Source> {
         ];
     }
 
-    renderRowsAbove(): TemplateResult {
-        return html`<tbody role="rowgroup">
-                <tr role="row">
-                    <td role="cell">
-                        <span>
-                            <div>${t`authentik Built-in`}</div>
-                            <small>${t`Built-in`}</small>
-                        </span>
-                    </td>
-                    <td role="cell">-</td>
-                    <td role="cell">
-                    </td>
-                </tr>
-            </tbody>`;
-    }
-
     row(item: Source): TemplateResult[] {
+        if (item.component === "") {
+            return this.rowInbuilt(item);
+        }
         return [
             html`<a href="#/core/sources/${item.slug}">
                 <div>${item.name}</div>
@@ -107,6 +94,17 @@ export class SourceListPage extends TablePage<Source> {
                     ${t`Delete`}
                 </button>
             </ak-forms-delete>`,
+        ];
+    }
+
+    rowInbuilt(item: Source): TemplateResult[] {
+        return [
+            html`<span>
+                <div>${item.name}</div>
+                <small>${t`Built-in`}</small>
+            </span>`,
+            html`${t`Built-in`}`,
+            html``,
         ];
     }
 
