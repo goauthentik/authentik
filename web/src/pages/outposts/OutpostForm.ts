@@ -100,6 +100,7 @@ export class OutpostForm extends Form<Outpost> {
                     label=${t`Configuration`}
                     name="config">
                     <ak-codemirror mode="yaml" value="${YAML.stringify(fc)}"></ak-codemirror>
+                    <p class="pf-c-form__helper-text">${t`Set custom attributes using YAML or JSON.`}</p>
                 </ak-form-element-horizontal>`;
             }))}
         </form>`;

@@ -67,6 +67,7 @@ export class ServiceConnectionKubernetesForm extends Form<KubernetesServiceConne
                 name="kubeconfig">
                 <ak-codemirror mode="yaml" value="${YAML.stringify(this.sc?.kubeconfig)}">
                 </ak-codemirror>
+                <p class="pf-c-form__helper-text">${t`Set custom attributes using YAML or JSON.`}</p>
             </ak-form-element-horizontal>
         </form>`;
     }

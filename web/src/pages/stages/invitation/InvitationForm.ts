@@ -48,7 +48,7 @@ export class InvitationForm extends Form<Invitation> {
                 name="fixedData">
                 <ak-codemirror mode="yaml" value="${YAML.stringify(this.invitation?.fixedData)}">
                 </ak-codemirror>
-                <p class="pf-c-form__helper-text">${t`Optional data which is loaded into the flow's 'prompt_data' context variable.`}</p>
+                <p class="pf-c-form__helper-text">${t`Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON.`}</p>
             </ak-form-element-horizontal>
         </form>`;
     }

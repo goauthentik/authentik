@@ -2072,8 +2072,8 @@ msgid "Optional URL if the IDP supports Single-Logout."
 msgstr "Optional URL if the IDP supports Single-Logout."
 
 #: src/pages/stages/invitation/InvitationForm.ts:55
-msgid "Optional data which is loaded into the flow's 'prompt_data' context variable."
-msgstr "Optional data which is loaded into the flow's 'prompt_data' context variable."
+msgid "Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON."
+msgstr "Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON."
 
 #: src/pages/stages/identification/IdentificationStageForm.ts:119
 msgid "Optional enrollment flow, which is linked at the bottom of the page."
@@ -2685,6 +2685,14 @@ msgstr "Set HTTP-Basic Authentication"
 #: src/pages/providers/proxy/ProxyProviderForm.ts:164
 msgid "Set a custom HTTP-Basic Authentication header based on values from authentik."
 msgstr "Set a custom HTTP-Basic Authentication header based on values from authentik."
+
+#: src/pages/groups/GroupForm.ts:100
+#: src/pages/outposts/OutpostForm.ts:109
+#: src/pages/outposts/ServiceConnectionKubernetesForm.ts:73
+#: src/pages/policies/PolicyTestForm.ts:78
+#: src/pages/users/UserForm.ts:81
+msgid "Set custom attributes using YAML or JSON."
+msgstr "Set custom attributes using YAML or JSON."
 
 #: src/pages/events/RuleForm.ts:96
 #: src/pages/events/RuleListPage.ts:48
