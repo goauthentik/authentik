@@ -4,7 +4,7 @@ from typing import Any
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-from ldap3.core.exceptions import LDAPException
+from ldap3.core.exceptions import LDAPOperationResult
 from rest_framework.serializers import ValidationError
 
 from authentik.core.models import User
@@ -55,10 +55,10 @@ def ldap_sync_password(sender, user: User, password: str, **_):
     changer = LDAPPasswordChanger(source)
     try:
         changer.change_password(user, password)
-    except LDAPException as exc:
+    except LDAPOperationResult as exc:
         Event.new(
             EventAction.CONFIGURATION_ERROR,
-            message=str(exc),
+            message=f"Result: {exc.result}, Description {exc.description}",
             source=source,
         ).set_user(user).save()
         raise ValidationError("Failed to set password") from exc
