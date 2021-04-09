@@ -7,6 +7,7 @@ from django.db.utils import IntegrityError
 from pytz import UTC
 
 from authentik.core.models import User
+from authentik.events.models import Event, EventAction
 from authentik.sources.ldap.sync.base import LDAP_UNIQUENESS, BaseLDAPSynchronizer
 
 
@@ -48,13 +49,16 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                     }
                 )
             except IntegrityError as exc:
-                self._logger.warning("Failed to create user", exc=exc)
-                self._logger.warning(
-                    (
+                Event.new(
+                    EventAction.CONFIGURATION_ERROR,
+                    message=(
+                        f"Failed to create user: {str(exc)} "
                         "To merge new user with existing user, set the user's "
                         f"Attribute '{LDAP_UNIQUENESS}' to '{uniq}'"
-                    )
-                )
+                    ),
+                    source=self._source,
+                    dn=user_dn,
+                ).save()
             else:
                 self._logger.debug(
                     "Synced User", user=ak_user.username, created=created
