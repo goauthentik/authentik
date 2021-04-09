@@ -115,6 +115,8 @@ export class Form<T> extends LitElement {
                 json[element.name] = values;
             } else if (element.tagName.toLowerCase() === "input" && element.type === "date") {
                 json[element.name] = element.valueAsDate;
+            } else if (element.tagName.toLowerCase() === "input" && element.type === "checkbox") {
+                json[element.name] = element.checked;
             } else {
                 for (let v = 0; v < values.length; v++) {
                     form._addSerializedElement(json, element.name, values[v]);
