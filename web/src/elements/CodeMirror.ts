@@ -2,12 +2,18 @@ import { css, CSSResult, customElement, html, LitElement, property, TemplateResu
 
 import CodeMirror from "codemirror";
 import "codemirror/addon/display/autorefresh";
+import "codemirror/addon/search/search";
+import "codemirror/addon/search/searchcursor";
+import "codemirror/addon/dialog/dialog";
+import "codemirror/addon/hint/show-hint";
 import "codemirror/mode/xml/xml.js";
 import "codemirror/mode/yaml/yaml.js";
 import "codemirror/mode/javascript/javascript.js";
 import "codemirror/mode/python/python.js";
 import CodeMirrorStyle from "codemirror/lib/codemirror.css";
 import CodeMirrorTheme from "codemirror/theme/monokai.css";
+import CodeMirrorDialogStyle from "codemirror/addon/dialog/dialog.css";
+import CodeMirrorShowHintStyle from  "codemirror/addon/hint/show-hint.css";
 import { ifDefined } from "lit-html/directives/if-defined";
 import YAML from "yaml";
 
@@ -27,23 +33,45 @@ export class CodeMirrorTextarea extends LitElement {
     _value?: string;
 
     @property()
-    set value(v: string) {
-        if (v === null) return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
+    set value(v: any) {
+        if (v === null || v === undefined) return;
+        // Value might be an object if within an iron-form, as that calls the getter of value
+        // in the beginning and the calls this setter on reset
+        let textValue = v;
+        if (!(typeof v === "string" || v instanceof String)) {
+            switch (this.mode.toLowerCase()) {
+                case "yaml":
+                    textValue = YAML.stringify(v);
+                    break;
+                case "javascript":
+                    textValue = JSON.stringify(v);
+                    break;
+                default:
+                    textValue = v.toString();
+                    break;
+            }
+        }
         if (this.editor) {
-            this.editor.setValue(v);
+            this.editor.setValue(textValue);
         } else {
-            this._value = v;
+            this._value = textValue;
         }
     }
 
-    get value(): string {
-        switch (this.mode.toLowerCase()) {
-            case "yaml":
-                return YAML.parse(this.getInnerValue());
-            case "javascript":
-                return JSON.parse(this.getInnerValue());
-            default:
-                return this.getInnerValue();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    get value(): any {
+        try {
+            switch (this.mode.toLowerCase()) {
+                case "yaml":
+                    return YAML.parse(this.getInnerValue());
+                case "javascript":
+                    return JSON.parse(this.getInnerValue());
+                default:
+                    return this.getInnerValue();
+            }
+        } catch (e) {
+            return this.getInnerValue();
         }
     }
 
@@ -55,7 +83,7 @@ export class CodeMirrorTextarea extends LitElement {
     }
 
     static get styles(): CSSResult[] {
-        return [CodeMirrorStyle, CodeMirrorTheme, css`
+        return [CodeMirrorStyle, CodeMirrorTheme, CodeMirrorDialogStyle, CodeMirrorShowHintStyle, css`
             .CodeMirror-wrap pre {
                 word-break: break-word !important;
             }
@@ -70,7 +98,7 @@ export class CodeMirrorTextarea extends LitElement {
         this.editor = CodeMirror.fromTextArea(textarea, {
             mode: this.mode,
             theme: "monokai",
-            lineNumbers: false,
+            lineNumbers: true,
             readOnly: this.readOnly,
             autoRefresh: true,
             lineWrapping: true,
