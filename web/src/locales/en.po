@@ -75,19 +75,19 @@ msgstr "Action"
 msgid "Active"
 msgstr "Active"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:201
+#: src/pages/sources/ldap/LDAPSourceForm.ts:202
 msgid "Addition Group DN"
 msgstr "Addition Group DN"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:195
+#: src/pages/sources/ldap/LDAPSourceForm.ts:196
 msgid "Addition User DN"
 msgstr "Addition User DN"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:204
+#: src/pages/sources/ldap/LDAPSourceForm.ts:205
 msgid "Additional group DN, prepended to the Base DN."
 msgstr "Additional group DN, prepended to the Base DN."
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:198
+#: src/pages/sources/ldap/LDAPSourceForm.ts:199
 msgid "Additional user DN, prepended to the Base DN."
 msgstr "Additional user DN, prepended to the Base DN."
 
@@ -99,7 +99,7 @@ msgid "Advanced protocol settings"
 msgstr "Advanced protocol settings"
 
 #: src/pages/policies/password/PasswordPolicyForm.ts:114
-#: src/pages/sources/ldap/LDAPSourceForm.ts:139
+#: src/pages/sources/ldap/LDAPSourceForm.ts:140
 msgid "Advanced settings"
 msgstr "Advanced settings"
 
@@ -319,7 +319,7 @@ msgstr "Backup finished with warnings."
 msgid "Backup status"
 msgstr "Backup status"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:130
+#: src/pages/sources/ldap/LDAPSourceForm.ts:131
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:91
 msgid "Base DN"
 msgstr "Base DN"
@@ -344,11 +344,11 @@ msgstr "Based on the username"
 msgid "Basic-Auth"
 msgstr "Basic-Auth"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:117
+#: src/pages/sources/ldap/LDAPSourceForm.ts:118
 msgid "Bind CN"
 msgstr "Bind CN"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:123
+#: src/pages/sources/ldap/LDAPSourceForm.ts:124
 msgid "Bind Password"
 msgstr "Bind Password"
 
@@ -583,7 +583,7 @@ msgstr "Connected."
 msgid "Connection error, reconnecting..."
 msgstr "Connection error, reconnecting..."
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:99
+#: src/pages/sources/ldap/LDAPSourceForm.ts:100
 #: src/pages/stages/email/EmailStageForm.ts:58
 msgid "Connection settings"
 msgstr "Connection settings"
@@ -604,11 +604,11 @@ msgstr "Consent expires."
 msgid "Consent given last indefinitely"
 msgstr "Consent given last indefinitely"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:218
+#: src/pages/sources/ldap/LDAPSourceForm.ts:219
 msgid "Consider Objects matching this filter to be Groups."
 msgstr "Consider Objects matching this filter to be Groups."
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:211
+#: src/pages/sources/ldap/LDAPSourceForm.ts:212
 msgid "Consider Objects matching this filter to be Users."
 msgstr "Consider Objects matching this filter to be Users."
 
@@ -1042,7 +1042,7 @@ msgstr "Email: Text field with Email type."
 msgid "Enable"
 msgstr "Enable"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:112
+#: src/pages/sources/ldap/LDAPSourceForm.ts:113
 msgid "Enable StartTLS"
 msgstr "Enable StartTLS"
 
@@ -1253,11 +1253,11 @@ msgstr "Field key to check, field keys defined in Prompt stages are available."
 msgid "Field of the user object this value is written to."
 msgstr "Field of the user object this value is written to."
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:232
+#: src/pages/sources/ldap/LDAPSourceForm.ts:233
 msgid "Field which contains a unique Identifier."
 msgstr "Field which contains a unique Identifier."
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:225
+#: src/pages/sources/ldap/LDAPSourceForm.ts:226
 msgid "Field which contains members of a group."
 msgstr "Field which contains members of a group."
 
@@ -1372,15 +1372,15 @@ msgstr "Go to previous page"
 msgid "Group"
 msgstr "Group"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:169
+#: src/pages/sources/ldap/LDAPSourceForm.ts:170
 msgid "Group Property Mappings"
 msgstr "Group Property Mappings"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:221
+#: src/pages/sources/ldap/LDAPSourceForm.ts:222
 msgid "Group membership field"
 msgstr "Group membership field"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:214
+#: src/pages/sources/ldap/LDAPSourceForm.ts:215
 msgid "Group object filter"
 msgstr "Group object filter"
 
@@ -1426,8 +1426,8 @@ msgstr "Hide managed mappings"
 #: src/pages/outposts/OutpostForm.ts:98
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:169
 #: src/pages/providers/saml/SAMLProviderForm.ts:171
-#: src/pages/sources/ldap/LDAPSourceForm.ts:166
-#: src/pages/sources/ldap/LDAPSourceForm.ts:192
+#: src/pages/sources/ldap/LDAPSourceForm.ts:167
+#: src/pages/sources/ldap/LDAPSourceForm.ts:193
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:111
 #: src/pages/stages/identification/IdentificationStageForm.ts:83
 #: src/pages/stages/password/PasswordStageForm.ts:83
@@ -1662,8 +1662,8 @@ msgstr "Loading"
 #: src/pages/providers/saml/SAMLProviderForm.ts:169
 #: src/pages/providers/saml/SAMLProviderForm.ts:185
 #: src/pages/providers/saml/SAMLProviderImportForm.ts:55
-#: src/pages/sources/ldap/LDAPSourceForm.ts:163
-#: src/pages/sources/ldap/LDAPSourceForm.ts:189
+#: src/pages/sources/ldap/LDAPSourceForm.ts:164
+#: src/pages/sources/ldap/LDAPSourceForm.ts:190
 #: src/pages/sources/oauth/OAuthSourceForm.ts:153
 #: src/pages/sources/oauth/OAuthSourceForm.ts:181
 #: src/pages/sources/oauth/OAuthSourceForm.ts:202
@@ -1688,6 +1688,10 @@ msgstr "Loading..."
 #: src/pages/outposts/ServiceConnectionListPage.ts:54
 msgid "Local"
 msgstr "Local"
+
+#: src/pages/sources/ldap/LDAPSourceForm.ts:88
+msgid "Login password is synced from LDAP into authentik automatically. Enable this option only to write password changes in authentik back to LDAP."
+msgstr "Login password is synced from LDAP into authentik automatically. Enable this option only to write password changes in authentik back to LDAP."
 
 #: src/flows/stages/identification/IdentificationStage.ts:146
 msgid "Login to continue to {0}."
@@ -2026,7 +2030,7 @@ msgstr "Object"
 msgid "Object field"
 msgstr "Object field"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:228
+#: src/pages/sources/ldap/LDAPSourceForm.ts:229
 msgid "Object uniqueness field"
 msgstr "Object uniqueness field"
 
@@ -2297,11 +2301,11 @@ msgstr "Property Mappings"
 msgid "Property mappings"
 msgstr "Property mappings"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:191
+#: src/pages/sources/ldap/LDAPSourceForm.ts:192
 msgid "Property mappings used to group creation."
 msgstr "Property mappings used to group creation."
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:165
+#: src/pages/sources/ldap/LDAPSourceForm.ts:166
 msgid "Property mappings used to user creation."
 msgstr "Property mappings used to user creation."
 
@@ -2645,7 +2649,7 @@ msgstr "Sent to group"
 msgid "Separator: Static Separator Line"
 msgstr "Separator: Static Separator Line"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:103
+#: src/pages/sources/ldap/LDAPSourceForm.ts:104
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:83
 msgid "Server URI"
 msgstr "Server URI"
@@ -3113,7 +3117,7 @@ msgstr "Sync"
 msgid "Sync failed."
 msgstr "Sync failed."
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:93
+#: src/pages/sources/ldap/LDAPSourceForm.ts:94
 msgid "Sync groups"
 msgstr "Sync groups"
 
@@ -3124,10 +3128,6 @@ msgstr "Sync status"
 #: src/pages/sources/ldap/LDAPSourceForm.ts:77
 msgid "Sync users"
 msgstr "Sync users"
-
-#: src/pages/sources/ldap/LDAPSourceForm.ts:85
-msgid "Sync users' passwords"
-msgstr "Sync users' passwords"
 
 #: src/pages/admin-overview/AdminOverviewPage.ts:33
 msgid "System Overview"
@@ -3518,7 +3518,7 @@ msgstr "User"
 msgid "User Info"
 msgstr "User Info"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:143
+#: src/pages/sources/ldap/LDAPSourceForm.ts:144
 msgid "User Property Mappings"
 msgstr "User Property Mappings"
 
@@ -3535,9 +3535,13 @@ msgstr "User details"
 msgid "User fields"
 msgstr "User fields"
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:207
+#: src/pages/sources/ldap/LDAPSourceForm.ts:208
 msgid "User object filter"
 msgstr "User object filter"
+
+#: src/pages/sources/ldap/LDAPSourceForm.ts:85
+msgid "User password writeback"
+msgstr "User password writeback"
 
 #: src/pages/policies/BoundPoliciesList.ts:52
 #: src/pages/users/UserViewPage.ts:49

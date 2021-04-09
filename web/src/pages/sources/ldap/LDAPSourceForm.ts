@@ -79,9 +79,10 @@ export class LDAPSourceForm extends Form<LDAPSource> {
                 <div class="pf-c-check">
                     <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.source?.syncUsersPassword, true)}>
                     <label class="pf-c-check__label">
-                        ${t`Sync users' passwords`}
+                        ${t`User password writeback`}
                     </label>
                 </div>
+                <p class="pf-c-form__helper-text">${t`Login password is synced from LDAP into authentik automatically. Enable this option only to write password changes in authentik back to LDAP.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="syncGroups">
                 <div class="pf-c-check">
