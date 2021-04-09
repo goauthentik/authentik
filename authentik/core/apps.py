@@ -14,3 +14,4 @@ class AuthentikCoreConfig(AppConfig):
 
     def ready(self):
         import_module("authentik.core.signals")
+        import_module("authentik.core.managed")

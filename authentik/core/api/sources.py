@@ -26,6 +26,9 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
 
     def get_component(self, obj: Source):
         """Get object component so that we know how to edit the object"""
+        # pyright: reportGeneralTypeIssues=false
+        if obj.__class__ == Source:
+            return ""
         return obj.component
 
     class Meta:

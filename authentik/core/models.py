@@ -240,7 +240,7 @@ class Application(PolicyBindingModel):
         verbose_name_plural = _("Applications")
 
 
-class Source(SerializerModel, PolicyBindingModel):
+class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
     name = models.TextField(help_text=_("Source's display Name."))

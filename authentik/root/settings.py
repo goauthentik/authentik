@@ -132,7 +132,6 @@ INSTALLED_APPS = [
     "django_prometheus",
     "channels",
     "dbbackup",
-    "authentik.managed.apps.AuthentikManagedConfig",
 ]
 
 GUARDIAN_MONKEY_PATCH = False
@@ -482,6 +481,7 @@ if DEBUG:
     CELERY_TASK_ALWAYS_EAGER = True
     os.environ[ENV_GIT_HASH_KEY] = "dev"
 
-INSTALLED_APPS.append("authentik.core.apps.AuthentikCoreConfig")
+INSTALLED_APPS.append("authentik.core")
+INSTALLED_APPS.append("authentik.managed")
 
 j_print("Booting authentik", version=__version__)
