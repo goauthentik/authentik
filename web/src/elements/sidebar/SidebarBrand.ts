@@ -28,8 +28,8 @@ export class SidebarBrand extends LitElement {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
-                    height: 82px;
-                    min-height: 82px;
+                    height: 114px;
+                    min-height: 114px;
                 }
                 .pf-c-brand img {
                     width: 100%;

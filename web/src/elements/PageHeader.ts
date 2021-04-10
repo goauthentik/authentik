@@ -1,9 +1,10 @@
+import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import AKGlobal from "../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { TITLE_SUFFIX } from "../constants";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import { EVENT_SIDEBAR_TOGGLE, TITLE_SUFFIX } from "../constants";
 
 @customElement("ak-page-header")
 export class PageHeader extends LitElement {
@@ -34,7 +35,15 @@ export class PageHeader extends LitElement {
     _header = "";
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFContent, AKGlobal];
+        return [PFBase, PFButton, PFPage, PFContent, AKGlobal, css`
+            :host {
+                display: flex;
+                flex-direction: row;
+            }
+            button.sidebar-trigger {
+                background-color: var(--pf-c-page__main-section--m-light--BackgroundColor);
+            }
+        `];
     }
 
     renderIcon(): TemplateResult {
@@ -48,14 +57,26 @@ export class PageHeader extends LitElement {
     }
 
     render(): TemplateResult {
-        return html`<section class="pf-c-page__main-section pf-m-light">
+        return html`<button
+            class="sidebar-trigger pf-c-button pf-m-plain"
+            @click=${() => {
+                this.dispatchEvent(
+                    new CustomEvent(EVENT_SIDEBAR_TOGGLE, {
+                        bubbles: true,
+                        composed: true,
+                    })
+                );
+            }}>
+            <i class="fas fa-bars"></i>
+        </button>
+        <section class="pf-c-page__main-section pf-m-light">
             <div class="pf-c-content">
                 <h1>
                     ${this.renderIcon()}
                     ${this.header}
                 </h1>
                 ${this.description ?
-                    html`<p>${this.description}</p>`: html``}
+                    html`<p>${this.description}</p>` : html``}
             </div>
         </section>`;
     }

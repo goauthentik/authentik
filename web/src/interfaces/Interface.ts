@@ -8,7 +8,6 @@ import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 
 import "../elements/router/RouterOutlet";
 import "../elements/messages/MessageContainer";
-import "../elements/sidebar/SidebarHamburger";
 import "../elements/notifications/NotificationDrawer";
 import "../elements/Banner";
 import { until } from "lit-html/directives/until";
@@ -61,8 +60,6 @@ export abstract class Interface extends LitElement {
                 return html``;
             }))}
             <div class="pf-c-page">
-                <ak-sidebar-hamburger>
-                </ak-sidebar-hamburger>
                 <ak-sidebar class="pf-c-page__sidebar ${this.sidebarOpen ? "pf-m-expanded" : "pf-m-collapsed"}" .items=${this.sidebar}>
                 </ak-sidebar>
                 <div class="pf-c-page__drawer">

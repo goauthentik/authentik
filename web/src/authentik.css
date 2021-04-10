@@ -118,6 +118,9 @@ body {
     .pf-c-page__main-section {
         --pf-c-page__main-section--BackgroundColor: var(--ak-dark-background);
     }
+    .sidebar-trigger {
+        background-color: var(--ak-dark-background-light) !important;
+    }
     .pf-c-page__main-section.pf-m-light {
         background-color: var(--ak-dark-background-light);
     }
