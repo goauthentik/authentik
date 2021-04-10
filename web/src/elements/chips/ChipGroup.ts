@@ -1,4 +1,4 @@
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFChip from "@patternfly/patternfly/components/Chip/chip.css";
@@ -14,7 +14,9 @@ export class ChipGroup extends LitElement {
         return [PFBase, PFChip, PFChipGroup, PFButton, AKGlobal];
     }
 
-    set value(v: (string | number | undefined)[]) {}
+    set value(v: (string | number | undefined)[]) {
+        return;
+    }
 
     get value(): (string | number | undefined)[] {
         const values: (string | number | undefined)[] = [];

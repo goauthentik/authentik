@@ -15,6 +15,7 @@ import "./UserActiveForm";
 import "./UserForm";
 import { showMessage } from "../../elements/messages/MessageContainer";
 import { MessageLevel } from "../../elements/messages/Message";
+import { first } from "../../utils";
 
 @customElement("ak-user-list")
 export class UserListPage extends TablePage<User> {
@@ -59,7 +60,7 @@ export class UserListPage extends TablePage<User> {
                 <small>${item.name}</small>
             </a>`,
             html`${item.isActive ? t`Yes` : t`No`}`,
-            html`${item.lastLogin?.toLocaleString()}`,
+            html`${first(item.lastLogin?.toLocaleString(), "-")}`,
             html`
             <ak-forms-modal>
                 <span slot="submit">

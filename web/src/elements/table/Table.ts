@@ -246,6 +246,7 @@ export abstract class Table<T> extends LitElement {
         </ak-table-search>&nbsp;`;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     renderSelectedChip(item: T): TemplateResult {
         return html``;
     }

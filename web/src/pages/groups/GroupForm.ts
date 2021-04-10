@@ -1,4 +1,4 @@
-import { CoreApi, Group } from "authentik-api";
+import { CoreApi, Group, User } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -8,6 +8,9 @@ import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
 import "../../elements/CodeMirror";
+import "../../elements/chips/ChipGroup";
+import "../../elements/chips/Chip";
+import "./MemberSelectModal";
 import YAML from "yaml";
 import { first } from "../../utils";
 
@@ -72,18 +75,48 @@ export class GroupForm extends Form<Group> {
                 label=${t`Members`}
                 ?required=${true}
                 name="users">
-                <select class="pf-c-form-control" multiple>
-                    ${until(new CoreApi(DEFAULT_CONFIG).coreUsersList({
-                        ordering: "username",
-                    }).then(users => {
-                        return users.results.map(user => {
-                            const selected = Array.from(this.group?.users || []).some(su => {
-                                return su == user.pk;
-                            });
-                            return html`<option value=${ifDefined(user.pk)} ?selected=${selected}>${user.username} (${user.name})</option>`;
-                        });
-                    }), html`<option>${t`Loading...`}</option>`)}
-                </select>
+                <div class="pf-c-input-group">
+                    <ak-group-member-select-table
+                        .confirm=${(items: User[]) => {
+                            // Because the model only has the IDs, map the user list to IDs
+                            const ids = items.map(u => u.pk || 0);
+                            if (!this.group) return Promise.reject();
+                            this.group.users = new Set(Array.from(this.group?.users || []).concat(ids));
+                            this.requestUpdate();
+                            return Promise.resolve();
+                        }}>
+                        <button slot="trigger" class="pf-c-button pf-m-control" type="button">
+                            <i class="fas fa-plus" aria-hidden="true"></i>
+                        </button>
+                    </ak-group-member-select-table>
+                    <div class="pf-c-form-control">
+                        <ak-chip-group>
+                            ${until(new CoreApi(DEFAULT_CONFIG).coreUsersList({
+                                ordering: "username",
+                            }).then(users => {
+                                return users.results.map(user => {
+                                    const selected = Array.from(this.group?.users || []).some(su => {
+                                        return su == user.pk;
+                                    });
+                                    if (!selected) return;
+                                    return html`<ak-chip
+                                        .removable=${true}
+                                        value=${ifDefined(user.pk)}
+                                        @remove=${() => {
+                                            if (!this.group) return;
+                                            const users = Array.from(this.group?.users || []);
+                                            const idx = users.indexOf(user.pk || 0);
+                                            users.splice(idx, 1);
+                                            this.group.users = new Set(users);
+                                            this.requestUpdate();
+                                        }}>
+                                        ${user.username}
+                                    </ak-chip>`;
+                                });
+                            }), html`<option>${t`Loading...`}</option>`)}
+                        </ak-chip-group>
+                    </div>
+                </div>
                 <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
