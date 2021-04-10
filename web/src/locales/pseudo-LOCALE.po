@@ -2029,7 +2029,7 @@ msgstr ""
 msgid "Notification rule"
 msgstr ""
 
-#: src/elements/notifications/NotificationDrawer.ts:99
+#: src/elements/notifications/NotificationDrawer.ts:95
 msgid "Notifications"
 msgstr ""
 
@@ -3850,7 +3850,7 @@ msgstr ""
 msgid "{0} is available!"
 msgstr ""
 
-#: src/elements/notifications/NotificationDrawer.ts:102
+#: src/elements/notifications/NotificationDrawer.ts:98
 msgid "{0} unread"
 msgstr ""
 

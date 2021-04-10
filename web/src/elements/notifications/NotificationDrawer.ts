@@ -6,8 +6,10 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import AKGlobal from "../../authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import { EVENT_NOTIFICATION_TOGGLE } from "../../constants";
 
 @customElement("ak-notification-drawer")
 export class NotificationDrawer extends LitElement {
@@ -19,14 +21,8 @@ export class NotificationDrawer extends LitElement {
     unread = 0;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFNotificationDrawer, PFContent, PFDropdown, AKGlobal].concat(
+        return [PFBase, PFButton, PFNotificationDrawer, PFContent, PFDropdown, AKGlobal].concat(
             css`
-                .pf-c-notification-drawer__header {
-                    height: 114px;
-                    padding: var(--pf-c-page__main-section--PaddingTop) var(--pf-c-page__main-section--PaddingRight) var(--pf-c-page__main-section--PaddingBottom) var(--pf-c-page__main-section--PaddingLeft);
-                    display: flex;
-                    flex-direction: column;
-                }
                 .pf-c-notification-drawer__list-item-description {
                     white-space: pre-wrap;
                 }
@@ -98,13 +94,31 @@ export class NotificationDrawer extends LitElement {
         }
         return html`<div class="pf-c-drawer__body pf-m-no-padding">
             <div class="pf-c-notification-drawer">
-                <div class="pf-c-notification-drawer__header pf-c-content">
-                    <h1>
+                <div class="pf-c-notification-drawer__header">
+                    <h1 class="pf-c-notification-drawer__header-title">
                         ${t`Notifications`}
                     </h1>
-                    <p>
+                    <span class="pf-c-notification-drawer__header-status">
                         ${t`${this.unread} unread`}
-                    </p>
+                    </span>
+                    <div class="pf-c-notification-drawer__header-action">
+                        <div class="pf-c-notification-drawer__header-action-close">
+                            <button
+                                @click=${() => {
+                                    this.dispatchEvent(
+                                        new CustomEvent(EVENT_NOTIFICATION_TOGGLE, {
+                                            bubbles: true,
+                                            composed: true,
+                                        })
+                                    );
+                                }}
+                                class="pf-c-button pf-m-plain"
+                                type="button"
+                                aria-label="Close">
+                                <i class="fas fa-times" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="pf-c-notification-drawer__body">
                     <ul class="pf-c-notification-drawer__list">

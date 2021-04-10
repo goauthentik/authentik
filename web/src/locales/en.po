@@ -2037,7 +2037,7 @@ msgstr "Notification Transports"
 msgid "Notification rule"
 msgstr "Notification rule"
 
-#: src/elements/notifications/NotificationDrawer.ts:99
+#: src/elements/notifications/NotificationDrawer.ts:95
 msgid "Notifications"
 msgstr "Notifications"
 
@@ -3862,7 +3862,7 @@ msgstr "{0} - {1} of {2}"
 msgid "{0} is available!"
 msgstr "{0} is available!"
 
-#: src/elements/notifications/NotificationDrawer.ts:102
+#: src/elements/notifications/NotificationDrawer.ts:98
 msgid "{0} unread"
 msgstr "{0} unread"
 
