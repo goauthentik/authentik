@@ -7,8 +7,8 @@ import { TablePage } from "../../elements/table/TablePage";
 
 import "./OutpostHealth";
 import "./OutpostForm";
+import "./OutpostDeploymentModal";
 import "../../elements/buttons/SpinnerButton";
-import "../../elements/buttons/TokenCopyButton";
 import "../../elements/forms/DeleteForm";
 import "../../elements/forms/ModalForm";
 import { PAGE_SIZE } from "../../constants";
@@ -87,42 +87,8 @@ export class OutpostListPage extends TablePage<Outpost> {
                 <button slot="trigger" class="pf-c-button pf-m-tertiary">
                     ${t`View Deployment Info`}
                 </button>
-                <div slot="modal">
-                    <div class="pf-c-modal-box__header">
-                        <h1 class="pf-c-title pf-m-2xl" id="modal-title">${t`Outpost Deployment Info`}</h1>
-                    </div>
-                    <div class="pf-c-modal-box__body" id="modal-description">
-                        <p><a href="https://goauthentik.io/docs/outposts/outposts/#deploy">${t`View deployment documentation`}</a></p>
-                        <form class="pf-c-form">
-                            <div class="pf-c-form__group">
-                                <label class="pf-c-form__label" for="help-text-simple-form-name">
-                                    <span class="pf-c-form__label-text">AUTHENTIK_HOST</span>
-                                </label>
-                                <input class="pf-c-form-control" readonly type="text" value="${document.location.toString()}" />
-                            </div>
-                            <div class="pf-c-form__group">
-                                <label class="pf-c-form__label" for="help-text-simple-form-name">
-                                    <span class="pf-c-form__label-text">AUTHENTIK_TOKEN</span>
-                                </label>
-                                <div>
-                                    <ak-token-copy-button identifier="${ifDefined(item.tokenIdentifier)}">
-                                        ${t`Click to copy token`}
-                                    </ak-token-copy-button>
-                                </div>
-                            </div>
-                            <h3>${t`If your authentik Instance is using a self-signed certificate, set this value.`}</h3>
-                            <div class="pf-c-form__group">
-                                <label class="pf-c-form__label" for="help-text-simple-form-name">
-                                    <span class="pf-c-form__label-text">AUTHENTIK_INSECURE</span>
-                                </label>
-                                <input class="pf-c-form-control" readonly type="text" value="true" />
-                            </div>
-                        </form>
-                    </div>
-                    <footer class="pf-c-modal-box__footer pf-m-align-left">
-                        <a class="pf-c-button pf-m-primary">${t`Close`}</a>
-                    </footer>
-                </div>
+                <ak-outpost-deployment-modal .outpost=${item} slot="modal">
+                </ak-outpost-deployment-modal>
             </ak-modal-button>`,
         ];
     }

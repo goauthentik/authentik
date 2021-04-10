@@ -496,7 +496,7 @@ msgstr "Clear cache"
 msgid "Click to change value"
 msgstr "Click to change value"
 
-#: src/pages/outposts/OutpostListPage.ts:112
+#: src/pages/outposts/OutpostDeploymentModal.ts:42
 msgid "Click to copy token"
 msgstr "Click to copy token"
 
@@ -520,7 +520,7 @@ msgstr "Client Secret"
 msgid "Client type"
 msgstr "Client type"
 
-#: src/pages/outposts/OutpostListPage.ts:126
+#: src/pages/outposts/OutpostDeploymentModal.ts:56
 msgid "Close"
 msgstr "Close"
 
@@ -674,8 +674,8 @@ msgstr "Copy Key"
 #: src/pages/flows/FlowListPage.ts:117
 #: src/pages/groups/GroupListPage.ts:91
 #: src/pages/groups/GroupListPage.ts:99
-#: src/pages/outposts/OutpostListPage.ts:136
-#: src/pages/outposts/OutpostListPage.ts:144
+#: src/pages/outposts/OutpostListPage.ts:102
+#: src/pages/outposts/OutpostListPage.ts:110
 #: src/pages/outposts/ServiceConnectionListPage.ts:110
 #: src/pages/outposts/ServiceConnectionListPage.ts:119
 #: src/pages/policies/BoundPoliciesList.ts:158
@@ -746,7 +746,7 @@ msgstr "Create Notification Rule"
 msgid "Create Notification Transport"
 msgstr "Create Notification Transport"
 
-#: src/pages/outposts/OutpostListPage.ts:139
+#: src/pages/outposts/OutpostListPage.ts:105
 msgid "Create Outpost"
 msgstr "Create Outpost"
 
@@ -1470,7 +1470,7 @@ msgstr "If left empty, authentik will try to extract the launch URL based on the
 msgid "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given."
 msgstr "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given."
 
-#: src/pages/outposts/OutpostListPage.ts:116
+#: src/pages/outposts/OutpostDeploymentModal.ts:46
 msgid "If your authentik Instance is using a self-signed certificate, set this value."
 msgstr "If your authentik Instance is using a self-signed certificate, set this value."
 
@@ -2105,7 +2105,7 @@ msgstr "Order"
 msgid "Outpost"
 msgstr "Outpost"
 
-#: src/pages/outposts/OutpostListPage.ts:95
+#: src/pages/outposts/OutpostDeploymentModal.ts:25
 msgid "Outpost Deployment Info"
 msgstr "Outpost Deployment Info"
 
@@ -3635,7 +3635,7 @@ msgstr "Version: {0}"
 msgid "View Deployment Info"
 msgstr "View Deployment Info"
 
-#: src/pages/outposts/OutpostListPage.ts:98
+#: src/pages/outposts/OutpostDeploymentModal.ts:28
 msgid "View deployment documentation"
 msgstr "View deployment documentation"
 

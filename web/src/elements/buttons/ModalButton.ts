@@ -1,5 +1,4 @@
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { unsafeHTML } from "lit-html/directives/unsafe-html";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFModalBox from "@patternfly/patternfly/components/ModalBox/modal-box.css";
@@ -21,9 +20,6 @@ export class ModalButton extends LitElement {
 
     @property({type: Boolean})
     open = false;
-
-    @property()
-    modal = "<slot name='modal'></slot>";
 
     static get styles(): CSSResult[] {
         return [PFBase, PFButton, PFModalBox, PFForm, PFFormControl, PFBullseye, PFBackdrop, PFPage, PFStack, PFCard, PFContent, AKGlobal].concat(
@@ -72,7 +68,7 @@ export class ModalButton extends LitElement {
     }
 
     renderModalInner(): TemplateResult {
-        return html`${unsafeHTML(this.modal)}`;
+        return html`<slot name='modal'></slot>`;
     }
 
     renderModal(): TemplateResult {
