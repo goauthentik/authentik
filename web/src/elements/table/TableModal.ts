@@ -1,45 +1,25 @@
-import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import { CSSResult, LitElement, property } from "lit-element";
+import { html, TemplateResult } from "lit-html";
+import { Table } from "./Table";
 import PFModalBox from "@patternfly/patternfly/components/ModalBox/modal-box.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import PFBackdrop from "@patternfly/patternfly/components/Backdrop/backdrop.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import AKGlobal from "../../authentik.css";
 import { PFSize } from "../Spinner";
+import { MODAL_BUTTON_STYLES } from "../buttons/ModalButton";
 
-export const MODAL_BUTTON_STYLES = css`
-    :host {
-        text-align: left;
-        font-size: var(--pf-global--FontSize--md);
-    }
-    .pf-c-modal-box.pf-m-lg {
-        overflow-y: auto;
-    }
-    .pf-c-modal-box > .pf-c-button + * {
-        margin-right: 0;
-    }
-    /* fix multiple selects height */
-    select[multiple] {
-        height: 15em;
-    }
-`;
-
-@customElement("ak-modal-button")
-export class ModalButton extends LitElement {
+export abstract class TableModal<T> extends Table<T> {
     @property()
     size: PFSize = PFSize.Large;
 
-    @property({type: Boolean})
+    @property({ type: Boolean })
     open = false;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFModalBox, PFForm, PFFormControl, PFBullseye, PFBackdrop, PFPage, PFStack, PFCard, PFContent, AKGlobal, MODAL_BUTTON_STYLES];
+        return super.styles.concat(PFModalBox, PFBullseye, PFContent, PFBackdrop, PFPage, PFStack, AKGlobal, MODAL_BUTTON_STYLES);
     }
 
     constructor() {
@@ -68,7 +48,7 @@ export class ModalButton extends LitElement {
     }
 
     renderModalInner(): TemplateResult {
-        return html`<slot name='modal'></slot>`;
+        return this.renderTable();
     }
 
     renderModal(): TemplateResult {
@@ -97,5 +77,4 @@ export class ModalButton extends LitElement {
         return html` <slot name="trigger" @click=${() => this.onClick()}></slot>
             ${this.open ? this.renderModal() : ""}`;
     }
-
 }
