@@ -46,6 +46,9 @@ export class PasswordPolicyForm extends Form<PasswordPolicy> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
+            <div class="form-help-text">
+                ${t`Checks the value from the policy request against several rules, mostly used to ensure password strength.`}
+            </div>
             <ak-form-element-horizontal
                 label=${t`Name`}
                 ?required=${true}
@@ -59,7 +62,9 @@ export class PasswordPolicyForm extends Form<PasswordPolicy> {
                         ${t`Execution logging`}
                     </label>
                 </div>
-                <p class="pf-c-form__helper-text">${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}</p>
+                <p class="pf-c-form__helper-text">
+                    ${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header">

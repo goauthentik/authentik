@@ -46,6 +46,9 @@ export class PasswordExpiryPolicyForm extends Form<PasswordExpiryPolicy> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
+            <div class="form-help-text">
+                ${t`Checks if the request's user's password has been changed in the last x days, and denys based on settings.`}
+            </div>
             <ak-form-element-horizontal
                 label=${t`Name`}
                 ?required=${true}
@@ -59,7 +62,9 @@ export class PasswordExpiryPolicyForm extends Form<PasswordExpiryPolicy> {
                         ${t`Execution logging`}
                     </label>
                 </div>
-                <p class="pf-c-form__helper-text">${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}</p>
+                <p class="pf-c-form__helper-text">
+                    ${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header">
@@ -76,7 +81,7 @@ export class PasswordExpiryPolicyForm extends Form<PasswordExpiryPolicy> {
                         <div class="pf-c-check">
                             <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.policy?.denyOnly, false)}>
                             <label class="pf-c-check__label">
-                                ${t`Only fail the policy, don't set user's password.`}
+                                ${t`Only fail the policy, don't invalidate user's password.`}
                             </label>
                         </div>
                     </ak-form-element-horizontal>

@@ -46,6 +46,10 @@ export class HaveIBeenPwnedPolicyForm extends Form<HaveIBeenPwendPolicy> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
+            <div class="form-help-text">
+                ${t`Checks a value from the policy request against the Have I been Pwned API, and denys the request based upon that.
+                Note that only a part of the hash of the password is sent, the full comparison is done clientside.`}
+            </div>
             <ak-form-element-horizontal
                 label=${t`Name`}
                 ?required=${true}
@@ -59,7 +63,9 @@ export class HaveIBeenPwnedPolicyForm extends Form<HaveIBeenPwendPolicy> {
                         ${t`Execution logging`}
                     </label>
                 </div>
-                <p class="pf-c-form__helper-text">${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}</p>
+                <p class="pf-c-form__helper-text">
+                    ${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header">

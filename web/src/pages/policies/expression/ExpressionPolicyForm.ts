@@ -47,6 +47,9 @@ export class ExpressionPolicyForm extends Form<ExpressionPolicy> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
+            <div class="form-help-text">
+                ${t`Executes the python snippet to determine whether to allow or deny a request.`}
+            </div>
             <ak-form-element-horizontal
                 label=${t`Name`}
                 ?required=${true}
@@ -60,7 +63,9 @@ export class ExpressionPolicyForm extends Form<ExpressionPolicy> {
                         ${t`Execution logging`}
                     </label>
                 </div>
-                <p class="pf-c-form__helper-text">${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}</p>
+                <p class="pf-c-form__helper-text">
+                    ${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header">

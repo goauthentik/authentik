@@ -46,6 +46,9 @@ export class DummyPolicyForm extends Form<DummyPolicy> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
+            <div class="form-help-text">
+                ${t`A policy used for testing. Always returns the same result as specified below after waiting a random duration.`}
+            </div>
             <ak-form-element-horizontal
                 label=${t`Name`}
                 ?required=${true}
@@ -59,7 +62,9 @@ export class DummyPolicyForm extends Form<DummyPolicy> {
                         ${t`Execution logging`}
                     </label>
                 </div>
-                <p class="pf-c-form__helper-text">${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}</p>
+                <p class="pf-c-form__helper-text">
+                    ${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header">
@@ -73,7 +78,6 @@ export class DummyPolicyForm extends Form<DummyPolicy> {
                                 ${t`Pass policy?`}
                             </label>
                         </div>
-                        <p class="pf-c-form__helper-text">${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Wait (min)`}

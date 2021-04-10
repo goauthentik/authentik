@@ -25,6 +25,10 @@ msgstr "6 digits, widely compatible"
 msgid "8 digits, not compatible with apps like Google Authenticator"
 msgstr "8 digits, not compatible with apps like Google Authenticator"
 
+#: src/pages/policies/dummy/DummyPolicyForm.ts:53
+msgid "A policy used for testing. Always returns the same result as specified below after waiting a random duration."
+msgstr "A policy used for testing. Always returns the same result as specified below after waiting a random duration."
+
 #: src/pages/providers/saml/SAMLProviderForm.ts:82
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:95
 msgid "ACS URL"
@@ -66,7 +70,7 @@ msgstr "Access token URL"
 
 #: src/elements/events/ObjectChangelog.ts:38
 #: src/pages/events/EventListPage.ts:43
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:74
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:79
 msgid "Action"
 msgstr "Action"
 
@@ -98,7 +102,7 @@ msgstr "Additional user DN, prepended to the Base DN."
 msgid "Advanced protocol settings"
 msgstr "Advanced protocol settings"
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:114
+#: src/pages/policies/password/PasswordPolicyForm.ts:119
 #: src/pages/sources/ldap/LDAPSourceForm.ts:140
 msgid "Advanced settings"
 msgstr "Advanced settings"
@@ -119,7 +123,7 @@ msgstr "Algorithm used to sign the JWT Tokens."
 msgid "Allow IDP-initiated logins"
 msgstr "Allow IDP-initiated logins"
 
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:84
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:90
 msgid "Allow up to N occurrences in the HIBP database."
 msgstr "Allow up to N occurrences in the HIBP database."
 
@@ -127,13 +131,17 @@ msgstr "Allow up to N occurrences in the HIBP database."
 msgid "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages."
 msgstr "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages."
 
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:80
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:86
 msgid "Allowed count"
 msgstr "Allowed count"
 
 #: src/pages/sources/saml/SAMLSourceForm.ts:144
 msgid "Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done."
 msgstr "Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done."
+
+#: src/pages/policies/reputation/ReputationPolicyForm.ts:53
+msgid "Allows/denys requests based on the users and/or the IPs reputation."
+msgstr "Allows/denys requests based on the users and/or the IPs reputation."
 
 #: src/pages/sources/saml/SAMLSourceForm.ts:96
 msgid "Also known as Entity ID. Defaults the Metadata URL."
@@ -144,7 +152,7 @@ msgid "Always require consent"
 msgstr "Always require consent"
 
 #: src/pages/events/EventInfo.ts:59
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:94
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:99
 msgid "App"
 msgstr "App"
 
@@ -459,15 +467,15 @@ msgstr "Change your password"
 msgid "Changelog"
 msgstr "Changelog"
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:122
+#: src/pages/policies/password/PasswordPolicyForm.ts:127
 msgid "Characters which are considered as symbols."
 msgstr "Characters which are considered as symbols."
 
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:76
+#: src/pages/policies/reputation/ReputationPolicyForm.ts:81
 msgid "Check IP"
 msgstr "Check IP"
 
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:84
+#: src/pages/policies/reputation/ReputationPolicyForm.ts:89
 msgid "Check Username"
 msgstr "Check Username"
 
@@ -478,6 +486,22 @@ msgstr "Check your Emails for a password reset link."
 #: src/pages/stages/prompt/PromptForm.ts:60
 msgid "Checkbox"
 msgstr "Checkbox"
+
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:53
+msgid ""
+"Checks a value from the policy request against the Have I been Pwned API, and denys the request based upon that.\n"
+"Note that only a part of the hash of the password is sent, the full comparison is done clientside."
+msgstr ""
+"Checks a value from the policy request against the Have I been Pwned API, and denys the request based upon that.\n"
+"Note that only a part of the hash of the password is sent, the full comparison is done clientside."
+
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts:53
+msgid "Checks if the request's user's password has been changed in the last x days, and denys based on settings."
+msgstr "Checks if the request's user's password has been changed in the last x days, and denys based on settings."
+
+#: src/pages/policies/password/PasswordPolicyForm.ts:53
+msgid "Checks the value from the policy request against several rules, mostly used to ensure password strength."
+msgstr "Checks the value from the policy request against several rules, mostly used to ensure password strength."
 
 #: src/pages/admin-overview/cards/FlowCacheStatusCard.ts:41
 msgid "Clear Flow cache"
@@ -507,7 +531,7 @@ msgstr "Client ID"
 
 #: src/elements/events/ObjectChangelog.ts:41
 #: src/pages/events/EventListPage.ts:46
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:88
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:93
 msgid "Client IP"
 msgstr "Client IP"
 
@@ -1081,7 +1105,7 @@ msgstr "Error"
 msgid "Error creating credential: {err}"
 msgstr "Error creating credential: {err}"
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:105
+#: src/pages/policies/password/PasswordPolicyForm.ts:110
 msgid "Error message"
 msgstr "Error message"
 
@@ -1143,13 +1167,17 @@ msgstr "Execute"
 msgid "Execute flow"
 msgstr "Execute flow"
 
-#: src/pages/policies/dummy/DummyPolicyForm.ts:62
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:63
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:62
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:63
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:62
-#: src/pages/policies/password/PasswordPolicyForm.ts:62
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:62
+#: src/pages/policies/expression/ExpressionPolicyForm.ts:54
+msgid "Executes the python snippet to determine whether to allow or deny a request."
+msgstr "Executes the python snippet to determine whether to allow or deny a request."
+
+#: src/pages/policies/dummy/DummyPolicyForm.ts:65
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:66
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts:65
+#: src/pages/policies/expression/ExpressionPolicyForm.ts:66
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:66
+#: src/pages/policies/password/PasswordPolicyForm.ts:65
+#: src/pages/policies/reputation/ReputationPolicyForm.ts:65
 msgid "Execution logging"
 msgstr "Execution logging"
 
@@ -1187,14 +1215,14 @@ msgid "Export"
 msgstr "Export"
 
 #: src/pages/events/EventInfo.ts:133
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:74
+#: src/pages/policies/expression/ExpressionPolicyForm.ts:79
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts:65
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts:75
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts:72
 msgid "Expression"
 msgstr "Expression"
 
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:79
+#: src/pages/policies/expression/ExpressionPolicyForm.ts:84
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts:70
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts:80
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts:77
@@ -1241,8 +1269,8 @@ msgstr "Field"
 msgid "Field Key"
 msgstr "Field Key"
 
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:77
-#: src/pages/policies/password/PasswordPolicyForm.ts:77
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:83
+#: src/pages/policies/password/PasswordPolicyForm.ts:82
 msgid "Field key to check, field keys defined in Prompt stages are available."
 msgstr "Field key to check, field keys defined in Prompt stages are available."
 
@@ -1645,8 +1673,8 @@ msgstr "Loading"
 #: src/pages/policies/PolicyBindingForm.ts:172
 #: src/pages/policies/PolicyBindingForm.ts:188
 #: src/pages/policies/PolicyTestForm.ts:70
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:83
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:103
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:88
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:108
 #: src/pages/property-mappings/PropertyMappingTestForm.ts:59
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:74
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:166
@@ -1715,19 +1743,23 @@ msgstr "Logs"
 msgid "Long-running operations which authentik executes in the background."
 msgstr "Long-running operations which authentik executes in the background."
 
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:85
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:90
 msgid "Match created events with this action type. When left empty, all action types will be matched."
 msgstr "Match created events with this action type. When left empty, all action types will be matched."
 
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:105
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:110
 msgid "Match events created by selected application. When left empty, all applications are matched."
 msgstr "Match events created by selected application. When left empty, all applications are matched."
 
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:91
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:96
 msgid "Matches Event's Client IP (strict matching, for network matching use an Expression Policy."
 msgstr "Matches Event's Client IP (strict matching, for network matching use an Expression Policy."
 
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:73
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:54
+msgid "Matches an event against a set of criteria. If any of the configured values match, the policy passes."
+msgstr "Matches an event against a set of criteria. If any of the configured values match, the policy passes."
+
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts:78
 msgid "Maximum age (in days)"
 msgstr "Maximum age (in days)"
 
@@ -1749,19 +1781,19 @@ msgstr "Messages"
 msgid "Metadata"
 msgstr "Metadata"
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:93
+#: src/pages/policies/password/PasswordPolicyForm.ts:98
 msgid "Minimum amount of Lowercase Characters"
 msgstr "Minimum amount of Lowercase Characters"
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:99
+#: src/pages/policies/password/PasswordPolicyForm.ts:104
 msgid "Minimum amount of Symbols Characters"
 msgstr "Minimum amount of Symbols Characters"
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:87
+#: src/pages/policies/password/PasswordPolicyForm.ts:92
 msgid "Minimum amount of Uppercase Characters"
 msgstr "Minimum amount of Uppercase Characters"
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:81
+#: src/pages/policies/password/PasswordPolicyForm.ts:86
 msgid "Minimum length"
 msgstr "Minimum length"
 
@@ -1799,13 +1831,13 @@ msgstr "Monitor"
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts:54
 #: src/pages/outposts/ServiceConnectionListPage.ts:53
 #: src/pages/policies/PolicyListPage.ts:56
-#: src/pages/policies/dummy/DummyPolicyForm.ts:53
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:54
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:53
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:54
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:53
-#: src/pages/policies/password/PasswordPolicyForm.ts:53
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:53
+#: src/pages/policies/dummy/DummyPolicyForm.ts:56
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:57
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts:56
+#: src/pages/policies/expression/ExpressionPolicyForm.ts:57
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:57
+#: src/pages/policies/password/PasswordPolicyForm.ts:56
+#: src/pages/policies/reputation/ReputationPolicyForm.ts:56
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts:52
 #: src/pages/property-mappings/PropertyMappingListPage.ts:54
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts:52
@@ -2040,9 +2072,9 @@ msgstr "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3
 msgid "On behalf of {0}"
 msgstr "On behalf of {0}"
 
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:82
-msgid "Only fail the policy, don't set user's password."
-msgstr "Only fail the policy, don't set user's password."
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts:87
+msgid "Only fail the policy, don't invalidate user's password."
+msgstr "Only fail the policy, don't invalidate user's password."
 
 #: src/pages/events/TransportForm.ts:102
 msgid "Only send notification once, for example when sending a webhook into a chat channel."
@@ -2147,7 +2179,7 @@ msgstr "PEM-encoded Certificate data."
 msgid "Parent"
 msgstr "Parent"
 
-#: src/pages/policies/dummy/DummyPolicyForm.ts:76
+#: src/pages/policies/dummy/DummyPolicyForm.ts:81
 msgid "Pass policy?"
 msgstr "Pass policy?"
 
@@ -2160,8 +2192,8 @@ msgstr "Passing"
 msgid "Password"
 msgstr "Password"
 
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:73
-#: src/pages/policies/password/PasswordPolicyForm.ts:73
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:79
+#: src/pages/policies/password/PasswordPolicyForm.ts:78
 msgid "Password field"
 msgstr "Password field"
 
@@ -2228,13 +2260,13 @@ msgstr "Policy engine mode"
 msgid "Policy {0}"
 msgstr "Policy {0}"
 
-#: src/pages/policies/dummy/DummyPolicyForm.ts:69
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:70
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:69
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:70
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:69
-#: src/pages/policies/password/PasswordPolicyForm.ts:69
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:69
+#: src/pages/policies/dummy/DummyPolicyForm.ts:74
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:75
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts:74
+#: src/pages/policies/expression/ExpressionPolicyForm.ts:75
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:75
+#: src/pages/policies/password/PasswordPolicyForm.ts:74
+#: src/pages/policies/reputation/ReputationPolicyForm.ts:74
 msgid "Policy-specific settings"
 msgstr "Policy-specific settings"
 
@@ -2587,7 +2619,7 @@ msgstr "Search..."
 msgid "Secret:"
 msgstr "Secret:"
 
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:81
+#: src/pages/policies/expression/ExpressionPolicyForm.ts:86
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts:72
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts:82
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts:79
@@ -3114,7 +3146,7 @@ msgstr "Superuser"
 msgid "Superuser privileges?"
 msgstr "Superuser privileges?"
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:118
+#: src/pages/policies/password/PasswordPolicyForm.ts:123
 msgid "Symbol charset"
 msgstr "Symbol charset"
 
@@ -3199,7 +3231,7 @@ msgstr "Text: Simple Text input"
 msgid "The URL \"{0}\" was not found."
 msgstr "The URL \"{0}\" was not found."
 
-#: src/pages/policies/dummy/DummyPolicyForm.ts:86
+#: src/pages/policies/dummy/DummyPolicyForm.ts:90
 msgid "The policy takes a random time to execute. This controls the minimum time it will take."
 msgstr "The policy takes a random time to execute. This controls the minimum time it will take."
 
@@ -3228,7 +3260,7 @@ msgstr "These policies control which users can access this flow."
 msgid "These policies control which users can access this source."
 msgstr "These policies control which users can access this source."
 
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:89
+#: src/pages/policies/reputation/ReputationPolicyForm.ts:94
 msgid "Threshold"
 msgstr "Threshold"
 
@@ -3643,11 +3675,11 @@ msgstr "View deployment documentation"
 msgid "Visible in the URL."
 msgstr "Visible in the URL."
 
-#: src/pages/policies/dummy/DummyPolicyForm.ts:89
+#: src/pages/policies/dummy/DummyPolicyForm.ts:93
 msgid "Wait (max)"
 msgstr "Wait (max)"
 
-#: src/pages/policies/dummy/DummyPolicyForm.ts:82
+#: src/pages/policies/dummy/DummyPolicyForm.ts:86
 msgid "Wait (min)"
 msgstr "Wait (min)"
 
@@ -3704,14 +3736,13 @@ msgstr "When enabled, user fields are matched regardless of their casing."
 msgid "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."
 msgstr "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."
 
-#: src/pages/policies/dummy/DummyPolicyForm.ts:65
-#: src/pages/policies/dummy/DummyPolicyForm.ts:79
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:66
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:65
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:66
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:65
-#: src/pages/policies/password/PasswordPolicyForm.ts:65
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:65
+#: src/pages/policies/dummy/DummyPolicyForm.ts:69
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:70
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts:69
+#: src/pages/policies/expression/ExpressionPolicyForm.ts:70
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:70
+#: src/pages/policies/password/PasswordPolicyForm.ts:69
+#: src/pages/policies/reputation/ReputationPolicyForm.ts:69
 msgid "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
 msgstr "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
 
