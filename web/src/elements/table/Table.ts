@@ -13,6 +13,8 @@ import AKGlobal from "../../authentik.css";
 
 import "./TablePagination";
 import "../EmptyState";
+import "../chips/Chip";
+import "../chips/ChipGroup";
 import { EVENT_REFRESH } from "../../constants";
 
 export class TableColumn {
@@ -235,7 +237,15 @@ export abstract class Table<T> extends LitElement {
     }
 
     renderTable(): TemplateResult {
-        return html`<div class="pf-c-toolbar">
+        return html`
+            ${this.checkbox ?
+                html`<ak-chip-group>
+                        ${this.selectedElements.map(el => {
+                            return html`<ak-chip>${this.renderSelectedChip(el)}</ak-chip>`;
+                        })}
+                    </ak-chip-group>`:
+                html``}
+            <div class="pf-c-toolbar">
                 <div class="pf-c-toolbar__content">
                     ${this.renderSearch()}
                     <div class="pf-c-toolbar__bulk-select">
