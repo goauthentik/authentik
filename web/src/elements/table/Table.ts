@@ -12,10 +12,12 @@ import PFPagination from "@patternfly/patternfly/components/Pagination/paginatio
 import AKGlobal from "../../authentik.css";
 
 import "./TablePagination";
+import "./TableSearch";
 import "../EmptyState";
 import "../chips/Chip";
 import "../chips/ChipGroup";
 import { EVENT_REFRESH } from "../../constants";
+import { ifDefined } from "lit-html/directives/if-defined";
 
 export class TableColumn {
 
@@ -84,6 +86,10 @@ export abstract class Table<T> extends LitElement {
     abstract row(item: T): TemplateResult[];
 
     private isLoading = false;
+
+    searchEnabled(): boolean {
+        return false;
+    }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     renderExpanded(item: T): TemplateResult {
@@ -194,6 +200,7 @@ export abstract class Table<T> extends LitElement {
                                     if (index <= -1) return;
                                     this.selectedElements.splice(index, 1);
                                 }
+                                this.requestUpdate();
                             }} />
                     </td>` : html``}
                     ${this.expandable ? html`<td class="pf-c-table__toggle" role="cell">
@@ -229,6 +236,17 @@ export abstract class Table<T> extends LitElement {
     }
 
     renderSearch(): TemplateResult {
+        if (!this.searchEnabled()) {
+            return html``;
+        }
+        return html`<ak-table-search value=${ifDefined(this.search)} .onSearch=${(value: string) => {
+            this.search = value;
+            this.fetch();
+        }}>
+        </ak-table-search>&nbsp;`;
+    }
+
+    renderSelectedChip(item: T): TemplateResult {
         return html``;
     }
 

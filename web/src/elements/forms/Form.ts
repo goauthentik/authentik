@@ -10,6 +10,7 @@ import AKGlobal from "../../authentik.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import { MessageLevel } from "../messages/Message";
 import { IronFormElement } from "@polymer/iron-form/iron-form";
 import { camelToSnake, convertToSlug } from "../../utils";
@@ -36,7 +37,7 @@ export class Form<T> extends LitElement {
     nonFieldErrors?: string[];
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFCard, PFButton, PFForm, PFAlert, PFFormControl, AKGlobal, css`
+        return [PFBase, PFCard, PFButton, PFForm, PFAlert, PFInputGroup, PFFormControl, AKGlobal, css`
             select[multiple] {
                 height: 15em;
             }
