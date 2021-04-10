@@ -1,4 +1,6 @@
 """authentik sentry integration"""
+from typing import Optional
+
 from aioredis.errors import ConnectionClosedError, ReplyError
 from billiard.exceptions import WorkerLostError
 from botocore.client import ClientError
@@ -22,7 +24,7 @@ class SentryIgnoredException(Exception):
     """Base Class for all errors that are suppressed, and not sent to sentry."""
 
 
-def before_send(event: dict, hint: dict) -> dict:
+def before_send(event: dict, hint: dict) -> Optional[dict]:
     """Check if error is database error, and ignore if so"""
     ignored_classes = (
         # Inbuilt types
