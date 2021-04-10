@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
 
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -21,7 +21,6 @@ import "../../../elements/events/ObjectChangelog";
 import "../../../elements/forms/ModalForm";
 import "../../policies/BoundPoliciesList";
 import "./SAMLSourceForm";
-import { Page } from "../../../elements/Page";
 import { SAMLSource, SourcesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { AppURLManager } from "../../../api/legacy";
@@ -29,16 +28,7 @@ import { EVENT_REFRESH } from "../../../constants";
 import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-source-saml-view")
-export class SAMLSourceViewPage extends Page {
-    pageTitle(): string {
-        return t`SAML Source ${this.source?.name || ""}`;
-    }
-    pageDescription(): string | undefined {
-        return;
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-integration";
-    }
+export class SAMLSourceViewPage extends LitElement {
 
     @property({ type: String })
     set sourceSlug(slug: string) {
@@ -64,7 +54,7 @@ export class SAMLSourceViewPage extends Page {
         });
     }
 
-    renderContent(): TemplateResult {
+    render(): TemplateResult {
         if (!this.source) {
             return html``;
         }

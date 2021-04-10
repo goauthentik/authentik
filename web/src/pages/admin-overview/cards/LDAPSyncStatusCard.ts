@@ -22,7 +22,7 @@ export class LDAPSyncStatusCard extends AdminStatusCard<Task> {
     }
 
     renderValue(): TemplateResult {
-        return html`${t`Last sync: ${this.value?.taskFinishTimestamp.toLocaleTimeString()}`}`;
+        return html`${t`Last sync: ${this.value?.taskFinishTimestamp?.toLocaleTimeString()}`}`;
     }
 
     getStatus(value: Task): Promise<AdminStatus> {

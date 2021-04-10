@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -20,23 +20,13 @@ import "../../../elements/Tabs";
 import "../../../elements/events/ObjectChangelog";
 import "../RelatedApplicationButton";
 import "./SAMLProviderForm";
-import { Page } from "../../../elements/Page";
 import { ProvidersApi, SAMLProvider } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";
 import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-provider-saml-view")
-export class SAMLProviderViewPage extends Page {
-    pageTitle(): string {
-        return t`SAML Provider ${this.provider?.name || ""}`;
-    }
-    pageDescription(): string | undefined {
-        return;
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-integration";
-    }
+export class SAMLProviderViewPage extends LitElement {
 
     @property()
     set args(value: { [key: string]: number }) {
@@ -65,7 +55,7 @@ export class SAMLProviderViewPage extends Page {
         });
     }
 
-    renderContent(): TemplateResult {
+    render(): TemplateResult {
         if (!this.provider) {
             return html``;
         }

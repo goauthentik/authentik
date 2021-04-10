@@ -2,6 +2,7 @@ import { css, CSSResult, customElement, html, LitElement, property, TemplateResu
 
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/EmptyState";
+import "../../elements/PageHeader";
 
 import "./saml/SAMLProviderViewPage";
 import "./oauth2/OAuth2ProviderViewPage";
@@ -31,7 +32,7 @@ export class ProviderViewPage extends LitElement {
         `];
     }
 
-    render(): TemplateResult {
+    renderProvider(): TemplateResult {
         if (!this.provider) {
             return html`<ak-empty-state ?loading=${true} ?fullHeight=${true}></ak-empty-state>`;
         }
@@ -45,5 +46,14 @@ export class ProviderViewPage extends LitElement {
             default:
                 return html`<p>Invalid provider type ${this.provider?.component}</p>`;
         }
+    }
+
+    render(): TemplateResult {
+        return html`<ak-page-header
+            icon="pf-icon pf-icon-integration"
+            header=${ifDefined(this.provider?.name)}
+            description=${ifDefined(this.provider?.verboseName)}>
+        </ak-page-header>
+        ${this.renderProvider()}`;
     }
 }

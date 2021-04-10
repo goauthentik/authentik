@@ -1,9 +1,9 @@
-import { t } from "@lingui/macro";
 import { CSSResult } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { Table } from "./Table";
 import "./TableSearch";
+import "../../elements/PageHeader";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
@@ -29,16 +29,11 @@ export abstract class TablePage<T> extends Table<T> {
     }
 
     render(): TemplateResult {
-        const description = this.pageDescription();
-        return html`<section class="pf-c-page__main-section pf-m-light">
-                <div class="pf-c-content">
-                    <h1>
-                        <i class="${this.pageIcon()}"></i>
-                        ${t`${this.pageTitle()}`}
-                    </h1>
-                    ${description ? html`<p>${t`${description}`}</p>` : html``}
-                </div>
-            </section>
+        return html`<ak-page-header
+                icon=${this.pageIcon()}
+                header=${this.pageTitle()}
+                description=${ifDefined(this.pageDescription())}>
+            </ak-page-header>
             <section class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-card">${this.renderTable()}</div>
             </section>`;

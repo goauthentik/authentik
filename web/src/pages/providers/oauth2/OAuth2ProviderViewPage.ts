@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -21,23 +21,13 @@ import "../../../elements/Tabs";
 import "../../../elements/events/ObjectChangelog";
 import "../RelatedApplicationButton";
 import "./OAuth2ProviderForm";
-import { Page } from "../../../elements/Page";
 import { convertToTitle } from "../../../utils";
 import { OAuth2Provider, OAuth2ProviderSetupURLs, ProvidersApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";
 
 @customElement("ak-provider-oauth2-view")
-export class OAuth2ProviderViewPage extends Page {
-    pageTitle(): string {
-        return t`OAuth Provider ${this.provider?.name || ""}`;
-    }
-    pageDescription(): string | undefined {
-        return;
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-integration";
-    }
+export class OAuth2ProviderViewPage extends LitElement {
 
     @property({type: Number})
     set providerID(value: number) {
@@ -72,7 +62,7 @@ export class OAuth2ProviderViewPage extends Page {
         });
     }
 
-    renderContent(): TemplateResult {
+    render(): TemplateResult {
         if (!this.provider) {
             return html``;
         }

@@ -9,6 +9,7 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import AKGlobal from "../../authentik.css";
 import "./EventInfo";
+import "../../elements/PageHeader";
 
 @customElement("ak-event-info-page")
 export class EventInfoPage extends LitElement {
@@ -34,14 +35,10 @@ export class EventInfoPage extends LitElement {
     }
 
     render(): TemplateResult {
-        return html`<section class="pf-c-page__main-section pf-m-light">
-            <div class="pf-c-content">
-                <h1>
-                    <i class="pf-icon pf-icon-catalog"></i>
-                    ${t`Event ${this.event?.pk || ""}`}
-                </h1>
-            </div>
-        </section>
+        return html`<ak-page-header
+            icon="pf-icon pf-icon-catalog"
+            header=${t`Event ${this.event?.pk || ""}`}>
+        </ak-page-header>
         <section class="pf-c-page__main-section pf-m-no-padding-mobile">
             <div class="pf-c-card">
                 <div class="pf-c-card__title">

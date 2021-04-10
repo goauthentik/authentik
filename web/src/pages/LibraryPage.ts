@@ -7,6 +7,7 @@ import { AKResponse } from "../api/Client";
 import { DEFAULT_CONFIG } from "../api/Config";
 import { me } from "../api/Users";
 import { loading, truncate } from "../utils";
+import "../elements/PageHeader";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
@@ -125,14 +126,10 @@ export class LibraryPage extends LitElement {
 
     render(): TemplateResult {
         return html`<main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
-            <section class="pf-c-page__main-section pf-m-light">
-                <div class="pf-c-content">
-                    <h1>
-                        <i class="pf-icon pf-icon-applications"></i>
-                        ${t`Applications`}
-                    </h1>
-                </div>
-            </section>
+            <ak-page-header
+                icon="pf-icon pf-icon-applications"
+                header=${t`Applications`}>
+            </ak-page-header>
             <section class="pf-c-page__main-section">
             ${loading(this.apps, html`${(this.apps?.results.length || 0) > 0 ?
                 this.renderApps() :

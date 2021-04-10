@@ -5,8 +5,7 @@ import { RouteMatch } from "./RouteMatch";
 import AKGlobal from "../../authentik.css";
 
 import "./Router404";
-import { Page } from "../Page";
-import { ROUTE_SEPARATOR, TITLE_SUFFIX } from "../../constants";
+import { ROUTE_SEPARATOR } from "../../constants";
 
 // Poliyfill for hashchange.newURL,
 // https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onhashchange
@@ -38,8 +37,6 @@ export class RouterOutlet extends LitElement {
                 }
                 *:first-child {
                     height: 100%;
-                    display: flex;
-                    flex-direction: column;
                 }
             `,
         ];
@@ -52,18 +49,6 @@ export class RouterOutlet extends LitElement {
 
     firstUpdated(): void {
         this.navigate();
-    }
-
-    updated(): void {
-        if (!this.shadowRoot) return;
-        Array.from(this.shadowRoot?.children).forEach((el) => {
-            if ("pageTitle" in el) {
-                const title = (el as Page).pageTitle();
-                document.title = `${title} - ${TITLE_SUFFIX}`;
-            } else {
-                document.title = TITLE_SUFFIX;
-            }
-        });
     }
 
     navigate(ev?: HashChangeEvent): void {

@@ -8,6 +8,7 @@ import "../../elements/EmptyState";
 import "../../elements/events/ObjectChangelog";
 import "../policies/BoundPoliciesList";
 import "./ApplicationForm";
+import "../../elements/PageHeader";
 import { Application, CoreApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -17,6 +18,7 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import AKGlobal from "../../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-application-view")
 export class ApplicationViewPage extends LitElement {
@@ -47,28 +49,23 @@ export class ApplicationViewPage extends LitElement {
     }
 
     render(): TemplateResult {
+        return html`<ak-page-header
+                icon=${this.application?.metaIcon || ""}
+                header=${this.application?.name}
+                description=${ifDefined(this.application?.metaPublisher)}
+                .iconImage=${true}>
+            </ak-page-header>
+            ${this.renderApp()}`;
+    }
+
+    renderApp(): TemplateResult {
         if (!this.application) {
-            return html`<section class="pf-c-page__main-section pf-m-light">
-                <div class="pf-c-content">
-                    <h1>
-                        ${t`Loading...`}
-                    </h1>
-                </div>
-            </section>
-            <ak-empty-state
+            return html`<ak-empty-state
                 ?loading="${true}"
                 header=${t`Loading`}>
             </ak-empty-state>`;
         }
-        return html`<section class="pf-c-page__main-section pf-m-light">
-                <div class="pf-c-content">
-                    <h1>
-                        <img class="pf-icon" src="${this.application?.metaIcon || ""}" />
-                        ${this.application?.name}
-                    </h1>
-                    <p>${this.application?.metaPublisher}</p>
-                </div>
-            </section>
+        return html`
             <ak-tabs>
                 <section slot="page-1" data-tab-title="${t`Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-l-gallery pf-m-gutter">

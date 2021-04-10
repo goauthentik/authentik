@@ -2,6 +2,7 @@ import { t } from "@lingui/macro";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 
 import "../../elements/Tabs";
+import "../../elements/PageHeader";
 import "../../elements/events/ObjectChangelog";
 import "../../elements/buttons/SpinnerButton";
 import "../policies/BoundPoliciesList";
@@ -49,15 +50,11 @@ export class FlowViewPage extends LitElement {
         if (!this.flow) {
             return html``;
         }
-        return html`<section class="pf-c-page__main-section pf-m-light">
-                <div class="pf-c-content">
-                    <h1>
-                        <i class="pf-icon pf-icon-process-automation"></i>
-                        ${this.flow?.name}
-                    </h1>
-                    <p>${this.flow?.title}</p>
-                </div>
-            </section>
+        return html`<ak-page-header
+            icon="pf-icon pf-icon-process-automation"
+            header=${this.flow.name}
+            description=${this.flow.title}>
+            </ak-page-header>
             <ak-tabs>
                 <div slot="page-1" data-tab-title="${t`Flow Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-l-gallery pf-m-gutter">

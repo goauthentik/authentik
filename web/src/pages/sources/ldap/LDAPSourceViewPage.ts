@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -20,23 +20,13 @@ import "../../../elements/Tabs";
 import "../../../elements/events/ObjectChangelog";
 import "../../../elements/forms/ModalForm";
 import "./LDAPSourceForm";
-import { Page } from "../../../elements/Page";
 import { until } from "lit-html/directives/until";
 import { LDAPSource, SourcesApi, TaskStatusEnum } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";
 
 @customElement("ak-source-ldap-view")
-export class LDAPSourceViewPage extends Page {
-    pageTitle(): string {
-        return t`LDAP Source ${this.source?.name || ""}`;
-    }
-    pageDescription(): string | undefined {
-        return;
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-middleware";
-    }
+export class LDAPSourceViewPage extends LitElement {
 
     @property({ type: String })
     set sourceSlug(slug: string) {
@@ -62,7 +52,7 @@ export class LDAPSourceViewPage extends Page {
         });
     }
 
-    renderContent(): TemplateResult {
+    render(): TemplateResult {
         if (!this.source) {
             return html``;
         }

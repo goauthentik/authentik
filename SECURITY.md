@@ -4,7 +4,6 @@
 
 | Version    | Supported          |
 | ---------- | ------------------ |
-| 2021.2.x   | :white_check_mark: |
 | 2021.3.x   | :white_check_mark: |
 | 2021.4.x   | :white_check_mark: |
 

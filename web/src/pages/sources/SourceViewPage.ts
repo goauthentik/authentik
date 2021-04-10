@@ -4,10 +4,12 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/EmptyState";
+import "../../elements/PageHeader";
 
 import "./ldap/LDAPSourceViewPage";
 import "./oauth/OAuthSourceViewPage";
 import "./saml/SAMLSourceViewPage";
+import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-source-view")
 export class SourceViewPage extends LitElement {
@@ -32,7 +34,7 @@ export class SourceViewPage extends LitElement {
         `];
     }
 
-    render(): TemplateResult {
+    renderSource(): TemplateResult {
         if (!this.source) {
             return html`<ak-empty-state ?loading=${true} ?fullHeight=${true}></ak-empty-state>`;
         }
@@ -46,5 +48,14 @@ export class SourceViewPage extends LitElement {
             default:
                 return html`<p>Invalid source type ${this.source.component}</p>`;
         }
+    }
+
+    render(): TemplateResult {
+        return html`<ak-page-header
+            icon="pf-icon pf-icon-middleware"
+            header=${ifDefined(this.source?.name)}
+            description=${ifDefined(this.source?.verboseName)}>
+        </ak-page-header>
+        ${this.renderSource()}`;
     }
 }

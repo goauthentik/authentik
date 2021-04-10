@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -24,7 +24,7 @@ import "../../elements/user/UserConsentList";
 import "../../elements/oauth/UserCodeList";
 import "../../elements/oauth/UserRefreshList";
 import "../../elements/charts/UserChart";
-import { Page } from "../../elements/Page";
+import "../../elements/PageHeader";
 import { CoreApi, User } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { EVENT_REFRESH } from "../../constants";
@@ -33,16 +33,7 @@ import { MessageLevel } from "../../elements/messages/Message";
 import { PFColor } from "../../elements/Label";
 
 @customElement("ak-user-view")
-export class UserViewPage extends Page {
-    pageTitle(): string {
-        return t`User ${this.user?.username || ""}`;
-    }
-    pageDescription(): string | undefined {
-        return this.user?.name || "";
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-user";
-    }
+export class UserViewPage extends LitElement {
 
     @property({ type: Number })
     set userId(id: number) {
@@ -68,7 +59,16 @@ export class UserViewPage extends Page {
         });
     }
 
-    renderContent(): TemplateResult {
+    render(): TemplateResult {
+        return html`<ak-page-header
+            icon="pf-icon pf-icon-user"
+            header=${t`User ${this.user?.username || ""}`}
+            description=${this.user?.name || ""}>
+        </ak-page-header>
+        ${this.renderBody()}`;
+    }
+
+    renderBody(): TemplateResult {
         if (!this.user) {
             return html``;
         }

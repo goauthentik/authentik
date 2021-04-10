@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -20,22 +20,12 @@ import "../../../elements/events/ObjectChangelog";
 import "../../../elements/forms/ModalForm";
 import "../../policies/BoundPoliciesList";
 import "./OAuthSourceForm";
-import { Page } from "../../../elements/Page";
 import { OAuthSource, SourcesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";
 
 @customElement("ak-source-oauth-view")
-export class OAuthSourceViewPage extends Page {
-    pageTitle(): string {
-        return t`OAuth Source ${this.source?.name || ""}`;
-    }
-    pageDescription(): string | undefined {
-        return;
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-middleware";
-    }
+export class OAuthSourceViewPage extends LitElement {
 
     @property({ type: String })
     set sourceSlug(value: string) {
@@ -61,7 +51,7 @@ export class OAuthSourceViewPage extends Page {
         });
     }
 
-    renderContent(): TemplateResult {
+    render(): TemplateResult {
         if (!this.source) {
             return html``;
         }

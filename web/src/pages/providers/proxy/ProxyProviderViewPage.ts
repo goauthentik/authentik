@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -19,22 +19,12 @@ import "../../../elements/Tabs";
 import "../../../elements/events/ObjectChangelog";
 import "../RelatedApplicationButton";
 import "./ProxyProviderForm";
-import { Page } from "../../../elements/Page";
 import { ProvidersApi, ProxyProvider } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";
 
 @customElement("ak-provider-proxy-view")
-export class ProxyProviderViewPage extends Page {
-    pageTitle(): string {
-        return t`Proxy Provider ${this.provider?.name || ""}`;
-    }
-    pageDescription(): string | undefined {
-        return;
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-integration";
-    }
+export class ProxyProviderViewPage extends LitElement {
 
     @property()
     set args(value: { [key: string]: number }) {
@@ -63,7 +53,7 @@ export class ProxyProviderViewPage extends Page {
         });
     }
 
-    renderContent(): TemplateResult {
+    render(): TemplateResult {
         if (!this.provider) {
             return html``;
         }

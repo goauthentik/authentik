@@ -30,7 +30,7 @@ msgid "A policy used for testing. Always returns the same result as specified be
 msgstr "A policy used for testing. Always returns the same result as specified below after waiting a random duration."
 
 #: src/pages/providers/saml/SAMLProviderForm.ts:82
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:95
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:84
 msgid "ACS URL"
 msgstr "ACS URL"
 
@@ -60,7 +60,7 @@ msgstr "API Requests"
 msgid "API request failed"
 msgstr "API request failed"
 
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:98
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:87
 msgid "Access Key"
 msgstr "Access Key"
 
@@ -75,7 +75,7 @@ msgid "Action"
 msgstr "Action"
 
 #: src/pages/users/UserListPage.ts:50
-#: src/pages/users/UserViewPage.ts:117
+#: src/pages/users/UserViewPage.ts:115
 msgid "Active"
 msgstr "Active"
 
@@ -176,13 +176,13 @@ msgid "Application's display Name."
 msgstr "Application's display Name."
 
 #: src/interfaces/AdminInterface.ts:20
-#: src/pages/LibraryPage.ts:92
-#: src/pages/LibraryPage.ts:131
+#: src/pages/LibraryPage.ts:93
+#: src/pages/LibraryPage.ts:130
 #: src/pages/applications/ApplicationListPage.ts:28
 msgid "Applications"
 msgstr "Applications"
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:47
+#: src/pages/admin-overview/AdminOverviewPage.ts:42
 msgid "Apps with most usage"
 msgstr "Apps with most usage"
 
@@ -231,9 +231,9 @@ msgid "Assertions is empty"
 msgstr "Assertions is empty"
 
 #: src/pages/providers/ProviderListPage.ts:65
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:92
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:83
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:85
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:81
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:72
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:74
 msgid "Assigned to application"
 msgstr "Assigned to application"
 
@@ -256,7 +256,7 @@ msgid "Attributes"
 msgstr "Attributes"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts:108
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:103
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:92
 msgid "Audience"
 msgstr "Audience"
 
@@ -283,7 +283,7 @@ msgid "Authorization Code"
 msgstr "Authorization Code"
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts:65
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:106
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:95
 msgid "Authorization URL"
 msgstr "Authorization URL"
 
@@ -294,7 +294,7 @@ msgstr "Authorization URL"
 msgid "Authorization flow"
 msgstr "Authorization flow"
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:179
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:168
 msgid "Authorize URL"
 msgstr "Authorize URL"
 
@@ -323,12 +323,12 @@ msgstr "Backup finished with errors."
 msgid "Backup finished with warnings."
 msgstr "Backup finished with warnings."
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:64
+#: src/pages/admin-overview/AdminOverviewPage.ts:59
 msgid "Backup status"
 msgstr "Backup status"
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts:131
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:91
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts:80
 msgid "Base DN"
 msgstr "Base DN"
 
@@ -348,7 +348,7 @@ msgstr "Based on the User's UPN, only works if user has a 'upn' attribute set. U
 msgid "Based on the username"
 msgstr "Based on the username"
 
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:109
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:98
 msgid "Basic-Auth"
 msgstr "Basic-Auth"
 
@@ -387,15 +387,15 @@ msgstr "Built-in"
 msgid "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 msgstr "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:62
+#: src/pages/admin-overview/AdminOverviewPage.ts:57
 msgid "Cached Flows"
 msgstr "Cached Flows"
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:60
+#: src/pages/admin-overview/AdminOverviewPage.ts:55
 msgid "Cached Policies"
 msgstr "Cached Policies"
 
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:90
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:79
 msgid "Callback URL"
 msgstr "Callback URL"
 
@@ -455,15 +455,15 @@ msgstr "Change password"
 msgid "Change your password"
 msgstr "Change your password"
 
-#: src/pages/applications/ApplicationViewPage.ts:122
-#: src/pages/flows/FlowViewPage.ts:114
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:147
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:146
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:140
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:124
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:143
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:130
-#: src/pages/users/UserViewPage.ts:178
+#: src/pages/applications/ApplicationViewPage.ts:116
+#: src/pages/flows/FlowViewPage.ts:110
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:136
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:135
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:129
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts:113
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:132
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:119
+#: src/pages/users/UserViewPage.ts:176
 msgid "Changelog"
 msgstr "Changelog"
 
@@ -525,7 +525,7 @@ msgid "Click to copy token"
 msgstr "Click to copy token"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:107
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:110
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:99
 msgid "Client ID"
 msgstr "Client ID"
 
@@ -540,7 +540,7 @@ msgid "Client Secret"
 msgstr "Client Secret"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:85
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:102
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:91
 msgid "Client type"
 msgstr "Client type"
 
@@ -588,7 +588,7 @@ msgstr "Configure how the NameID value will be created. When left empty, the Nam
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr "Configure how the issuer field of the ID Token should be filled."
 
-#: src/pages/user-settings/UserSettingsPage.ts:73
+#: src/pages/user-settings/UserSettingsPage.ts:71
 msgid "Configure settings relevant to your user profile."
 msgstr "Configure settings relevant to your user profile."
 
@@ -988,8 +988,8 @@ msgstr "Disconnect"
 msgid "Docker URL"
 msgstr "Docker URL"
 
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:166
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:154
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:155
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:143
 msgid "Download"
 msgstr "Download"
 
@@ -1002,8 +1002,8 @@ msgid "Each provider has a different issuer, based on the application slug."
 msgstr "Each provider has a different issuer, based on the application slug."
 
 #: src/pages/applications/ApplicationListPage.ts:90
-#: src/pages/applications/ApplicationViewPage.ts:98
-#: src/pages/applications/ApplicationViewPage.ts:112
+#: src/pages/applications/ApplicationViewPage.ts:92
+#: src/pages/applications/ApplicationViewPage.ts:106
 #: src/pages/crypto/CertificateKeyPairListPage.ts:74
 #: src/pages/events/RuleListPage.ts:70
 #: src/pages/events/TransportListPage.ts:74
@@ -1014,18 +1014,18 @@ msgstr "Each provider has a different issuer, based on the application slug."
 #: src/pages/policies/PolicyListPage.ts:90
 #: src/pages/property-mappings/PropertyMappingListPage.ts:79
 #: src/pages/providers/ProviderListPage.ts:86
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:139
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:138
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:132
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:128
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:127
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:121
 #: src/pages/sources/SourcesListPage.ts:82
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:116
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:135
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:122
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts:105
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:124
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:111
 #: src/pages/stages/StageListPage.ts:98
 #: src/pages/stages/prompt/PromptListPage.ts:75
 #: src/pages/user-settings/tokens/UserTokenList.ts:113
 #: src/pages/users/UserListPage.ts:75
-#: src/pages/users/UserViewPage.ts:148
+#: src/pages/users/UserViewPage.ts:146
 msgid "Edit"
 msgstr "Edit"
 
@@ -1050,7 +1050,7 @@ msgstr "Edit Stage"
 msgid "Edit User"
 msgstr "Edit User"
 
-#: src/pages/LibraryPage.ts:113
+#: src/pages/LibraryPage.ts:114
 msgid "Either no applications are defined, or you don't have access to any."
 msgstr "Either no applications are defined, or you don't have access to any."
 
@@ -1058,7 +1058,7 @@ msgstr "Either no applications are defined, or you don't have access to any."
 #: src/pages/stages/identification/IdentificationStageForm.ts:82
 #: src/pages/user-settings/UserDetailsPage.ts:71
 #: src/pages/users/UserForm.ts:61
-#: src/pages/users/UserViewPage.ts:101
+#: src/pages/users/UserViewPage.ts:99
 msgid "Email"
 msgstr "Email"
 
@@ -1129,11 +1129,11 @@ msgstr "Error when creating credential: {err}"
 msgid "Error when validating assertion on server: {err}"
 msgstr "Error when validating assertion on server: {err}"
 
-#: src/pages/user-settings/UserSettingsPage.ts:61
+#: src/pages/user-settings/UserSettingsPage.ts:62
 msgid "Error: unsupported source settings: {0}"
 msgstr "Error: unsupported source settings: {0}"
 
-#: src/pages/user-settings/UserSettingsPage.ts:52
+#: src/pages/user-settings/UserSettingsPage.ts:53
 msgid "Error: unsupported stage settings: {0}"
 msgstr "Error: unsupported stage settings: {0}"
 
@@ -1153,11 +1153,11 @@ msgstr "Evaluate policies during the Flow planning process. Disable this for inp
 msgid "Event Log"
 msgstr "Event Log"
 
-#: src/pages/events/EventInfoPage.ts:45
+#: src/pages/events/EventInfoPage.ts:42
 msgid "Event info"
 msgstr "Event info"
 
-#: src/pages/events/EventInfoPage.ts:38
+#: src/pages/events/EventInfoPage.ts:37
 msgid "Event {0}"
 msgstr "Event {0}"
 
@@ -1171,11 +1171,11 @@ msgid "Exception"
 msgstr "Exception"
 
 #: src/pages/flows/FlowListPage.ts:98
-#: src/pages/flows/FlowViewPage.ts:87
+#: src/pages/flows/FlowViewPage.ts:83
 msgid "Execute"
 msgstr "Execute"
 
-#: src/pages/flows/FlowViewPage.ts:73
+#: src/pages/flows/FlowViewPage.ts:69
 msgid "Execute flow"
 msgstr "Execute flow"
 
@@ -1218,7 +1218,7 @@ msgstr "Expiry"
 msgid "Expiry date"
 msgstr "Expiry date"
 
-#: src/pages/users/UserViewPage.ts:189
+#: src/pages/users/UserViewPage.ts:187
 msgid "Explicit Consent"
 msgstr "Explicit Consent"
 
@@ -1245,7 +1245,7 @@ msgstr "Expression using Python."
 msgid "External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML."
 msgstr "External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML."
 
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:101
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:90
 msgid "External Host"
 msgstr "External Host"
 
@@ -1311,7 +1311,7 @@ msgstr "Fields a user can identify themselves with."
 msgid "Flow"
 msgstr "Flow"
 
-#: src/pages/flows/FlowViewPage.ts:57
+#: src/pages/flows/FlowViewPage.ts:53
 msgid "Flow Overview"
 msgstr "Flow Overview"
 
@@ -1543,7 +1543,7 @@ msgstr "Include User claims from scopes in the id_token, for applications that d
 msgid "Include claims in id_token"
 msgstr "Include claims in id_token"
 
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:93
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:82
 msgid "Internal Host"
 msgstr "Internal Host"
 
@@ -1577,9 +1577,9 @@ msgid "Is superuser"
 msgstr "Is superuser"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts:88
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:111
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:100
 #: src/pages/sources/saml/SAMLSourceForm.ts:93
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:101
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:90
 msgid "Issuer"
 msgstr "Issuer"
 
@@ -1603,10 +1603,6 @@ msgstr "Keypair which is used to sign outgoing requests. Leave empty to disable 
 msgid "Kubeconfig"
 msgstr "Kubeconfig"
 
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:44
-msgid "LDAP Source {0}"
-msgstr "LDAP Source {0}"
-
 #: src/pages/admin-overview/cards/LDAPSyncStatusCardContainer.ts:24
 msgid "LDAP Sync status {0}"
 msgstr "LDAP Sync status {0}"
@@ -1621,7 +1617,7 @@ msgid "Label shown next to/above the prompt."
 msgstr "Label shown next to/above the prompt."
 
 #: src/pages/users/UserListPage.ts:51
-#: src/pages/users/UserViewPage.ts:109
+#: src/pages/users/UserViewPage.ts:107
 msgid "Last login"
 msgstr "Last login"
 
@@ -1634,7 +1630,7 @@ msgid "Last seen: {0}"
 msgstr "Last seen: {0}"
 
 #: src/pages/admin-overview/cards/LDAPSyncStatusCard.ts:25
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:154
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts:143
 msgid "Last sync: {0}"
 msgstr "Last sync: {0}"
 
@@ -1666,7 +1662,7 @@ msgstr "Library"
 #: src/flows/stages/identification/IdentificationStage.ts:134
 #: src/flows/stages/password/PasswordStage.ts:31
 #: src/flows/stages/prompt/PromptStage.ts:126
-#: src/pages/applications/ApplicationViewPage.ts:55
+#: src/pages/applications/ApplicationViewPage.ts:57
 #: src/pages/user-settings/UserDetailsPage.ts:38
 #: src/utils.ts:40
 msgid "Loading"
@@ -1674,7 +1670,6 @@ msgstr "Loading"
 
 #: src/elements/Spinner.ts:29
 #: src/pages/applications/ApplicationForm.ts:106
-#: src/pages/applications/ApplicationViewPage.ts:49
 #: src/pages/events/RuleForm.ts:74
 #: src/pages/events/RuleForm.ts:90
 #: src/pages/flows/StageBindingForm.ts:89
@@ -1746,12 +1741,12 @@ msgstr "Login to continue to {0}."
 msgid "Logins"
 msgstr "Logins"
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:44
-#: src/pages/applications/ApplicationViewPage.ts:71
+#: src/pages/admin-overview/AdminOverviewPage.ts:39
+#: src/pages/applications/ApplicationViewPage.ts:65
 msgid "Logins over the last 24 hours"
 msgstr "Logins over the last 24 hours"
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:197
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:186
 msgid "Logout URL"
 msgstr "Logout URL"
 
@@ -1794,10 +1789,10 @@ msgstr "Members"
 msgid "Messages"
 msgstr "Messages"
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:158
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:147
 #: src/pages/providers/saml/SAMLProviderImportForm.ts:61
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:152
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:141
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:141
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:130
 msgid "Metadata"
 msgstr "Metadata"
 
@@ -1864,19 +1859,19 @@ msgstr "Monitor"
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts:52
 #: src/pages/providers/ProviderListPage.ts:52
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:56
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:84
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:73
 #: src/pages/providers/proxy/ProxyProviderForm.ts:74
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:75
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:64
 #: src/pages/providers/saml/SAMLProviderForm.ts:53
 #: src/pages/providers/saml/SAMLProviderImportForm.ts:38
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:77
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:66
 #: src/pages/sources/SourcesListPage.ts:51
 #: src/pages/sources/ldap/LDAPSourceForm.ts:54
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:75
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts:64
 #: src/pages/sources/oauth/OAuthSourceForm.ts:98
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:74
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:63
 #: src/pages/sources/saml/SAMLSourceForm.ts:54
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:77
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:66
 #: src/pages/stages/StageListPage.ts:65
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:57
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:56
@@ -1898,7 +1893,7 @@ msgstr "Monitor"
 #: src/pages/user-settings/UserDetailsPage.ts:64
 #: src/pages/users/UserForm.ts:54
 #: src/pages/users/UserListPage.ts:49
-#: src/pages/users/UserViewPage.ts:93
+#: src/pages/users/UserViewPage.ts:91
 msgid "Name"
 msgstr "Name"
 
@@ -1928,14 +1923,14 @@ msgstr "New version available!"
 #: src/pages/outposts/ServiceConnectionListPage.ts:64
 #: src/pages/policies/BoundPoliciesList.ts:118
 #: src/pages/policies/PolicyTestForm.ts:38
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:119
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:108
 #: src/pages/tokens/TokenListPage.ts:56
 #: src/pages/user-settings/tokens/UserTokenList.ts:83
 #: src/pages/users/UserListPage.ts:62
 msgid "No"
 msgstr "No"
 
-#: src/pages/LibraryPage.ts:111
+#: src/pages/LibraryPage.ts:112
 msgid "No Applications available."
 msgstr "No Applications available."
 
@@ -2007,7 +2002,7 @@ msgstr "Not connected."
 msgid "Not found"
 msgstr "Not found"
 
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:165
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts:154
 msgid "Not synced yet."
 msgstr "Not synced yet."
 
@@ -2054,21 +2049,13 @@ msgstr "Notifications Transport"
 msgid "Number"
 msgstr "Number"
 
-#: src/pages/users/UserViewPage.ts:197
+#: src/pages/users/UserViewPage.ts:195
 msgid "OAuth Authorization Codes"
 msgstr "OAuth Authorization Codes"
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:46
-msgid "OAuth Provider {0}"
-msgstr "OAuth Provider {0}"
-
-#: src/pages/users/UserViewPage.ts:205
+#: src/pages/users/UserViewPage.ts:203
 msgid "OAuth Refresh Codes"
 msgstr "OAuth Refresh Codes"
-
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:43
-msgid "OAuth Source {0}"
-msgstr "OAuth Source {0}"
 
 #: src/pages/events/EventInfo.ts:147
 #: src/pages/events/EventInfo.ts:166
@@ -2104,11 +2091,11 @@ msgstr "Only send notification once, for example when sending a webhook into a c
 msgid "Open application"
 msgstr "Open application"
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:172
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:161
 msgid "OpenID Configuration Issuer"
 msgstr "OpenID Configuration Issuer"
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:166
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:155
 msgid "OpenID Configuration URL"
 msgstr "OpenID Configuration URL"
 
@@ -2179,14 +2166,14 @@ msgid "Outposts are deployments of authentik components to support different env
 msgstr "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies."
 
 #: src/interfaces/AdminInterface.ts:17
-#: src/pages/applications/ApplicationViewPage.ts:68
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:76
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:67
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:69
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:67
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:66
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:69
-#: src/pages/users/UserViewPage.ts:75
+#: src/pages/applications/ApplicationViewPage.ts:62
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:65
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:56
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:58
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts:56
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:55
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:58
+#: src/pages/users/UserViewPage.ts:73
 msgid "Overview"
 msgstr "Overview"
 
@@ -2239,7 +2226,7 @@ msgid "Please enter your password"
 msgstr "Please enter your password"
 
 #: src/interfaces/AdminInterface.ts:26
-#: src/pages/admin-overview/AdminOverviewPage.ts:52
+#: src/pages/admin-overview/AdminOverviewPage.ts:47
 #: src/pages/flows/FlowListPage.ts:50
 #: src/pages/policies/PolicyListPage.ts:38
 msgid "Policies"
@@ -2259,10 +2246,10 @@ msgstr "Policy"
 msgid "Policy / User / Group"
 msgstr "Policy / User / Group"
 
-#: src/pages/applications/ApplicationViewPage.ts:133
-#: src/pages/flows/FlowViewPage.ts:105
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:154
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:161
+#: src/pages/applications/ApplicationViewPage.ts:127
+#: src/pages/flows/FlowViewPage.ts:101
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:143
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:150
 msgid "Policy Bindings"
 msgstr "Policy Bindings"
 
@@ -2378,13 +2365,13 @@ msgstr "Provide support for protocols like SAML and OAuth to assigned applicatio
 #: src/elements/oauth/UserRefreshList.ts:29
 #: src/pages/applications/ApplicationForm.ts:100
 #: src/pages/applications/ApplicationListPage.ts:59
-#: src/pages/applications/ApplicationViewPage.ts:85
+#: src/pages/applications/ApplicationViewPage.ts:79
 #: src/pages/providers/ProviderListPage.ts:34
 msgid "Provider"
 msgstr "Provider"
 
 #: src/pages/applications/ApplicationListPage.ts:60
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:82
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:71
 msgid "Provider Type"
 msgstr "Provider Type"
 
@@ -2393,7 +2380,7 @@ msgid "Provider type"
 msgstr "Provider type"
 
 #: src/interfaces/AdminInterface.ts:20
-#: src/pages/admin-overview/AdminOverviewPage.ts:50
+#: src/pages/admin-overview/AdminOverviewPage.ts:45
 #: src/pages/outposts/OutpostForm.ts:82
 #: src/pages/outposts/OutpostListPage.ts:50
 msgid "Providers"
@@ -2402,10 +2389,6 @@ msgstr "Providers"
 #: src/pages/outposts/OutpostForm.ts:57
 msgid "Proxy"
 msgstr "Proxy"
-
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:43
-msgid "Proxy Provider {0}"
-msgstr "Proxy Provider {0}"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:101
 msgid "Public"
@@ -2472,7 +2455,7 @@ msgid "Redirect"
 msgstr "Redirect"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:119
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:118
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:107
 msgid "Redirect URIs"
 msgstr "Redirect URIs"
 
@@ -2496,8 +2479,8 @@ msgstr "Register device"
 msgid "Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression."
 msgstr "Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression."
 
-#: src/pages/applications/ApplicationViewPage.ts:79
-#: src/pages/flows/FlowViewPage.ts:68
+#: src/pages/applications/ApplicationViewPage.ts:73
+#: src/pages/flows/FlowViewPage.ts:64
 msgid "Related"
 msgstr "Related"
 
@@ -2528,7 +2511,7 @@ msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 
 #: src/pages/users/UserListPage.ts:132
-#: src/pages/users/UserViewPage.ts:166
+#: src/pages/users/UserViewPage.ts:164
 msgid "Reset Password"
 msgstr "Reset Password"
 
@@ -2541,7 +2524,7 @@ msgstr "Resources"
 msgid "Result"
 msgstr "Result"
 
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:177
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts:166
 #: src/pages/system-tasks/SystemTaskListPage.ts:108
 msgid "Retry Task"
 msgstr "Retry Task"
@@ -2567,14 +2550,6 @@ msgstr "Return to device picker"
 msgid "SAML Attribute Name"
 msgstr "SAML Attribute Name"
 
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:45
-msgid "SAML Provider {0}"
-msgstr "SAML Provider {0}"
-
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:46
-msgid "SAML Source {0}"
-msgstr "SAML Source {0}"
-
 #: src/pages/providers/saml/SAMLProviderForm.ts:218
 #: src/pages/sources/saml/SAMLSourceForm.ts:181
 msgid "SHA1"
@@ -2596,7 +2571,7 @@ msgid "SHA512"
 msgstr "SHA512"
 
 #: src/pages/sources/saml/SAMLSourceForm.ts:87
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:93
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:82
 msgid "SLO URL"
 msgstr "SLO URL"
 
@@ -2617,7 +2592,7 @@ msgid "SMTP Username"
 msgstr "SMTP Username"
 
 #: src/pages/sources/saml/SAMLSourceForm.ts:80
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:85
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:74
 msgid "SSO URL"
 msgstr "SSO URL"
 
@@ -2707,7 +2682,7 @@ msgid "Separator: Static Separator Line"
 msgstr "Separator: Static Separator Line"
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts:104
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:83
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts:72
 msgid "Server URI"
 msgstr "Server URI"
 
@@ -2828,7 +2803,7 @@ msgstr "Sources of identities, which can either be synced into authentik's datab
 msgid "Stage"
 msgstr "Stage"
 
-#: src/pages/flows/FlowViewPage.ts:97
+#: src/pages/flows/FlowViewPage.ts:93
 msgid "Stage Bindings"
 msgstr "Stage Bindings"
 
@@ -3059,7 +3034,7 @@ msgid "Successfully generated certificate-key pair."
 msgstr "Successfully generated certificate-key pair."
 
 #: src/pages/users/UserListPage.ts:127
-#: src/pages/users/UserViewPage.ts:161
+#: src/pages/users/UserViewPage.ts:159
 msgid "Successfully generated recovery link"
 msgstr "Successfully generated recovery link"
 
@@ -3190,7 +3165,7 @@ msgstr "Successfully updated user."
 msgid "Successfully updated {0} {1}"
 msgstr "Successfully updated {0} {1}"
 
-#: src/pages/users/UserViewPage.ts:127
+#: src/pages/users/UserViewPage.ts:125
 msgid "Superuser"
 msgstr "Superuser"
 
@@ -3202,7 +3177,7 @@ msgstr "Superuser privileges?"
 msgid "Symbol charset"
 msgstr "Symbol charset"
 
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:135
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts:124
 msgid "Sync"
 msgstr "Sync"
 
@@ -3214,7 +3189,7 @@ msgstr "Sync failed."
 msgid "Sync groups"
 msgstr "Sync groups"
 
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:140
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts:129
 msgid "Sync status"
 msgstr "Sync status"
 
@@ -3222,7 +3197,7 @@ msgstr "Sync status"
 msgid "Sync users"
 msgstr "Sync users"
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:29
+#: src/pages/admin-overview/AdminOverviewPage.ts:35
 msgid "System Overview"
 msgstr "System Overview"
 
@@ -3247,11 +3222,11 @@ msgstr "TOTP Authenticators"
 msgid "Target"
 msgstr "Target"
 
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:151
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts:140
 msgid "Task finished with errors"
 msgstr "Task finished with errors"
 
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:148
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts:137
 msgid "Task finished with warnings"
 msgstr "Task finished with warnings"
 
@@ -3299,16 +3274,16 @@ msgstr ""
 msgid "These policies control when this stage will be applied to the flow."
 msgstr "These policies control when this stage will be applied to the flow."
 
-#: src/pages/applications/ApplicationViewPage.ts:135
+#: src/pages/applications/ApplicationViewPage.ts:129
 msgid "These policies control which users can access this application."
 msgstr "These policies control which users can access this application."
 
-#: src/pages/flows/FlowViewPage.ts:107
+#: src/pages/flows/FlowViewPage.ts:103
 msgid "These policies control which users can access this flow."
 msgstr "These policies control which users can access this flow."
 
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:156
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:163
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:145
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:152
 msgid "These policies control which users can access this source."
 msgstr "These policies control which users can access this source."
 
@@ -3351,8 +3326,8 @@ msgstr "Title"
 msgid "Token"
 msgstr "Token"
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:185
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:114
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:174
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:103
 msgid "Token URL"
 msgstr "Token URL"
 
@@ -3371,7 +3346,7 @@ msgstr "Token validity"
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts:62
 #: src/interfaces/AdminInterface.ts:32
 #: src/pages/tokens/TokenListPage.ts:26
-#: src/pages/user-settings/UserSettingsPage.ts:80
+#: src/pages/user-settings/UserSettingsPage.ts:77
 msgid "Tokens"
 msgstr "Tokens"
 
@@ -3452,7 +3427,7 @@ msgid "Up-to-date!"
 msgstr "Up-to-date!"
 
 #: src/pages/applications/ApplicationListPage.ts:82
-#: src/pages/applications/ApplicationViewPage.ts:104
+#: src/pages/applications/ApplicationViewPage.ts:98
 #: src/pages/crypto/CertificateKeyPairListPage.ts:66
 #: src/pages/events/RuleListPage.ts:62
 #: src/pages/events/TransportListPage.ts:66
@@ -3469,13 +3444,13 @@ msgstr "Up-to-date!"
 #: src/pages/policies/PolicyListPage.ts:77
 #: src/pages/property-mappings/PropertyMappingListPage.ts:66
 #: src/pages/providers/ProviderListPage.ts:73
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:129
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:128
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:122
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:118
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:117
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:111
 #: src/pages/sources/SourcesListPage.ts:69
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:106
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:125
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:112
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts:95
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:114
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:101
 #: src/pages/stages/StageListPage.ts:85
 #: src/pages/stages/prompt/PromptListPage.ts:67
 #: src/pages/user-settings/UserDetailsPage.ts:81
@@ -3485,12 +3460,12 @@ msgstr "Up-to-date!"
 #: src/pages/user-settings/tokens/UserTokenList.ts:105
 #: src/pages/users/UserActiveForm.ts:66
 #: src/pages/users/UserListPage.ts:67
-#: src/pages/users/UserViewPage.ts:140
+#: src/pages/users/UserViewPage.ts:138
 msgid "Update"
 msgstr "Update"
 
 #: src/pages/applications/ApplicationListPage.ts:85
-#: src/pages/applications/ApplicationViewPage.ts:107
+#: src/pages/applications/ApplicationViewPage.ts:101
 msgid "Update Application"
 msgstr "Update Application"
 
@@ -3511,7 +3486,7 @@ msgstr "Update Flow"
 msgid "Update Group"
 msgstr "Update Group"
 
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:109
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts:98
 msgid "Update LDAP Source"
 msgstr "Update LDAP Source"
 
@@ -3523,11 +3498,11 @@ msgstr "Update Notification Rule"
 msgid "Update Notification Transport"
 msgstr "Update Notification Transport"
 
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:128
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:117
 msgid "Update OAuth Source"
 msgstr "Update OAuth Source"
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:132
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:121
 msgid "Update OAuth2 Provider"
 msgstr "Update OAuth2 Provider"
 
@@ -3539,15 +3514,15 @@ msgstr "Update Outpost"
 msgid "Update Prompt"
 msgstr "Update Prompt"
 
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:131
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:120
 msgid "Update Proxy Provider"
 msgstr "Update Proxy Provider"
 
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:125
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:114
 msgid "Update SAML Provider"
 msgstr "Update SAML Provider"
 
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:115
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:104
 msgid "Update SAML Source"
 msgstr "Update SAML Source"
 
@@ -3561,7 +3536,7 @@ msgstr "Update Token"
 
 #: src/pages/policies/BoundPoliciesList.ts:102
 #: src/pages/users/UserListPage.ts:70
-#: src/pages/users/UserViewPage.ts:143
+#: src/pages/users/UserViewPage.ts:141
 msgid "Update User"
 msgstr "Update User"
 
@@ -3615,7 +3590,7 @@ msgstr "Use global settings"
 msgid "User"
 msgstr "User"
 
-#: src/pages/users/UserViewPage.ts:79
+#: src/pages/users/UserViewPage.ts:77
 msgid "User Info"
 msgstr "User Info"
 
@@ -3623,11 +3598,11 @@ msgstr "User Info"
 msgid "User Property Mappings"
 msgstr "User Property Mappings"
 
-#: src/pages/user-settings/UserSettingsPage.ts:71
+#: src/pages/user-settings/UserSettingsPage.ts:70
 msgid "User Settings"
 msgstr "User Settings"
 
-#: src/pages/user-settings/UserSettingsPage.ts:77
+#: src/pages/user-settings/UserSettingsPage.ts:74
 msgid "User details"
 msgstr "User details"
 
@@ -3645,7 +3620,7 @@ msgid "User password writeback"
 msgstr "User password writeback"
 
 #: src/pages/policies/BoundPoliciesList.ts:52
-#: src/pages/users/UserViewPage.ts:50
+#: src/pages/users/UserViewPage.ts:62
 msgid "User {0}"
 msgstr "User {0}"
 
@@ -3666,14 +3641,14 @@ msgstr "User/Group Attribute used for the password part of the HTTP-Basic Header
 msgid "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used."
 msgstr "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used."
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:191
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:180
 msgid "Userinfo URL"
 msgstr "Userinfo URL"
 
 #: src/pages/stages/identification/IdentificationStageForm.ts:79
 #: src/pages/user-settings/UserDetailsPage.ts:57
 #: src/pages/users/UserForm.ts:47
-#: src/pages/users/UserViewPage.ts:85
+#: src/pages/users/UserViewPage.ts:83
 msgid "Username"
 msgstr "Username"
 
@@ -3682,7 +3657,7 @@ msgid "Username: Same as Text input, but checks for and prevents duplicate usern
 msgstr "Username: Same as Text input, but checks for and prevents duplicate usernames."
 
 #: src/interfaces/AdminInterface.ts:32
-#: src/pages/admin-overview/AdminOverviewPage.ts:54
+#: src/pages/admin-overview/AdminOverviewPage.ts:49
 #: src/pages/users/UserListPage.ts:31
 msgid "Users"
 msgstr "Users"
@@ -3723,7 +3698,7 @@ msgstr "Verification Certificate"
 msgid "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity."
 msgstr "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity."
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:56
+#: src/pages/admin-overview/AdminOverviewPage.ts:51
 msgid "Version"
 msgstr "Version"
 
@@ -3822,7 +3797,7 @@ msgstr "Whoops!"
 msgid "Windows"
 msgstr "Windows"
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:58
+#: src/pages/admin-overview/AdminOverviewPage.ts:53
 msgid "Workers"
 msgstr "Workers"
 
@@ -3843,7 +3818,7 @@ msgstr "X509 Subject"
 #: src/pages/outposts/ServiceConnectionListPage.ts:64
 #: src/pages/policies/BoundPoliciesList.ts:118
 #: src/pages/policies/PolicyTestForm.ts:38
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:116
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:105
 #: src/pages/tokens/TokenListPage.ts:56
 #: src/pages/user-settings/tokens/UserTokenList.ts:83
 #: src/pages/users/UserListPage.ts:62
@@ -3868,8 +3843,6 @@ msgstr "no tabs defined"
 
 #: src/elements/Expand.ts:28
 #: src/elements/Expand.ts:28
-#: src/elements/Page.ts:11
-#: src/elements/table/TablePage.ts:28
 msgid "{0}"
 msgstr "{0}"
 
@@ -3900,8 +3873,3 @@ msgstr "{0}, should be {1}"
 #: src/elements/forms/ConfirmationForm.ts:45
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
-
-#: src/elements/Page.ts:13
-#: src/elements/table/TablePage.ts:30
-msgid "{description}"
-msgstr "{description}"
