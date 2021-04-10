@@ -526,7 +526,7 @@ msgstr "Clear cache"
 msgid "Click to change value"
 msgstr "Click to change value"
 
-#: src/pages/outposts/OutpostDeploymentModal.ts:42
+#: src/pages/outposts/OutpostDeploymentModal.ts:33
 msgid "Click to copy token"
 msgstr "Click to copy token"
 
@@ -550,7 +550,7 @@ msgstr "Client Secret"
 msgid "Client type"
 msgstr "Client type"
 
-#: src/pages/outposts/OutpostDeploymentModal.ts:56
+#: src/pages/outposts/OutpostDeploymentModal.ts:48
 msgid "Close"
 msgstr "Close"
 
@@ -704,8 +704,8 @@ msgstr "Copy Key"
 #: src/pages/flows/FlowListPage.ts:117
 #: src/pages/groups/GroupListPage.ts:91
 #: src/pages/groups/GroupListPage.ts:99
-#: src/pages/outposts/OutpostListPage.ts:102
-#: src/pages/outposts/OutpostListPage.ts:110
+#: src/pages/outposts/OutpostListPage.ts:101
+#: src/pages/outposts/OutpostListPage.ts:109
 #: src/pages/outposts/ServiceConnectionListPage.ts:110
 #: src/pages/outposts/ServiceConnectionListPage.ts:119
 #: src/pages/policies/BoundPoliciesList.ts:158
@@ -776,7 +776,7 @@ msgstr "Create Notification Rule"
 msgid "Create Notification Transport"
 msgstr "Create Notification Transport"
 
-#: src/pages/outposts/OutpostListPage.ts:105
+#: src/pages/outposts/OutpostListPage.ts:104
 msgid "Create Outpost"
 msgstr "Create Outpost"
 
@@ -867,7 +867,7 @@ msgstr "Define how notifications are sent to users, like Email or Webhook."
 #: src/pages/events/TransportListPage.ts:86
 #: src/pages/flows/FlowListPage.ts:86
 #: src/pages/groups/GroupListPage.ts:82
-#: src/pages/outposts/OutpostListPage.ts:86
+#: src/pages/outposts/OutpostListPage.ts:87
 #: src/pages/outposts/ServiceConnectionListPage.ts:101
 #: src/pages/policies/PolicyListPage.ts:115
 #: src/pages/property-mappings/PropertyMappingListPage.ts:104
@@ -1015,7 +1015,7 @@ msgstr "Each provider has a different issuer, based on the application slug."
 #: src/pages/events/TransportListPage.ts:74
 #: src/pages/flows/FlowListPage.ts:74
 #: src/pages/groups/GroupListPage.ts:70
-#: src/pages/outposts/OutpostListPage.ts:74
+#: src/pages/outposts/OutpostListPage.ts:75
 #: src/pages/outposts/ServiceConnectionListPage.ts:89
 #: src/pages/policies/PolicyListPage.ts:90
 #: src/pages/property-mappings/PropertyMappingListPage.ts:79
@@ -1452,7 +1452,7 @@ msgstr "HTTP-Basic Password Key"
 msgid "HTTP-Basic Username Key"
 msgstr "HTTP-Basic Username Key"
 
-#: src/pages/outposts/OutpostListPage.ts:51
+#: src/pages/outposts/OutpostListPage.ts:52
 msgid "Health and Version"
 msgstr "Health and Version"
 
@@ -1516,7 +1516,7 @@ msgstr "If left empty, authentik will try to extract the launch URL based on the
 msgid "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given."
 msgstr "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given."
 
-#: src/pages/outposts/OutpostDeploymentModal.ts:46
+#: src/pages/outposts/OutpostDeploymentModal.ts:37
 msgid "If your authentik Instance is using a self-signed certificate, set this value."
 msgstr "If your authentik Instance is using a self-signed certificate, set this value."
 
@@ -1849,7 +1849,7 @@ msgstr "Monitor"
 #: src/pages/groups/GroupListPage.ts:45
 #: src/pages/groups/MemberSelectModal.ts:44
 #: src/pages/outposts/OutpostForm.ts:47
-#: src/pages/outposts/OutpostListPage.ts:49
+#: src/pages/outposts/OutpostListPage.ts:50
 #: src/pages/outposts/ServiceConnectionDockerForm.ts:53
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts:54
 #: src/pages/outposts/ServiceConnectionListPage.ts:53
@@ -2149,11 +2149,11 @@ msgstr "Optionally set the 'FriendlyName' value of the Assertion attribute."
 msgid "Order"
 msgstr "Order"
 
-#: src/pages/outposts/OutpostListPage.ts:79
+#: src/pages/outposts/OutpostListPage.ts:80
 msgid "Outpost"
 msgstr "Outpost"
 
-#: src/pages/outposts/OutpostDeploymentModal.ts:25
+#: src/pages/outposts/OutpostDeploymentModal.ts:16
 msgid "Outpost Deployment Info"
 msgstr "Outpost Deployment Info"
 
@@ -2166,11 +2166,11 @@ msgid "Outpost Service-connection"
 msgstr "Outpost Service-connection"
 
 #: src/interfaces/AdminInterface.ts:20
-#: src/pages/outposts/OutpostListPage.ts:28
+#: src/pages/outposts/OutpostListPage.ts:29
 msgid "Outposts"
 msgstr "Outposts"
 
-#: src/pages/outposts/OutpostListPage.ts:31
+#: src/pages/outposts/OutpostListPage.ts:32
 msgid "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies."
 msgstr "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies."
 
@@ -2391,7 +2391,7 @@ msgstr "Provider type"
 #: src/interfaces/AdminInterface.ts:20
 #: src/pages/admin-overview/AdminOverviewPage.ts:45
 #: src/pages/outposts/OutpostForm.ts:82
-#: src/pages/outposts/OutpostListPage.ts:50
+#: src/pages/outposts/OutpostListPage.ts:51
 msgid "Providers"
 msgstr "Providers"
 
@@ -3448,7 +3448,7 @@ msgstr "Up-to-date!"
 #: src/pages/flows/BoundStagesList.ts:71
 #: src/pages/flows/FlowListPage.ts:66
 #: src/pages/groups/GroupListPage.ts:62
-#: src/pages/outposts/OutpostListPage.ts:66
+#: src/pages/outposts/OutpostListPage.ts:67
 #: src/pages/outposts/ServiceConnectionListPage.ts:76
 #: src/pages/policies/BoundPoliciesList.ts:64
 #: src/pages/policies/BoundPoliciesList.ts:84
@@ -3519,7 +3519,7 @@ msgstr "Update OAuth Source"
 msgid "Update OAuth2 Provider"
 msgstr "Update OAuth2 Provider"
 
-#: src/pages/outposts/OutpostListPage.ts:69
+#: src/pages/outposts/OutpostListPage.ts:70
 msgid "Update Outpost"
 msgstr "Update Outpost"
 
@@ -3719,11 +3719,11 @@ msgstr "Version"
 msgid "Version: {0}"
 msgstr "Version: {0}"
 
-#: src/pages/outposts/OutpostListPage.ts:91
+#: src/pages/outposts/OutpostListPage.ts:92
 msgid "View Deployment Info"
 msgstr "View Deployment Info"
 
-#: src/pages/outposts/OutpostDeploymentModal.ts:28
+#: src/pages/outposts/OutpostDeploymentModal.ts:19
 msgid "View deployment documentation"
 msgstr "View deployment documentation"
 

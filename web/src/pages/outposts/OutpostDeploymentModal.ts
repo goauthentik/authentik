@@ -1,27 +1,17 @@
 import { Outpost } from "authentik-api";
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { customElement, html, property, TemplateResult } from "lit-element";
 import { t } from "@lingui/macro";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFModalBox from "@patternfly/patternfly/components/ModalBox/modal-box.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import AKGlobal from "../../authentik.css";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/buttons/TokenCopyButton";
+import { ModalButton } from "../../elements/buttons/ModalButton";
 
 @customElement("ak-outpost-deployment-modal")
-export class OutpostDeploymentModal extends LitElement {
+export class OutpostDeploymentModal extends ModalButton {
 
     @property({attribute: false})
     outpost?: Outpost;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFTitle, PFButton, PFModalBox, PFForm, PFFormControl, AKGlobal];
-    }
-
-    render(): TemplateResult {
+    renderModalInner(): TemplateResult {
         return html`<div class="pf-c-modal-box__header">
                 <h1 class="pf-c-title pf-m-2xl">${t`Outpost Deployment Info`}</h1>
             </div>
@@ -54,7 +44,9 @@ export class OutpostDeploymentModal extends LitElement {
                 </form>
             </div>
             <footer class="pf-c-modal-box__footer pf-m-align-left">
-                <a class="pf-c-button pf-m-primary">${t`Close`}</a>
+                <button class="pf-c-button pf-m-primary" @click=${() => {this.open = false;}}>
+                    ${t`Close`}
+                </button>
             </footer>`;
     }
 

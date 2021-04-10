@@ -9,6 +9,7 @@ import PFBackdrop from "@patternfly/patternfly/components/Backdrop/backdrop.css"
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import AKGlobal from "../../authentik.css";
 import { PFSize } from "../Spinner";
@@ -39,7 +40,7 @@ export class ModalButton extends LitElement {
     open = false;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFModalBox, PFForm, PFFormControl, PFBullseye, PFBackdrop, PFPage, PFStack, PFCard, PFContent, AKGlobal, MODAL_BUTTON_STYLES];
+        return [PFBase, PFButton, PFModalBox, PFForm, PFTitle, PFFormControl, PFBullseye, PFBackdrop, PFPage, PFStack, PFCard, PFContent, AKGlobal, MODAL_BUTTON_STYLES];
     }
 
     constructor() {

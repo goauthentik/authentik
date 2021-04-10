@@ -9,12 +9,13 @@ import "./OutpostHealth";
 import "./OutpostForm";
 import "./OutpostDeploymentModal";
 import "../../elements/buttons/SpinnerButton";
-import "../../elements/forms/DeleteForm";
 import "../../elements/forms/ModalForm";
+import "../../elements/forms/DeleteForm";
 import { PAGE_SIZE } from "../../constants";
 import { Outpost, OutpostsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
+import { PFSize } from "../../elements/Spinner";
 
 @customElement("ak-outpost-list")
 export class OutpostListPage extends TablePage<Outpost> {
@@ -83,13 +84,11 @@ export class OutpostListPage extends TablePage<Outpost> {
                     ${t`Delete`}
                 </button>
             </ak-forms-delete>
-            <ak-modal-button>
+            <ak-outpost-deployment-modal .outpost=${item} size=${PFSize.Medium}>
                 <button slot="trigger" class="pf-c-button pf-m-tertiary">
                     ${t`View Deployment Info`}
                 </button>
-                <ak-outpost-deployment-modal .outpost=${item} slot="modal">
-                </ak-outpost-deployment-modal>
-            </ak-modal-button>`,
+            </ak-outpost-deployment-modal>`,
         ];
     }
 

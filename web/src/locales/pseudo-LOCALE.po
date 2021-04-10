@@ -520,7 +520,7 @@ msgstr ""
 msgid "Click to change value"
 msgstr ""
 
-#: src/pages/outposts/OutpostDeploymentModal.ts:42
+#: src/pages/outposts/OutpostDeploymentModal.ts:33
 msgid "Click to copy token"
 msgstr ""
 
@@ -544,7 +544,7 @@ msgstr ""
 msgid "Client type"
 msgstr ""
 
-#: src/pages/outposts/OutpostDeploymentModal.ts:56
+#: src/pages/outposts/OutpostDeploymentModal.ts:48
 msgid "Close"
 msgstr ""
 
@@ -698,8 +698,8 @@ msgstr ""
 #: src/pages/flows/FlowListPage.ts:117
 #: src/pages/groups/GroupListPage.ts:91
 #: src/pages/groups/GroupListPage.ts:99
-#: src/pages/outposts/OutpostListPage.ts:102
-#: src/pages/outposts/OutpostListPage.ts:110
+#: src/pages/outposts/OutpostListPage.ts:101
+#: src/pages/outposts/OutpostListPage.ts:109
 #: src/pages/outposts/ServiceConnectionListPage.ts:110
 #: src/pages/outposts/ServiceConnectionListPage.ts:119
 #: src/pages/policies/BoundPoliciesList.ts:158
@@ -770,7 +770,7 @@ msgstr ""
 msgid "Create Notification Transport"
 msgstr ""
 
-#: src/pages/outposts/OutpostListPage.ts:105
+#: src/pages/outposts/OutpostListPage.ts:104
 msgid "Create Outpost"
 msgstr ""
 
@@ -861,7 +861,7 @@ msgstr ""
 #: src/pages/events/TransportListPage.ts:86
 #: src/pages/flows/FlowListPage.ts:86
 #: src/pages/groups/GroupListPage.ts:82
-#: src/pages/outposts/OutpostListPage.ts:86
+#: src/pages/outposts/OutpostListPage.ts:87
 #: src/pages/outposts/ServiceConnectionListPage.ts:101
 #: src/pages/policies/PolicyListPage.ts:115
 #: src/pages/property-mappings/PropertyMappingListPage.ts:104
@@ -1007,7 +1007,7 @@ msgstr ""
 #: src/pages/events/TransportListPage.ts:74
 #: src/pages/flows/FlowListPage.ts:74
 #: src/pages/groups/GroupListPage.ts:70
-#: src/pages/outposts/OutpostListPage.ts:74
+#: src/pages/outposts/OutpostListPage.ts:75
 #: src/pages/outposts/ServiceConnectionListPage.ts:89
 #: src/pages/policies/PolicyListPage.ts:90
 #: src/pages/property-mappings/PropertyMappingListPage.ts:79
@@ -1444,7 +1444,7 @@ msgstr ""
 msgid "HTTP-Basic Username Key"
 msgstr ""
 
-#: src/pages/outposts/OutpostListPage.ts:51
+#: src/pages/outposts/OutpostListPage.ts:52
 msgid "Health and Version"
 msgstr ""
 
@@ -1508,7 +1508,7 @@ msgstr ""
 msgid "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given."
 msgstr ""
 
-#: src/pages/outposts/OutpostDeploymentModal.ts:46
+#: src/pages/outposts/OutpostDeploymentModal.ts:37
 msgid "If your authentik Instance is using a self-signed certificate, set this value."
 msgstr ""
 
@@ -1841,7 +1841,7 @@ msgstr ""
 #: src/pages/groups/GroupListPage.ts:45
 #: src/pages/groups/MemberSelectModal.ts:44
 #: src/pages/outposts/OutpostForm.ts:47
-#: src/pages/outposts/OutpostListPage.ts:49
+#: src/pages/outposts/OutpostListPage.ts:50
 #: src/pages/outposts/ServiceConnectionDockerForm.ts:53
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts:54
 #: src/pages/outposts/ServiceConnectionListPage.ts:53
@@ -2141,11 +2141,11 @@ msgstr ""
 msgid "Order"
 msgstr ""
 
-#: src/pages/outposts/OutpostListPage.ts:79
+#: src/pages/outposts/OutpostListPage.ts:80
 msgid "Outpost"
 msgstr ""
 
-#: src/pages/outposts/OutpostDeploymentModal.ts:25
+#: src/pages/outposts/OutpostDeploymentModal.ts:16
 msgid "Outpost Deployment Info"
 msgstr ""
 
@@ -2158,11 +2158,11 @@ msgid "Outpost Service-connection"
 msgstr ""
 
 #: src/interfaces/AdminInterface.ts:20
-#: src/pages/outposts/OutpostListPage.ts:28
+#: src/pages/outposts/OutpostListPage.ts:29
 msgid "Outposts"
 msgstr ""
 
-#: src/pages/outposts/OutpostListPage.ts:31
+#: src/pages/outposts/OutpostListPage.ts:32
 msgid "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies."
 msgstr ""
 
@@ -2383,7 +2383,7 @@ msgstr ""
 #: src/interfaces/AdminInterface.ts:20
 #: src/pages/admin-overview/AdminOverviewPage.ts:45
 #: src/pages/outposts/OutpostForm.ts:82
-#: src/pages/outposts/OutpostListPage.ts:50
+#: src/pages/outposts/OutpostListPage.ts:51
 msgid "Providers"
 msgstr ""
 
@@ -3438,7 +3438,7 @@ msgstr ""
 #: src/pages/flows/BoundStagesList.ts:71
 #: src/pages/flows/FlowListPage.ts:66
 #: src/pages/groups/GroupListPage.ts:62
-#: src/pages/outposts/OutpostListPage.ts:66
+#: src/pages/outposts/OutpostListPage.ts:67
 #: src/pages/outposts/ServiceConnectionListPage.ts:76
 #: src/pages/policies/BoundPoliciesList.ts:64
 #: src/pages/policies/BoundPoliciesList.ts:84
@@ -3509,7 +3509,7 @@ msgstr ""
 msgid "Update OAuth2 Provider"
 msgstr ""
 
-#: src/pages/outposts/OutpostListPage.ts:69
+#: src/pages/outposts/OutpostListPage.ts:70
 msgid "Update Outpost"
 msgstr ""
 
@@ -3709,11 +3709,11 @@ msgstr ""
 msgid "Version: {0}"
 msgstr ""
 
-#: src/pages/outposts/OutpostListPage.ts:91
+#: src/pages/outposts/OutpostListPage.ts:92
 msgid "View Deployment Info"
 msgstr ""
 
-#: src/pages/outposts/OutpostDeploymentModal.ts:28
+#: src/pages/outposts/OutpostDeploymentModal.ts:19
 msgid "View deployment documentation"
 msgstr ""
 
