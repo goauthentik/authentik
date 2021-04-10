@@ -1,59 +1,39 @@
-import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import { customElement, property } from "lit-element";
 import { CoreApi } from "authentik-api";
-import { ERROR_CLASS, PRIMARY_CLASS, SUCCESS_CLASS } from "../../constants";
+import { PRIMARY_CLASS, SUCCESS_CLASS } from "../../constants";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import AKGlobal from "../../authentik.css";
+import { ActionButton } from "./ActionButton";
 
 @customElement("ak-token-copy-button")
-export class TokenCopyButton extends LitElement {
+export class TokenCopyButton extends ActionButton {
     @property()
     identifier?: string;
 
     @property()
     buttonClass: string = PRIMARY_CLASS;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            AKGlobal,
-            css`
-                button {
-                    transition: background-color 0.3s ease 0s;
-                }
-            `,
-        ];
-    }
-
-    onClick(): void {
+    apiRequest: () => Promise<unknown> = () => {
+        this.setLoading();
         if (!this.identifier) {
-            this.buttonClass = ERROR_CLASS;
-            setTimeout(() => {
-                this.buttonClass = PRIMARY_CLASS;
-            }, 1500);
-            return;
+            return Promise.reject();
         }
-        new CoreApi(DEFAULT_CONFIG).coreTokensViewKey({
+        return new CoreApi(DEFAULT_CONFIG).coreTokensViewKey({
             identifier: this.identifier
         }).then((token) => {
             if (!token.key) {
-                this.buttonClass = ERROR_CLASS;
-                return;
+                return Promise.reject();
             }
-            navigator.clipboard.writeText(token.key).then(() => {
+            return navigator.clipboard.writeText(token.key).then(() => {
                 this.buttonClass = SUCCESS_CLASS;
                 setTimeout(() => {
                     this.buttonClass = PRIMARY_CLASS;
                 }, 1500);
             });
+        }).catch((err: Response) => {
+            return err.json();
+        }).then(errResp => {
+            throw new Error(errResp["detail"]);
         });
     }
 
-    render(): TemplateResult {
-        return html`<button @click=${() => this.onClick()} class="pf-c-button ${this.buttonClass}">
-            <slot></slot>
-        </button>`;
-    }
 }
