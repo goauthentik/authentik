@@ -17,11 +17,11 @@ msgstr ""
 msgid "-"
 msgstr ""
 
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:69
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:72
 msgid "6 digits, widely compatible"
 msgstr ""
 
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:72
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:75
 msgid "8 digits, not compatible with apps like Google Authenticator"
 msgstr ""
 
@@ -147,7 +147,7 @@ msgstr ""
 msgid "Also known as Entity ID. Defaults the Metadata URL."
 msgstr ""
 
-#: src/pages/stages/consent/ConsentStageForm.ts:78
+#: src/pages/stages/consent/ConsentStageForm.ts:81
 msgid "Always require consent"
 msgstr ""
 
@@ -298,7 +298,7 @@ msgstr ""
 msgid "Authorized application:"
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts:71
+#: src/pages/stages/password/PasswordStageForm.ts:74
 msgid "Backends"
 msgstr ""
 
@@ -406,7 +406,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:89
+#: src/pages/stages/identification/IdentificationStageForm.ts:92
 msgid "Case insensitive matching"
 msgstr ""
 
@@ -563,10 +563,10 @@ msgstr ""
 msgid "Configuration"
 msgstr ""
 
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:71
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:77
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:115
-#: src/pages/stages/password/PasswordStageForm.ts:86
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:74
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:80
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:118
+#: src/pages/stages/password/PasswordStageForm.ts:89
 msgid "Configuration flow"
 msgstr ""
 
@@ -611,15 +611,15 @@ msgstr ""
 msgid "Consent"
 msgstr ""
 
-#: src/pages/stages/consent/ConsentStageForm.ts:90
+#: src/pages/stages/consent/ConsentStageForm.ts:93
 msgid "Consent expires in"
 msgstr ""
 
-#: src/pages/stages/consent/ConsentStageForm.ts:84
+#: src/pages/stages/consent/ConsentStageForm.ts:87
 msgid "Consent expires."
 msgstr ""
 
-#: src/pages/stages/consent/ConsentStageForm.ts:81
+#: src/pages/stages/consent/ConsentStageForm.ts:84
 msgid "Consent given last indefinitely"
 msgstr ""
 
@@ -655,11 +655,11 @@ msgstr ""
 #: src/flows/stages/dummy/DummyStage.ts:39
 #: src/flows/stages/password/PasswordStage.ts:71
 #: src/flows/stages/prompt/PromptStage.ts:155
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:91
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:94
 msgid "Continue"
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationStageForm.ts:67
+#: src/pages/stages/invitation/InvitationStageForm.ts:70
 msgid "Continue flow without invitation"
 msgstr ""
 
@@ -715,8 +715,8 @@ msgstr ""
 #: src/pages/stages/invitation/InvitationListPage.ts:85
 #: src/pages/stages/prompt/PromptListPage.ts:96
 #: src/pages/stages/prompt/PromptListPage.ts:104
-#: src/pages/stages/prompt/PromptStageForm.ts:87
-#: src/pages/stages/prompt/PromptStageForm.ts:95
+#: src/pages/stages/prompt/PromptStageForm.ts:90
+#: src/pages/stages/prompt/PromptStageForm.ts:98
 #: src/pages/user-settings/tokens/UserTokenList.ts:50
 #: src/pages/user-settings/tokens/UserTokenList.ts:58
 #: src/pages/users/UserListPage.ts:143
@@ -773,7 +773,7 @@ msgid "Create Policy"
 msgstr ""
 
 #: src/pages/stages/prompt/PromptListPage.ts:99
-#: src/pages/stages/prompt/PromptStageForm.ts:90
+#: src/pages/stages/prompt/PromptStageForm.ts:93
 msgid "Create Prompt"
 msgstr ""
 
@@ -896,11 +896,17 @@ msgstr ""
 msgid "Delete temporary users after"
 msgstr ""
 
+#: src/pages/stages/user_delete/UserDeleteStageForm.ts:51
+msgid ""
+"Delete the currently pending user. CAUTION, this stage does not ask for\n"
+"confirmation. Use a consent stage to ensure the user is aware of their actions."
+msgstr ""
+
 #: src/elements/forms/DeleteForm.ts:62
 msgid "Delete {0}"
 msgstr ""
 
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:88
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:91
 msgid "Deny the user access"
 msgstr ""
 
@@ -928,11 +934,11 @@ msgstr ""
 msgid "Determines how authentik sends the response back to the Service Provider."
 msgstr ""
 
-#: src/pages/stages/user_login/UserLoginStageForm.ts:67
+#: src/pages/stages/user_login/UserLoginStageForm.ts:70
 msgid "Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)."
 msgstr ""
 
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:110
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:113
 msgid "Device classes which can be used to authenticate."
 msgstr ""
 
@@ -945,7 +951,7 @@ msgstr ""
 msgid "Digest algorithm"
 msgstr ""
 
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:64
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:67
 msgid "Digits"
 msgstr ""
 
@@ -977,6 +983,10 @@ msgstr ""
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:166
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:154
 msgid "Download"
+msgstr ""
+
+#: src/pages/stages/dummy/DummyStageForm.ts:51
+msgid "Dummy stage used for testing. Shows a simple continue button and always passes."
 msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:226
@@ -1037,7 +1047,7 @@ msgid "Either no applications are defined, or you don't have access to any."
 msgstr ""
 
 #: src/pages/events/TransportForm.ts:46
-#: src/pages/stages/identification/IdentificationStageForm.ts:79
+#: src/pages/stages/identification/IdentificationStageForm.ts:82
 #: src/pages/user-settings/UserDetailsPage.ts:71
 #: src/pages/users/UserForm.ts:61
 #: src/pages/users/UserViewPage.ts:101
@@ -1087,7 +1097,7 @@ msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts:186
 #: src/pages/sources/saml/SAMLSourceForm.ts:266
-#: src/pages/stages/identification/IdentificationStageForm.ts:104
+#: src/pages/stages/identification/IdentificationStageForm.ts:107
 msgid "Enrollment flow"
 msgstr ""
 
@@ -1235,7 +1245,7 @@ msgstr ""
 msgid "External host"
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts:108
+#: src/pages/stages/password/PasswordStageForm.ts:111
 msgid "Failed attempts before cancel"
 msgstr ""
 
@@ -1280,11 +1290,11 @@ msgstr ""
 msgid "Field which contains members of a group."
 msgstr ""
 
-#: src/pages/stages/prompt/PromptStageForm.ts:66
+#: src/pages/stages/prompt/PromptStageForm.ts:69
 msgid "Fields"
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:82
+#: src/pages/stages/identification/IdentificationStageForm.ts:85
 msgid "Fields a user can identify themselves with."
 msgstr ""
 
@@ -1316,12 +1326,12 @@ msgstr ""
 msgid "Flow used before authentication."
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts:105
+#: src/pages/stages/password/PasswordStageForm.ts:108
 msgid "Flow used by an authenticated user to configure their password. If empty, user will not be able to configure change their password."
 msgstr ""
 
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:89
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:95
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:93
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:98
 msgid "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
 msgstr ""
 
@@ -1343,7 +1353,7 @@ msgstr ""
 msgid "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them."
 msgstr ""
 
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:85
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:88
 msgid "Force the user to configure an authenticator"
 msgstr ""
 
@@ -1447,15 +1457,15 @@ msgstr ""
 #: src/pages/providers/saml/SAMLProviderForm.ts:171
 #: src/pages/sources/ldap/LDAPSourceForm.ts:167
 #: src/pages/sources/ldap/LDAPSourceForm.ts:193
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:111
-#: src/pages/stages/identification/IdentificationStageForm.ts:83
-#: src/pages/stages/password/PasswordStageForm.ts:83
-#: src/pages/stages/prompt/PromptStageForm.ts:84
-#: src/pages/stages/prompt/PromptStageForm.ts:118
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:114
+#: src/pages/stages/identification/IdentificationStageForm.ts:86
+#: src/pages/stages/password/PasswordStageForm.ts:86
+#: src/pages/stages/prompt/PromptStageForm.ts:87
+#: src/pages/stages/prompt/PromptStageForm.ts:121
 msgid "Hold control/command to select multiple items."
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts:112
+#: src/pages/stages/password/PasswordStageForm.ts:115
 msgid "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage."
 msgstr ""
 
@@ -1488,7 +1498,7 @@ msgstr ""
 msgid "If left empty, authentik will try to extract the launch URL based on the selected provider."
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationStageForm.ts:70
+#: src/pages/stages/invitation/InvitationStageForm.ts:73
 msgid "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given."
 msgstr ""
 
@@ -1624,6 +1634,10 @@ msgstr ""
 msgid "Launch URL"
 msgstr ""
 
+#: src/pages/stages/identification/IdentificationStageForm.ts:60
+msgid "Let the user identify themselves with their username or Email address."
+msgstr ""
+
 #: src/interfaces/AdminInterface.ts:16
 msgid "Library"
 msgstr ""
@@ -1690,15 +1704,15 @@ msgstr ""
 #: src/pages/sources/saml/SAMLSourceForm.ts:240
 #: src/pages/sources/saml/SAMLSourceForm.ts:261
 #: src/pages/sources/saml/SAMLSourceForm.ts:282
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:87
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:93
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:128
-#: src/pages/stages/email/EmailStageForm.ts:169
-#: src/pages/stages/identification/IdentificationStageForm.ts:117
-#: src/pages/stages/identification/IdentificationStageForm.ts:135
-#: src/pages/stages/password/PasswordStageForm.ts:103
-#: src/pages/stages/prompt/PromptStageForm.ts:82
-#: src/pages/stages/prompt/PromptStageForm.ts:115
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:90
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:96
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:131
+#: src/pages/stages/email/EmailStageForm.ts:172
+#: src/pages/stages/identification/IdentificationStageForm.ts:120
+#: src/pages/stages/identification/IdentificationStageForm.ts:138
+#: src/pages/stages/password/PasswordStageForm.ts:106
+#: src/pages/stages/prompt/PromptStageForm.ts:85
+#: src/pages/stages/prompt/PromptStageForm.ts:118
 msgid "Loading..."
 msgstr ""
 
@@ -1706,6 +1720,10 @@ msgstr ""
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts:63
 #: src/pages/outposts/ServiceConnectionListPage.ts:55
 msgid "Local"
+msgstr ""
+
+#: src/pages/stages/user_login/UserLoginStageForm.ts:52
+msgid "Log the currently pending user in."
 msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts:88
@@ -1793,7 +1811,7 @@ msgstr ""
 
 #: src/pages/events/TransportForm.ts:79
 #: src/pages/events/TransportListPage.ts:47
-#: src/pages/stages/consent/ConsentStageForm.ts:65
+#: src/pages/stages/consent/ConsentStageForm.ts:68
 msgid "Mode"
 msgstr ""
 
@@ -1852,23 +1870,23 @@ msgstr ""
 #: src/pages/sources/saml/SAMLSourceForm.ts:54
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:77
 #: src/pages/stages/StageListPage.ts:65
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:54
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:53
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:61
-#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts:51
-#: src/pages/stages/captcha/CaptchaStageForm.ts:52
-#: src/pages/stages/consent/ConsentStageForm.ts:54
-#: src/pages/stages/deny/DenyStageForm.ts:51
-#: src/pages/stages/dummy/DummyStageForm.ts:51
-#: src/pages/stages/email/EmailStageForm.ts:121
-#: src/pages/stages/identification/IdentificationStageForm.ts:60
-#: src/pages/stages/invitation/InvitationStageForm.ts:53
-#: src/pages/stages/password/PasswordStageForm.ts:60
-#: src/pages/stages/prompt/PromptStageForm.ts:55
-#: src/pages/stages/user_delete/UserDeleteStageForm.ts:51
-#: src/pages/stages/user_login/UserLoginStageForm.ts:52
-#: src/pages/stages/user_logout/UserLogoutStageForm.ts:51
-#: src/pages/stages/user_write/UserWriteStageForm.ts:51
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:57
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:56
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:64
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts:54
+#: src/pages/stages/captcha/CaptchaStageForm.ts:55
+#: src/pages/stages/consent/ConsentStageForm.ts:57
+#: src/pages/stages/deny/DenyStageForm.ts:54
+#: src/pages/stages/dummy/DummyStageForm.ts:54
+#: src/pages/stages/email/EmailStageForm.ts:124
+#: src/pages/stages/identification/IdentificationStageForm.ts:63
+#: src/pages/stages/invitation/InvitationStageForm.ts:56
+#: src/pages/stages/password/PasswordStageForm.ts:63
+#: src/pages/stages/prompt/PromptStageForm.ts:58
+#: src/pages/stages/user_delete/UserDeleteStageForm.ts:55
+#: src/pages/stages/user_login/UserLoginStageForm.ts:55
+#: src/pages/stages/user_logout/UserLogoutStageForm.ts:54
+#: src/pages/stages/user_write/UserWriteStageForm.ts:55
 #: src/pages/user-settings/UserDetailsPage.ts:64
 #: src/pages/users/UserForm.ts:54
 #: src/pages/users/UserListPage.ts:49
@@ -1969,7 +1987,7 @@ msgstr ""
 msgid "Not available"
 msgstr ""
 
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:72
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:75
 msgid "Not configured action"
 msgstr ""
 
@@ -2057,7 +2075,7 @@ msgstr ""
 msgid "Object uniqueness field"
 msgstr ""
 
-#: src/pages/stages/consent/ConsentStageForm.ts:94
+#: src/pages/stages/consent/ConsentStageForm.ts:97
 msgid "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
 
@@ -2098,11 +2116,11 @@ msgstr ""
 msgid "Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON."
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:119
+#: src/pages/stages/identification/IdentificationStageForm.ts:122
 msgid "Optional enrollment flow, which is linked at the bottom of the page."
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:137
+#: src/pages/stages/identification/IdentificationStageForm.ts:140
 msgid "Optional recovery flow, which is linked at the bottom of the page."
 msgstr ""
 
@@ -2285,7 +2303,7 @@ msgid "Pre-authentication flow"
 msgstr ""
 
 #: src/pages/crypto/CertificateKeyPairForm.ts:61
-#: src/pages/stages/captcha/CaptchaStageForm.ts:70
+#: src/pages/stages/captcha/CaptchaStageForm.ts:73
 msgid "Private Key"
 msgstr ""
 
@@ -2293,7 +2311,7 @@ msgstr ""
 msgid "Private key available?"
 msgstr ""
 
-#: src/pages/stages/captcha/CaptchaStageForm.ts:75
+#: src/pages/stages/captcha/CaptchaStageForm.ts:78
 msgid "Private key, acquired from https://www.google.com/recaptcha/intro/v3.html."
 msgstr ""
 
@@ -2304,6 +2322,10 @@ msgstr ""
 #: src/pages/stages/invitation/InvitationListPage.ts:61
 #: src/pages/stages/prompt/PromptListPage.ts:80
 msgid "Prompt"
+msgstr ""
+
+#: src/pages/stages/consent/ConsentStageForm.ts:54
+msgid "Prompt for the user's consent. The consent can either be permanent or expire in a defined amount of time."
 msgstr ""
 
 #: src/interfaces/AdminInterface.ts:29
@@ -2381,11 +2403,11 @@ msgstr ""
 msgid "Public"
 msgstr ""
 
-#: src/pages/stages/captcha/CaptchaStageForm.ts:63
+#: src/pages/stages/captcha/CaptchaStageForm.ts:66
 msgid "Public Key"
 msgstr ""
 
-#: src/pages/stages/captcha/CaptchaStageForm.ts:67
+#: src/pages/stages/captcha/CaptchaStageForm.ts:70
 msgid "Public key, acquired from https://www.google.com/recaptcha/intro/v3.html."
 msgstr ""
 
@@ -2429,7 +2451,7 @@ msgstr ""
 msgid "Recovery"
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:122
+#: src/pages/stages/identification/IdentificationStageForm.ts:125
 msgid "Recovery flow"
 msgstr ""
 
@@ -2469,6 +2491,10 @@ msgstr ""
 #: src/pages/applications/ApplicationViewPage.ts:79
 #: src/pages/flows/FlowViewPage.ts:68
 msgid "Related"
+msgstr ""
+
+#: src/pages/stages/user_logout/UserLogoutStageForm.ts:51
+msgid "Remove the user from the current session."
 msgstr ""
 
 #: src/pages/events/EventInfo.ts:145
@@ -2640,7 +2666,7 @@ msgstr ""
 msgid "Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI."
 msgstr ""
 
-#: src/pages/stages/prompt/PromptStageForm.ts:117
+#: src/pages/stages/prompt/PromptStageForm.ts:120
 msgid "Selected policies are executed when the stage is submitted to validate the data."
 msgstr ""
 
@@ -2648,7 +2674,7 @@ msgstr ""
 msgid "Selecting a service-connection enables the management of the outpost by authentik."
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts:82
+#: src/pages/stages/password/PasswordStageForm.ts:85
 msgid "Selection of backends to test the password against."
 msgstr ""
 
@@ -2689,7 +2715,7 @@ msgstr ""
 msgid "Service connection"
 msgstr ""
 
-#: src/pages/stages/user_login/UserLoginStageForm.ts:63
+#: src/pages/stages/user_login/UserLoginStageForm.ts:66
 msgid "Session duration"
 msgstr ""
 
@@ -2722,7 +2748,11 @@ msgstr ""
 msgid "Severity"
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:98
+#: src/pages/stages/prompt/PromptStageForm.ts:55
+msgid "Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable."
+msgstr ""
+
+#: src/pages/stages/identification/IdentificationStageForm.ts:101
 msgid "Show matched user"
 msgstr ""
 
@@ -2802,21 +2832,37 @@ msgstr ""
 msgid "Stage binding"
 msgstr ""
 
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:130
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:133
 msgid "Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
 msgstr ""
 
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:61
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:60
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:68
-#: src/pages/stages/captcha/CaptchaStageForm.ts:59
-#: src/pages/stages/consent/ConsentStageForm.ts:61
-#: src/pages/stages/email/EmailStageForm.ts:128
-#: src/pages/stages/identification/IdentificationStageForm.ts:67
-#: src/pages/stages/invitation/InvitationStageForm.ts:60
-#: src/pages/stages/password/PasswordStageForm.ts:67
-#: src/pages/stages/prompt/PromptStageForm.ts:62
-#: src/pages/stages/user_login/UserLoginStageForm.ts:59
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:53
+msgid "Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator)."
+msgstr ""
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts:51
+msgid "Stage used to configure a WebAutnn authenticator (i.e. Yubikey, FaceID/Windows Hello)."
+msgstr ""
+
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:54
+msgid "Stage used to configure a static authenticator (i.e. static tokens). This stage should be used for configuration flows."
+msgstr ""
+
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:61
+msgid "Stage used to validate any authenticator. This stage should be used during authentication or authorization flows."
+msgstr ""
+
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:64
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:63
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:71
+#: src/pages/stages/captcha/CaptchaStageForm.ts:62
+#: src/pages/stages/consent/ConsentStageForm.ts:64
+#: src/pages/stages/email/EmailStageForm.ts:131
+#: src/pages/stages/identification/IdentificationStageForm.ts:70
+#: src/pages/stages/invitation/InvitationStageForm.ts:63
+#: src/pages/stages/password/PasswordStageForm.ts:70
+#: src/pages/stages/prompt/PromptStageForm.ts:65
+#: src/pages/stages/user_login/UserLoginStageForm.ts:62
 msgid "Stage-specific settings"
 msgstr ""
 
@@ -2828,20 +2874,24 @@ msgid "Stages"
 msgstr ""
 
 #: src/pages/stages/StageListPage.ts:47
-msgid "Stages are single steps of a Flow that a user is guided through."
+msgid "Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow."
 msgstr ""
 
 #: src/pages/outposts/ServiceConnectionListPage.ts:56
 msgid "State"
 msgstr ""
 
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:101
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:104
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts:77
 msgid "Static Tokens"
 msgstr ""
 
 #: src/pages/stages/prompt/PromptForm.ts:75
 msgid "Static: Static value, displayed as-is."
+msgstr ""
+
+#: src/pages/stages/deny/DenyStageForm.ts:51
+msgid "Statically deny the flow. To use this stage effectively, disable *Evaluate on plan* on the respective binding."
 msgstr ""
 
 #: src/pages/system-tasks/SystemTaskListPage.ts:57
@@ -2862,7 +2912,7 @@ msgstr ""
 msgid "Stop impersonation"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:151
+#: src/pages/stages/email/EmailStageForm.ts:154
 msgid "Subject"
 msgstr ""
 
@@ -3181,7 +3231,7 @@ msgstr ""
 msgid "TLS Verification Certificate"
 msgstr ""
 
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:104
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:107
 msgid "TOTP Authenticators"
 msgstr ""
 
@@ -3197,7 +3247,7 @@ msgstr ""
 msgid "Task finished with warnings"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:157
+#: src/pages/stages/email/EmailStageForm.ts:160
 msgid "Template"
 msgstr ""
 
@@ -3252,11 +3302,19 @@ msgstr ""
 msgid "These policies control which users can access this source."
 msgstr ""
 
+#: src/pages/stages/invitation/InvitationStageForm.ts:53
+msgid "This stage can be included in enrollment flows to accept invitations."
+msgstr ""
+
+#: src/pages/stages/captcha/CaptchaStageForm.ts:52
+msgid "This stage checks the user's current session against the Google reCaptcha service."
+msgstr ""
+
 #: src/pages/policies/reputation/ReputationPolicyForm.ts:94
 msgid "Threshold"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:148
+#: src/pages/stages/email/EmailStageForm.ts:151
 msgid "Time in minutes the token sent is valid."
 msgstr ""
 
@@ -3288,11 +3346,11 @@ msgstr ""
 msgid "Token URL"
 msgstr ""
 
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:65
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:68
 msgid "Token count"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:144
+#: src/pages/stages/email/EmailStageForm.ts:147
 msgid "Token expiry"
 msgstr ""
 
@@ -3529,7 +3587,7 @@ msgstr ""
 msgid "Use a security key to prove your identity."
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:138
+#: src/pages/stages/email/EmailStageForm.ts:141
 msgid "Use global settings"
 msgstr ""
 
@@ -3563,8 +3621,8 @@ msgstr ""
 msgid "User details"
 msgstr ""
 
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:96
-#: src/pages/stages/identification/IdentificationStageForm.ts:71
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:99
+#: src/pages/stages/identification/IdentificationStageForm.ts:74
 msgid "User fields"
 msgstr ""
 
@@ -3602,7 +3660,7 @@ msgstr ""
 msgid "Userinfo URL"
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:76
+#: src/pages/stages/identification/IdentificationStageForm.ts:79
 #: src/pages/user-settings/UserDetailsPage.ts:57
 #: src/pages/users/UserForm.ts:47
 #: src/pages/users/UserViewPage.ts:85
@@ -3635,7 +3693,11 @@ msgstr ""
 msgid "Validate SSL Certificates of upstream servers."
 msgstr ""
 
-#: src/pages/stages/prompt/PromptStageForm.ts:100
+#: src/pages/stages/password/PasswordStageForm.ts:60
+msgid "Validate the user's password against the selected backend(s)."
+msgstr ""
+
+#: src/pages/stages/prompt/PromptStageForm.ts:103
 msgid "Validation Policies"
 msgstr ""
 
@@ -3645,6 +3707,10 @@ msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts:138
 msgid "Verification Certificate"
+msgstr ""
+
+#: src/pages/stages/email/EmailStageForm.ts:121
+msgid "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity."
 msgstr ""
 
 #: src/pages/admin-overview/AdminOverviewPage.ts:56
@@ -3692,7 +3758,7 @@ msgstr ""
 msgid "Warning: Provider not assigned to any application."
 msgstr ""
 
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:107
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:110
 msgid "WebAuthn Authenticators"
 msgstr ""
 
@@ -3712,15 +3778,15 @@ msgstr ""
 msgid "Webhook URL"
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:101
+#: src/pages/stages/identification/IdentificationStageForm.ts:104
 msgid "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown."
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:141
+#: src/pages/stages/email/EmailStageForm.ts:144
 msgid "When enabled, global Email connection settings will be used and connection settings below will be ignored."
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:92
+#: src/pages/stages/identification/IdentificationStageForm.ts:95
 msgid "When enabled, user fields are matched regardless of their casing."
 msgstr ""
 
@@ -3750,6 +3816,12 @@ msgstr ""
 msgid "Workers"
 msgstr ""
 
+#: src/pages/stages/user_write/UserWriteStageForm.ts:51
+msgid ""
+"Write any data from the flow's context's 'prompt_data' to the currently pending user. If no user\n"
+"is pending, a new user is created, and data is written to them."
+msgstr ""
+
 #: src/pages/sources/saml/SAMLSourceForm.ts:161
 msgid "X509 Subject"
 msgstr ""
@@ -3770,11 +3842,11 @@ msgstr ""
 msgid "You're currently impersonating {0}."
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts:76
+#: src/pages/stages/password/PasswordStageForm.ts:79
 msgid "authentik Builtin Database"
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts:79
+#: src/pages/stages/password/PasswordStageForm.ts:82
 msgid "authentik LDAP Backend"
 msgstr ""
 
@@ -3789,11 +3861,11 @@ msgstr ""
 msgid "{0}"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptStageForm.ts:79
+#: src/pages/stages/prompt/PromptStageForm.ts:82
 msgid "{0} (\"{1}\", of type {2})"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptStageForm.ts:112
+#: src/pages/stages/prompt/PromptStageForm.ts:115
 msgid "{0} ({1})"
 msgstr ""
 

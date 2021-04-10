@@ -44,6 +44,10 @@ export class UserWriteStageForm extends Form<UserWriteStage> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
+            <div class="form-help-text">
+                ${t`Write any data from the flow's context's 'prompt_data' to the currently pending user. If no user
+                is pending, a new user is created, and data is written to them.`}
+            </div>
             <ak-form-element-horizontal
                 label=${t`Name`}
                 ?required=${true}

@@ -46,6 +46,9 @@ export class InvitationStageForm extends Form<InvitationStage> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
+            <div class="form-help-text">
+                ${t`This stage can be included in enrollment flows to accept invitations.`}
+            </div>
             <ak-form-element-horizontal
                 label=${t`Name`}
                 ?required=${true}

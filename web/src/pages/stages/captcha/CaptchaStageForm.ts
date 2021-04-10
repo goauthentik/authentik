@@ -45,6 +45,9 @@ export class CaptchaStageForm extends Form<CaptchaStage> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
+            <div class="form-help-text">
+                ${t`This stage checks the user's current session against the Google reCaptcha service.`}
+            </div>
             <ak-form-element-horizontal
                 label=${t`Name`}
                 ?required=${true}

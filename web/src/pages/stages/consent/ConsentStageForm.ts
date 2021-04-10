@@ -49,6 +49,9 @@ export class ConsentStageForm extends Form<ConsentStage> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
+            <div class="form-help-text">
+                ${t`Prompt for the user's consent. The consent can either be permanent or expire in a defined amount of time.`}
+            </div>
             <ak-form-element-horizontal
                 label=${t`Name`}
                 ?required=${true}

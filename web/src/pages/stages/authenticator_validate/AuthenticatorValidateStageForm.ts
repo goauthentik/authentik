@@ -56,6 +56,9 @@ export class AuthenticatorValidateStageForm extends Form<AuthenticatorValidateSt
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
+            <div class="form-help-text">
+                ${t`Stage used to validate any authenticator. This stage should be used during authentication or authorization flows.`}
+            </div>
             <ak-form-element-horizontal
                 label=${t`Name`}
                 ?required=${true}

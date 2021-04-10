@@ -47,6 +47,9 @@ export class AuthenticatorStaticStageForm extends Form<AuthenticatorStaticStage>
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
+            <div class="form-help-text">
+                ${t`Stage used to configure a static authenticator (i.e. static tokens). This stage should be used for configuration flows.`}
+            </div>
             <ak-form-element-horizontal
                 label=${t`Name`}
                 ?required=${true}
@@ -82,7 +85,9 @@ export class AuthenticatorStaticStageForm extends Form<AuthenticatorStaticStage>
                                 });
                             }), html`<option>${t`Loading...`}</option>`)}
                         </select>
-                        <p class="pf-c-form__helper-text">${t`Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.`}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.`}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

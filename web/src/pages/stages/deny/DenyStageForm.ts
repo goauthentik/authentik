@@ -44,6 +44,9 @@ export class DenyStageForm extends Form<DenyStage> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
+            <div class="form-help-text">
+                ${t`Statically deny the flow. To use this stage effectively, disable *Evaluate on plan* on the respective binding.`}
+            </div>
             <ak-form-element-horizontal
                 label=${t`Name`}
                 ?required=${true}

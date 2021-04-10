@@ -44,6 +44,10 @@ export class UserDeleteStageForm extends Form<UserDeleteStage> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
+            <div class="form-help-text">
+                ${t`Delete the currently pending user. CAUTION, this stage does not ask for
+                confirmation. Use a consent stage to ensure the user is aware of their actions.`}
+            </div>
             <ak-form-element-horizontal
                 label=${t`Name`}
                 ?required=${true}

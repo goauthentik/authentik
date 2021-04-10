@@ -39,7 +39,7 @@ export class StageListPage extends TablePage<Stage> {
         return t`Stages`;
     }
     pageDescription(): string | undefined {
-        return t`Stages are single steps of a Flow that a user is guided through.`;
+        return t`Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow.`;
     }
     pageIcon(): string {
         return "pf-icon pf-icon-plugged";

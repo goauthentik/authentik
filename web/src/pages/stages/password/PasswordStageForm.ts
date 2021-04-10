@@ -53,6 +53,9 @@ export class PasswordStageForm extends Form<PasswordStage> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
+            <div class="form-help-text">
+                ${t`Validate the user's password against the selected backend(s).`}
+            </div>
             <ak-form-element-horizontal
                 label=${t`Name`}
                 ?required=${true}

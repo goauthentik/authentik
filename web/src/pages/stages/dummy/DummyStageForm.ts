@@ -44,6 +44,9 @@ export class DummyStageForm extends Form<DummyStage> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
+            <div class="form-help-text">
+                ${t`Dummy stage used for testing. Shows a simple continue button and always passes.`}
+            </div>
             <ak-form-element-horizontal
                 label=${t`Name`}
                 ?required=${true}
