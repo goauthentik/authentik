@@ -74,7 +74,11 @@ export class ApplicationListPage extends TablePage<Application> {
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : html``}
             </a>`,
             html`<code>${item.slug}</code>`,
-            html`${item.provider?.name || "-"}`,
+            item.provider ?
+                html`<a href="#/core/providers/${item.provider.pk}">
+                    ${item.provider?.name}
+                </a>` :
+                html`-`,
             html`${item.provider?.verboseName || "-"}`,
             html`
             <ak-forms-modal>
