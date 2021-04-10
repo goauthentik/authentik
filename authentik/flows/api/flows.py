@@ -268,7 +268,7 @@ class FlowViewSet(ModelViewSet):
                 required=True,
             )
         ],
-        responses={200: "Success"},
+        responses={200: "Success", 400: "Bad request"},
     )
     @action(
         detail=True,
@@ -289,7 +289,7 @@ class FlowViewSet(ModelViewSet):
         return Response({})
 
     @swagger_auto_schema(
-        responses={200: LinkSerializer(many=False)},
+        responses={200: LinkSerializer(many=False), 400: "Flow not applicable"},
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=unused-argument

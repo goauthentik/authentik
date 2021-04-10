@@ -39,9 +39,7 @@ class TestAdminAPI(TestCase):
                 kwargs={"pk": "clean_expired_models"},
             )
         )
-        self.assertEqual(response.status_code, 200)
-        body = loads(response.content)
-        self.assertTrue(body["successful"])
+        self.assertEqual(response.status_code, 204)
 
     def test_tasks_retry_404(self):
         """Test Task API (retry, 404)"""

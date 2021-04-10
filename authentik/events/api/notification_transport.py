@@ -59,7 +59,10 @@ class NotificationTransportViewSet(ModelViewSet):
 
     @permission_required("authentik_events.change_notificationtransport")
     @swagger_auto_schema(
-        responses={200: NotificationTransportTestSerializer(many=False)},
+        responses={
+            200: NotificationTransportTestSerializer(many=False),
+            503: "Failed to test transport",
+        },
         request_body=no_body,
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["post"])

@@ -66,7 +66,12 @@ class OAuth2ProviderViewSet(ModelViewSet):
     queryset = OAuth2Provider.objects.all()
     serializer_class = OAuth2ProviderSerializer
 
-    @swagger_auto_schema(responses={200: OAuth2ProviderSetupURLs(many=False)})
+    @swagger_auto_schema(
+        responses={
+            200: OAuth2ProviderSetupURLs(many=False),
+            404: "Provider has no application assigned",
+        }
+    )
     @action(methods=["GET"], detail=True)
     # pylint: disable=invalid-name
     def setup_urls(self, request: Request, pk: int) -> str:

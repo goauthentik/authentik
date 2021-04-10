@@ -67,7 +67,12 @@ class TokenViewSet(ModelViewSet):
         serializer.save(user=self.request.user)
 
     @permission_required("authentik_core.view_token_key")
-    @swagger_auto_schema(responses={200: TokenViewSerializer(many=False)})
+    @swagger_auto_schema(
+        responses={
+            200: TokenViewSerializer(many=False),
+            404: "Token not found or expired",
+        }
+    )
     @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=unused-argument
     def view_key(self, request: Request, identifier: str) -> Response:

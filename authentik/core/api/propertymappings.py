@@ -99,7 +99,7 @@ class PropertyMappingViewSet(
     @permission_required("authentik_core.view_propertymapping")
     @swagger_auto_schema(
         request_body=PolicyTestSerializer(),
-        responses={200: PropertyMappingTestResultSerializer},
+        responses={200: PropertyMappingTestResultSerializer, 400: "Invalid parameters"},
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
     # pylint: disable=unused-argument, invalid-name

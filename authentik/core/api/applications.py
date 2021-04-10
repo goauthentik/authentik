@@ -124,7 +124,7 @@ class ApplicationViewSet(ModelViewSet):
                 required=True,
             )
         ],
-        responses={200: "Success"},
+        responses={200: "Success", 400: "Bad request"},
     )
     @action(
         detail=True,

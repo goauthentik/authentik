@@ -52,6 +52,13 @@ class TaskViewSet(ViewSet):
         tasks = sorted(TaskInfo.all().values(), key=lambda task: task.task_name)
         return Response(TaskSerializer(tasks, many=True).data)
 
+    @swagger_auto_schema(
+        responses={
+            204: "Task retried successfully",
+            404: "Task not found",
+            500: "Failed to retry task",
+        }
+    )
     @action(detail=True, methods=["post"])
     # pylint: disable=invalid-name
     def retry(self, request: Request, pk=None) -> Response:
@@ -70,12 +77,8 @@ class TaskViewSet(ViewSet):
                     % {"name": task.task_name}
                 ),
             )
-            return Response(
-                {
-                    "successful": True,
-                }
-            )
+            return Response(status=204)
         except ImportError:  # pragma: no cover
             # if we get an import error, the module path has probably changed
             task.delete()
-            return Response({"successful": False})
+            return Response(status=500)

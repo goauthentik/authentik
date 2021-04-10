@@ -138,7 +138,7 @@ class PolicyViewSet(
     @permission_required("authentik_policies.view_policy")
     @swagger_auto_schema(
         request_body=PolicyTestSerializer(),
-        responses={200: PolicyTestResultSerializer()},
+        responses={200: PolicyTestResultSerializer(), 400: "Invalid parameters"},
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
     # pylint: disable=unused-argument, invalid-name

@@ -79,7 +79,12 @@ class SAMLProviderViewSet(ModelViewSet):
     queryset = SAMLProvider.objects.all()
     serializer_class = SAMLProviderSerializer
 
-    @swagger_auto_schema(responses={200: SAMLMetadataSerializer(many=False)})
+    @swagger_auto_schema(
+        responses={
+            200: SAMLMetadataSerializer(many=False),
+            404: "Provider has no application assigned",
+        }
+    )
     @action(methods=["GET"], detail=True, permission_classes=[AllowAny])
     # pylint: disable=invalid-name, unused-argument
     def metadata(self, request: Request, pk: int) -> Response:

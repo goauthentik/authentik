@@ -107,17 +107,19 @@ paths:
       description: Retry task
       parameters: []
       responses:
-        '201':
-          description: ''
-        '403':
-          description: Authentication credentials were invalid, absent or insufficient.
-          schema:
-            $ref: '#/definitions/GenericError'
+        '204':
+          description: Task retried successfully
         '404':
           description: Object does not exist or caller has insufficient permissions
             to access it.
           schema:
             $ref: '#/definitions/APIException'
+        '500':
+          description: Failed to retry task
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
       tags:
         - admin
     parameters:
@@ -1387,6 +1389,8 @@ paths:
       responses:
         '200':
           description: Success
+        '400':
+          description: Bad request
         '403':
           description: Authentication credentials were invalid, absent or insufficient.
           schema:
@@ -1844,15 +1848,15 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/TokenView'
-        '403':
-          description: Authentication credentials were invalid, absent or insufficient.
-          schema:
-            $ref: '#/definitions/GenericError'
         '404':
           description: Object does not exist or caller has insufficient permissions
             to access it.
           schema:
             $ref: '#/definitions/APIException'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
       tags:
         - core
     parameters:
@@ -3402,6 +3406,8 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/NotificationTransportTest'
+        '503':
+          description: Failed to test transport
         '403':
           description: Authentication credentials were invalid, absent or insufficient.
           schema:
@@ -4045,6 +4051,8 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/Link'
+        '400':
+          description: Flow not applicable
         '403':
           description: Authentication credentials were invalid, absent or insufficient.
           schema:
@@ -4105,6 +4113,8 @@ paths:
       responses:
         '200':
           description: Success
+        '400':
+          description: Bad request
         '403':
           description: Authentication credentials were invalid, absent or insufficient.
           schema:
@@ -8748,15 +8758,15 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/OAuth2ProviderSetupURLs'
-        '403':
-          description: Authentication credentials were invalid, absent or insufficient.
-          schema:
-            $ref: '#/definitions/GenericError'
         '404':
           description: Object does not exist or caller has insufficient permissions
             to access it.
           schema:
             $ref: '#/definitions/APIException'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
       tags:
         - providers
     parameters:
@@ -9205,15 +9215,15 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/SAMLMetadata'
-        '403':
-          description: Authentication credentials were invalid, absent or insufficient.
-          schema:
-            $ref: '#/definitions/GenericError'
         '404':
           description: Object does not exist or caller has insufficient permissions
             to access it.
           schema:
             $ref: '#/definitions/APIException'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
       tags:
         - providers
     parameters:

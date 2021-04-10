@@ -123,7 +123,7 @@ class CertificateKeyPairViewSet(ModelViewSet):
     @permission_required(None, ["authentik_crypto.add_certificatekeypair"])
     @swagger_auto_schema(
         request_body=CertificateGenerationSerializer(),
-        responses={200: CertificateKeyPairSerializer},
+        responses={200: CertificateKeyPairSerializer, 400: "Bad request"},
     )
     @action(detail=False, methods=["POST"])
     def generate(self, request: Request) -> Response:
