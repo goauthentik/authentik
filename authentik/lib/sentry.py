@@ -22,7 +22,7 @@ class SentryIgnoredException(Exception):
     """Base Class for all errors that are suppressed, and not sent to sentry."""
 
 
-def before_send(event, hint):
+def before_send(event: dict, hint: dict) -> dict:
     """Check if error is database error, and ignore if so"""
     ignored_classes = (
         # Inbuilt types
@@ -63,5 +63,8 @@ def before_send(event, hint):
     if "exc_info" in hint:
         _, exc_value, _ = hint["exc_info"]
         if isinstance(exc_value, ignored_classes):
+            return None
+    if "logger" in event:
+        if event["logger"] in ["dbbackup"]:
             return None
     return event
