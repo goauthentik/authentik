@@ -1,4 +1,4 @@
-import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { customElement, html, LitElement, property, TemplateResult } from "lit-element";
 
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/EmptyState";
@@ -23,14 +23,6 @@ export class ProviderViewPage extends LitElement {
 
     @property({ attribute: false })
     provider?: Provider;
-
-    static get styles(): CSSResult[] {
-        return [css`
-            * {
-                height: 100%;
-            }
-        `];
-    }
 
     renderProvider(): TemplateResult {
         if (!this.provider) {

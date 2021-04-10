@@ -1,4 +1,4 @@
-import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { Source, SourcesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 
@@ -25,14 +25,6 @@ export class SourceViewPage extends LitElement {
 
     @property({ attribute: false })
     source?: Source;
-
-    static get styles(): CSSResult[] {
-        return [css`
-            * {
-                height: 100%;
-            }
-        `];
-    }
 
     renderSource(): TemplateResult {
         if (!this.source) {

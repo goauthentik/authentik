@@ -37,6 +37,8 @@ export class RouterOutlet extends LitElement {
                 }
                 *:first-child {
                     height: 100%;
+                    display: flex;
+                    flex-direction: column;
                 }
             `,
         ];
