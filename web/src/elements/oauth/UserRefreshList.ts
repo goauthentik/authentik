@@ -35,7 +35,9 @@ export class UserOAuthRefreshList extends Table<ExpiringBaseGrantModel> {
 
     row(item: ExpiringBaseGrantModel): TemplateResult[] {
         return [
-            html`${item.provider.name}`,
+            html`<a href="#/core/providers/${item.provider?.pk}">
+                ${item.provider?.name}
+            </a>`,
             html`${item.expires?.toLocaleString()}`,
             html`${item.scope.join(", ")}`,
             html`

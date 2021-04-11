@@ -283,7 +283,7 @@ msgstr "Authenticator"
 msgid "Authorization"
 msgstr "Authorization"
 
-#: src/elements/oauth/UserCodeList.ts:44
+#: src/elements/oauth/UserCodeList.ts:46
 msgid "Authorization Code"
 msgstr "Authorization Code"
 
@@ -461,7 +461,7 @@ msgstr "Change password"
 msgid "Change your password"
 msgstr "Change your password"
 
-#: src/pages/applications/ApplicationViewPage.ts:118
+#: src/pages/applications/ApplicationViewPage.ts:119
 #: src/pages/flows/FlowViewPage.ts:110
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:136
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:135
@@ -883,7 +883,7 @@ msgstr "Define how notifications are sent to users, like Email or Webhook."
 msgid "Delete"
 msgstr "Delete"
 
-#: src/elements/oauth/UserCodeList.ts:51
+#: src/elements/oauth/UserCodeList.ts:53
 msgid "Delete Authorization Code"
 msgstr "Delete Authorization Code"
 
@@ -896,7 +896,7 @@ msgstr "Delete Binding"
 msgid "Delete Consent"
 msgstr "Delete Consent"
 
-#: src/elements/oauth/UserRefreshList.ts:51
+#: src/elements/oauth/UserRefreshList.ts:53
 msgid "Delete Refresh Code"
 msgstr "Delete Refresh Code"
 
@@ -1008,8 +1008,8 @@ msgid "Each provider has a different issuer, based on the application slug."
 msgstr "Each provider has a different issuer, based on the application slug."
 
 #: src/pages/applications/ApplicationListPage.ts:94
-#: src/pages/applications/ApplicationViewPage.ts:94
-#: src/pages/applications/ApplicationViewPage.ts:108
+#: src/pages/applications/ApplicationViewPage.ts:95
+#: src/pages/applications/ApplicationViewPage.ts:109
 #: src/pages/crypto/CertificateKeyPairListPage.ts:74
 #: src/pages/events/RuleListPage.ts:70
 #: src/pages/events/TransportListPage.ts:74
@@ -1669,7 +1669,7 @@ msgstr "Library"
 #: src/flows/stages/identification/IdentificationStage.ts:134
 #: src/flows/stages/password/PasswordStage.ts:31
 #: src/flows/stages/prompt/PromptStage.ts:126
-#: src/pages/applications/ApplicationViewPage.ts:59
+#: src/pages/applications/ApplicationViewPage.ts:60
 #: src/pages/user-settings/UserDetailsPage.ts:38
 #: src/utils.ts:40
 msgid "Loading"
@@ -1749,7 +1749,7 @@ msgid "Logins"
 msgstr "Logins"
 
 #: src/pages/admin-overview/AdminOverviewPage.ts:39
-#: src/pages/applications/ApplicationViewPage.ts:67
+#: src/pages/applications/ApplicationViewPage.ts:68
 msgid "Logins over the last 24 hours"
 msgstr "Logins over the last 24 hours"
 
@@ -2084,7 +2084,7 @@ msgid "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)
 msgstr "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
 
 #: src/elements/events/ObjectChangelog.ts:50
-#: src/pages/events/EventListPage.ts:57
+#: src/pages/events/EventListPage.ts:60
 msgid "On behalf of {0}"
 msgstr "On behalf of {0}"
 
@@ -2175,7 +2175,7 @@ msgid "Outposts are deployments of authentik components to support different env
 msgstr "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies."
 
 #: src/interfaces/AdminInterface.ts:17
-#: src/pages/applications/ApplicationViewPage.ts:64
+#: src/pages/applications/ApplicationViewPage.ts:65
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:65
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:56
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:58
@@ -2255,7 +2255,7 @@ msgstr "Policy"
 msgid "Policy / User / Group"
 msgstr "Policy / User / Group"
 
-#: src/pages/applications/ApplicationViewPage.ts:129
+#: src/pages/applications/ApplicationViewPage.ts:130
 #: src/pages/flows/FlowViewPage.ts:101
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:143
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:150
@@ -2374,7 +2374,7 @@ msgstr "Provide support for protocols like SAML and OAuth to assigned applicatio
 #: src/elements/oauth/UserRefreshList.ts:29
 #: src/pages/applications/ApplicationForm.ts:100
 #: src/pages/applications/ApplicationListPage.ts:59
-#: src/pages/applications/ApplicationViewPage.ts:81
+#: src/pages/applications/ApplicationViewPage.ts:82
 #: src/pages/providers/ProviderListPage.ts:34
 msgid "Provider"
 msgstr "Provider"
@@ -2476,7 +2476,7 @@ msgstr "Redirect binding"
 msgid "Refresh"
 msgstr "Refresh"
 
-#: src/elements/oauth/UserRefreshList.ts:44
+#: src/elements/oauth/UserRefreshList.ts:46
 msgid "Refresh Code"
 msgstr "Refresh Code"
 
@@ -2488,7 +2488,7 @@ msgstr "Register device"
 msgid "Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression."
 msgstr "Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression."
 
-#: src/pages/applications/ApplicationViewPage.ts:75
+#: src/pages/applications/ApplicationViewPage.ts:76
 #: src/pages/flows/FlowViewPage.ts:64
 msgid "Related"
 msgstr "Related"
@@ -3287,7 +3287,7 @@ msgstr ""
 msgid "These policies control when this stage will be applied to the flow."
 msgstr "These policies control when this stage will be applied to the flow."
 
-#: src/pages/applications/ApplicationViewPage.ts:131
+#: src/pages/applications/ApplicationViewPage.ts:132
 msgid "These policies control which users can access this application."
 msgstr "These policies control which users can access this application."
 
@@ -3440,7 +3440,7 @@ msgid "Up-to-date!"
 msgstr "Up-to-date!"
 
 #: src/pages/applications/ApplicationListPage.ts:86
-#: src/pages/applications/ApplicationViewPage.ts:100
+#: src/pages/applications/ApplicationViewPage.ts:101
 #: src/pages/crypto/CertificateKeyPairListPage.ts:66
 #: src/pages/events/RuleListPage.ts:62
 #: src/pages/events/TransportListPage.ts:66
@@ -3478,7 +3478,7 @@ msgid "Update"
 msgstr "Update"
 
 #: src/pages/applications/ApplicationListPage.ts:89
-#: src/pages/applications/ApplicationViewPage.ts:103
+#: src/pages/applications/ApplicationViewPage.ts:104
 msgid "Update Application"
 msgstr "Update Application"
 
