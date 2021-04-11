@@ -103,6 +103,7 @@ export class Sidebar extends LitElement {
             css`
                 :host {
                     z-index: 100;
+                    box-shadow: none !important;
                 }
                 .pf-c-nav__link.pf-m-current::after,
                 .pf-c-nav__link.pf-m-current:hover::after,
