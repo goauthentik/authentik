@@ -43,6 +43,9 @@ export class PageHeader extends LitElement {
             button.sidebar-trigger {
                 background-color: var(--pf-c-page__main-section--m-light--BackgroundColor);
             }
+            .pf-c-page__main-section {
+                width: 100%;
+            }
         `];
     }
 
