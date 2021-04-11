@@ -59,7 +59,7 @@ export class ObjectChangelog extends Table<Event> {
                 ${t`On behalf of ${item.user.on_behalf_of.username}`}
             </small>` : html``}`,
             html`<span>${item.created?.toLocaleString()}</span>`,
-            html`<span>${item.clientIp}</span>`,
+            html`<span>${item.clientIp || "-"}</span>`,
         ];
     }
 
@@ -76,7 +76,7 @@ export class ObjectChangelog extends Table<Event> {
     }
 
     renderEmpty(): TemplateResult {
-        return super.renderEmpty(html`<ak-empty-state header=${t`No Events found.`} icon="pf-icon-module">
+        return super.renderEmpty(html`<ak-empty-state header=${t`No Events found.`}>
             <div slot="body">
                 ${t`No matching events could be found.`}
             </div>
