@@ -10,7 +10,7 @@ from authentik.core.models import Group
 class GroupSerializer(ModelSerializer):
     """Group Serializer"""
 
-    attributes = JSONField(validators=[is_dict])
+    attributes = JSONField(validators=[is_dict], required=False)
 
     class Meta:
 

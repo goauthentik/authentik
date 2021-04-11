@@ -29,7 +29,7 @@ class InvitationStageViewSet(ModelViewSet):
 class InvitationSerializer(ModelSerializer):
     """Invitation Serializer"""
 
-    fixed_data = JSONField(validators=[is_dict])
+    fixed_data = JSONField(validators=[is_dict], required=False)
 
     class Meta:
 

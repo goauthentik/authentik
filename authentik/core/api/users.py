@@ -26,7 +26,7 @@ class UserSerializer(ModelSerializer):
 
     is_superuser = BooleanField(read_only=True)
     avatar = CharField(read_only=True)
-    attributes = JSONField(validators=[is_dict])
+    attributes = JSONField(validators=[is_dict], required=False)
 
     class Meta:
 

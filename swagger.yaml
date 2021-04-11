@@ -17725,7 +17725,6 @@ definitions:
         x-nullable: true
       fixed_data:
         title: Fixed data
-        description: Optional fixed data to enforce on user enrollment.
         type: object
       created_by:
         required:
