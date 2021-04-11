@@ -14,7 +14,6 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import AKGlobal from "../../authentik.css";
 
 import "../../elements/forms/ModalForm";
-import "./UserForm";
 import "../../elements/buttons/ActionButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/CodeMirror";
@@ -25,6 +24,8 @@ import "../../elements/oauth/UserCodeList";
 import "../../elements/oauth/UserRefreshList";
 import "../../elements/charts/UserChart";
 import "../../elements/PageHeader";
+import "../../elements/events/UserEvents";
+import "./UserForm";
 import { CoreApi, User } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { EVENT_REFRESH } from "../../constants";
@@ -75,7 +76,7 @@ export class UserViewPage extends LitElement {
         return html`<ak-tabs>
                 <section slot="page-overview" data-tab-title="${t`Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-l-gallery pf-m-gutter">
-                        <div class="pf-c-card pf-l-gallery__item pf-m-4-col">
+                        <div class="pf-c-card pf-l-gallery__item">
                             <div class="pf-c-card__title">
                                 ${t`User Info`}
                             </div>
@@ -167,11 +168,19 @@ export class UserViewPage extends LitElement {
                                 </ak-action-button>
                             </div>
                         </div>
-                        <div class="pf-c-card pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 4;grid-row-end: span 2;">
+                        <div class="pf-c-card pf-l-gallery__item" style="grid-column-end: span 4;grid-row-end: span 2;">
                             <div class="pf-c-card__body">
                                 <ak-charts-user userId=${this.user.pk || 0}>
                                 </ak-charts-user>
                             </div>
+                        </div>
+                    </div>
+                </section>
+                <section slot="page-events" data-tab-title="${t`User events`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-events-user targetUser=${this.user.username}>
+                            </ak-events-user>
                         </div>
                     </div>
                 </section>

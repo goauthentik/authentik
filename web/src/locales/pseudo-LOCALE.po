@@ -69,6 +69,7 @@ msgid "Access token URL"
 msgstr ""
 
 #: src/elements/events/ObjectChangelog.ts:38
+#: src/elements/events/UserEvents.ts:35
 #: src/pages/events/EventListPage.ts:43
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:79
 msgid "Action"
@@ -76,7 +77,7 @@ msgstr ""
 
 #: src/pages/groups/MemberSelectModal.ts:45
 #: src/pages/users/UserListPage.ts:51
-#: src/pages/users/UserViewPage.ts:115
+#: src/pages/users/UserViewPage.ts:116
 msgid "Active"
 msgstr ""
 
@@ -465,7 +466,7 @@ msgstr ""
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:113
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:132
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:119
-#: src/pages/users/UserViewPage.ts:176
+#: src/pages/users/UserViewPage.ts:185
 msgid "Changelog"
 msgstr ""
 
@@ -530,6 +531,7 @@ msgid "Client ID"
 msgstr ""
 
 #: src/elements/events/ObjectChangelog.ts:41
+#: src/elements/events/UserEvents.ts:38
 #: src/pages/events/EventListPage.ts:46
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:93
 msgid "Client IP"
@@ -825,6 +827,7 @@ msgid "Created {0}"
 msgstr ""
 
 #: src/elements/events/ObjectChangelog.ts:40
+#: src/elements/events/UserEvents.ts:37
 #: src/pages/events/EventListPage.ts:45
 msgid "Creation Date"
 msgstr ""
@@ -1023,7 +1026,7 @@ msgstr ""
 #: src/pages/stages/prompt/PromptListPage.ts:75
 #: src/pages/user-settings/tokens/UserTokenList.ts:113
 #: src/pages/users/UserListPage.ts:76
-#: src/pages/users/UserViewPage.ts:146
+#: src/pages/users/UserViewPage.ts:147
 msgid "Edit"
 msgstr ""
 
@@ -1056,7 +1059,7 @@ msgstr ""
 #: src/pages/stages/identification/IdentificationStageForm.ts:82
 #: src/pages/user-settings/UserDetailsPage.ts:71
 #: src/pages/users/UserForm.ts:61
-#: src/pages/users/UserViewPage.ts:99
+#: src/pages/users/UserViewPage.ts:100
 msgid "Email"
 msgstr ""
 
@@ -1216,7 +1219,7 @@ msgstr ""
 msgid "Expiry date"
 msgstr ""
 
-#: src/pages/users/UserViewPage.ts:187
+#: src/pages/users/UserViewPage.ts:196
 msgid "Explicit Consent"
 msgstr ""
 
@@ -1616,7 +1619,7 @@ msgstr ""
 
 #: src/pages/groups/MemberSelectModal.ts:46
 #: src/pages/users/UserListPage.ts:52
-#: src/pages/users/UserViewPage.ts:107
+#: src/pages/users/UserViewPage.ts:108
 msgid "Last login"
 msgstr ""
 
@@ -1893,7 +1896,7 @@ msgstr ""
 #: src/pages/user-settings/UserDetailsPage.ts:64
 #: src/pages/users/UserForm.ts:54
 #: src/pages/users/UserListPage.ts:50
-#: src/pages/users/UserViewPage.ts:91
+#: src/pages/users/UserViewPage.ts:92
 msgid "Name"
 msgstr ""
 
@@ -1936,6 +1939,7 @@ msgid "No Applications available."
 msgstr ""
 
 #: src/elements/events/ObjectChangelog.ts:68
+#: src/elements/events/UserEvents.ts:65
 msgid "No Events found."
 msgstr ""
 
@@ -1964,6 +1968,7 @@ msgid "No form found"
 msgstr ""
 
 #: src/elements/events/ObjectChangelog.ts:70
+#: src/elements/events/UserEvents.ts:67
 msgid "No matching events could be found."
 msgstr ""
 
@@ -2050,11 +2055,11 @@ msgstr ""
 msgid "Number"
 msgstr ""
 
-#: src/pages/users/UserViewPage.ts:195
+#: src/pages/users/UserViewPage.ts:204
 msgid "OAuth Authorization Codes"
 msgstr ""
 
-#: src/pages/users/UserViewPage.ts:203
+#: src/pages/users/UserViewPage.ts:212
 msgid "OAuth Refresh Codes"
 msgstr ""
 
@@ -2076,6 +2081,7 @@ msgid "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)
 msgstr ""
 
 #: src/elements/events/ObjectChangelog.ts:50
+#: src/elements/events/UserEvents.ts:47
 #: src/pages/events/EventListPage.ts:60
 msgid "On behalf of {0}"
 msgstr ""
@@ -2174,7 +2180,7 @@ msgstr ""
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:56
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:55
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:58
-#: src/pages/users/UserViewPage.ts:73
+#: src/pages/users/UserViewPage.ts:74
 msgid "Overview"
 msgstr ""
 
@@ -2512,7 +2518,7 @@ msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr ""
 
 #: src/pages/users/UserListPage.ts:133
-#: src/pages/users/UserViewPage.ts:164
+#: src/pages/users/UserViewPage.ts:165
 msgid "Reset Password"
 msgstr ""
 
@@ -3039,7 +3045,7 @@ msgid "Successfully generated certificate-key pair."
 msgstr ""
 
 #: src/pages/users/UserListPage.ts:128
-#: src/pages/users/UserViewPage.ts:159
+#: src/pages/users/UserViewPage.ts:160
 msgid "Successfully generated recovery link"
 msgstr ""
 
@@ -3170,7 +3176,7 @@ msgstr ""
 msgid "Successfully updated {0} {1}"
 msgstr ""
 
-#: src/pages/users/UserViewPage.ts:125
+#: src/pages/users/UserViewPage.ts:126
 msgid "Superuser"
 msgstr ""
 
@@ -3463,7 +3469,7 @@ msgstr ""
 #: src/pages/user-settings/tokens/UserTokenList.ts:105
 #: src/pages/users/UserActiveForm.ts:66
 #: src/pages/users/UserListPage.ts:68
-#: src/pages/users/UserViewPage.ts:138
+#: src/pages/users/UserViewPage.ts:139
 msgid "Update"
 msgstr ""
 
@@ -3539,7 +3545,7 @@ msgstr ""
 
 #: src/pages/policies/BoundPoliciesList.ts:102
 #: src/pages/users/UserListPage.ts:71
-#: src/pages/users/UserViewPage.ts:141
+#: src/pages/users/UserViewPage.ts:142
 msgid "Update User"
 msgstr ""
 
@@ -3580,6 +3586,7 @@ msgid "Use global settings"
 msgstr ""
 
 #: src/elements/events/ObjectChangelog.ts:39
+#: src/elements/events/UserEvents.ts:36
 #: src/pages/events/EventInfo.ts:83
 #: src/pages/events/EventListPage.ts:44
 #: src/pages/policies/PolicyBindingForm.ts:140
@@ -3593,7 +3600,7 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: src/pages/users/UserViewPage.ts:77
+#: src/pages/users/UserViewPage.ts:78
 msgid "User Info"
 msgstr ""
 
@@ -3607,6 +3614,10 @@ msgstr ""
 
 #: src/pages/user-settings/UserSettingsPage.ts:74
 msgid "User details"
+msgstr ""
+
+#: src/pages/users/UserViewPage.ts:177
+msgid "User events"
 msgstr ""
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:99
@@ -3623,7 +3634,7 @@ msgid "User password writeback"
 msgstr ""
 
 #: src/pages/policies/BoundPoliciesList.ts:52
-#: src/pages/users/UserViewPage.ts:62
+#: src/pages/users/UserViewPage.ts:63
 msgid "User {0}"
 msgstr ""
 
@@ -3651,7 +3662,7 @@ msgstr ""
 #: src/pages/stages/identification/IdentificationStageForm.ts:79
 #: src/pages/user-settings/UserDetailsPage.ts:57
 #: src/pages/users/UserForm.ts:47
-#: src/pages/users/UserViewPage.ts:83
+#: src/pages/users/UserViewPage.ts:84
 msgid "Username"
 msgstr ""
 
