@@ -1,7 +1,9 @@
 """Invitation Stage API Views"""
+from rest_framework.fields import JSONField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.utils import is_dict
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.invitation.models import Invitation, InvitationStage
 
@@ -26,6 +28,8 @@ class InvitationStageViewSet(ModelViewSet):
 
 class InvitationSerializer(ModelSerializer):
     """Invitation Serializer"""
+
+    fixed_data = JSONField(validators=[is_dict])
 
     class Meta:
 

@@ -4,7 +4,7 @@ from django.utils.http import urlencode
 from drf_yasg.utils import swagger_auto_schema, swagger_serializer_method
 from guardian.utils import get_anonymous_user
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, SerializerMethodField
+from rest_framework.fields import CharField, JSONField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import BooleanField, ModelSerializer
@@ -12,7 +12,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.admin.api.metrics import CoordinateSerializer, get_events_per_1h
 from authentik.api.decorators import permission_required
-from authentik.core.api.utils import LinkSerializer, PassiveSerializer
+from authentik.core.api.utils import LinkSerializer, PassiveSerializer, is_dict
 from authentik.core.middleware import (
     SESSION_IMPERSONATE_ORIGINAL_USER,
     SESSION_IMPERSONATE_USER,
@@ -26,6 +26,7 @@ class UserSerializer(ModelSerializer):
 
     is_superuser = BooleanField(read_only=True)
     avatar = CharField(read_only=True)
+    attributes = JSONField(validators=[is_dict])
 
     class Meta:
 

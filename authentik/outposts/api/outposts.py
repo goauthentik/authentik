@@ -8,14 +8,14 @@ from rest_framework.serializers import JSONField, ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import PassiveSerializer, is_dict
 from authentik.outposts.models import Outpost, default_outpost_config
 
 
 class OutpostSerializer(ModelSerializer):
     """Outpost Serializer"""
 
-    _config = JSONField()
+    _config = JSONField(validators=[is_dict])
     providers_obj = ProviderSerializer(source="providers", many=True, read_only=True)
 
     class Meta:

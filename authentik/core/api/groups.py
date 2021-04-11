@@ -1,12 +1,16 @@
 """Groups API Viewset"""
+from rest_framework.fields import JSONField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.utils import is_dict
 from authentik.core.models import Group
 
 
 class GroupSerializer(ModelSerializer):
     """Group Serializer"""
+
+    attributes = JSONField(validators=[is_dict])
 
     class Meta:
 
