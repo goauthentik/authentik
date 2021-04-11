@@ -16,7 +16,7 @@ export class WorkersStatusCard extends AdminStatusCard<number> {
     getStatus(value: number): Promise<AdminStatus> {
         if (value < 1) {
             return Promise.resolve<AdminStatus>({
-                icon: "fa fa-exclamation-triangle pf-m-warning",
+                icon: "fa fa-times-circle pf-m-danger",
                 message: t`No workers connected. Background tasks will not run.`,
             });
         } else {

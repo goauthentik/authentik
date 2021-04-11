@@ -31,7 +31,7 @@ export class BackupStatusCard extends AdminStatusCard<TaskStatusEnum> {
                 });
             case TaskStatusEnum.Error:
                 return Promise.resolve<AdminStatus>({
-                    icon: "fa fas fa-times-circle pf-m-danger",
+                    icon: "fa fa-times-circle pf-m-danger",
                     message: t`Backup finished with errors.`,
                 });
             default:
