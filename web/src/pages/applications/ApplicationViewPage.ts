@@ -15,9 +15,10 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import AKGlobal from "../../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import AKGlobal from "../../authentik.css";
 import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-application-view")
@@ -36,7 +37,7 @@ export class ApplicationViewPage extends LitElement {
     application!: Application;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFContent, PFButton, PFGallery, PFCard, AKGlobal];
+        return [PFBase, PFPage, PFContent, PFButton, PFDescriptionList, PFGallery, PFCard, AKGlobal];
     }
 
     render(): TemplateResult {
@@ -60,14 +61,6 @@ export class ApplicationViewPage extends LitElement {
             <ak-tabs>
                 <section slot="page-overview" data-tab-title="${t`Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-l-gallery pf-m-gutter">
-                        <div class="pf-c-card pf-l-gallery__item" style="grid-column-end: span 3;grid-row-end: span 2;">
-                            <div class="pf-c-card__title">${t`Logins over the last 24 hours`}</div>
-                            <div class="pf-c-card__body">
-                                ${this.application && html`
-                                    <ak-charts-application-authorize applicationSlug=${this.application.slug}>
-                                    </ak-charts-application-authorize>`}
-                            </div>
-                        </div>
                         <div class="pf-c-card pf-l-gallery__item">
                             <div class="pf-c-card__title">${t`Related`}</div>
                             <div class="pf-c-card__body">
@@ -86,6 +79,16 @@ export class ApplicationViewPage extends LitElement {
                                             </dd>
                                         </div>`:
                                     html``}
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text">${t`Policy engine mode`}</span>
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                ${this.application.policyEngineMode?.toUpperCase()}
+                                            </div>
+                                        </dd>
+                                    </div>
                                     <div class="pf-c-description-list__group">
                                         <dt class="pf-c-description-list__term">
                                             <span class="pf-c-description-list__text">${t`Edit`}</span>
@@ -111,7 +114,15 @@ export class ApplicationViewPage extends LitElement {
                                 </dl>
                             </div>
                         </div>
-                        <div class="pf-c-card pf-l-gallery__item" style="grid-column-end: span 3;grid-row-end: span 2;">
+                        <div class="pf-c-card pf-l-gallery__item" style="grid-column-end: span 4;grid-row-end: span 2;">
+                            <div class="pf-c-card__title">${t`Logins over the last 24 hours`}</div>
+                            <div class="pf-c-card__body">
+                                ${this.application && html`
+                                    <ak-charts-application-authorize applicationSlug=${this.application.slug}>
+                                    </ak-charts-application-authorize>`}
+                            </div>
+                        </div>
+                        <div class="pf-c-card pf-l-gallery__item" style="grid-column-end: span 5;grid-row-end: span 3;">
                             <div class="pf-c-card__title">${t`Changelog`}</div>
                             <div class="pf-c-card__body">
                                 <ak-object-changelog
