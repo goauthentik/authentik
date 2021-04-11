@@ -14456,6 +14456,10 @@ definitions:
         maxLength: 50
         minLength: 1
       provider:
+        title: Provider
+        type: integer
+        x-nullable: true
+      provider_obj:
         $ref: '#/definitions/Provider'
       launch_url:
         title: Launch url
