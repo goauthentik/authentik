@@ -34,6 +34,7 @@ module.exports = {
             label: "Outposts",
             items: [
                 "outposts/outposts",
+                "outposts/proxy",
                 "outposts/upgrading",
                 "outposts/manual-deploy-docker-compose",
                 "outposts/manual-deploy-kubernetes",
