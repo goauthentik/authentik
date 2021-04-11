@@ -2,7 +2,7 @@
 from drf_yasg.utils import swagger_serializer_method
 from rest_framework.fields import CharField, ListField, SerializerMethodField
 from rest_framework.serializers import ModelSerializer
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.utils import PassiveSerializer
@@ -68,16 +68,6 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
 
     oidc_configuration = SerializerMethodField()
 
-    def create(self, validated_data):
-        instance: ProxyProvider = super().create(validated_data)
-        instance.set_oauth_defaults()
-        instance.save()
-        return instance
-
-    def update(self, instance: ProxyProvider, validated_data):
-        instance.set_oauth_defaults()
-        return super().update(instance, validated_data)
-
     class Meta:
 
         model = ProxyProvider
@@ -104,9 +94,14 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
         return ProviderInfoView(request=self.context["request"]._request).get_info(obj)
 
 
-class ProxyOutpostConfigViewSet(ModelViewSet):
+class ProxyOutpostConfigViewSet(ReadOnlyModelViewSet):
     """ProxyProvider Viewset"""
 
     queryset = ProxyProvider.objects.filter(application__isnull=False)
     serializer_class = ProxyOutpostConfigSerializer
     ordering = ["name"]
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        print(qs)
+        return qs

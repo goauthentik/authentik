@@ -4730,30 +4730,6 @@ paths:
             $ref: '#/definitions/GenericError'
       tags:
         - outposts
-    post:
-      operationId: outposts_proxy_create
-      description: ProxyProvider Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/ProxyOutpostConfig'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/ProxyOutpostConfig'
-        '400':
-          description: Invalid input.
-          schema:
-            $ref: '#/definitions/ValidationError'
-        '403':
-          description: Authentication credentials were invalid, absent or insufficient.
-          schema:
-            $ref: '#/definitions/GenericError'
-      tags:
-        - outposts
     parameters: []
   /outposts/proxy/{id}/:
     get:
@@ -4765,82 +4741,6 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/ProxyOutpostConfig'
-        '403':
-          description: Authentication credentials were invalid, absent or insufficient.
-          schema:
-            $ref: '#/definitions/GenericError'
-        '404':
-          description: Object does not exist or caller has insufficient permissions
-            to access it.
-          schema:
-            $ref: '#/definitions/APIException'
-      tags:
-        - outposts
-    put:
-      operationId: outposts_proxy_update
-      description: ProxyProvider Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/ProxyOutpostConfig'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/ProxyOutpostConfig'
-        '400':
-          description: Invalid input.
-          schema:
-            $ref: '#/definitions/ValidationError'
-        '403':
-          description: Authentication credentials were invalid, absent or insufficient.
-          schema:
-            $ref: '#/definitions/GenericError'
-        '404':
-          description: Object does not exist or caller has insufficient permissions
-            to access it.
-          schema:
-            $ref: '#/definitions/APIException'
-      tags:
-        - outposts
-    patch:
-      operationId: outposts_proxy_partial_update
-      description: ProxyProvider Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/ProxyOutpostConfig'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/ProxyOutpostConfig'
-        '400':
-          description: Invalid input.
-          schema:
-            $ref: '#/definitions/ValidationError'
-        '403':
-          description: Authentication credentials were invalid, absent or insufficient.
-          schema:
-            $ref: '#/definitions/GenericError'
-        '404':
-          description: Object does not exist or caller has insufficient permissions
-            to access it.
-          schema:
-            $ref: '#/definitions/APIException'
-      tags:
-        - outposts
-    delete:
-      operationId: outposts_proxy_delete
-      description: ProxyProvider Viewset
-      parameters: []
-      responses:
-        '204':
-          description: ''
         '403':
           description: Authentication credentials were invalid, absent or insufficient.
           schema:
