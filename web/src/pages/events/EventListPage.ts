@@ -47,16 +47,21 @@ export class EventListPage extends TablePage<Event> {
             new TableColumn(""),
         ];
     }
+
     row(item: EventWithContext): TemplateResult[] {
         return [
             html`<div>${item.action}</div>
             <small>${item.app}</small>`,
-            html`<div>${item.user?.username}</div>
-            ${item.user.on_behalf_of ? html`<small>
-                ${t`On behalf of ${item.user.on_behalf_of.username}`}
-            </small>` : html``}`,
+            item.user?.username ?
+                html`<a href="#/identity/users/${item.user.pk}">
+                    ${item.user?.username}
+                </a>
+                ${item.user.on_behalf_of ? html`<small>
+                    ${t`On behalf of ${item.user.on_behalf_of.username}`}
+                </small>` : html``}` :
+                html`-`,
             html`<span>${item.created?.toLocaleString()}</span>`,
-            html`<span>${item.clientIp}</span>`,
+            html`<span>${item.clientIp || "-"}</span>`,
             html`<a href="#/events/log/${item.pk}">
                 <i class="fas fas fa-share-square"></i>
             </a>`,
