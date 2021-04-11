@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 
 import "../../elements/Tabs";
 import "../../elements/charts/ApplicationAuthorizeChart";
@@ -36,16 +36,7 @@ export class ApplicationViewPage extends LitElement {
     application!: Application;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFContent, PFButton, PFGallery, PFCard, AKGlobal].concat(
-            css`
-                img.pf-icon {
-                    max-height: 24px;
-                }
-                ak-tabs {
-                    height: 100%;
-                }
-            `
-        );
+        return [PFBase, PFPage, PFContent, PFButton, PFGallery, PFCard, AKGlobal];
     }
 
     render(): TemplateResult {

@@ -48,6 +48,9 @@ export class PageHeader extends LitElement {
             .pf-c-page__main-section {
                 width: 100%;
             }
+            img.pf-icon {
+                max-height: 24px;
+            }
         `];
     }
 
