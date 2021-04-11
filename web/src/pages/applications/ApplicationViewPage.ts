@@ -67,7 +67,7 @@ export class ApplicationViewPage extends LitElement {
         }
         return html`
             <ak-tabs>
-                <section slot="page-1" data-tab-title="${t`Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-overview" data-tab-title="${t`Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-l-gallery pf-m-gutter">
                         <div class="pf-c-card pf-l-gallery__item" style="grid-column-end: span 3;grid-row-end: span 2;">
                             <div class="pf-c-card__title">${t`Logins over the last 24 hours`}</div>
@@ -132,7 +132,7 @@ export class ApplicationViewPage extends LitElement {
                         </div>
                     </div>
                 </section>
-                <div slot="page-2" data-tab-title="${t`Policy Bindings`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div slot="page-policy-bindings" data-tab-title="${t`Policy Bindings`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__title">${t`These policies control which users can access this application.`}</div>
                         <ak-bound-policies-list .target=${this.application.pk}>

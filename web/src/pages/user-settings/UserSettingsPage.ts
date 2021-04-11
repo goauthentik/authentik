@@ -72,10 +72,10 @@ export class UserSettingsPage extends LitElement {
                     description=${t`Configure settings relevant to your user profile.`}>
                 </ak-page-header>
                 <ak-tabs ?vertical="${true}" style="height: 100%;">
-                    <section slot="page-1" data-tab-title="${t`User details`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                    <section slot="page-details" data-tab-title="${t`User details`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                         <ak-user-details></ak-user-details>
                     </section>
-                    <section slot="page-2" data-tab-title="${t`Tokens`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                    <section slot="page-tokens" data-tab-title="${t`Tokens`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                         <ak-user-token-list></ak-user-token-list>
                     </section>
                     ${until(new StagesApi(DEFAULT_CONFIG).stagesAllUserSettings().then((stages) => {

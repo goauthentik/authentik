@@ -67,7 +67,7 @@ export class OAuth2ProviderViewPage extends LitElement {
             return html``;
         }
         return html`<ak-tabs>
-                <section slot="page-1" data-tab-title="${t`Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-overview" data-tab-title="${t`Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-u-display-flex pf-u-justify-content-center">
                         <div class="pf-u-w-75">
                             <div class="pf-c-card">
@@ -138,7 +138,7 @@ export class OAuth2ProviderViewPage extends LitElement {
                         </div>
                     </div>
                 </section>
-                <section slot="page-2" data-tab-title="${t`Changelog`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-changelog" data-tab-title="${t`Changelog`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
                             <ak-object-changelog
@@ -149,7 +149,7 @@ export class OAuth2ProviderViewPage extends LitElement {
                         </div>
                     </div>
                 </section>
-                <section slot="page-3" data-tab-title="${t`Metadata`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-metadata" data-tab-title="${t`Metadata`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-u-display-flex pf-u-justify-content-center">
                         <div class="pf-u-w-75">
                             <div class="pf-c-card">
