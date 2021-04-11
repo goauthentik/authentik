@@ -100,8 +100,3 @@ class ProxyOutpostConfigViewSet(ReadOnlyModelViewSet):
     queryset = ProxyProvider.objects.filter(application__isnull=False)
     serializer_class = ProxyOutpostConfigSerializer
     ordering = ["name"]
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        print(qs)
-        return qs

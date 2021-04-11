@@ -81,15 +81,15 @@ export class ApplicationViewPage extends LitElement {
                             <div class="pf-c-card__title">${t`Related`}</div>
                             <div class="pf-c-card__body">
                                 <dl class="pf-c-description-list">
-                                    ${this.application.provider ?
+                                    ${this.application.providerObj ?
                                     html`<div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
                                                 <span class="pf-c-description-list__text">${t`Provider`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">
-                                                    <a href="#/core/providers/${this.application.provider.pk}">
-                                                        ${this.application.provider.name}
+                                                    <a href="#/core/providers/${this.application.providerObj?.pk}">
+                                                        ${this.application.providerObj?.name}
                                                     </a>
                                                 </div>
                                             </dd>

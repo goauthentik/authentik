@@ -75,11 +75,11 @@ export class ApplicationListPage extends TablePage<Application> {
             </a>`,
             html`<code>${item.slug}</code>`,
             item.provider ?
-                html`<a href="#/core/providers/${item.provider.pk}">
-                    ${item.provider?.name}
+                html`<a href="#/core/providers/${item.providerObj?.pk}">
+                    ${item.providerObj?.name}
                 </a>` :
                 html`-`,
-            html`${item.provider?.verboseName || "-"}`,
+            html`${item.providerObj?.verboseName || "-"}`,
             html`
             <ak-forms-modal>
                 <span slot="submit">

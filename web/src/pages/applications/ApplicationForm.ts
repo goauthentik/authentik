@@ -72,7 +72,7 @@ export class ApplicationForm extends Form<Application> {
             ${Array.from(m).map(([group, providers]) => {
                 return html`<optgroup label=${group}>
                     ${providers.map(p => {
-                        const selected = (this.application?.provider?.pk === p.pk) || (this.provider === p.pk);
+                        const selected = (this.application?.provider === p.pk) || (this.provider === p.pk);
                         return html`<option ?selected=${selected} value=${ifDefined(p.pk)}>${p.name}</option>`;
                     })}
                 </optgroup>`;
@@ -98,7 +98,7 @@ export class ApplicationForm extends Form<Application> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Provider`}
-                name="parent">
+                name="provider">
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.application?.provider === undefined}>---------</option>
                     ${until(new ProvidersApi(DEFAULT_CONFIG).providersAllList({}).then(providers => {
