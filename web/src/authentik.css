@@ -1,5 +1,13 @@
 :root {
     --ak-accent: #fd4b2d;
+
+    --ak-dark-foreground: #fafafa;
+    --ak-dark-foreground-darker: #bebebe;
+    --ak-dark-foreground-link: #5a5cb9;
+    --ak-dark-background: #18191a;
+    --ak-dark-background-darker: #000000;
+    --ak-dark-background-light: #1c1e21;
+    --ak-dark-background-lighter: #2b2e33;
 }
 
 html {
@@ -92,14 +100,6 @@ body {
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --ak-dark-foreground: #fafafa;
-        --ak-dark-foreground-darker: #bebebe;
-        --ak-dark-foreground-link: #5a5cb9;
-        --ak-dark-background: #18191a;
-        --ak-dark-background-darker: #000000;
-        --ak-dark-background-light: #1c1e21;
-        --ak-dark-background-lighter: #2b2e33;
-
         --pf-global--Color--100: var(--ak-dark-foreground);
         --pf-c-page__main-section--m-light--BackgroundColor: var(--ak-dark-background-darker);
         --pf-global--link--Color: var(--ak-dark-foreground-link);

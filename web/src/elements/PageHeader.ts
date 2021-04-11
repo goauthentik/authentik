@@ -39,9 +39,11 @@ export class PageHeader extends LitElement {
             :host {
                 display: flex;
                 flex-direction: row;
+                min-height: 114px;
             }
             button.sidebar-trigger {
                 background-color: var(--pf-c-page__main-section--m-light--BackgroundColor);
+                border-radius: 0px;
             }
             .pf-c-page__main-section {
                 width: 100%;
