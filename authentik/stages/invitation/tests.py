@@ -144,7 +144,7 @@ class TestInvitationsAPI(APITestCase):
         response = self.client.post(
             reverse("authentik_api:invitation-list"),
             {"identifier": "test-token", "fixed_data": {}},
-            format="json"
+            format="json",
         )
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Invitation.objects.first().created_by, self.user)
