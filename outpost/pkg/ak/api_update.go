@@ -3,6 +3,7 @@ package ak
 import (
 	"crypto/sha512"
 	"encoding/hex"
+	"encoding/json"
 
 	"goauthentik.io/outpost/pkg/client/outposts"
 	"goauthentik.io/outpost/pkg/models"
@@ -16,8 +17,11 @@ func (a *APIController) Update() ([]*models.ProxyOutpostConfig, error) {
 	}
 	// Check provider hash to see if anything is changed
 	hasher := sha512.New()
-	bin, _ := providers.Payload.MarshalBinary()
-	hash := hex.EncodeToString(hasher.Sum(bin))
+	out, err := json.Marshal(providers.Payload.Results)
+	if err != nil {
+		return nil, nil
+	}
+	hash := hex.EncodeToString(hasher.Sum(out))
 	if hash == a.lastBundleHash {
 		return nil, nil
 	}
