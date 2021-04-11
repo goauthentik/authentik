@@ -51,7 +51,7 @@ logconfig_dict = {
 if SERVICE_HOST_ENV_NAME in os.environ:
     workers = 2
 else:
-    workers = cpu_count() * 2 + 1
+    workers = int(os.environ.get("WORKERS", cpu_count() * 2 + 1))
 threads = 4
 
 warnings.simplefilter("once")

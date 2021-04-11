@@ -28,6 +28,7 @@ services:
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
       # AUTHENTIK_ERROR_REPORTING__ENABLED: "true"
+      # WORKERS: 2
     volumes:
       - ./media:/media
       - ./custom-templates:/templates
