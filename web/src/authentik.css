@@ -279,6 +279,7 @@ body {
     }
     .pf-c-notification-drawer__header {
         background-color: var(--ak-dark-background-lighter);
+        color: var(--ak-dark-foreground);
     }
     /* data list */
     .pf-c-data-list__item {
