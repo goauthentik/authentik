@@ -188,7 +188,7 @@ msgstr ""
 msgid "Applications"
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:42
+#: src/pages/admin-overview/AdminOverviewPage.ts:43
 msgid "Apps with most usage"
 msgstr ""
 
@@ -325,7 +325,7 @@ msgstr ""
 msgid "Backup finished with warnings."
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:59
+#: src/pages/admin-overview/AdminOverviewPage.ts:60
 msgid "Backup status"
 msgstr ""
 
@@ -389,11 +389,11 @@ msgstr ""
 msgid "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:57
+#: src/pages/admin-overview/AdminOverviewPage.ts:58
 msgid "Cached Flows"
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:55
+#: src/pages/admin-overview/AdminOverviewPage.ts:56
 msgid "Cached Policies"
 msgstr ""
 
@@ -1386,6 +1386,10 @@ msgstr ""
 msgid "From address"
 msgstr ""
 
+#: src/pages/admin-overview/AdminOverviewPage.ts:36
+msgid "General system status"
+msgstr ""
+
 #: src/pages/crypto/CertificateKeyPairListPage.ts:135
 #: src/pages/crypto/CertificateKeyPairListPage.ts:143
 msgid "Generate"
@@ -1743,7 +1747,7 @@ msgstr ""
 msgid "Logins"
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:39
+#: src/pages/admin-overview/AdminOverviewPage.ts:40
 #: src/pages/applications/ApplicationViewPage.ts:68
 msgid "Logins over the last 24 hours"
 msgstr ""
@@ -2233,7 +2237,7 @@ msgid "Please enter your password"
 msgstr ""
 
 #: src/interfaces/AdminInterface.ts:26
-#: src/pages/admin-overview/AdminOverviewPage.ts:47
+#: src/pages/admin-overview/AdminOverviewPage.ts:48
 #: src/pages/flows/FlowListPage.ts:50
 #: src/pages/policies/PolicyListPage.ts:38
 msgid "Policies"
@@ -2387,7 +2391,7 @@ msgid "Provider type"
 msgstr ""
 
 #: src/interfaces/AdminInterface.ts:20
-#: src/pages/admin-overview/AdminOverviewPage.ts:45
+#: src/pages/admin-overview/AdminOverviewPage.ts:46
 #: src/pages/outposts/OutpostForm.ts:82
 #: src/pages/outposts/OutpostListPage.ts:51
 msgid "Providers"
@@ -3671,7 +3675,7 @@ msgid "Username: Same as Text input, but checks for and prevents duplicate usern
 msgstr ""
 
 #: src/interfaces/AdminInterface.ts:32
-#: src/pages/admin-overview/AdminOverviewPage.ts:49
+#: src/pages/admin-overview/AdminOverviewPage.ts:50
 #: src/pages/users/UserListPage.ts:32
 msgid "Users"
 msgstr ""
@@ -3712,7 +3716,7 @@ msgstr ""
 msgid "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity."
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:51
+#: src/pages/admin-overview/AdminOverviewPage.ts:52
 msgid "Version"
 msgstr ""
 
@@ -3811,7 +3815,7 @@ msgstr ""
 msgid "Windows"
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:53
+#: src/pages/admin-overview/AdminOverviewPage.ts:54
 msgid "Workers"
 msgstr ""
 

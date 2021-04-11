@@ -33,7 +33,8 @@ export class AdminOverviewPage extends LitElement {
         return html`
         <ak-page-header
             icon=""
-            header=${t`System Overview`}>
+            header=${t`System Overview`}
+            description=${t`General system status`}>
         </ak-page-header>
         <section class="pf-c-page__main-section">
             <div class="pf-l-gallery pf-m-gutter">
