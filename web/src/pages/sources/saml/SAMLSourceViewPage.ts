@@ -59,7 +59,7 @@ export class SAMLSourceViewPage extends LitElement {
             return html``;
         }
         return html`<ak-tabs>
-                <section slot="page-1" data-tab-title="${t`Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-overview" data-tab-title="${t`Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-u-display-flex pf-u-justify-content-center">
                         <div class="pf-u-w-75">
                             <div class="pf-c-card">
@@ -120,7 +120,7 @@ export class SAMLSourceViewPage extends LitElement {
                         </div>
                     </div>
                 </section>
-                <section slot="page-2" data-tab-title="${t`Changelog`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-changelog" data-tab-title="${t`Changelog`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
                             <ak-object-changelog
@@ -131,7 +131,7 @@ export class SAMLSourceViewPage extends LitElement {
                         </div>
                     </div>
                 </section>
-                <section slot="page-3" data-tab-title="${t`Metadata`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-metadata" data-tab-title="${t`Metadata`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-u-display-flex pf-u-justify-content-center">
                         <div class="pf-u-w-75">
                             <div class="pf-c-card">
@@ -152,7 +152,7 @@ export class SAMLSourceViewPage extends LitElement {
                         </div>
                     </div>
                 </section>
-                <div slot="page-4" data-tab-title="${t`Policy Bindings`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div slot="page-policy-bindings" data-tab-title="${t`Policy Bindings`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__title">${t`These policies control which users can access this source.`}</div>
                         <div class="pf-c-card__body">

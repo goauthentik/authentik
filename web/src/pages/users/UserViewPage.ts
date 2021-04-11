@@ -73,7 +73,7 @@ export class UserViewPage extends LitElement {
             return html``;
         }
         return html`<ak-tabs>
-                <section slot="page-1" data-tab-title="${t`Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-overview" data-tab-title="${t`Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-l-gallery pf-m-gutter">
                         <div class="pf-c-card pf-l-gallery__item pf-m-4-col">
                             <div class="pf-c-card__title">
@@ -175,7 +175,7 @@ export class UserViewPage extends LitElement {
                         </div>
                     </div>
                 </section>
-                <section slot="page-2" data-tab-title="${t`Changelog`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-changelog" data-tab-title="${t`Changelog`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
                             <ak-object-changelog
@@ -186,7 +186,7 @@ export class UserViewPage extends LitElement {
                         </div>
                     </div>
                 </section>
-                <section slot="page-3" data-tab-title="${t`Explicit Consent`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-consent" data-tab-title="${t`Explicit Consent`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
                             <ak-user-consent-list .userId="${(this.user.pk || 0).toString()}">
@@ -194,7 +194,7 @@ export class UserViewPage extends LitElement {
                         </div>
                     </div>
                 </section>
-                <section slot="page-4" data-tab-title="${t`OAuth Authorization Codes`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-oauth-code" data-tab-title="${t`OAuth Authorization Codes`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
                             <ak-user-oauth-code-list .userId="${(this.user.pk || 0).toString()}">
@@ -202,7 +202,7 @@ export class UserViewPage extends LitElement {
                         </div>
                     </div>
                 </section>
-                <section slot="page-5" data-tab-title="${t`OAuth Refresh Codes`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-oauth-refresh" data-tab-title="${t`OAuth Refresh Codes`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
                             <ak-user-oauth-refresh-list .userId="${(this.user.pk || 0).toString()}">
