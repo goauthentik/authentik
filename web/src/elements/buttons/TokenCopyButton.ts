@@ -30,9 +30,9 @@ export class TokenCopyButton extends ActionButton {
                 }, 1500);
             });
         }).catch((err: Response) => {
-            return err.json();
-        }).then(errResp => {
-            throw new Error(errResp["detail"]);
+            return err.json().then(errResp => {
+                throw new Error(errResp["detail"]);
+            });
         });
     }
 
