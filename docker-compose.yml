@@ -33,8 +33,6 @@ services:
       - ./media:/media
       - ./custom-templates:/templates
       - geoip:/geoip
-    ports:
-      - 8000
     networks:
       - internal
     labels:
