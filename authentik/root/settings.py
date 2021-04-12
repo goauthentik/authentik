@@ -338,6 +338,7 @@ if CONFIG.y("postgresql.s3_backup"):
 # Sentry integration
 _ERROR_REPORTING = CONFIG.y_bool("error_reporting.enabled", False)
 if not DEBUG and _ERROR_REPORTING:
+    # pylint: disable=abstract-class-instantiated
     sentry_init(
         dsn="https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8",
         integrations=[
