@@ -97,6 +97,9 @@ html > form > input {
 body {
     background-color: var(--ak-dark-background) !important;
 }
+.ak-initial-load h1 {
+    color: var(--ak-dark-foreground);
+}
 
 @media (prefers-color-scheme: dark) {
     :root {
