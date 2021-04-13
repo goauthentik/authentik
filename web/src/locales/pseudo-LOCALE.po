@@ -25,6 +25,10 @@ msgstr ""
 msgid "8 digits, not compatible with apps like Google Authenticator"
 msgstr ""
 
+#: src/interfaces/Interface.ts:50
+msgid "A newer version of the frontend is available."
+msgstr ""
+
 #: src/pages/policies/dummy/DummyPolicyForm.ts:53
 msgid "A policy used for testing. Always returns the same result as specified below after waiting a random duration."
 msgstr ""
@@ -458,7 +462,7 @@ msgstr ""
 msgid "Change your password"
 msgstr ""
 
-#: src/pages/applications/ApplicationViewPage.ts:119
+#: src/pages/applications/ApplicationViewPage.ts:123
 #: src/pages/flows/FlowViewPage.ts:110
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:136
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:135
@@ -1003,8 +1007,8 @@ msgid "Each provider has a different issuer, based on the application slug."
 msgstr ""
 
 #: src/pages/applications/ApplicationListPage.ts:94
-#: src/pages/applications/ApplicationViewPage.ts:95
-#: src/pages/applications/ApplicationViewPage.ts:109
+#: src/pages/applications/ApplicationViewPage.ts:91
+#: src/pages/applications/ApplicationViewPage.ts:105
 #: src/pages/crypto/CertificateKeyPairListPage.ts:74
 #: src/pages/events/RuleListPage.ts:70
 #: src/pages/events/TransportListPage.ts:74
@@ -1668,7 +1672,7 @@ msgstr ""
 #: src/flows/stages/identification/IdentificationStage.ts:134
 #: src/flows/stages/password/PasswordStage.ts:31
 #: src/flows/stages/prompt/PromptStage.ts:126
-#: src/pages/applications/ApplicationViewPage.ts:60
+#: src/pages/applications/ApplicationViewPage.ts:54
 #: src/pages/user-settings/UserDetailsPage.ts:38
 #: src/utils.ts:40
 msgid "Loading"
@@ -1748,7 +1752,7 @@ msgid "Logins"
 msgstr ""
 
 #: src/pages/admin-overview/AdminOverviewPage.ts:40
-#: src/pages/applications/ApplicationViewPage.ts:68
+#: src/pages/applications/ApplicationViewPage.ts:115
 msgid "Logins over the last 24 hours"
 msgstr ""
 
@@ -2177,7 +2181,7 @@ msgid "Outposts are deployments of authentik components to support different env
 msgstr ""
 
 #: src/interfaces/AdminInterface.ts:17
-#: src/pages/applications/ApplicationViewPage.ts:65
+#: src/pages/applications/ApplicationViewPage.ts:59
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:65
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:56
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:58
@@ -2257,7 +2261,7 @@ msgstr ""
 msgid "Policy / User / Group"
 msgstr ""
 
-#: src/pages/applications/ApplicationViewPage.ts:130
+#: src/pages/applications/ApplicationViewPage.ts:134
 #: src/pages/flows/FlowViewPage.ts:101
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:143
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:150
@@ -2269,6 +2273,7 @@ msgid "Policy binding"
 msgstr ""
 
 #: src/pages/applications/ApplicationForm.ts:141
+#: src/pages/applications/ApplicationViewPage.ts:81
 #: src/pages/flows/FlowForm.ts:101
 #: src/pages/flows/StageBindingForm.ts:136
 msgid "Policy engine mode"
@@ -2376,7 +2381,7 @@ msgstr ""
 #: src/elements/oauth/UserRefreshList.ts:29
 #: src/pages/applications/ApplicationForm.ts:100
 #: src/pages/applications/ApplicationListPage.ts:59
-#: src/pages/applications/ApplicationViewPage.ts:82
+#: src/pages/applications/ApplicationViewPage.ts:68
 #: src/pages/providers/ProviderListPage.ts:34
 msgid "Provider"
 msgstr ""
@@ -2490,9 +2495,13 @@ msgstr ""
 msgid "Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression."
 msgstr ""
 
-#: src/pages/applications/ApplicationViewPage.ts:76
+#: src/pages/applications/ApplicationViewPage.ts:62
 #: src/pages/flows/FlowViewPage.ts:64
 msgid "Related"
+msgstr ""
+
+#: src/interfaces/Interface.ts:52
+msgid "Reload"
 msgstr ""
 
 #: src/pages/stages/user_logout/UserLogoutStageForm.ts:51
@@ -2906,7 +2915,7 @@ msgstr ""
 msgid "Status: Enabled"
 msgstr ""
 
-#: src/interfaces/Interface.ts:51
+#: src/interfaces/Interface.ts:63
 msgid "Stop impersonation"
 msgstr ""
 
@@ -3287,7 +3296,7 @@ msgstr ""
 msgid "These policies control when this stage will be applied to the flow."
 msgstr ""
 
-#: src/pages/applications/ApplicationViewPage.ts:132
+#: src/pages/applications/ApplicationViewPage.ts:136
 msgid "These policies control which users can access this application."
 msgstr ""
 
@@ -3440,7 +3449,7 @@ msgid "Up-to-date!"
 msgstr ""
 
 #: src/pages/applications/ApplicationListPage.ts:86
-#: src/pages/applications/ApplicationViewPage.ts:101
+#: src/pages/applications/ApplicationViewPage.ts:97
 #: src/pages/crypto/CertificateKeyPairListPage.ts:66
 #: src/pages/events/RuleListPage.ts:62
 #: src/pages/events/TransportListPage.ts:66
@@ -3478,7 +3487,7 @@ msgid "Update"
 msgstr ""
 
 #: src/pages/applications/ApplicationListPage.ts:89
-#: src/pages/applications/ApplicationViewPage.ts:104
+#: src/pages/applications/ApplicationViewPage.ts:100
 msgid "Update Application"
 msgstr ""
 
@@ -3842,7 +3851,7 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: src/interfaces/Interface.ts:49
+#: src/interfaces/Interface.ts:61
 msgid "You're currently impersonating {0}."
 msgstr ""
 

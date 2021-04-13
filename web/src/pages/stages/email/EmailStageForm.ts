@@ -71,16 +71,14 @@ export class EmailStageForm extends Form<EmailStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`SMTP Username`}
-                        ?required=${true}
                         name="username">
-                        <input type="text" value="${ifDefined(this.stage?.username || "")}" class="pf-c-form-control" required>
+                        <input type="text" value="${ifDefined(this.stage?.username || "")}" class="pf-c-form-control">
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`SMTP Password`}
-                        ?required=${true}
                         ?writeOnly=${this.stage !== undefined}
                         name="password">
-                        <input type="text" value="${ifDefined(this.stage?.password || "")}" class="pf-c-form-control" required>
+                        <input type="text" value="${ifDefined(this.stage?.password || "")}" class="pf-c-form-control">
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="useTls">
                         <div class="pf-c-check">
@@ -92,7 +90,7 @@ export class EmailStageForm extends Form<EmailStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="useSsl">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.stage?.useSsl, true)}>
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.stage?.useSsl, false)}>
                             <label class="pf-c-check__label">
                                 ${t`Use SSL`}
                             </label>
