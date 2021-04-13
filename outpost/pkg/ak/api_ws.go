@@ -2,7 +2,6 @@ package ak
 
 import (
 	"crypto/tls"
-	"encoding/base64"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -20,7 +19,7 @@ func (ac *APIController) initWS(pbURL url.URL, outpostUUID strfmt.UUID) {
 	pathTemplate := "%s://%s/ws/outpost/%s/"
 	scheme := strings.ReplaceAll(pbURL.Scheme, "http", "ws")
 
-	authHeader := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("Basic :%s", ac.token)))
+	authHeader := fmt.Sprintf("Bearer %s", ac.token)
 
 	header := http.Header{
 		"Authorization": []string{authHeader},

@@ -16,7 +16,6 @@ export const DEFAULT_CONFIG = new Configuration({
     basePath: "/api/v2beta",
     headers: {
         "X-CSRFToken": getCookie("authentik_csrf"),
-        "X-Authentik-Prevent-Basic": "true"
     },
     middleware: [
         API_DRAWER_MIDDLEWARE,
