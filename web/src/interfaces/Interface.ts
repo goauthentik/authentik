@@ -2,7 +2,6 @@ import { css, CSSResult, html, LitElement, property, TemplateResult } from "lit-
 import { SidebarItem } from "../elements/sidebar/Sidebar";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFSkipToContent from "@patternfly/patternfly/components/SkipToContent/skip-to-content.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 
@@ -13,7 +12,9 @@ import "../elements/Banner";
 import { until } from "lit-html/directives/until";
 import { me } from "../api/Users";
 import { t } from "@lingui/macro";
-import { EVENT_NOTIFICATION_TOGGLE, EVENT_SIDEBAR_TOGGLE } from "../constants";
+import { EVENT_NOTIFICATION_TOGGLE, EVENT_SIDEBAR_TOGGLE, VERSION } from "../constants";
+import { AdminApi } from "authentik-api";
+import { DEFAULT_CONFIG } from "../api/Config";
 
 export abstract class Interface extends LitElement {
     @property({type: Boolean})
@@ -25,7 +26,7 @@ export abstract class Interface extends LitElement {
     abstract get sidebar(): SidebarItem[];
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFSkipToContent, PFButton, PFDrawer, css`
+        return [PFBase, PFPage, PFButton, PFDrawer, css`
             .pf-c-page__main, .pf-c-drawer__content, .pf-c-page__drawer {
                 z-index: auto !important;
             }
@@ -48,6 +49,17 @@ export abstract class Interface extends LitElement {
 
     render(): TemplateResult {
         return html`
+            ${until(new AdminApi(DEFAULT_CONFIG).adminVersionList().then(version => {
+                if (version.versionCurrent !== VERSION) {
+                    return html`<ak-banner>
+                        ${t`A newer version of the frontend is available.`}
+                        <button @click=${() => { window.location.reload(); }}>
+                            ${t`Reload`}
+                        </button>
+                    </ak-banner>`;
+                }
+                return html``;
+            }))}
             ${until(me().then((u) => {
                 if (u.original) {
                     return html`<ak-banner>

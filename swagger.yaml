@@ -13,12 +13,12 @@ consumes:
 produces:
   - application/json
 securityDefinitions:
-  token:
+  Bearer:
     type: apiKey
     name: Authorization
     in: header
 security:
-  - token: []
+  - Bearer: []
 paths:
   /admin/apps/:
     get:
@@ -131,27 +131,7 @@ paths:
     get:
       operationId: admin_version_list
       description: Get running and latest version.
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: ''

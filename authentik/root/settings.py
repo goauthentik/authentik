@@ -143,7 +143,7 @@ SWAGGER_SETTINGS = {
         "authentik.api.pagination_schema.PaginationInspector",
     ],
     "SECURITY_DEFINITIONS": {
-        "token": {"type": "apiKey", "name": "Authorization", "in": "header"}
+        "Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"}
     },
 }
 

@@ -52,7 +52,6 @@ class EmailStageViewSet(ModelViewSet):
     queryset = EmailStage.objects.all()
     serializer_class = EmailStageSerializer
 
-    # TODO: Validate connection settings when use_global_settings is unchecked
     @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])
     def templates(self, request: Request) -> Response:

@@ -8,7 +8,7 @@ import { AdminStatusCard, AdminStatus } from "./AdminStatusCard";
 export class VersionStatusCard extends AdminStatusCard<Version> {
 
     getPrimaryValue(): Promise<Version> {
-        return new AdminApi(DEFAULT_CONFIG).adminVersionList({});
+        return new AdminApi(DEFAULT_CONFIG).adminVersionList();
     }
 
     getStatus(value: Version): Promise<AdminStatus> {

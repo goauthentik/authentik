@@ -1,7 +1,7 @@
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
-import { configureSentry } from "../../api/Config";
+import { configureSentry } from "../../api/Sentry";
 import { Config } from "authentik-api";
 import { ifDefined } from "lit-html/directives/if-defined";
 

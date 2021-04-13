@@ -11,13 +11,20 @@ from authentik.core.models import Token, TokenIntents
 class TestAPIAuth(TestCase):
     """Test API Authentication"""
 
-    def test_valid(self):
+    def test_valid_basic(self):
         """Test valid token"""
         token = Token.objects.create(
             intent=TokenIntents.INTENT_API, user=get_anonymous_user()
         )
         auth = b64encode(f":{token.key}".encode()).decode()
         self.assertEqual(token_from_header(f"Basic {auth}".encode()), token)
+
+    def test_valid_bearer(self):
+        """Test valid token"""
+        token = Token.objects.create(
+            intent=TokenIntents.INTENT_API, user=get_anonymous_user()
+        )
+        self.assertEqual(token_from_header(f"Bearer {token.key}".encode()), token)
 
     def test_invalid_type(self):
         """Test invalid type"""

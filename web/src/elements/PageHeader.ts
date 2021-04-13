@@ -47,6 +47,9 @@ export class PageHeader extends LitElement {
             }
             .pf-c-page__main-section {
                 width: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
             }
             img.pf-icon {
                 max-height: 24px;
