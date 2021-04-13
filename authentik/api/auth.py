@@ -12,9 +12,12 @@ from authentik.core.models import Token, TokenIntents, User
 LOGGER = get_logger()
 
 
+# pylint: disable=too-many-return-statements
 def token_from_header(raw_header: bytes) -> Optional[Token]:
     """raw_header in the Format of `Basic dGVzdDp0ZXN0`"""
     auth_credentials = raw_header.decode()
+    if auth_credentials == "":
+        return None
     # Legacy, accept basic auth thats fully encoded (2021.3 outposts)
     if " " not in auth_credentials:
         try:
