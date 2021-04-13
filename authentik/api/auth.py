@@ -1,5 +1,5 @@
 """API Authentication"""
-from base64 import b64decode
+from base64 import b64decode, b64encode
 from binascii import Error
 from typing import Any, Optional, Union
 
@@ -15,9 +15,14 @@ LOGGER = get_logger()
 def token_from_header(raw_header: bytes) -> Optional[Token]:
     """raw_header in the Format of `Basic dGVzdDp0ZXN0`"""
     auth_credentials = raw_header.decode()
-    # Accept headers with Type format and without
+    # Legacy, accept basic auth thats fully encoded (2021.3 outposts)
     if " " not in auth_credentials:
-        return None
+        try:
+            plain = b64decode(auth_credentials.encode()).decode()
+            auth_type, body = plain.split()
+            auth_credentials = f"{auth_type} {b64encode(body.encode()).decode()}"
+        except (UnicodeDecodeError, Error):
+            return None
     auth_type, auth_credentials = auth_credentials.split()
     if auth_type.lower() not in ["basic", "bearer"]:
         LOGGER.debug("Unsupported authentication type, denying", type=auth_type.lower())
