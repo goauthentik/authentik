@@ -44,7 +44,7 @@ func NewAPIController(pbURL url.URL, token string) *APIController {
 	transport.Transport = SetUserAgent(getTLSTransport(), fmt.Sprintf("authentik-proxy@%s", pkg.VERSION))
 
 	// create the transport
-	auth := httptransport.BasicAuth("", token)
+	auth := httptransport.BearerToken(token)
 
 	// create the API client, with the transport
 	apiClient := client.New(transport, strfmt.Default)
