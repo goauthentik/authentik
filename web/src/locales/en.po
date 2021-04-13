@@ -1394,7 +1394,7 @@ msgstr "Form didn't return a promise for submitting"
 msgid "Friendly Name"
 msgstr "Friendly Name"
 
-#: src/pages/stages/email/EmailStageForm.ts:109
+#: src/pages/stages/email/EmailStageForm.ts:107
 msgid "From address"
 msgstr "From address"
 
@@ -1728,7 +1728,7 @@ msgstr "Loading"
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:90
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:96
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:131
-#: src/pages/stages/email/EmailStageForm.ts:172
+#: src/pages/stages/email/EmailStageForm.ts:170
 #: src/pages/stages/identification/IdentificationStageForm.ts:120
 #: src/pages/stages/identification/IdentificationStageForm.ts:138
 #: src/pages/stages/password/PasswordStageForm.ts:106
@@ -1900,7 +1900,7 @@ msgstr "Monitor"
 #: src/pages/stages/consent/ConsentStageForm.ts:57
 #: src/pages/stages/deny/DenyStageForm.ts:54
 #: src/pages/stages/dummy/DummyStageForm.ts:54
-#: src/pages/stages/email/EmailStageForm.ts:124
+#: src/pages/stages/email/EmailStageForm.ts:122
 #: src/pages/stages/identification/IdentificationStageForm.ts:63
 #: src/pages/stages/invitation/InvitationStageForm.ts:56
 #: src/pages/stages/password/PasswordStageForm.ts:63
@@ -2607,7 +2607,7 @@ msgstr "SLO URL"
 msgid "SMTP Host"
 msgstr "SMTP Host"
 
-#: src/pages/stages/email/EmailStageForm.ts:80
+#: src/pages/stages/email/EmailStageForm.ts:79
 msgid "SMTP Password"
 msgstr "SMTP Password"
 
@@ -2872,7 +2872,7 @@ msgstr "Stage used to validate any authenticator. This stage should be used duri
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:71
 #: src/pages/stages/captcha/CaptchaStageForm.ts:62
 #: src/pages/stages/consent/ConsentStageForm.ts:64
-#: src/pages/stages/email/EmailStageForm.ts:131
+#: src/pages/stages/email/EmailStageForm.ts:129
 #: src/pages/stages/identification/IdentificationStageForm.ts:70
 #: src/pages/stages/invitation/InvitationStageForm.ts:63
 #: src/pages/stages/password/PasswordStageForm.ts:70
@@ -2927,7 +2927,7 @@ msgstr "Status: Enabled"
 msgid "Stop impersonation"
 msgstr "Stop impersonation"
 
-#: src/pages/stages/email/EmailStageForm.ts:154
+#: src/pages/stages/email/EmailStageForm.ts:152
 msgid "Subject"
 msgstr "Subject"
 
@@ -3262,7 +3262,7 @@ msgstr "Task finished with errors"
 msgid "Task finished with warnings"
 msgstr "Task finished with warnings"
 
-#: src/pages/stages/email/EmailStageForm.ts:160
+#: src/pages/stages/email/EmailStageForm.ts:158
 msgid "Template"
 msgstr "Template"
 
@@ -3331,7 +3331,7 @@ msgstr "This stage checks the user's current session against the Google reCaptch
 msgid "Threshold"
 msgstr "Threshold"
 
-#: src/pages/stages/email/EmailStageForm.ts:151
+#: src/pages/stages/email/EmailStageForm.ts:149
 msgid "Time in minutes the token sent is valid."
 msgstr "Time in minutes the token sent is valid."
 
@@ -3345,7 +3345,7 @@ msgstr "Time-based One-Time Passwords"
 
 #: src/pages/policies/BoundPoliciesList.ts:39
 #: src/pages/policies/PolicyBindingForm.ts:209
-#: src/pages/stages/email/EmailStageForm.ts:103
+#: src/pages/stages/email/EmailStageForm.ts:101
 msgid "Timeout"
 msgstr "Timeout"
 
@@ -3367,7 +3367,7 @@ msgstr "Token URL"
 msgid "Token count"
 msgstr "Token count"
 
-#: src/pages/stages/email/EmailStageForm.ts:147
+#: src/pages/stages/email/EmailStageForm.ts:145
 msgid "Token expiry"
 msgstr "Token expiry"
 
@@ -3588,11 +3588,11 @@ msgstr "Update details"
 msgid "Update {0}"
 msgstr "Update {0}"
 
-#: src/pages/stages/email/EmailStageForm.ts:98
+#: src/pages/stages/email/EmailStageForm.ts:96
 msgid "Use SSL"
 msgstr "Use SSL"
 
-#: src/pages/stages/email/EmailStageForm.ts:90
+#: src/pages/stages/email/EmailStageForm.ts:88
 msgid "Use TLS"
 msgstr "Use TLS"
 
@@ -3604,7 +3604,7 @@ msgstr "Use a code-based authenticator."
 msgid "Use a security key to prove your identity."
 msgstr "Use a security key to prove your identity."
 
-#: src/pages/stages/email/EmailStageForm.ts:141
+#: src/pages/stages/email/EmailStageForm.ts:139
 msgid "Use global settings"
 msgstr "Use global settings"
 
@@ -3731,7 +3731,7 @@ msgstr "Validity days"
 msgid "Verification Certificate"
 msgstr "Verification Certificate"
 
-#: src/pages/stages/email/EmailStageForm.ts:121
+#: src/pages/stages/email/EmailStageForm.ts:119
 msgid "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity."
 msgstr "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity."
 
@@ -3804,7 +3804,7 @@ msgstr "Webhook URL"
 msgid "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown."
 msgstr "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown."
 
-#: src/pages/stages/email/EmailStageForm.ts:144
+#: src/pages/stages/email/EmailStageForm.ts:142
 msgid "When enabled, global Email connection settings will be used and connection settings below will be ignored."
 msgstr "When enabled, global Email connection settings will be used and connection settings below will be ignored."
 
