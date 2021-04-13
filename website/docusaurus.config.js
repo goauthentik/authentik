@@ -70,12 +70,6 @@ module.exports = {
         algolia: {
             apiKey: '1b60b8f630b127697cbe0d3b31841470',
             indexName: 'goauthentik',
-
-            // Optional: see doc section below
-            contextualSearch: true,
-
-            // Optional: Algolia search parameters
-            searchParameters: {},
         },
     },
     presets: [
