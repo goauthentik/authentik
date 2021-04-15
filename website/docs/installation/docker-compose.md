@@ -21,6 +21,7 @@ To optionally deploy a different version run `echo AUTHENTIK_TAG=2021.4.1 >> .en
 If this is a fresh authentik install run the following commands to generate a password:
 
 ```shell
+# You can also use openssl instead: `openssl rand -base64 36`
 sudo apt-get install -y pwgen
 echo "PG_PASS=$(pwgen 40 1)" >> .env
 echo "AUTHENTIK_SECRET_KEY=$(pwgen 50 1)" >> .env

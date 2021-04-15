@@ -9,7 +9,7 @@
 | serverReplicas                    | 1                       | Replicas for the Server deployment |
 | workerReplicas                    | 1                       | Replicas for the Worker deployment |
 | kubernetesIntegration             | true                    | Enable/disable the Kubernetes integration for authentik. This will create a service account for authentik to create and update outposts in authentik |
-| config.secretKey                  |                         | Secret key used to sign session cookies, generate with `pwgen 50 1` for example. |
+| config.secretKey                  |                         | Secret key used to sign session cookies, generate with `pwgen 50 1` or `openssl rand -base64 36` for example. |
 | config.errorReporting.enabled     | false                   | Enable/disable error reporting |
 | config.errorReporting.environment | customer                | Environment sent with the error reporting |
 | config.errorReporting.sendPii     | false                   | Whether to send Personally-identifiable data with the error reporting |
