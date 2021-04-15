@@ -74,7 +74,7 @@ services:
       traefik.http.routers.static-router.rule: PathPrefix(`/static`, `/if`, `/media`, `/robots.txt`, `/favicon.ico`)
       traefik.http.routers.static-router.tls: 'true'
       traefik.http.routers.static-router.service: static-service
-      traefik.http.services.static-service.loadbalancer.healthcheck.path: /-/health/ready/
+      traefik.http.services.static-service.loadbalancer.healthcheck.path: /
       traefik.http.services.static-service.loadbalancer.healthcheck.interval: 30s
       traefik.http.services.static-service.loadbalancer.server.port: '80'
     volumes:
