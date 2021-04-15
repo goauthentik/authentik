@@ -81,3 +81,35 @@ The compose file statically references the latest version available at the time 
 authentik will then be reachable HTTPS on port 443. You can optionally configure the packaged traefik to use Let's Encrypt certificates for TLS Encryption.
 
 To start the initial setup, navigate to `https://<your server>/if/flow/initial-setup/`. There you will be prompted to set a password for the akadmin user.
+
+## Explanation
+
+The docker-compose project contains the following containers:
+
+- server
+
+    This is the backend service, which does all the logic, runs the API and the actual SSO part.
+
+- static
+
+    This container runs the frontend, hosts the JS/CSS files, and also servers the files you've uploaded for icons/etc.
+
+- worker
+
+    This container executes backgorund tasks, everything you can see on the *System Tasks* page in the frontend.
+
+- redis & postgresql
+
+    Cache and database respectively.
+
+- traefik
+
+    Traefik is used so that you only have a single entry point, and don't need to configure a reverse proxy yourself.
+
+    It does the following things:
+
+    - Routes everything that starts with `/static`, `/if`, `/media`, `/robots.txt` or `/favicon.ico` to the *static* container on port 80
+    - Routes everything else to the *server* container on port 8000
+    - Does some minor health checking
+
+Additionally, if you've enabled GeoIP, there is a container running which regularly updates the GeoIP database.
