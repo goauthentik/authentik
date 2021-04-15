@@ -80,7 +80,7 @@ function Comparison() {
                             <tr>
                                 <td className="row-label">Enrollment</td>
                                 <td className="result passed authentik"><Check></Check></td>
-                                <td className="result failed"><X></X></td>
+                                <td className="result warning"><AlertTriangle></AlertTriangle></td>
                                 <td className="result failed"><X></X></td>
                                 <td className="result failed"><X></X></td>
                                 <td className="result failed"><X></X></td>
