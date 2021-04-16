@@ -280,7 +280,7 @@ msgid "Authentication flow"
 msgstr "Authentication flow"
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts:63
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:29
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:33
 msgid "Authenticator"
 msgstr "Authenticator"
 
@@ -588,7 +588,7 @@ msgstr "Configuration"
 msgid "Configuration flow"
 msgstr "Configuration flow"
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:103
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:106
 msgid "Configure WebAuthn"
 msgstr "Configure WebAuthn"
 
@@ -608,11 +608,11 @@ msgstr "Configure settings relevant to your user profile."
 msgid "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
 msgstr "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
 
-#: src/pages/user-settings/settings/SourceSettingsOAuth.ts:47
+#: src/pages/user-settings/settings/SourceSettingsOAuth.ts:43
 msgid "Connect"
 msgstr "Connect"
 
-#: src/pages/user-settings/settings/SourceSettingsOAuth.ts:34
+#: src/pages/user-settings/settings/SourceSettingsOAuth.ts:30
 msgid "Connected."
 msgstr "Connected."
 
@@ -832,7 +832,7 @@ msgstr "Create {0}"
 msgid "Created by"
 msgstr "Created by"
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:86
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:90
 msgid "Created {0}"
 msgstr "Created {0}"
 
@@ -884,7 +884,7 @@ msgstr "Define how notifications are sent to users, like Email or Webhook."
 #: src/pages/stages/invitation/InvitationListPage.ts:68
 #: src/pages/stages/prompt/PromptListPage.ts:87
 #: src/pages/tokens/TokenListPage.ts:68
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:36
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:40
 #: src/pages/user-settings/tokens/UserTokenList.ts:125
 #: src/pages/users/UserListPage.ts:115
 msgid "Delete"
@@ -963,7 +963,7 @@ msgstr "Determines how long a session lasts. Default of 0 seconds means that the
 msgid "Device classes which can be used to authenticate."
 msgstr "Device classes which can be used to authenticate."
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:59
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:63
 msgid "Device name"
 msgstr "Device name"
 
@@ -981,11 +981,11 @@ msgstr "Digits"
 msgid "Disable"
 msgstr "Disable"
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts:51
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts:55
 msgid "Disable Static Tokens"
 msgstr "Disable Static Tokens"
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts:36
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts:40
 msgid "Disable Time-based OTP"
 msgstr "Disable Time-based OTP"
 
@@ -993,7 +993,7 @@ msgstr "Disable Time-based OTP"
 msgid "Disabled"
 msgstr "Disabled"
 
-#: src/pages/user-settings/settings/SourceSettingsOAuth.ts:41
+#: src/pages/user-settings/settings/SourceSettingsOAuth.ts:37
 msgid "Disconnect"
 msgstr "Disconnect"
 
@@ -1096,13 +1096,13 @@ msgstr "Enable"
 msgid "Enable StartTLS"
 msgstr "Enable StartTLS"
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts:67
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts:55
 msgid "Enable Static Tokens"
 msgstr "Enable Static Tokens"
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts:52
-msgid "Enable Time-based OTP"
-msgstr "Enable Time-based OTP"
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts:70
+msgid "Enable TOTP"
+msgstr "Enable TOTP"
 
 #: src/pages/policies/BoundPoliciesList.ts:37
 #: src/pages/policies/PolicyBindingForm.ts:198
@@ -2020,7 +2020,7 @@ msgstr "Not available"
 msgid "Not configured action"
 msgstr "Not configured action"
 
-#: src/pages/user-settings/settings/SourceSettingsOAuth.ts:44
+#: src/pages/user-settings/settings/SourceSettingsOAuth.ts:40
 msgid "Not connected."
 msgstr "Not connected."
 
@@ -2822,7 +2822,7 @@ msgstr "Something went wrong! Please try again later."
 msgid "Source"
 msgstr "Source"
 
-#: src/pages/user-settings/settings/SourceSettingsOAuth.ts:21
+#: src/pages/user-settings/settings/SourceSettingsOAuth.ts:18
 msgid "Source {0}"
 msgstr "Source {0}"
 
@@ -2901,9 +2901,12 @@ msgid "State"
 msgstr "State"
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:104
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts:77
 msgid "Static Tokens"
 msgstr "Static Tokens"
+
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts:62
+msgid "Static tokens"
+msgstr "Static tokens"
 
 #: src/pages/stages/prompt/PromptForm.ts:75
 msgid "Static: Static value, displayed as-is."
@@ -2917,13 +2920,13 @@ msgstr "Statically deny the flow. To use this stage effectively, disable *Evalua
 msgid "Status"
 msgstr "Status"
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts:44
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts:59
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts:48
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts:63
 msgid "Status: Disabled"
 msgstr "Status: Disabled"
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts:18
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts:22
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts:22
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts:26
 msgid "Status: Enabled"
 msgstr "Status: Enabled"
 
@@ -3104,7 +3107,7 @@ msgstr "Successfully updated certificate-key pair."
 msgid "Successfully updated details."
 msgstr "Successfully updated details."
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:50
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:54
 msgid "Successfully updated device."
 msgstr "Successfully updated device."
 
@@ -3343,7 +3346,7 @@ msgstr "Time in minutes the token sent is valid."
 msgid "Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3)."
 msgstr "Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3)."
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts:62
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts:77
 msgid "Time-based One-Time Passwords"
 msgstr "Time-based One-Time Passwords"
 
@@ -3490,9 +3493,9 @@ msgstr "Up-to-date!"
 #: src/pages/stages/StageListPage.ts:85
 #: src/pages/stages/prompt/PromptListPage.ts:67
 #: src/pages/user-settings/UserDetailsPage.ts:81
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:43
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:46
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:67
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:47
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:50
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:71
 #: src/pages/user-settings/tokens/UserTokenList.ts:105
 #: src/pages/users/UserActiveForm.ts:66
 #: src/pages/users/UserListPage.ts:68
@@ -3788,7 +3791,7 @@ msgstr "Warning: Provider not assigned to any application."
 msgid "WebAuthn Authenticators"
 msgstr "WebAuthn Authenticators"
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:74
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:78
 msgid "WebAuthn Devices"
 msgstr "WebAuthn Devices"
 
