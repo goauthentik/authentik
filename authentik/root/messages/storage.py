@@ -1,19 +1,21 @@
 """Channels Messages storage"""
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
-from django.contrib.messages.storage.base import Message
-from django.contrib.messages.storage.fallback import FallbackStorage
+from django.contrib.messages.storage.base import BaseStorage, Message
 from django.core.cache import cache
 from django.http.request import HttpRequest
 
 
-class ChannelsStorage(FallbackStorage):
+class ChannelsStorage(BaseStorage):
     """Send contrib.messages over websocket"""
 
     def __init__(self, request: HttpRequest) -> None:
         # pyright: reportGeneralTypeIssues=false
         super().__init__(request)
         self.channel = get_channel_layer()
+
+    def _get(self):
+        return [], True
 
     def _store(self, messages: list[Message], response, *args, **kwargs):
         prefix = f"user_{self.request.session.session_key}_messages_"
