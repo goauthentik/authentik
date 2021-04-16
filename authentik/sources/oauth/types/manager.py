@@ -58,17 +58,17 @@ class SourceTypeManager:
         """Get list of tuples of all registered names"""
         return [(x.slug, x.name) for x in self.__sources]
 
-    def find_type(self, source: "OAuthSource") -> SourceType:
+    def find_type(self, type_name: str) -> SourceType:
         """Find type based on source"""
         found_type = None
         for src_type in self.__sources:
-            if src_type.slug == source.provider_type:
+            if src_type.slug == type_name:
                 return src_type
         if not found_type:
             found_type = SourceType()
             LOGGER.warning(
                 "no matching type found, using default",
-                wanted=source.provider_type,
+                wanted=type_name,
                 have=[x.name for x in self.__sources],
             )
         return found_type

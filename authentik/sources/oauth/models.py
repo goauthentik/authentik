@@ -28,16 +28,19 @@ class OAuthSource(Source):
     )
     authorization_url = models.CharField(
         max_length=255,
+        blank=True,
         verbose_name=_("Authorization URL"),
         help_text=_("URL the user is redirect to to conest the flow."),
     )
     access_token_url = models.CharField(
         max_length=255,
+        blank=True,
         verbose_name=_("Access Token URL"),
         help_text=_("URL used by authentik to retrive tokens."),
     )
     profile_url = models.CharField(
         max_length=255,
+        blank=True,
         verbose_name=_("Profile URL"),
         help_text=_("URL used by authentik to get user information."),
     )
@@ -49,7 +52,7 @@ class OAuthSource(Source):
         """Return the provider instance for this source"""
         from authentik.sources.oauth.types.manager import MANAGER
 
-        return MANAGER.find_type(self)
+        return MANAGER.find_type(self.provider_type)
 
     @property
     def component(self) -> str:

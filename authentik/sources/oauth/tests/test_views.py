@@ -1,4 +1,5 @@
 """OAuth Source tests"""
+from authentik.sources.oauth.api.source import OAuthSourceSerializer
 from django.test import TestCase
 from django.urls import reverse
 
@@ -17,6 +18,23 @@ class TestOAuthSource(TestCase):
             profile_url="",
             consumer_key="",
         )
+
+    def test_api_validate(self):
+        """Test API validation"""
+        self.assertTrue(OAuthSourceSerializer(data={
+            "name": "foo",
+            "slug": "bar",
+            "provider_type": "google",
+            "consumer_key": "foo",
+            "consumer_secret": "foo",
+        }).is_valid())
+        self.assertFalse(OAuthSourceSerializer(data={
+            "name": "foo",
+            "slug": "bar",
+            "provider_type": "openid-connect",
+            "consumer_key": "foo",
+            "consumer_secret": "foo",
+        }).is_valid())
 
     def test_source_redirect(self):
         """test redirect view"""
