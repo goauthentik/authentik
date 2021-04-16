@@ -4,6 +4,7 @@ version: '3.2'
 services:
   postgresql:
     image: postgres:12
+    restart: unless-stopped
     volumes:
       - database:/var/lib/postgresql/data
     networks:
@@ -20,6 +21,7 @@ services:
       - internal
   server:
     image: ${AUTHENTIK_IMAGE:-beryju/authentik}:${AUTHENTIK_TAG:-2021.4.1}
+    restart: unless-stopped
     command: server
     environment:
       AUTHENTIK_REDIS__HOST: redis
@@ -47,6 +49,7 @@ services:
       - .env
   worker:
     image: ${AUTHENTIK_IMAGE:-beryju/authentik}:${AUTHENTIK_TAG:-2021.4.1}
+    restart: unless-stopped
     command: worker
     networks:
       - internal
@@ -66,6 +69,7 @@ services:
       - .env
   static:
     image: ${AUTHENTIK_IMAGE_STATIC:-beryju/authentik-static}:${AUTHENTIK_TAG:-2021.4.1}
+    restart: unless-stopped
     networks:
       - internal
     labels:
@@ -81,6 +85,7 @@ services:
       - ./media:/usr/share/nginx/html/media
   traefik:
     image: traefik:2.3
+    restart: unless-stopped
     command:
       - "--log.format=json"
       - "--api.insecure=true"
