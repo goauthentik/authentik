@@ -18,7 +18,7 @@ stages:
         steps:
           - task: GoTool@0
             inputs:
-              version: '1.15'
+              version: '1.16'
           - task: CmdLine@2
             inputs:
               script: |
@@ -40,7 +40,7 @@ stages:
         steps:
           - task: GoTool@0
             inputs:
-              version: '1.15'
+              version: '1.16'
           - task: Go@0
             inputs:
               command: 'get'
@@ -63,7 +63,7 @@ stages:
         steps:
           - task: GoTool@0
             inputs:
-              version: '1.15'
+              version: '1.16'
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
@@ -82,7 +82,7 @@ stages:
         steps:
           - task: GoTool@0
             inputs:
-              version: '1.15'
+              version: '1.16'
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
