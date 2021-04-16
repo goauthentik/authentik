@@ -2237,15 +2237,15 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/Link'
-        '403':
-          description: Authentication credentials were invalid, absent or insufficient.
-          schema:
-            $ref: '#/definitions/GenericError'
         '404':
           description: Object does not exist or caller has insufficient permissions
             to access it.
           schema:
             $ref: '#/definitions/APIException'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
       tags:
         - core
     parameters:
