@@ -127,6 +127,13 @@ export class UserListPage extends TablePage<User> {
                             message: t`Successfully generated recovery link`,
                             description: rec.link
                         });
+                    }).catch((ex: Response) => {
+                        ex.json().then(() => {
+                            showMessage({
+                                level: MessageLevel.error,
+                                message: t`No recovery flow is configured.`,
+                            });
+                        });
                     });
                 }}>
                 ${t`Reset Password`}

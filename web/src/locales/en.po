@@ -737,8 +737,8 @@ msgstr "Copy Key"
 #: src/pages/stages/prompt/PromptStageForm.ts:98
 #: src/pages/user-settings/tokens/UserTokenList.ts:50
 #: src/pages/user-settings/tokens/UserTokenList.ts:58
-#: src/pages/users/UserListPage.ts:144
-#: src/pages/users/UserListPage.ts:152
+#: src/pages/users/UserListPage.ts:151
+#: src/pages/users/UserListPage.ts:159
 msgid "Create"
 msgstr "Create"
 
@@ -808,7 +808,7 @@ msgstr "Create Stage binding"
 msgid "Create Token"
 msgstr "Create Token"
 
-#: src/pages/users/UserListPage.ts:147
+#: src/pages/users/UserListPage.ts:154
 msgid "Create User"
 msgstr "Create User"
 
@@ -1531,7 +1531,7 @@ msgstr "If this flag is set, this Stage will jump to the next Stage when no Invi
 msgid "If your authentik Instance is using a self-signed certificate, set this value."
 msgstr "If your authentik Instance is using a self-signed certificate, set this value."
 
-#: src/pages/users/UserListPage.ts:136
+#: src/pages/users/UserListPage.ts:143
 msgid "Impersonate"
 msgstr "Impersonate"
 
@@ -1995,6 +1995,10 @@ msgstr "No policies are currently bound to this object."
 #: src/pages/admin-overview/cards/PolicyCacheStatusCard.ts:24
 msgid "No policies cached. Users may experience slow response times."
 msgstr "No policies cached. Users may experience slow response times."
+
+#: src/pages/users/UserListPage.ts:135
+msgid "No recovery flow is configured."
+msgstr "No recovery flow is configured."
 
 #: src/pages/flows/BoundStagesList.ts:114
 msgid "No stages are currently bound to this flow."
@@ -2538,7 +2542,7 @@ msgstr "Required"
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 
-#: src/pages/users/UserListPage.ts:133
+#: src/pages/users/UserListPage.ts:140
 #: src/pages/users/UserViewPage.ts:165
 msgid "Reset Password"
 msgstr "Reset Password"

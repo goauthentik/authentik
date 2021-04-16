@@ -1,4 +1,5 @@
 """User API Views"""
+from django.http.response import Http404
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
 from drf_yasg.utils import swagger_auto_schema, swagger_serializer_method
@@ -19,6 +20,7 @@ from authentik.core.middleware import (
 )
 from authentik.core.models import Token, TokenIntents, User
 from authentik.events.models import EventAction
+from authentik.flows.models import Flow, FlowDesignation
 
 
 class UserSerializer(ModelSerializer):
@@ -121,12 +123,16 @@ class UserViewSet(ModelViewSet):
 
     @permission_required("authentik_core.reset_user_password")
     @swagger_auto_schema(
-        responses={"200": LinkSerializer(many=False)},
+        responses={"200": LinkSerializer(many=False), "404": "No recovery flow found."},
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=invalid-name, unused-argument
     def recovery(self, request: Request, pk: int) -> Response:
         """Create a temporary link that a user can use to recover their accounts"""
+        # Check that there is a recovery flow, if not return an error
+        flow = Flow.with_policy(request, designation=FlowDesignation.RECOVERY)
+        if not flow:
+            raise Http404
         user: User = self.get_object()
         token, __ = Token.objects.get_or_create(
             identifier=f"{user.uid}-password-reset",

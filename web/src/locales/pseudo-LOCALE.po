@@ -731,8 +731,8 @@ msgstr ""
 #: src/pages/stages/prompt/PromptStageForm.ts:98
 #: src/pages/user-settings/tokens/UserTokenList.ts:50
 #: src/pages/user-settings/tokens/UserTokenList.ts:58
-#: src/pages/users/UserListPage.ts:144
-#: src/pages/users/UserListPage.ts:152
+#: src/pages/users/UserListPage.ts:151
+#: src/pages/users/UserListPage.ts:159
 msgid "Create"
 msgstr ""
 
@@ -802,7 +802,7 @@ msgstr ""
 msgid "Create Token"
 msgstr ""
 
-#: src/pages/users/UserListPage.ts:147
+#: src/pages/users/UserListPage.ts:154
 msgid "Create User"
 msgstr ""
 
@@ -1523,7 +1523,7 @@ msgstr ""
 msgid "If your authentik Instance is using a self-signed certificate, set this value."
 msgstr ""
 
-#: src/pages/users/UserListPage.ts:136
+#: src/pages/users/UserListPage.ts:143
 msgid "Impersonate"
 msgstr ""
 
@@ -1986,6 +1986,10 @@ msgstr ""
 
 #: src/pages/admin-overview/cards/PolicyCacheStatusCard.ts:24
 msgid "No policies cached. Users may experience slow response times."
+msgstr ""
+
+#: src/pages/users/UserListPage.ts:135
+msgid "No recovery flow is configured."
 msgstr ""
 
 #: src/pages/flows/BoundStagesList.ts:114
@@ -2530,7 +2534,7 @@ msgstr ""
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr ""
 
-#: src/pages/users/UserListPage.ts:133
+#: src/pages/users/UserListPage.ts:140
 #: src/pages/users/UserViewPage.ts:165
 msgid "Reset Password"
 msgstr ""
