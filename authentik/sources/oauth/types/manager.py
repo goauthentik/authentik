@@ -1,6 +1,6 @@
 """Source type manager"""
 from enum import Enum
-from typing import TYPE_CHECKING, Callable, Optional
+from typing import Callable, Optional
 
 from structlog.stdlib import get_logger
 
@@ -8,9 +8,6 @@ from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 LOGGER = get_logger()
-
-if TYPE_CHECKING:
-    from authentik.sources.oauth.models import OAuthSource
 
 
 class RequestKind(Enum):
@@ -69,13 +66,13 @@ class SourceTypeManager:
             LOGGER.warning(
                 "no matching type found, using default",
                 wanted=type_name,
-                have=[x.name for x in self.__sources],
+                have=[x.slug for x in self.__sources],
             )
         return found_type
 
-    def find(self, source: "OAuthSource", kind: RequestKind) -> Callable:
+    def find(self, type_name: str, kind: RequestKind) -> Callable:
         """Find fitting Source Type"""
-        found_type = self.find_type(source)
+        found_type = self.find_type(type_name)
         if kind == RequestKind.CALLBACK:
             return found_type.callback_view
         if kind == RequestKind.REDIRECT:

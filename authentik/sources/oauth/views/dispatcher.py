@@ -21,6 +21,6 @@ class DispatcherView(View):
         if not slug:
             raise Http404
         source = get_object_or_404(OAuthSource, slug=slug)
-        view = MANAGER.find(source, kind=RequestKind(self.kind))
+        view = MANAGER.find(source.provider_type, kind=RequestKind(self.kind))
         LOGGER.debug("dispatching OAuth2 request to", view=view, kind=self.kind)
         return view.as_view()(*args, **kwargs)
