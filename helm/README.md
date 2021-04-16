@@ -22,6 +22,11 @@
 | config.email.use_ssl              | false                   | Enable SSL |
 | config.email.timeout              | 10                      | SMTP Timeout |
 | config.email.from                 | authentik@localhost     | Email address authentik will send from, should have a correct @domain |
+| pvc.mode                          | ReadWriteMany           | Mode that the PVCs are created in (uploads and GeoIP, if enabled) |
+| pvc.uploadsSize                   | 5Gi                     | Size for the uploads PVC |
+| pvc.uploadsStorageClass           | null                    | Storage class for the uploads PVC (default: use default storage class) |
+| pvc.geoIpSize                     | 1Gi                     | Size for the GeoIP PVC |
+| pvc.geoIpStorageClass             | null                    | Storage class for the GeoIP PVC (default: use default storage class) |
 | geoip.enabled                     | false                   | Optionally enable GeoIP |
 | geoip.accountId                   |                         | GeoIP MaxMind Account ID |
 | geoip.licenseKey                  |                         | GeoIP MaxMind License key |

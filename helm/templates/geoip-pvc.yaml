@@ -10,8 +10,9 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   accessModes:
-  - ReadWriteMany
+  - {{ .Values.pvc.mode }}
+  storageClassName: {{ .Values.pvc.geoIpStorageClass }}
   resources:
     requests:
-      storage: 1Gi
+      storage: {{ .Values.pvc.geoIpSize }}
 {{- end }}
