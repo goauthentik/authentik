@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.sources import SourceSerializer
@@ -46,6 +47,20 @@ class OAuthSourceSerializer(SourceSerializer):
     def get_type(self, instace: OAuthSource) -> SourceTypeSerializer:
         """Get source's type configuration"""
         return SourceTypeSerializer(instace.type).data
+
+    def validate(self, attrs: dict) -> dict:
+        provider_type = MANAGER.find_type(attrs.get("provider_type", ""))
+        for url in [
+            "authorization_url",
+            "access_token_url",
+            "profile_url",
+        ]:
+            if getattr(provider_type, url, None) is None:
+                if url not in attrs:
+                    raise ValidationError(
+                        f"{url} is required for provider {provider_type.name}"
+                    )
+        return attrs
 
     class Meta:
         model = OAuthSource
