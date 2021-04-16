@@ -163,6 +163,16 @@ class OpenIDOAuthSource(OAuthSource):
         verbose_name_plural = _("OpenID OAuth Sources")
 
 
+class PlexOAuthSource(OAuthSource):
+    """Login using plex.tv."""
+
+    class Meta:
+
+        abstract = True
+        verbose_name = _("Plex OAuth Source")
+        verbose_name_plural = _("Plex OAuth Sources")
+
+
 class UserOAuthSourceConnection(UserSourceConnection):
     """Authorized remote OAuth provider."""
 

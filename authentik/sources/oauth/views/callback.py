@@ -209,9 +209,9 @@ class OAuthCallback(OAuthClientMixin, View):
         )
         return redirect(
             reverse(
-                "authentik_sources_oauth:oauth-client-user",
-                kwargs={"source_slug": self.source.slug},
+                "authentik_core:if-admin",
             )
+            + f"#/user;page-{self.source.slug}"
         )
 
     def handle_enroll(

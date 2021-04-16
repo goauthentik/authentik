@@ -9,4 +9,5 @@ AUTHENTIK_SOURCES_OAUTH_TYPES = [
     "authentik.sources.oauth.types.twitter",
     "authentik.sources.oauth.types.azure_ad",
     "authentik.sources.oauth.types.oidc",
+    "authentik.sources.oauth.types.plex",
 ]
