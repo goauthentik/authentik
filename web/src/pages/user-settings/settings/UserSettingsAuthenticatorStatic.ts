@@ -1,6 +1,6 @@
-import { AuthenticatorsApi, StagesApi } from "authentik-api";
+import { AuthenticatorsApi } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, html, TemplateResult } from "lit-element";
+import { customElement, html, property, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { FlowURLManager } from "../../../api/legacy";
@@ -8,6 +8,9 @@ import { BaseUserSettings } from "./BaseUserSettings";
 
 @customElement("ak-user-settings-authenticator-static")
 export class UserSettingsAuthenticatorStatic extends BaseUserSettings {
+
+    @property({ type: Boolean })
+    configureFlow = false;
 
     renderEnabled(): TemplateResult {
         return html`<div class="pf-c-card__body">
@@ -44,21 +47,17 @@ export class UserSettingsAuthenticatorStatic extends BaseUserSettings {
                 </p>
             </div>
             <div class="pf-c-card__footer">
-                ${until(new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorTotpRead({ stageUuid: this.objectId}).then((stage) => {
-                    if (stage.configureFlow) {
-                        return html`<a href="${FlowURLManager.configure(stage.pk || "", "?next=/%23%2Fuser")}"
-                                class="pf-c-button pf-m-primary">${t`Enable Time-based OTP`}
-                            </a>`;
-                    }
-                    return html``;
-                }))}
+                ${this.configureFlow ?
+                    html`<a href="${FlowURLManager.configure(this.objectId || "", "?next=/%23%2Fuser")}"
+                            class="pf-c-button pf-m-primary">${t`Enable Static Tokens`}
+                        </a>`: html``}
             </div>`;
     }
 
     render(): TemplateResult {
         return html`<div class="pf-c-card">
             <div class="pf-c-card__title">
-                ${t`Time-based One-Time Passwords`}
+                ${t`Static tokens`}
             </div>
             ${until(new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsTotpList({}).then((devices) => {
                 return devices.results.length > 0 ? this.renderEnabled() : this.renderDisabled();

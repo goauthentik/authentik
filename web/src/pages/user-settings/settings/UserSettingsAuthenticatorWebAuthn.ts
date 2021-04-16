@@ -1,6 +1,6 @@
-import { CSSResult, customElement, html, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { t } from "@lingui/macro";
-import { AuthenticatorsApi, StagesApi, WebAuthnDevice } from "authentik-api";
+import { AuthenticatorsApi, WebAuthnDevice } from "authentik-api";
 import { until } from "lit-html/directives/until";
 import { FlowURLManager } from "../../../api/legacy";
 import { DEFAULT_CONFIG } from "../../../api/Config";
@@ -16,6 +16,9 @@ import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-user-settings-authenticator-webauthn")
 export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
+
+    @property({type: Boolean})
+    configureFlow = false;
 
     static get styles(): CSSResult[] {
         return super.styles.concat(PFDataList);
@@ -96,14 +99,10 @@ export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
                 </ul>
             </div>
             <div class="pf-c-card__footer">
-                ${until(new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnRead({ stageUuid: this.objectId}).then((stage) => {
-                    if (stage.configureFlow) {
-                        return html`<a href="${FlowURLManager.configure(stage.pk || "", "?next=/%23%2Fuser")}"
-                                class="pf-c-button pf-m-primary">${t`Configure WebAuthn`}
-                            </a>`;
-                    }
-                    return html``;
-                }))}
+                ${this.configureFlow ?
+                    html`<a href="${FlowURLManager.configure(this.objectId || "", "?next=/%23%2Fuser")}"
+                            class="pf-c-button pf-m-primary">${t`Configure WebAuthn`}
+                        </a>`: html``}
             </div>
         </div>`;
     }
