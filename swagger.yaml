@@ -10265,7 +10265,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/UserSetting'
+              $ref: '#/definitions/StageUserSetting'
         '403':
           description: Authentication credentials were invalid, absent or insufficient.
           schema:
@@ -17216,6 +17216,28 @@ definitions:
           \ log out manually. (Format: hours=1;minutes=2;seconds=3)."
         type: string
         minLength: 1
+  StageUserSetting:
+    required:
+      - object_uid
+      - component
+      - title
+    type: object
+    properties:
+      object_uid:
+        title: Object uid
+        type: string
+        minLength: 1
+      component:
+        title: Component
+        type: string
+        minLength: 1
+      title:
+        title: Title
+        type: string
+        minLength: 1
+      configure_flow:
+        title: Configure flow
+        type: boolean
   AuthenticatorStaticStage:
     required:
       - name
