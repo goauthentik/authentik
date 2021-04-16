@@ -127,6 +127,7 @@ class FlowExecutorView(APIView):
     @swagger_auto_schema(
         responses={
             200: Challenge(),
+            404: "No Token found" # This error can be raised by the email stage
         },
         request_body=no_body,
         manual_parameters=[

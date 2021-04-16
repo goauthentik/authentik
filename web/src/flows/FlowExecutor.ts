@@ -162,11 +162,11 @@ export class FlowExecutor extends LitElement implements StageHost {
             </div>
             <footer class="pf-c-login__main-footer">
                 <ul class="pf-c-login__main-footer-links">
-                        <li class="pf-c-login__main-footer-links-item">
-                            <a class="pf-c-button pf-m-primary pf-m-block" href="/">
-                                ${t`Return`}
-                            </a>
-                        </li>
+                    <li class="pf-c-login__main-footer-links-item">
+                        <a class="pf-c-button pf-m-primary pf-m-block" href="/">
+                            ${t`Return`}
+                        </a>
+                    </li>
                 </ul>
             </footer>`
         };
