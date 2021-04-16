@@ -56,7 +56,7 @@ export class UserSettingsPage extends LitElement {
     renderSourceSettings(source: UserSetting): TemplateResult {
         switch (source.component) {
             case "ak-user-settings-source-oauth":
-                return html`<ak-user-settings-source-oauth objectId=${source.objectUid}>
+                return html`<ak-user-settings-source-oauth objectId=${source.objectUid} title=${source.title}>
                 </ak-user-settings-source-oauth>`;
             default:
                 return html`<p>${t`Error: unsupported source settings: ${source.component}`}</p>`;
