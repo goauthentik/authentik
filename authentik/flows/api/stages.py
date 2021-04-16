@@ -4,6 +4,7 @@ from typing import Iterable
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
+from rest_framework.fields import BooleanField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
@@ -17,6 +18,12 @@ from authentik.flows.models import Stage
 from authentik.lib.utils.reflection import all_subclasses
 
 LOGGER = get_logger()
+
+
+class StageUserSettingSerializer(UserSettingSerializer):
+    """User settings but can include a configure flow"""
+
+    configure_flow = BooleanField(required=False)
 
 
 class StageSerializer(ModelSerializer, MetaNameSerializer):
@@ -78,7 +85,7 @@ class StageViewSet(
         data = sorted(data, key=lambda x: x["name"])
         return Response(TypeCreateSerializer(data, many=True).data)
 
-    @swagger_auto_schema(responses={200: UserSettingSerializer(many=True)})
+    @swagger_auto_schema(responses={200: StageUserSettingSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])
     def user_settings(self, request: Request) -> Response:
         """Get all stages the user can configure"""
@@ -89,6 +96,10 @@ class StageViewSet(
             if not user_settings:
                 continue
             user_settings.initial_data["object_uid"] = str(stage.pk)
+            if hasattr(stage, "configure_flow"):
+                user_settings.initial_data["configure_flow"] = bool(
+                    stage.configure_flow
+                )
             if not user_settings.is_valid():
                 LOGGER.warning(user_settings.errors)
             matching_stages.append(user_settings.initial_data)
