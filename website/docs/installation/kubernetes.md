@@ -32,6 +32,16 @@ workerReplicas: 1
 # Enable the Kubernetes integration which lets authentik deploy outposts into kubernetes
 kubernetesIntegration: true
 
+monitoring: # Optionally deploy Prometheus Rules and ServiceMonitors
+  enabled: false
+
+pvc:
+  mode: ReadWriteMany
+  uploadsSize: 5Gi
+  uploadsStorageClass: null
+  geoIpSize: 1Gi
+  geoIpStorageClass: null
+
 config:
   # Optionally specify fixed secret_key, otherwise generated automatically
   # secretKey: _k*@6h2u2@q-dku57hhgzb7tnx*ba9wodcb^s9g0j59@=y(@_o

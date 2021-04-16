@@ -9,7 +9,8 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   accessModes:
-  - ReadWriteMany
+  - {{ .Values.pvc.mode }}
+  storageClassName: {{ .Values.pvc.uploadsStorageClass }}
   resources:
     requests:
-      storage: 5Gi
+      storage: {{ .Values.pvc.uploadsSize }}
