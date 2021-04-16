@@ -15,7 +15,7 @@ workerReplicas: 1
 kubernetesIntegration: true
 
 monitoring:
-  enabled: true
+  enabled: false
 
 config:
   # Optionally specify fixed secret_key, otherwise generated automatically
