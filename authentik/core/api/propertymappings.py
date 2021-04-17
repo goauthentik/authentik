@@ -91,7 +91,8 @@ class PropertyMappingViewSet(
                 {
                     "name": subclass._meta.verbose_name,
                     "description": subclass.__doc__,
-                    "component": subclass.component,
+                    # pyright: reportGeneralTypeIssues=false
+                    "component": subclass().component,
                 }
             )
         return Response(TypeCreateSerializer(data, many=True).data)
