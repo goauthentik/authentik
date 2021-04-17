@@ -9,6 +9,7 @@ from requests.models import Response
 from structlog.stdlib import get_logger
 
 from authentik import __version__
+from authentik.events.models import Event, EventAction
 from authentik.sources.oauth.models import OAuthSource
 
 LOGGER = get_logger()
@@ -59,7 +60,16 @@ class BaseOAuthClient:
         args.update(additional)
         params = urlencode(args)
         LOGGER.info("redirect args", **args)
-        return f"{self.source.authorization_url}?{params}"
+        base_url = self.source.authorization_url
+        if not self.source.type.urls_customizable:
+            base_url = self.source.type.authorization_url
+        if base_url == "":
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                source=self.source,
+                message="Source has an empty authorization URL.",
+            ).save()
+        return f"{base_url}?{params}"
 
     def parse_raw_token(self, raw_token: str) -> dict[str, Any]:
         "Parse token and secret from raw token response."

@@ -56,9 +56,12 @@ class OAuth2Client(BaseOAuthClient):
             LOGGER.warning("No code returned by the source")
             return None
         try:
+            access_token_url = self.source.access_token_url
+            if not self.source.type.urls_customizable:
+                access_token_url = self.source.type.access_token_url or ""
             response = self.session.request(
                 "post",
-                self.source.access_token_url,
+                access_token_url,
                 data=args,
                 headers=self._default_headers,
             )
