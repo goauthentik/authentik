@@ -121,7 +121,7 @@ export class GroupForm extends Form<Group> {
             <ak-form-element-horizontal
                 label=${t`Attributes`}
                 name="attributes">
-                <ak-codemirror mode="yaml" value="${YAML.stringify(this.group?.attributes)}">
+                <ak-codemirror mode="yaml" value="${YAML.stringify(first(this.group?.attributes, {}))}">
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">${t`Set custom attributes using YAML or JSON.`}</p>
             </ak-form-element-horizontal>

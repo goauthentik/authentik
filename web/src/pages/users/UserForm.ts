@@ -72,7 +72,7 @@ export class UserForm extends Form<User> {
             <ak-form-element-horizontal
                 label=${t`Attributes`}
                 name="attributes">
-                <ak-codemirror mode="yaml" value="${YAML.stringify(this.user?.attributes)}">
+                <ak-codemirror mode="yaml" value="${YAML.stringify(first(this.user?.attributes, {}))}">
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">${t`Set custom attributes using YAML or JSON.`}</p>
             </ak-form-element-horizontal>

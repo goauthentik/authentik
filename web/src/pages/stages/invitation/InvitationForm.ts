@@ -7,6 +7,7 @@ import { Form } from "../../../elements/forms/Form";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/CodeMirror";
 import YAML from "yaml";
+import { first } from "../../../utils";
 
 @customElement("ak-invitation-form")
 export class InvitationForm extends Form<Invitation> {
@@ -46,7 +47,7 @@ export class InvitationForm extends Form<Invitation> {
             <ak-form-element-horizontal
                 label=${t`Attributes`}
                 name="fixedData">
-                <ak-codemirror mode="yaml" value="${YAML.stringify(this.invitation?.fixedData)}">
+                <ak-codemirror mode="yaml" value="${YAML.stringify(first(this.invitation?.fixedData, {}))}">
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">${t`Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON.`}</p>
             </ak-form-element-horizontal>
