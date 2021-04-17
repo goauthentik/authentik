@@ -3,6 +3,7 @@ from datetime import datetime
 
 import ldap3
 import ldap3.core.exceptions
+from django.core.exceptions import FieldError
 from django.db.utils import IntegrityError
 from pytz import UTC
 
@@ -48,7 +49,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                         "defaults": defaults,
                     }
                 )
-            except IntegrityError as exc:
+            except (IntegrityError, FieldError) as exc:
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
                     message=(
