@@ -1,9 +1,11 @@
 """Sync LDAP Users and groups into authentik"""
 import ldap3
 import ldap3.core.exceptions
+from django.core.exceptions import FieldError
 from django.db.utils import IntegrityError
 
 from authentik.core.models import Group
+from authentik.events.models import Event, EventAction
 from authentik.sources.ldap.sync.base import LDAP_UNIQUENESS, BaseLDAPSynchronizer
 
 
@@ -47,14 +49,17 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                         "defaults": defaults,
                     }
                 )
-            except IntegrityError as exc:
-                self._logger.warning("Failed to create group", exc=exc)
-                self._logger.warning(
-                    (
-                        "To merge new group with existing group, set the group's "
+            except (IntegrityError, FieldError) as exc:
+                Event.new(
+                    EventAction.CONFIGURATION_ERROR,
+                    message=(
+                        f"Failed to create group: {str(exc)} "
+                        "To merge new group with existing group, set the groups's "
                         f"Attribute '{LDAP_UNIQUENESS}' to '{uniq}'"
-                    )
-                )
+                    ),
+                    source=self._source,
+                    dn=group_dn,
+                ).save()
             else:
                 self._logger.debug("Synced group", group=ak_group.name, created=created)
                 group_count += 1
