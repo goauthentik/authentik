@@ -160,6 +160,7 @@ module.exports = {
                 "troubleshooting/access",
                 "troubleshooting/emails",
                 "troubleshooting/login",
+                "troubleshooting/image_upload_backup",
             ],
         },
         {
