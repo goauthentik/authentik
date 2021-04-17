@@ -29,12 +29,13 @@ export class GroupForm extends Form<Group> {
     }
 
     send = (data: Group): Promise<Group> => {
-        if (this.group) {
+        if (this.group?.pk) {
             return new CoreApi(DEFAULT_CONFIG).coreGroupsUpdate({
                 groupUuid: this.group.pk || "",
                 data: data
             });
         } else {
+            data.users = Array.from(this.group?.users || []) as unknown as Set<number>;
             return new CoreApi(DEFAULT_CONFIG).coreGroupsCreate({
                 data: data
             });
@@ -79,7 +80,7 @@ export class GroupForm extends Form<Group> {
                         .confirm=${(items: User[]) => {
                             // Because the model only has the IDs, map the user list to IDs
                             const ids = items.map(u => u.pk || 0);
-                            if (!this.group) return Promise.reject();
+                            if (!this.group) this.group = {} as Group;
                             this.group.users = new Set(Array.from(this.group?.users || []).concat(ids));
                             this.requestUpdate();
                             return Promise.resolve();

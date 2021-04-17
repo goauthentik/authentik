@@ -79,13 +79,13 @@ msgstr "Access token URL"
 msgid "Action"
 msgstr "Action"
 
-#: src/pages/groups/MemberSelectModal.ts:45
+#: src/pages/groups/MemberSelectModal.ts:46
 #: src/pages/users/UserListPage.ts:51
 #: src/pages/users/UserViewPage.ts:116
 msgid "Active"
 msgstr "Active"
 
-#: src/pages/groups/MemberSelectModal.ts:82
+#: src/pages/groups/MemberSelectModal.ts:83
 msgid "Add"
 msgstr "Add"
 
@@ -259,8 +259,8 @@ msgstr "Attempted to log in as {0}"
 msgid "Attribute name used for SAML Assertions. Can be a URN OID, a schema reference, or a any other string. If this property mapping is used for NameID Property, this field is discarded."
 msgstr "Attribute name used for SAML Assertions. Can be a URN OID, a schema reference, or a any other string. If this property mapping is used for NameID Property, this field is discarded."
 
-#: src/pages/groups/GroupForm.ts:134
-#: src/pages/stages/invitation/InvitationForm.ts:51
+#: src/pages/groups/GroupForm.ts:135
+#: src/pages/stages/invitation/InvitationForm.ts:52
 #: src/pages/users/UserForm.ts:77
 msgid "Attributes"
 msgstr "Attributes"
@@ -274,7 +274,7 @@ msgstr "Audience"
 msgid "Authentication"
 msgstr "Authentication"
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:165
+#: src/pages/sources/oauth/OAuthSourceForm.ts:175
 #: src/pages/sources/saml/SAMLSourceForm.ts:245
 msgid "Authentication flow"
 msgstr "Authentication flow"
@@ -416,7 +416,7 @@ msgstr "Can be in the format of 'unix://' when connecting to a local docker daem
 #: src/elements/forms/ConfirmationForm.ts:75
 #: src/elements/forms/DeleteForm.ts:86
 #: src/elements/forms/ModalForm.ts:71
-#: src/pages/groups/MemberSelectModal.ts:89
+#: src/pages/groups/MemberSelectModal.ts:90
 #: src/pages/users/UserActiveForm.ts:73
 msgid "Cancel"
 msgstr "Cancel"
@@ -1116,7 +1116,7 @@ msgstr "Enabled"
 msgid "Enrollment"
 msgstr "Enrollment"
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:186
+#: src/pages/sources/oauth/OAuthSourceForm.ts:196
 #: src/pages/sources/saml/SAMLSourceForm.ts:266
 #: src/pages/stages/identification/IdentificationStageForm.ts:107
 msgid "Enrollment flow"
@@ -1209,7 +1209,7 @@ msgstr "Execution logging"
 #: src/elements/oauth/UserCodeList.ts:30
 #: src/elements/oauth/UserRefreshList.ts:30
 #: src/elements/user/UserConsentList.ts:30
-#: src/pages/stages/invitation/InvitationForm.ts:45
+#: src/pages/stages/invitation/InvitationForm.ts:46
 msgid "Expires"
 msgstr "Expires"
 
@@ -1328,17 +1328,17 @@ msgstr "Flow"
 msgid "Flow Overview"
 msgstr "Flow Overview"
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:161
+#: src/pages/sources/oauth/OAuthSourceForm.ts:171
 #: src/pages/sources/saml/SAMLSourceForm.ts:220
 msgid "Flow settings"
 msgstr "Flow settings"
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:183
+#: src/pages/sources/oauth/OAuthSourceForm.ts:193
 #: src/pages/sources/saml/SAMLSourceForm.ts:263
 msgid "Flow to use when authenticating existing users."
 msgstr "Flow to use when authenticating existing users."
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:204
+#: src/pages/sources/oauth/OAuthSourceForm.ts:214
 #: src/pages/sources/saml/SAMLSourceForm.ts:284
 msgid "Flow to use when enrolling new users."
 msgstr "Flow to use when enrolling new users."
@@ -1476,7 +1476,7 @@ msgid "Hide managed mappings"
 msgstr "Hide managed mappings"
 
 #: src/pages/events/RuleForm.ts:93
-#: src/pages/groups/GroupForm.ts:131
+#: src/pages/groups/GroupForm.ts:132
 #: src/pages/outposts/OutpostForm.ts:98
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:169
 #: src/pages/providers/saml/SAMLProviderForm.ts:171
@@ -1589,7 +1589,7 @@ msgstr "Invitations"
 msgid "Is active"
 msgstr "Is active"
 
-#: src/pages/groups/GroupForm.ts:60
+#: src/pages/groups/GroupForm.ts:62
 msgid "Is superuser"
 msgstr "Is superuser"
 
@@ -1633,7 +1633,7 @@ msgstr "Label"
 msgid "Label shown next to/above the prompt."
 msgstr "Label shown next to/above the prompt."
 
-#: src/pages/groups/MemberSelectModal.ts:46
+#: src/pages/groups/MemberSelectModal.ts:47
 #: src/pages/users/UserListPage.ts:52
 #: src/pages/users/UserViewPage.ts:108
 msgid "Last login"
@@ -1692,8 +1692,8 @@ msgstr "Loading"
 #: src/pages/events/RuleForm.ts:90
 #: src/pages/flows/StageBindingForm.ts:89
 #: src/pages/flows/StageBindingForm.ts:106
-#: src/pages/groups/GroupForm.ts:76
-#: src/pages/groups/GroupForm.ts:127
+#: src/pages/groups/GroupForm.ts:77
+#: src/pages/groups/GroupForm.ts:128
 #: src/pages/outposts/OutpostForm.ts:74
 #: src/pages/outposts/OutpostForm.ts:96
 #: src/pages/outposts/ServiceConnectionDockerForm.ts:87
@@ -1718,9 +1718,9 @@ msgstr "Loading"
 #: src/pages/providers/saml/SAMLProviderImportForm.ts:55
 #: src/pages/sources/ldap/LDAPSourceForm.ts:164
 #: src/pages/sources/ldap/LDAPSourceForm.ts:190
-#: src/pages/sources/oauth/OAuthSourceForm.ts:153
-#: src/pages/sources/oauth/OAuthSourceForm.ts:181
-#: src/pages/sources/oauth/OAuthSourceForm.ts:202
+#: src/pages/sources/oauth/OAuthSourceForm.ts:163
+#: src/pages/sources/oauth/OAuthSourceForm.ts:191
+#: src/pages/sources/oauth/OAuthSourceForm.ts:212
 #: src/pages/sources/saml/SAMLSourceForm.ts:126
 #: src/pages/sources/saml/SAMLSourceForm.ts:240
 #: src/pages/sources/saml/SAMLSourceForm.ts:261
@@ -1796,7 +1796,7 @@ msgstr "Matches an event against a set of criteria. If any of the configured val
 msgid "Maximum age (in days)"
 msgstr "Maximum age (in days)"
 
-#: src/pages/groups/GroupForm.ts:80
+#: src/pages/groups/GroupForm.ts:81
 #: src/pages/groups/GroupListPage.ts:47
 msgid "Members"
 msgstr "Members"
@@ -1856,9 +1856,9 @@ msgstr "Monitor"
 #: src/pages/flows/BoundStagesList.ts:39
 #: src/pages/flows/FlowForm.ts:81
 #: src/pages/flows/FlowListPage.ts:47
-#: src/pages/groups/GroupForm.ts:51
+#: src/pages/groups/GroupForm.ts:53
 #: src/pages/groups/GroupListPage.ts:45
-#: src/pages/groups/MemberSelectModal.ts:44
+#: src/pages/groups/MemberSelectModal.ts:45
 #: src/pages/outposts/OutpostForm.ts:47
 #: src/pages/outposts/OutpostListPage.ts:50
 #: src/pages/outposts/ServiceConnectionDockerForm.ts:53
@@ -1939,7 +1939,7 @@ msgstr "New version available!"
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts:61
 #: src/pages/groups/GroupListPage.ts:58
-#: src/pages/groups/MemberSelectModal.ts:56
+#: src/pages/groups/MemberSelectModal.ts:57
 #: src/pages/outposts/ServiceConnectionListPage.ts:64
 #: src/pages/policies/BoundPoliciesList.ts:118
 #: src/pages/policies/PolicyTestForm.ts:38
@@ -2134,7 +2134,7 @@ msgstr "Optional Private Key. If this is set, you can use this keypair for encry
 msgid "Optional URL if the IDP supports Single-Logout."
 msgstr "Optional URL if the IDP supports Single-Logout."
 
-#: src/pages/stages/invitation/InvitationForm.ts:55
+#: src/pages/stages/invitation/InvitationForm.ts:56
 msgid "Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON."
 msgstr "Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON."
 
@@ -2208,7 +2208,7 @@ msgstr "Overview"
 msgid "PEM-encoded Certificate data."
 msgstr "PEM-encoded Certificate data."
 
-#: src/pages/groups/GroupForm.ts:66
+#: src/pages/groups/GroupForm.ts:68
 #: src/pages/groups/GroupListPage.ts:46
 msgid "Parent"
 msgstr "Parent"
@@ -2673,7 +2673,7 @@ msgstr "Select all rows"
 msgid "Select an identification method."
 msgstr "Select an identification method."
 
-#: src/pages/groups/MemberSelectModal.ts:67
+#: src/pages/groups/MemberSelectModal.ts:68
 msgid "Select users to add"
 msgstr "Select users to add"
 
@@ -2754,7 +2754,7 @@ msgstr "Set HTTP-Basic Authentication"
 msgid "Set a custom HTTP-Basic Authentication header based on values from authentik."
 msgstr "Set a custom HTTP-Basic Authentication header based on values from authentik."
 
-#: src/pages/groups/GroupForm.ts:138
+#: src/pages/groups/GroupForm.ts:139
 #: src/pages/outposts/OutpostForm.ts:109
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts:73
 #: src/pages/policies/PolicyTestForm.ts:78
@@ -2979,11 +2979,11 @@ msgstr "Successfully created certificate-key pair."
 msgid "Successfully created flow."
 msgstr "Successfully created flow."
 
-#: src/pages/groups/GroupForm.ts:44
+#: src/pages/groups/GroupForm.ts:46
 msgid "Successfully created group."
 msgstr "Successfully created group."
 
-#: src/pages/stages/invitation/InvitationForm.ts:38
+#: src/pages/stages/invitation/InvitationForm.ts:39
 msgid "Successfully created invitation."
 msgstr "Successfully created invitation."
 
@@ -3115,11 +3115,11 @@ msgstr "Successfully updated device."
 msgid "Successfully updated flow."
 msgstr "Successfully updated flow."
 
-#: src/pages/groups/GroupForm.ts:41
+#: src/pages/groups/GroupForm.ts:43
 msgid "Successfully updated group."
 msgstr "Successfully updated group."
 
-#: src/pages/stages/invitation/InvitationForm.ts:35
+#: src/pages/stages/invitation/InvitationForm.ts:36
 msgid "Successfully updated invitation."
 msgstr "Successfully updated invitation."
 
@@ -3706,7 +3706,7 @@ msgstr "Username: Same as Text input, but checks for and prevents duplicate user
 msgid "Users"
 msgstr "Users"
 
-#: src/pages/groups/GroupForm.ts:63
+#: src/pages/groups/GroupForm.ts:65
 msgid "Users added to this group will be superusers."
 msgstr "Users added to this group will be superusers."
 
@@ -3859,7 +3859,7 @@ msgstr "X509 Subject"
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts:61
 #: src/pages/groups/GroupListPage.ts:58
-#: src/pages/groups/MemberSelectModal.ts:56
+#: src/pages/groups/MemberSelectModal.ts:57
 #: src/pages/outposts/ServiceConnectionListPage.ts:64
 #: src/pages/policies/BoundPoliciesList.ts:118
 #: src/pages/policies/PolicyTestForm.ts:38

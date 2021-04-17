@@ -42,10 +42,10 @@ export class MemberSelectTable extends TableModal<User> {
 
     row(item: User): TemplateResult[] {
         return [
-            html`<a href="#/identity/users/${item.pk}">
+            html`<div>
                 <div>${item.username}</div>
                 <small>${item.name}</small>
-            </a>`,
+            </div>`,
             html`${item.isActive ? t`Yes` : t`No`}`,
             html`${first(item.lastLogin?.toLocaleString(), "-")}`,
         ];
