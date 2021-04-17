@@ -93,7 +93,7 @@ class PropertyMappingViewSet(
                     "description": subclass.__doc__,
                     # pyright: reportGeneralTypeIssues=false
                     "component": subclass().component,
-                    "model_name": subclass._meta.model_name
+                    "model_name": subclass._meta.model_name,
                 }
             )
         return Response(TypeCreateSerializer(data, many=True).data)

@@ -6,7 +6,7 @@ from urllib.parse import parse_qs, urlencode, urlsplit, urlunsplit
 from uuid import uuid4
 
 from django.http import HttpRequest, HttpResponse
-from django.http.response import Http404, HttpResponseRedirect
+from django.http.response import Http404, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.utils import timezone
 from django.utils.translation import gettext as _
@@ -236,6 +236,9 @@ class OAuthFulfillmentStage(StageView):
     # pylint: disable=unused-argument
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """final Stage of an OAuth2 Flow"""
+        if PLAN_CONTEXT_PARAMS not in self.executor.plan.context:
+            LOGGER.warning("Got to fulfillment stage with no pending context")
+            return HttpResponseBadRequest()
         self.params: OAuthAuthorizationParams = self.executor.plan.context.pop(
             PLAN_CONTEXT_PARAMS
         )

@@ -81,7 +81,7 @@ class SourceViewSet(
                     "name": subclass._meta.verbose_name,
                     "description": subclass.__doc__,
                     "component": component,
-                    "model_name": subclass._meta.model_name
+                    "model_name": subclass._meta.model_name,
                 }
             )
         return Response(TypeCreateSerializer(data, many=True).data)

@@ -108,7 +108,7 @@ class PolicyViewSet(
                     "name": subclass._meta.verbose_name,
                     "description": subclass.__doc__,
                     "component": subclass().component,
-                    "model_name": subclass._meta.model_name
+                    "model_name": subclass._meta.model_name,
                 }
             )
         return Response(TypeCreateSerializer(data, many=True).data)
