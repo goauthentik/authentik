@@ -20,7 +20,7 @@ services:
     networks:
       - internal
   server:
-    image: ${AUTHENTIK_IMAGE:-beryju/authentik}:${AUTHENTIK_TAG:-2021.4.1}
+    image: ${AUTHENTIK_IMAGE:-beryju/authentik}:${AUTHENTIK_TAG:-2021.4.2}
     restart: unless-stopped
     command: server
     environment:
@@ -48,7 +48,7 @@ services:
     env_file:
       - .env
   worker:
-    image: ${AUTHENTIK_IMAGE:-beryju/authentik}:${AUTHENTIK_TAG:-2021.4.1}
+    image: ${AUTHENTIK_IMAGE:-beryju/authentik}:${AUTHENTIK_TAG:-2021.4.2}
     restart: unless-stopped
     command: worker
     networks:
@@ -68,7 +68,7 @@ services:
     env_file:
       - .env
   static:
-    image: ${AUTHENTIK_IMAGE_STATIC:-beryju/authentik-static}:${AUTHENTIK_TAG:-2021.4.1}
+    image: ${AUTHENTIK_IMAGE_STATIC:-beryju/authentik-static}:${AUTHENTIK_TAG:-2021.4.2}
     restart: unless-stopped
     networks:
       - internal
