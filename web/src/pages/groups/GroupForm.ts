@@ -60,7 +60,6 @@ export class GroupForm extends Form<Group> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Parent`}
-                ?required=${true}
                 name="parent">
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.group?.parent === undefined}>---------</option>

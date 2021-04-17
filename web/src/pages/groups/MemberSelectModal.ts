@@ -21,6 +21,8 @@ export class MemberSelectTable extends TableModal<User> {
     @property()
     confirm!: (selectedItems: User[]) => Promise<unknown>;
 
+    order = "username";
+
     apiEndpoint(page: number): Promise<AKResponse<User>> {
         return new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ordering: this.order,
