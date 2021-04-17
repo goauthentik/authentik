@@ -4,12 +4,26 @@ title: Kubernetes installation
 
 For a mid to high-load installation, Kubernetes is recommended. authentik is installed using a helm-chart.
 
-To install authentik using the helm chart, run these commands:
+To install authentik using the helm chart, generate a password for the database and the cache, using `pwgen` or `openssl rand -base64 36`.
+
+Create a values.yaml file with a minimum of these settings:
+
+```yaml
+postgresql:
+  postgresqlPassword: "<password you generated>"
+redis:
+  password: "<another password you generated>"
+config:
+  secretKey: "<another password you generated>"
+# Optionally configure more things, as seen in the full values.yaml file below.
+```
+
+Afterwards, run these commands to install authentik:
 
 ```
 helm repo add authentik https://docker.beryju.org/chartrepo/authentik
 helm repo update
-helm install authentik/authentik --devel -f values.yaml
+helm install authentik/authentik -f values.yaml
 ```
 
 This installation automatically applies database migrations on startup. After the installation is done, navigate to the `https://<ingress you've specified>/if/flow/initial-setup/`, to set a password for the akadmin user.
@@ -38,7 +52,7 @@ monitoring: # Optionally deploy Prometheus Rules and ServiceMonitors
 pvc:
   mode: ReadWriteMany
   uploadsSize: 5Gi
-  uploadsStorageClass: null
+  uploadsStorageClass: null # null uses the default storage class
   geoIpSize: 1Gi
   geoIpStorageClass: null
 
