@@ -157,6 +157,7 @@ class EventViewSet(ReadOnlyModelViewSet):
                     "name": name,
                     "description": "",
                     "component": value,
+                    "model_name": ""
                 }
             )
         return Response(TypeCreateSerializer(data, many=True).data)

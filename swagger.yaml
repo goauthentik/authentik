@@ -14771,6 +14771,7 @@ definitions:
       - name
       - description
       - component
+      - model_name
     type: object
     properties:
       name:
@@ -14783,6 +14784,10 @@ definitions:
         minLength: 1
       component:
         title: Component
+        type: string
+        minLength: 1
+      model_name:
+        title: Model name
         type: string
         minLength: 1
   EventTopPerUser:

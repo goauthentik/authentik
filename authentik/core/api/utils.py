@@ -48,6 +48,7 @@ class TypeCreateSerializer(PassiveSerializer):
     name = CharField(required=True)
     description = CharField(required=True)
     component = CharField(required=True)
+    model_name = CharField(required=True)
 
 
 class CacheSerializer(PassiveSerializer):

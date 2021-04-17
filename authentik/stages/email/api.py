@@ -63,6 +63,7 @@ class EmailStageViewSet(ModelViewSet):
                     "name": value,
                     "description": label,
                     "component": "",
+                    "model_name": "",
                 }
             )
         return Response(TypeCreateSerializer(choices, many=True).data)
