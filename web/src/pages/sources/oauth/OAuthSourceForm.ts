@@ -141,6 +141,10 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                             } else {
                                 this.showUrlOptions = false;
                             }
+                            if (!this.source) {
+                                this.source = {} as OAuthSource;
+                            }
+                            this.source.providerType = selected.value;
                         }}>
                             ${until(new SourcesApi(DEFAULT_CONFIG).sourcesOauthSourceTypes().then(types => {
                                 return types.map(type => {
