@@ -128,6 +128,9 @@ export class SourceListPage extends TablePage<Source> {
                                 </span>
                                 <ak-proxy-form
                                     slot="form"
+                                    .args=${{
+                                        "modelName": type.modelName
+                                    }}
                                     type=${type.component}>
                                 </ak-proxy-form>
                                 <button slot="trigger" class="pf-c-dropdown__menu-item">

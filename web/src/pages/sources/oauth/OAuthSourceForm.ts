@@ -22,6 +22,9 @@ export class OAuthSourceForm extends Form<OAuthSource> {
         });
     }
 
+    @property()
+    modelName?: string;
+
     @property({attribute: false})
     source?: OAuthSource;
 
@@ -148,7 +151,13 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                         }}>
                             ${until(new SourcesApi(DEFAULT_CONFIG).sourcesOauthSourceTypes().then(types => {
                                 return types.map(type => {
-                                    return html`<option ?data-urls-custom=${type.urlsCustomizable} value=${type.slug} ?selected=${this.source?.providerType === type.slug}>${type.name}</option>`;
+                                    let selected = this.source?.providerType === type.slug;
+                                    if (!this.source?.pk) {
+                                        if (this.modelName?.replace("oauthsource", "") === type.slug) {
+                                            selected = true;
+                                        }
+                                    }
+                                    return html`<option ?data-urls-custom=${type.urlsCustomizable} value=${type.slug} ?selected=${selected}>${type.name}</option>`;
                                 });
                             }), html`<option>${t`Loading...`}</option>`)}
                         </select>

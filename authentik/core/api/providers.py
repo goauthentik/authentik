@@ -86,6 +86,7 @@ class ProviderViewSet(
                 "name": _("SAML Provider from Metadata"),
                 "description": _("Create a SAML Provider by importing its Metadata."),
                 "component": "ak-provider-saml-import-form",
+                "model_name": "",
             }
         )
         return Response(TypeCreateSerializer(data, many=True).data)
