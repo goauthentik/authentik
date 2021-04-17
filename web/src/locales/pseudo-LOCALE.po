@@ -68,7 +68,7 @@ msgstr ""
 msgid "Access Key"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:72
+#: src/pages/sources/oauth/OAuthSourceForm.ts:73
 msgid "Access token URL"
 msgstr ""
 
@@ -270,7 +270,7 @@ msgstr ""
 msgid "Authentication"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:175
+#: src/pages/sources/oauth/OAuthSourceForm.ts:189
 #: src/pages/sources/saml/SAMLSourceForm.ts:245
 msgid "Authentication flow"
 msgstr ""
@@ -288,7 +288,7 @@ msgstr ""
 msgid "Authorization Code"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:65
+#: src/pages/sources/oauth/OAuthSourceForm.ts:66
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:95
 msgid "Authorization URL"
 msgstr ""
@@ -643,11 +643,11 @@ msgstr ""
 msgid "Consider Objects matching this filter to be Users."
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:124
+#: src/pages/sources/oauth/OAuthSourceForm.ts:126
 msgid "Consumer key"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:130
+#: src/pages/sources/oauth/OAuthSourceForm.ts:132
 msgid "Consumer secret"
 msgstr ""
 
@@ -1099,7 +1099,7 @@ msgstr ""
 #: src/pages/policies/BoundPoliciesList.ts:37
 #: src/pages/policies/PolicyBindingForm.ts:198
 #: src/pages/sources/ldap/LDAPSourceForm.ts:69
-#: src/pages/sources/oauth/OAuthSourceForm.ts:113
+#: src/pages/sources/oauth/OAuthSourceForm.ts:115
 #: src/pages/sources/saml/SAMLSourceForm.ts:69
 msgid "Enabled"
 msgstr ""
@@ -1108,7 +1108,7 @@ msgstr ""
 msgid "Enrollment"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:196
+#: src/pages/sources/oauth/OAuthSourceForm.ts:210
 #: src/pages/sources/saml/SAMLSourceForm.ts:266
 #: src/pages/stages/identification/IdentificationStageForm.ts:107
 msgid "Enrollment flow"
@@ -1320,17 +1320,17 @@ msgstr ""
 msgid "Flow Overview"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:171
+#: src/pages/sources/oauth/OAuthSourceForm.ts:185
 #: src/pages/sources/saml/SAMLSourceForm.ts:220
 msgid "Flow settings"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:193
+#: src/pages/sources/oauth/OAuthSourceForm.ts:207
 #: src/pages/sources/saml/SAMLSourceForm.ts:263
 msgid "Flow to use when authenticating existing users."
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:214
+#: src/pages/sources/oauth/OAuthSourceForm.ts:228
 #: src/pages/sources/saml/SAMLSourceForm.ts:284
 msgid "Flow to use when enrolling new users."
 msgstr ""
@@ -1710,9 +1710,9 @@ msgstr ""
 #: src/pages/providers/saml/SAMLProviderImportForm.ts:55
 #: src/pages/sources/ldap/LDAPSourceForm.ts:164
 #: src/pages/sources/ldap/LDAPSourceForm.ts:190
-#: src/pages/sources/oauth/OAuthSourceForm.ts:163
-#: src/pages/sources/oauth/OAuthSourceForm.ts:191
-#: src/pages/sources/oauth/OAuthSourceForm.ts:212
+#: src/pages/sources/oauth/OAuthSourceForm.ts:177
+#: src/pages/sources/oauth/OAuthSourceForm.ts:205
+#: src/pages/sources/oauth/OAuthSourceForm.ts:226
 #: src/pages/sources/saml/SAMLSourceForm.ts:126
 #: src/pages/sources/saml/SAMLSourceForm.ts:240
 #: src/pages/sources/saml/SAMLSourceForm.ts:261
@@ -1879,7 +1879,7 @@ msgstr ""
 #: src/pages/sources/SourcesListPage.ts:51
 #: src/pages/sources/ldap/LDAPSourceForm.ts:54
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:64
-#: src/pages/sources/oauth/OAuthSourceForm.ts:98
+#: src/pages/sources/oauth/OAuthSourceForm.ts:100
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:63
 #: src/pages/sources/saml/SAMLSourceForm.ts:54
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:66
@@ -2330,7 +2330,7 @@ msgstr ""
 msgid "Private key, acquired from https://www.google.com/recaptcha/intro/v3.html."
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:79
+#: src/pages/sources/oauth/OAuthSourceForm.ts:80
 msgid "Profile URL"
 msgstr ""
 
@@ -2372,7 +2372,7 @@ msgstr ""
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:81
 #: src/pages/providers/proxy/ProxyProviderForm.ts:99
 #: src/pages/providers/saml/SAMLProviderForm.ts:78
-#: src/pages/sources/oauth/OAuthSourceForm.ts:120
+#: src/pages/sources/oauth/OAuthSourceForm.ts:122
 #: src/pages/sources/saml/SAMLSourceForm.ts:76
 msgid "Protocol settings"
 msgstr ""
@@ -2395,7 +2395,7 @@ msgstr ""
 msgid "Provider Type"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:136
+#: src/pages/sources/oauth/OAuthSourceForm.ts:138
 msgid "Provider type"
 msgstr ""
 
@@ -2521,7 +2521,7 @@ msgstr ""
 msgid "Request has been denied."
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:86
+#: src/pages/sources/oauth/OAuthSourceForm.ts:87
 msgid "Request token URL"
 msgstr ""
 
@@ -2800,7 +2800,7 @@ msgstr ""
 #: src/pages/applications/ApplicationListPage.ts:58
 #: src/pages/flows/FlowForm.ts:94
 #: src/pages/sources/ldap/LDAPSourceForm.ts:60
-#: src/pages/sources/oauth/OAuthSourceForm.ts:104
+#: src/pages/sources/oauth/OAuthSourceForm.ts:106
 #: src/pages/sources/saml/SAMLSourceForm.ts:60
 msgid "Slug"
 msgstr ""
@@ -3019,7 +3019,7 @@ msgid "Successfully created service-connection."
 msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts:47
-#: src/pages/sources/oauth/OAuthSourceForm.ts:50
+#: src/pages/sources/oauth/OAuthSourceForm.ts:51
 #: src/pages/sources/saml/SAMLSourceForm.ts:47
 msgid "Successfully created source."
 msgstr ""
@@ -3155,7 +3155,7 @@ msgid "Successfully updated service-connection."
 msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts:44
-#: src/pages/sources/oauth/OAuthSourceForm.ts:47
+#: src/pages/sources/oauth/OAuthSourceForm.ts:48
 #: src/pages/sources/saml/SAMLSourceForm.ts:44
 msgid "Successfully updated source."
 msgstr ""
@@ -3415,7 +3415,7 @@ msgstr ""
 msgid "UID"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:61
+#: src/pages/sources/oauth/OAuthSourceForm.ts:62
 msgid "URL settings"
 msgstr ""
 
@@ -3423,19 +3423,19 @@ msgstr ""
 msgid "URL that the initial Login request is sent to."
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:69
+#: src/pages/sources/oauth/OAuthSourceForm.ts:70
 msgid "URL the user is redirect to to consent the authorization."
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:83
+#: src/pages/sources/oauth/OAuthSourceForm.ts:84
 msgid "URL used by authentik to get user information."
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:76
+#: src/pages/sources/oauth/OAuthSourceForm.ts:77
 msgid "URL used by authentik to retrieve tokens."
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:89
+#: src/pages/sources/oauth/OAuthSourceForm.ts:90
 msgid "URL used to request the initial token. This URL is only required for OAuth 1."
 msgstr ""
 

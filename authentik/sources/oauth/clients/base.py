@@ -60,9 +60,9 @@ class BaseOAuthClient:
         args.update(additional)
         params = urlencode(args)
         LOGGER.info("redirect args", **args)
-        base_url = self.source.authorization_url
-        if not self.source.type.urls_customizable:
-            base_url = self.source.type.authorization_url
+        base_url = self.source.type.authorization_url
+        if self.source.authorization_url:
+            base_url = self.source.authorization_url
         if base_url == "":
             Event.new(
                 EventAction.CONFIGURATION_ERROR,

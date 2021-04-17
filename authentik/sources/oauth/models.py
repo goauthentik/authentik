@@ -19,7 +19,7 @@ class OAuthSource(Source):
 
     provider_type = models.CharField(max_length=255)
     request_token_url = models.CharField(
-        blank=True,
+        null=True,
         max_length=255,
         verbose_name=_("Request Token URL"),
         help_text=_(
@@ -28,19 +28,19 @@ class OAuthSource(Source):
     )
     authorization_url = models.CharField(
         max_length=255,
-        blank=True,
+        null=True,
         verbose_name=_("Authorization URL"),
         help_text=_("URL the user is redirect to to conest the flow."),
     )
     access_token_url = models.CharField(
         max_length=255,
-        blank=True,
+        null=True,
         verbose_name=_("Access Token URL"),
         help_text=_("URL used by authentik to retrive tokens."),
     )
     profile_url = models.CharField(
         max_length=255,
-        blank=True,
+        null=True,
         verbose_name=_("Profile URL"),
         help_text=_("URL used by authentik to get user information."),
     )

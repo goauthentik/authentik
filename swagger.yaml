@@ -17034,21 +17034,29 @@ definitions:
           for OAuth 1.
         type: string
         maxLength: 255
+        minLength: 1
+        x-nullable: true
       authorization_url:
         title: Authorization URL
         description: URL the user is redirect to to conest the flow.
         type: string
         maxLength: 255
+        minLength: 1
+        x-nullable: true
       access_token_url:
         title: Access Token URL
         description: URL used by authentik to retrive tokens.
         type: string
         maxLength: 255
+        minLength: 1
+        x-nullable: true
       profile_url:
         title: Profile URL
         description: URL used by authentik to get user information.
         type: string
         maxLength: 255
+        minLength: 1
+        x-nullable: true
       consumer_key:
         title: Consumer key
         type: string

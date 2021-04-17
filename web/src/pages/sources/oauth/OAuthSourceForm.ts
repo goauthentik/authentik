@@ -31,6 +31,9 @@ export class OAuthSourceForm extends Form<OAuthSource> {
     @property({type: Boolean})
     showUrlOptions = false;
 
+    @property({type: Boolean})
+    showRequestTokenURL = false;
+
     getSuccessMessage(): string {
         if (this.source) {
             return t`Successfully updated source.`;
@@ -66,29 +69,30 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                         label=${t`Authorization URL`}
                         ?required=${true}
                         name="authorizationUrl">
-                        <input type="text" value="${ifDefined(this.source?.authorizationUrl)}" class="pf-c-form-control" required>
+                        <input type="text" value="${first(this.source?.authorizationUrl, "")}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`URL the user is redirect to to consent the authorization.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Access token URL`}
                         ?required=${true}
                         name="accessTokenUrl">
-                        <input type="text" value="${ifDefined(this.source?.accessTokenUrl)}" class="pf-c-form-control" required>
+                        <input type="text" value="${first(this.source?.accessTokenUrl, "")}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`URL used by authentik to retrieve tokens.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Profile URL`}
                         ?required=${true}
                         name="profileUrl">
-                        <input type="text" value="${ifDefined(this.source?.profileUrl)}" class="pf-c-form-control" required>
+                        <input type="text" value="${first(this.source?.profileUrl, "")}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`URL used by authentik to get user information.`}</p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
+                    ${this.showRequestTokenURL ? html`<ak-form-element-horizontal
                         label=${t`Request token URL`}
                         name="requestTokenUrl">
-                        <input type="text" value="${ifDefined(this.source?.requestTokenUrl)}" class="pf-c-form-control">
+                        <input type="text" value="${first(this.source?.requestTokenUrl, "")}" class="pf-c-form-control">
                         <p class="pf-c-form__helper-text">${t`URL used to request the initial token. This URL is only required for OAuth 1.`}</p>
                     </ak-form-element-horizontal>
+                    ` : html``}
                 </div>
             </ak-form-group>`;
     }
@@ -144,6 +148,11 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                             } else {
                                 this.showUrlOptions = false;
                             }
+                            if ("data-request-token" in selected.attributes) {
+                                this.showRequestTokenURL = true;
+                            } else {
+                                this.showRequestTokenURL = false;
+                            }
                             if (!this.source) {
                                 this.source = {} as OAuthSource;
                             }
@@ -157,7 +166,13 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                                             selected = true;
                                         }
                                     }
-                                    return html`<option ?data-urls-custom=${type.urlsCustomizable} value=${type.slug} ?selected=${selected}>${type.name}</option>`;
+                                    return html`<option
+                                        ?data-urls-custom=${type.urlsCustomizable}
+                                        ?data-request-token=${type.requestTokenUrl}
+                                        value=${type.slug}
+                                        ?selected=${selected}>
+                                        ${type.name}
+                                    </option>`;
                                 });
                             }), html`<option>${t`Loading...`}</option>`)}
                         </select>
