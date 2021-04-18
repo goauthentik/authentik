@@ -8,5 +8,9 @@ module.exports = {
             type: "doc",
             id: "api",
         },
+        {
+            type: "doc",
+            id: "translation",
+        },
     ],
 };
