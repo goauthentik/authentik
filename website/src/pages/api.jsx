@@ -2,11 +2,11 @@ import React from "react";
 import Layout from "@theme/Layout";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
-import "rapidoc";
 
 function APIBrowser() {
     const context = useDocusaurusContext();
     const { siteConfig = {} } = context;
+    import('rapidoc');
     return (
         <Layout title="API Browser" description={siteConfig.tagline}>
             <rapi-doc
