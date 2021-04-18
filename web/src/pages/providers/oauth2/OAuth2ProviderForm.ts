@@ -117,7 +117,7 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                         name="redirectUris">
                         <textarea class="pf-c-form-control">${this.provider?.redirectUris}</textarea>
                         <p class="pf-c-form__helper-text">
-                            ${t`Valid redirect URLs after a successful authorization flow. Also specify any origins here for CORS Headers.`}
+                            ${t`Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows.`}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
@@ -157,9 +157,14 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                                 ordering: "scope_name"
                             }).then(scopes => {
                                 return scopes.results.map(scope => {
-                                    const selected = Array.from(this.provider?.propertyMappings || []).some(su => {
-                                        return su == scope.pk;
-                                    });
+                                    let selected = false;
+                                    if (!this.provider?.propertyMappings) {
+                                        selected = scope.managed?.startsWith("goauthentik.io/providers/oauth2/scope-") || false;
+                                    } else {
+                                        selected = Array.from(this.provider?.propertyMappings).some(su => {
+                                            return su == scope.pk;
+                                        });
+                                    }
                                     return html`<option value=${ifDefined(scope.pk)} ?selected=${selected}>${scope.name}</option>`;
                                 });
                             }), html`<option>${t`Loading...`}</option>`)}

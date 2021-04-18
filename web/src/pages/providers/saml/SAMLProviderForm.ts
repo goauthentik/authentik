@@ -154,9 +154,14 @@ export class SAMLProviderFormPage extends Form<SAMLProvider> {
                                 ordering: "saml_name"
                             }).then(mappings => {
                                 return mappings.results.map(mapping => {
-                                    const selected = Array.from(this.provider?.propertyMappings || []).some(su => {
-                                        return su == mapping.pk;
-                                    });
+                                    let selected = false;
+                                    if (!this.provider?.propertyMappings) {
+                                        selected = mapping.managed?.startsWith("goauthentik.io/providers/saml") || false;
+                                    } else {
+                                        selected = Array.from(this.provider?.propertyMappings).some(su => {
+                                            return su == mapping.pk;
+                                        });
+                                    }
                                     return html`<option value=${ifDefined(mapping.pk)} ?selected=${selected}>${mapping.name}</option>`;
                                 });
                             }), html`<option>${t`Loading...`}</option>`)}
