@@ -163,13 +163,5 @@ module.exports = {
                 "troubleshooting/image_upload_backup",
             ],
         },
-        {
-            type: "category",
-            label: "Development",
-            items: [
-                "development/local-dev-environment",
-                "development/api"
-            ],
-        },
     ],
 };

@@ -22,6 +22,12 @@ module.exports = {
                     position: "left",
                 },
                 {
+                    to: "developer-docs/",
+                    activeBasePath: "developer-docs",
+                    label: "Developer Docs",
+                    position: "left",
+                },
+                {
                     to: "api/",
                     activeBasePath: "api",
                     label: "API",
@@ -47,6 +53,10 @@ module.exports = {
                         {
                             label: "Documentation",
                             to: "docs/",
+                        },
+                        {
+                            label: "Developer Documentation",
+                            to: "developer-docs/",
                         },
                         {
                             label: "Installations",
@@ -83,12 +93,25 @@ module.exports = {
             "@docusaurus/preset-classic",
             {
                 docs: {
+                    id: "docs",
                     sidebarPath: require.resolve("./sidebars.js"),
                     editUrl: "https://github.com/beryju/authentik/edit/master/website/",
                 },
                 theme: {
                     customCss: require.resolve("./src/css/custom.css"),
                 },
+            },
+        ],
+    ],
+    plugins: [
+        [
+            '@docusaurus/plugin-content-docs',
+            {
+                id: 'docsDevelopers',
+                path: 'developer-docs',
+                routeBasePath: 'developer-docs',
+                sidebarPath: require.resolve('./sidebarsDev.js'),
+                editUrl: "https://github.com/beryju/authentik/edit/master/website/",
             },
         ],
     ],

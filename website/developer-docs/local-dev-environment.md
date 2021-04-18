@@ -1,5 +1,6 @@
 ---
-title: Setting up a local dev environment
+title: Getting started
+slug: /
 ---
 
 ## Backend
@@ -26,6 +27,10 @@ log_level: debug
 Afterwards, you can start authentik by running `./manage.py runserver`. Generally speaking, authentik is a Django application.
 
 Most functions and classes have type-hints and docstrings, so it is recommended to install a Python Type-checking Extension in your IDE to navigate around the code.
+
+Before committing code, run `make lint` to ensure your code is formatted well. This also requires `pyright`, which can be installed with npm.
+
+Run `make gen` to run all unittests and generated an updated swagger document for any changes you made.
 
 ## Frontend
 
@@ -54,3 +59,5 @@ npm run build
 ```
 
 If you want to make changes to the UI, run `npm run watch` instead.
+
+To ensure the code is formatted well, run `npx eslint . --fix` and `npm run lit-analyse`.
