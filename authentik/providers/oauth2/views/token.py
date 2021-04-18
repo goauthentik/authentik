@@ -198,7 +198,7 @@ class TokenView(View):
         response_dict = {
             "access_token": refresh_token.access_token,
             "refresh_token": refresh_token.refresh_token,
-            "token_type": "Bearer",
+            "token_type": "bearer",
             "expires_in": timedelta_from_string(
                 self.params.provider.token_validity
             ).seconds,
