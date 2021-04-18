@@ -22,6 +22,12 @@ module.exports = {
                     position: "left",
                 },
                 {
+                    to: "api/",
+                    activeBasePath: "api",
+                    label: "API",
+                    position: "left",
+                },
+                {
                     href: "https://github.com/beryju/authentik",
                     label: "GitHub",
                     position: "right",
