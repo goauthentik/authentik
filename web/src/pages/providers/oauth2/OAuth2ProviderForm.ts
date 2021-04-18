@@ -113,9 +113,12 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                         <input type="text" value="${first(this.provider?.clientSecret, randomString(128))}" class="pf-c-form-control">
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Redirect URIs`}
+                        label=${t`Redirect URIs/Origins`}
                         name="redirectUris">
                         <textarea class="pf-c-form-control">${this.provider?.redirectUris}</textarea>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Valid redirect URLs after a successful authorization flow. Also specify any origins here for CORS Headers.`}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

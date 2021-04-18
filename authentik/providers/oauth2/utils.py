@@ -3,6 +3,7 @@ import re
 from base64 import b64decode
 from binascii import Error
 from typing import Optional
+from urllib.parse import urlparse
 
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.utils.cache import patch_vary_headers
@@ -25,13 +26,32 @@ class TokenResponse(JsonResponse):
         self["Pragma"] = "no-cache"
 
 
-def cors_allow_any(request, response):
-    """
-    Add headers to permit CORS requests from any origin, with or without credentials,
-    with any headers.
-    """
+def cors_allow_any(request: HttpRequest, response: HttpResponse, *allowed_origins: str):
+    """Add headers to permit CORS requests from any origin, with or without credentials,
+    with any headers."""
     origin = request.META.get("HTTP_ORIGIN")
     if not origin:
+        return response
+
+    # OPTIONS requests don't have an authorization header -> hence
+    # we can't extract the provider this request is for
+    # so for options requests we allow the calling origin without checking
+    allowed = request.method == "OPTIONS"
+    received_origin = urlparse(origin)
+    for allowed_origin in allowed_origins:
+        url = urlparse(allowed_origin)
+        if (
+            received_origin.scheme == url.scheme
+            and received_origin.hostname == url.hostname
+            and received_origin.port == url.port
+        ):
+            allowed = True
+    if not allowed:
+        LOGGER.warning(
+            "CORS: Origin is not an allowed origin",
+            requested=origin,
+            allowed=allowed_origins,
+        )
         return response
 
     # From the CORS spec: The string "*" cannot be used for a resource that supports credentials.

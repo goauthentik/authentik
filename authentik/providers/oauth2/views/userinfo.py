@@ -1,7 +1,8 @@
 """authentik OAuth2 OpenID Userinfo views"""
-from typing import Any
+from typing import Any, Optional
 
 from django.http import HttpRequest, HttpResponse
+from django.http.response import HttpResponseBadRequest
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from structlog.stdlib import get_logger
@@ -21,6 +22,8 @@ LOGGER = get_logger()
 class UserInfoView(View):
     """Create a dictionary with all the requested claims about the End-User.
     See: http://openid.net/specs/openid-connect-core-1_0.html#UserInfoResponse"""
+
+    token: Optional[RefreshToken]
 
     def get_scope_descriptions(self, scopes: list[str]) -> list[dict[str, str]]:
         """Get a list of all Scopes's descriptions"""
@@ -79,16 +82,25 @@ class UserInfoView(View):
             final_claims.update(value)
         return final_claims
 
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        self.token = kwargs.get("token", None)
+        response = super().dispatch(request, *args, **kwargs)
+        allowed_origins = []
+        if self.token:
+            allowed_origins = self.token.provider.redirect_uris.split("\n")
+        cors_allow_any(self.request, response, *allowed_origins)
+        return response
+
     def options(self, request: HttpRequest) -> HttpResponse:
-        return cors_allow_any(self.request, TokenResponse({}))
+        return TokenResponse({})
 
     def get(self, request: HttpRequest, **kwargs) -> HttpResponse:
         """Handle GET Requests for UserInfo"""
-        token: RefreshToken = kwargs["token"]
-        claims = self.get_claims(token)
-        claims["sub"] = token.id_token.sub
+        if not self.token:
+            return HttpResponseBadRequest()
+        claims = self.get_claims(self.token)
+        claims["sub"] = self.token.id_token.sub
         response = TokenResponse(claims)
-        cors_allow_any(self.request, response)
         return response
 
     def post(self, request: HttpRequest, **kwargs) -> HttpResponse:

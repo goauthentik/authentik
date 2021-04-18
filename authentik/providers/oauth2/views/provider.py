@@ -30,6 +30,8 @@ PLAN_CONTEXT_SCOPES = "scopes"
 class ProviderInfoView(View):
     """OpenID-compliant Provider Info"""
 
+    provider: OAuth2Provider
+
     def get_info(self, provider: OAuth2Provider) -> dict[str, Any]:
         """Get dictionary for OpenID Connect information"""
         scopes = list(
@@ -95,19 +97,20 @@ class ProviderInfoView(View):
         }
 
     # pylint: disable=unused-argument
-    def get(
-        self, request: HttpRequest, application_slug: str, *args, **kwargs
-    ) -> HttpResponse:
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """OpenID-compliant Provider Info"""
+        return JsonResponse(
+            self.get_info(self.provider), json_dumps_params={"indent": 2}
+        )
 
+    def dispatch(
+        self, request: HttpRequest, application_slug: str, *args: Any, **kwargs: Any
+    ) -> HttpResponse:
+        # Since this view only supports get, we can statically set the CORS headers
         application = get_object_or_404(Application, slug=application_slug)
-        provider: OAuth2Provider = get_object_or_404(
+        self.provider: OAuth2Provider = get_object_or_404(
             OAuth2Provider, pk=application.provider_id
         )
-        return JsonResponse(self.get_info(provider), json_dumps_params={"indent": 2})
-
-    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        # Since this view only supports get, we can statically set the CORS headers
         response = super().dispatch(request, *args, **kwargs)
-        cors_allow_any(request, response)
+        cors_allow_any(request, response, *self.provider.redirect_uris.split("\n"))
         return response

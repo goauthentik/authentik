@@ -21,7 +21,7 @@ class ProxyScopeMappingManager(ObjectManager):
             EnsureExists(
                 ScopeMapping,
                 "goauthentik.io/providers/proxy/scope-proxy",
-                name="authentik default OAuth Mapping: proxy outpost",
+                name="authentik default OAuth Mapping: Proxy outpost",
                 scope_name=SCOPE_AK_PROXY,
                 expression=SCOPE_AK_PROXY_EXPRESSION,
             ),
