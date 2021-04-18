@@ -25,7 +25,7 @@ export class ProviderListPage extends TablePage<Provider> {
         return true;
     }
     pageTitle(): string {
-        return t`Provider`;
+        return t`Providers`;
     }
     pageDescription(): string {
         return t`Provide support for protocols like SAML and OAuth to assigned applications.`;

@@ -43,7 +43,7 @@ export class ApplicationViewPage extends LitElement {
     render(): TemplateResult {
         return html`<ak-page-header
                 icon=${this.application?.metaIcon || ""}
-                header=${this.application?.name}
+                header=${this.application?.name || t`Loading`}
                 description=${ifDefined(this.application?.metaPublisher)}
                 .iconImage=${true}>
             </ak-page-header>

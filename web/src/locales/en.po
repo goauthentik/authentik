@@ -1680,6 +1680,7 @@ msgstr "Library"
 #: src/flows/stages/identification/IdentificationStage.ts:134
 #: src/flows/stages/password/PasswordStage.ts:31
 #: src/flows/stages/prompt/PromptStage.ts:126
+#: src/pages/applications/ApplicationViewPage.ts:43
 #: src/pages/applications/ApplicationViewPage.ts:54
 #: src/pages/user-settings/UserDetailsPage.ts:38
 #: src/utils.ts:40
@@ -2394,7 +2395,6 @@ msgstr "Provide support for protocols like SAML and OAuth to assigned applicatio
 #: src/pages/applications/ApplicationForm.ts:100
 #: src/pages/applications/ApplicationListPage.ts:59
 #: src/pages/applications/ApplicationViewPage.ts:68
-#: src/pages/providers/ProviderListPage.ts:34
 msgid "Provider"
 msgstr "Provider"
 
@@ -2411,6 +2411,7 @@ msgstr "Provider type"
 #: src/pages/admin-overview/AdminOverviewPage.ts:46
 #: src/pages/outposts/OutpostForm.ts:82
 #: src/pages/outposts/OutpostListPage.ts:51
+#: src/pages/providers/ProviderListPage.ts:34
 msgid "Providers"
 msgstr "Providers"
 
