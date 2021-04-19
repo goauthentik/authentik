@@ -67,6 +67,8 @@ def outpost_controller(self: MonitoredTask, outpost_pk: str):
     outpost: Outpost = Outpost.objects.get(pk=outpost_pk)
     self.set_uid(slugify(outpost.name))
     try:
+        if not outpost.service_connection:
+            return
         if outpost.type == OutpostType.PROXY:
             service_connection = outpost.service_connection
             if isinstance(service_connection, DockerServiceConnection):
