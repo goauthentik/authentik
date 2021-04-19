@@ -104,13 +104,15 @@ function Home() {
                             <div className="col col--5">
                                 <div>
                                     <BrowserOnly>
-                                        <BeforeAfterSlider
-                                            className={styles.featureImage}
-                                            before={useBaseUrl("img/screen_apps_light.jpg")}
-                                            after={useBaseUrl("img/screen_apps_dark.jpg")}
-                                            width={640}
-                                            height={480}
-                                        />
+                                        {() => {
+                                            return <BeforeAfterSlider
+                                                className={styles.featureImage}
+                                                before={useBaseUrl("img/screen_apps_light.jpg")}
+                                                after={useBaseUrl("img/screen_apps_dark.jpg")}
+                                                width={640}
+                                                height={480}
+                                            />
+                                        }}
                                     </BrowserOnly>
                                 </div>
                             </div>
@@ -143,13 +145,15 @@ function Home() {
                             <div className="col col--5">
                                 <div>
                                     <BrowserOnly>
-                                        <BeforeAfterSlider
-                                            className={styles.featureImage}
-                                            before={useBaseUrl("img/screen_admin_light.jpg")}
-                                            after={useBaseUrl("img/screen_admin_dark.jpg")}
-                                            width={640}
-                                            height={480}
-                                        />
+                                        {() => {
+                                            return <BeforeAfterSlider
+                                                className={styles.featureImage}
+                                                before={useBaseUrl("img/screen_admin_light.jpg")}
+                                                after={useBaseUrl("img/screen_admin_dark.jpg")}
+                                                width={640}
+                                                height={480}
+                                            />
+                                        }}
                                     </BrowserOnly>
                                 </div>
                             </div>
