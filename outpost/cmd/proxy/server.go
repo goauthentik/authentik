@@ -52,13 +52,14 @@ func main() {
 
 	ac.Server = proxy.NewServer(ac)
 
-	ac.Start()
+	err = ac.Start()
+	if err != nil {
+		log.WithError(err).Panic("Failed to run server")
+	}
 
 	for {
-		select {
-		case <-interrupt:
-			ac.Shutdown()
-			os.Exit(0)
-		}
+		<-interrupt
+		ac.Shutdown()
+		os.Exit(0)
 	}
 }

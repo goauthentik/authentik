@@ -98,7 +98,10 @@ func (a *APIController) Start() error {
 		a.startWSHealth()
 	}()
 	go func() {
-		a.Server.Start()
+		err := a.Server.Start()
+		if err != nil {
+			panic(err)
+		}
 	}()
 	return nil
 }

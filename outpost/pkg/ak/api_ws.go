@@ -64,7 +64,6 @@ func (ac *APIController) Shutdown() {
 		ac.logger.Println("write close:", err)
 		return
 	}
-	return
 }
 
 func (ac *APIController) startWSHandler() {
@@ -92,7 +91,8 @@ func (ac *APIController) startWSHandler() {
 }
 
 func (ac *APIController) startWSHealth() {
-	for ; true; <-time.Tick(time.Second * 10) {
+	ticker := time.NewTicker(time.Second * 10)
+	for ; true; <-ticker.C {
 		if !ac.wsConn.IsConnected() {
 			continue
 		}
