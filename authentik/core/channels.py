@@ -1,6 +1,7 @@
 """Channels base classes"""
 from channels.exceptions import DenyConnection
 from channels.generic.websocket import JsonWebsocketConsumer
+from rest_framework.exceptions import AuthenticationFailed
 from structlog.stdlib import get_logger
 
 from authentik.api.auth import token_from_header
@@ -22,9 +23,13 @@ class AuthJsonConsumer(JsonWebsocketConsumer):
 
         raw_header = headers[b"authorization"]
 
-        token = token_from_header(raw_header)
-        if not token:
-            LOGGER.warning("Failed to authenticate")
+        try:
+            token = token_from_header(raw_header)
+            # token is only None when no header was given, in which case we deny too
+            if not token:
+                raise DenyConnection()
+        except AuthenticationFailed as exc:
+            LOGGER.warning("Failed to authenticate", exc=exc)
             raise DenyConnection()
 
         self.user = token.user
