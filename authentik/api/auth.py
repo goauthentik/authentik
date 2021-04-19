@@ -62,6 +62,3 @@ class AuthentikTokenAuthentication(BaseAuthentication):
             return None
 
         return (token.user, None)
-
-    def authenticate_header(self, request: Request) -> str:
-        return "Bearer"

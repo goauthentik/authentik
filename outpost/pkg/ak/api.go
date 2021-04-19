@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"net/url"
+	"os"
 	"time"
 
 	"github.com/go-openapi/runtime"
@@ -56,7 +57,8 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	outposts, err := apiClient.Outposts.OutpostsInstancesList(outposts.NewOutpostsInstancesListParams(), auth)
 
 	if err != nil {
-		log.WithError(err).Panic("Failed to fetch configuration")
+		log.WithError(err).Error("Failed to fetch configuration")
+		os.Exit(1)
 	}
 	outpost := outposts.Payload.Results[0]
 	doGlobalSetup(outpost.Config.(map[string]interface{}))
