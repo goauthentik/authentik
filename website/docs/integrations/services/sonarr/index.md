@@ -2,8 +2,6 @@
 title: Sonarr
 ---
 
-# Sonarr Integration
-
 :::note
 These instructions apply to all projects in the \*arr Family. If you use multiple of these projects, you can assign them to the same Outpost.
 :::

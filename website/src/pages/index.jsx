@@ -2,7 +2,7 @@ import React from "react";
 import clsx from "clsx";
 import Layout from "@theme/Layout";
 import Link from "@docusaurus/Link";
-import ClientOnly from "@docusaurus/core/lib/client/exports/ClientOnly.js";
+import BrowserOnly from "@docusaurus/core/lib/client/exports/BrowserOnly";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import styles from "./styles.module.css";
@@ -103,7 +103,7 @@ function Home() {
                         <div className="row">
                             <div className="col col--5">
                                 <div>
-                                    <ClientOnly>
+                                    <BrowserOnly>
                                         <BeforeAfterSlider
                                             className={styles.featureImage}
                                             before={useBaseUrl("img/screen_apps_light.jpg")}
@@ -111,7 +111,7 @@ function Home() {
                                             width={640}
                                             height={480}
                                         />
-                                    </ClientOnly>
+                                    </BrowserOnly>
                                 </div>
                             </div>
                             <div className="col col--5 col--offset-2 padding-vert--xl">
@@ -142,7 +142,7 @@ function Home() {
                             </div>
                             <div className="col col--5">
                                 <div>
-                                    <ClientOnly>
+                                    <BrowserOnly>
                                         <BeforeAfterSlider
                                             className={styles.featureImage}
                                             before={useBaseUrl("img/screen_admin_light.jpg")}
@@ -150,7 +150,7 @@ function Home() {
                                             width={640}
                                             height={480}
                                         />
-                                    </ClientOnly>
+                                    </BrowserOnly>
                                 </div>
                             </div>
                         </div>

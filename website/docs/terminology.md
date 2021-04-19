@@ -30,3 +30,11 @@ Flows are an ordered sequence of stages. These flows can be used to define how a
 ### Property Mappings
 
 Property Mappings allow you to make information available for external applications. For example, if you want to login to AWS with authentik, you'd use Property Mappings to set the user's roles in AWS based on their group memberships in authentik.
+
+### Outpost
+
+An outpost is a separate component of authentik, which can be deployed anywhere, irregardless of the authentik deployment. The outpost offers services that aren't implemented directly into the authentik core, like Reverse Proxying.
+
+Currently there is only a reverse-proxy outpost, in the future there will be more different outpost types.
+
+See [Outposts](./outposts/outposts.md)
