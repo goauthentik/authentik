@@ -7674,6 +7674,9 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/PolicyTest'
+        - name: format_result
+          in: query
+          type: boolean
       responses:
         '200':
           description: ''

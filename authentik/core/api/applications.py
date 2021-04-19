@@ -108,7 +108,7 @@ class ApplicationViewSet(ModelViewSet):
         should_cache = request.GET.get("search", "") == ""
 
         superuser_full_list = (
-            request.GET.get("superuser_full_list", "false").lower() == "true"
+            str(request.GET.get("superuser_full_list", "false")).lower() == "true"
         )
         if superuser_full_list and request.user.is_superuser:
             serializer = self.get_serializer(queryset, many=True)

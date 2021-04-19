@@ -27,7 +27,8 @@ export class PolicyTestForm extends Form<PolicyTest> {
     send = (data: PolicyTest): Promise<PropertyMappingTestResult> => {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllTest({
             pmUuid: this.mapping?.pk || "",
-            data: data
+            data: data,
+            formatResult: true,
         }).then(result => this.result = result);
     };
 

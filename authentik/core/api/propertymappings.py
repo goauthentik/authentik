@@ -1,6 +1,7 @@
 """PropertyMapping API Views"""
 from json import dumps
 
+from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins
@@ -102,6 +103,13 @@ class PropertyMappingViewSet(
     @swagger_auto_schema(
         request_body=PolicyTestSerializer(),
         responses={200: PropertyMappingTestResultSerializer, 400: "Invalid parameters"},
+        manual_parameters=[
+            openapi.Parameter(
+                name="format_result",
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_BOOLEAN,
+            )
+        ],
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
     # pylint: disable=unused-argument, invalid-name
@@ -111,6 +119,8 @@ class PropertyMappingViewSet(
         test_params = PolicyTestSerializer(data=request.data)
         if not test_params.is_valid():
             return Response(test_params.errors, status=400)
+
+        format_result = str(request.GET.get("format_result", "false")).lower() == "true"
 
         # User permission check, only allow mapping testing for users that are readable
         users = get_objects_for_user(request.user, "authentik_core.view_user").filter(
@@ -126,7 +136,9 @@ class PropertyMappingViewSet(
                 self.request,
                 **test_params.validated_data.get("context", {}),
             )
-            response_data["result"] = dumps(result)
+            response_data["result"] = dumps(
+                result, indent=(4 if format_result else None)
+            )
         except Exception as exc:  # pylint: disable=broad-except
             response_data["result"] = str(exc)
             response_data["successful"] = False
