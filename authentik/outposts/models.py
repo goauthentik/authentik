@@ -77,6 +77,7 @@ class OutpostType(models.TextChoices):
     """Outpost types, currently only the reverse proxy is available"""
 
     PROXY = "proxy"
+    LDAP = "ldap"
 
 
 def default_outpost_config(host: Optional[str] = None):

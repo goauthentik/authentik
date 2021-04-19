@@ -31,7 +31,7 @@ func doGlobalSetup(config map[string]interface{}) {
 	default:
 		log.SetLevel(log.DebugLevel)
 	}
-	log.WithField("version", pkg.VERSION).Info("Starting authentik proxy")
+	log.WithField("version", pkg.VERSION).Info("Starting authentik outpost")
 
 	var dsn string
 	if config[ConfigErrorReportingEnabled].(bool) {
