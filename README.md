@@ -31,7 +31,7 @@ Light | Dark
 
 ## Development
 
-See [Development Documentation](https://goauthentik.io/docs/development/local-dev-environment)
+See [Development Documentation](https://goauthentik.io/developer-docs/)
 
 ## Security
 
