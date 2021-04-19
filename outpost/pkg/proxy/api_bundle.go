@@ -38,7 +38,11 @@ func (pb *providerBundle) prepareOpts(provider *models.ProxyOutpostConfig) *opti
 		return nil
 	}
 	providerOpts := &options.Options{}
-	copier.Copy(&providerOpts, getCommonOptions())
+	err = copier.Copy(&providerOpts, getCommonOptions())
+	if err != nil {
+		log.WithError(err).Warning("Failed to copy options, skipping provider")
+		return nil
+	}
 	providerOpts.ClientID = provider.ClientID
 	providerOpts.ClientSecret = provider.ClientSecret
 
@@ -62,7 +66,7 @@ func (pb *providerBundle) prepareOpts(provider *models.ProxyOutpostConfig) *opti
 			ID:                    "default",
 			URI:                   *provider.InternalHost,
 			Path:                  "/",
-			InsecureSkipTLSVerify: *&provider.InternalHostSslValidation,
+			InsecureSkipTLSVerify: provider.InternalHostSslValidation,
 		},
 	}
 
@@ -85,7 +89,7 @@ func (pb *providerBundle) prepareOpts(provider *models.ProxyOutpostConfig) *opti
 			return providerOpts
 		}
 
-		x509cert, err := tls.X509KeyPair([]byte(*&cert.Payload.Data), []byte(key.Payload.Data))
+		x509cert, err := tls.X509KeyPair([]byte(cert.Payload.Data), []byte(key.Payload.Data))
 		if err != nil {
 			pb.log.WithField("provider", provider.ClientID).WithError(err).Warning("Failed to parse certificate")
 			return providerOpts
@@ -135,7 +139,7 @@ func (pb *providerBundle) Build(provider *models.ProxyOutpostConfig) {
 		os.Exit(1)
 	}
 
-	if *&provider.BasicAuthEnabled {
+	if provider.BasicAuthEnabled {
 		oauthproxy.SetBasicAuth = true
 		oauthproxy.BasicAuthUserAttribute = provider.BasicAuthUserAttribute
 		oauthproxy.BasicAuthPasswordAttribute = provider.BasicAuthPasswordAttribute
