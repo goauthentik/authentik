@@ -22,10 +22,8 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                sudo wget -O /usr/local/bin/swagger https://github.com/go-swagger/go-swagger/releases/latest/download/swagger_linux_amd64
-                sudo chmod +x /usr/local/bin/swagger
-                mkdir -p $(go env GOPATH)
-                swagger generate client -f ../swagger.yaml -A authentik -t pkg/
+                cp ../swagger.yaml .
+                docker run --rm -it --user $(id -u):$(id -g) -e GOPATH=$HOME/go:/go -v $HOME:$HOME -w $(pwd) quay.io/goswagger/swagger generate client -f swagger.yaml -A authentik -t pkg/
               workingDirectory: 'outpost/'
           - task: PublishPipelineArtifact@1
             inputs:
