@@ -39,8 +39,8 @@ type APIController struct {
 }
 
 // NewAPIController initialise new API Controller instance from URL and API token
-func NewAPIController(pbURL url.URL, token string) *APIController {
-	transport := httptransport.New(pbURL.Host, client.DefaultBasePath, []string{pbURL.Scheme})
+func NewAPIController(akURL url.URL, token string) *APIController {
+	transport := httptransport.New(akURL.Host, client.DefaultBasePath, []string{akURL.Scheme})
 	transport.Transport = SetUserAgent(getTLSTransport(), fmt.Sprintf("authentik-proxy@%s", pkg.VERSION))
 
 	// create the transport
@@ -53,7 +53,7 @@ func NewAPIController(pbURL url.URL, token string) *APIController {
 
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
-	outposts, err := apiClient.Outposts.OutpostsOutpostsList(outposts.NewOutpostsOutpostsListParams(), auth)
+	outposts, err := apiClient.Outposts.OutpostsInstancesList(outposts.NewOutpostsInstancesListParams(), auth)
 
 	if err != nil {
 		log.WithError(err).Panic("Failed to fetch configuration")
@@ -73,7 +73,7 @@ func NewAPIController(pbURL url.URL, token string) *APIController {
 		lastBundleHash: "",
 	}
 	ac.logger.Debugf("HA Reload offset: %s", ac.reloadOffset)
-	ac.initWS(pbURL, outpost.Pk)
+	ac.initWS(akURL, outpost.Pk)
 	return ac
 }
 

@@ -113,6 +113,7 @@ router.register("core/user_consent", UserConsentViewSet)
 router.register("core/tokens", TokenViewSet)
 
 router.register("outposts/outposts", OutpostViewSet)
+router.register("outposts/instances", OutpostViewSet)
 router.register("outposts/service_connections/all", ServiceConnectionViewSet)
 router.register("outposts/service_connections/docker", DockerServiceConnectionViewSet)
 router.register(
