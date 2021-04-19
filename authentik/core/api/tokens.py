@@ -11,7 +11,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.api.decorators import permission_required
 from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import PassiveSerializer
-from authentik.core.models import Token
+from authentik.core.models import Token, TokenIntents
 from authentik.events.models import Event, EventAction
 from authentik.managed.api import ManagedSerializer
 
@@ -64,7 +64,7 @@ class TokenViewSet(ModelViewSet):
     ordering = ["expires"]
 
     def perform_create(self, serializer: TokenSerializer):
-        serializer.save(user=self.request.user)
+        serializer.save(user=self.request.user, intent=TokenIntents.INTENT_API)
 
     @permission_required("authentik_core.view_token_key")
     @swagger_auto_schema(

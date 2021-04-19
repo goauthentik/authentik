@@ -2,7 +2,7 @@
 from django.urls.base import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import Token, User
+from authentik.core.models import Token, TokenIntents, User
 
 
 class TestTokenAPI(APITestCase):
@@ -19,4 +19,6 @@ class TestTokenAPI(APITestCase):
             reverse("authentik_api:token-list"), {"identifier": "test-token"}
         )
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(Token.objects.get(identifier="test-token").user, self.user)
+        token = Token.objects.get(identifier="test-token")
+        self.assertEqual(token.user, self.user)
+        self.assertEqual(token.intent, TokenIntents.INTENT_API)
