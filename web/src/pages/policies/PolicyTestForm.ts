@@ -9,6 +9,7 @@ import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
 import "../../elements/CodeMirror";
 import { PolicyTest } from "authentik-api/src";
+import YAML from "yaml";
 
 @customElement("ak-policy-test-form")
 export class PolicyTestForm extends Form<PolicyTest> {
@@ -75,7 +76,7 @@ export class PolicyTestForm extends Form<PolicyTest> {
             <ak-form-element-horizontal
                 label=${t`Context`}
                 name="context">
-                <ak-codemirror mode="yaml">
+                <ak-codemirror mode="yaml" value=${YAML.stringify({})}>>
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">${t`Set custom attributes using YAML or JSON.`}</p>
             </ak-form-element-horizontal>
