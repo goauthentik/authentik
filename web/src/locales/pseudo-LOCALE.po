@@ -168,12 +168,12 @@ msgstr ""
 
 #: src/elements/user/UserConsentList.ts:29
 #: src/pages/admin-overview/TopApplicationsTable.ts:42
-#: src/pages/applications/ApplicationListPage.ts:104
+#: src/pages/applications/ApplicationListPage.ts:105
 #: src/pages/providers/ProviderListPage.ts:53
 msgid "Application"
 msgstr ""
 
-#: src/pages/applications/ApplicationListPage.ts:68
+#: src/pages/applications/ApplicationListPage.ts:69
 msgid "Application Icon"
 msgstr ""
 
@@ -689,8 +689,8 @@ msgid "Copy Key"
 msgstr ""
 
 #: src/pages/applications/ApplicationForm.ts:120
-#: src/pages/applications/ApplicationListPage.ts:120
-#: src/pages/applications/ApplicationListPage.ts:128
+#: src/pages/applications/ApplicationListPage.ts:121
+#: src/pages/applications/ApplicationListPage.ts:129
 #: src/pages/crypto/CertificateKeyPairListPage.ts:122
 #: src/pages/crypto/CertificateKeyPairListPage.ts:130
 #: src/pages/events/RuleListPage.ts:91
@@ -736,7 +736,7 @@ msgstr ""
 msgid "Create"
 msgstr ""
 
-#: src/pages/applications/ApplicationListPage.ts:123
+#: src/pages/applications/ApplicationListPage.ts:124
 #: src/pages/providers/RelatedApplicationButton.ts:30
 msgid "Create Application"
 msgstr ""
@@ -862,7 +862,7 @@ msgid "Define how notifications are sent to users, like Email or Webhook."
 msgstr ""
 
 #: src/elements/forms/DeleteForm.ts:79
-#: src/pages/applications/ApplicationListPage.ts:111
+#: src/pages/applications/ApplicationListPage.ts:112
 #: src/pages/crypto/CertificateKeyPairListPage.ts:86
 #: src/pages/events/RuleListPage.ts:82
 #: src/pages/events/TransportListPage.ts:86
@@ -1006,7 +1006,7 @@ msgstr ""
 msgid "Each provider has a different issuer, based on the application slug."
 msgstr ""
 
-#: src/pages/applications/ApplicationListPage.ts:94
+#: src/pages/applications/ApplicationListPage.ts:95
 #: src/pages/applications/ApplicationViewPage.ts:91
 #: src/pages/applications/ApplicationViewPage.ts:105
 #: src/pages/crypto/CertificateKeyPairListPage.ts:74
@@ -1247,7 +1247,7 @@ msgid "Expression using Python."
 msgstr ""
 
 #: src/pages/applications/ApplicationListPage.ts:31
-msgid "External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML."
+msgid "External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access."
 msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:90
@@ -1838,7 +1838,7 @@ msgid "Monitor"
 msgstr ""
 
 #: src/pages/applications/ApplicationForm.ts:86
-#: src/pages/applications/ApplicationListPage.ts:57
+#: src/pages/applications/ApplicationListPage.ts:58
 #: src/pages/crypto/CertificateKeyPairForm.ts:45
 #: src/pages/crypto/CertificateKeyPairListPage.ts:51
 #: src/pages/events/EventInfo.ts:51
@@ -2107,7 +2107,7 @@ msgstr ""
 msgid "Only send notification once, for example when sending a webhook into a chat channel."
 msgstr ""
 
-#: src/pages/applications/ApplicationListPage.ts:99
+#: src/pages/applications/ApplicationListPage.ts:100
 msgid "Open application"
 msgstr ""
 
@@ -2385,12 +2385,12 @@ msgstr ""
 #: src/elements/oauth/UserCodeList.ts:29
 #: src/elements/oauth/UserRefreshList.ts:29
 #: src/pages/applications/ApplicationForm.ts:100
-#: src/pages/applications/ApplicationListPage.ts:59
+#: src/pages/applications/ApplicationListPage.ts:60
 #: src/pages/applications/ApplicationViewPage.ts:68
 msgid "Provider"
 msgstr ""
 
-#: src/pages/applications/ApplicationListPage.ts:60
+#: src/pages/applications/ApplicationListPage.ts:61
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:71
 msgid "Provider Type"
 msgstr ""
@@ -2801,7 +2801,7 @@ msgid "Skip path regex"
 msgstr ""
 
 #: src/pages/applications/ApplicationForm.ts:93
-#: src/pages/applications/ApplicationListPage.ts:58
+#: src/pages/applications/ApplicationListPage.ts:59
 #: src/pages/flows/FlowForm.ts:94
 #: src/pages/sources/ldap/LDAPSourceForm.ts:60
 #: src/pages/sources/oauth/OAuthSourceForm.ts:106
@@ -3459,7 +3459,7 @@ msgstr ""
 msgid "Up-to-date!"
 msgstr ""
 
-#: src/pages/applications/ApplicationListPage.ts:86
+#: src/pages/applications/ApplicationListPage.ts:87
 #: src/pages/applications/ApplicationViewPage.ts:97
 #: src/pages/crypto/CertificateKeyPairListPage.ts:66
 #: src/pages/events/RuleListPage.ts:62
@@ -3497,7 +3497,7 @@ msgstr ""
 msgid "Update"
 msgstr ""
 
-#: src/pages/applications/ApplicationListPage.ts:89
+#: src/pages/applications/ApplicationListPage.ts:90
 #: src/pages/applications/ApplicationViewPage.ts:100
 msgid "Update Application"
 msgstr ""

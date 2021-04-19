@@ -22,7 +22,7 @@ export class ApplicationListPage extends TablePage<Application> {
         return t`Applications`;
     }
     pageDescription(): string {
-        return t`External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML.`;
+        return t`External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.`;
     }
     pageIcon(): string {
         return "pf-icon pf-icon-applications";
@@ -37,6 +37,7 @@ export class ApplicationListPage extends TablePage<Application> {
             page: page,
             pageSize: PAGE_SIZE,
             search: this.search || "",
+            superuserFullList: true,
         });
     }
 

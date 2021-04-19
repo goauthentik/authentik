@@ -1152,6 +1152,9 @@ paths:
           description: Page Size
           required: false
           type: integer
+        - name: superuser_full_list
+          in: query
+          type: boolean
       responses:
         '200':
           description: ''

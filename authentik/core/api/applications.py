@@ -91,12 +91,28 @@ class ApplicationViewSet(ModelViewSet):
                 applications.append(application)
         return applications
 
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(
+                name="superuser_full_list",
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_BOOLEAN,
+            )
+        ]
+    )
     def list(self, request: Request) -> Response:
         """Custom list method that checks Policy based access instead of guardian"""
         queryset = self._filter_queryset_for_list(self.get_queryset())
         self.paginate_queryset(queryset)
 
         should_cache = request.GET.get("search", "") == ""
+
+        superuser_full_list = (
+            request.GET.get("superuser_full_list", "false").lower() == "true"
+        )
+        if superuser_full_list and request.user.is_superuser:
+            serializer = self.get_serializer(queryset, many=True)
+            return self.get_paginated_response(serializer.data)
 
         allowed_applications = []
         if not should_cache:
