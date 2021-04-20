@@ -44,6 +44,9 @@ export class PolicyBindingForm extends Form<PolicyBinding> {
     @property({type: Number})
     policyGroupUser: target = target.policy;
 
+    @property({type: Boolean})
+    policyOnly = false;
+
     getSuccessMessage(): string {
         if (this.binding) {
             return t`Successfully updated binding.`;
@@ -58,10 +61,6 @@ export class PolicyBindingForm extends Form<PolicyBinding> {
                 justify-content: center;
             }
         `);
-    }
-
-    async customValidate(form: PolicyBinding): Promise<PolicyBinding> {
-        return form;
     }
 
     send = (data: PolicyBinding): Promise<PolicyBinding> => {
@@ -105,34 +104,49 @@ export class PolicyBindingForm extends Form<PolicyBinding> {
         });
     }
 
+    renderModeSelector(): TemplateResult {
+        console.log(this.policyOnly);
+        if (this.policyOnly) {
+            this.policyGroupUser = target.policy;
+            return html`
+                <div class="pf-c-toggle-group__item">
+                    <button class="pf-c-toggle-group__button pf-m-selected" type="button">
+                        <span class="pf-c-toggle-group__text">${t`Policy`}</span>
+                    </button>
+                </div>`;
+        }
+        return html`
+            <div class="pf-c-toggle-group__item">
+                <button class="pf-c-toggle-group__button ${this.policyGroupUser === target.policy ? "pf-m-selected": ""}" type="button" @click=${() => {
+                    this.policyGroupUser = target.policy;
+                }}>
+                    <span class="pf-c-toggle-group__text">${t`Policy`}</span>
+                </button>
+            </div>
+            <div class="pf-c-divider pf-m-vertical" role="separator"></div>
+            <div class="pf-c-toggle-group__item">
+                <button class="pf-c-toggle-group__button ${this.policyGroupUser === target.group ? "pf-m-selected" : ""}" type="button" @click=${() => {
+                    this.policyGroupUser = target.group;
+                }}>
+                    <span class="pf-c-toggle-group__text">${t`Group`}</span>
+                </button>
+            </div>
+            <div class="pf-c-divider pf-m-vertical" role="separator"></div>
+            <div class="pf-c-toggle-group__item">
+                <button class="pf-c-toggle-group__button ${this.policyGroupUser === target.user ? "pf-m-selected" : ""}" type="button" @click=${() => {
+                    this.policyGroupUser = target.user;
+                }}>
+                    <span class="pf-c-toggle-group__text">${t`User`}</span>
+                </button>
+            </div>`;
+    }
+
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <div class="pf-c-card pf-m-selectable pf-m-selected">
                 <div class="pf-c-card__body">
                     <div class="pf-c-toggle-group">
-                        <div class="pf-c-toggle-group__item">
-                            <button class="pf-c-toggle-group__button ${this.policyGroupUser === target.policy ? "pf-m-selected": ""}" type="button" @click=${() => {
-                                this.policyGroupUser = target.policy;
-                            }}>
-                                <span class="pf-c-toggle-group__text">${t`Policy`}</span>
-                            </button>
-                        </div>
-                        <div class="pf-c-divider pf-m-vertical" role="separator"></div>
-                        <div class="pf-c-toggle-group__item">
-                            <button class="pf-c-toggle-group__button ${this.policyGroupUser === target.group ? "pf-m-selected" : ""}" type="button" @click=${() => {
-                                this.policyGroupUser = target.group;
-                            }}>
-                                <span class="pf-c-toggle-group__text">${t`Group`}</span>
-                            </button>
-                        </div>
-                        <div class="pf-c-divider pf-m-vertical" role="separator"></div>
-                        <div class="pf-c-toggle-group__item">
-                            <button class="pf-c-toggle-group__button ${this.policyGroupUser === target.user ? "pf-m-selected" : ""}" type="button" @click=${() => {
-                                this.policyGroupUser = target.user;
-                            }}>
-                                <span class="pf-c-toggle-group__text">${t`User`}</span>
-                            </button>
-                        </div>
+                        ${this.renderModeSelector()}
                     </div>
                 </div>
                 <div class="pf-c-card__footer">

@@ -154,9 +154,10 @@ export class SAMLSourceViewPage extends LitElement {
                 </section>
                 <div slot="page-policy-bindings" data-tab-title="${t`Policy Bindings`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
-                        <div class="pf-c-card__title">${t`These bindings control which users can access this source.`}</div>
+                        <div class="pf-c-card__title">${t`These bindings control which users can access this source.
+                        You can only use policies here as access is checked before the user is authenticated.`}</div>
                         <div class="pf-c-card__body">
-                            <ak-bound-policies-list .target=${this.source.pk}>
+                            <ak-bound-policies-list .target=${this.source.pk} ?policyOnly=${true}>
                             </ak-bound-policies-list>
                         </div>
                     </div>

@@ -25,6 +25,9 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     @property()
     target?: string;
 
+    @property({type: Boolean})
+    policyOnly = false;
+
     apiEndpoint(page: number): Promise<AKResponse<PolicyBinding>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsList({
             target: this.target || "",
@@ -125,7 +128,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 <span slot="header">
                     ${t`Update Binding`}
                 </span>
-                <ak-policy-binding-form slot="form" .binding=${item} targetPk=${ifDefined(this.target)}>
+                <ak-policy-binding-form slot="form" .binding=${item} targetPk=${ifDefined(this.target)} ?policyOnly=${this.policyOnly}>
                 </ak-policy-binding-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${t`Edit Binding`}
@@ -159,7 +162,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                     <span slot="header">
                         ${t`Create Binding`}
                     </span>
-                    <ak-policy-binding-form slot="form" targetPk=${ifDefined(this.target)}>
+                    <ak-policy-binding-form slot="form" targetPk=${ifDefined(this.target)} ?policyOnly=${this.policyOnly}>
                     </ak-policy-binding-form>
                     <button slot="trigger" class="pf-c-button pf-m-primary">
                         ${t`Create Binding`}
@@ -208,7 +211,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             <span slot="header">
                 ${t`Create Binding`}
             </span>
-            <ak-policy-binding-form slot="form" targetPk=${ifDefined(this.target)}>
+            <ak-policy-binding-form slot="form" targetPk=${ifDefined(this.target)} ?policyOnly=${this.policyOnly}>
             </ak-policy-binding-form>
             <button slot="trigger" class="pf-c-button pf-m-secondary">
                 ${t`Create Binding`}
