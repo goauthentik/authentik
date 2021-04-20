@@ -84,7 +84,7 @@ export class AuthenticatorTOTPStageForm extends Form<AuthenticatorTOTPStage> {
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     let selected = this.stage?.configureFlow === flow.pk;
-                                    if (!this.stage?.configureFlow && flow.slug === "default-otp-time-configure") {
+                                    if (!this.stage?.pk && !this.stage?.configureFlow && flow.slug === "default-otp-time-configure") {
                                         selected = true;
                                     }
                                     return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
