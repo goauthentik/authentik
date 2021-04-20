@@ -44,7 +44,7 @@ export class AdminOverviewPage extends LitElement {
                 <ak-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header=${t`Apps with most usage`} style="grid-column-end: span 2;grid-row-end: span 3;">
                     <ak-top-applications-table></ak-top-applications-table>
                 </ak-aggregate-card>
-                <ak-admin-status-card-provider class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-plugged" header=${t`Providers`} headerLink="#/core/providers/">
+                <ak-admin-status-card-provider class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-plugged" header=${t`Providers`} headerLink="#/core/providers">
                 </ak-admin-status-card-provider>
                 <ak-admin-status-card-policy-unbound class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-infrastructure" header=${t`Policies`} headerLink="#/policy/policies">
                 </ak-admin-status-card-policy-unbound>
