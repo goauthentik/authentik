@@ -28,8 +28,8 @@ class OAuthClient(BaseOAuthClient):
         if raw_token is not None and verifier is not None:
             token = self.parse_raw_token(raw_token)
             try:
-                access_token_url: str = self.source.type.access_token_url or ""
-                if self.source.access_token_url:
+                access_token_url = self.source.type.access_token_url or ""
+                if self.source.type.urls_customizable and self.source.access_token_url:
                     access_token_url = self.source.access_token_url
                 response = self.do_request(
                     "post",
@@ -51,8 +51,8 @@ class OAuthClient(BaseOAuthClient):
         "Fetch the OAuth request token. Only required for OAuth 1.0."
         callback = self.request.build_absolute_uri(self.callback)
         try:
-            request_token_url: str = self.source.type.request_token_url or ""
-            if self.source.request_token_url:
+            request_token_url = self.source.type.request_token_url or ""
+            if self.source.type.urls_customizable and self.source.request_token_url:
                 request_token_url = self.source.request_token_url
             response = self.do_request(
                 "post",

@@ -99,7 +99,7 @@ export class OAuthSourceViewPage extends LitElement {
                                                 <span class="pf-c-description-list__text">${t`Authorization URL`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.source.authorizationUrl}</div>
+                                                <div class="pf-c-description-list__text">${this.source.type?.authorizationUrl || this.source.authorizationUrl}</div>
                                             </dd>
                                         </div>
                                         <div class="pf-c-description-list__group">
@@ -107,7 +107,7 @@ export class OAuthSourceViewPage extends LitElement {
                                                 <span class="pf-c-description-list__text">${t`Token URL`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.source.accessTokenUrl}</div>
+                                                <div class="pf-c-description-list__text">${this.source.type?.accessTokenUrl || this.source.accessTokenUrl}</div>
                                             </dd>
                                         </div>
                                     </dl>

@@ -57,7 +57,7 @@ class OAuth2Client(BaseOAuthClient):
             return None
         try:
             access_token_url = self.source.type.access_token_url or ""
-            if self.source.access_token_url:
+            if self.source.type.urls_customizable and self.source.access_token_url:
                 access_token_url = self.source.access_token_url
             response = self.session.request(
                 "post",
