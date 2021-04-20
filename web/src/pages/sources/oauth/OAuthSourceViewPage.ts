@@ -146,7 +146,7 @@ export class OAuthSourceViewPage extends LitElement {
                 </section>
                 <div slot="page-policy-binding" data-tab-title="${t`Policy Bindings`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
-                        <div class="pf-c-card__title">${t`These policies control which users can access this source.`}</div>
+                        <div class="pf-c-card__title">${t`These bindings control which users can access this source.`}</div>
                         <div class="pf-c-card__body">
                             <ak-bound-policies-list .target=${this.source.pk}>
                             </ak-bound-policies-list>

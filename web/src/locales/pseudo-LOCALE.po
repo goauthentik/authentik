@@ -64,7 +64,7 @@ msgstr ""
 msgid "API request failed"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:87
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:88
 msgid "Access Key"
 msgstr ""
 
@@ -289,7 +289,7 @@ msgid "Authorization Code"
 msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts:66
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:95
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:96
 msgid "Authorization URL"
 msgstr ""
 
@@ -401,7 +401,7 @@ msgstr ""
 msgid "Cached Policies"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:79
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:80
 msgid "Callback URL"
 msgstr ""
 
@@ -468,7 +468,7 @@ msgstr ""
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:135
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:129
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:113
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:132
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:133
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:119
 #: src/pages/users/UserViewPage.ts:185
 msgid "Changelog"
@@ -654,8 +654,8 @@ msgstr ""
 #: src/pages/events/EventInfo.ts:79
 #: src/pages/events/EventInfo.ts:148
 #: src/pages/events/EventInfo.ts:167
-#: src/pages/policies/PolicyTestForm.ts:74
-#: src/pages/property-mappings/PropertyMappingTestForm.ts:63
+#: src/pages/policies/PolicyTestForm.ts:75
+#: src/pages/property-mappings/PropertyMappingTestForm.ts:65
 msgid "Context"
 msgstr ""
 
@@ -1024,7 +1024,7 @@ msgstr ""
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:121
 #: src/pages/sources/SourcesListPage.ts:82
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:105
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:124
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:125
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:111
 #: src/pages/stages/StageListPage.ts:98
 #: src/pages/stages/prompt/PromptListPage.ts:75
@@ -1694,10 +1694,10 @@ msgstr ""
 #: src/pages/policies/PolicyBindingForm.ts:156
 #: src/pages/policies/PolicyBindingForm.ts:172
 #: src/pages/policies/PolicyBindingForm.ts:188
-#: src/pages/policies/PolicyTestForm.ts:70
+#: src/pages/policies/PolicyTestForm.ts:71
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:88
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:108
-#: src/pages/property-mappings/PropertyMappingTestForm.ts:59
+#: src/pages/property-mappings/PropertyMappingTestForm.ts:61
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:74
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:175
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:194
@@ -1795,7 +1795,7 @@ msgid "Members"
 msgstr ""
 
 #: src/pages/events/EventInfo.ts:174
-#: src/pages/policies/PolicyTestForm.ts:43
+#: src/pages/policies/PolicyTestForm.ts:44
 #: src/pages/system-tasks/SystemTaskListPage.ts:80
 msgid "Messages"
 msgstr ""
@@ -1881,7 +1881,7 @@ msgstr ""
 #: src/pages/sources/ldap/LDAPSourceForm.ts:54
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:64
 #: src/pages/sources/oauth/OAuthSourceForm.ts:100
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:63
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:64
 #: src/pages/sources/saml/SAMLSourceForm.ts:54
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:66
 #: src/pages/stages/StageListPage.ts:65
@@ -1935,7 +1935,7 @@ msgstr ""
 #: src/pages/groups/MemberSelectModal.ts:57
 #: src/pages/outposts/ServiceConnectionListPage.ts:64
 #: src/pages/policies/BoundPoliciesList.ts:118
-#: src/pages/policies/PolicyTestForm.ts:38
+#: src/pages/policies/PolicyTestForm.ts:39
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:108
 #: src/pages/tokens/TokenListPage.ts:56
 #: src/pages/user-settings/tokens/UserTokenList.ts:83
@@ -2191,7 +2191,7 @@ msgstr ""
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:56
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:58
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:56
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:55
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:56
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:58
 #: src/pages/users/UserViewPage.ts:74
 msgid "Overview"
@@ -2211,7 +2211,7 @@ msgid "Pass policy?"
 msgstr ""
 
 #: src/pages/events/EventInfo.ts:173
-#: src/pages/policies/PolicyTestForm.ts:35
+#: src/pages/policies/PolicyTestForm.ts:36
 msgid "Passing"
 msgstr ""
 
@@ -2262,13 +2262,16 @@ msgstr ""
 msgid "Policy"
 msgstr ""
 
+#: src/pages/applications/ApplicationViewPage.ts:134
+#: src/pages/flows/FlowViewPage.ts:101
+msgid "Policy / Group / User Bindings"
+msgstr ""
+
 #: src/pages/policies/BoundPoliciesList.ts:36
 msgid "Policy / User / Group"
 msgstr ""
 
-#: src/pages/applications/ApplicationViewPage.ts:134
-#: src/pages/flows/FlowViewPage.ts:101
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:143
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:144
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:150
 msgid "Policy Bindings"
 msgstr ""
@@ -2391,7 +2394,7 @@ msgid "Provider"
 msgstr ""
 
 #: src/pages/applications/ApplicationListPage.ts:61
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:71
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:72
 msgid "Provider Type"
 msgstr ""
 
@@ -2548,7 +2551,7 @@ msgid "Resources"
 msgstr ""
 
 #: src/pages/events/EventInfo.ts:171
-#: src/pages/property-mappings/PropertyMappingTestForm.ts:34
+#: src/pages/property-mappings/PropertyMappingTestForm.ts:36
 msgid "Result"
 msgstr ""
 
@@ -2753,7 +2756,7 @@ msgstr ""
 #: src/pages/groups/GroupForm.ts:139
 #: src/pages/outposts/OutpostForm.ts:109
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts:73
-#: src/pages/policies/PolicyTestForm.ts:78
+#: src/pages/policies/PolicyTestForm.ts:79
 #: src/pages/users/UserForm.ts:81
 msgid "Set custom attributes using YAML or JSON."
 msgstr ""
@@ -3081,8 +3084,8 @@ msgstr ""
 msgid "Successfully imported provider."
 msgstr ""
 
-#: src/pages/policies/PolicyTestForm.ts:29
-#: src/pages/property-mappings/PropertyMappingTestForm.ts:29
+#: src/pages/policies/PolicyTestForm.ts:30
+#: src/pages/property-mappings/PropertyMappingTestForm.ts:31
 msgid "Successfully sent test-request."
 msgstr ""
 
@@ -3297,27 +3300,27 @@ msgstr ""
 msgid "The policy takes a random time to execute. This controls the minimum time it will take."
 msgstr ""
 
+#: src/pages/flows/BoundStagesList.ts:102
+msgid "These bindings control if this stage will be applied to the flow."
+msgstr ""
+
 #: src/pages/events/RuleListPage.ts:109
 msgid ""
-"These policies control upon which events this rule triggers. Bindings to\n"
+"These bindings control upon which events this rule triggers. Bindings to\n"
 "groups/users are checked against the user of the event."
 msgstr ""
 
-#: src/pages/flows/BoundStagesList.ts:102
-msgid "These policies control when this stage will be applied to the flow."
+#: src/pages/flows/FlowViewPage.ts:103
+msgid "These bindings control which users can access this flow."
+msgstr ""
+
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:146
+#: src/pages/sources/saml/SAMLSourceViewPage.ts:152
+msgid "These bindings control which users can access this source."
 msgstr ""
 
 #: src/pages/applications/ApplicationViewPage.ts:136
 msgid "These policies control which users can access this application."
-msgstr ""
-
-#: src/pages/flows/FlowViewPage.ts:103
-msgid "These policies control which users can access this flow."
-msgstr ""
-
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:145
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:152
-msgid "These policies control which users can access this source."
 msgstr ""
 
 #: src/pages/stages/invitation/InvitationStageForm.ts:53
@@ -3360,7 +3363,7 @@ msgid "Token"
 msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:174
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:103
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:104
 msgid "Token URL"
 msgstr ""
 
@@ -3482,7 +3485,7 @@ msgstr ""
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:111
 #: src/pages/sources/SourcesListPage.ts:69
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:95
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:114
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:115
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:101
 #: src/pages/stages/StageListPage.ts:85
 #: src/pages/stages/prompt/PromptListPage.ts:67
@@ -3531,7 +3534,7 @@ msgstr ""
 msgid "Update Notification Transport"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:117
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts:118
 msgid "Update OAuth Source"
 msgstr ""
 
@@ -3615,8 +3618,8 @@ msgstr ""
 #: src/pages/events/EventListPage.ts:44
 #: src/pages/policies/PolicyBindingForm.ts:140
 #: src/pages/policies/PolicyBindingForm.ts:176
-#: src/pages/policies/PolicyTestForm.ts:60
-#: src/pages/property-mappings/PropertyMappingTestForm.ts:49
+#: src/pages/policies/PolicyTestForm.ts:61
+#: src/pages/property-mappings/PropertyMappingTestForm.ts:51
 #: src/pages/tokens/TokenListPage.ts:45
 #: src/pages/user-settings/tokens/UserTokenList.ts:72
 #: src/pages/users/UserListPage.ts:88
@@ -3858,7 +3861,7 @@ msgstr ""
 #: src/pages/groups/MemberSelectModal.ts:57
 #: src/pages/outposts/ServiceConnectionListPage.ts:64
 #: src/pages/policies/BoundPoliciesList.ts:118
-#: src/pages/policies/PolicyTestForm.ts:38
+#: src/pages/policies/PolicyTestForm.ts:39
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:105
 #: src/pages/tokens/TokenListPage.ts:56
 #: src/pages/user-settings/tokens/UserTokenList.ts:83
