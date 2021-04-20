@@ -60,7 +60,7 @@ class IdentificationStageView(ChallengeStageView):
     def get_user(self, uid_value: str) -> Optional[User]:
         """Find user instance. Returns None if no user was found."""
         current_stage: IdentificationStage = self.executor.current_stage
-        query = Q()
+        query = Q(is_active=True)
         for search_field in current_stage.user_fields:
             model_field = search_field
             if current_stage.case_insensitive_matching:
