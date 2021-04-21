@@ -11,7 +11,7 @@ Nextcloud is a suite of client-server software for creating and using file hosti
 :::
 
 :::warning
-This setup only works, when NextCloud is running with HTTPS enabled.
+This setup only works, when NextCloud is running with HTTPS enabled. See [here](https://docs.nextcloud.com/server/stable/admin_manual/configuration_server/reverse_proxy_configuration.html?highlight=overwriteprotocol#overwrite-parameters) on how to configure this.
 :::
 
 :::warning
@@ -38,7 +38,7 @@ You can of course use a custom signing certificate, and adjust durations.
 
 ## NextCloud
 
-In NextCloud, navigate to `Settings`, then `SSO & SAML Authentication`.
+In NextCloud, ensure that the `SSO & SAML Authentication` extension is installed. Navigate to `Settings`, then `SSO & SAML Authentication`.
 
 Set the following values:
 
