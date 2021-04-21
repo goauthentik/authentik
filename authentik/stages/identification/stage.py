@@ -1,5 +1,6 @@
 """Identification stage logic"""
 from dataclasses import asdict
+from time import sleep
 from typing import Optional
 
 from django.db.models import Q
@@ -46,6 +47,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
         """Validate that user exists"""
         pre_user = self.stage.get_user(value)
         if not pre_user:
+            sleep(0.150)
             LOGGER.debug("invalid_login", identifier=value)
             raise ValidationError("Failed to authenticate.")
         self.pre_user = pre_user
@@ -60,7 +62,7 @@ class IdentificationStageView(ChallengeStageView):
     def get_user(self, uid_value: str) -> Optional[User]:
         """Find user instance. Returns None if no user was found."""
         current_stage: IdentificationStage = self.executor.current_stage
-        query = Q(is_active=True)
+        query = Q()
         for search_field in current_stage.user_fields:
             model_field = search_field
             if current_stage.case_insensitive_matching:
@@ -68,7 +70,7 @@ class IdentificationStageView(ChallengeStageView):
             else:
                 model_field += "__exact"
             query |= Q(**{model_field: uid_value})
-        users = User.objects.filter(query)
+        users = User.objects.filter(query, is_active=True)
         if users.exists():
             LOGGER.debug("Found user", user=users.first(), query=query)
             return users.first()
