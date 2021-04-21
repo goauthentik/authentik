@@ -102,6 +102,7 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
                         ?required=${true}
                         name="internalHost">
                         <input type="text" value="${ifDefined(this.provider?.internalHost)}" class="pf-c-form-control" required>
+                        <p class="pf-c-form__helper-text">${t`Upstream host that the requests are forwarded to.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="internalHostSslValidation">
                         <div class="pf-c-check">
@@ -117,6 +118,7 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
                         ?required=${true}
                         name="externalHost">
                         <input type="text" value="${ifDefined(this.provider?.externalHost)}" class="pf-c-form-control" required>
+                        <p class="pf-c-form__helper-text">${t`The external URL you'll access the outpost at.`}</p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

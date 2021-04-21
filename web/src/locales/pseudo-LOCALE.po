@@ -106,7 +106,7 @@ msgid "Additional user DN, prepended to the Base DN."
 msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:131
-#: src/pages/providers/proxy/ProxyProviderForm.ts:128
+#: src/pages/providers/proxy/ProxyProviderForm.ts:130
 #: src/pages/providers/saml/SAMLProviderForm.ts:117
 #: src/pages/sources/saml/SAMLSourceForm.ts:134
 msgid "Advanced protocol settings"
@@ -422,7 +422,7 @@ msgid "Case insensitive matching"
 msgstr ""
 
 #: src/pages/crypto/CertificateKeyPairForm.ts:51
-#: src/pages/providers/proxy/ProxyProviderForm.ts:132
+#: src/pages/providers/proxy/ProxyProviderForm.ts:134
 msgid "Certificate"
 msgstr ""
 
@@ -1254,7 +1254,7 @@ msgstr ""
 msgid "External Host"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:118
+#: src/pages/providers/proxy/ProxyProviderForm.ts:119
 msgid "External host"
 msgstr ""
 
@@ -1564,7 +1564,7 @@ msgstr ""
 msgid "Internal host"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:112
+#: src/pages/providers/proxy/ProxyProviderForm.ts:113
 msgid "Internal host SSL Validation"
 msgstr ""
 
@@ -1702,7 +1702,7 @@ msgstr ""
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:175
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:194
 #: src/pages/providers/proxy/ProxyProviderForm.ts:92
-#: src/pages/providers/proxy/ProxyProviderForm.ts:143
+#: src/pages/providers/proxy/ProxyProviderForm.ts:145
 #: src/pages/providers/saml/SAMLProviderForm.ts:71
 #: src/pages/providers/saml/SAMLProviderForm.ts:133
 #: src/pages/providers/saml/SAMLProviderForm.ts:149
@@ -2503,7 +2503,7 @@ msgstr ""
 msgid "Register device"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:151
+#: src/pages/providers/proxy/ProxyProviderForm.ts:153
 msgid "Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression."
 msgstr ""
 
@@ -2746,11 +2746,11 @@ msgstr ""
 msgid "Session valid not on or after"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:161
+#: src/pages/providers/proxy/ProxyProviderForm.ts:163
 msgid "Set HTTP-Basic Authentication"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:164
+#: src/pages/providers/proxy/ProxyProviderForm.ts:166
 msgid "Set a custom HTTP-Basic Authentication header based on values from authentik."
 msgstr ""
 
@@ -2800,7 +2800,7 @@ msgstr ""
 msgid "Single Prompts that can be used for Prompt Stages."
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:148
+#: src/pages/providers/proxy/ProxyProviderForm.ts:150
 msgid "Skip path regex"
 msgstr ""
 
@@ -3297,6 +3297,10 @@ msgstr ""
 msgid "The URL \"{0}\" was not found."
 msgstr ""
 
+#: src/pages/providers/proxy/ProxyProviderForm.ts:123
+msgid "The external URL you'll access the outpost at."
+msgstr ""
+
 #: src/pages/policies/dummy/DummyPolicyForm.ts:90
 msgid "The policy takes a random time to execute. This controls the minimum time it will take."
 msgstr ""
@@ -3595,6 +3599,10 @@ msgstr ""
 msgid "Update {0}"
 msgstr ""
 
+#: src/pages/providers/proxy/ProxyProviderForm.ts:107
+msgid "Upstream host that the requests are forwarded to."
+msgstr ""
+
 #: src/pages/stages/email/EmailStageForm.ts:96
 msgid "Use SSL"
 msgstr ""
@@ -3722,7 +3730,7 @@ msgstr ""
 msgid "Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows."
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:115
+#: src/pages/providers/proxy/ProxyProviderForm.ts:116
 msgid "Validate SSL Certificates of upstream servers."
 msgstr ""
 
