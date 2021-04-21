@@ -12,8 +12,8 @@ from docker.types.healthcheck import Healthcheck
 from authentik import __version__
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
-from authentik.outposts.apps import AuthentikOutpostConfig
 from authentik.outposts.models import DockerServiceConnection, Outpost, OutpostType
+from authentik.outposts.tasks import outpost_local_connection
 from authentik.providers.proxy.controllers.docker import DockerController
 from authentik.providers.proxy.models import ProxyProvider
 
@@ -53,7 +53,7 @@ class TestProxyDocker(TestCase):
         self.ssl_folder = mkdtemp()
         self.container = self._start_container(self.ssl_folder)
         # Ensure that local connection have been created
-        AuthentikOutpostConfig.init_local_connection()
+        outpost_local_connection()
         self.provider: ProxyProvider = ProxyProvider.objects.create(
             name="test",
             internal_host="http://localhost",

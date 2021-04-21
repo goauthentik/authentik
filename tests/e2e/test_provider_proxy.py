@@ -13,13 +13,13 @@ from selenium.webdriver.common.by import By
 from authentik import __version__
 from authentik.core.models import Application
 from authentik.flows.models import Flow
-from authentik.outposts.apps import AuthentikOutpostConfig
 from authentik.outposts.models import (
     DockerServiceConnection,
     Outpost,
     OutpostConfig,
     OutpostType,
 )
+from authentik.outposts.tasks import outpost_local_connection
 from authentik.providers.proxy.models import ProxyProvider
 from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
 
@@ -117,7 +117,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
     @object_manager
     def test_proxy_connectivity(self):
         """Test proxy connectivity over websocket"""
-        AuthentikOutpostConfig.init_local_connection()
+        outpost_local_connection()
         proxy: ProxyProvider = ProxyProvider.objects.create(
             name="proxy_provider",
             authorization_flow=Flow.objects.get(
