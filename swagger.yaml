@@ -5,7 +5,7 @@ info:
     email: hello@beryju.org
   license:
     name: GNU GPLv3
-    url: https://github.com/BeryJu/authentik/blob/master/LICENSE
+    url: https://github.com/goauthentik/authentik/blob/master/LICENSE
   version: v2beta
 basePath: /api/v2beta
 consumes:

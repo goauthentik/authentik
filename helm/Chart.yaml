@@ -3,7 +3,7 @@ description: authentik is an open-source Identity Provider focused on flexibilit
 name: authentik
 home: https://goauthentik.io
 sources:
-  - https://github.com/BeryJu/authentik
+  - https://github.com/goauthentik/authentik
 version: "2021.4.3"
 icon: https://raw.githubusercontent.com/BeryJu/authentik/master/web/icons/icon.svg
 dependencies:

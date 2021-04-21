@@ -196,7 +196,8 @@ info = openapi.Info(
     default_version="v2beta",
     contact=openapi.Contact(email="hello@beryju.org"),
     license=openapi.License(
-        name="GNU GPLv3", url="https://github.com/BeryJu/authentik/blob/master/LICENSE"
+        name="GNU GPLv3",
+        url="https://github.com/goauthentik/authentik/blob/master/LICENSE",
     ),
 )
 SchemaView = get_schema_view(info, public=True, permission_classes=(AllowAny,))
