@@ -24,8 +24,13 @@ export function configureSentry(): Promise<Config> {
                         return null;
                     }
                     if (hint.originalException instanceof Response) {
-                        const body = await hint.originalException.json();
-                        event.message = `${hint.originalException.status} ${hint.originalException.url}: ${JSON.stringify(body)}`
+                        const response = hint.originalException as Response;
+                        // We only care about server errors
+                        if (response.status < 500) {
+                            return null;
+                        }
+                        const body = await response.json();
+                        event.message = `${response.status} ${response.url}: ${JSON.stringify(body)}`
                     }
                     if (event.exception) {
                         me().then(user => {
