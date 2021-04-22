@@ -4,7 +4,8 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import AKGlobal from "../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import { EVENT_SIDEBAR_TOGGLE, TITLE_SUFFIX } from "../constants";
+import { EVENT_SIDEBAR_TOGGLE, TITLE_DEFAULT } from "../constants";
+import { config } from "../api/Config";
 
 @customElement("ak-page-header")
 export class PageHeader extends LitElement {
@@ -17,11 +18,13 @@ export class PageHeader extends LitElement {
 
     @property()
     set header(value: string) {
-        if (value !== "") {
-            document.title = `${value} - ${TITLE_SUFFIX}`;
-        } else {
-            document.title = TITLE_SUFFIX;
-        }
+        config().then(config => {
+            if (value !== "") {
+                document.title = `${value} - ${config.brandingTitle}`;
+            } else {
+                document.title = config.brandingTitle || TITLE_DEFAULT;
+            }
+        });
         this._header = value;
     }
 
