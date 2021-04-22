@@ -708,8 +708,8 @@ msgstr "Copy Key"
 #: src/pages/flows/BoundStagesList.ts:167
 #: src/pages/flows/FlowListPage.ts:109
 #: src/pages/flows/FlowListPage.ts:117
-#: src/pages/groups/GroupListPage.ts:91
-#: src/pages/groups/GroupListPage.ts:99
+#: src/pages/groups/GroupListPage.ts:90
+#: src/pages/groups/GroupListPage.ts:98
 #: src/pages/outposts/OutpostListPage.ts:101
 #: src/pages/outposts/OutpostListPage.ts:109
 #: src/pages/outposts/ServiceConnectionListPage.ts:110
@@ -762,7 +762,7 @@ msgstr "Create Certificate-Key Pair"
 msgid "Create Flow"
 msgstr "Create Flow"
 
-#: src/pages/groups/GroupListPage.ts:94
+#: src/pages/groups/GroupListPage.ts:93
 msgid "Create Group"
 msgstr "Create Group"
 
@@ -873,7 +873,7 @@ msgstr "Define how notifications are sent to users, like Email or Webhook."
 #: src/pages/events/RuleListPage.ts:82
 #: src/pages/events/TransportListPage.ts:86
 #: src/pages/flows/FlowListPage.ts:86
-#: src/pages/groups/GroupListPage.ts:82
+#: src/pages/groups/GroupListPage.ts:81
 #: src/pages/outposts/OutpostListPage.ts:87
 #: src/pages/outposts/ServiceConnectionListPage.ts:101
 #: src/pages/policies/PolicyListPage.ts:115
@@ -1021,7 +1021,7 @@ msgstr "Each provider has a different issuer, based on the application slug."
 #: src/pages/events/RuleListPage.ts:70
 #: src/pages/events/TransportListPage.ts:74
 #: src/pages/flows/FlowListPage.ts:74
-#: src/pages/groups/GroupListPage.ts:70
+#: src/pages/groups/GroupListPage.ts:69
 #: src/pages/outposts/OutpostListPage.ts:75
 #: src/pages/outposts/ServiceConnectionListPage.ts:89
 #: src/pages/policies/PolicyListPage.ts:90
@@ -1420,7 +1420,7 @@ msgid "Go to previous page"
 msgstr "Go to previous page"
 
 #: src/pages/events/RuleForm.ts:65
-#: src/pages/groups/GroupListPage.ts:75
+#: src/pages/groups/GroupListPage.ts:74
 #: src/pages/policies/PolicyBindingForm.ts:125
 #: src/pages/policies/PolicyBindingForm.ts:161
 msgid "Group"
@@ -1939,7 +1939,7 @@ msgid "New version available!"
 msgstr "New version available!"
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts:61
-#: src/pages/groups/GroupListPage.ts:58
+#: src/pages/groups/GroupListPage.ts:57
 #: src/pages/groups/MemberSelectModal.ts:57
 #: src/pages/outposts/ServiceConnectionListPage.ts:64
 #: src/pages/policies/BoundPoliciesList.ts:122
@@ -2254,7 +2254,6 @@ msgid "Please enter your password"
 msgstr "Please enter your password"
 
 #: src/interfaces/AdminInterface.ts:26
-#: src/pages/admin-overview/AdminOverviewPage.ts:48
 #: src/pages/flows/FlowListPage.ts:50
 #: src/pages/policies/PolicyListPage.ts:38
 msgid "Policies"
@@ -2412,12 +2411,15 @@ msgid "Provider type"
 msgstr "Provider type"
 
 #: src/interfaces/AdminInterface.ts:20
-#: src/pages/admin-overview/AdminOverviewPage.ts:46
 #: src/pages/outposts/OutpostForm.ts:82
 #: src/pages/outposts/OutpostListPage.ts:51
 #: src/pages/providers/ProviderListPage.ts:34
 msgid "Providers"
 msgstr "Providers"
+
+#: src/pages/admin-overview/AdminOverviewPage.ts:46
+msgid "Providers without application"
+msgstr "Providers without application"
 
 #: src/pages/outposts/OutpostForm.ts:57
 msgid "Proxy"
@@ -3465,6 +3467,10 @@ msgstr "URL used by authentik to retrieve tokens."
 msgid "URL used to request the initial token. This URL is only required for OAuth 1."
 msgstr "URL used to request the initial token. This URL is only required for OAuth 1."
 
+#: src/pages/admin-overview/AdminOverviewPage.ts:48
+msgid "Unbound policies"
+msgstr "Unbound policies"
+
 #: src/pages/flows/FlowForm.ts:73
 msgid "Unenrollment"
 msgstr "Unenrollment"
@@ -3489,7 +3495,7 @@ msgstr "Up-to-date!"
 #: src/pages/flows/BoundStagesList.ts:53
 #: src/pages/flows/BoundStagesList.ts:71
 #: src/pages/flows/FlowListPage.ts:66
-#: src/pages/groups/GroupListPage.ts:62
+#: src/pages/groups/GroupListPage.ts:61
 #: src/pages/outposts/OutpostListPage.ts:67
 #: src/pages/outposts/ServiceConnectionListPage.ts:76
 #: src/pages/policies/BoundPoliciesList.ts:68
@@ -3536,7 +3542,7 @@ msgstr "Update Certificate-Key Pair"
 msgid "Update Flow"
 msgstr "Update Flow"
 
-#: src/pages/groups/GroupListPage.ts:65
+#: src/pages/groups/GroupListPage.ts:64
 #: src/pages/policies/BoundPoliciesList.ts:91
 msgid "Update Group"
 msgstr "Update Group"
@@ -3882,7 +3888,7 @@ msgid "X509 Subject"
 msgstr "X509 Subject"
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts:61
-#: src/pages/groups/GroupListPage.ts:58
+#: src/pages/groups/GroupListPage.ts:57
 #: src/pages/groups/MemberSelectModal.ts:57
 #: src/pages/outposts/ServiceConnectionListPage.ts:64
 #: src/pages/policies/BoundPoliciesList.ts:122
