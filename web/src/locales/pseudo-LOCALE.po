@@ -105,7 +105,7 @@ msgstr ""
 msgid "Additional user DN, prepended to the Base DN."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:131
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:132
 #: src/pages/providers/proxy/ProxyProviderForm.ts:130
 #: src/pages/providers/saml/SAMLProviderForm.ts:117
 #: src/pages/sources/saml/SAMLSourceForm.ts:134
@@ -125,7 +125,7 @@ msgstr ""
 msgid "Alert"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:152
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:153
 msgid "Algorithm used to sign the JWT Tokens."
 msgstr ""
 
@@ -255,7 +255,7 @@ msgstr ""
 msgid "Attribute name used for SAML Assertions. Can be a URN OID, a schema reference, or a any other string. If this property mapping is used for NameID Property, this field is discarded."
 msgstr ""
 
-#: src/pages/groups/GroupForm.ts:135
+#: src/pages/groups/GroupForm.ts:134
 #: src/pages/stages/invitation/InvitationForm.ts:52
 #: src/pages/users/UserForm.ts:77
 msgid "Attributes"
@@ -338,19 +338,19 @@ msgstr ""
 msgid "Base DN"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:204
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:203
 msgid "Based on the Hashed User ID"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:210
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:209
 msgid "Based on the User's Email. This is recommended over the UPN method."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:213
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:212
 msgid "Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:207
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:206
 msgid "Based on the username"
 msgstr ""
 
@@ -590,7 +590,7 @@ msgstr ""
 msgid "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:242
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:241
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr ""
 
@@ -598,7 +598,7 @@ msgstr ""
 msgid "Configure settings relevant to your user profile."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:217
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:216
 msgid "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
 msgstr ""
 
@@ -1002,7 +1002,7 @@ msgstr ""
 msgid "Dummy stage used for testing. Shows a simple continue button and always passes."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:235
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:234
 msgid "Each provider has a different issuer, based on the application slug."
 msgstr ""
 
@@ -1239,10 +1239,10 @@ msgstr ""
 msgid "Expression"
 msgstr ""
 
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:84
-#: src/pages/property-mappings/PropertyMappingLDAPForm.ts:70
-#: src/pages/property-mappings/PropertyMappingSAMLForm.ts:80
-#: src/pages/property-mappings/PropertyMappingScopeForm.ts:77
+#: src/pages/policies/expression/ExpressionPolicyForm.ts:85
+#: src/pages/property-mappings/PropertyMappingLDAPForm.ts:71
+#: src/pages/property-mappings/PropertyMappingSAMLForm.ts:81
+#: src/pages/property-mappings/PropertyMappingScopeForm.ts:78
 msgid "Expression using Python."
 msgstr ""
 
@@ -1443,7 +1443,7 @@ msgstr ""
 msgid "Groups"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:149
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:150
 msgid "HS256 (Symmetric Encryption)"
 msgstr ""
 
@@ -1468,7 +1468,7 @@ msgid "Hide managed mappings"
 msgstr ""
 
 #: src/pages/events/RuleForm.ts:93
-#: src/pages/groups/GroupForm.ts:132
+#: src/pages/groups/GroupForm.ts:131
 #: src/pages/outposts/OutpostForm.ts:98
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:178
 #: src/pages/providers/saml/SAMLProviderForm.ts:177
@@ -1544,11 +1544,11 @@ msgstr ""
 msgid "In case you can't access any other method."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:227
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:226
 msgid "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:224
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:223
 msgid "Include claims in id_token"
 msgstr ""
 
@@ -1592,15 +1592,15 @@ msgstr ""
 msgid "Issuer"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:230
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:229
 msgid "Issuer mode"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:141
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:142
 msgid "JWT Algorithm"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:196
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:195
 msgid "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
 msgstr ""
 
@@ -1686,7 +1686,7 @@ msgstr ""
 #: src/pages/flows/StageBindingForm.ts:89
 #: src/pages/flows/StageBindingForm.ts:106
 #: src/pages/groups/GroupForm.ts:77
-#: src/pages/groups/GroupForm.ts:128
+#: src/pages/groups/GroupForm.ts:127
 #: src/pages/outposts/OutpostForm.ts:74
 #: src/pages/outposts/OutpostForm.ts:96
 #: src/pages/outposts/ServiceConnectionDockerForm.ts:87
@@ -1700,7 +1700,7 @@ msgstr ""
 #: src/pages/property-mappings/PropertyMappingTestForm.ts:61
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:74
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:175
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:194
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:193
 #: src/pages/providers/proxy/ProxyProviderForm.ts:92
 #: src/pages/providers/proxy/ProxyProviderForm.ts:145
 #: src/pages/providers/saml/SAMLProviderForm.ts:71
@@ -2431,7 +2431,7 @@ msgstr ""
 msgid "Publisher"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:146
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:147
 msgid "RS256 (Asymmetric Encryption)"
 msgstr ""
 
@@ -2628,7 +2628,7 @@ msgstr ""
 msgid "SSO URL"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:238
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:237
 msgid "Same identifier is used for all providers"
 msgstr ""
 
@@ -2642,7 +2642,7 @@ msgstr ""
 
 #: src/elements/oauth/UserCodeList.ts:31
 #: src/elements/oauth/UserRefreshList.ts:31
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:155
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:156
 msgid "Scopes"
 msgstr ""
 
@@ -2654,10 +2654,10 @@ msgstr ""
 msgid "Secret:"
 msgstr ""
 
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:86
-#: src/pages/property-mappings/PropertyMappingLDAPForm.ts:72
-#: src/pages/property-mappings/PropertyMappingSAMLForm.ts:82
-#: src/pages/property-mappings/PropertyMappingScopeForm.ts:79
+#: src/pages/policies/expression/ExpressionPolicyForm.ts:87
+#: src/pages/property-mappings/PropertyMappingLDAPForm.ts:73
+#: src/pages/property-mappings/PropertyMappingSAMLForm.ts:83
+#: src/pages/property-mappings/PropertyMappingScopeForm.ts:80
 msgid "See documentation for a list of all variables."
 msgstr ""
 
@@ -2758,7 +2758,7 @@ msgstr ""
 #: src/pages/outposts/OutpostForm.ts:109
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts:73
 #: src/pages/policies/PolicyTestForm.ts:79
-#: src/pages/users/UserForm.ts:81
+#: src/pages/users/UserForm.ts:82
 msgid "Set custom attributes using YAML or JSON."
 msgstr ""
 
@@ -2938,7 +2938,7 @@ msgstr ""
 msgid "Subject"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:199
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:198
 msgid "Subject mode"
 msgstr ""
 
@@ -3382,7 +3382,7 @@ msgstr ""
 msgid "Token expiry"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:135
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:136
 msgid "Token validity"
 msgstr ""
 
@@ -3726,7 +3726,7 @@ msgstr ""
 msgid "Using source"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:123
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:124
 msgid "Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows."
 msgstr ""
 

@@ -74,6 +74,7 @@ export class ExpressionPolicyForm extends Form<ExpressionPolicy> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${t`Expression`}
+                        ?required=${true}
                         name="expression">
                         <ak-codemirror mode="python" value="${ifDefined(this.policy?.expression)}">
                         </ak-codemirror>

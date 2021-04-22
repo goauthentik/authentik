@@ -70,6 +70,7 @@ export class PropertyMappingLDAPForm extends Form<SAMLPropertyMapping> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Expression`}
+                ?required=${true}
                 name="expression">
                 <ak-codemirror mode="python" value="${ifDefined(this.mapping?.expression)}">
                 </ak-codemirror>

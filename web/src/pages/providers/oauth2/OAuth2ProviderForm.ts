@@ -114,8 +114,9 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Redirect URIs/Origins`}
+                        ?required=${true}
                         name="redirectUris">
-                        <textarea class="pf-c-form-control">${this.provider?.redirectUris}</textarea>
+                        <textarea class="pf-c-form-control" required>${this.provider?.redirectUris}</textarea>
                         <p class="pf-c-form__helper-text">
                             ${t`Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows.`}
                         </p>
@@ -150,7 +151,6 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Scopes`}
-                        ?required=${true}
                         name="propertyMappings">
                         <select class="pf-c-form-control" multiple>
                             ${until(new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsScopeList({
@@ -174,7 +174,6 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`RSA Key`}
-                        ?required=${true}
                         name="rsaKey">
                         <select class="pf-c-form-control">
                             <option value="" ?selected=${this.provider?.rsaKey === undefined}>---------</option>
