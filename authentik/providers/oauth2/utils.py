@@ -26,8 +26,8 @@ class TokenResponse(JsonResponse):
         self["Pragma"] = "no-cache"
 
 
-def cors_allow_any(request: HttpRequest, response: HttpResponse, *allowed_origins: str):
-    """Add headers to permit CORS requests from any origin, with or without credentials,
+def cors_allow(request: HttpRequest, response: HttpResponse, *allowed_origins: str):
+    """Add headers to permit CORS requests from allowed_origins, with or without credentials,
     with any headers."""
     origin = request.META.get("HTTP_ORIGIN")
     if not origin:
