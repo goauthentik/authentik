@@ -36,13 +36,14 @@ import { AuthenticatorValidateStageChallenge } from "./stages/authenticator_vali
 import { WebAuthnAuthenticatorRegisterChallenge } from "./stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
 import { CaptchaChallenge } from "./stages/captcha/CaptchaStage";
 import { StageHost } from "./stages/base";
-import { Challenge, ChallengeTypeEnum, Config, FlowsApi, RootApi } from "authentik-api";
+import { Challenge, ChallengeTypeEnum, Config, FlowsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
 import { AccessDeniedChallenge } from "./access_denied/FlowAccessDenied";
 import { PFSize } from "../elements/Spinner";
 import { TITLE_SUFFIX } from "../constants";
+import { configureSentry } from "../api/Sentry";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement implements StageHost {
@@ -124,7 +125,7 @@ export class FlowExecutor extends LitElement implements StageHost {
     }
 
     firstUpdated(): void {
-        new RootApi(DEFAULT_CONFIG).rootConfigList().then((config) => {
+        configureSentry().then((config) => {
             this.config = config;
         });
         this.loading = true;
