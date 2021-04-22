@@ -369,8 +369,6 @@ stages:
                 coverage-unittest/unittest.xml
               mergeTestResults: true
           - task: CmdLine@2
-            env:
-              CODECOV_TOKEN: $(CODECOV_TOKEN)
             inputs:
               script: bash <(curl -s https://codecov.io/bash)
   - stage: Build
