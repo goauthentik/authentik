@@ -304,7 +304,7 @@ class OAuthFulfillmentStage(StageView):
                 return urlunsplit(uri)
             raise OAuth2Error()
         except OAuth2Error as error:
-            LOGGER.exception("Error when trying to create response uri", error=error)
+            LOGGER.warning("Error when trying to create response uri", error=error)
             raise AuthorizeError(
                 self.params.redirect_uri,
                 "server_error",

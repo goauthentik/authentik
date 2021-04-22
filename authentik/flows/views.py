@@ -14,6 +14,7 @@ from drf_yasg import openapi
 from drf_yasg.utils import no_body, swagger_auto_schema
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
+from sentry_sdk import capture_exception
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import USER_ATTRIBUTE_DEBUG
@@ -152,7 +153,8 @@ class FlowExecutorView(APIView):
             stage_response = self.current_stage_view.get(request, *args, **kwargs)
             return to_stage_response(request, stage_response)
         except Exception as exc:  # pylint: disable=broad-except
-            self._logger.exception(exc)
+            capture_exception(exc)
+            self._logger.warning(exc)
             return to_stage_response(request, FlowErrorResponse(request, exc))
 
     @swagger_auto_schema(
@@ -180,7 +182,8 @@ class FlowExecutorView(APIView):
             stage_response = self.current_stage_view.post(request, *args, **kwargs)
             return to_stage_response(request, stage_response)
         except Exception as exc:  # pylint: disable=broad-except
-            self._logger.exception(exc)
+            capture_exception(exc)
+            self._logger.warning(exc)
             return to_stage_response(request, FlowErrorResponse(request, exc))
 
     def _initiate_plan(self) -> FlowPlan:
