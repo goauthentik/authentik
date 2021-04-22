@@ -6,7 +6,7 @@ from billiard.exceptions import WorkerLostError
 from botocore.client import ClientError
 from celery.exceptions import CeleryError
 from channels_redis.core import ChannelFull
-from django.core.exceptions import DisallowedHost, ValidationError
+from django.core.exceptions import SuspiciousOperation, ValidationError
 from django.db import InternalError, OperationalError, ProgrammingError
 from django_redis.exceptions import ConnectionInterrupted
 from docker.errors import DockerException
@@ -36,7 +36,7 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
         OperationalError,
         InternalError,
         ProgrammingError,
-        DisallowedHost,
+        SuspiciousOperation,
         ValidationError,
         # Redis errors
         RedisConnectionError,
