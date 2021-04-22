@@ -5,7 +5,7 @@ home: https://goauthentik.io
 sources:
   - https://github.com/goauthentik/authentik
 version: "2021.4.3"
-icon: https://raw.githubusercontent.com/BeryJu/authentik/master/web/icons/icon.svg
+icon: https://raw.githubusercontent.com/goauthentik/authentik/master/web/icons/icon.svg
 dependencies:
   - name: postgresql
     version: 9.4.1
