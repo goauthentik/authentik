@@ -31,8 +31,7 @@ type APIController struct {
 
 	Server Outpost
 
-	lastBundleHash string
-	logger         *log.Entry
+	logger *log.Entry
 
 	reloadOffset time.Duration
 
@@ -71,16 +70,10 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		logger: log,
 
 		reloadOffset: time.Duration(rand.Intn(10)) * time.Second,
-
-		lastBundleHash: "",
 	}
 	ac.logger.Debugf("HA Reload offset: %s", ac.reloadOffset)
 	ac.initWS(akURL, outpost.Pk)
 	return ac
-}
-
-func (a *APIController) GetLastBundleHash() string {
-	return a.lastBundleHash
 }
 
 // Start Starts all handlers, non-blocking
