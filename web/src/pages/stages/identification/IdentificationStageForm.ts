@@ -70,7 +70,7 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
                     <ak-form-element-horizontal
                         label=${t`User fields`}
                         ?required=${true}
-                        name="transports">
+                        name="userFields">
                         <select name="users" class="pf-c-form-control" multiple>
                             <option value=${IdentificationStageUserFieldsEnum.Username} ?selected=${this.isUserFieldSelected(IdentificationStageUserFieldsEnum.Username)}>
                                 ${t`Username`}
