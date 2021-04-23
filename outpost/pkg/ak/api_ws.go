@@ -15,9 +15,9 @@ import (
 	"goauthentik.io/outpost/pkg"
 )
 
-func (ac *APIController) initWS(pbURL url.URL, outpostUUID strfmt.UUID) {
+func (ac *APIController) initWS(akURL url.URL, outpostUUID strfmt.UUID) {
 	pathTemplate := "%s://%s/ws/outpost/%s/"
-	scheme := strings.ReplaceAll(pbURL.Scheme, "http", "ws")
+	scheme := strings.ReplaceAll(akURL.Scheme, "http", "ws")
 
 	authHeader := fmt.Sprintf("Bearer %s", ac.token)
 
@@ -37,7 +37,7 @@ func (ac *APIController) initWS(pbURL url.URL, outpostUUID strfmt.UUID) {
 			InsecureSkipVerify: strings.ToLower(value) == "true",
 		},
 	}
-	ws.Dial(fmt.Sprintf(pathTemplate, scheme, pbURL.Host, outpostUUID.String()), header)
+	ws.Dial(fmt.Sprintf(pathTemplate, scheme, akURL.Host, outpostUUID.String()), header)
 
 	ac.logger.WithField("logger", "authentik.outpost.ak-ws").WithField("outpost", outpostUUID.String()).Debug("connecting to authentik")
 
