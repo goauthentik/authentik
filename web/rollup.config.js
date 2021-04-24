@@ -76,9 +76,7 @@ export default [
     },
     // Polyfills (imported first)
     {
-        input: [
-            "construct-style-sheets-polyfill"
-        ],
+        input: "./poly.ts",
         output: [
             {
                 format: "iife",
