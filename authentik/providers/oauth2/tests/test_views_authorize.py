@@ -166,7 +166,7 @@ class TestViewsAuthorize(TestCase):
             name="test",
             client_id="test",
             authorization_flow=flow,
-            redirect_uris="http://localhost",
+            redirect_uris="foo://localhost",
         )
         Application.objects.create(name="app", slug="app", provider=provider)
         state = generate_client_id()
@@ -179,7 +179,7 @@ class TestViewsAuthorize(TestCase):
                 "response_type": "code",
                 "client_id": "test",
                 "state": state,
-                "redirect_uri": "http://localhost",
+                "redirect_uri": "foo://localhost",
             },
         )
         response = self.client.get(
@@ -190,7 +190,7 @@ class TestViewsAuthorize(TestCase):
             force_str(response.content),
             {
                 "type": ChallengeTypes.REDIRECT.value,
-                "to": f"http://localhost?code={code.code}&state={state}",
+                "to": f"foo://localhost?code={code.code}&state={state}",
             },
         )
 

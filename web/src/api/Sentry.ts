@@ -2,12 +2,12 @@ import * as Sentry from "@sentry/browser";
 import { Integrations } from "@sentry/tracing";
 import { VERSION } from "../constants";
 import { SentryIgnoredError } from "../common/errors";
-import { Config, RootApi } from "authentik-api";
 import { me } from "./Users";
-import { DEFAULT_CONFIG } from "./Config";
+import { config } from "./Config";
+import { Config } from "authentik-api";
 
 export function configureSentry(): Promise<Config> {
-    return new RootApi(DEFAULT_CONFIG).rootConfigList().then((config) => {
+    return config().then((config) => {
         if (config.errorReportingEnabled) {
             Sentry.init({
                 dsn: "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8",
@@ -19,9 +19,18 @@ export function configureSentry(): Promise<Config> {
                 ],
                 tracesSampleRate: 0.6,
                 environment: config.errorReportingEnvironment,
-                beforeSend(event: Sentry.Event, hint: Sentry.EventHint) {
+                beforeSend: async (event: Sentry.Event, hint: Sentry.EventHint): Promise<Sentry.Event | null> => {
                     if (hint.originalException instanceof SentryIgnoredError) {
                         return null;
+                    }
+                    if (hint.originalException instanceof Response) {
+                        const response = hint.originalException as Response;
+                        // We only care about server errors
+                        if (response.status < 500) {
+                            return null;
+                        }
+                        const body = await response.json();
+                        event.message = `${response.status} ${response.url}: ${JSON.stringify(body)}`
                     }
                     if (event.exception) {
                         me().then(user => {

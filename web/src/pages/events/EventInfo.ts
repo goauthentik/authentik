@@ -190,7 +190,7 @@ export class EventInfo extends LitElement {
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
         case "update_available":
             return html`<h3>${t`New version available!`}</h3>
-                <a target="_blank" href="https://github.com/BeryJu/authentik/releases/tag/version%2F${this.event.context.new_version}">${this.event.context.new_version}</a>
+                <a target="_blank" href="https://github.com/goauthentik/authentik/releases/tag/version%2F${this.event.context.new_version}">${this.event.context.new_version}</a>
                 `;
         // Action types which typically don't record any extra context.
         // If context is not empty, we fall to the default response.

@@ -3,9 +3,9 @@ description: authentik is an open-source Identity Provider focused on flexibilit
 name: authentik
 home: https://goauthentik.io
 sources:
-  - https://github.com/BeryJu/authentik
-version: "2021.4.2"
-icon: https://raw.githubusercontent.com/BeryJu/authentik/master/web/icons/icon.svg
+  - https://github.com/goauthentik/authentik
+version: "2021.4.4"
+icon: https://raw.githubusercontent.com/goauthentik/authentik/master/web/icons/icon.svg
 dependencies:
   - name: postgresql
     version: 9.4.1

@@ -196,7 +196,7 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     let selected = this.source?.authenticationFlow === flow.pk;
-                                    if (!this.source?.authenticationFlow && flow.slug === "default-source-authentication") {
+                                    if (!this.source?.pk && !this.source?.authenticationFlow && flow.slug === "default-source-authentication") {
                                         selected = true;
                                     }
                                     return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
@@ -216,7 +216,7 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     let selected = this.source?.enrollmentFlow === flow.pk;
-                                    if (!this.source?.enrollmentFlow && flow.slug === "default-source-enrollment") {
+                                    if (!this.source?.pk && !this.source?.enrollmentFlow && flow.slug === "default-source-enrollment") {
                                         selected = true;
                                     }
                                     return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;

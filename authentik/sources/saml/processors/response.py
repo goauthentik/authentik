@@ -39,13 +39,13 @@ from authentik.sources.saml.processors.constants import (
 from authentik.sources.saml.processors.request import SESSION_REQUEST_ID
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
+from authentik.stages.user_login.stage import DEFAULT_BACKEND
 
 LOGGER = get_logger()
 if TYPE_CHECKING:
     from xml.etree.ElementTree import Element  # nosec
 
 CACHE_SEEN_REQUEST_ID = "authentik_saml_seen_ids_%s"
-DEFAULT_BACKEND = "django.contrib.auth.backends.ModelBackend"
 
 
 class ResponseProcessor:

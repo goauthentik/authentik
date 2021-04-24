@@ -71,6 +71,7 @@ export class UserForm extends Form<User> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Attributes`}
+                ?required=${true}
                 name="attributes">
                 <ak-codemirror mode="yaml" value="${YAML.stringify(first(this.user?.attributes, {}))}">
                 </ak-codemirror>

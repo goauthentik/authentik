@@ -53,7 +53,7 @@ export class GroupListPage extends TablePage<Group> {
         return [
             html`${item.name}`,
             html`${item.parent || "-"}`,
-            html`${item.users?.keys.length}`,
+            html`${Array.from(item.users || []).length}`,
             html`${item.isSuperuser ? t`Yes` : t`No`}`,
             html`
             <ak-forms-modal>

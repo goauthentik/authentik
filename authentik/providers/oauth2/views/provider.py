@@ -19,7 +19,7 @@ from authentik.providers.oauth2.models import (
     ResponseTypes,
     ScopeMapping,
 )
-from authentik.providers.oauth2.utils import cors_allow_any
+from authentik.providers.oauth2.utils import cors_allow
 
 LOGGER = get_logger()
 
@@ -112,5 +112,5 @@ class ProviderInfoView(View):
             OAuth2Provider, pk=application.provider_id
         )
         response = super().dispatch(request, *args, **kwargs)
-        cors_allow_any(request, response, *self.provider.redirect_uris.split("\n"))
+        cors_allow(request, response, *self.provider.redirect_uris.split("\n"))
         return response

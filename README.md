@@ -5,12 +5,12 @@
 ---
 
 [![](https://img.shields.io/discord/809154715984199690?label=Discord&style=flat-square)](https://discord.gg/jg33eMhnj6)
-[![CI Build status](https://img.shields.io/azure-devops/build/beryjuorg/authentik/1?style=flat-square)](https://dev.azure.com/beryjuorg/authentik/_build?definitionId=1)
-[![Tests](https://img.shields.io/azure-devops/tests/beryjuorg/authentik/1?compact_message&style=flat-square)](https://dev.azure.com/beryjuorg/authentik/_build?definitionId=1)
-[![Code Coverage](https://img.shields.io/codecov/c/gh/beryju/authentik?style=flat-square)](https://codecov.io/gh/BeryJu/authentik)
+[![CI Build status](https://img.shields.io/azure-devops/build/beryjuorg/authentik/6?style=flat-square)](https://dev.azure.com/beryjuorg/authentik/_build?definitionId=6)
+[![Tests](https://img.shields.io/azure-devops/tests/beryjuorg/authentik/6?compact_message&style=flat-square)](https://dev.azure.com/beryjuorg/authentik/_build?definitionId=6)
+[![Code Coverage](https://img.shields.io/codecov/c/gh/goauthentik/authentik?style=flat-square)](https://codecov.io/gh/goauthentik/authentik)
 ![Docker pulls](https://img.shields.io/docker/pulls/beryju/authentik.svg?style=flat-square)
 ![Latest version](https://img.shields.io/docker/v/beryju/authentik?sort=semver&style=flat-square)
-![LGTM Grade](https://img.shields.io/lgtm/grade/python/github/BeryJu/authentik?style=flat-square)
+![LGTM Grade](https://img.shields.io/lgtm/grade/python/github/goauthentik/authentik?style=flat-square)
 
 ## What is authentik?
 

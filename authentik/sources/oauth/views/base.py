@@ -2,11 +2,14 @@
 from typing import Optional, Type
 
 from django.http.request import HttpRequest
+from structlog.stdlib import get_logger
 
 from authentik.sources.oauth.clients.base import BaseOAuthClient
 from authentik.sources.oauth.clients.oauth1 import OAuthClient
 from authentik.sources.oauth.clients.oauth2 import OAuth2Client
 from authentik.sources.oauth.models import OAuthSource
+
+LOGGER = get_logger()
 
 
 # pylint: disable=too-few-public-methods
@@ -22,6 +25,9 @@ class OAuthClientMixin:
         if self.client_class is not None:
             # pylint: disable=not-callable
             return self.client_class(source, self.request, **kwargs)
-        if source.request_token_url:
-            return OAuthClient(source, self.request, **kwargs)
-        return OAuth2Client(source, self.request, **kwargs)
+        if source.type.request_token_url or source.request_token_url:
+            client = OAuthClient(source, self.request, **kwargs)
+        else:
+            client = OAuth2Client(source, self.request, **kwargs)
+        LOGGER.debug("Using client for oauth request", client=client)
+        return client

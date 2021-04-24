@@ -130,7 +130,7 @@ export class UserViewPage extends LitElement {
                                         </dt>
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">
-                                                <ak-label color=${this.user.isActive ? PFColor.Green : PFColor.Orange} text=""></ak-label>
+                                                <ak-label color=${this.user.isSuperuser ? PFColor.Green : PFColor.Orange} text=""></ak-label>
                                             </div>
                                         </dd>
                                     </div>

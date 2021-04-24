@@ -100,7 +100,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         <td role="cell" colspan="3">
             <div class="pf-c-table__expandable-row-content">
                 <div class="pf-c-content">
-                    <p>${t`These policies control when this stage will be applied to the flow.`}</p>
+                    <p>${t`These bindings control if this stage will be applied to the flow.`}</p>
                     <ak-bound-policies-list .target=${item.policybindingmodelPtrId}>
                     </ak-bound-policies-list>
                 </div>

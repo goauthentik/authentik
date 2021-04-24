@@ -19,7 +19,11 @@ from authentik.providers.oauth2.models import (
     OAuth2Provider,
     RefreshToken,
 )
-from authentik.providers.oauth2.utils import TokenResponse, extract_client_auth
+from authentik.providers.oauth2.utils import (
+    TokenResponse,
+    cors_allow,
+    extract_client_auth,
+)
 
 LOGGER = get_logger()
 
@@ -154,7 +158,18 @@ class TokenParams:
 class TokenView(View):
     """Generate tokens for clients"""
 
-    params: TokenParams
+    params: Optional[TokenParams] = None
+
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        response = super().dispatch(request, *args, **kwargs)
+        allowed_origins = []
+        if self.params:
+            allowed_origins = self.params.provider.redirect_uris.split("\n")
+        cors_allow(self.request, response, *allowed_origins)
+        return response
+
+    def options(self, request: HttpRequest) -> HttpResponse:
+        return TokenResponse({})
 
     def post(self, request: HttpRequest) -> HttpResponse:
         """Generate tokens for clients"""

@@ -11,6 +11,7 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 
 LOGGER = get_logger()
+DEFAULT_BACKEND = "django.contrib.auth.backends.ModelBackend"
 
 
 class UserLoginStageView(StageView):
@@ -23,12 +24,9 @@ class UserLoginStageView(StageView):
             messages.error(request, message)
             LOGGER.debug(message)
             return self.executor.stage_invalid()
-        if PLAN_CONTEXT_AUTHENTICATION_BACKEND not in self.executor.plan.context:
-            message = _("Pending user has no backend.")
-            messages.error(request, message)
-            LOGGER.debug(message)
-            return self.executor.stage_invalid()
-        backend = self.executor.plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND]
+        backend = self.executor.plan.context.get(
+            PLAN_CONTEXT_AUTHENTICATION_BACKEND, DEFAULT_BACKEND
+        )
         login(
             self.request,
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER],

@@ -4,6 +4,7 @@ from sys import platform
 from time import sleep
 from typing import Any, Optional
 from unittest.case import skipUnless
+from unittest.mock import Mock, patch
 
 from django.test import override_settings
 from docker.models.containers import Container
@@ -22,10 +23,29 @@ from authentik.providers.oauth2.generators import (
     generate_client_secret,
 )
 from authentik.sources.oauth.models import OAuthSource
+from authentik.sources.oauth.types.manager import SourceType
+from authentik.sources.oauth.types.twitter import TwitterOAuthCallback
 from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
 
 CONFIG_PATH = "/tmp/dex.yml"  # nosec
 LOGGER = get_logger()
+
+
+class OAUth1Type(SourceType):
+    """Twitter Type definition"""
+
+    callback_view = TwitterOAuthCallback
+    name = "Twitter"
+    slug = "twitter"
+
+    request_token_url = "http://localhost:5000/oauth/request_token"  # nosec
+    access_token_url = "http://localhost:5000/oauth/access_token"  # nosec
+    authorization_url = "http://localhost:5000/oauth/authorize"
+    profile_url = "http://localhost:5000/api/me"
+    urls_customizable = False
+
+
+SOURCE_TYPE_MOCK = Mock(return_value=OAUth1Type())
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -291,10 +311,6 @@ class TestSourceOAuth1(SeleniumTestCase):
             authentication_flow=authentication_flow,
             enrollment_flow=enrollment_flow,
             provider_type="twitter",
-            request_token_url="http://localhost:5000/oauth/request_token",
-            access_token_url="http://localhost:5000/oauth/access_token",
-            authorization_url="http://localhost:5000/oauth/authorize",
-            profile_url="http://localhost:5000/api/me",
             consumer_key=self.client_id,
             consumer_secret=self.client_secret,
         )
@@ -304,6 +320,10 @@ class TestSourceOAuth1(SeleniumTestCase):
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0009_source_flows")
     @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @patch(
+        "authentik.sources.oauth.types.manager.SourceTypeManager.find_type",
+        SOURCE_TYPE_MOCK,
+    )
     @object_manager
     def test_oauth_enroll(self):
         """test OAuth Source With With OIDC"""

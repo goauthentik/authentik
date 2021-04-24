@@ -73,7 +73,6 @@ export class GroupForm extends Form<Group> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Members`}
-                ?required=${true}
                 name="users">
                 <div class="pf-c-input-group">
                     <ak-group-member-select-table
@@ -121,6 +120,7 @@ export class GroupForm extends Form<Group> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Attributes`}
+                ?required=${true}
                 name="attributes">
                 <ak-codemirror mode="yaml" value="${YAML.stringify(first(this.group?.attributes, {}))}">
                 </ak-codemirror>

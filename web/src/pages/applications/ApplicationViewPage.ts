@@ -134,7 +134,7 @@ export class ApplicationViewPage extends LitElement {
                         </div>
                     </div>
                 </section>
-                <div slot="page-policy-bindings" data-tab-title="${t`Policy Bindings`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div slot="page-policy-bindings" data-tab-title="${t`Policy / Group / User Bindings`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__title">${t`These policies control which users can access this application.`}</div>
                         <ak-bound-policies-list .target=${this.application.pk}>

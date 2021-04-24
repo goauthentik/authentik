@@ -3,8 +3,8 @@ import yaml
 from django.test import TestCase
 
 from authentik.flows.models import Flow
-from authentik.outposts.apps import AuthentikOutpostConfig
 from authentik.outposts.models import KubernetesServiceConnection, Outpost, OutpostType
+from authentik.outposts.tasks import outpost_local_connection
 from authentik.providers.proxy.controllers.kubernetes import ProxyKubernetesController
 from authentik.providers.proxy.models import ProxyProvider
 
@@ -14,7 +14,7 @@ class TestProxyKubernetes(TestCase):
 
     def setUp(self):
         # Ensure that local connection have been created
-        AuthentikOutpostConfig.init_local_connection()
+        outpost_local_connection()
 
     def test_kubernetes_controller_static(self):
         """Test Kubernetes Controller"""

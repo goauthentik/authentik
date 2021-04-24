@@ -99,7 +99,7 @@ export class OAuthSourceViewPage extends LitElement {
                                                 <span class="pf-c-description-list__text">${t`Authorization URL`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.source.authorizationUrl}</div>
+                                                <div class="pf-c-description-list__text">${this.source.type?.authorizationUrl || this.source.authorizationUrl}</div>
                                             </dd>
                                         </div>
                                         <div class="pf-c-description-list__group">
@@ -107,7 +107,7 @@ export class OAuthSourceViewPage extends LitElement {
                                                 <span class="pf-c-description-list__text">${t`Token URL`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.source.accessTokenUrl}</div>
+                                                <div class="pf-c-description-list__text">${this.source.type?.accessTokenUrl || this.source.accessTokenUrl}</div>
                                             </dd>
                                         </div>
                                     </dl>
@@ -146,9 +146,10 @@ export class OAuthSourceViewPage extends LitElement {
                 </section>
                 <div slot="page-policy-binding" data-tab-title="${t`Policy Bindings`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
-                        <div class="pf-c-card__title">${t`These policies control which users can access this source.`}</div>
+                        <div class="pf-c-card__title">${t`These bindings control which users can access this source.
+                        You can only use policies here as access is checked before the user is authenticated.`}</div>
                         <div class="pf-c-card__body">
-                            <ak-bound-policies-list .target=${this.source.pk}>
+                            <ak-bound-policies-list .target=${this.source.pk} ?policyOnly=${true}>
                             </ak-bound-policies-list>
                         </div>
                     </div>

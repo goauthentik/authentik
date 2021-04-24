@@ -67,6 +67,7 @@ export class PropertyMappingScopeForm extends Form<ScopeMapping> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Expression`}
+                ?required=${true}
                 name="expression">
                 <ak-codemirror mode="python" value="${ifDefined(this.mapping?.expression)}">
                 </ak-codemirror>

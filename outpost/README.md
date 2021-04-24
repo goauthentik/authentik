@@ -1,6 +1,6 @@
 # authentik outpost
 
-[![CI Build status](https://img.shields.io/azure-devops/build/beryjuorg/authentik/3?style=flat-square)](https://dev.azure.com/beryjuorg/authentik/_build?definitionId=3)
+[![CI Build status](https://img.shields.io/azure-devops/build/beryjuorg/authentik/3?style=flat-square)](https://dev.azure.com/beryjuorg/authentik/_build?definitionId=8)
 ![Docker pulls (proxy)](https://img.shields.io/docker/pulls/beryju/authentik-proxy.svg?style=flat-square)
 
 Reverse Proxy based on [oauth2_proxy](https://github.com/oauth2-proxy/oauth2-proxy), completely managed and monitored by authentik.

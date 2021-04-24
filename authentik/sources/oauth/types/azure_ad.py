@@ -1,5 +1,5 @@
 """AzureAD OAuth2 Views"""
-from typing import Any
+from typing import Any, Optional
 from uuid import UUID
 
 from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
@@ -10,8 +10,11 @@ from authentik.sources.oauth.views.callback import OAuthCallback
 class AzureADOAuthCallback(OAuthCallback):
     """AzureAD OAuth2 Callback"""
 
-    def get_user_id(self, source: OAuthSource, info: dict[str, Any]) -> str:
-        return str(UUID(info.get("objectId")).int)
+    def get_user_id(self, source: OAuthSource, info: dict[str, Any]) -> Optional[str]:
+        try:
+            return str(UUID(info.get("objectId")).int)
+        except TypeError:
+            return None
 
     def get_user_enroll_context(
         self,

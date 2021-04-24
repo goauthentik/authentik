@@ -36,13 +36,14 @@ import { AuthenticatorValidateStageChallenge } from "./stages/authenticator_vali
 import { WebAuthnAuthenticatorRegisterChallenge } from "./stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
 import { CaptchaChallenge } from "./stages/captcha/CaptchaStage";
 import { StageHost } from "./stages/base";
-import { Challenge, ChallengeTypeEnum, Config, FlowsApi, RootApi } from "authentik-api";
-import { DEFAULT_CONFIG } from "../api/Config";
+import { Challenge, ChallengeTypeEnum, Config, FlowsApi } from "authentik-api";
+import { config, DEFAULT_CONFIG } from "../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
 import { AccessDeniedChallenge } from "./access_denied/FlowAccessDenied";
 import { PFSize } from "../elements/Spinner";
-import { TITLE_SUFFIX } from "../constants";
+import { TITLE_DEFAULT } from "../constants";
+import { configureSentry } from "../api/Sentry";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement implements StageHost {
@@ -98,11 +99,13 @@ export class FlowExecutor extends LitElement implements StageHost {
     }
 
     private postUpdate(): void {
-        if (this.challenge?.title) {
-            document.title = `${this.challenge.title} - ${TITLE_SUFFIX}`;
-        } else {
-            document.title = TITLE_SUFFIX;
-        }
+        config().then(config => {
+            if (this.challenge?.title) {
+                document.title = `${this.challenge.title} - ${config.brandingTitle}`;
+            } else {
+                document.title = config.brandingTitle || TITLE_DEFAULT;
+            }
+        });
     }
 
     submit<T>(formData?: T): Promise<void> {
@@ -124,7 +127,7 @@ export class FlowExecutor extends LitElement implements StageHost {
     }
 
     firstUpdated(): void {
-        new RootApi(DEFAULT_CONFIG).rootConfigList().then((config) => {
+        configureSentry().then((config) => {
             this.config = config;
         });
         this.loading = true;

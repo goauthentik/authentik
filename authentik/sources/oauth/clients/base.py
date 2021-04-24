@@ -40,8 +40,11 @@ class BaseOAuthClient:
 
     def get_profile_info(self, token: dict[str, str]) -> Optional[dict[str, Any]]:
         "Fetch user profile information."
+        profile_url = self.source.type.profile_url or ""
+        if self.source.type.urls_customizable and self.source.profile_url:
+            profile_url = self.source.profile_url
         try:
-            response = self.do_request("get", self.source.profile_url, token=token)
+            response = self.do_request("get", profile_url, token=token)
             response.raise_for_status()
         except RequestException as exc:
             LOGGER.warning("Unable to fetch user profile", exc=exc)
@@ -60,16 +63,16 @@ class BaseOAuthClient:
         args.update(additional)
         params = urlencode(args)
         LOGGER.info("redirect args", **args)
-        base_url = self.source.type.authorization_url
-        if self.source.authorization_url:
-            base_url = self.source.authorization_url
-        if base_url == "":
+        authorization_url = self.source.type.authorization_url or ""
+        if self.source.type.urls_customizable and self.source.authorization_url:
+            authorization_url = self.source.authorization_url
+        if authorization_url == "":
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
                 source=self.source,
                 message="Source has an empty authorization URL.",
             ).save()
-        return f"{base_url}?{params}"
+        return f"{authorization_url}?{params}"
 
     def parse_raw_token(self, raw_token: str) -> dict[str, Any]:
         "Parse token and secret from raw token response."

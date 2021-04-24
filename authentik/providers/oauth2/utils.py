@@ -2,10 +2,11 @@
 import re
 from base64 import b64decode
 from binascii import Error
-from typing import Optional
+from typing import Any, Optional
 from urllib.parse import urlparse
 
 from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http.response import HttpResponseRedirect
 from django.utils.cache import patch_vary_headers
 from structlog.stdlib import get_logger
 
@@ -26,8 +27,8 @@ class TokenResponse(JsonResponse):
         self["Pragma"] = "no-cache"
 
 
-def cors_allow_any(request: HttpRequest, response: HttpResponse, *allowed_origins: str):
-    """Add headers to permit CORS requests from any origin, with or without credentials,
+def cors_allow(request: HttpRequest, response: HttpResponse, *allowed_origins: str):
+    """Add headers to permit CORS requests from allowed_origins, with or without credentials,
     with any headers."""
     origin = request.META.get("HTTP_ORIGIN")
     if not origin:
@@ -161,3 +162,18 @@ def protected_resource_view(scopes: list[str]):
         return view_wrapper
 
     return wrapper
+
+
+class HttpResponseRedirectScheme(HttpResponseRedirect):
+    """HTTP Response to redirect, can be to a non-http scheme"""
+
+    def __init__(
+        self,
+        redirect_to: str,
+        *args: Any,
+        allowed_schemes: Optional[list[str]] = None,
+        **kwargs: Any,
+    ) -> None:
+        self.allowed_schemes = allowed_schemes or ["http", "https", "ftp"]
+        # pyright: reportGeneralTypeIssues=false
+        super().__init__(redirect_to, *args, **kwargs)

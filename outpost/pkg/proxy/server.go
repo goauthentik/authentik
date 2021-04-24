@@ -42,7 +42,8 @@ func (s *Server) handler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(204)
 		return
 	}
-	handler, ok := s.Handlers[r.Host]
+	host := getHost(r)
+	handler, ok := s.Handlers[host]
 	if !ok {
 		// If we only have one handler, host name switching doesn't matter
 		if len(s.Handlers) == 1 {
@@ -56,7 +57,7 @@ func (s *Server) handler(w http.ResponseWriter, r *http.Request) {
 		for k := range s.Handlers {
 			hostKeys = append(hostKeys, k)
 		}
-		s.logger.WithField("host", r.Host).WithField("known-hosts", strings.Join(hostKeys, ", ")).Debug("Host header does not match any we know of")
+		s.logger.WithField("host", host).WithField("known-hosts", strings.Join(hostKeys, ", ")).Debug("Host header does not match any we know of")
 		w.WriteHeader(404)
 		return
 	}

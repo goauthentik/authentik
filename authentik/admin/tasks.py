@@ -23,7 +23,9 @@ URL_FINDER = URLValidator.regex.pattern[1:]
 def update_latest_version(self: MonitoredTask):
     """Update latest version info"""
     try:
-        response = get("https://api.github.com/repos/beryju/authentik/releases/latest")
+        response = get(
+            "https://api.github.com/repos/goauthentik/authentik/releases/latest"
+        )
         response.raise_for_status()
         data = response.json()
         tag_name = data.get("tag_name")

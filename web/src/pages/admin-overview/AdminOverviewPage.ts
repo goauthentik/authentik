@@ -44,13 +44,13 @@ export class AdminOverviewPage extends LitElement {
                 <ak-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header=${t`Apps with most usage`} style="grid-column-end: span 2;grid-row-end: span 3;">
                     <ak-top-applications-table></ak-top-applications-table>
                 </ak-aggregate-card>
-                <ak-admin-status-card-provider class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-plugged" header=${t`Providers`} headerLink="#/core/providers/">
+                <ak-admin-status-card-provider class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-plugged" header=${t`Providers without application`} headerLink="#/core/providers">
                 </ak-admin-status-card-provider>
-                <ak-admin-status-card-policy-unbound class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-infrastructure" header=${t`Policies`} headerLink="#/policy/policies">
+                <ak-admin-status-card-policy-unbound class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-infrastructure" header=${t`Unbound policies`} headerLink="#/policy/policies">
                 </ak-admin-status-card-policy-unbound>
                 <ak-admin-status-card-user-count class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-user" header=${t`Users`} headerLink="#/identity/users">
                 </ak-admin-status-card-user-count>
-                <ak-admin-status-version class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-bundle" header=${t`Version`} headerLink="https://github.com/BeryJu/authentik/releases">
+                <ak-admin-status-version class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-bundle" header=${t`Version`} headerLink="https://github.com/goauthentik/authentik/releases">
                 </ak-admin-status-version>
                 <ak-admin-status-card-workers class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header=${t`Workers`}>
                 </ak-admin-status-card-workers>

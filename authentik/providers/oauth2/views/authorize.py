@@ -2,12 +2,12 @@
 from dataclasses import dataclass, field
 from datetime import timedelta
 from typing import Optional
-from urllib.parse import parse_qs, urlencode, urlsplit, urlunsplit
+from urllib.parse import parse_qs, urlencode, urlparse, urlsplit, urlunsplit
 from uuid import uuid4
 
 from django.http import HttpRequest, HttpResponse
 from django.http.response import Http404, HttpResponseBadRequest, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
@@ -46,6 +46,7 @@ from authentik.providers.oauth2.models import (
     OAuth2Provider,
     ResponseTypes,
 )
+from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
 from authentik.providers.oauth2.views.userinfo import UserInfoView
 from authentik.stages.consent.models import ConsentMode, ConsentStage
 from authentik.stages.consent.stage import (
@@ -233,6 +234,11 @@ class OAuthFulfillmentStage(StageView):
     params: OAuthAuthorizationParams
     provider: OAuth2Provider
 
+    def redirect(self, uri: str) -> HttpResponse:
+        """Redirect using HttpResponseRedirectScheme, compatible with non-http schemes"""
+        parsed = urlparse(uri)
+        return HttpResponseRedirectScheme(uri, allowed_schemes=[parsed.scheme])
+
     # pylint: disable=unused-argument
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """final Stage of an OAuth2 Flow"""
@@ -261,7 +267,7 @@ class OAuthFulfillmentStage(StageView):
                 flow=self.executor.plan.flow_pk,
                 scopes=", ".join(self.params.scope),
             ).from_http(self.request)
-            return redirect(self.create_response_uri())
+            return self.redirect(self.create_response_uri())
         except (ClientIdError, RedirectUriError) as error:
             error.to_event(application=application).from_http(request)
             self.executor.stage_invalid()
@@ -270,7 +276,7 @@ class OAuthFulfillmentStage(StageView):
         except AuthorizeError as error:
             error.to_event(application=application).from_http(request)
             self.executor.stage_invalid()
-            return redirect(error.create_uri())
+            return self.redirect(error.create_uri())
 
     def create_response_uri(self) -> str:
         """Create a final Response URI the user is redirected to."""
@@ -304,7 +310,7 @@ class OAuthFulfillmentStage(StageView):
                 return urlunsplit(uri)
             raise OAuth2Error()
         except OAuth2Error as error:
-            LOGGER.exception("Error when trying to create response uri", error=error)
+            LOGGER.warning("Error when trying to create response uri", error=error)
             raise AuthorizeError(
                 self.params.redirect_uri,
                 "server_error",

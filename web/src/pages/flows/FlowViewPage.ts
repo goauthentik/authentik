@@ -104,9 +104,9 @@ export class FlowViewPage extends LitElement {
                         </div>
                     </div>
                 </div>
-                <div slot="page-policy-bindings" data-tab-title="${t`Policy Bindings`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div slot="page-policy-bindings" data-tab-title="${t`Policy / Group / User Bindings`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
-                        <div class="pf-c-card__title">${t`These policies control which users can access this flow.`}</div>
+                        <div class="pf-c-card__title">${t`These bindings control which users can access this flow.`}</div>
                         <div class="pf-c-card__body">
                             <ak-bound-policies-list .target=${this.flow.policybindingmodelPtrId}>
                             </ak-bound-policies-list>

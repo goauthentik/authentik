@@ -14,7 +14,7 @@ from authentik.providers.oauth2.constants import (
     SCOPE_GITHUB_USER_READ,
 )
 from authentik.providers.oauth2.models import RefreshToken, ScopeMapping
-from authentik.providers.oauth2.utils import TokenResponse, cors_allow_any
+from authentik.providers.oauth2.utils import TokenResponse, cors_allow
 
 LOGGER = get_logger()
 
@@ -88,7 +88,7 @@ class UserInfoView(View):
         allowed_origins = []
         if self.token:
             allowed_origins = self.token.provider.redirect_uris.split("\n")
-        cors_allow_any(self.request, response, *allowed_origins)
+        cors_allow(self.request, response, *allowed_origins)
         return response
 
     def options(self, request: HttpRequest) -> HttpResponse:
