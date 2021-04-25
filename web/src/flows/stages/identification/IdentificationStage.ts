@@ -149,7 +149,6 @@ export class IdentificationStage extends BaseStage {
                 </p>` : html``}
                 ${this.challenge.recovery_url ? html`
                 <p class="pf-c-login__main-footer-band-item">
-                    ${t`Need an account?`}
                     <a id="recovery" href="${this.challenge.recovery_url}">${t`Forgot username or password?`}</a>
                 </p>` : html``}
             </div>`;
