@@ -9,7 +9,7 @@ func (ls *LDAPServer) Refresh() error {
 }
 
 func (ls *LDAPServer) Start() error {
-	listen := "0.0.0.0:3389"
+	listen := "127.0.0.1:3390"
 	log.Debugf("Listening on %s", listen)
 	err := ls.s.ListenAndServe(listen)
 	if err != nil {

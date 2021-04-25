@@ -22,6 +22,9 @@ type LDAPServer struct {
 	s   *ldap.Server
 	log *log.Entry
 	ac  *ak.APIController
+
+	// TODO: Make configurable
+	flowSlug string
 }
 
 func NewServer(ac *ak.APIController) *LDAPServer {

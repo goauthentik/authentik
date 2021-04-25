@@ -42,7 +42,7 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 				},
 				{
 					Name:   "uid",
-					Values: []string{strconv.Itoa(int(g.Pk))},
+					Values: []string{string(g.Pk)},
 				},
 				{
 					Name:   "objectClass",
