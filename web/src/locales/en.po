@@ -1079,7 +1079,7 @@ msgstr "Email"
 msgid "Email address"
 msgstr "Email address"
 
-#: src/flows/stages/identification/IdentificationStage.ts:151
+#: src/flows/stages/identification/IdentificationStage.ts:150
 msgid "Email or Username"
 msgstr "Email or Username"
 
@@ -1382,7 +1382,7 @@ msgstr "Force the user to configure an authenticator"
 msgid "Forgot password?"
 msgstr "Forgot password?"
 
-#: src/flows/stages/identification/IdentificationStage.ts:125
+#: src/flows/stages/identification/IdentificationStage.ts:124
 msgid "Forgot username or password?"
 msgstr "Forgot username or password?"
 
@@ -1677,7 +1677,7 @@ msgstr "Library"
 #: src/flows/stages/consent/ConsentStage.ts:28
 #: src/flows/stages/dummy/DummyStage.ts:27
 #: src/flows/stages/email/EmailStage.ts:26
-#: src/flows/stages/identification/IdentificationStage.ts:134
+#: src/flows/stages/identification/IdentificationStage.ts:133
 #: src/flows/stages/password/PasswordStage.ts:31
 #: src/flows/stages/prompt/PromptStage.ts:126
 #: src/pages/applications/ApplicationViewPage.ts:43
@@ -1752,7 +1752,7 @@ msgstr "Log the currently pending user in."
 msgid "Login password is synced from LDAP into authentik automatically. Enable this option only to write password changes in authentik back to LDAP."
 msgstr "Login password is synced from LDAP into authentik automatically. Enable this option only to write password changes in authentik back to LDAP."
 
-#: src/flows/stages/identification/IdentificationStage.ts:146
+#: src/flows/stages/identification/IdentificationStage.ts:145
 msgid "Login to continue to {0}."
 msgstr "Login to continue to {0}."
 
@@ -1930,7 +1930,6 @@ msgid "NameID Property Mapping"
 msgstr "NameID Property Mapping"
 
 #: src/flows/stages/identification/IdentificationStage.ts:119
-#: src/flows/stages/identification/IdentificationStage.ts:124
 msgid "Need an account?"
 msgstr "Need an account?"
 
