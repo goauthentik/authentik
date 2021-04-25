@@ -6,18 +6,18 @@ import time
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from hashlib import sha256
-from typing import Any, Optional, Type
+from typing import Any, Optional, Type, Union
 from urllib.parse import urlparse
 from uuid import uuid4
 
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from dacite import from_dict
 from django.conf import settings
 from django.db import models
 from django.http import HttpRequest
 from django.utils import dateformat, timezone
 from django.utils.translation import gettext_lazy as _
-from jwkest.jwk import Key, RSAKey, SYMKey, import_rsa_key
-from jwkest.jws import JWS
+from jwt import encode
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User
@@ -229,7 +229,7 @@ class OAuth2Provider(Provider):
         token.access_token = token.create_access_token(user, request)
         return token
 
-    def get_jwt_keys(self) -> list[Key]:
+    def get_jwt_keys(self) -> Union[RSAPrivateKey, str]:
         """
         Takes a provider and returns the set of keys associated with it.
         Returns a list of keys.
@@ -246,17 +246,10 @@ class OAuth2Provider(Provider):
                 self.jwt_alg = JWTAlgorithms.HS256
                 self.save()
             else:
-                # Because the JWT Library uses python cryptodome,
-                # we can't directly pass the RSAPublicKey
-                # object, but have to load it ourselves
-                key = import_rsa_key(self.rsa_key.key_data)
-                keys = [RSAKey(key=key, kid=self.rsa_key.kid)]
-                if not keys:
-                    raise Exception("You must add at least one RSA Key.")
-                return keys
+                return self.rsa_key.private_key
 
         if self.jwt_alg == JWTAlgorithms.HS256:
-            return [SYMKey(key=self.client_secret, alg=self.jwt_alg)]
+            return self.client_secret
 
         raise Exception("Unsupported key algorithm.")
 
@@ -297,11 +290,11 @@ class OAuth2Provider(Provider):
 
     def encode(self, payload: dict[str, Any]) -> str:
         """Represent the ID Token as a JSON Web Token (JWT)."""
-        keys = self.get_jwt_keys()
+        key = self.get_jwt_keys()
         # If the provider does not have an RSA Key assigned, it was switched to Symmetric
         self.refresh_from_db()
-        jws = JWS(payload, alg=self.jwt_alg)
-        return jws.sign_compact(keys)
+        # pyright: reportGeneralTypeIssues=false
+        return encode(payload, key, algorithm=self.jwt_alg)
 
     class Meta:
 
