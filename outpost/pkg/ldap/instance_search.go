@@ -34,6 +34,7 @@ func (pi *ProviderInstance) Search(bindDN string, searchReq ldap.SearchRequest, 
 		if err != nil {
 			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("API Error: %s", err)
 		}
+		pi.log.WithField("count", len(groups.Payload.Results)).Trace("Got results from API")
 		for _, g := range groups.Payload.Results {
 			attrs := []*ldap.EntryAttribute{
 				{

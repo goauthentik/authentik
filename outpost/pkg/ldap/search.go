@@ -9,9 +9,13 @@ import (
 )
 
 func (ls *LDAPServer) Search(boundDN string, searchReq ldap.SearchRequest, conn net.Conn) (ldap.ServerSearchResult, error) {
-	ls.log.WithField("dn", boundDN).Info("search")
-	bd, err := goldap.ParseDN(boundDN)
+	ls.log.WithField("boundDN", boundDN).WithField("baseDN", searchReq.BaseDN).Info("search")
+	if searchReq.BaseDN == "" {
+		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultSuccess}, nil
+	}
+	bd, err := goldap.ParseDN(searchReq.BaseDN)
 	if err != nil {
+		ls.log.WithField("baseDN", searchReq.BaseDN).WithError(err).Info("failed to parse basedn")
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, errors.New("invalid DN")
 	}
 	for _, provider := range ls.providers {
@@ -20,5 +24,5 @@ func (ls *LDAPServer) Search(boundDN string, searchReq ldap.SearchRequest, conn 
 			return provider.Search(boundDN, searchReq, conn)
 		}
 	}
-	return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, errors.New("invalid DN")
+	return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, errors.New("no provider could handle request")
 }

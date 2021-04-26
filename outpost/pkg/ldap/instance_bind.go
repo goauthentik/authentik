@@ -53,7 +53,7 @@ func (pi *ProviderInstance) Bind(username string, bindPW string, conn net.Conn) 
 	}
 	passed, err := pi.solveFlowChallenge(username, bindPW, client)
 	if err != nil {
-		pi.log.WithField("dn", username).WithError(err).Warning("failed to solve challenge")
+		pi.log.WithField("boundDN", username).WithError(err).Warning("failed to solve challenge")
 		return ldap.LDAPResultOperationsError, nil
 	}
 	if !passed {
@@ -66,13 +66,13 @@ func (pi *ProviderInstance) Bind(username string, bindPW string, conn net.Conn) 
 	}, httptransport.PassThroughAuth)
 	if err != nil {
 		if _, denied := err.(*core.CoreApplicationsCheckAccessForbidden); denied {
-			pi.log.WithField("dn", username).Info("Access denied for user")
+			pi.log.WithField("boundDN", username).Info("Access denied for user")
 			return ldap.LDAPResultInsufficientAccessRights, nil
 		}
-		pi.log.WithField("dn", username).WithError(err).Warning("failed to check access")
+		pi.log.WithField("boundDN", username).WithError(err).Warning("failed to check access")
 		return ldap.LDAPResultOperationsError, nil
 	}
-	pi.log.WithField("dn", username).Info("User has access")
+	pi.log.WithField("boundDN", username).Info("User has access")
 	return ldap.LDAPResultSuccess, nil
 }
 
