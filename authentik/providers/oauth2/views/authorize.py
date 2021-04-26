@@ -291,7 +291,7 @@ class OAuthFulfillmentStage(StageView):
                 GrantTypes.HYBRID,
             ]:
                 code = self.params.create_code(self.request)
-                code.save()
+                code.save(force_insert=True)
 
             if self.params.grant_type == GrantTypes.AUTHORIZATION_CODE:
                 query_params["code"] = code.code
