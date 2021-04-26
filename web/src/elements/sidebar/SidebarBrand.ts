@@ -41,7 +41,7 @@ export class SidebarBrand extends LitElement {
     }
 
     firstUpdated(): void {
-        configureSentry().then((c) => {this.config = c;});
+        configureSentry(true).then((c) => {this.config = c;});
     }
 
     render(): TemplateResult {
