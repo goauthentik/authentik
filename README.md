@@ -11,6 +11,7 @@
 ![Docker pulls](https://img.shields.io/docker/pulls/beryju/authentik.svg?style=flat-square)
 ![Latest version](https://img.shields.io/docker/v/beryju/authentik?sort=semver&style=flat-square)
 ![LGTM Grade](https://img.shields.io/lgtm/grade/python/github/goauthentik/authentik?style=flat-square)
+![Transifex](https://www.transifex.com/beryjuorg/authentik/)
 
 ## What is authentik?
 
