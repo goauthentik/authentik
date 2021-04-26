@@ -110,6 +110,6 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 			entries = append(entries, &ldap.Entry{DN: dn, Attributes: attrs})
 		}
 	}
-	ls.log.Debug(fmt.Sprintf("AP: Search OK: %s", searchReq.Filter))
+	ls.log.WithField("filter", searchReq.Filter).Debug("Search OK")
 	return ldap.ServerSearchResult{Entries: entries, Referrals: []string{}, Controls: []ldap.Control{}, ResultCode: ldap.LDAPResultSuccess}, nil
 }

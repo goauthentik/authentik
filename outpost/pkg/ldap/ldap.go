@@ -25,6 +25,7 @@ type LDAPServer struct {
 
 	// TODO: Make configurable
 	flowSlug string
+	appSlug  string
 }
 
 func NewServer(ac *ak.APIController) *LDAPServer {

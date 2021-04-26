@@ -10,8 +10,10 @@ import (
 	"strings"
 
 	goldap "github.com/go-ldap/ldap/v3"
+	httptransport "github.com/go-openapi/runtime/client"
 
 	"github.com/nmcclain/ldap"
+	"goauthentik.io/outpost/pkg/client/core"
 	"goauthentik.io/outpost/pkg/client/flows"
 )
 
@@ -58,13 +60,27 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 	}
 	passed, err := ls.solveFlowChallenge(username, bindPW, client)
 	if err != nil {
-		ls.log.WithError(err).Warning("failed to solve challenge")
+		ls.log.WithField("dn", username).WithError(err).Warning("failed to solve challenge")
 		return ldap.LDAPResultOperationsError, nil
 	}
-	if passed {
-		return ldap.LDAPResultSuccess, nil
+	if !passed {
+		return ldap.LDAPResultInvalidCredentials, nil
 	}
-	return ldap.LDAPResultInvalidCredentials, nil
+	_, err = ls.ac.Client.Core.CoreApplicationsCheckAccess(&core.CoreApplicationsCheckAccessParams{
+		Slug:       ls.appSlug,
+		Context:    context.Background(),
+		HTTPClient: client,
+	}, httptransport.PassThroughAuth)
+	if err != nil {
+		if _, denied := err.(*core.CoreApplicationsCheckAccessForbidden); denied {
+			ls.log.WithField("dn", username).Info("Access denied for user")
+			return ldap.LDAPResultInvalidCredentials, nil
+		}
+		ls.log.WithField("dn", username).WithError(err).Warning("failed to check access")
+		return ldap.LDAPResultOperationsError, nil
+	}
+	ls.log.WithField("dn", username).Info("User has access")
+	return ldap.LDAPResultSuccess, nil
 }
 
 func (ls *LDAPServer) solveFlowChallenge(bindDN string, password string, client *http.Client) (bool, error) {
@@ -73,7 +89,7 @@ func (ls *LDAPServer) solveFlowChallenge(bindDN string, password string, client 
 		Query:      "ldap=true",
 		Context:    context.Background(),
 		HTTPClient: client,
-	}, ls.ac.Auth)
+	}, httptransport.PassThroughAuth)
 	if err != nil {
 		ls.log.WithError(err).Warning("Failed to get challenge")
 		return false, err
@@ -93,7 +109,7 @@ func (ls *LDAPServer) solveFlowChallenge(bindDN string, password string, client 
 	default:
 		return false, fmt.Errorf("unsupported challenge type: %s", challenge.Payload.Component)
 	}
-	response, err := ls.ac.Client.Flows.FlowsExecutorSolve(responseParams, ls.ac.Auth)
+	response, err := ls.ac.Client.Flows.FlowsExecutorSolve(responseParams, httptransport.PassThroughAuth)
 	ls.log.WithField("component", response.Payload.Component).WithField("type", *response.Payload.Type).Debug("Got response")
 	if *response.Payload.Type == "redirect" {
 		return true, nil
