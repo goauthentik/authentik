@@ -6,7 +6,6 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Provider
-from authentik.flows.models import Flow
 from authentik.outposts.models import OutpostModel
 
 
@@ -29,9 +28,9 @@ class LDAPProvider(OutpostModel, Provider):
 
     @property
     def serializer(self) -> Type[Serializer]:
-        from authentik.providers.oauth2.api.provider import OAuth2ProviderSerializer
+        from authentik.providers.ldap.api import LDAPProviderSerializer
 
-        return OAuth2ProviderSerializer
+        return LDAPProviderSerializer
 
     def __str__(self):
         return f"LDAP Provider {self.name}"
