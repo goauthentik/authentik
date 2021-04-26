@@ -15959,6 +15959,12 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      type:
+        title: Type
+        type: string
+        enum:
+          - proxy
+          - ldap
       providers:
         type: array
         items:

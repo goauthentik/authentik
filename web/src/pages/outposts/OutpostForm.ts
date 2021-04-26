@@ -1,4 +1,4 @@
-import { Outpost, OutpostsApi, ProvidersApi } from "authentik-api";
+import { Outpost, OutpostsApi, OutpostTypeEnum, ProvidersApi } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -50,7 +50,8 @@ export class OutpostForm extends Form<Outpost> {
                 ?required=${true}
                 name="type">
                 <select class="pf-c-form-control">
-                    <option value="proxy" ?selected=${true}>${t`Proxy`}</option>s
+                    <option value=${OutpostTypeEnum.Proxy} ?selected=${this.outpost?.type === OutpostTypeEnum.Proxy}>${t`Proxy`}</option>
+                    <option value=${OutpostTypeEnum.Ldap} ?selected=${this.outpost?.type === OutpostTypeEnum.Ldap}>${t`LDAP`}</option>
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
