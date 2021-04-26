@@ -5,6 +5,7 @@ from typing import Iterable, Optional, Union
 from uuid import uuid4
 
 from dacite import from_dict
+from django.contrib.auth.models import Permission
 from django.core.cache import cache
 from django.db import models, transaction
 from django.db.models.base import Model
@@ -64,7 +65,7 @@ class OutpostConfig:
 class OutpostModel(Model):
     """Base model for providers that need more objects than just themselves"""
 
-    def get_required_objects(self) -> Iterable[models.Model]:
+    def get_required_objects(self) -> Iterable[Union[models.Model, str]]:
         """Return a list of all required objects"""
         return [self]
 
@@ -335,9 +336,18 @@ class Outpost(models.Model):
         # the ones the user needs
         with transaction.atomic():
             UserObjectPermission.objects.filter(user=user).delete()
-            for model in self.get_required_objects():
-                code_name = f"{model._meta.app_label}.view_{model._meta.model_name}"
-                assign_perm(code_name, user, model)
+            Permission.objects.filter(user=user).delete()
+            for model_or_perm in self.get_required_objects():
+                if isinstance(model_or_perm, models.Model):
+                    model_or_perm: models.Model
+                    code_name = (
+                        f"{model_or_perm._meta.app_label}."
+                        f"view_{model_or_perm._meta.model_name}"
+                    )
+                    assign_perm(code_name, user, model_or_perm)
+                else:
+                    assign_perm(model_or_perm, user)
+            LOGGER.debug("Updated service account's permissions")
         return user
 
     @property
@@ -360,9 +370,9 @@ class Outpost(models.Model):
             managed=f"goauthentik.io/outpost/{self.token_identifier}",
         )
 
-    def get_required_objects(self) -> Iterable[models.Model]:
+    def get_required_objects(self) -> Iterable[Union[models.Model, str]]:
         """Get an iterator of all objects the user needs read access to"""
-        objects = [self]
+        objects: list[Union[models.Model, str]] = [self]
         for provider in (
             Provider.objects.filter(outpost=self).select_related().select_subclasses()
         ):

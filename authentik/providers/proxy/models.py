@@ -1,7 +1,7 @@
 """authentik proxy models"""
 import string
 from random import SystemRandom
-from typing import Iterable, Optional, Type
+from typing import Iterable, Optional, Type, Union
 from urllib.parse import urljoin
 
 from django.db import models
@@ -139,7 +139,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     def __str__(self):
         return f"Proxy Provider {self.name}"
 
-    def get_required_objects(self) -> Iterable[models.Model]:
+    def get_required_objects(self) -> Iterable[Union[models.Model, str]]:
         required_models = [self]
         if self.certificate is not None:
             required_models.append(self.certificate)
