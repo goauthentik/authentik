@@ -17101,13 +17101,6 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
-      bind_flow:
-        title: Bind flow
-        description: Flow which is used to bind users. When left empty, no users will
-          be able to bind.
-        type: string
-        format: uuid
-        x-nullable: true
       base_dn:
         title: Base dn
         description: DN under which objects are accessible.

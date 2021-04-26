@@ -89,6 +89,16 @@ export class OutpostForm extends Form<Outpost> {
                             return html`<option value=${ifDefined(provider.pk)} ?selected=${selected}>${provider.verboseName} ${provider.name}</option>`;
                         });
                     }), html`<option>${t`Loading...`}</option>`)}
+                    ${until(new ProvidersApi(DEFAULT_CONFIG).providersLdapList({
+                        ordering: "pk"
+                    }).then(providers => {
+                        return providers.results.map(provider => {
+                            const selected = Array.from(this.outpost?.providers || []).some(sp => {
+                                return sp == provider.pk;
+                            });
+                            return html`<option value=${ifDefined(provider.pk)} ?selected=${selected}>${provider.verboseName} ${provider.name}</option>`;
+                        });
+                    }), html`<option>${t`Loading...`}</option>`)}
                 </select>
                 <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
             </ak-form-element-horizontal>

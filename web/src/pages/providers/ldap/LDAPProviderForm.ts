@@ -56,14 +56,14 @@ export class LDAPProviderFormPage extends Form<LDAPProvider> {
             <ak-form-element-horizontal
                 label=${t`Bind flow`}
                 ?required=${true}
-                name="bindFlow">
+                name="authorizationFlow">
                 <select class="pf-c-form-control">
                     ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                         ordering: "pk",
                         designation: FlowDesignationEnum.Authentication,
                     }).then(flows => {
                         return flows.results.map(flow => {
-                            return html`<option value=${ifDefined(flow.pk)} ?selected=${this.provider?.bindFlow === flow.pk}>${flow.name} (${flow.slug})</option>`;
+                            return html`<option value=${ifDefined(flow.pk)} ?selected=${this.provider?.authorizationFlow === flow.pk}>${flow.name} (${flow.slug})</option>`;
                         });
                     }), html`<option>${t`Loading...`}</option>`)}
                 </select>

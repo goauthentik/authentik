@@ -18,16 +18,6 @@ class LDAPProvider(OutpostModel, Provider):
         help_text=_("DN under which objects are accessible."),
     )
 
-    bind_flow = models.ForeignKey(
-        Flow,
-        null=True,
-        default=None,
-        on_delete=models.SET_DEFAULT,
-        help_text=_(
-            "Flow which is used to bind users. When left empty, no users will be able to bind."
-        ),
-    )
-
     @property
     def launch_url(self) -> Optional[str]:
         """LDAP never has a launch URL"""

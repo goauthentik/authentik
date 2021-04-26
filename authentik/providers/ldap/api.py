@@ -14,7 +14,6 @@ class LDAPProviderSerializer(ProviderSerializer):
 
         model = LDAPProvider
         fields = ProviderSerializer.Meta.fields + [
-            "bind_flow",
             "base_dn",
         ]
 
@@ -31,7 +30,7 @@ class LDAPOutpostConfigSerializer(ModelSerializer):
     """LDAPProvider Serializer"""
 
     application_slug = CharField(source="application.slug")
-    bind_flow_slug = CharField(source="bind_flow.slug")
+    bind_flow_slug = CharField(source="authorization_flow.slug")
 
     class Meta:
 
