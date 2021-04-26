@@ -9,6 +9,7 @@ import (
 )
 
 func (ls *LDAPServer) Search(boundDN string, searchReq ldap.SearchRequest, conn net.Conn) (ldap.ServerSearchResult, error) {
+	ls.log.WithField("dn", boundDN).Info("search")
 	bd, err := goldap.ParseDN(boundDN)
 	if err != nil {
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, errors.New("invalid DN")

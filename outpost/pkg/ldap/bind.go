@@ -6,15 +6,9 @@ import (
 	"github.com/nmcclain/ldap"
 )
 
-type UIDResponse struct {
-	UIDFIeld string `json:"uid_field"`
-}
-
-type PasswordResponse struct {
-	Password string `json:"password"`
-}
 
 func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LDAPResultCode, error) {
+	ls.log.WithField("dn", bindDN).Info("bind")
 	for _, instance := range ls.providers {
 		username, err := instance.getUsername(bindDN)
 		if err == nil {

@@ -16,6 +16,14 @@ import (
 	"goauthentik.io/outpost/pkg/client/flows"
 )
 
+type UIDResponse struct {
+	UIDFIeld string `json:"uid_field"`
+}
+
+type PasswordResponse struct {
+	Password string `json:"password"`
+}
+
 func (pi *ProviderInstance) getUsername(dn string) (string, error) {
 	if !strings.HasSuffix(dn, pi.BaseDN) {
 		return "", errors.New("invalid base DN")
@@ -59,7 +67,7 @@ func (pi *ProviderInstance) Bind(username string, bindPW string, conn net.Conn) 
 	if err != nil {
 		if _, denied := err.(*core.CoreApplicationsCheckAccessForbidden); denied {
 			pi.log.WithField("dn", username).Info("Access denied for user")
-			return ldap.LDAPResultInvalidCredentials, nil
+			return ldap.LDAPResultInsufficientAccessRights, nil
 		}
 		pi.log.WithField("dn", username).WithError(err).Warning("failed to check access")
 		return ldap.LDAPResultOperationsError, nil

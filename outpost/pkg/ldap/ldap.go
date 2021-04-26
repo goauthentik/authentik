@@ -35,7 +35,7 @@ func NewServer(ac *ak.APIController) *LDAPServer {
 	s.EnforceLDAP = true
 	ls := &LDAPServer{
 		s:         s,
-		log:       log.WithField("logger", "ldap-server"),
+		log:       log.WithField("logger", "authentik.outpost.ldap"),
 		ac:        ac,
 		providers: []*ProviderInstance{},
 	}

@@ -28,7 +28,7 @@ func (ls *LDAPServer) Refresh() error {
 			appSlug:  *provider.ApplicationSlug,
 			flowSlug: *provider.BindFlowSlug,
 			s:        ls,
-			log:      log.WithField("provider", provider.Name),
+			log:      log.WithField("logger", "authentik.outpost.ldap").WithField("provider", provider.Name),
 		}
 	}
 	ls.providers = providers

@@ -51,9 +51,9 @@ stages:
               script: |
                 docker run --rm -v $(pwd):/app -w /app golangci/golangci-lint:v1.39.0 golangci-lint run -v --timeout 200s
               workingDirectory: 'outpost/'
-  - stage: proxy_build_go
+  - stage: build_go
     jobs:
-      - job: build_go
+      - job: proxy_build_go
         pool:
           vmImage: 'ubuntu-latest'
         steps:
@@ -70,9 +70,26 @@ stages:
               command: 'build'
               arguments: './cmd/proxy'
               workingDirectory: 'outpost/'
-  - stage: proxy_build_docker
+      - job: ldap_build_go
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: GoTool@0
+            inputs:
+              version: '1.16.3'
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'current'
+              artifactName: 'go_swagger_client'
+              path: "outpost/pkg/"
+          - task: Go@0
+            inputs:
+              command: 'build'
+              arguments: './cmd/ldap'
+              workingDirectory: 'outpost/'
+  - stage: build_docker
     jobs:
-      - job: build
+      - job: proxy_build_docker
         pool:
           vmImage: 'ubuntu-latest'
         steps:
@@ -95,5 +112,30 @@ stages:
               repository: 'authentik/outpost-proxy'
               command: 'buildAndPush'
               Dockerfile: 'outpost/proxy.Dockerfile'
+              buildContext: 'outpost/'
+              tags: "gh-$(branchName)"
+      - job: ldap_build_docker
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: GoTool@0
+            inputs:
+              version: '1.16.3'
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'current'
+              artifactName: 'go_swagger_client'
+              path: "outpost/pkg/"
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: |
+                python ./scripts/az_do_set_branch.py
+          - task: Docker@2
+            inputs:
+              containerRegistry: 'beryjuorg-harbor'
+              repository: 'authentik/outpost-ldap'
+              command: 'buildAndPush'
+              Dockerfile: 'outpost/ldap.Dockerfile'
               buildContext: 'outpost/'
               tags: "gh-$(branchName)"
