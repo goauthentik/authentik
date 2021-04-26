@@ -1,12 +1,21 @@
 """authentik OAuth2 JWKS Views"""
+from base64 import urlsafe_b64encode
+
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views import View
-from jwkest import long_to_base64
-from jwkest.jwk import import_rsa_key
 
 from authentik.core.models import Application
 from authentik.providers.oauth2.models import JWTAlgorithms, OAuth2Provider
+
+
+def b64_enc(number: int) -> str:
+    """Convert number to base64-encoded octet-value"""
+    length = ((number).bit_length() + 7) // 8
+    number_bytes = number.to_bytes(length, "big")
+    final = urlsafe_b64encode(number_bytes).rstrip(b"=")
+    return final.decode("ascii")
 
 
 class JWKSView(View):
@@ -22,15 +31,16 @@ class JWKSView(View):
         response_data = {}
 
         if provider.jwt_alg == JWTAlgorithms.RS256:
-            public_key = import_rsa_key(provider.rsa_key.key_data).publickey()
+            public_key: RSAPublicKey = provider.rsa_key.private_key.public_key()
+            public_numbers = public_key.public_numbers()
             response_data["keys"] = [
                 {
                     "kty": "RSA",
                     "alg": "RS256",
                     "use": "sig",
                     "kid": provider.rsa_key.kid,
-                    "n": long_to_base64(public_key.n),
-                    "e": long_to_base64(public_key.e),
+                    "n": b64_enc(public_numbers.n),
+                    "e": b64_enc(public_numbers.e),
                 }
             ]
 

@@ -104,7 +104,6 @@ class TokenIntrospectionView(View):
     token: RefreshToken
     params: TokenIntrospectionParams
     provider: OAuth2Provider
-    id_token: IDToken
 
     def post(self, request: HttpRequest) -> HttpResponse:
         """Introspection handler"""

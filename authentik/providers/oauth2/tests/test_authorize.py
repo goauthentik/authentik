@@ -2,6 +2,7 @@
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
+from jwt import decode
 
 from authentik.core.models import Application, User
 from authentik.flows.challenge import ChallengeTypes
@@ -11,7 +12,10 @@ from authentik.providers.oauth2.errors import (
     ClientIdError,
     RedirectUriError,
 )
-from authentik.providers.oauth2.generators import generate_client_id
+from authentik.providers.oauth2.generators import (
+    generate_client_id,
+    generate_client_secret,
+)
 from authentik.providers.oauth2.models import (
     AuthorizationCode,
     GrantTypes,
@@ -21,7 +25,7 @@ from authentik.providers.oauth2.models import (
 from authentik.providers.oauth2.views.authorize import OAuthAuthorizationParams
 
 
-class TestViewsAuthorize(TestCase):
+class TestAuthorize(TestCase):
     """Test authorize view"""
 
     def setUp(self) -> None:
@@ -200,6 +204,7 @@ class TestViewsAuthorize(TestCase):
         provider = OAuth2Provider.objects.create(
             name="test",
             client_id="test",
+            client_secret=generate_client_secret(),
             authorization_flow=flow,
             redirect_uris="http://localhost",
         )
@@ -233,3 +238,23 @@ class TestViewsAuthorize(TestCase):
                 ),
             },
         )
+        jwt = decode(
+            token.access_token,
+            provider.client_secret,
+            algorithms=[provider.jwt_alg],
+            audience=provider.client_id,
+        )
+        self.assertIsNotNone(jwt["exp"])
+        self.assertIsNotNone(jwt["iat"])
+        self.assertIsNotNone(jwt["auth_time"])
+        self.assertIsNotNone(jwt["acr"])
+        self.assertIsNotNone(jwt["sub"])
+        self.assertIsNotNone(jwt["iss"])
+        # Check id_token
+        id_token = token.id_token.to_dict()
+        self.assertIsNotNone(id_token["exp"])
+        self.assertIsNotNone(id_token["iat"])
+        self.assertIsNotNone(id_token["auth_time"])
+        self.assertIsNotNone(id_token["acr"])
+        self.assertIsNotNone(id_token["sub"])
+        self.assertIsNotNone(id_token["iss"])

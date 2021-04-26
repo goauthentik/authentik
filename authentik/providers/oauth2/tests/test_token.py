@@ -23,7 +23,7 @@ from authentik.providers.oauth2.models import (
 from authentik.providers.oauth2.views.token import TokenParams
 
 
-class TestViewsToken(TestCase):
+class TestToken(TestCase):
     """Test token view"""
 
     def setUp(self) -> None:
