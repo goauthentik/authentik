@@ -1,5 +1,5 @@
 """LDAP Provider"""
-from typing import Optional, Type
+from typing import Iterable, Optional, Type
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -7,10 +7,11 @@ from rest_framework.serializers import Serializer
 
 from authentik.core.models import Provider
 from authentik.flows.models import Flow
+from authentik.outposts.models import OutpostModel
 
 
-class LDAPProvider(Provider):
-    """LDAP Provider"""
+class LDAPProvider(OutpostModel, Provider):
+    """Allow applications to authenticate against authentik's users using LDAP."""
 
     base_dn = models.TextField(
         default="DC=ldap,DC=goauthentik,DC=io",
@@ -44,6 +45,9 @@ class LDAPProvider(Provider):
 
     def __str__(self):
         return f"LDAP Provider {self.name}"
+
+    def get_required_objects(self) -> Iterable[models.Model]:
+        return [self]
 
     class Meta:
 
