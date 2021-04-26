@@ -4671,6 +4671,103 @@ paths:
         required: true
         type: string
         format: uuid
+  /outposts/ldap/:
+    get:
+      operationId: outposts_ldap_list
+      description: LDAPProvider Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: Page Index
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Page Size
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - results
+              - pagination
+            type: object
+            properties:
+              pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/LDAPOutpostConfig'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+      tags:
+        - outposts
+    parameters: []
+  /outposts/ldap/{id}/:
+    get:
+      operationId: outposts_ldap_read
+      description: LDAPProvider Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/LDAPOutpostConfig'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+        '404':
+          description: Object does not exist or caller has insufficient permissions
+            to access it.
+          schema:
+            $ref: '#/definitions/APIException'
+      tags:
+        - outposts
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this LDAP Provider.
+        required: true
+        type: integer
   /outposts/outposts/:
     get:
       operationId: outposts_outposts_list
@@ -8737,6 +8834,203 @@ paths:
       - name: id
         in: path
         description: A unique integer value identifying this provider.
+        required: true
+        type: integer
+  /providers/ldap/:
+    get:
+      operationId: providers_ldap_list
+      description: LDAPProvider Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: Page Index
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Page Size
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - results
+              - pagination
+            type: object
+            properties:
+              pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/LDAPProvider'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+      tags:
+        - providers
+    post:
+      operationId: providers_ldap_create
+      description: LDAPProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/LDAPProvider'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/LDAPProvider'
+        '400':
+          description: Invalid input.
+          schema:
+            $ref: '#/definitions/ValidationError'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+      tags:
+        - providers
+    parameters: []
+  /providers/ldap/{id}/:
+    get:
+      operationId: providers_ldap_read
+      description: LDAPProvider Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/LDAPProvider'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+        '404':
+          description: Object does not exist or caller has insufficient permissions
+            to access it.
+          schema:
+            $ref: '#/definitions/APIException'
+      tags:
+        - providers
+    put:
+      operationId: providers_ldap_update
+      description: LDAPProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/LDAPProvider'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/LDAPProvider'
+        '400':
+          description: Invalid input.
+          schema:
+            $ref: '#/definitions/ValidationError'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+        '404':
+          description: Object does not exist or caller has insufficient permissions
+            to access it.
+          schema:
+            $ref: '#/definitions/APIException'
+      tags:
+        - providers
+    patch:
+      operationId: providers_ldap_partial_update
+      description: LDAPProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/LDAPProvider'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/LDAPProvider'
+        '400':
+          description: Invalid input.
+          schema:
+            $ref: '#/definitions/ValidationError'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+        '404':
+          description: Object does not exist or caller has insufficient permissions
+            to access it.
+          schema:
+            $ref: '#/definitions/APIException'
+      tags:
+        - providers
+    delete:
+      operationId: providers_ldap_delete
+      description: LDAPProvider Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+        '404':
+          description: Object does not exist or caller has insufficient permissions
+            to access it.
+          schema:
+            $ref: '#/definitions/APIException'
+      tags:
+        - providers
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this LDAP Provider.
         required: true
         type: integer
   /providers/oauth2/:
@@ -15718,6 +16012,34 @@ definitions:
         title: Version outdated
         type: boolean
         readOnly: true
+  LDAPOutpostConfig:
+    required:
+      - name
+      - bind_flow_slug
+      - application_slug
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      base_dn:
+        title: Base dn
+        description: DN under which objects are accessible.
+        type: string
+        minLength: 1
+      bind_flow_slug:
+        title: Bind flow slug
+        type: string
+        minLength: 1
+      application_slug:
+        title: Application slug
+        type: string
+        minLength: 1
   OpenIDConnectConfiguration:
     description: Embed OpenID Connect provider information
     required:
@@ -16223,6 +16545,7 @@ definitions:
           - authentik.policies.password
           - authentik.policies.reputation
           - authentik.providers.proxy
+          - authentik.providers.ldap
           - authentik.providers.oauth2
           - authentik.providers.saml
           - authentik.recovery
@@ -16727,6 +17050,63 @@ definitions:
         description: Description shown to the user when consenting. If left empty,
           the user won't be informed.
         type: string
+  LDAPProvider:
+    required:
+      - name
+      - authorization_flow
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      authorization_flow:
+        title: Authorization flow
+        description: Flow used when authorizing this provider.
+        type: string
+        format: uuid
+      property_mappings:
+        type: array
+        items:
+          type: string
+          format: uuid
+        uniqueItems: true
+      component:
+        title: Component
+        type: string
+        readOnly: true
+      assigned_application_slug:
+        title: Assigned application slug
+        type: string
+        readOnly: true
+      assigned_application_name:
+        title: Assigned application name
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
+      bind_flow:
+        title: Bind flow
+        description: Flow which is used to bind users. When left empty, no users will
+          be able to bind.
+        type: string
+        format: uuid
+        x-nullable: true
+      base_dn:
+        title: Base dn
+        description: DN under which objects are accessible.
+        type: string
+        minLength: 1
   OAuth2ProviderSetupURLs:
     type: object
     properties:
