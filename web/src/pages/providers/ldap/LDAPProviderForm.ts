@@ -1,4 +1,4 @@
-import { FlowDesignationEnum, FlowsApi, ProvidersApi, LDAPProvider } from "authentik-api";
+import { FlowDesignationEnum, FlowsApi, ProvidersApi, LDAPProvider, CoreApi } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -68,6 +68,19 @@ export class LDAPProviderFormPage extends Form<LDAPProvider> {
                     }), html`<option>${t`Loading...`}</option>`)}
                 </select>
                 <p class="pf-c-form__helper-text">${t`Flow used for users to authenticate. Currently only identification and password stages are supported.`}</p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${t`Group`}
+                name="searchGroup">
+                <select class="pf-c-form-control">
+                    <option value="" ?selected=${this.provider?.searchGroup === undefined}>---------</option>
+                    ${until(new CoreApi(DEFAULT_CONFIG).coreGroupsList({}).then(groups => {
+                        return groups.results.map(group => {
+                            return html`<option value=${ifDefined(group.pk)} ?selected=${this.provider?.searchGroup === group.pk}>${group.name}</option>`;
+                        });
+                    }), html`<option>${t`Loading...`}</option>`)}
+                </select>
+                <p class="pf-c-form__helper-text">${t`Users in the selected group can do search queries.`}</p>
             </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>

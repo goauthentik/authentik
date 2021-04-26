@@ -16051,6 +16051,13 @@ definitions:
         title: Application slug
         type: string
         minLength: 1
+      search_group:
+        title: Search group
+        description: Users in this group can do search queries. If not set, every
+          user can execute search queries.
+        type: string
+        format: uuid
+        x-nullable: true
   OpenIDConnectConfiguration:
     description: Embed OpenID Connect provider information
     required:
@@ -17111,6 +17118,13 @@ definitions:
         description: DN under which objects are accessible.
         type: string
         minLength: 1
+      search_group:
+        title: Search group
+        description: Users in this group can do search queries. If not set, every
+          user can execute search queries.
+        type: string
+        format: uuid
+        x-nullable: true
   OAuth2ProviderSetupURLs:
     type: object
     properties:

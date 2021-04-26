@@ -1,5 +1,4 @@
 """User API Views"""
-from authentik.core.api.groups import GroupSerializer
 from django.http.response import Http404
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
@@ -14,6 +13,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.admin.api.metrics import CoordinateSerializer, get_events_per_1h
 from authentik.api.decorators import permission_required
+from authentik.core.api.groups import GroupSerializer
 from authentik.core.api.utils import LinkSerializer, PassiveSerializer, is_dict
 from authentik.core.middleware import (
     SESSION_IMPERSONATE_ORIGINAL_USER,

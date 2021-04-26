@@ -15,6 +15,7 @@ class LDAPProviderSerializer(ProviderSerializer):
         model = LDAPProvider
         fields = ProviderSerializer.Meta.fields + [
             "base_dn",
+            "search_group",
         ]
 
 
@@ -35,7 +36,14 @@ class LDAPOutpostConfigSerializer(ModelSerializer):
     class Meta:
 
         model = LDAPProvider
-        fields = ["pk", "name", "base_dn", "bind_flow_slug", "application_slug"]
+        fields = [
+            "pk",
+            "name",
+            "base_dn",
+            "bind_flow_slug",
+            "application_slug",
+            "search_group",
+        ]
 
 
 class LDAPOutpostConfigViewSet(ReadOnlyModelViewSet):
