@@ -1329,6 +1329,33 @@ paths:
         type: string
         format: slug
         pattern: ^[-a-zA-Z0-9_]+$
+  /core/applications/{slug}/check_access/:
+    get:
+      operationId: core_applications_check_access
+      description: Check access to a single application by slug
+      parameters: []
+      responses:
+        '204':
+          description: Access granted
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+        '404':
+          description: Object does not exist or caller has insufficient permissions
+            to access it.
+          schema:
+            $ref: '#/definitions/APIException'
+      tags:
+        - core
+    parameters:
+      - name: slug
+        in: path
+        description: Internal application name, used in URLs.
+        required: true
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
   /core/applications/{slug}/metrics/:
     get:
       operationId: core_applications_metrics

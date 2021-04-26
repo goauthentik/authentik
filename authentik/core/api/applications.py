@@ -92,6 +92,23 @@ class ApplicationViewSet(ModelViewSet):
         return applications
 
     @swagger_auto_schema(
+        responses={
+            204: "Access granted",
+            403: "Access denied",
+        }
+    )
+    @action(detail=True, methods=["GET"])
+    # pylint: disable=unused-argument
+    def check_access(self, request: Request, slug: str) -> Response:
+        """Check access to a single application by slug"""
+        application = self.get_object()
+        engine = PolicyEngine(application, self.request.user, self.request)
+        engine.build()
+        if engine.passing:
+            return Response(status=204)
+        return Response(status=403)
+
+    @swagger_auto_schema(
         manual_parameters=[
             openapi.Parameter(
                 name="superuser_full_list",
