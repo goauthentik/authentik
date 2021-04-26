@@ -3,6 +3,10 @@
 {% load static %}
 {% load i18n %}
 
+{% block head_before %}
+<link rel="stylesheet" type="text/css" href="{% static 'dist/patternfly.min.css' %}?v={{ ak_version }}">
+{% endblock %}
+
 {% block body %}
 <div class="pf-c-background-image">
     <svg xmlns="http://www.w3.org/2000/svg" class="pf-c-background-image__filter" width="0" height="0">
