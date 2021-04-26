@@ -6,7 +6,7 @@ import { me } from "./Users";
 import { config } from "./Config";
 import { Config } from "authentik-api";
 
-export function configureSentry(): Promise<Config> {
+export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
     return config().then((config) => {
         if (config.errorReportingEnabled) {
             Sentry.init({
@@ -47,7 +47,7 @@ export function configureSentry(): Promise<Config> {
                 },
             });
             console.debug("authentik/config: Sentry enabled.");
-            if (config.errorReportingSendPii) {
+            if (config.errorReportingSendPii && canDoPpi) {
                 me().then(user => {
                     Sentry.setUser({ email: user.user.email });
                     console.debug("authentik/config: Sentry with PII enabled.");
