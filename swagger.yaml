@@ -15140,6 +15140,11 @@ definitions:
         title: Is superuser
         type: boolean
         readOnly: true
+      groups:
+        type: array
+        items:
+          $ref: '#/definitions/Group'
+        readOnly: true
       email:
         title: Email address
         type: string

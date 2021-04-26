@@ -50,11 +50,8 @@ func (pi *ProviderInstance) Search(bindDN string, searchReq ldap.SearchRequest, 
 				},
 			}
 			attrs = append(attrs, AKAttrsToLDAP(g.Attributes)...)
-			// attrs = append(attrs, &ldap.EntryAttribute{Name: "description", Values: []string{fmt.Sprintf("%s", g.Name)}})
-			// attrs = append(attrs, &ldap.EntryAttribute{Name: "gidNumber", Values: []string{fmt.Sprintf("%d", g.UnixID)}})
-			// attrs = append(attrs, &ldap.EntryAttribute{Name: "uniqueMember", Values: h.getGroupMembers(g.UnixID)})
-			// attrs = append(attrs, &ldap.EntryAttribute{Name: "memberUid", Values: h.getGroupMemberIDs(g.UnixID)})
-			dn := fmt.Sprintf("cn=%s,%s", *g.Name, pi.GroupDN)
+
+			dn := pi.GetGroupDN(g)
 			entries = append(entries, &ldap.Entry{DN: dn, Attributes: attrs})
 		}
 	case UserObjectClass, "":
@@ -102,7 +99,7 @@ func (pi *ProviderInstance) Search(bindDN string, searchReq ldap.SearchRequest, 
 				attrs = append(attrs, &ldap.EntryAttribute{Name: "superuser", Values: []string{"active"}})
 			}
 
-			// attrs = append(attrs, &ldap.EntryAttribute{Name: "memberOf", Values: h.getGroupDNs(append(u.OtherGroups, u.PrimaryGroup))})
+			attrs = append(attrs, &ldap.EntryAttribute{Name: "memberOf", Values: pi.GroupsForUser(u)})
 
 			attrs = append(attrs, AKAttrsToLDAP(u.Attributes)...)
 

@@ -1,4 +1,5 @@
 """User API Views"""
+from authentik.core.api.groups import GroupSerializer
 from django.http.response import Http404
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
@@ -8,7 +9,7 @@ from rest_framework.decorators import action
 from rest_framework.fields import CharField, JSONField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import BooleanField, ModelSerializer
+from rest_framework.serializers import BooleanField, ListSerializer, ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.admin.api.metrics import CoordinateSerializer, get_events_per_1h
@@ -29,6 +30,7 @@ class UserSerializer(ModelSerializer):
     is_superuser = BooleanField(read_only=True)
     avatar = CharField(read_only=True)
     attributes = JSONField(validators=[is_dict], required=False)
+    groups = ListSerializer(child=GroupSerializer(), read_only=True, source="ak_groups")
 
     class Meta:
 
@@ -40,6 +42,7 @@ class UserSerializer(ModelSerializer):
             "is_active",
             "last_login",
             "is_superuser",
+            "groups",
             "email",
             "avatar",
             "attributes",
