@@ -20,10 +20,12 @@ def is_dict(value: Any):
 class PassiveSerializer(Serializer):
     """Base serializer class which doesn't implement create/update methods"""
 
-    def create(self, validated_data: dict) -> Model:
+    def create(self, validated_data: dict) -> Model:  # pragma: no cover
         return Model()
 
-    def update(self, instance: Model, validated_data: dict) -> Model:
+    def update(
+        self, instance: Model, validated_data: dict
+    ) -> Model:  # pragma: no cover
         return Model()
 
 
