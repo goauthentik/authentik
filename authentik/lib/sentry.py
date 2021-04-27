@@ -5,6 +5,7 @@ from aioredis.errors import ConnectionClosedError, ReplyError
 from billiard.exceptions import WorkerLostError
 from botocore.client import ClientError
 from celery.exceptions import CeleryError
+from channels.middleware import BaseMiddleware
 from channels_redis.core import ChannelFull
 from django.core.exceptions import SuspiciousOperation, ValidationError
 from django.db import InternalError, OperationalError, ProgrammingError
@@ -14,10 +15,26 @@ from ldap3.core.exceptions import LDAPException
 from redis.exceptions import ConnectionError as RedisConnectionError
 from redis.exceptions import RedisError, ResponseError
 from rest_framework.exceptions import APIException
+from sentry_sdk import Hub
+from sentry_sdk.tracing import Transaction
 from structlog.stdlib import get_logger
 from websockets.exceptions import WebSocketException
 
+from authentik.lib.utils.reflection import class_to_path
+
 LOGGER = get_logger()
+
+
+class SentryWSMiddleware(BaseMiddleware):
+    """Sentry Websocket middleweare to set the transaction name based on
+    consumer class path"""
+
+    async def __call__(self, scope, receive, send):
+        transaction: Optional[Transaction] = Hub.current.scope.transaction
+        class_path = class_to_path(self.inner.consumer_class)
+        if transaction:
+            transaction.name = class_path
+        return await self.inner(scope, receive, send)
 
 
 class SentryIgnoredException(Exception):
