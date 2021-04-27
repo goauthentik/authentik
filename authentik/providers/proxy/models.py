@@ -57,7 +57,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         help_text=_(
             "Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with "
             "internal_host."
-        )
+        ),
     )
 
     skip_path_regex = models.TextField(

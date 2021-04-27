@@ -6,13 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('authentik_providers_proxy', '0010_auto_20201214_0942'),
+        ("authentik_providers_proxy", "0010_auto_20201214_0942"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='proxyprovider',
-            name='forward_auth_mode',
-            field=models.BooleanField(default=False, help_text='Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.'),
+            model_name="proxyprovider",
+            name="forward_auth_mode",
+            field=models.BooleanField(
+                default=False,
+                help_text="Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.",
+            ),
         ),
     ]
