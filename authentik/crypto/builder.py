@@ -33,7 +33,7 @@ class CertificateBuilder:
     def save(self) -> Optional[CertificateKeyPair]:
         """Save generated certificate as model"""
         if not self.__certificate:
-            return None
+            raise ValueError("Certificated hasn't been built yet")
         return CertificateKeyPair.objects.create(
             name=self.common_name,
             certificate_data=self.certificate,

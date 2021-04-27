@@ -37,6 +37,8 @@ class TestCrypto(TestCase):
         """Test Builder"""
         builder = CertificateBuilder()
         builder.common_name = "test-cert"
+        with self.assertRaises(ValueError):
+            builder.save()
         builder.build(
             subject_alt_names=[],
             validity_days=3,
