@@ -201,7 +201,7 @@ class DockerServiceConnection(OutpostServiceConnection):
                 )
             client.containers.list()
         except DockerException as exc:
-            LOGGER.error(exc)
+            LOGGER.warning(exc)
             raise ServiceConnectionInvalid from exc
         return client
 
