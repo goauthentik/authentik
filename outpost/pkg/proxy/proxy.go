@@ -338,9 +338,15 @@ func (p *OAuthProxy) AuthenticateOnly(rw http.ResponseWriter, req *http.Request)
 	session, err := p.getAuthenticatedSession(rw, req)
 	if err != nil {
 		if p.forwardAuthMode {
-			host := getHost(req)
-			http.Redirect(rw, req, fmt.Sprintf("//%s%s", host, p.OAuthStartPath), http.StatusTemporaryRedirect)
-			return
+			if _, ok := req.URL.Query()["nginx"]; ok {
+				rw.WriteHeader(401)
+				return
+			}
+			if _, ok := req.URL.Query()["traefik"]; ok {
+				host := getHost(req)
+				http.Redirect(rw, req, fmt.Sprintf("//%s%s", host, p.OAuthStartPath), http.StatusTemporaryRedirect)
+				return
+			}
 		}
 		http.Error(rw, "unauthorized request", http.StatusUnauthorized)
 		return
