@@ -68,7 +68,7 @@ def send_mail(
                 messages=["Successfully sent Mail."],
             )
         )
-    except (SMTPException, ConnectionError) as exc:
+    except (SMTPException, ConnectionError, ValueError) as exc:
         LOGGER.debug("Error sending email, retrying...", exc=exc)
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
         raise exc
