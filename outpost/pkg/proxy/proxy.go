@@ -337,6 +337,11 @@ func (p *OAuthProxy) SignOut(rw http.ResponseWriter, req *http.Request) {
 func (p *OAuthProxy) AuthenticateOnly(rw http.ResponseWriter, req *http.Request) {
 	session, err := p.getAuthenticatedSession(rw, req)
 	if err != nil {
+		if p.forwardAuthMode {
+			host := getHost(req)
+			http.Redirect(rw, req, fmt.Sprintf("//%s%s", host, p.OAuthStartPath), http.StatusTemporaryRedirect)
+			return
+		}
 		http.Error(rw, "unauthorized request", http.StatusUnauthorized)
 		return
 	}
