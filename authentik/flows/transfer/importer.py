@@ -160,7 +160,7 @@ class FlowImporter:
             try:
                 model: SerializerModel = apps.get_model(model_app_label, model_name)
             except LookupError:
-                self.logger.error(
+                self.logger.warning(
                     "app or model does not exist", app=model_app_label, model=model_name
                 )
                 return False
@@ -168,7 +168,7 @@ class FlowImporter:
             try:
                 serializer = self._validate_single(entry)
             except EntryInvalidError as exc:
-                self.logger.error("entry not valid", entry=entry, error=exc)
+                self.logger.warning("entry not valid", entry=entry, error=exc)
                 return False
 
             model = serializer.save()
