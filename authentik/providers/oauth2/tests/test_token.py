@@ -1,11 +1,11 @@
 """Test token view"""
 from base64 import b64encode
 
-from django.test import RequestFactory, TestCase
+from django.test import RequestFactory
 from django.urls import reverse
 from django.utils.encoding import force_str
 
-from authentik.core.models import User
+from authentik.core.models import Application, User
 from authentik.flows.models import Flow
 from authentik.providers.oauth2.constants import (
     GRANT_TYPE_AUTHORIZATION_CODE,
@@ -20,15 +20,17 @@ from authentik.providers.oauth2.models import (
     OAuth2Provider,
     RefreshToken,
 )
+from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.views.token import TokenParams
 
 
-class TestToken(TestCase):
+class TestToken(OAuthTestCase):
     """Test token view"""
 
     def setUp(self) -> None:
         super().setUp()
         self.factory = RequestFactory()
+        self.app = Application.objects.create(name="test", slug="test")
 
     def test_request_auth_code(self):
         """test request param"""
@@ -97,12 +99,15 @@ class TestToken(TestCase):
             authorization_flow=Flow.objects.first(),
             redirect_uris="http://local.invalid",
         )
+        # Needs to be assigned to an application for iss to be set
+        self.app.provider = provider
+        self.app.save()
         header = b64encode(
             f"{provider.client_id}:{provider.client_secret}".encode()
         ).decode()
         user = User.objects.get(username="akadmin")
         code = AuthorizationCode.objects.create(
-            code="foobar", provider=provider, user=user
+            code="foobar", provider=provider, user=user, is_open_id=True
         )
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -126,6 +131,7 @@ class TestToken(TestCase):
                 ),
             },
         )
+        self.validate_jwt(new_token, provider)
 
     def test_refresh_token_view(self):
         """test request param"""
@@ -136,6 +142,9 @@ class TestToken(TestCase):
             authorization_flow=Flow.objects.first(),
             redirect_uris="http://local.invalid",
         )
+        # Needs to be assigned to an application for iss to be set
+        self.app.provider = provider
+        self.app.save()
         header = b64encode(
             f"{provider.client_id}:{provider.client_secret}".encode()
         ).decode()
@@ -174,6 +183,7 @@ class TestToken(TestCase):
                 ),
             },
         )
+        self.validate_jwt(new_token, provider)
 
     def test_refresh_token_view_invalid_origin(self):
         """test request param"""

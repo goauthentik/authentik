@@ -16,6 +16,7 @@ from authentik.providers.oauth2.constants import (
 from authentik.providers.oauth2.errors import TokenError, UserAuthError
 from authentik.providers.oauth2.models import (
     AuthorizationCode,
+    ClientTypes,
     OAuth2Provider,
     RefreshToken,
 )
@@ -75,7 +76,7 @@ class TokenParams:
             LOGGER.warning("OAuth2Provider does not exist", client_id=self.client_id)
             raise TokenError("invalid_client")
 
-        if self.provider.client_type == "confidential":
+        if self.provider.client_type == ClientTypes.CONFIDENTIAL:
             if self.provider.client_secret != self.client_secret:
                 LOGGER.warning(
                     "Invalid client secret: client does not have secret",
