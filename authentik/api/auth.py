@@ -1,5 +1,5 @@
 """API Authentication"""
-from base64 import b64decode, b64encode
+from base64 import b64decode
 from binascii import Error
 from typing import Any, Optional, Union
 
@@ -19,14 +19,6 @@ def token_from_header(raw_header: bytes) -> Optional[Token]:
     auth_credentials = raw_header.decode()
     if auth_credentials == "":
         return None
-    # Legacy, accept basic auth thats fully encoded (2021.3 outposts)
-    if " " not in auth_credentials:
-        try:
-            plain = b64decode(auth_credentials.encode()).decode()
-            auth_type, body = plain.split()
-            auth_credentials = f"{auth_type} {b64encode(body.encode()).decode()}"
-        except (UnicodeDecodeError, Error):
-            raise AuthenticationFailed("Malformed header")
     auth_type, auth_credentials = auth_credentials.split()
     if auth_type.lower() not in ["basic", "bearer"]:
         LOGGER.debug("Unsupported authentication type, denying", type=auth_type.lower())
