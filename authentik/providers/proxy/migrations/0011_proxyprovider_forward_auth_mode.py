@@ -2,6 +2,8 @@
 
 from django.db import migrations, models
 
+import authentik.lib.models
+
 
 class Migration(migrations.Migration):
 
@@ -16,6 +18,18 @@ class Migration(migrations.Migration):
             field=models.BooleanField(
                 default=False,
                 help_text="Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.",
+            ),
+        ),
+        migrations.AlterField(
+            model_name="proxyprovider",
+            name="internal_host",
+            field=models.TextField(
+                blank=True,
+                validators=[
+                    authentik.lib.models.DomainlessURLValidator(
+                        schemes=("http", "https")
+                    )
+                ],
             ),
         ),
     ]

@@ -15758,7 +15758,6 @@ definitions:
   ProxyOutpostConfig:
     required:
       - name
-      - internal_host
       - external_host
     type: object
     properties:
@@ -15773,7 +15772,6 @@ definitions:
       internal_host:
         title: Internal host
         type: string
-        minLength: 1
       external_host:
         title: External host
         type: string
@@ -16736,7 +16734,6 @@ definitions:
     required:
       - name
       - authorization_flow
-      - internal_host
       - external_host
     type: object
     properties:
@@ -16782,7 +16779,6 @@ definitions:
       internal_host:
         title: Internal host
         type: string
-        minLength: 1
       external_host:
         title: External host
         type: string

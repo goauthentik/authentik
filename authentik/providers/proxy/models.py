@@ -42,7 +42,8 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     Protocols by using a Reverse-Proxy."""
 
     internal_host = models.TextField(
-        validators=[DomainlessURLValidator(schemes=("http", "https"))]
+        validators=[DomainlessURLValidator(schemes=("http", "https"))],
+        blank=True,
     )
     external_host = models.TextField(
         validators=[DomainlessURLValidator(schemes=("http", "https"))]
