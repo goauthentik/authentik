@@ -1,4 +1,5 @@
 """login tests"""
+from time import sleep
 from unittest.mock import patch
 
 from django.test import Client, TestCase
@@ -50,6 +51,31 @@ class TestUserLoginStage(TestCase):
             force_str(response.content),
             {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
         )
+
+    def test_expiry(self):
+        """Test with expiry"""
+        self.stage.session_duration = "seconds=2"
+        self.stage.save()
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_str(response.content),
+            {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
+        )
+        self.assertNotEqual(list(self.client.session.keys()), [])
+        sleep(3)
+        self.client.session.clear_expired()
+        self.assertEqual(list(self.client.session.keys()), [])
 
     @patch(
         "authentik.flows.views.to_stage_response",
