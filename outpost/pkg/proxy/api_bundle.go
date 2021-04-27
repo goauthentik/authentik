@@ -78,7 +78,7 @@ func (pb *providerBundle) prepareOpts(provider *models.ProxyOutpostConfig) *opti
 		providerOpts.UpstreamServers = []options.Upstream{
 			{
 				ID:                    "default",
-				URI:                   *provider.InternalHost,
+				URI:                   provider.InternalHost,
 				Path:                  "/",
 				InsecureSkipTLSVerify: provider.InternalHostSslValidation,
 			},
