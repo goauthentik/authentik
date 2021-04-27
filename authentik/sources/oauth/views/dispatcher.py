@@ -1,5 +1,4 @@
 """Dispatch OAuth views to respective views"""
-from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views import View
 from structlog.stdlib import get_logger
@@ -15,12 +14,9 @@ class DispatcherView(View):
 
     kind = ""
 
-    def dispatch(self, *args, **kwargs):
+    def dispatch(self, *args, source_slug: str, **kwargs):
         """Find Source by slug and forward request"""
-        slug = kwargs.get("source_slug", None)
-        if not slug:
-            raise Http404
-        source = get_object_or_404(OAuthSource, slug=slug)
+        source = get_object_or_404(OAuthSource, slug=source_slug)
         view = MANAGER.find(source.provider_type, kind=RequestKind(self.kind))
         LOGGER.debug("dispatching OAuth2 request to", view=view, kind=self.kind)
-        return view.as_view()(*args, **kwargs)
+        return view.as_view()(*args, source_slug=source_slug, **kwargs)
