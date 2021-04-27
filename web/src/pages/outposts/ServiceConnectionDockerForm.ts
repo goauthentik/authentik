@@ -70,7 +70,6 @@ export class ServiceConnectionDockerForm extends Form<DockerServiceConnection> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`TLS Verification Certificate`}
-                ?required=${true}
                 name="tlsVerification">
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.sc?.tlsVerification === undefined}>---------</option>
@@ -86,7 +85,6 @@ export class ServiceConnectionDockerForm extends Form<DockerServiceConnection> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`TLS Authentication Certificate`}
-                ?required=${true}
                 name="tlsAuthentication">
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.sc?.tlsAuthentication === undefined}>---------</option>
