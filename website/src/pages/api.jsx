@@ -18,9 +18,6 @@ function APIBrowser() {
                 primary-color="#fd4b2d"
                 allow-spec-url-load="false"
                 allow-spec-file-load="false">
-                <div slot="logo">
-                    <img src={useBaseUrl("img/icon_top_brand.svg")}  />
-                </div>
             </rapi-doc>
         </Layout>
     );
