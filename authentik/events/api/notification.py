@@ -1,4 +1,5 @@
 """Notification API Views"""
+from guardian.utils import get_anonymous_user
 from rest_framework import mixins
 from rest_framework.fields import ReadOnlyField
 from rest_framework.serializers import ModelSerializer
@@ -48,6 +49,5 @@ class NotificationViewSet(
     ]
 
     def get_queryset(self):
-        if not self.request:
-            return super().get_queryset()
-        return Notification.objects.filter(user=self.request.user)
+        user = self.request.user if self.request else get_anonymous_user()
+        return Notification.objects.filter(user=user)
