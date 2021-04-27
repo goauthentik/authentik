@@ -1,5 +1,6 @@
 """AuthenticatorStaticStage API Views"""
 from django_otp.plugins.otp_static.models import StaticDevice
+from guardian.utils import get_anonymous_user
 from rest_framework.permissions import IsAdminUser
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
@@ -44,9 +45,8 @@ class StaticDeviceViewSet(ModelViewSet):
     ordering = ["name"]
 
     def get_queryset(self):
-        if not self.request:
-            return super().get_queryset()
-        return StaticDevice.objects.filter(user=self.request.user)
+        user = self.request.user if self.request else get_anonymous_user()
+        return StaticDevice.objects.filter(user=user)
 
 
 class StaticAdminDeviceViewSet(ReadOnlyModelViewSet):

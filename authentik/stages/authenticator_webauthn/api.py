@@ -1,4 +1,5 @@
 """AuthenticateWebAuthnStage API Views"""
+from guardian.utils import get_anonymous_user
 from rest_framework.permissions import IsAdminUser
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
@@ -46,9 +47,8 @@ class WebAuthnDeviceViewSet(ModelViewSet):
     ordering = ["name"]
 
     def get_queryset(self):
-        if not self.request:
-            return super().get_queryset()
-        return WebAuthnDevice.objects.filter(user=self.request.user)
+        user = self.request.user if self.request else get_anonymous_user()
+        return WebAuthnDevice.objects.filter(user=user)
 
 
 class WebAuthnAdminDeviceViewSet(ReadOnlyModelViewSet):

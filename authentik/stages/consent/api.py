@@ -1,4 +1,5 @@
 """ConsentStage API Views"""
+from guardian.utils import get_anonymous_user
 from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
@@ -50,8 +51,7 @@ class UserConsentViewSet(
     ordering = ["application", "expires"]
 
     def get_queryset(self):
-        if not self.request:
+        user = self.request.user if self.request else get_anonymous_user()
+        if user.is_superuser:
             return super().get_queryset()
-        if self.request.user.is_superuser:
-            return super().get_queryset()
-        return super().get_queryset().filter(user=self.request.user)
+        return super().get_queryset().filter(user=user)

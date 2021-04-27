@@ -1,5 +1,6 @@
 """AuthenticatorTOTPStage API Views"""
 from django_otp.plugins.otp_totp.models import TOTPDevice
+from guardian.utils import get_anonymous_user
 from rest_framework.permissions import IsAdminUser
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
@@ -47,9 +48,8 @@ class TOTPDeviceViewSet(ModelViewSet):
     ordering = ["name"]
 
     def get_queryset(self):
-        if not self.request:
-            return super().get_queryset()
-        return TOTPDevice.objects.filter(user=self.request.user)
+        user = self.request.user if self.request else get_anonymous_user()
+        return TOTPDevice.objects.filter(user=user)
 
 
 class TOTPAdminDeviceViewSet(ReadOnlyModelViewSet):

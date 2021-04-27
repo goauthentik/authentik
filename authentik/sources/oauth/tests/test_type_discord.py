@@ -18,7 +18,7 @@ DISCORD_USER = {
 }
 
 
-class TestTypeGitHub(TestCase):
+class TestTypeDiscord(TestCase):
     """OAuth Source tests"""
 
     def setUp(self):
@@ -32,7 +32,7 @@ class TestTypeGitHub(TestCase):
         )
 
     def test_enroll_context(self):
-        """Test GitHub Enrollment context"""
+        """Test discord Enrollment context"""
         ak_context = DiscordOAuth2Callback().get_user_enroll_context(
             self.source, UserOAuthSourceConnection(), DISCORD_USER
         )

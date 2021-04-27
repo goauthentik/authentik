@@ -1,8 +1,7 @@
 """Test authorize view"""
-from django.test import RequestFactory, TestCase
+from django.test import RequestFactory
 from django.urls import reverse
 from django.utils.encoding import force_str
-from jwt import decode
 
 from authentik.core.models import Application, User
 from authentik.flows.challenge import ChallengeTypes
@@ -22,10 +21,11 @@ from authentik.providers.oauth2.models import (
     OAuth2Provider,
     RefreshToken,
 )
+from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.views.authorize import OAuthAuthorizationParams
 
 
-class TestAuthorize(TestCase):
+class TestAuthorize(OAuthTestCase):
     """Test authorize view"""
 
     def setUp(self) -> None:
@@ -238,23 +238,4 @@ class TestAuthorize(TestCase):
                 ),
             },
         )
-        jwt = decode(
-            token.access_token,
-            provider.client_secret,
-            algorithms=[provider.jwt_alg],
-            audience=provider.client_id,
-        )
-        self.assertIsNotNone(jwt["exp"])
-        self.assertIsNotNone(jwt["iat"])
-        self.assertIsNotNone(jwt["auth_time"])
-        self.assertIsNotNone(jwt["acr"])
-        self.assertIsNotNone(jwt["sub"])
-        self.assertIsNotNone(jwt["iss"])
-        # Check id_token
-        id_token = token.id_token.to_dict()
-        self.assertIsNotNone(id_token["exp"])
-        self.assertIsNotNone(id_token["iat"])
-        self.assertIsNotNone(id_token["auth_time"])
-        self.assertIsNotNone(id_token["acr"])
-        self.assertIsNotNone(id_token["sub"])
-        self.assertIsNotNone(id_token["iss"])
+        self.validate_jwt(token, provider)
