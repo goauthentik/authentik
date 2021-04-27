@@ -23,6 +23,11 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
                     if (hint.originalException instanceof SentryIgnoredError) {
                         return null;
                     }
+                    if (hint.originalException instanceof Error) {
+                        if (hint.originalException.name == 'NetworkError') {
+                            return null;
+                        }
+                    }
                     if (hint.originalException instanceof Response) {
                         const response = hint.originalException as Response;
                         // We only care about server errors
