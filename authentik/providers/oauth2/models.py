@@ -175,6 +175,16 @@ class OAuth2Provider(Provider):
         ),
     )
 
+    access_code_validity = models.TextField(
+        default="minutes=1",
+        validators=[timedelta_string_validator],
+        help_text=_(
+            (
+                "Access codes not valid on or after current time + this value "
+                "(Format: hours=1;minutes=2;seconds=3)."
+            )
+        ),
+    )
     token_validity = models.TextField(
         default="minutes=10",
         validators=[timedelta_string_validator],

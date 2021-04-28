@@ -189,7 +189,8 @@ export class SAMLProviderFormPage extends Form<SAMLProvider> {
                         ?required=${true}
                         name="assertionValidNotBefore">
                         <input type="text" value="${this.provider?.assertionValidNotBefore || "minutes=-5"}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${t`Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3).`}</p>
+                        <p class="pf-c-form__helper-text">${t`Configure the maximum allowed time drift for an asseration.`}</p>
+                        <p class="pf-c-form__helper-text">${t`(Format: hours=-1;minutes=-2;seconds=-3).`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Assertion valid not on or after`}

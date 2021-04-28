@@ -64,7 +64,8 @@ export class UserLoginStageForm extends Form<UserLoginStage> {
                         ?required=${true}
                         name="sessionDuration">
                         <input type="text" value="${first(this.stage?.sessionDuration, "seconds=0")}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${t`Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3).`}</p>
+                        <p class="pf-c-form__helper-text">${t`Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed.`}</p>
+                        <p class="pf-c-form__helper-text">${t`(Format: hours=-1;minutes=-2;seconds=-3).`}</p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

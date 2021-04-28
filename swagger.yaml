@@ -15547,6 +15547,12 @@ definitions:
         title: Client Secret
         type: string
         maxLength: 255
+      access_code_validity:
+        title: Access code validity
+        description: 'Access codes not valid on or after current time + this value
+          (Format: hours=1;minutes=2;seconds=3).'
+        type: string
+        minLength: 1
       token_validity:
         title: Token validity
         description: 'Tokens not valid on or after current time + this value (Format:
