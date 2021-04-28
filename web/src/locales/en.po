@@ -393,7 +393,7 @@ msgstr "Build hash: {0}"
 msgid "Built-in"
 msgstr "Built-in"
 
-#: src/pages/outposts/ServiceConnectionDockerForm.ts:89
+#: src/pages/outposts/ServiceConnectionDockerForm.ts:88
 msgid "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 msgstr "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 
@@ -450,7 +450,7 @@ msgstr "Certificate-Key Pair"
 msgid "Certificate-Key Pairs"
 msgstr "Certificate-Key Pairs"
 
-#: src/pages/outposts/ServiceConnectionDockerForm.ts:106
+#: src/pages/outposts/ServiceConnectionDockerForm.ts:104
 msgid "Certificate/Key used for authentication. Can be left empty for no authentication."
 msgstr "Certificate/Key used for authentication. Can be left empty for no authentication."
 
@@ -1697,8 +1697,8 @@ msgstr "Loading"
 #: src/pages/groups/GroupForm.ts:127
 #: src/pages/outposts/OutpostForm.ts:74
 #: src/pages/outposts/OutpostForm.ts:96
-#: src/pages/outposts/ServiceConnectionDockerForm.ts:87
-#: src/pages/outposts/ServiceConnectionDockerForm.ts:104
+#: src/pages/outposts/ServiceConnectionDockerForm.ts:86
+#: src/pages/outposts/ServiceConnectionDockerForm.ts:102
 #: src/pages/policies/PolicyBindingForm.ts:157
 #: src/pages/policies/PolicyBindingForm.ts:173
 #: src/pages/policies/PolicyBindingForm.ts:189
@@ -3254,7 +3254,7 @@ msgstr "System Overview"
 msgid "System Tasks"
 msgstr "System Tasks"
 
-#: src/pages/outposts/ServiceConnectionDockerForm.ts:92
+#: src/pages/outposts/ServiceConnectionDockerForm.ts:91
 msgid "TLS Authentication Certificate"
 msgstr "TLS Authentication Certificate"
 
