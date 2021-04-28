@@ -100,6 +100,9 @@ body {
 .ak-initial-load h1 {
     color: var(--ak-dark-foreground);
 }
+.form-help-text {
+    color: var(--pf-global--Color--100);
+}
 
 @media (prefers-color-scheme: dark) {
     :root {
@@ -237,6 +240,9 @@ body {
         color: var(--ak-dark-foreground);
     }
     .pf-c-check__label {
+        color: var(--ak-dark-foreground);
+    }
+    .form-help-text {
         color: var(--ak-dark-foreground);
     }
     /* inputs help text */
