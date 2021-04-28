@@ -95,15 +95,11 @@ class TestUserLoginStage(TestCase):
         self.stage.continue_flow_without_invitation = False
         self.stage.save()
 
-    def test_with_invitation(self):
+    def test_with_invitation_get(self):
         """Test with invitation, check data in session"""
         plan = FlowPlan(
             flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
         )
-        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        plan.context[
-            PLAN_CONTEXT_AUTHENTICATION_BACKEND
-        ] = "django.contrib.auth.backends.ModelBackend"
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -119,6 +115,37 @@ class TestUserLoginStage(TestCase):
             )
             args = urlencode({INVITATION_TOKEN_KEY: invite.pk.hex})
             response = self.client.get(base_url + f"?query={args}")
+
+        session = self.client.session
+        plan: FlowPlan = session[SESSION_KEY_PLAN]
+        self.assertEqual(plan.context[PLAN_CONTEXT_PROMPT], data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_str(response.content),
+            {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
+        )
+
+    def test_with_invitation_prompt_data(self):
+        """Test with invitation, check data in session"""
+        data = {"foo": "bar"}
+        invite = Invitation.objects.create(
+            created_by=get_anonymous_user(), fixed_data=data
+        )
+
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
+        plan.context[PLAN_CONTEXT_PROMPT] = {INVITATION_TOKEN_KEY: invite.pk.hex}
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        with patch("authentik.flows.views.FlowExecutorView.cancel", MagicMock()):
+            base_url = reverse(
+                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
+            )
+            response = self.client.get(base_url)
 
         session = self.client.session
         plan: FlowPlan = session[SESSION_KEY_PLAN]
