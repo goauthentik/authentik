@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, patch
 from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
+from django.utils.http import urlencode
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.test import APITestCase
 
@@ -116,9 +117,8 @@ class TestUserLoginStage(TestCase):
             base_url = reverse(
                 "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
             )
-            response = self.client.get(
-                base_url + f"?{INVITATION_TOKEN_KEY}={invite.pk.hex}"
-            )
+            args = urlencode({INVITATION_TOKEN_KEY: invite.pk.hex})
+            response = self.client.get(base_url + f"?query={args}")
 
         session = self.client.session
         plan: FlowPlan = session[SESSION_KEY_PLAN]
