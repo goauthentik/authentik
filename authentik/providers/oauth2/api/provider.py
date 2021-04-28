@@ -38,6 +38,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "client_type",
             "client_id",
             "client_secret",
+            "access_code_validity",
             "token_validity",
             "include_claims_in_id_token",
             "jwt_alg",

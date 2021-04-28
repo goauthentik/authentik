@@ -130,10 +130,20 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                 </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
+                        label=${t`Access code validity`}
+                        ?required=${true}
+                        name="accessCodeValidity">
+                        <input type="text" value="${first(this.provider?.accessCodeValidity, "minutes=1")}" class="pf-c-form-control" required>
+                        <p class="pf-c-form__helper-text">${t`Configure how long access codes are valid for.`}</p>
+                        <p class="pf-c-form__helper-text">${t`(Format: hours=-1;minutes=-2;seconds=-3).`}</p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
                         label=${t`Token validity`}
                         ?required=${true}
                         name="tokenValidity">
-                        <input type="text" value="${this.provider?.tokenValidity || "minutes=10"}" class="pf-c-form-control" required>
+                        <input type="text" value="${first(this.provider?.tokenValidity, "minutes=10")}" class="pf-c-form-control" required>
+                        <p class="pf-c-form__helper-text">${t`Configure how long refresh tokens and their id_tokens are valid for.`}</p>
+                        <p class="pf-c-form__helper-text">${t`(Format: hours=-1;minutes=-2;seconds=-3).`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`JWT Algorithm`}
