@@ -10,21 +10,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
       - name: Docker Login Registry
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_PASSWORD }}
           password: ${{ secrets.DOCKER_USERNAME }}
       - name: Building Docker Image
-        run: docker build
-          --no-cache
-          -t beryju/authentik:2021.4.4
-          -t beryju/authentik:latest
-          -f Dockerfile .
-      - name: Push Docker Container to Registry (versioned)
-        run: docker push beryju/authentik:2021.4.4
-      - name: Push Docker Container to Registry (latest)
-        run: docker push beryju/authentik:latest
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: |
+            beryju/authentik-proxy:2021.4.4,
+            beryju/authentik-proxy:latest,
+            ghcr.io/goauthentik/authentik:2021.4.4,
+            ghcr.io/goauthentik/authentik:latest
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v8
   build-proxy:
     runs-on: ubuntu-latest
     steps:
@@ -38,23 +42,27 @@ jobs:
           go get -u github.com/go-swagger/go-swagger/cmd/swagger
           swagger generate client -f ../swagger.yaml -A authentik -t pkg/
           go build -v .
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
       - name: Docker Login Registry
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_PASSWORD }}
           password: ${{ secrets.DOCKER_USERNAME }}
       - name: Building Docker Image
-        run: |
-          cd outpost/
-          docker build \
-          --no-cache \
-          -t beryju/authentik-proxy:2021.4.4 \
-          -t beryju/authentik-proxy:latest \
-          -f proxy.Dockerfile .
-      - name: Push Docker Container to Registry (versioned)
-        run: docker push beryju/authentik-proxy:2021.4.4
-      - name: Push Docker Container to Registry (latest)
-        run: docker push beryju/authentik-proxy:latest
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: |
+            beryju/authentik-proxy:2021.4.4,
+            beryju/authentik-proxy:latest,
+            ghcr.io/goauthentik/proxy:2021.4.4,
+            ghcr.io/goauthentik/proxy:latest
+          context: proxy/
+          file: proxy/proxy.Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v8
   build-static:
     runs-on: ubuntu-latest
     steps:
@@ -62,23 +70,26 @@ jobs:
       - name: prepare ts api client
         run: |
           docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate -i /local/swagger.yaml -g typescript-fetch -o /local/web/api --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
       - name: Docker Login Registry
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_PASSWORD }}
           password: ${{ secrets.DOCKER_USERNAME }}
       - name: Building Docker Image
-        run: |
-          cd web/
-          docker build \
-          --no-cache \
-          -t beryju/authentik-static:2021.4.4 \
-          -t beryju/authentik-static:latest \
-          -f Dockerfile .
-      - name: Push Docker Container to Registry (versioned)
-        run: docker push beryju/authentik-static:2021.4.4
-      - name: Push Docker Container to Registry (latest)
-        run: docker push beryju/authentik-static:latest
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: |
+            beryju/authentik-static:2021.4.4,
+            beryju/authentik-static:latest,
+            ghcr.io/goauthentik/static:2021.4.4,
+            ghcr.io/goauthentik/static:latest
+          context: web/
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v8
   test-release:
     needs:
       - build-server
