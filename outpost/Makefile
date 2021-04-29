@@ -1,4 +1,4 @@
-all: clean generate build
+all: clean generate
 
 generate:
 	go get -u github.com/go-swagger/go-swagger/cmd/swagger
@@ -11,5 +11,3 @@ clean:
 	go mod tidy
 	go clean .
 
-build:
-	go build -v .

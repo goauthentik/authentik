@@ -16,8 +16,6 @@ from kubernetes.client import (
     V1SecretKeySelector,
 )
 
-from authentik import __version__
-from authentik.lib.config import CONFIG
 from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import (
     KubernetesObjectReconciler,
@@ -75,7 +73,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
             )
         meta = self.get_object_meta(name=self.name)
         secret_name = f"authentik-outpost-{self.controller.outpost.uuid.hex}-api"
-        image_prefix = CONFIG.y("outposts.docker_image_base")
+        image_name = self.controller.get_container_image()
         return V1Deployment(
             metadata=meta,
             spec=V1DeploymentSpec(
@@ -87,7 +85,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
                         containers=[
                             V1Container(
                                 name=str(self.outpost.type),
-                                image=f"{image_prefix}-{self.outpost.type}:{__version__}",
+                                image=image_name,
                                 ports=container_ports,
                                 env=[
                                     V1EnvVar(

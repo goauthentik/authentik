@@ -9,6 +9,7 @@ from channels.middleware import BaseMiddleware
 from channels_redis.core import ChannelFull
 from django.core.exceptions import SuspiciousOperation, ValidationError
 from django.db import InternalError, OperationalError, ProgrammingError
+from django.http.response import Http404
 from django_redis.exceptions import ConnectionInterrupted
 from docker.errors import DockerException
 from ldap3.core.exceptions import LDAPException
@@ -78,6 +79,8 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
         LDAPException,
         # Docker errors
         DockerException,
+        # End-user errors
+        Http404,
     )
     if "exc_info" in hint:
         _, exc_value, _ = hint["exc_info"]

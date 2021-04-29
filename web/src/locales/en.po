@@ -13,6 +13,13 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:141
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:149
+#: src/pages/providers/saml/SAMLProviderForm.ts:202
+#: src/pages/stages/user_login/UserLoginStageForm.ts:71
+msgid "(Format: hours=-1;minutes=-2;seconds=-3)."
+msgstr "(Format: hours=-1;minutes=-2;seconds=-3)."
+
 #: src/pages/policies/BoundPoliciesList.ts:59
 msgid "-"
 msgstr "-"
@@ -68,6 +75,10 @@ msgstr "API request failed"
 msgid "Access Key"
 msgstr "Access Key"
 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:136
+msgid "Access code validity"
+msgstr "Access code validity"
+
 #: src/pages/sources/oauth/OAuthSourceForm.ts:73
 msgid "Access token URL"
 msgstr "Access token URL"
@@ -106,7 +117,7 @@ msgid "Additional user DN, prepended to the Base DN."
 msgstr "Additional user DN, prepended to the Base DN."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:132
-#: src/pages/providers/proxy/ProxyProviderForm.ts:130
+#: src/pages/providers/proxy/ProxyProviderForm.ts:153
 #: src/pages/providers/saml/SAMLProviderForm.ts:117
 #: src/pages/sources/saml/SAMLSourceForm.ts:134
 msgid "Advanced protocol settings"
@@ -125,7 +136,7 @@ msgstr "Affected model:"
 msgid "Alert"
 msgstr "Alert"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:153
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:163
 msgid "Algorithm used to sign the JWT Tokens."
 msgstr "Algorithm used to sign the JWT Tokens."
 
@@ -220,7 +231,7 @@ msgstr "Are you sure you want to delete {0} {objName} ?"
 msgid "Are you sure you want to update {0} \"{1}\"?"
 msgstr "Are you sure you want to update {0} \"{1}\"?"
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:208
+#: src/pages/providers/saml/SAMLProviderForm.ts:209
 msgid "Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
 msgstr "Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
 
@@ -228,11 +239,7 @@ msgstr "Assertion not valid on or after current time + this value (Format: hours
 msgid "Assertion valid not before"
 msgstr "Assertion valid not before"
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:201
-msgid "Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3)."
-msgstr "Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3)."
-
-#: src/pages/providers/saml/SAMLProviderForm.ts:204
+#: src/pages/providers/saml/SAMLProviderForm.ts:205
 msgid "Assertion valid not on or after"
 msgstr "Assertion valid not on or after"
 
@@ -298,7 +305,7 @@ msgid "Authorization URL"
 msgstr "Authorization URL"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:62
-#: src/pages/providers/proxy/ProxyProviderForm.ts:80
+#: src/pages/providers/proxy/ProxyProviderForm.ts:104
 #: src/pages/providers/saml/SAMLProviderForm.ts:59
 #: src/pages/providers/saml/SAMLProviderImportForm.ts:44
 msgid "Authorization flow"
@@ -342,19 +349,19 @@ msgstr "Backup status"
 msgid "Base DN"
 msgstr "Base DN"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:203
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:213
 msgid "Based on the Hashed User ID"
 msgstr "Based on the Hashed User ID"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:209
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:219
 msgid "Based on the User's Email. This is recommended over the UPN method."
 msgstr "Based on the User's Email. This is recommended over the UPN method."
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:212
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:222
 msgid "Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains."
 msgstr "Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains."
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:206
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:216
 msgid "Based on the username"
 msgstr "Based on the username"
 
@@ -393,7 +400,7 @@ msgstr "Build hash: {0}"
 msgid "Built-in"
 msgstr "Built-in"
 
-#: src/pages/outposts/ServiceConnectionDockerForm.ts:89
+#: src/pages/outposts/ServiceConnectionDockerForm.ts:88
 msgid "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 msgstr "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 
@@ -426,7 +433,7 @@ msgid "Case insensitive matching"
 msgstr "Case insensitive matching"
 
 #: src/pages/crypto/CertificateKeyPairForm.ts:51
-#: src/pages/providers/proxy/ProxyProviderForm.ts:134
+#: src/pages/providers/proxy/ProxyProviderForm.ts:157
 msgid "Certificate"
 msgstr "Certificate"
 
@@ -450,7 +457,7 @@ msgstr "Certificate-Key Pair"
 msgid "Certificate-Key Pairs"
 msgstr "Certificate-Key Pairs"
 
-#: src/pages/outposts/ServiceConnectionDockerForm.ts:106
+#: src/pages/outposts/ServiceConnectionDockerForm.ts:104
 msgid "Certificate/Key used for authentication. Can be left empty for no authentication."
 msgstr "Certificate/Key used for authentication. Can be left empty for no authentication."
 
@@ -592,11 +599,19 @@ msgstr "Configuration flow"
 msgid "Configure WebAuthn"
 msgstr "Configure WebAuthn"
 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:140
+msgid "Configure how long access codes are valid for."
+msgstr "Configure how long access codes are valid for."
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:148
+msgid "Configure how long refresh tokens and their id_tokens are valid for."
+msgstr "Configure how long refresh tokens and their id_tokens are valid for."
+
 #: src/pages/providers/saml/SAMLProviderForm.ts:193
 msgid "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected."
 msgstr "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected."
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:241
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:251
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr "Configure how the issuer field of the ID Token should be filled."
 
@@ -604,7 +619,11 @@ msgstr "Configure how the issuer field of the ID Token should be filled."
 msgid "Configure settings relevant to your user profile."
 msgstr "Configure settings relevant to your user profile."
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:216
+#: src/pages/providers/saml/SAMLProviderForm.ts:201
+msgid "Configure the maximum allowed time drift for an asseration."
+msgstr "Configure the maximum allowed time drift for an asseration."
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:226
 msgid "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
 msgstr "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
 
@@ -846,7 +865,7 @@ msgstr "Creation Date"
 msgid "Customisation"
 msgstr "Customisation"
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:255
+#: src/pages/providers/saml/SAMLProviderForm.ts:256
 #: src/pages/sources/saml/SAMLSourceForm.ts:212
 msgid "DSA-SHA1"
 msgstr "DSA-SHA1"
@@ -956,8 +975,8 @@ msgid "Determines how authentik sends the response back to the Service Provider.
 msgstr "Determines how authentik sends the response back to the Service Provider."
 
 #: src/pages/stages/user_login/UserLoginStageForm.ts:70
-msgid "Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)."
-msgstr "Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)."
+msgid "Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed."
+msgstr "Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed."
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:113
 msgid "Device classes which can be used to authenticate."
@@ -967,7 +986,7 @@ msgstr "Device classes which can be used to authenticate."
 msgid "Device name"
 msgstr "Device name"
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:219
+#: src/pages/providers/saml/SAMLProviderForm.ts:220
 #: src/pages/sources/saml/SAMLSourceForm.ts:176
 msgid "Digest algorithm"
 msgstr "Digest algorithm"
@@ -1010,7 +1029,7 @@ msgstr "Download"
 msgid "Dummy stage used for testing. Shows a simple continue button and always passes."
 msgstr "Dummy stage used for testing. Shows a simple continue button and always passes."
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:234
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:244
 msgid "Each provider has a different issuer, based on the application slug."
 msgstr "Each provider has a different issuer, based on the application slug."
 
@@ -1103,6 +1122,14 @@ msgstr "Enable Static Tokens"
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts:70
 msgid "Enable TOTP"
 msgstr "Enable TOTP"
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts:140
+msgid "Enable forward-auth mode"
+msgstr "Enable forward-auth mode"
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts:144
+msgid "Enable this if you don't want to use this provider as a proxy, and want to use it with Traefik's forwardAuth or nginx's auth_request."
+msgstr "Enable this if you don't want to use this provider as a proxy, and want to use it with Traefik's forwardAuth or nginx's auth_request."
 
 #: src/pages/policies/BoundPoliciesList.ts:41
 #: src/pages/policies/PolicyBindingForm.ts:199
@@ -1262,7 +1289,7 @@ msgstr "External Applications which use authentik as Identity-Provider, utilizin
 msgid "External Host"
 msgstr "External Host"
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:119
+#: src/pages/providers/proxy/ProxyProviderForm.ts:127
 msgid "External host"
 msgstr "External host"
 
@@ -1357,7 +1384,7 @@ msgid "Flow used by an authenticated user to configure this Stage. If empty, use
 msgstr "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:76
-#: src/pages/providers/proxy/ProxyProviderForm.ts:94
+#: src/pages/providers/proxy/ProxyProviderForm.ts:118
 #: src/pages/providers/saml/SAMLProviderForm.ts:73
 #: src/pages/providers/saml/SAMLProviderImportForm.ts:57
 msgid "Flow used when authorizing this provider."
@@ -1451,15 +1478,15 @@ msgstr "Group {0}"
 msgid "Groups"
 msgstr "Groups"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:150
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:160
 msgid "HS256 (Symmetric Encryption)"
 msgstr "HS256 (Symmetric Encryption)"
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:64
+#: src/pages/providers/proxy/ProxyProviderForm.ts:66
 msgid "HTTP-Basic Password Key"
 msgstr "HTTP-Basic Password Key"
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:58
+#: src/pages/providers/proxy/ProxyProviderForm.ts:60
 msgid "HTTP-Basic Username Key"
 msgstr "HTTP-Basic Username Key"
 
@@ -1478,7 +1505,7 @@ msgstr "Hide managed mappings"
 #: src/pages/events/RuleForm.ts:93
 #: src/pages/groups/GroupForm.ts:131
 #: src/pages/outposts/OutpostForm.ts:98
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:178
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:188
 #: src/pages/providers/saml/SAMLProviderForm.ts:177
 #: src/pages/sources/ldap/LDAPSourceForm.ts:167
 #: src/pages/sources/ldap/LDAPSourceForm.ts:193
@@ -1552,11 +1579,11 @@ msgstr "Import certificates of external providers or create certificates to sign
 msgid "In case you can't access any other method."
 msgstr "In case you can't access any other method."
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:226
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:236
 msgid "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
 msgstr "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:223
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:233
 msgid "Include claims in id_token"
 msgstr "Include claims in id_token"
 
@@ -1568,11 +1595,11 @@ msgstr "Internal Host"
 msgid "Internal application name, used in URLs."
 msgstr "Internal application name, used in URLs."
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:103
+#: src/pages/providers/proxy/ProxyProviderForm.ts:78
 msgid "Internal host"
 msgstr "Internal host"
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:113
+#: src/pages/providers/proxy/ProxyProviderForm.ts:88
 msgid "Internal host SSL Validation"
 msgstr "Internal host SSL Validation"
 
@@ -1600,15 +1627,15 @@ msgstr "Is superuser"
 msgid "Issuer"
 msgstr "Issuer"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:229
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:239
 msgid "Issuer mode"
 msgstr "Issuer mode"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:142
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:152
 msgid "JWT Algorithm"
 msgstr "JWT Algorithm"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:195
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:205
 msgid "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
 msgstr "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
 
@@ -1697,8 +1724,8 @@ msgstr "Loading"
 #: src/pages/groups/GroupForm.ts:127
 #: src/pages/outposts/OutpostForm.ts:74
 #: src/pages/outposts/OutpostForm.ts:96
-#: src/pages/outposts/ServiceConnectionDockerForm.ts:87
-#: src/pages/outposts/ServiceConnectionDockerForm.ts:104
+#: src/pages/outposts/ServiceConnectionDockerForm.ts:86
+#: src/pages/outposts/ServiceConnectionDockerForm.ts:102
 #: src/pages/policies/PolicyBindingForm.ts:157
 #: src/pages/policies/PolicyBindingForm.ts:173
 #: src/pages/policies/PolicyBindingForm.ts:189
@@ -1707,10 +1734,10 @@ msgstr "Loading"
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:108
 #: src/pages/property-mappings/PropertyMappingTestForm.ts:61
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:74
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:175
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:193
-#: src/pages/providers/proxy/ProxyProviderForm.ts:92
-#: src/pages/providers/proxy/ProxyProviderForm.ts:145
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:185
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:203
+#: src/pages/providers/proxy/ProxyProviderForm.ts:116
+#: src/pages/providers/proxy/ProxyProviderForm.ts:168
 #: src/pages/providers/saml/SAMLProviderForm.ts:71
 #: src/pages/providers/saml/SAMLProviderForm.ts:133
 #: src/pages/providers/saml/SAMLProviderForm.ts:149
@@ -1880,7 +1907,7 @@ msgstr "Monitor"
 #: src/pages/providers/ProviderListPage.ts:52
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:56
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:73
-#: src/pages/providers/proxy/ProxyProviderForm.ts:74
+#: src/pages/providers/proxy/ProxyProviderForm.ts:98
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:64
 #: src/pages/providers/saml/SAMLProviderForm.ts:53
 #: src/pages/providers/saml/SAMLProviderImportForm.ts:38
@@ -2381,7 +2408,7 @@ msgid "Property mappings used to user creation."
 msgstr "Property mappings used to user creation."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:81
-#: src/pages/providers/proxy/ProxyProviderForm.ts:99
+#: src/pages/providers/proxy/ProxyProviderForm.ts:123
 #: src/pages/providers/saml/SAMLProviderForm.ts:78
 #: src/pages/sources/oauth/OAuthSourceForm.ts:122
 #: src/pages/sources/saml/SAMLSourceForm.ts:76
@@ -2440,30 +2467,30 @@ msgstr "Public key, acquired from https://www.google.com/recaptcha/intro/v3.html
 msgid "Publisher"
 msgstr "Publisher"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:147
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:157
 msgid "RS256 (Asymmetric Encryption)"
 msgstr "RS256 (Asymmetric Encryption)"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:181
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:191
 msgid "RSA Key"
 msgstr "RSA Key"
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:243
+#: src/pages/providers/saml/SAMLProviderForm.ts:244
 #: src/pages/sources/saml/SAMLSourceForm.ts:200
 msgid "RSA-SHA1"
 msgstr "RSA-SHA1"
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:246
+#: src/pages/providers/saml/SAMLProviderForm.ts:247
 #: src/pages/sources/saml/SAMLSourceForm.ts:203
 msgid "RSA-SHA256"
 msgstr "RSA-SHA256"
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:249
+#: src/pages/providers/saml/SAMLProviderForm.ts:250
 #: src/pages/sources/saml/SAMLSourceForm.ts:206
 msgid "RSA-SHA384"
 msgstr "RSA-SHA384"
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:252
+#: src/pages/providers/saml/SAMLProviderForm.ts:253
 #: src/pages/sources/saml/SAMLSourceForm.ts:209
 msgid "RSA-SHA512"
 msgstr "RSA-SHA512"
@@ -2512,7 +2539,7 @@ msgstr "Refresh Code"
 msgid "Register device"
 msgstr "Register device"
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:153
+#: src/pages/providers/proxy/ProxyProviderForm.ts:176
 msgid "Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression."
 msgstr "Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression."
 
@@ -2591,22 +2618,22 @@ msgstr "Return to device picker"
 msgid "SAML Attribute Name"
 msgstr "SAML Attribute Name"
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:224
+#: src/pages/providers/saml/SAMLProviderForm.ts:225
 #: src/pages/sources/saml/SAMLSourceForm.ts:181
 msgid "SHA1"
 msgstr "SHA1"
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:227
+#: src/pages/providers/saml/SAMLProviderForm.ts:228
 #: src/pages/sources/saml/SAMLSourceForm.ts:184
 msgid "SHA256"
 msgstr "SHA256"
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:230
+#: src/pages/providers/saml/SAMLProviderForm.ts:231
 #: src/pages/sources/saml/SAMLSourceForm.ts:187
 msgid "SHA384"
 msgstr "SHA384"
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:233
+#: src/pages/providers/saml/SAMLProviderForm.ts:234
 #: src/pages/sources/saml/SAMLSourceForm.ts:190
 msgid "SHA512"
 msgstr "SHA512"
@@ -2637,7 +2664,7 @@ msgstr "SMTP Username"
 msgid "SSO URL"
 msgstr "SSO URL"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:237
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:247
 msgid "Same identifier is used for all providers"
 msgstr "Same identifier is used for all providers"
 
@@ -2651,7 +2678,7 @@ msgstr "Scope which the client can specify to access these properties."
 
 #: src/elements/oauth/UserCodeList.ts:31
 #: src/elements/oauth/UserRefreshList.ts:31
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:156
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:166
 msgid "Scopes"
 msgstr "Scopes"
 
@@ -2686,7 +2713,7 @@ msgstr "Select an identification method."
 msgid "Select users to add"
 msgstr "Select users to add"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:177
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:187
 msgid "Select which scopes can be used by the client. The client stil has to specify the scope to access the data."
 msgstr "Select which scopes can be used by the client. The client stil has to specify the scope to access the data."
 
@@ -2747,19 +2774,19 @@ msgstr "Service connection"
 msgid "Session duration"
 msgstr "Session duration"
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:215
+#: src/pages/providers/saml/SAMLProviderForm.ts:216
 msgid "Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
 msgstr "Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:211
+#: src/pages/providers/saml/SAMLProviderForm.ts:212
 msgid "Session valid not on or after"
 msgstr "Session valid not on or after"
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:163
+#: src/pages/providers/proxy/ProxyProviderForm.ts:186
 msgid "Set HTTP-Basic Authentication"
 msgstr "Set HTTP-Basic Authentication"
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:166
+#: src/pages/providers/proxy/ProxyProviderForm.ts:189
 msgid "Set a custom HTTP-Basic Authentication header based on values from authentik."
 msgstr "Set a custom HTTP-Basic Authentication header based on values from authentik."
 
@@ -2792,7 +2819,7 @@ msgstr "Shown as the Title in Flow pages."
 msgid "Sign up."
 msgstr "Sign up."
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:238
+#: src/pages/providers/saml/SAMLProviderForm.ts:239
 #: src/pages/sources/saml/SAMLSourceForm.ts:195
 msgid "Signature algorithm"
 msgstr "Signature algorithm"
@@ -2809,7 +2836,7 @@ msgstr "Signing keypair"
 msgid "Single Prompts that can be used for Prompt Stages."
 msgstr "Single Prompts that can be used for Prompt Stages."
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:150
+#: src/pages/providers/proxy/ProxyProviderForm.ts:173
 msgid "Skip path regex"
 msgstr "Skip path regex"
 
@@ -2947,7 +2974,7 @@ msgstr "Stop impersonation"
 msgid "Subject"
 msgstr "Subject"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:198
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:208
 msgid "Subject mode"
 msgstr "Subject mode"
 
@@ -3021,7 +3048,7 @@ msgid "Successfully created prompt."
 msgstr "Successfully created prompt."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:49
-#: src/pages/providers/proxy/ProxyProviderForm.ts:49
+#: src/pages/providers/proxy/ProxyProviderForm.ts:51
 #: src/pages/providers/saml/SAMLProviderForm.ts:46
 msgid "Successfully created provider."
 msgstr "Successfully created provider."
@@ -3157,7 +3184,7 @@ msgid "Successfully updated prompt."
 msgstr "Successfully updated prompt."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:46
-#: src/pages/providers/proxy/ProxyProviderForm.ts:46
+#: src/pages/providers/proxy/ProxyProviderForm.ts:48
 #: src/pages/providers/saml/SAMLProviderForm.ts:43
 msgid "Successfully updated provider."
 msgstr "Successfully updated provider."
@@ -3254,7 +3281,7 @@ msgstr "System Overview"
 msgid "System Tasks"
 msgstr "System Tasks"
 
-#: src/pages/outposts/ServiceConnectionDockerForm.ts:92
+#: src/pages/outposts/ServiceConnectionDockerForm.ts:91
 msgid "TLS Authentication Certificate"
 msgstr "TLS Authentication Certificate"
 
@@ -3306,7 +3333,7 @@ msgstr "Text: Simple Text input"
 msgid "The URL \"{0}\" was not found."
 msgstr "The URL \"{0}\" was not found."
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:123
+#: src/pages/providers/proxy/ProxyProviderForm.ts:131
 msgid "The external URL you'll access the outpost at."
 msgstr "The external URL you'll access the outpost at."
 
@@ -3395,7 +3422,7 @@ msgstr "Token count"
 msgid "Token expiry"
 msgstr "Token expiry"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:136
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:144
 msgid "Token validity"
 msgstr "Token validity"
 
@@ -3616,7 +3643,7 @@ msgstr "Update details"
 msgid "Update {0}"
 msgstr "Update {0}"
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:107
+#: src/pages/providers/proxy/ProxyProviderForm.ts:82
 msgid "Upstream host that the requests are forwarded to."
 msgstr "Upstream host that the requests are forwarded to."
 
@@ -3702,11 +3729,11 @@ msgstr "User's avatar"
 msgid "User's display name."
 msgstr "User's display name."
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:67
+#: src/pages/providers/proxy/ProxyProviderForm.ts:69
 msgid "User/Group Attribute used for the password part of the HTTP-Basic Header."
 msgstr "User/Group Attribute used for the password part of the HTTP-Basic Header."
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:61
+#: src/pages/providers/proxy/ProxyProviderForm.ts:63
 msgid "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used."
 msgstr "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used."
 
@@ -3747,7 +3774,7 @@ msgstr "Using source"
 msgid "Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows."
 msgstr "Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows."
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:116
+#: src/pages/providers/proxy/ProxyProviderForm.ts:91
 msgid "Validate SSL Certificates of upstream servers."
 msgstr "Validate SSL Certificates of upstream servers."
 

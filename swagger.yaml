@@ -15873,6 +15873,12 @@ definitions:
         title: Client Secret
         type: string
         maxLength: 255
+      access_code_validity:
+        title: Access code validity
+        description: 'Access codes not valid on or after current time + this value
+          (Format: hours=1;minutes=2;seconds=3).'
+        type: string
+        minLength: 1
       token_validity:
         title: Token validity
         description: 'Tokens not valid on or after current time + this value (Format:
@@ -16125,7 +16131,6 @@ definitions:
   ProxyOutpostConfig:
     required:
       - name
-      - internal_host
       - external_host
     type: object
     properties:
@@ -16140,7 +16145,6 @@ definitions:
       internal_host:
         title: Internal host
         type: string
-        minLength: 1
       external_host:
         title: External host
         type: string
@@ -16189,6 +16193,11 @@ definitions:
         description: User/Group Attribute used for the user part of the HTTP-Basic
           Header. If not set, the user's Email address is used.
         type: string
+      forward_auth_mode:
+        title: Forward auth mode
+        description: Enable support for forwardAuth in traefik and nginx auth_request.
+          Exclusive with internal_host.
+        type: boolean
   ServiceConnection:
     required:
       - name
@@ -17156,7 +17165,6 @@ definitions:
     required:
       - name
       - authorization_flow
-      - internal_host
       - external_host
     type: object
     properties:
@@ -17202,7 +17210,6 @@ definitions:
       internal_host:
         title: Internal host
         type: string
-        minLength: 1
       external_host:
         title: External host
         type: string
@@ -17236,6 +17243,11 @@ definitions:
         description: User/Group Attribute used for the user part of the HTTP-Basic
           Header. If not set, the user's Email address is used.
         type: string
+      forward_auth_mode:
+        title: Forward auth mode
+        description: Enable support for forwardAuth in traefik and nginx auth_request.
+          Exclusive with internal_host.
+        type: boolean
   SAMLProvider:
     required:
       - name

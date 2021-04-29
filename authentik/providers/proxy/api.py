@@ -52,6 +52,7 @@ class ProxyProviderSerializer(ProviderSerializer):
             "basic_auth_enabled",
             "basic_auth_password_attribute",
             "basic_auth_user_attribute",
+            "forward_auth_mode",
         ]
 
 
@@ -86,6 +87,7 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
             "basic_auth_enabled",
             "basic_auth_password_attribute",
             "basic_auth_user_attribute",
+            "forward_auth_mode",
         ]
 
     @swagger_serializer_method(serializer_or_field=OpenIDConnectConfigurationSerializer)

@@ -37,7 +37,10 @@ It is also recommended to configure global email credentials. These are used by 
 image:
   name: beryju/authentik
   name_static: beryju/authentik-static
-  name_outposts: beryju/authentik # Prefix used for Outpost deployments, Outpost type and version is appended
+  # Image used for managed outposts. Placeholders:
+  # %(type)s: Outpost type; proxy, ldap, etc
+  # %(version)s: Current version; 2021.4.1
+  name_outposts: "beryju/authentik-%(type)s:%(version)s"
   tag: 2021.4.4
 
 serverReplicas: 1

@@ -42,7 +42,8 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     Protocols by using a Reverse-Proxy."""
 
     internal_host = models.TextField(
-        validators=[DomainlessURLValidator(schemes=("http", "https"))]
+        validators=[DomainlessURLValidator(schemes=("http", "https"))],
+        blank=True,
     )
     external_host = models.TextField(
         validators=[DomainlessURLValidator(schemes=("http", "https"))]
@@ -51,6 +52,13 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         default=True,
         help_text=_("Validate SSL Certificates of upstream servers"),
         verbose_name=_("Internal host SSL Validation"),
+    )
+    forward_auth_mode = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with "
+            "internal_host."
+        ),
     )
 
     skip_path_regex = models.TextField(
