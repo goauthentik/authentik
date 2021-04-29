@@ -13,6 +13,13 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:141
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:149
+#: src/pages/providers/saml/SAMLProviderForm.ts:202
+#: src/pages/stages/user_login/UserLoginStageForm.ts:71
+msgid "(Format: hours=-1;minutes=-2;seconds=-3)."
+msgstr ""
+
 #: src/pages/policies/BoundPoliciesList.ts:59
 msgid "-"
 msgstr ""
@@ -66,6 +73,10 @@ msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:88
 msgid "Access Key"
+msgstr ""
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:136
+msgid "Access code validity"
 msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts:73
@@ -125,7 +136,7 @@ msgstr ""
 msgid "Alert"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:153
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:163
 msgid "Algorithm used to sign the JWT Tokens."
 msgstr ""
 
@@ -216,7 +227,7 @@ msgstr ""
 msgid "Are you sure you want to update {0} \"{1}\"?"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:208
+#: src/pages/providers/saml/SAMLProviderForm.ts:209
 msgid "Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
 
@@ -224,11 +235,7 @@ msgstr ""
 msgid "Assertion valid not before"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:201
-msgid "Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3)."
-msgstr ""
-
-#: src/pages/providers/saml/SAMLProviderForm.ts:204
+#: src/pages/providers/saml/SAMLProviderForm.ts:205
 msgid "Assertion valid not on or after"
 msgstr ""
 
@@ -338,19 +345,19 @@ msgstr ""
 msgid "Base DN"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:203
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:213
 msgid "Based on the Hashed User ID"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:209
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:219
 msgid "Based on the User's Email. This is recommended over the UPN method."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:212
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:222
 msgid "Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:206
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:216
 msgid "Based on the username"
 msgstr ""
 
@@ -586,11 +593,19 @@ msgstr ""
 msgid "Configure WebAuthn"
 msgstr ""
 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:140
+msgid "Configure how long access codes are valid for."
+msgstr ""
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:148
+msgid "Configure how long refresh tokens and their id_tokens are valid for."
+msgstr ""
+
 #: src/pages/providers/saml/SAMLProviderForm.ts:193
 msgid "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:241
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:251
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr ""
 
@@ -598,7 +613,11 @@ msgstr ""
 msgid "Configure settings relevant to your user profile."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:216
+#: src/pages/providers/saml/SAMLProviderForm.ts:201
+msgid "Configure the maximum allowed time drift for an asseration."
+msgstr ""
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:226
 msgid "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
 msgstr ""
 
@@ -840,7 +859,7 @@ msgstr ""
 msgid "Customisation"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:255
+#: src/pages/providers/saml/SAMLProviderForm.ts:256
 #: src/pages/sources/saml/SAMLSourceForm.ts:212
 msgid "DSA-SHA1"
 msgstr ""
@@ -948,7 +967,7 @@ msgid "Determines how authentik sends the response back to the Service Provider.
 msgstr ""
 
 #: src/pages/stages/user_login/UserLoginStageForm.ts:70
-msgid "Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)."
+msgid "Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed."
 msgstr ""
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:113
@@ -959,7 +978,7 @@ msgstr ""
 msgid "Device name"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:219
+#: src/pages/providers/saml/SAMLProviderForm.ts:220
 #: src/pages/sources/saml/SAMLSourceForm.ts:176
 msgid "Digest algorithm"
 msgstr ""
@@ -1002,7 +1021,7 @@ msgstr ""
 msgid "Dummy stage used for testing. Shows a simple continue button and always passes."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:234
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:244
 msgid "Each provider has a different issuer, based on the application slug."
 msgstr ""
 
@@ -1451,7 +1470,7 @@ msgstr ""
 msgid "Groups"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:150
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:160
 msgid "HS256 (Symmetric Encryption)"
 msgstr ""
 
@@ -1478,7 +1497,7 @@ msgstr ""
 #: src/pages/events/RuleForm.ts:93
 #: src/pages/groups/GroupForm.ts:131
 #: src/pages/outposts/OutpostForm.ts:98
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:178
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:188
 #: src/pages/providers/saml/SAMLProviderForm.ts:177
 #: src/pages/sources/ldap/LDAPSourceForm.ts:167
 #: src/pages/sources/ldap/LDAPSourceForm.ts:193
@@ -1552,11 +1571,11 @@ msgstr ""
 msgid "In case you can't access any other method."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:226
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:236
 msgid "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:223
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:233
 msgid "Include claims in id_token"
 msgstr ""
 
@@ -1600,15 +1619,15 @@ msgstr ""
 msgid "Issuer"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:229
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:239
 msgid "Issuer mode"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:142
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:152
 msgid "JWT Algorithm"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:195
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:205
 msgid "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
 msgstr ""
 
@@ -1707,8 +1726,8 @@ msgstr ""
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:108
 #: src/pages/property-mappings/PropertyMappingTestForm.ts:61
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:74
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:175
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:193
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:185
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:203
 #: src/pages/providers/proxy/ProxyProviderForm.ts:116
 #: src/pages/providers/proxy/ProxyProviderForm.ts:168
 #: src/pages/providers/saml/SAMLProviderForm.ts:71
@@ -2440,30 +2459,30 @@ msgstr ""
 msgid "Publisher"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:147
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:157
 msgid "RS256 (Asymmetric Encryption)"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:181
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:191
 msgid "RSA Key"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:243
+#: src/pages/providers/saml/SAMLProviderForm.ts:244
 #: src/pages/sources/saml/SAMLSourceForm.ts:200
 msgid "RSA-SHA1"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:246
+#: src/pages/providers/saml/SAMLProviderForm.ts:247
 #: src/pages/sources/saml/SAMLSourceForm.ts:203
 msgid "RSA-SHA256"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:249
+#: src/pages/providers/saml/SAMLProviderForm.ts:250
 #: src/pages/sources/saml/SAMLSourceForm.ts:206
 msgid "RSA-SHA384"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:252
+#: src/pages/providers/saml/SAMLProviderForm.ts:253
 #: src/pages/sources/saml/SAMLSourceForm.ts:209
 msgid "RSA-SHA512"
 msgstr ""
@@ -2591,22 +2610,22 @@ msgstr ""
 msgid "SAML Attribute Name"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:224
+#: src/pages/providers/saml/SAMLProviderForm.ts:225
 #: src/pages/sources/saml/SAMLSourceForm.ts:181
 msgid "SHA1"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:227
+#: src/pages/providers/saml/SAMLProviderForm.ts:228
 #: src/pages/sources/saml/SAMLSourceForm.ts:184
 msgid "SHA256"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:230
+#: src/pages/providers/saml/SAMLProviderForm.ts:231
 #: src/pages/sources/saml/SAMLSourceForm.ts:187
 msgid "SHA384"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:233
+#: src/pages/providers/saml/SAMLProviderForm.ts:234
 #: src/pages/sources/saml/SAMLSourceForm.ts:190
 msgid "SHA512"
 msgstr ""
@@ -2637,7 +2656,7 @@ msgstr ""
 msgid "SSO URL"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:237
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:247
 msgid "Same identifier is used for all providers"
 msgstr ""
 
@@ -2651,7 +2670,7 @@ msgstr ""
 
 #: src/elements/oauth/UserCodeList.ts:31
 #: src/elements/oauth/UserRefreshList.ts:31
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:156
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:166
 msgid "Scopes"
 msgstr ""
 
@@ -2686,7 +2705,7 @@ msgstr ""
 msgid "Select users to add"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:177
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:187
 msgid "Select which scopes can be used by the client. The client stil has to specify the scope to access the data."
 msgstr ""
 
@@ -2747,11 +2766,11 @@ msgstr ""
 msgid "Session duration"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:215
+#: src/pages/providers/saml/SAMLProviderForm.ts:216
 msgid "Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:211
+#: src/pages/providers/saml/SAMLProviderForm.ts:212
 msgid "Session valid not on or after"
 msgstr ""
 
@@ -2792,7 +2811,7 @@ msgstr ""
 msgid "Sign up."
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:238
+#: src/pages/providers/saml/SAMLProviderForm.ts:239
 #: src/pages/sources/saml/SAMLSourceForm.ts:195
 msgid "Signature algorithm"
 msgstr ""
@@ -2947,7 +2966,7 @@ msgstr ""
 msgid "Subject"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:198
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:208
 msgid "Subject mode"
 msgstr ""
 
@@ -3391,7 +3410,7 @@ msgstr ""
 msgid "Token expiry"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:136
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:144
 msgid "Token validity"
 msgstr ""
 

@@ -4,9 +4,9 @@ import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { Form } from "../../../elements/forms/Form";
-import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
+import { first } from "../../../utils";
 
 @customElement("ak-stage-user-login-form")
 export class UserLoginStageForm extends Form<UserLoginStage> {
@@ -52,7 +52,7 @@ export class UserLoginStageForm extends Form<UserLoginStage> {
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.stage?.name || "")}" class="pf-c-form-control" required>
+                <input type="text" value="${first(this.stage?.name, "")}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header">
@@ -62,9 +62,10 @@ export class UserLoginStageForm extends Form<UserLoginStage> {
                     <ak-form-element-horizontal
                         label=${t`Session duration`}
                         ?required=${true}
-                        name="privateKey">
-                        <input type="text" value="${ifDefined(this.stage?.sessionDuration || "seconds=0")}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${t`Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3).`}</p>
+                        name="sessionDuration">
+                        <input type="text" value="${first(this.stage?.sessionDuration, "seconds=0")}" class="pf-c-form-control" required>
+                        <p class="pf-c-form__helper-text">${t`Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed.`}</p>
+                        <p class="pf-c-form__helper-text">${t`(Format: hours=-1;minutes=-2;seconds=-3).`}</p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

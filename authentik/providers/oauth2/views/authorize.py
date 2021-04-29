@@ -219,7 +219,7 @@ class OAuthAuthorizationParams:
             code.code_challenge_method = self.code_challenge_method
 
         code.expires_at = timezone.now() + timedelta_from_string(
-            self.provider.token_validity
+            self.provider.access_code_validity
         )
         code.scope = self.scope
         code.nonce = self.nonce
