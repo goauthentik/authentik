@@ -24,9 +24,9 @@ jobs:
         with:
           push: true
           tags: |
-            beryju/authentik-proxy:2021.4.4,
+            beryju/authentik-proxy:2021.4.5,
             beryju/authentik-proxy:latest,
-            ghcr.io/goauthentik/authentik:2021.4.4,
+            ghcr.io/goauthentik/authentik:2021.4.5,
             ghcr.io/goauthentik/authentik:latest
           platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v8
   build-proxy:
@@ -56,9 +56,9 @@ jobs:
         with:
           push: true
           tags: |
-            beryju/authentik-proxy:2021.4.4,
+            beryju/authentik-proxy:2021.4.5,
             beryju/authentik-proxy:latest,
-            ghcr.io/goauthentik/proxy:2021.4.4,
+            ghcr.io/goauthentik/proxy:2021.4.5,
             ghcr.io/goauthentik/proxy:latest
           context: proxy/
           file: proxy/proxy.Dockerfile
@@ -84,9 +84,9 @@ jobs:
         with:
           push: true
           tags: |
-            beryju/authentik-static:2021.4.4,
+            beryju/authentik-static:2021.4.5,
             beryju/authentik-static:latest,
-            ghcr.io/goauthentik/static:2021.4.4,
+            ghcr.io/goauthentik/static:2021.4.5,
             ghcr.io/goauthentik/static:latest
           context: web/
           platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v8
@@ -121,5 +121,5 @@ jobs:
           SENTRY_PROJECT: authentik
           SENTRY_URL: https://sentry.beryju.org
         with:
-          tagName: 2021.4.4
+          tagName: 2021.4.5
           environment: beryjuorg-prod
