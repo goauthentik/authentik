@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from structlog.stdlib import get_logger
 from structlog.testing import capture_logs
 
+from authentik import __version__
+from authentik.lib.config import CONFIG
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.outposts.models import Outpost, OutpostServiceConnection
 
@@ -55,3 +57,10 @@ class BaseController:
     def get_static_deployment(self) -> str:
         """Return a static deployment configuration"""
         raise NotImplementedError
+
+    def get_container_image(self) -> str:
+        """Get container image to use for this outpost"""
+        image_name_template: str = CONFIG.y("outposts.docker_image_base")
+        return image_name_template.format(
+            {"type": self.outpost.type, "version": __version__}
+        )

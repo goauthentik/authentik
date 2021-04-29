@@ -202,3 +202,5 @@ selenium_screenshots/
 backups/
 media/
 *mmdb
+
+.idea/

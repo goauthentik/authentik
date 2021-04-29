@@ -4,6 +4,7 @@
 |-----------------------------------|-------------------------|-------------|
 | image.name                        | beryju/authentik        | Image used to run the authentik server and worker |
 | image.name_static                 | beryju/authentik-static | Image used to run the authentik static server (CSS and JS Files) |
+| image.name_outposts               | beryju/authentik-%(type)s:%(version)s | Image used for managed outposts. Placeholders: %(type)s: Outpost type; proxy, ldap, etc. %(version)s: Current version; 2021.4.1 |
 | image.tag                         | 2021.4.4                | Image tag |
 | image.pullPolicy                  | IfNotPresent            | Image Pull Policy used for all deployments |
 | serverReplicas                    | 1                       | Replicas for the Server deployment |

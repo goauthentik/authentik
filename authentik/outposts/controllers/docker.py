@@ -8,7 +8,6 @@ from docker.models.containers import Container
 from yaml import safe_dump
 
 from authentik import __version__
-from authentik.lib.config import CONFIG
 from authentik.outposts.controllers.base import BaseController, ControllerException
 from authentik.outposts.models import (
     DockerServiceConnection,
@@ -60,8 +59,7 @@ class DockerController(BaseController):
             return self.client.containers.get(container_name), False
         except NotFound:
             self.logger.info("Container does not exist, creating")
-            image_prefix = CONFIG.y("outposts.docker_image_base")
-            image_name = f"{image_prefix}-{self.outpost.type}:{__version__}"
+            image_name = self.get_container_image()
             self.client.images.pull(image_name)
             container_args = {
                 "image": image_name,
@@ -146,12 +144,12 @@ class DockerController(BaseController):
             f"{port.port}:{port.port}/{port.protocol.lower()}"
             for port in self.deployment_ports
         ]
-        image_prefix = CONFIG.y("outposts.docker_image_base")
+        image_name = self.get_container_image()
         compose = {
             "version": "3.5",
             "services": {
                 f"authentik_{self.outpost.type}": {
-                    "image": f"{image_prefix}-{self.outpost.type}:{__version__}",
+                    "image": image_name,
                     "ports": ports,
                     "environment": {
                         "AUTHENTIK_HOST": self.outpost.config.authentik_host,
