@@ -17950,7 +17950,6 @@ definitions:
   IdentificationStage:
     required:
       - name
-      - user_fields
     type: object
     properties:
       pk:
