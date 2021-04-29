@@ -63,6 +63,7 @@ type OAuthProxy struct {
 	AuthOnlyPath      string
 	UserInfoPath      string
 
+	forwardAuthMode            bool
 	redirectURL                *url.URL // the url to receive requests at
 	whitelistDomains           []string
 	provider                   providers.Provider
@@ -132,6 +133,7 @@ func NewOAuthProxy(opts *options.Options, provider *models.ProxyOutpostConfig) (
 		CookieRefresh:  opts.Cookie.Refresh,
 		CookieSameSite: opts.Cookie.SameSite,
 
+		forwardAuthMode:   provider.ForwardAuthMode,
 		RobotsPath:        "/robots.txt",
 		SignInPath:        fmt.Sprintf("%s/sign_in", opts.ProxyPrefix),
 		SignOutPath:       fmt.Sprintf("%s/sign_out", opts.ProxyPrefix),
@@ -335,12 +337,29 @@ func (p *OAuthProxy) SignOut(rw http.ResponseWriter, req *http.Request) {
 func (p *OAuthProxy) AuthenticateOnly(rw http.ResponseWriter, req *http.Request) {
 	session, err := p.getAuthenticatedSession(rw, req)
 	if err != nil {
+		if p.forwardAuthMode {
+			if _, ok := req.URL.Query()["nginx"]; ok {
+				rw.WriteHeader(401)
+				return
+			}
+			if _, ok := req.URL.Query()["traefik"]; ok {
+				host := getHost(req)
+				http.Redirect(rw, req, fmt.Sprintf("//%s%s", host, p.OAuthStartPath), http.StatusTemporaryRedirect)
+				return
+			}
+		}
 		http.Error(rw, "unauthorized request", http.StatusUnauthorized)
 		return
 	}
-
 	// we are authenticated
 	p.addHeadersForProxying(rw, req, session)
+	if p.forwardAuthMode {
+		for headerKey, headers := range req.Header {
+			for _, value := range headers {
+				rw.Header().Set(headerKey, value)
+			}
+		}
+	}
 	rw.WriteHeader(http.StatusAccepted)
 }
 
@@ -435,7 +454,6 @@ func (p *OAuthProxy) addHeadersForProxying(rw http.ResponseWriter, req *http.Req
 		authVal := b64.StdEncoding.EncodeToString([]byte(username + ":" + password))
 		req.Header["Authorization"] = []string{fmt.Sprintf("Basic %s", authVal)}
 	}
-	rw.Header().Set("GAP-Auth", session.PreferredUsername)
 	// Check if user has additional headers set that we should sent
 	if additionalHeaders, ok := userAttributes["additionalHeaders"].(map[string]string); ok {
 		if additionalHeaders == nil {

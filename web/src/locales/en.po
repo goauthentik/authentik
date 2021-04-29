@@ -117,7 +117,7 @@ msgid "Additional user DN, prepended to the Base DN."
 msgstr "Additional user DN, prepended to the Base DN."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:132
-#: src/pages/providers/proxy/ProxyProviderForm.ts:130
+#: src/pages/providers/proxy/ProxyProviderForm.ts:153
 #: src/pages/providers/saml/SAMLProviderForm.ts:117
 #: src/pages/sources/saml/SAMLSourceForm.ts:134
 msgid "Advanced protocol settings"
@@ -305,7 +305,7 @@ msgid "Authorization URL"
 msgstr "Authorization URL"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:62
-#: src/pages/providers/proxy/ProxyProviderForm.ts:80
+#: src/pages/providers/proxy/ProxyProviderForm.ts:104
 #: src/pages/providers/saml/SAMLProviderForm.ts:59
 #: src/pages/providers/saml/SAMLProviderImportForm.ts:44
 msgid "Authorization flow"
@@ -433,7 +433,7 @@ msgid "Case insensitive matching"
 msgstr "Case insensitive matching"
 
 #: src/pages/crypto/CertificateKeyPairForm.ts:51
-#: src/pages/providers/proxy/ProxyProviderForm.ts:134
+#: src/pages/providers/proxy/ProxyProviderForm.ts:157
 msgid "Certificate"
 msgstr "Certificate"
 
@@ -1123,6 +1123,14 @@ msgstr "Enable Static Tokens"
 msgid "Enable TOTP"
 msgstr "Enable TOTP"
 
+#: src/pages/providers/proxy/ProxyProviderForm.ts:140
+msgid "Enable forward-auth mode"
+msgstr "Enable forward-auth mode"
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts:144
+msgid "Enable this if you don't want to use this provider as a proxy, and want to use it with Traefik's forwardAuth or nginx's auth_request."
+msgstr "Enable this if you don't want to use this provider as a proxy, and want to use it with Traefik's forwardAuth or nginx's auth_request."
+
 #: src/pages/policies/BoundPoliciesList.ts:41
 #: src/pages/policies/PolicyBindingForm.ts:199
 #: src/pages/sources/ldap/LDAPSourceForm.ts:69
@@ -1281,7 +1289,7 @@ msgstr "External Applications which use authentik as Identity-Provider, utilizin
 msgid "External Host"
 msgstr "External Host"
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:119
+#: src/pages/providers/proxy/ProxyProviderForm.ts:127
 msgid "External host"
 msgstr "External host"
 
@@ -1376,7 +1384,7 @@ msgid "Flow used by an authenticated user to configure this Stage. If empty, use
 msgstr "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:76
-#: src/pages/providers/proxy/ProxyProviderForm.ts:94
+#: src/pages/providers/proxy/ProxyProviderForm.ts:118
 #: src/pages/providers/saml/SAMLProviderForm.ts:73
 #: src/pages/providers/saml/SAMLProviderImportForm.ts:57
 msgid "Flow used when authorizing this provider."
@@ -1474,11 +1482,11 @@ msgstr "Groups"
 msgid "HS256 (Symmetric Encryption)"
 msgstr "HS256 (Symmetric Encryption)"
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:64
+#: src/pages/providers/proxy/ProxyProviderForm.ts:66
 msgid "HTTP-Basic Password Key"
 msgstr "HTTP-Basic Password Key"
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:58
+#: src/pages/providers/proxy/ProxyProviderForm.ts:60
 msgid "HTTP-Basic Username Key"
 msgstr "HTTP-Basic Username Key"
 
@@ -1587,11 +1595,11 @@ msgstr "Internal Host"
 msgid "Internal application name, used in URLs."
 msgstr "Internal application name, used in URLs."
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:103
+#: src/pages/providers/proxy/ProxyProviderForm.ts:78
 msgid "Internal host"
 msgstr "Internal host"
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:113
+#: src/pages/providers/proxy/ProxyProviderForm.ts:88
 msgid "Internal host SSL Validation"
 msgstr "Internal host SSL Validation"
 
@@ -1728,8 +1736,8 @@ msgstr "Loading"
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:74
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:185
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:203
-#: src/pages/providers/proxy/ProxyProviderForm.ts:92
-#: src/pages/providers/proxy/ProxyProviderForm.ts:145
+#: src/pages/providers/proxy/ProxyProviderForm.ts:116
+#: src/pages/providers/proxy/ProxyProviderForm.ts:168
 #: src/pages/providers/saml/SAMLProviderForm.ts:71
 #: src/pages/providers/saml/SAMLProviderForm.ts:133
 #: src/pages/providers/saml/SAMLProviderForm.ts:149
@@ -1899,7 +1907,7 @@ msgstr "Monitor"
 #: src/pages/providers/ProviderListPage.ts:52
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:56
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:73
-#: src/pages/providers/proxy/ProxyProviderForm.ts:74
+#: src/pages/providers/proxy/ProxyProviderForm.ts:98
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:64
 #: src/pages/providers/saml/SAMLProviderForm.ts:53
 #: src/pages/providers/saml/SAMLProviderImportForm.ts:38
@@ -2400,7 +2408,7 @@ msgid "Property mappings used to user creation."
 msgstr "Property mappings used to user creation."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:81
-#: src/pages/providers/proxy/ProxyProviderForm.ts:99
+#: src/pages/providers/proxy/ProxyProviderForm.ts:123
 #: src/pages/providers/saml/SAMLProviderForm.ts:78
 #: src/pages/sources/oauth/OAuthSourceForm.ts:122
 #: src/pages/sources/saml/SAMLSourceForm.ts:76
@@ -2531,7 +2539,7 @@ msgstr "Refresh Code"
 msgid "Register device"
 msgstr "Register device"
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:153
+#: src/pages/providers/proxy/ProxyProviderForm.ts:176
 msgid "Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression."
 msgstr "Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression."
 
@@ -2774,11 +2782,11 @@ msgstr "Session not valid on or after current time + this value (Format: hours=1
 msgid "Session valid not on or after"
 msgstr "Session valid not on or after"
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:163
+#: src/pages/providers/proxy/ProxyProviderForm.ts:186
 msgid "Set HTTP-Basic Authentication"
 msgstr "Set HTTP-Basic Authentication"
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:166
+#: src/pages/providers/proxy/ProxyProviderForm.ts:189
 msgid "Set a custom HTTP-Basic Authentication header based on values from authentik."
 msgstr "Set a custom HTTP-Basic Authentication header based on values from authentik."
 
@@ -2828,7 +2836,7 @@ msgstr "Signing keypair"
 msgid "Single Prompts that can be used for Prompt Stages."
 msgstr "Single Prompts that can be used for Prompt Stages."
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:150
+#: src/pages/providers/proxy/ProxyProviderForm.ts:173
 msgid "Skip path regex"
 msgstr "Skip path regex"
 
@@ -3040,7 +3048,7 @@ msgid "Successfully created prompt."
 msgstr "Successfully created prompt."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:49
-#: src/pages/providers/proxy/ProxyProviderForm.ts:49
+#: src/pages/providers/proxy/ProxyProviderForm.ts:51
 #: src/pages/providers/saml/SAMLProviderForm.ts:46
 msgid "Successfully created provider."
 msgstr "Successfully created provider."
@@ -3176,7 +3184,7 @@ msgid "Successfully updated prompt."
 msgstr "Successfully updated prompt."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:46
-#: src/pages/providers/proxy/ProxyProviderForm.ts:46
+#: src/pages/providers/proxy/ProxyProviderForm.ts:48
 #: src/pages/providers/saml/SAMLProviderForm.ts:43
 msgid "Successfully updated provider."
 msgstr "Successfully updated provider."
@@ -3325,7 +3333,7 @@ msgstr "Text: Simple Text input"
 msgid "The URL \"{0}\" was not found."
 msgstr "The URL \"{0}\" was not found."
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:123
+#: src/pages/providers/proxy/ProxyProviderForm.ts:131
 msgid "The external URL you'll access the outpost at."
 msgstr "The external URL you'll access the outpost at."
 
@@ -3635,7 +3643,7 @@ msgstr "Update details"
 msgid "Update {0}"
 msgstr "Update {0}"
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:107
+#: src/pages/providers/proxy/ProxyProviderForm.ts:82
 msgid "Upstream host that the requests are forwarded to."
 msgstr "Upstream host that the requests are forwarded to."
 
@@ -3721,11 +3729,11 @@ msgstr "User's avatar"
 msgid "User's display name."
 msgstr "User's display name."
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:67
+#: src/pages/providers/proxy/ProxyProviderForm.ts:69
 msgid "User/Group Attribute used for the password part of the HTTP-Basic Header."
 msgstr "User/Group Attribute used for the password part of the HTTP-Basic Header."
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:61
+#: src/pages/providers/proxy/ProxyProviderForm.ts:63
 msgid "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used."
 msgstr "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used."
 
@@ -3766,7 +3774,7 @@ msgstr "Using source"
 msgid "Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows."
 msgstr "Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows."
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:116
+#: src/pages/providers/proxy/ProxyProviderForm.ts:91
 msgid "Validate SSL Certificates of upstream servers."
 msgstr "Validate SSL Certificates of upstream servers."
 

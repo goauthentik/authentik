@@ -31,6 +31,10 @@ type providerBundle struct {
 	log *log.Entry
 }
 
+func intToPointer(i int) *int {
+	return &i
+}
+
 func (pb *providerBundle) prepareOpts(provider *models.ProxyOutpostConfig) *options.Options {
 	externalHost, err := url.Parse(*provider.ExternalHost)
 	if err != nil {
@@ -61,13 +65,24 @@ func (pb *providerBundle) prepareOpts(provider *models.ProxyOutpostConfig) *opti
 		providerOpts.SkipAuthRegex = skipRegexes
 	}
 
-	providerOpts.UpstreamServers = []options.Upstream{
-		{
-			ID:                    "default",
-			URI:                   *provider.InternalHost,
-			Path:                  "/",
-			InsecureSkipTLSVerify: provider.InternalHostSslValidation,
-		},
+	if provider.ForwardAuthMode {
+		providerOpts.UpstreamServers = []options.Upstream{
+			{
+				ID:         "static",
+				Static:     true,
+				StaticCode: intToPointer(202),
+				Path:       "/",
+			},
+		}
+	} else {
+		providerOpts.UpstreamServers = []options.Upstream{
+			{
+				ID:                    "default",
+				URI:                   provider.InternalHost,
+				Path:                  "/",
+				InsecureSkipTLSVerify: provider.InternalHostSslValidation,
+			},
+		}
 	}
 
 	if provider.Certificate != nil {

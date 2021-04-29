@@ -19,6 +19,7 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
         }).then(provider => {
             this.provider = provider;
             this.showHttpBasic = first(provider.basicAuthEnabled, true);
+            this.showInternalServer = first(!provider.forwardAuthMode, true);
         });
     }
 
@@ -27,6 +28,9 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
 
     @property({type: Boolean})
     showHttpBasic = true;
+
+    @property({type: Boolean})
+    showInternalServer = true;
 
     getSuccessMessage(): string {
         if (this.provider) {
@@ -67,6 +71,28 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
             </ak-form-element-horizontal>`;
     }
 
+    renderInternalServer(): TemplateResult {
+        if (!this.showInternalServer) {
+            return html``;
+        }
+        return html`<ak-form-element-horizontal
+                    label=${t`Internal host`}
+                    ?required=${true}
+                    name="internalHost">
+                    <input type="text" value="${ifDefined(this.provider?.internalHost)}" class="pf-c-form-control" required>
+                    <p class="pf-c-form__helper-text">${t`Upstream host that the requests are forwarded to.`}</p>
+                </ak-form-element-horizontal>
+                <ak-form-element-horizontal name="internalHostSslValidation">
+                    <div class="pf-c-check">
+                        <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.provider?.internalHostSslValidation, true)}>
+                        <label class="pf-c-check__label">
+                            ${t`Internal host SSL Validation`}
+                        </label>
+                    </div>
+                    <p class="pf-c-form__helper-text">${t`Validate SSL Certificates of upstream servers.`}</p>
+                </ak-form-element-horizontal>`;
+    }
+
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
@@ -98,28 +124,27 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
                 </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Internal host`}
-                        ?required=${true}
-                        name="internalHost">
-                        <input type="text" value="${ifDefined(this.provider?.internalHost)}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${t`Upstream host that the requests are forwarded to.`}</p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="internalHostSslValidation">
-                        <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.provider?.internalHostSslValidation, true)}>
-                            <label class="pf-c-check__label">
-                                ${t`Internal host SSL Validation`}
-                            </label>
-                        </div>
-                        <p class="pf-c-form__helper-text">${t`Validate SSL Certificates of upstream servers.`}</p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
                         label=${t`External host`}
                         ?required=${true}
                         name="externalHost">
                         <input type="text" value="${ifDefined(this.provider?.externalHost)}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`The external URL you'll access the outpost at.`}</p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal name="forwardAuthMode">
+                        <div class="pf-c-check">
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.provider?.forwardAuthMode, false)} @change=${(ev: Event) => {
+                                const el = ev.target as HTMLInputElement;
+                                this.showInternalServer = !el.checked;
+                            }}>
+                            <label class="pf-c-check__label">
+                                ${t`Enable forward-auth mode`}
+                            </label>
+                        </div>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Enable this if you don't want to use this provider as a proxy, and want to use it with Traefik's forwardAuth or nginx's auth_request.`}
+                        </p>
+                    </ak-form-element-horizontal>
+                    ${this.renderInternalServer()}
                 </div>
             </ak-form-group>
 
