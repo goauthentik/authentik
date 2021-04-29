@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nmcclain/ldap"
+	"github.com/goauthentik/ldap"
 	"goauthentik.io/outpost/pkg/client/core"
 )
 

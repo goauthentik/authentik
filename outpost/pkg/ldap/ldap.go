@@ -4,7 +4,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/outpost/pkg/ak"
 
-	"github.com/nmcclain/ldap"
+	"github.com/goauthentik/ldap"
 )
 
 const GroupObjectClass = "group"

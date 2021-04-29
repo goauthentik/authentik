@@ -3,7 +3,7 @@ package ldap
 import (
 	"fmt"
 
-	"github.com/nmcclain/ldap"
+	"github.com/goauthentik/ldap"
 	"goauthentik.io/outpost/pkg/models"
 )
 

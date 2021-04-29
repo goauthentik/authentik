@@ -16,6 +16,7 @@ require (
 	github.com/go-openapi/validate v0.20.2
 	github.com/go-redis/redis/v7 v7.4.0 // indirect
 	github.com/go-swagger/go-swagger v0.27.0 // indirect
+	github.com/goauthentik/ldap v0.0.0-20210429185144-85625dd05305 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/gorilla/websocket v1.4.2
 	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a
@@ -24,7 +25,6 @@ require (
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/nmcclain/asn1-ber v0.0.0-20170104154839-2661553a0484 // indirect
-	github.com/nmcclain/ldap v0.0.0-20191021200707-3b3b69a7e9e3
 	github.com/oauth2-proxy/oauth2-proxy v0.0.0-20200831161845-e4e5580852dc
 	github.com/pelletier/go-toml v1.9.0 // indirect
 	github.com/pkg/errors v0.9.1

@@ -11,10 +11,12 @@ import (
 
 	goldap "github.com/go-ldap/ldap/v3"
 	httptransport "github.com/go-openapi/runtime/client"
-	"github.com/nmcclain/ldap"
+	"github.com/goauthentik/ldap"
 	"goauthentik.io/outpost/pkg/client/core"
 	"goauthentik.io/outpost/pkg/client/flows"
 )
+
+const ContextUserKey = "ak_user"
 
 type UIDResponse struct {
 	UIDFIeld string `json:"uid_field"`
@@ -42,7 +44,7 @@ func (pi *ProviderInstance) getUsername(dn string) (string, error) {
 	return "", errors.New("failed to find dn")
 }
 
-func (pi *ProviderInstance) Bind(username string, bindPW string, conn net.Conn) (ldap.LDAPResultCode, error) {
+func (pi *ProviderInstance) Bind(username string, bindPW string, conn net.Conn, ctx context.Context) (ldap.LDAPResultCode, error) {
 	jar, err := cookiejar.New(nil)
 	if err != nil {
 		pi.log.WithError(err).Warning("Failed to create cookiejar")
@@ -73,6 +75,16 @@ func (pi *ProviderInstance) Bind(username string, bindPW string, conn net.Conn) 
 		return ldap.LDAPResultOperationsError, nil
 	}
 	pi.log.WithField("boundDN", username).Info("User has access")
+	// Get user info to store in context
+	userInfo, err := pi.s.ac.Client.Core.CoreUsersMe(&core.CoreUsersMeParams{
+		Context:    ctx,
+		HTTPClient: client,
+	}, httptransport.PassThroughAuth)
+	if err != nil {
+		pi.log.WithField("boundDN", username).WithError(err).Warning("failed to get user info")
+		return ldap.LDAPResultOperationsError, nil
+	}
+	ctx = context.WithValue(ctx, ContextUserKey, userInfo.Payload.User)
 	return ldap.LDAPResultSuccess, nil
 }
 
