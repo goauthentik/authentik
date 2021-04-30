@@ -1,4 +1,6 @@
 """saml sp views"""
+from urllib.parse import ParseResult, parse_qsl, urlparse, urlunparse
+
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, HttpRequest, HttpResponse
@@ -104,8 +106,24 @@ class InitiateView(View):
         auth_n_req = RequestProcessor(source, request, relay_state)
         # If the source is configured for Redirect bindings, we can just redirect there
         if source.binding_type == SAMLBindingTypes.REDIRECT:
-            url_args = urlencode(auth_n_req.build_auth_n_detached())
-            return redirect(f"{source.sso_url}?{url_args}")
+            # Parse the initial SSO URL
+            sso_url = urlparse(source.sso_url)
+            # Parse the querystring into a dict...
+            url_kwargs = dict(parse_qsl(sso_url.query))
+            # ... and update it with the SAML args
+            url_kwargs.update(auth_n_req.build_auth_n_detached())
+            # Encode it back into a string
+            res = ParseResult(
+                scheme=sso_url.scheme,
+                netloc=sso_url.hostname or "",
+                path=sso_url.path,
+                params=sso_url.params,
+                query=urlencode(url_kwargs),
+                fragment=sso_url.fragment,
+            )
+            # and merge it back into a URL
+            final_url = urlunparse(res)
+            return redirect(final_url)
         # As POST Binding we show a form
         saml_request = nice64(auth_n_req.build_auth_n())
         injected_stages = []
