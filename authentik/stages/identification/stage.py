@@ -28,7 +28,7 @@ LOGGER = get_logger()
 class IdentificationChallenge(Challenge):
     """Identification challenges with all UI elements"""
 
-    user_fields = ListField(CharField(), allow_empty=True, allow_null=True)
+    user_fields = ListField(child=CharField(), allow_empty=True, allow_null=True)
     application_pre = CharField(required=False)
 
     enroll_url = CharField(required=False)
