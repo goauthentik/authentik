@@ -22,7 +22,7 @@ export const PasswordManagerPrefill: {
 
 export interface IdentificationChallenge extends Challenge {
 
-    input_type: string;
+    user_fields?: string[];
     primary_action: string;
     sources?: UILoginButton[];
 
@@ -154,6 +154,43 @@ export class IdentificationStage extends BaseStage {
             </div>`;
     }
 
+    renderInput(): TemplateResult {
+        let label = "";
+        let type = "text";
+        if (!this.challenge?.user_fields) {
+            return html`<p>
+                ${t`Select one of the sources below to login.`}
+            </p>`;
+        }
+        if (this.challenge?.user_fields === ["email"]) {
+            label = t`Email`;
+            type = "email";
+        } else if (this.challenge?.user_fields === ["username"]) {
+            label = t`Username`;
+        } else {
+            label = t`Email or username`;
+        }
+        return html`<ak-form-element
+                label=${label}
+                ?required="${true}"
+                class="pf-c-form__group"
+                .errors=${(this.challenge?.response_errors || {})["uid_field"]}>
+                <!-- @ts-ignore -->
+                <input type=${type}
+                    name="uid_field"
+                    placeholder="Email or Username"
+                    autofocus=""
+                    autocomplete="username"
+                    class="pf-c-form-control"
+                    required>
+            </ak-form-element>
+            <div class="pf-c-form__group pf-m-action">
+                <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                    ${this.challenge.primary_action}
+                </button>
+            </div>`;
+    }
+
     render(): TemplateResult {
         if (!this.challenge) {
             return html`<ak-empty-state
@@ -173,26 +210,7 @@ export class IdentificationStage extends BaseStage {
                             ${t`Login to continue to ${this.challenge.application_pre}.`}
                         </p>`:
                         html``}
-
-                    <ak-form-element
-                        label="${t`Email or Username`}"
-                        ?required="${true}"
-                        class="pf-c-form__group"
-                        .errors=${(this.challenge?.response_errors || {})["uid_field"]}>
-                        <input type="text"
-                            name="uid_field"
-                            placeholder="Email or Username"
-                            autofocus=""
-                            autocomplete="username"
-                            class="pf-c-form-control"
-                            required>
-                    </ak-form-element>
-
-                    <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${this.challenge.primary_action}
-                        </button>
-                    </div>
+                    ${this.renderInput()}
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">

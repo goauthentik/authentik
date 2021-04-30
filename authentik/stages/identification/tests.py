@@ -106,7 +106,7 @@ class TestIdentificationStage(TestCase):
                 "background": flow.background.url,
                 "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-identification",
-                "input_type": "email",
+                "user_fields": ["email"],
                 "enroll_url": reverse(
                     "authentik_core:if-flow",
                     kwargs={"flow_slug": "unique-enrollment-string"},
@@ -149,7 +149,7 @@ class TestIdentificationStage(TestCase):
                 "background": flow.background.url,
                 "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-identification",
-                "input_type": "email",
+                "user_fields": ["email"],
                 "recovery_url": reverse(
                     "authentik_core:if-flow",
                     kwargs={"flow_slug": "unique-recovery-string"},

@@ -424,7 +424,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:92
+#: src/pages/stages/identification/IdentificationStageForm.ts:91
 msgid "Case insensitive matching"
 msgstr ""
 
@@ -1078,8 +1078,9 @@ msgstr ""
 msgid "Either no applications are defined, or you don't have access to any."
 msgstr ""
 
+#: src/flows/stages/identification/IdentificationStage.ts:138
 #: src/pages/events/TransportForm.ts:46
-#: src/pages/stages/identification/IdentificationStageForm.ts:82
+#: src/pages/stages/identification/IdentificationStageForm.ts:81
 #: src/pages/user-settings/UserDetailsPage.ts:71
 #: src/pages/users/UserForm.ts:61
 #: src/pages/users/UserViewPage.ts:100
@@ -1090,8 +1091,8 @@ msgstr ""
 msgid "Email address"
 msgstr ""
 
-#: src/flows/stages/identification/IdentificationStage.ts:150
-msgid "Email or Username"
+#: src/flows/stages/identification/IdentificationStage.ts:145
+msgid "Email or username"
 msgstr ""
 
 #: src/pages/stages/prompt/PromptForm.ts:51
@@ -1137,7 +1138,7 @@ msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts:210
 #: src/pages/sources/saml/SAMLSourceForm.ts:266
-#: src/pages/stages/identification/IdentificationStageForm.ts:107
+#: src/pages/stages/identification/IdentificationStageForm.ts:106
 msgid "Enrollment flow"
 msgstr ""
 
@@ -1334,8 +1335,8 @@ msgstr ""
 msgid "Fields"
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:85
-msgid "Fields a user can identify themselves with."
+#: src/pages/stages/identification/IdentificationStageForm.ts:84
+msgid "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources."
 msgstr ""
 
 #: src/pages/flows/FlowImportForm.ts:34
@@ -1502,7 +1503,7 @@ msgstr ""
 #: src/pages/sources/ldap/LDAPSourceForm.ts:167
 #: src/pages/sources/ldap/LDAPSourceForm.ts:193
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:114
-#: src/pages/stages/identification/IdentificationStageForm.ts:86
+#: src/pages/stages/identification/IdentificationStageForm.ts:85
 #: src/pages/stages/password/PasswordStageForm.ts:86
 #: src/pages/stages/prompt/PromptStageForm.ts:87
 #: src/pages/stages/prompt/PromptStageForm.ts:121
@@ -1696,7 +1697,7 @@ msgstr ""
 #: src/flows/stages/consent/ConsentStage.ts:28
 #: src/flows/stages/dummy/DummyStage.ts:27
 #: src/flows/stages/email/EmailStage.ts:26
-#: src/flows/stages/identification/IdentificationStage.ts:133
+#: src/flows/stages/identification/IdentificationStage.ts:170
 #: src/flows/stages/password/PasswordStage.ts:31
 #: src/flows/stages/prompt/PromptStage.ts:126
 #: src/pages/applications/ApplicationViewPage.ts:43
@@ -1749,8 +1750,8 @@ msgstr ""
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:96
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:131
 #: src/pages/stages/email/EmailStageForm.ts:170
-#: src/pages/stages/identification/IdentificationStageForm.ts:120
-#: src/pages/stages/identification/IdentificationStageForm.ts:138
+#: src/pages/stages/identification/IdentificationStageForm.ts:119
+#: src/pages/stages/identification/IdentificationStageForm.ts:137
 #: src/pages/stages/password/PasswordStageForm.ts:106
 #: src/pages/stages/prompt/PromptStageForm.ts:85
 #: src/pages/stages/prompt/PromptStageForm.ts:118
@@ -1771,7 +1772,7 @@ msgstr ""
 msgid "Login password is synced from LDAP into authentik automatically. Enable this option only to write password changes in authentik back to LDAP."
 msgstr ""
 
-#: src/flows/stages/identification/IdentificationStage.ts:145
+#: src/flows/stages/identification/IdentificationStage.ts:182
 msgid "Login to continue to {0}."
 msgstr ""
 
@@ -2157,11 +2158,11 @@ msgstr ""
 msgid "Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON."
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:122
+#: src/pages/stages/identification/IdentificationStageForm.ts:121
 msgid "Optional enrollment flow, which is linked at the bottom of the page."
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:140
+#: src/pages/stages/identification/IdentificationStageForm.ts:139
 msgid "Optional recovery flow, which is linked at the bottom of the page."
 msgstr ""
 
@@ -2495,7 +2496,7 @@ msgstr ""
 msgid "Recovery"
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:125
+#: src/pages/stages/identification/IdentificationStageForm.ts:124
 msgid "Recovery flow"
 msgstr ""
 
@@ -2701,6 +2702,10 @@ msgstr ""
 msgid "Select an identification method."
 msgstr ""
 
+#: src/flows/stages/identification/IdentificationStage.ts:134
+msgid "Select one of the sources below to login."
+msgstr ""
+
 #: src/pages/groups/MemberSelectModal.ts:68
 msgid "Select users to add"
 msgstr ""
@@ -2799,7 +2804,7 @@ msgstr ""
 msgid "Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable."
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:101
+#: src/pages/stages/identification/IdentificationStageForm.ts:100
 msgid "Show matched user"
 msgstr ""
 
@@ -3729,7 +3734,8 @@ msgstr ""
 msgid "Userinfo URL"
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:79
+#: src/flows/stages/identification/IdentificationStage.ts:142
+#: src/pages/stages/identification/IdentificationStageForm.ts:78
 #: src/pages/user-settings/UserDetailsPage.ts:57
 #: src/pages/users/UserForm.ts:47
 #: src/pages/users/UserViewPage.ts:84
@@ -3851,7 +3857,7 @@ msgstr ""
 msgid "Webhook URL"
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:104
+#: src/pages/stages/identification/IdentificationStageForm.ts:103
 msgid "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown."
 msgstr ""
 
@@ -3859,7 +3865,7 @@ msgstr ""
 msgid "When enabled, global Email connection settings will be used and connection settings below will be ignored."
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:95
+#: src/pages/stages/identification/IdentificationStageForm.ts:94
 msgid "When enabled, user fields are matched regardless of their casing."
 msgstr ""
 

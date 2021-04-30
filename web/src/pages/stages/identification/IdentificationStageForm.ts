@@ -69,7 +69,6 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${t`User fields`}
-                        ?required=${true}
                         name="userFields">
                         <select name="users" class="pf-c-form-control" multiple>
                             <option value=${IdentificationStageUserFieldsEnum.Username} ?selected=${this.isUserFieldSelected(IdentificationStageUserFieldsEnum.Username)}>
@@ -79,7 +78,7 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
                                 ${t`Email`}
                             </option>
                         </select>
-                        <p class="pf-c-form__helper-text">${t`Fields a user can identify themselves with.`}</p>
+                        <p class="pf-c-form__helper-text">${t`Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources.`}</p>
                         <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="caseInsensitiveMatching">

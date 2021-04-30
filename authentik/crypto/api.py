@@ -39,7 +39,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
         """Show if this keypair has a private key configured or not"""
         return instance.key_data != "" and instance.key_data is not None
 
-    def validate_certificate_data(self, value):
+    def validate_certificate_data(self, value: str) -> str:
         """Verify that input is a valid PEM x509 Certificate"""
         try:
             load_pem_x509_certificate(value.encode("utf-8"), default_backend())
@@ -47,7 +47,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
             raise ValidationError("Unable to load certificate.")
         return value
 
-    def validate_key_data(self, value):
+    def validate_key_data(self, value: str) -> str:
         """Verify that input is a valid PEM RSA Key"""
         # Since this field is optional, data can be empty.
         if value != "":
@@ -57,8 +57,10 @@ class CertificateKeyPairSerializer(ModelSerializer):
                     password=None,
                     backend=default_backend(),
                 )
-            except ValueError:
-                raise ValidationError("Unable to load private key.")
+            except (ValueError, TypeError):
+                raise ValidationError(
+                    "Unable to load private key (possibly encrypted?)."
+                )
         return value
 
     class Meta:

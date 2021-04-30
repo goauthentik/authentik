@@ -54,7 +54,7 @@ class ResponseProcessor:
     _source: SAMLSource
 
     _root: Any
-    _root_xml: str
+    _root_xml: bytes
 
     _http_request: HttpRequest
 
@@ -69,7 +69,7 @@ class ResponseProcessor:
         if not raw_response:
             raise MissingSAMLResponse("Request does not contain 'SAMLResponse'")
         # Check if response is compressed, b64 decode it
-        self._root_xml = b64decode(raw_response.encode()).decode()
+        self._root_xml = b64decode(raw_response.encode())
         self._root = fromstring(self._root_xml)
 
         if self._source.signing_kp:
@@ -186,7 +186,7 @@ class ResponseProcessor:
                 expected=self._source.name_id_policy,
                 got=name_id.attrib["Format"],
             )
-        # transient NameIDs are handeled seperately as they don't have to go through flows.
+        # transient NameIDs are handled separately as they don't have to go through flows.
         if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
             return self._handle_name_id_transient(request)
 

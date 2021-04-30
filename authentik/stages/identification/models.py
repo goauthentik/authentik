@@ -22,6 +22,7 @@ class IdentificationStage(Stage):
 
     user_fields = ArrayField(
         models.CharField(max_length=100, choices=UserFields.choices),
+        blank=True,
         help_text=_(
             (
                 "Fields of the user object to match against. "

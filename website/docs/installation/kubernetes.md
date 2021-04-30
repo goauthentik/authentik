@@ -41,7 +41,7 @@ image:
   # %(type)s: Outpost type; proxy, ldap, etc
   # %(version)s: Current version; 2021.4.1
   name_outposts: "beryju/authentik-%(type)s:%(version)s"
-  tag: 2021.4.4
+  tag: 2021.4.5
 
 serverReplicas: 1
 workerReplicas: 1

@@ -7,7 +7,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.urls import reverse
 from django.utils.translation import gettext as _
-from rest_framework.fields import CharField
+from rest_framework.fields import CharField, ListField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
@@ -20,7 +20,7 @@ from authentik.flows.stage import (
     ChallengeStageView,
 )
 from authentik.flows.views import SESSION_KEY_APPLICATION_PRE
-from authentik.stages.identification.models import IdentificationStage, UserFields
+from authentik.stages.identification.models import IdentificationStage
 
 LOGGER = get_logger()
 
@@ -28,7 +28,7 @@ LOGGER = get_logger()
 class IdentificationChallenge(Challenge):
     """Identification challenges with all UI elements"""
 
-    input_type = CharField()
+    user_fields = ListField(child=CharField(), allow_empty=True, allow_null=True)
     application_pre = CharField(required=False)
 
     enroll_url = CharField(required=False)
@@ -83,11 +83,9 @@ class IdentificationStageView(ChallengeStageView):
                 "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-identification",
                 "primary_action": _("Log in"),
-                "input_type": "text",
+                "user_fields": current_stage.user_fields,
             }
         )
-        if current_stage.user_fields == [UserFields.E_MAIL]:
-            challenge.initial_data["input_type"] = "email"
         # If the user has been redirected to us whilst trying to access an
         # application, SESSION_KEY_APPLICATION_PRE is set in the session
         if SESSION_KEY_APPLICATION_PRE in self.request.session:
