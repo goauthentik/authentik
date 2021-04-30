@@ -51,7 +51,7 @@
         "@rollup/plugin-replace": "^2.4.2",
         "@rollup/plugin-typescript": "^8.2.1",
         "@sentry/browser": "^6.3.4",
-        "@sentry/tracing": "^6.3.3",
+        "@sentry/tracing": "^6.3.4",
         "@types/chart.js": "^2.9.32",
         "@types/codemirror": "0.0.109",
         "@types/grecaptcha": "^3.0.2",
