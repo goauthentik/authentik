@@ -20,7 +20,7 @@ from authentik.flows.stage import (
     ChallengeStageView,
 )
 from authentik.flows.views import SESSION_KEY_APPLICATION_PRE
-from authentik.stages.identification.models import IdentificationStage, UserFields
+from authentik.stages.identification.models import IdentificationStage
 
 LOGGER = get_logger()
 
