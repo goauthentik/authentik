@@ -3,12 +3,6 @@ trigger:
   - next
   - version-*
 
-variables:
-  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/pull/') }}:
-    branchName: ${{ replace(variables['System.PullRequest.SourceBranch'], '/', '-') }}
-  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/') }}:
-    branchName: ${{ replace(variables['Build.SourceBranchName'], 'refs/heads/', '') }}
-
 stages:
   - stage: generate
     jobs:
@@ -99,27 +93,3 @@ stages:
               command: 'custom'
               workingDir: 'web/'
               customCommand: 'run build'
-  - stage: build_docker
-    jobs:
-      - job: build_static
-        pool:
-          vmImage: 'ubuntu-latest'
-        steps:
-          - task: DownloadPipelineArtifact@2
-            inputs:
-              buildType: 'current'
-              artifactName: 'ts_swagger_client'
-              path: "web/api/"
-          - task: Bash@3
-            inputs:
-              targetType: 'inline'
-              script: |
-                python ./scripts/az_do_set_branch.py
-          - task: Docker@2
-            inputs:
-              containerRegistry: 'beryjuorg-harbor'
-              repository: 'authentik/static'
-              command: 'buildAndPush'
-              Dockerfile: 'web/Dockerfile'
-              tags: "gh-$(branchName)"
-              buildContext: 'web/'
