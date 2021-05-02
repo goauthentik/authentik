@@ -115,6 +115,7 @@ class TestIdentificationStage(TestCase):
                 "title": self.flow.title,
                 "sources": [
                     {
+                        "additional_data": None,
                         "icon_url": "/static/authentik/sources/.svg",
                         "name": "test",
                         "url": "/source/oauth/login/test/",
@@ -158,6 +159,7 @@ class TestIdentificationStage(TestCase):
                 "title": self.flow.title,
                 "sources": [
                     {
+                        "additional_data": None,
                         "icon_url": "/static/authentik/sources/.svg",
                         "name": "test",
                         "url": "/source/oauth/login/test/",
