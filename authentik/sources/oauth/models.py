@@ -9,6 +9,7 @@ from rest_framework.serializers import Serializer
 
 from authentik.core.models import Source, UserSourceConnection
 from authentik.core.types import UILoginButton, UserSettingSerializer
+from authentik.flows.challenge import ChallengeTypes, RedirectChallenge
 
 if TYPE_CHECKING:
     from authentik.sources.oauth.types.manager import SourceType
@@ -67,9 +68,14 @@ class OAuthSource(Source):
     @property
     def ui_login_button(self) -> UILoginButton:
         return UILoginButton(
-            url=reverse(
-                "authentik_sources_oauth:oauth-client-login",
-                kwargs={"source_slug": self.slug},
+            challenge=RedirectChallenge(
+                instance={
+                    "type": ChallengeTypes.REDIRECT.value,
+                    "to": reverse(
+                        "authentik_sources_oauth:oauth-client-login",
+                        kwargs={"source_slug": self.slug},
+                    ),
+                }
             ),
             icon_url=static(f"authentik/sources/{self.provider_type}.svg"),
             name=self.name,
