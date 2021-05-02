@@ -1697,7 +1697,7 @@ msgstr ""
 #: src/flows/stages/consent/ConsentStage.ts:28
 #: src/flows/stages/dummy/DummyStage.ts:27
 #: src/flows/stages/email/EmailStage.ts:26
-#: src/flows/stages/identification/IdentificationStage.ts:170
+#: src/flows/stages/identification/IdentificationStage.ts:171
 #: src/flows/stages/password/PasswordStage.ts:31
 #: src/flows/stages/prompt/PromptStage.ts:126
 #: src/pages/applications/ApplicationViewPage.ts:43
@@ -1772,7 +1772,7 @@ msgstr ""
 msgid "Login password is synced from LDAP into authentik automatically. Enable this option only to write password changes in authentik back to LDAP."
 msgstr ""
 
-#: src/flows/stages/identification/IdentificationStage.ts:182
+#: src/flows/stages/identification/IdentificationStage.ts:183
 msgid "Login to continue to {0}."
 msgstr ""
 
