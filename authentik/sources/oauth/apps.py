@@ -2,10 +2,20 @@
 from importlib import import_module
 
 from django.apps import AppConfig
-from django.conf import settings
 from structlog.stdlib import get_logger
 
 LOGGER = get_logger()
+
+AUTHENTIK_SOURCES_OAUTH_TYPES = [
+    "authentik.sources.oauth.types.discord",
+    "authentik.sources.oauth.types.facebook",
+    "authentik.sources.oauth.types.github",
+    "authentik.sources.oauth.types.google",
+    "authentik.sources.oauth.types.reddit",
+    "authentik.sources.oauth.types.twitter",
+    "authentik.sources.oauth.types.azure_ad",
+    "authentik.sources.oauth.types.oidc",
+]
 
 
 class AuthentikSourceOAuthConfig(AppConfig):
@@ -18,7 +28,7 @@ class AuthentikSourceOAuthConfig(AppConfig):
 
     def ready(self):
         """Load source_types from config file"""
-        for source_type in settings.AUTHENTIK_SOURCES_OAUTH_TYPES:
+        for source_type in AUTHENTIK_SOURCES_OAUTH_TYPES:
             try:
                 import_module(source_type)
                 LOGGER.debug("Loaded OAuth Source Type", type=source_type)

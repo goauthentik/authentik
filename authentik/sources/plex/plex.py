@@ -85,6 +85,7 @@ class PlexOAuthClient(OAuth2Client):
     def get_profile_info(self, token: dict[str, str]) -> Optional[dict[str, Any]]:
         "Fetch user profile information."
         qs = {"X-Plex-Token": token["plex_token"]}
+        print(token)
         try:
             response = self.do_request(
                 "get", f"https://plex.tv/users/account.json?{urlencode(qs)}"
@@ -94,7 +95,8 @@ class PlexOAuthClient(OAuth2Client):
             LOGGER.warning("Unable to fetch user profile", exc=exc)
             return None
         else:
-            return response.json().get("user", {})
+            info = response.json()
+            return info.get("user", {})
 
 
 class PlexOAuth2Callback(OAuthCallback):

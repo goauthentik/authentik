@@ -10213,6 +10213,205 @@ paths:
         description: A unique integer value identifying this User OAuth Source Connection.
         required: true
         type: integer
+  /sources/plex/:
+    get:
+      operationId: sources_plex_list
+      description: Plex source Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: Page Index
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Page Size
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - results
+              - pagination
+            type: object
+            properties:
+              pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/PlexSource'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+      tags:
+        - sources
+    post:
+      operationId: sources_plex_create
+      description: Plex source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PlexSource'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/PlexSource'
+        '400':
+          description: Invalid input.
+          schema:
+            $ref: '#/definitions/ValidationError'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+      tags:
+        - sources
+    parameters: []
+  /sources/plex/{slug}/:
+    get:
+      operationId: sources_plex_read
+      description: Plex source Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PlexSource'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+        '404':
+          description: Object does not exist or caller has insufficient permissions
+            to access it.
+          schema:
+            $ref: '#/definitions/APIException'
+      tags:
+        - sources
+    put:
+      operationId: sources_plex_update
+      description: Plex source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PlexSource'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PlexSource'
+        '400':
+          description: Invalid input.
+          schema:
+            $ref: '#/definitions/ValidationError'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+        '404':
+          description: Object does not exist or caller has insufficient permissions
+            to access it.
+          schema:
+            $ref: '#/definitions/APIException'
+      tags:
+        - sources
+    patch:
+      operationId: sources_plex_partial_update
+      description: Plex source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PlexSource'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PlexSource'
+        '400':
+          description: Invalid input.
+          schema:
+            $ref: '#/definitions/ValidationError'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+        '404':
+          description: Object does not exist or caller has insufficient permissions
+            to access it.
+          schema:
+            $ref: '#/definitions/APIException'
+      tags:
+        - sources
+    delete:
+      operationId: sources_plex_delete
+      description: Plex source Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+        '404':
+          description: Object does not exist or caller has insufficient permissions
+            to access it.
+          schema:
+            $ref: '#/definitions/APIException'
+      tags:
+        - sources
+    parameters:
+      - name: slug
+        in: path
+        description: Internal source name, used in URLs.
+        required: true
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
   /sources/saml/:
     get:
       operationId: sources_saml_list
@@ -16210,6 +16409,7 @@ definitions:
           - authentik.recovery
           - authentik.sources.ldap
           - authentik.sources.oauth
+          - authentik.sources.plex
           - authentik.sources.saml
           - authentik.stages.authenticator_static
           - authentik.stages.authenticator_totp
@@ -17386,6 +17586,75 @@ definitions:
         type: string
         maxLength: 255
         minLength: 1
+  PlexSource:
+    required:
+      - name
+      - slug
+      - client_id
+      - allowed_servers
+    type: object
+    properties:
+      pk:
+        title: Pbm uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        description: Source's display Name.
+        type: string
+        minLength: 1
+      slug:
+        title: Slug
+        description: Internal source name, used in URLs.
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
+        maxLength: 50
+        minLength: 1
+      enabled:
+        title: Enabled
+        type: boolean
+      authentication_flow:
+        title: Authentication flow
+        description: Flow to use when authenticating existing users.
+        type: string
+        format: uuid
+        x-nullable: true
+      enrollment_flow:
+        title: Enrollment flow
+        description: Flow to use when enrolling new users.
+        type: string
+        format: uuid
+        x-nullable: true
+      component:
+        title: Component
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
+      policy_engine_mode:
+        title: Policy engine mode
+        type: string
+        enum:
+          - all
+          - any
+      client_id:
+        title: Client id
+        type: string
+        minLength: 1
+      allowed_servers:
+        type: array
+        items:
+          title: Allowed servers
+          type: string
+          minLength: 1
   SAMLSource:
     required:
       - name
