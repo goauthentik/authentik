@@ -21,6 +21,12 @@ export const DEFAULT_HEADERS = {
     "X-Plex-Device-Vendor": "BeryJu.org",
 };
 
+export function popupCenterScreen(url: string, title: string, w: number, h: number): Window | null {
+    const top = (screen.height - h) / 4, left = (screen.width - w) / 2;
+    const popup = window.open(url, title, `scrollbars=yes,width=${w},height=${h},top=${top},left=${left}`);
+    return popup;
+}
+
 export class PlexAPIClient {
 
     token: string;
@@ -44,12 +50,36 @@ export class PlexAPIClient {
         };
     }
 
-    static async pinStatus(id: number): Promise<string> {
+    static async pinStatus(clientIdentifier: string, id: number): Promise<string | undefined> {
+        const headers = { ...DEFAULT_HEADERS, ...{
+            "X-Plex-Client-Identifier": clientIdentifier
+        }};
         const pinResponse = await fetch(`https://plex.tv/api/v2/pins/${id}`, {
-            headers: DEFAULT_HEADERS
+            headers: headers
         });
         const pin: PlexPinResponse = await pinResponse.json();
         return pin.authToken || "";
+    }
+
+    static async pinPoll(clientIdentifier: string, id: number): Promise<string> {
+        const executePoll = async (
+            resolve: (authToken: string) => void,
+            reject: (e: Error) => void
+        ) => {
+            try {
+                const response = await PlexAPIClient.pinStatus(clientIdentifier, id)
+
+                if (response) {
+                    resolve(response);
+                } else {
+                    setTimeout(executePoll, 500, resolve, reject);
+                }
+            } catch (e) {
+                reject(e);
+            }
+        };
+
+        return new Promise(executePoll);
     }
 
     async getServers(): Promise<PlexResource[]> {

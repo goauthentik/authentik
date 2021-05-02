@@ -9,14 +9,8 @@ import "../../../elements/forms/HorizontalFormElement";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
 import { first, randomString } from "../../../utils";
-import { PlexAPIClient, PlexResource} from "../../../flows/sources/plex/API";
+import { PlexAPIClient, PlexResource, popupCenterScreen} from "../../../flows/sources/plex/API";
 
-
-function popupCenterScreen(url: string, title: string, w: number, h: number): Window | null {
-    const top = (screen.height - h) / 4, left = (screen.width - w) / 2;
-    const popup = window.open(url, title, `scrollbars=yes,width=${w},height=${h},top=${top},left=${left}`);
-    return popup;
-}
 
 @customElement("ak-source-plex-form")
 export class PlexSourceForm extends Form<PlexSource> {
@@ -64,15 +58,11 @@ export class PlexSourceForm extends Form<PlexSource> {
     async doAuth(): Promise<void> {
         const authInfo = await PlexAPIClient.getPin(this.source?.clientId);
         const authWindow = popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
-        const timer = setInterval(() => {
-            if (authWindow?.closed) {
-                clearInterval(timer);
-                PlexAPIClient.pinStatus(authInfo.pin.id).then((token: string) => {
-                    this.plexToken = token;
-                    this.loadServers();
-                });
-            }
-        }, 500);
+        PlexAPIClient.pinPoll(this.source?.clientId || "", authInfo.pin.id).then(token => {
+            authWindow?.close();
+            this.plexToken = token;
+            this.loadServers();
+        });
     }
 
     async loadServers(): Promise<void> {

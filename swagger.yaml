@@ -10307,6 +10307,39 @@ paths:
       tags:
         - sources
     parameters: []
+  /sources/plex/redeem_token/:
+    post:
+      operationId: sources_plex_redeem_token
+      description: |-
+        Redeem a plex token, check it's access to resources against what's allowed
+        for the source, and redirect to an authentication/enrollment flow.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PlexTokenRedeem'
+        - name: slug
+          in: query
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/RedirectChallenge'
+        '404':
+          description: Token not found
+        '400':
+          description: Invalid input.
+          schema:
+            $ref: '#/definitions/ValidationError'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+      tags:
+        - sources
+    parameters: []
   /sources/plex/{slug}/:
     get:
       operationId: sources_plex_read
@@ -17655,6 +17688,51 @@ definitions:
           title: Allowed servers
           type: string
           minLength: 1
+  PlexTokenRedeem:
+    required:
+      - plex_token
+    type: object
+    properties:
+      plex_token:
+        title: Plex token
+        type: string
+        minLength: 1
+  RedirectChallenge:
+    required:
+      - type
+      - to
+    type: object
+    properties:
+      type:
+        title: Type
+        type: string
+        enum:
+          - native
+          - shell
+          - redirect
+      component:
+        title: Component
+        type: string
+        minLength: 1
+      title:
+        title: Title
+        type: string
+        minLength: 1
+      background:
+        title: Background
+        type: string
+        minLength: 1
+      response_errors:
+        title: Response errors
+        type: object
+        additionalProperties:
+          type: array
+          items:
+            $ref: '#/definitions/ErrorDetail'
+      to:
+        title: To
+        type: string
+        minLength: 1
   SAMLSource:
     required:
       - name
