@@ -130,9 +130,7 @@ class TestUserLoginStage(TestCase):
         """Test with invitation, check data in session"""
         data = {"foo": "bar"}
         invite = Invitation.objects.create(
-            created_by=get_anonymous_user(),
-            fixed_data=data,
-            single_use=True
+            created_by=get_anonymous_user(), fixed_data=data, single_use=True
         )
 
         plan = FlowPlan(
