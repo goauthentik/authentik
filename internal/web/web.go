@@ -1,6 +1,9 @@
 package web
 
 import (
+	"context"
+	"errors"
+	"net"
 	"net/http"
 	"sync"
 
@@ -15,6 +18,8 @@ type WebServer struct {
 	BindTLS bool
 
 	LegacyProxy bool
+
+	stop chan struct{} // channel for waiting shutdown
 
 	m   *mux.Router
 	lh  *mux.Router
@@ -49,12 +54,45 @@ func (ws *WebServer) Run() {
 	}()
 	go func() {
 		defer wg.Done()
-		// ws.listenTLS()
+		ws.listenTLS()
 	}()
 	wg.Done()
 }
 
 func (ws *WebServer) listenPlain() {
+	ln, err := net.Listen("tcp", config.G.Web.Listen)
+	if err != nil {
+		ws.log.WithError(err).Fatalf("failed to listen")
+	}
+	ws.log.WithField("addr", config.G.Web.Listen).Info("Running")
+
+	ws.serve(ln)
+
 	ws.log.WithField("addr", config.G.Web.Listen).Info("Running")
 	http.ListenAndServe(config.G.Web.Listen, ws.m)
+}
+
+func (ws *WebServer) serve(listener net.Listener) {
+	srv := &http.Server{
+		Handler: ws.m,
+	}
+
+	// See https://golang.org/pkg/net/http/#Server.Shutdown
+	idleConnsClosed := make(chan struct{})
+	go func() {
+		<-ws.stop // wait notification for stopping server
+
+		// We received an interrupt signal, shut down.
+		if err := srv.Shutdown(context.Background()); err != nil {
+			// Error from closing listeners, or context timeout:
+			ws.log.Printf("HTTP server Shutdown: %v", err)
+		}
+		close(idleConnsClosed)
+	}()
+
+	err := srv.Serve(listener)
+	if err != nil && !errors.Is(err, http.ErrServerClosed) {
+		ws.log.Errorf("ERROR: http.Serve() - %s", err)
+	}
+	<-idleConnsClosed
 }

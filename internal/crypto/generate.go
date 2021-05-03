@@ -1,24 +1,24 @@
 package crypto
 
 import (
-	"crypto/ecdsa"
-	"crypto/elliptic"
 	"crypto/rand"
+	"crypto/rsa"
+	"crypto/tls"
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
 	"math/big"
-	"net"
-	"os"
 	"time"
 
 	log "github.com/sirupsen/logrus"
 )
 
-func GenerateKeypair(hosts []string) {
-	priv, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+// GenerateSelfSignedCert Generate a self-signed TLS Certificate, to be used as fallback
+func GenerateSelfSignedCert() (tls.Certificate, error) {
+	priv, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
 		log.Fatalf("Failed to generate private key: %v", err)
+		return tls.Certificate{}, err
 	}
 
 	keyUsage := x509.KeyUsageDigitalSignature | x509.KeyUsageKeyEncipherment
@@ -30,12 +30,14 @@ func GenerateKeypair(hosts []string) {
 	serialNumber, err := rand.Int(rand.Reader, serialNumberLimit)
 	if err != nil {
 		log.Fatalf("Failed to generate serial number: %v", err)
+		return tls.Certificate{}, err
 	}
 
 	template := x509.Certificate{
 		SerialNumber: serialNumber,
 		Subject: pkix.Name{
-			Organization: []string{"BeryJu.org"},
+			Organization: []string{"authentik"},
+			CommonName:   "authentik default certificate",
 		},
 		NotBefore: notBefore,
 		NotAfter:  notAfter,
@@ -45,46 +47,17 @@ func GenerateKeypair(hosts []string) {
 		BasicConstraintsValid: true,
 	}
 
-	for _, h := range hosts {
-		if ip := net.ParseIP(h); ip != nil {
-			template.IPAddresses = append(template.IPAddresses, ip)
-		} else {
-			template.DNSNames = append(template.DNSNames, h)
-		}
-	}
+	template.DNSNames = []string{"*"}
 
-	derBytes, err := x509.CreateCertificate(rand.Reader, &template, &template, priv, priv)
+	derBytes, err := x509.CreateCertificate(rand.Reader, &template, &template, &priv.PublicKey, priv)
 	if err != nil {
-		log.Fatalf("Failed to create certificate: %v", err)
+		log.Warning(err)
 	}
-
-	certOut, err := os.Create("cert.pem")
-	if err != nil {
-		log.Fatalf("Failed to open cert.pem for writing: %v", err)
-	}
-	if err := pem.Encode(certOut, &pem.Block{Type: "CERTIFICATE", Bytes: derBytes}); err != nil {
-		log.Fatalf("Failed to write data to cert.pem: %v", err)
-	}
-	if err := certOut.Close(); err != nil {
-		log.Fatalf("Error closing cert.pem: %v", err)
-	}
-	log.Print("wrote cert.pem\n")
-
-	keyOut, err := os.OpenFile("key.pem", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
-	if err != nil {
-		log.Fatalf("Failed to open key.pem for writing: %v", err)
-		return
-	}
+	pemBytes := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: derBytes})
 	privBytes, err := x509.MarshalPKCS8PrivateKey(priv)
 	if err != nil {
-		log.Fatalf("Unable to marshal private key: %v", err)
+		log.Warning(err)
 	}
-	if err := pem.Encode(keyOut, &pem.Block{Type: "PRIVATE KEY", Bytes: privBytes}); err != nil {
-		log.Fatalf("Failed to write data to key.pem: %v", err)
-	}
-	if err := keyOut.Close(); err != nil {
-		log.Fatalf("Error closing key.pem: %v", err)
-	}
-	log.Print("wrote key.pem\n")
-	return
+	privPemByes := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: privBytes})
+	return tls.X509KeyPair(pemBytes, privPemByes)
 }
