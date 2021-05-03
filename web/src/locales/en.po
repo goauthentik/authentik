@@ -281,6 +281,10 @@ msgstr "Attributes"
 msgid "Audience"
 msgstr "Audience"
 
+#: src/flows/sources/plex/PlexLoginInit.ts:56
+msgid "Authenticating with Plex..."
+msgstr "Authenticating with Plex..."
+
 #: src/pages/flows/FlowForm.ts:55
 msgid "Authentication"
 msgstr "Authentication"

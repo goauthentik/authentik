@@ -97,7 +97,8 @@ class OAuthSourceFlowManager(SourceFlowManager):
     connection_type = UserOAuthSourceConnection
 
     def update_connection(
-        self, connection: UserOAuthSourceConnection,
+        self,
+        connection: UserOAuthSourceConnection,
         access_token: Optional[str] = None,
     ) -> UserOAuthSourceConnection:
         """Set the access_token on the connection"""
