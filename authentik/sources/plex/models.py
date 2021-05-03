@@ -9,6 +9,7 @@ from rest_framework.serializers import BaseSerializer
 from authentik.core.models import Source, UserSourceConnection
 from authentik.core.types import UILoginButton
 from authentik.flows.challenge import Challenge, ChallengeTypes
+from authentik.providers.oauth2.generators import generate_client_id
 
 
 class PlexAuthenticationChallenge(Challenge):
@@ -21,8 +22,20 @@ class PlexAuthenticationChallenge(Challenge):
 class PlexSource(Source):
     """Authenticate against plex.tv"""
 
-    client_id = models.TextField()
-    allowed_servers = ArrayField(models.TextField())
+    client_id = models.TextField(
+        default=generate_client_id(),
+        help_text=_("Client identifier used to talk to Plex."),
+    )
+    allowed_servers = ArrayField(
+        models.TextField(),
+        default=list,
+        help_text=_(
+            (
+                "Which servers a user has to be a member of to be granted access. "
+                "Empty list allows every server."
+            )
+        ),
+    )
 
     @property
     def component(self) -> str:

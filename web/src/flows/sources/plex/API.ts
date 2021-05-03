@@ -67,7 +67,7 @@ export class PlexAPIClient {
             reject: (e: Error) => void
         ) => {
             try {
-                const response = await PlexAPIClient.pinStatus(clientIdentifier, id)
+                const response = await PlexAPIClient.pinStatus(clientIdentifier, id);
 
                 if (response) {
                     resolve(response);
