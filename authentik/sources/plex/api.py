@@ -1,26 +1,22 @@
 """Plex Source Serializer"""
-from urllib.parse import urlencode
-
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from requests import RequestException, get
 from rest_framework.decorators import action
 from rest_framework.fields import CharField
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from structlog.stdlib import get_logger
 
 from authentik.api.decorators import permission_required
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.utils import PassiveSerializer
-from authentik.flows.challenge import ChallengeTypes, RedirectChallenge
+from authentik.flows.challenge import RedirectChallenge
+from authentik.flows.views import to_stage_response
 from authentik.sources.plex.models import PlexSource
-
-LOGGER = get_logger()
+from authentik.sources.plex.plex import PlexAuth
 
 
 class PlexSourceSerializer(SourceSerializer):
@@ -72,29 +68,8 @@ class PlexSourceViewSet(ModelViewSet):
         plex_token = request.data.get("plex_token", None)
         if not plex_token:
             raise Http404
-        qs = {"X-Plex-Token": plex_token, "X-Plex-Client-Identifier": source.client_id}
-        try:
-            response = get(
-                f"https://plex.tv/api/v2/resources?{urlencode(qs)}",
-                headers={"Accept": "application/json"},
-            )
-            response.raise_for_status()
-        except RequestException as exc:
-            LOGGER.warning("Unable to fetch user resources", exc=exc)
+        auth_api = PlexAuth(source, plex_token)
+        if not auth_api.check_server_overlap():
             raise Http404
-        else:
-            resources: list[dict] = response.json()
-            for resource in resources:
-                if resource["provides"] != "server":
-                    continue
-                if resource["clientIdentifier"] in source.allowed_servers:
-                    LOGGER.info(
-                        "Plex allowed access from server", name=resource["name"]
-                    )
-                    request.session["foo"] = "bar"
-                    break
-            return Response(
-                RedirectChallenge(
-                    {"type": ChallengeTypes.REDIRECT.value, "to": ""}
-                ).data
-            )
+        response = auth_api.get_user_url(request)
+        return to_stage_response(request, response)

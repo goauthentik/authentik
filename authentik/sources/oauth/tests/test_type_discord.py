@@ -1,7 +1,7 @@
 """Discord Type tests"""
 from django.test import TestCase
 
-from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
+from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.discord import DiscordOAuth2Callback
 
 # https://discord.com/developers/docs/resources/user#user-object
@@ -33,9 +33,7 @@ class TestTypeDiscord(TestCase):
 
     def test_enroll_context(self):
         """Test discord Enrollment context"""
-        ak_context = DiscordOAuth2Callback().get_user_enroll_context(
-            self.source, UserOAuthSourceConnection(), DISCORD_USER
-        )
+        ak_context = DiscordOAuth2Callback().get_user_enroll_context(DISCORD_USER)
         self.assertEqual(ak_context["username"], DISCORD_USER["username"])
         self.assertEqual(ak_context["email"], DISCORD_USER["email"])
         self.assertEqual(ak_context["name"], DISCORD_USER["username"])

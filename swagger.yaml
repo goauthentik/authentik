@@ -17289,6 +17289,17 @@ definitions:
         enum:
           - all
           - any
+      user_matching_mode:
+        title: User matching mode
+        description: How the source determines if an existing user should be authenticated
+          or a new user enrolled.
+        type: string
+        enum:
+          - identifier
+          - email_link
+          - email_deny
+          - username_link
+          - username_deny
   UserSetting:
     required:
       - object_uid
@@ -17369,6 +17380,17 @@ definitions:
         enum:
           - all
           - any
+      user_matching_mode:
+        title: User matching mode
+        description: How the source determines if an existing user should be authenticated
+          or a new user enrolled.
+        type: string
+        enum:
+          - identifier
+          - email_link
+          - email_deny
+          - username_link
+          - username_deny
       server_uri:
         title: Server URI
         type: string
@@ -17549,6 +17571,17 @@ definitions:
         enum:
           - all
           - any
+      user_matching_mode:
+        title: User matching mode
+        description: How the source determines if an existing user should be authenticated
+          or a new user enrolled.
+        type: string
+        enum:
+          - identifier
+          - email_link
+          - email_deny
+          - username_link
+          - username_deny
       provider_type:
         title: Provider type
         type: string
@@ -17678,6 +17711,17 @@ definitions:
         enum:
           - all
           - any
+      user_matching_mode:
+        title: User matching mode
+        description: How the source determines if an existing user should be authenticated
+          or a new user enrolled.
+        type: string
+        enum:
+          - identifier
+          - email_link
+          - email_deny
+          - username_link
+          - username_deny
       client_id:
         title: Client id
         type: string
@@ -17792,6 +17836,17 @@ definitions:
         enum:
           - all
           - any
+      user_matching_mode:
+        title: User matching mode
+        description: How the source determines if an existing user should be authenticated
+          or a new user enrolled.
+        type: string
+        enum:
+          - identifier
+          - email_link
+          - email_deny
+          - username_link
+          - username_deny
       pre_authentication_flow:
         title: Pre authentication flow
         description: Flow used before authentication.
@@ -18537,6 +18592,17 @@ definitions:
                 enabled:
                   title: Enabled
                   type: boolean
+                user_matching_mode:
+                  title: User matching mode
+                  description: How the source determines if an existing user should
+                    be authenticated or a new user enrolled.
+                  type: string
+                  enum:
+                    - identifier
+                    - email_link
+                    - email_deny
+                    - username_link
+                    - username_deny
                 authentication_flow:
                   title: Authentication flow
                   description: Flow to use when authenticating existing users.

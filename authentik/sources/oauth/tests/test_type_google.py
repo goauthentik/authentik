@@ -1,7 +1,7 @@
 """google Type tests"""
 from django.test import TestCase
 
-from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
+from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.google import GoogleOAuth2Callback
 
 # https://developers.google.com/identity/protocols/oauth2/openid-connect?hl=en
@@ -32,9 +32,7 @@ class TestTypeGoogle(TestCase):
 
     def test_enroll_context(self):
         """Test Google Enrollment context"""
-        ak_context = GoogleOAuth2Callback().get_user_enroll_context(
-            self.source, UserOAuthSourceConnection(), GOOGLE_USER
-        )
+        ak_context = GoogleOAuth2Callback().get_user_enroll_context(GOOGLE_USER)
         self.assertEqual(ak_context["username"], GOOGLE_USER["email"])
         self.assertEqual(ak_context["email"], GOOGLE_USER["email"])
         self.assertEqual(ak_context["name"], GOOGLE_USER["name"])

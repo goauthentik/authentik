@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.fields import CharField
 from rest_framework.serializers import BaseSerializer
 
-from authentik.core.models import Source
+from authentik.core.models import Source, UserSourceConnection
 from authentik.core.types import UILoginButton
 from authentik.flows.challenge import Challenge, ChallengeTypes
 
@@ -53,3 +53,15 @@ class PlexSource(Source):
 
         verbose_name = _("Plex Source")
         verbose_name_plural = _("Plex Sources")
+
+
+class PlexSourceConnection(UserSourceConnection):
+    """Connect user and plex source"""
+
+    plex_token = models.TextField()
+    identifier = models.TextField()
+
+    class Meta:
+
+        verbose_name = _("User Plex Source Connection")
+        verbose_name_plural = _("User Plex Source Connections")
