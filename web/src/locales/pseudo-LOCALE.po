@@ -2833,6 +2833,10 @@ msgstr ""
 msgid "Single Prompts that can be used for Prompt Stages."
 msgstr ""
 
+#: src/pages/stages/invitation/InvitationForm.ts:62
+msgid "Single use"
+msgstr ""
+
 #: src/pages/providers/proxy/ProxyProviderForm.ts:173
 msgid "Skip path regex"
 msgstr ""
@@ -3863,6 +3867,10 @@ msgstr ""
 
 #: src/pages/stages/email/EmailStageForm.ts:142
 msgid "When enabled, global Email connection settings will be used and connection settings below will be ignored."
+msgstr ""
+
+#: src/pages/stages/invitation/InvitationForm.ts:66
+msgid "When enabled, the invitation will be deleted after usage."
 msgstr ""
 
 #: src/pages/stages/identification/IdentificationStageForm.ts:94

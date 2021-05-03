@@ -39,6 +39,7 @@ class InvitationSerializer(ModelSerializer):
             "expires",
             "fixed_data",
             "created_by",
+            "single_use",
         ]
         depth = 2
 
