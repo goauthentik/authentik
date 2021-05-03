@@ -23,6 +23,7 @@ import "./stages/email/EmailStage";
 import "./stages/identification/IdentificationStage";
 import "./stages/password/PasswordStage";
 import "./stages/prompt/PromptStage";
+import "./sources/plex/PlexLoginInit";
 import { ShellChallenge, RedirectChallenge } from "../api/Flows";
 import { IdentificationChallenge } from "./stages/identification/IdentificationStage";
 import { PasswordChallenge } from "./stages/password/PasswordStage";
@@ -44,6 +45,7 @@ import { AccessDeniedChallenge } from "./access_denied/FlowAccessDenied";
 import { PFSize } from "../elements/Spinner";
 import { TITLE_DEFAULT } from "../constants";
 import { configureSentry } from "../api/Sentry";
+import { PlexAuthenticationChallenge } from "./sources/plex/PlexLoginInit";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement implements StageHost {
@@ -223,6 +225,8 @@ export class FlowExecutor extends LitElement implements StageHost {
                         return html`<ak-stage-authenticator-webauthn .host=${this} .challenge=${this.challenge as WebAuthnAuthenticatorRegisterChallenge}></ak-stage-authenticator-webauthn>`;
                     case "ak-stage-authenticator-validate":
                         return html`<ak-stage-authenticator-validate .host=${this} .challenge=${this.challenge as AuthenticatorValidateStageChallenge}></ak-stage-authenticator-validate>`;
+                    case "ak-flow-sources-plex":
+                        return html`<ak-flow-sources-plex .host=${this} .challenge=${this.challenge as PlexAuthenticationChallenge}></ak-flow-sources-plex>`;
                     default:
                         break;
                 }

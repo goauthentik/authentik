@@ -1,11 +1,14 @@
 """authentik core models tests"""
 from time import sleep
+from typing import Callable, Type
 
 from django.test import TestCase
 from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
 
-from authentik.core.models import Token
+from authentik.core.models import Provider, Source, Token
+from authentik.flows.models import Stage
+from authentik.lib.utils.reflection import all_subclasses
 
 
 class TestModels(TestCase):
@@ -24,3 +27,40 @@ class TestModels(TestCase):
         )
         sleep(0.5)
         self.assertFalse(token.is_expired)
+
+
+def source_tester_factory(test_model: Type[Stage]) -> Callable:
+    """Test source"""
+
+    def tester(self: TestModels):
+        model_class = None
+        if test_model._meta.abstract:
+            model_class = test_model.__bases__[0]()
+        else:
+            model_class = test_model()
+        model_class.slug = "test"
+        self.assertIsNotNone(model_class.component)
+        _ = model_class.ui_login_button
+        _ = model_class.ui_user_settings
+
+    return tester
+
+
+def provider_tester_factory(test_model: Type[Stage]) -> Callable:
+    """Test provider"""
+
+    def tester(self: TestModels):
+        model_class = None
+        if test_model._meta.abstract:
+            model_class = test_model.__bases__[0]()
+        else:
+            model_class = test_model()
+        self.assertIsNotNone(model_class.component)
+
+    return tester
+
+
+for model in all_subclasses(Source):
+    setattr(TestModels, f"test_model_{model.__name__}", source_tester_factory(model))
+for model in all_subclasses(Provider):
+    setattr(TestModels, f"test_model_{model.__name__}", provider_tester_factory(model))
