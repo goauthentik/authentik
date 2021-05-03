@@ -18248,6 +18248,10 @@ definitions:
                   x-nullable: true
             readOnly: true
         readOnly: true
+      single_use:
+        title: Single use
+        description: When enabled, the invitation will be deleted after usage.
+        type: boolean
   InvitationStage:
     required:
       - name

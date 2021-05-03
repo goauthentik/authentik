@@ -1,4 +1,5 @@
 """invitation stage logic"""
+from copy import deepcopy
 from typing import Optional
 
 from django.http import HttpRequest, HttpResponse
@@ -38,7 +39,9 @@ class InvitationStageView(StageView):
             return self.executor.stage_invalid()
 
         invite: Invitation = get_object_or_404(Invitation, pk=token)
-        self.executor.plan.context[PLAN_CONTEXT_PROMPT] = invite.fixed_data
+        self.executor.plan.context[PLAN_CONTEXT_PROMPT] = deepcopy(invite.fixed_data)
         self.executor.plan.context[INVITATION_IN_EFFECT] = True
         invitation_used.send(sender=self, request=request, invitation=invite)
+        if invite.single_use:
+            invite.delete()
         return self.executor.stage_ok()

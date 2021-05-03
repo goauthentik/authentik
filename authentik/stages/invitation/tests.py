@@ -130,7 +130,9 @@ class TestUserLoginStage(TestCase):
         """Test with invitation, check data in session"""
         data = {"foo": "bar"}
         invite = Invitation.objects.create(
-            created_by=get_anonymous_user(), fixed_data=data
+            created_by=get_anonymous_user(),
+            fixed_data=data,
+            single_use=True
         )
 
         plan = FlowPlan(
@@ -156,6 +158,7 @@ class TestUserLoginStage(TestCase):
             force_str(response.content),
             {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
         )
+        self.assertFalse(Invitation.objects.filter(pk=invite.pk))
 
 
 class TestInvitationsAPI(APITestCase):
