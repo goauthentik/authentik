@@ -18,7 +18,7 @@ stages:
         steps:
           - task: NodeTool@0
             inputs:
-              versionSpec: '12.x'
+              versionSpec: '14.x'
             displayName: 'Install Node.js'
           - task: CmdLine@2
             inputs:
@@ -37,7 +37,7 @@ stages:
         steps:
           - task: NodeTool@0
             inputs:
-              versionSpec: '12.x'
+              versionSpec: '14.x'
             displayName: 'Install Node.js'
           - task: DownloadPipelineArtifact@2
             inputs:
@@ -59,7 +59,7 @@ stages:
         steps:
           - task: NodeTool@0
             inputs:
-              versionSpec: '12.x'
+              versionSpec: '14.x'
             displayName: 'Install Node.js'
           - task: DownloadPipelineArtifact@2
             inputs:
@@ -83,7 +83,7 @@ stages:
         steps:
           - task: NodeTool@0
             inputs:
-              versionSpec: '12.x'
+              versionSpec: '14.x'
             displayName: 'Install Node.js'
           - task: DownloadPipelineArtifact@2
             inputs:
