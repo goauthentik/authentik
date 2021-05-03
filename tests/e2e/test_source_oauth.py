@@ -147,11 +147,11 @@ class TestSourceOAuth2(SeleniumTestCase):
 
         wait.until(
             ec.presence_of_element_located(
-                (By.CLASS_NAME, "pf-c-login__main-footer-links-item-link")
+                (By.CSS_SELECTOR, "pf-c-login__main-footer-links-item > button")
             )
         )
         identification_stage.find_element(
-            By.CLASS_NAME, "pf-c-login__main-footer-links-item-link"
+            By.CSS_SELECTOR, "pf-c-login__main-footer-links-item > button"
         ).click()
 
         # Now we should be at the IDP, wait for the login field
@@ -206,11 +206,11 @@ class TestSourceOAuth2(SeleniumTestCase):
 
         wait.until(
             ec.presence_of_element_located(
-                (By.CLASS_NAME, "pf-c-login__main-footer-links-item-link")
+                (By.CSS_SELECTOR, "pf-c-login__main-footer-links-item > button")
             )
         )
         identification_stage.find_element(
-            By.CLASS_NAME, "pf-c-login__main-footer-links-item-link"
+            By.CSS_SELECTOR, "pf-c-login__main-footer-links-item > button"
         ).click()
 
         # Now we should be at the IDP, wait for the login field
@@ -245,11 +245,11 @@ class TestSourceOAuth2(SeleniumTestCase):
 
         wait.until(
             ec.presence_of_element_located(
-                (By.CLASS_NAME, "pf-c-login__main-footer-links-item-link")
+                (By.CSS_SELECTOR, "pf-c-login__main-footer-links-item > button")
             )
         )
         identification_stage.find_element(
-            By.CLASS_NAME, "pf-c-login__main-footer-links-item-link"
+            By.CSS_SELECTOR, "pf-c-login__main-footer-links-item > button"
         ).click()
 
         # Now we should be at the IDP, wait for the login field
@@ -338,11 +338,11 @@ class TestSourceOAuth1(SeleniumTestCase):
 
         wait.until(
             ec.presence_of_element_located(
-                (By.CLASS_NAME, "pf-c-login__main-footer-links-item-link")
+                (By.CSS_SELECTOR, "pf-c-login__main-footer-links-item > button")
             )
         )
         identification_stage.find_element(
-            By.CLASS_NAME, "pf-c-login__main-footer-links-item-link"
+            By.CSS_SELECTOR, "pf-c-login__main-footer-links-item > button"
         ).click()
 
         # Now we should be at the IDP, wait for the login field
