@@ -109,5 +109,4 @@ class PlexSourceFlowManager(SourceFlowManager):
     ) -> PlexSourceConnection:
         """Set the access_token on the connection"""
         connection.plex_token = plex_token
-        connection.save()
         return connection

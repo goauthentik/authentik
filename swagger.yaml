@@ -17656,8 +17656,6 @@ definitions:
     required:
       - name
       - slug
-      - client_id
-      - allowed_servers
     type: object
     properties:
       pk:
@@ -17724,9 +17722,12 @@ definitions:
           - username_deny
       client_id:
         title: Client id
+        description: Client identifier used to talk to Plex.
         type: string
         minLength: 1
       allowed_servers:
+        description: Which servers a user has to be a member of to be granted access.
+          Empty list allows every server.
         type: array
         items:
           title: Allowed servers

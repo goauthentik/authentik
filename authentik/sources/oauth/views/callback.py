@@ -57,7 +57,7 @@ class OAuthCallback(OAuthClientMixin, View):
             enroll_info=enroll_info,
         )
         return sfm.get_flow(
-            token=token,
+            access_token=token.get("access_token"),
         )
 
     # pylint: disable=unused-argument
@@ -97,9 +97,9 @@ class OAuthSourceFlowManager(SourceFlowManager):
     connection_type = UserOAuthSourceConnection
 
     def update_connection(
-        self, connection: UserOAuthSourceConnection, token: dict[str, Any]
+        self, connection: UserOAuthSourceConnection,
+        access_token: Optional[str] = None,
     ) -> UserOAuthSourceConnection:
         """Set the access_token on the connection"""
-        connection.access_token = token.get("access_token")
-        connection.save()
+        connection.access_token = access_token
         return connection
