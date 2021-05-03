@@ -51,6 +51,17 @@ export class InvitationForm extends Form<Invitation> {
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">${t`Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON.`}</p>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="singleUse">
+                <div class="pf-c-check">
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.invitation?.singleUse, true)}>
+                    <label class="pf-c-check__label">
+                        ${t`Single use`}
+                    </label>
+                </div>
+                <p class="pf-c-form__helper-text">
+                    ${t`When enabled, the invitation will be deleted after usage.`}
+                </p>
+            </ak-form-element-horizontal>
         </form>`;
     }
 

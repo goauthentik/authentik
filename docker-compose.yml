@@ -17,6 +17,7 @@ services:
       - .env
   redis:
     image: redis
+    restart: unless-stopped
     networks:
       - internal
   server:

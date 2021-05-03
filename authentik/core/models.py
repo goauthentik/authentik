@@ -240,6 +240,30 @@ class Application(PolicyBindingModel):
         verbose_name_plural = _("Applications")
 
 
+class SourceUserMatchingModes(models.TextChoices):
+    """Different modes a source can handle new/returning users"""
+
+    IDENTIFIER = "identifier", _("Use the source-specific identifier")
+    EMAIL_LINK = "email_link", _(
+        (
+            "Link to a user with identical email address. Can have security implications "
+            "when a source doesn't validate email addresses."
+        )
+    )
+    EMAIL_DENY = "email_deny", _(
+        "Use the user's email address, but deny enrollment when the email address already exists."
+    )
+    USERNAME_LINK = "username_link", _(
+        (
+            "Link to a user with identical username address. Can have security implications "
+            "when a username is used with another source."
+        )
+    )
+    USERNAME_DENY = "username_deny", _(
+        "Use the user's username, but deny enrollment when the username already exists."
+    )
+
+
 class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
@@ -272,6 +296,17 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         related_name="source_enrollment",
     )
 
+    user_matching_mode = models.TextField(
+        choices=SourceUserMatchingModes.choices,
+        default=SourceUserMatchingModes.IDENTIFIER,
+        help_text=_(
+            (
+                "How the source determines if an existing user should be authenticated or "
+                "a new user enrolled."
+            )
+        ),
+    )
+
     objects = InheritanceManager()
 
     @property
@@ -300,6 +335,8 @@ class UserSourceConnection(CreatedUpdatedModel):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     source = models.ForeignKey(Source, on_delete=models.CASCADE)
+
+    objects = InheritanceManager()
 
     class Meta:
 

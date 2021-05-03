@@ -272,7 +272,7 @@ body {
     .pf-c-login__main-header-desc {
         color: var(--ak-dark-foreground);
     }
-    .pf-c-login__main-footer-links-item-link > img {
+    .pf-c-login__main-footer-links-item img {
         filter: invert(1);
     }
     .pf-c-login__main-footer-band {

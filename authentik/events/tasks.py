@@ -35,7 +35,10 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
         LOGGER.warning("event doesn't exist yet or anymore", event_uuid=event_uuid)
         return
     event: Event = events.first()
-    trigger: NotificationRule = NotificationRule.objects.get(name=trigger_name)
+    triggers: NotificationRule = NotificationRule.objects.filter(name=trigger_name)
+    if not triggers.exists():
+        return
+    trigger = triggers.first()
 
     if "policy_uuid" in event.context:
         policy_uuid = event.context["policy_uuid"]

@@ -115,7 +115,7 @@ class InitiateView(View):
             # Encode it back into a string
             res = ParseResult(
                 scheme=sso_url.scheme,
-                netloc=sso_url.hostname or "",
+                netloc=sso_url.netloc,
                 path=sso_url.path,
                 params=sso_url.params,
                 query=urlencode(url_kwargs),

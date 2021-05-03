@@ -1,6 +1,8 @@
+import { Challenge } from "authentik-api";
 import { LitElement } from "lit-element";
 
 export interface StageHost {
+    challenge?: Challenge;
     submit<T>(formData?: T): Promise<void>;
 }
 

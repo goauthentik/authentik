@@ -1,7 +1,7 @@
 """GitHub Type tests"""
 from django.test import TestCase
 
-from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
+from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.github import GitHubOAuth2Callback
 
 # https://developer.github.com/v3/users/#get-the-authenticated-user
@@ -63,9 +63,7 @@ class TestTypeGitHub(TestCase):
 
     def test_enroll_context(self):
         """Test GitHub Enrollment context"""
-        ak_context = GitHubOAuth2Callback().get_user_enroll_context(
-            self.source, UserOAuthSourceConnection(), GITHUB_USER
-        )
+        ak_context = GitHubOAuth2Callback().get_user_enroll_context(GITHUB_USER)
         self.assertEqual(ak_context["username"], GITHUB_USER["login"])
         self.assertEqual(ak_context["email"], GITHUB_USER["email"])
         self.assertEqual(ak_context["name"], GITHUB_USER["name"])

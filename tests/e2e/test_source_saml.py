@@ -140,11 +140,11 @@ class TestSourceSAML(SeleniumTestCase):
 
         wait.until(
             ec.presence_of_element_located(
-                (By.CLASS_NAME, "pf-c-login__main-footer-links-item-link")
+                (By.CSS_SELECTOR, ".pf-c-login__main-footer-links-item > button")
             )
         )
         identification_stage.find_element(
-            By.CLASS_NAME, "pf-c-login__main-footer-links-item-link"
+            By.CSS_SELECTOR, ".pf-c-login__main-footer-links-item > button"
         ).click()
 
         # Now we should be at the IDP, wait for the username field
@@ -208,11 +208,11 @@ class TestSourceSAML(SeleniumTestCase):
 
         wait.until(
             ec.presence_of_element_located(
-                (By.CLASS_NAME, "pf-c-login__main-footer-links-item-link")
+                (By.CSS_SELECTOR, ".pf-c-login__main-footer-links-item > button")
             )
         )
         identification_stage.find_element(
-            By.CLASS_NAME, "pf-c-login__main-footer-links-item-link"
+            By.CSS_SELECTOR, ".pf-c-login__main-footer-links-item > button"
         ).click()
         sleep(1)
 
@@ -289,11 +289,11 @@ class TestSourceSAML(SeleniumTestCase):
 
         wait.until(
             ec.presence_of_element_located(
-                (By.CLASS_NAME, "pf-c-login__main-footer-links-item-link")
+                (By.CSS_SELECTOR, ".pf-c-login__main-footer-links-item > button")
             )
         )
         identification_stage.find_element(
-            By.CLASS_NAME, "pf-c-login__main-footer-links-item-link"
+            By.CSS_SELECTOR, ".pf-c-login__main-footer-links-item > button"
         ).click()
 
         # Now we should be at the IDP, wait for the username field

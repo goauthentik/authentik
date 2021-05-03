@@ -32,7 +32,7 @@ from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
 from authentik.managed.manager import ObjectManager
 
-RETRIES = int(environ.get("RETRIES", "3"))
+RETRIES = int(environ.get("RETRIES", "5"))
 
 # pylint: disable=invalid-name
 def USER() -> User:  # noqa
