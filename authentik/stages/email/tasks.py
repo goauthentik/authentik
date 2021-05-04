@@ -48,7 +48,12 @@ def send_mail(
             stage: EmailStage = EmailStage(use_global_settings=True)
         else:
             stage: EmailStage = EmailStage.objects.get(pk=email_stage_pk)
-        backend = stage.backend
+        try:
+            backend = stage.backend
+        except ValueError as exc:
+            LOGGER.warning(exc)
+            self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
+            return
         backend.open()
         # Since django's EmailMessage objects are not JSON serialisable,
         # we need to rebuild them from a dict
@@ -68,7 +73,7 @@ def send_mail(
                 messages=["Successfully sent Mail."],
             )
         )
-    except (SMTPException, ConnectionError, ValueError) as exc:
+    except (SMTPException, ConnectionError) as exc:
         LOGGER.debug("Error sending email, retrying...", exc=exc)
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
         raise exc
