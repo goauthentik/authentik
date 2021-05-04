@@ -148,22 +148,24 @@ class SourceFlowManager:
     def get_flow(self, **kwargs) -> HttpResponse:
         """Get the flow response based on user_matching_mode"""
         action, connection = self.get_action()
-        if not connection:
-            return redirect("/")
-        if action == Action.LINK:
-            self._logger.debug("Linking existing user")
-            return self.handle_existing_user_link(connection)
-        if action == Action.AUTH:
-            self._logger.debug("Handling auth user")
-            return self.handle_auth_user(connection)
-        if action == Action.ENROLL:
-            self._logger.debug("Handling enrollment of new user")
-            return self.handle_enroll(connection)
+        if connection:
+            if action == Action.LINK:
+                self._logger.debug("Linking existing user")
+                return self.handle_existing_user_link(connection)
+            if action == Action.AUTH:
+                self._logger.debug("Handling auth user")
+                return self.handle_auth_user(connection)
+            if action == Action.ENROLL:
+                self._logger.debug("Handling enrollment of new user")
+                return self.handle_enroll(connection)
         # Default case, assume deny
         messages.error(
             self.request,
             _(
-                "Request to authenticate with %(source)s has been denied!"
+                (
+                    "Request to authenticate with %(source)s has been denied. Please authenticate "
+                    "with the source you've previously signed up with."
+                )
                 % {"source": self.source.name}
             ),
         )

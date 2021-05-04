@@ -29,11 +29,11 @@ title: Next
 
     Now you can configure how the matching should be done:
 
-        - Identifier: Keeps the old behaviour, can lead to duplicate user accounts
-        - Email (link): If a user with the same Email address exists, they are linked. Can have security implications when a source doesn't validate email addresses.
-        - Email (deny): Deny the flow if the Email address is already used.
-        - Username (link): If a user with the same username address exists, they are linked. Can have security implications when a username is used with another source.
-        - Username (deny): Deny the flow if the username address is already used.
+    - Identifier: Keeps the old behaviour, can lead to duplicate user accounts
+    - Email (link): If a user with the same Email address exists, they are linked. Can have security implications when a source doesn't validate email addresses.
+    - Email (deny): Deny the flow if the Email address is already used.
+    - Username (link): If a user with the same username address exists, they are linked. Can have security implications when a username is used with another source.
+    - Username (deny): Deny the flow if the username address is already used.
 
 ## Minor changes
 
