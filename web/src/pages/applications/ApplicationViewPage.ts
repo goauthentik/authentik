@@ -111,6 +111,19 @@ export class ApplicationViewPage extends LitElement {
                                             </div>
                                         </dd>
                                     </div>
+                                    ${this.application.launchUrl ?
+                                        html`<div class="pf-c-description-list__group">
+                                            <dt class="pf-c-description-list__term">
+                                                <span class="pf-c-description-list__text">${t`Launch`}</span>
+                                            </dt>
+                                            <dd class="pf-c-description-list__description">
+                                                <div class="pf-c-description-list__text">
+                                                    <a target="_blank" href=${this.application.launchUrl} slot="trigger" class="pf-c-button pf-m-secondary">
+                                                        ${t`Launch`}
+                                                    </a>
+                                                </div>
+                                            </dd>
+                                        </div>`: html``}
                                 </dl>
                             </div>
                         </div>

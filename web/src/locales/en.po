@@ -358,19 +358,19 @@ msgstr "Backup status"
 msgid "Base DN"
 msgstr "Base DN"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:213
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:217
 msgid "Based on the Hashed User ID"
 msgstr "Based on the Hashed User ID"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:219
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:223
 msgid "Based on the User's Email. This is recommended over the UPN method."
 msgstr "Based on the User's Email. This is recommended over the UPN method."
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:222
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:226
 msgid "Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains."
 msgstr "Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains."
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:216
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:220
 msgid "Based on the username"
 msgstr "Based on the username"
 
@@ -482,7 +482,7 @@ msgstr "Change password"
 msgid "Change your password"
 msgstr "Change your password"
 
-#: src/pages/applications/ApplicationViewPage.ts:123
+#: src/pages/applications/ApplicationViewPage.ts:136
 #: src/pages/flows/FlowViewPage.ts:110
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:136
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:135
@@ -622,7 +622,7 @@ msgstr "Configure how long refresh tokens and their id_tokens are valid for."
 msgid "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected."
 msgstr "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected."
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:251
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:255
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr "Configure how the issuer field of the ID Token should be filled."
 
@@ -634,7 +634,7 @@ msgstr "Configure settings relevant to your user profile."
 msgid "Configure the maximum allowed time drift for an asseration."
 msgstr "Configure the maximum allowed time drift for an asseration."
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:226
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:230
 msgid "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
 msgstr "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
 
@@ -1040,7 +1040,7 @@ msgstr "Download"
 msgid "Dummy stage used for testing. Shows a simple continue button and always passes."
 msgstr "Dummy stage used for testing. Shows a simple continue button and always passes."
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:244
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:248
 msgid "Each provider has a different issuer, based on the application slug."
 msgstr "Each provider has a different issuer, based on the application slug."
 
@@ -1598,11 +1598,11 @@ msgstr "Import certificates of external providers or create certificates to sign
 msgid "In case you can't access any other method."
 msgstr "In case you can't access any other method."
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:236
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:240
 msgid "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
 msgstr "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:233
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:237
 msgid "Include claims in id_token"
 msgstr "Include claims in id_token"
 
@@ -1646,7 +1646,7 @@ msgstr "Is superuser"
 msgid "Issuer"
 msgstr "Issuer"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:239
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:243
 msgid "Issuer mode"
 msgstr "Issuer mode"
 
@@ -1654,7 +1654,7 @@ msgstr "Issuer mode"
 msgid "JWT Algorithm"
 msgstr "JWT Algorithm"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:205
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:209
 msgid "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
 msgstr "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
 
@@ -1697,6 +1697,11 @@ msgstr "Last seen: {0}"
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:143
 msgid "Last sync: {0}"
 msgstr "Last sync: {0}"
+
+#: src/pages/applications/ApplicationViewPage.ts:114
+#: src/pages/applications/ApplicationViewPage.ts:119
+msgid "Launch"
+msgstr "Launch"
 
 #: src/pages/applications/ApplicationForm.ts:159
 msgid "Launch URL"
@@ -1773,7 +1778,7 @@ msgstr "Loading"
 #: src/pages/property-mappings/PropertyMappingTestForm.ts:61
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:74
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:185
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:203
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:207
 #: src/pages/providers/proxy/ProxyProviderForm.ts:116
 #: src/pages/providers/proxy/ProxyProviderForm.ts:168
 #: src/pages/providers/saml/SAMLProviderForm.ts:71
@@ -1828,7 +1833,7 @@ msgid "Logins"
 msgstr "Logins"
 
 #: src/pages/admin-overview/AdminOverviewPage.ts:40
-#: src/pages/applications/ApplicationViewPage.ts:115
+#: src/pages/applications/ApplicationViewPage.ts:128
 msgid "Logins over the last 24 hours"
 msgstr "Logins over the last 24 hours"
 
@@ -2339,7 +2344,7 @@ msgstr "Policies without binding exist."
 msgid "Policy"
 msgstr "Policy"
 
-#: src/pages/applications/ApplicationViewPage.ts:134
+#: src/pages/applications/ApplicationViewPage.ts:147
 #: src/pages/flows/FlowViewPage.ts:101
 msgid "Policy / Group / User Bindings"
 msgstr "Policy / Group / User Bindings"
@@ -2709,7 +2714,7 @@ msgstr "SMTP Username"
 msgid "SSO URL"
 msgstr "SSO URL"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:247
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:251
 msgid "Same identifier is used for all providers"
 msgstr "Same identifier is used for all providers"
 
@@ -3032,7 +3037,7 @@ msgstr "Stop impersonation"
 msgid "Subject"
 msgstr "Subject"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:208
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:212
 msgid "Subject mode"
 msgstr "Subject mode"
 
@@ -3427,7 +3432,7 @@ msgstr ""
 "These bindings control which users can access this source.\n"
 "You can only use policies here as access is checked before the user is authenticated."
 
-#: src/pages/applications/ApplicationViewPage.ts:136
+#: src/pages/applications/ApplicationViewPage.ts:149
 msgid "These policies control which users can access this application."
 msgstr "These policies control which users can access this application."
 
