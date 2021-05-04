@@ -86,6 +86,9 @@ class ConfigLoader:
         url = urlparse(value)
         if url.scheme == "env":
             value = os.getenv(url.netloc, url.query)
+        if url.scheme == "file":
+            with open(url.netloc, 'r') as _file:
+                value = _file.read()
         return value
 
     def update_from_file(self, path: str):
