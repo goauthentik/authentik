@@ -1,4 +1,4 @@
-import { OAuthSource, SourcesApi, FlowsApi, FlowDesignationEnum } from "authentik-api";
+import { OAuthSource, SourcesApi, FlowsApi, FlowDesignationEnum, OAuthSourceUserMatchingModeEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -118,6 +118,28 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                         ${t`Enabled`}
                     </label>
                 </div>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${t`User matching mode`}
+                ?required=${true}
+                name="userMatchingMode">
+                <select class="pf-c-form-control">
+                    <option value=${OAuthSourceUserMatchingModeEnum.Identifier} ?selected=${this.source?.userMatchingMode === OAuthSourceUserMatchingModeEnum.Identifier}>
+                        ${t`Link users on unique identifier`}
+                    </option>
+                    <option value=${OAuthSourceUserMatchingModeEnum.UsernameLink} ?selected=${this.source?.userMatchingMode === OAuthSourceUserMatchingModeEnum.UsernameLink}>
+                        ${t`Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses`}
+                    </option>
+                    <option value=${OAuthSourceUserMatchingModeEnum.UsernameDeny} ?selected=${this.source?.userMatchingMode === OAuthSourceUserMatchingModeEnum.UsernameDeny}>
+                        ${t`Use the user's email address, but deny enrollment when the email address already exists.`}
+                    </option>
+                    <option value=${OAuthSourceUserMatchingModeEnum.EmailLink} ?selected=${this.source?.userMatchingMode === OAuthSourceUserMatchingModeEnum.EmailLink}>
+                        ${t`Link to a user with identical username address. Can have security implications when a username is used with another source.`}
+                    </option>
+                    <option value=${OAuthSourceUserMatchingModeEnum.EmailDeny} ?selected=${this.source?.userMatchingMode === OAuthSourceUserMatchingModeEnum.EmailDeny}>
+                        ${t`Use the user's username, but deny enrollment when the username already exists.`}
+                    </option>
+                </select>
             </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>

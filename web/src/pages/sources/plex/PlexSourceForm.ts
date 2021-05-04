@@ -1,4 +1,4 @@
-import { PlexSource, SourcesApi, FlowsApi, FlowDesignationEnum } from "authentik-api";
+import { PlexSource, SourcesApi, FlowsApi, FlowDesignationEnum, PlexSourceUserMatchingModeEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -93,6 +93,28 @@ export class PlexSourceForm extends Form<PlexSource> {
                         ${t`Enabled`}
                     </label>
                 </div>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${t`User matching mode`}
+                ?required=${true}
+                name="userMatchingMode">
+                <select class="pf-c-form-control">
+                    <option value=${PlexSourceUserMatchingModeEnum.Identifier} ?selected=${this.source?.userMatchingMode === PlexSourceUserMatchingModeEnum.Identifier}>
+                        ${t`Link users on unique identifier`}
+                    </option>
+                    <option value=${PlexSourceUserMatchingModeEnum.UsernameLink} ?selected=${this.source?.userMatchingMode === PlexSourceUserMatchingModeEnum.UsernameLink}>
+                        ${t`Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses`}
+                    </option>
+                    <option value=${PlexSourceUserMatchingModeEnum.UsernameDeny} ?selected=${this.source?.userMatchingMode === PlexSourceUserMatchingModeEnum.UsernameDeny}>
+                        ${t`Use the user's email address, but deny enrollment when the email address already exists.`}
+                    </option>
+                    <option value=${PlexSourceUserMatchingModeEnum.EmailLink} ?selected=${this.source?.userMatchingMode === PlexSourceUserMatchingModeEnum.EmailLink}>
+                        ${t`Link to a user with identical username address. Can have security implications when a username is used with another source.`}
+                    </option>
+                    <option value=${PlexSourceUserMatchingModeEnum.EmailDeny} ?selected=${this.source?.userMatchingMode === PlexSourceUserMatchingModeEnum.EmailDeny}>
+                        ${t`Use the user's username, but deny enrollment when the username already exists.`}
+                    </option>
+                </select>
             </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>
