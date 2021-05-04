@@ -3,6 +3,7 @@ package ldap
 import (
 	"sync"
 
+	"github.com/go-openapi/strfmt"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/outpost/pkg/ak"
 	"goauthentik.io/outpost/pkg/models"
@@ -19,13 +20,14 @@ type ProviderInstance struct {
 	UserDN  string
 	GroupDN string
 
-	appSlug    string
-	flowSlug   string
-	s          *LDAPServer
-	log        *log.Entry
+	appSlug  string
+	flowSlug string
+	s        *LDAPServer
+	log      *log.Entry
 
-	boundUsersMutex sync.RWMutex
-	boundUsers map[string]UserFlags
+	searchAllowedGroups []*strfmt.UUID
+	boundUsersMutex     sync.RWMutex
+	boundUsers          map[string]UserFlags
 }
 
 type UserFlags struct {

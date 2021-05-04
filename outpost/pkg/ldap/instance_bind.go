@@ -15,6 +15,7 @@ import (
 	"github.com/nmcclain/ldap"
 	"goauthentik.io/outpost/pkg/client/core"
 	"goauthentik.io/outpost/pkg/client/flows"
+	"goauthentik.io/outpost/pkg/models"
 )
 
 const ContextUserKey = "ak_user"
@@ -88,13 +89,25 @@ func (pi *ProviderInstance) Bind(username string, bindPW string, conn net.Conn) 
 	pi.boundUsersMutex.Lock()
 	pi.boundUsers[username] = UserFlags{
 		UserInfo:  userInfo.Payload.User,
-		CanSearch: userInfo.Payload.User.Attributes.(map[string]bool)["goauthentik.io/ldap/can-search"],
+		CanSearch: pi.SearchAccessCheck(userInfo.Payload.User),
 	}
 	pi.boundUsersMutex.Unlock()
 	pi.delayDeleteUserInfo(username)
 	return ldap.LDAPResultSuccess, nil
 }
 
+// SearchAccessCheck Check if the current user is allowed to search
+func (pi *ProviderInstance) SearchAccessCheck(user *models.User) bool {
+	for _, group := range user.Groups {
+		for _, allowedGroup := range pi.searchAllowedGroups {
+			if &group.Pk == allowedGroup {
+				pi.log.WithField("group", group.Name).Info("Allowed access to search")
+				return true
+			}
+		}
+	}
+	return false
+}
 func (pi *ProviderInstance) delayDeleteUserInfo(dn string) {
 	ticker := time.NewTicker(30 * time.Second)
 	quit := make(chan struct{})
