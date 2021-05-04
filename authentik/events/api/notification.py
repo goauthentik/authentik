@@ -50,4 +50,4 @@ class NotificationViewSet(
 
     def get_queryset(self):
         user = self.request.user if self.request else get_anonymous_user()
-        return Notification.objects.filter(user=user)
+        return Notification.objects.filter(user=user.pk)

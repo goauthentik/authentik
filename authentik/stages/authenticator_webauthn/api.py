@@ -48,7 +48,7 @@ class WebAuthnDeviceViewSet(ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user if self.request else get_anonymous_user()
-        return WebAuthnDevice.objects.filter(user=user)
+        return WebAuthnDevice.objects.filter(user=user.pk)
 
 
 class WebAuthnAdminDeviceViewSet(ReadOnlyModelViewSet):
