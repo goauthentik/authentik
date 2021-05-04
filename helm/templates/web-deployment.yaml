@@ -82,7 +82,7 @@ spec:
               containerPort: 9000
               protocol: TCP
             - name: https
-              containerPot: 9443
+              containerPort: 9443
               protocol: TCP
           livenessProbe:
             httpGet:
