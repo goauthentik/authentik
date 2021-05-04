@@ -1,10 +1,13 @@
 package ldap
 
 import (
+	"sync"
+
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/outpost/pkg/ak"
+	"goauthentik.io/outpost/pkg/models"
 
-	"github.com/goauthentik/ldap"
+	"github.com/nmcclain/ldap"
 )
 
 const GroupObjectClass = "group"
@@ -16,10 +19,18 @@ type ProviderInstance struct {
 	UserDN  string
 	GroupDN string
 
-	appSlug  string
-	flowSlug string
-	s        *LDAPServer
-	log      *log.Entry
+	appSlug    string
+	flowSlug   string
+	s          *LDAPServer
+	log        *log.Entry
+
+	boundUsersMutex sync.RWMutex
+	boundUsers map[string]UserFlags
+}
+
+type UserFlags struct {
+	UserInfo  *models.User
+	CanSearch bool
 }
 
 type LDAPServer struct {

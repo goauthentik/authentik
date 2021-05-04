@@ -1,7 +1,7 @@
 """Outpost models"""
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from typing import Iterable, Optional, Union
+from typing import Any, Iterable, Optional, Union
 from uuid import uuid4
 
 from dacite import from_dict
@@ -37,6 +37,7 @@ from authentik.outposts.docker_tls import DockerInlineTLS
 OUR_VERSION = parse(__version__)
 OUTPOST_HELLO_INTERVAL = 10
 LOGGER = get_logger()
+USER_ATTRIBUTE_LDAP_CAN_SEARCH = "goauthentik.io/ldap/can-search"
 
 
 class ServiceConnectionInvalid(SentryIgnoredException):
@@ -322,12 +323,20 @@ class Outpost(models.Model):
         return f"ak-outpost-{self.uuid.hex}"
 
     @property
+    def user_attributes(self) -> dict[str, Any]:
+        """Attributes that will be set on the service account"""
+        attrs = {USER_ATTRIBUTE_SA: True}
+        if self.type == OutpostType.LDAP:
+            attrs[USER_ATTRIBUTE_LDAP_CAN_SEARCH] = True
+        return attrs
+
+    @property
     def user(self) -> User:
         """Get/create user with access to all required objects"""
         users = User.objects.filter(username=self.user_identifier)
         if not users.exists():
             user: User = User.objects.create(username=self.user_identifier)
-            user.attributes[USER_ATTRIBUTE_SA] = True
+            user.attributes = self.user_attributes
             user.set_unusable_password()
             user.save()
         else:

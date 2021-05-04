@@ -8,10 +8,11 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"strings"
+	"time"
 
 	goldap "github.com/go-ldap/ldap/v3"
 	httptransport "github.com/go-openapi/runtime/client"
-	"github.com/goauthentik/ldap"
+	"github.com/nmcclain/ldap"
 	"goauthentik.io/outpost/pkg/client/core"
 	"goauthentik.io/outpost/pkg/client/flows"
 )
@@ -44,7 +45,7 @@ func (pi *ProviderInstance) getUsername(dn string) (string, error) {
 	return "", errors.New("failed to find dn")
 }
 
-func (pi *ProviderInstance) Bind(username string, bindPW string, conn net.Conn, ctx context.Context) (ldap.LDAPResultCode, error) {
+func (pi *ProviderInstance) Bind(username string, bindPW string, conn net.Conn) (ldap.LDAPResultCode, error) {
 	jar, err := cookiejar.New(nil)
 	if err != nil {
 		pi.log.WithError(err).Warning("Failed to create cookiejar")
@@ -77,15 +78,40 @@ func (pi *ProviderInstance) Bind(username string, bindPW string, conn net.Conn, 
 	pi.log.WithField("boundDN", username).Info("User has access")
 	// Get user info to store in context
 	userInfo, err := pi.s.ac.Client.Core.CoreUsersMe(&core.CoreUsersMeParams{
-		Context:    ctx,
+		Context:    context.Background(),
 		HTTPClient: client,
 	}, httptransport.PassThroughAuth)
 	if err != nil {
 		pi.log.WithField("boundDN", username).WithError(err).Warning("failed to get user info")
 		return ldap.LDAPResultOperationsError, nil
 	}
-	ctx = context.WithValue(ctx, ContextUserKey, userInfo.Payload.User)
+	pi.boundUsersMutex.Lock()
+	pi.boundUsers[username] = UserFlags{
+		UserInfo:  userInfo.Payload.User,
+		CanSearch: userInfo.Payload.User.Attributes.(map[string]bool)["goauthentik.io/ldap/can-search"],
+	}
+	pi.boundUsersMutex.Unlock()
+	pi.delayDeleteUserInfo(username)
 	return ldap.LDAPResultSuccess, nil
+}
+
+func (pi *ProviderInstance) delayDeleteUserInfo(dn string) {
+	ticker := time.NewTicker(30 * time.Second)
+	quit := make(chan struct{})
+	go func() {
+		for {
+			select {
+			case <-ticker.C:
+				pi.boundUsersMutex.Lock()
+				delete(pi.boundUsers, dn)
+				pi.boundUsersMutex.Unlock()
+				close(quit)
+			case <-quit:
+				ticker.Stop()
+				return
+			}
+		}
+	}()
 }
 
 func (pi *ProviderInstance) solveFlowChallenge(bindDN string, password string, client *http.Client) (bool, error) {

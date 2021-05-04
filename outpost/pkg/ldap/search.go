@@ -5,7 +5,7 @@ import (
 	"net"
 
 	goldap "github.com/go-ldap/ldap/v3"
-	"github.com/goauthentik/ldap"
+	"github.com/nmcclain/ldap"
 )
 
 func (ls *LDAPServer) Search(boundDN string, searchReq ldap.SearchRequest, conn net.Conn) (ldap.ServerSearchResult, error) {

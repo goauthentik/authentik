@@ -1,12 +1,13 @@
 package ldap
 
 import (
+	"errors"
 	"fmt"
 	"net"
 	"strconv"
 	"strings"
 
-	"github.com/goauthentik/ldap"
+	"github.com/nmcclain/ldap"
 	"goauthentik.io/outpost/pkg/client/core"
 )
 
@@ -24,6 +25,16 @@ func (pi *ProviderInstance) Search(bindDN string, searchReq ldap.SearchRequest, 
 	}
 	if !strings.HasSuffix(bindDN, baseDN) {
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: BindDN %s not in our BaseDN %s", bindDN, pi.BaseDN)
+	}
+
+	pi.boundUsersMutex.RLock()
+	defer pi.boundUsersMutex.RUnlock()
+	flags, ok := pi.boundUsers[bindDN]
+	if !ok {
+		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, errors.New("Access denied")
+	}
+	if !flags.CanSearch {
+		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, errors.New("Access denied")
 	}
 
 	switch filterEntity {

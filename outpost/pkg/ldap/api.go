@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"sync"
 
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/outpost/pkg/client/outposts"
@@ -22,13 +23,15 @@ func (ls *LDAPServer) Refresh() error {
 		userDN := strings.ToLower(fmt.Sprintf("cn=users,%s", provider.BaseDn))
 		groupDN := strings.ToLower(fmt.Sprintf("cn=groups,%s", provider.BaseDn))
 		providers[idx] = &ProviderInstance{
-			BaseDN:   provider.BaseDn,
-			GroupDN:  groupDN,
-			UserDN:   userDN,
-			appSlug:  *provider.ApplicationSlug,
-			flowSlug: *provider.BindFlowSlug,
-			s:        ls,
-			log:      log.WithField("logger", "authentik.outpost.ldap").WithField("provider", provider.Name),
+			BaseDN:          provider.BaseDn,
+			GroupDN:         groupDN,
+			UserDN:          userDN,
+			appSlug:         *provider.ApplicationSlug,
+			flowSlug:        *provider.BindFlowSlug,
+			s:               ls,
+			log:             log.WithField("logger", "authentik.outpost.ldap").WithField("provider", provider.Name),
+			boundUsersMutex: sync.RWMutex{},
+			boundUsers:      make(map[string]UserFlags),
 		}
 	}
 	ls.providers = providers
