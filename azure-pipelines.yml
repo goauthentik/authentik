@@ -262,6 +262,9 @@ stages:
           - task: UsePythonVersion@0
             inputs:
               versionSpec: '3.9'
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '14.x'
           - task: DockerCompose@0
             displayName: Run services
             inputs:
