@@ -134,7 +134,9 @@ class SourceFlowManager:
             SourceUserMatchingModes.EMAIL_DENY,
             SourceUserMatchingModes.USERNAME_DENY,
         ]:
+            self._logger.info("denying source because user exists", user=user)
             return Action.DENY, None
+        # Should never get here as default enroll case is returned above.
         return Action.DENY, None
 
     def update_connection(
@@ -146,17 +148,25 @@ class SourceFlowManager:
     def get_flow(self, **kwargs) -> HttpResponse:
         """Get the flow response based on user_matching_mode"""
         action, connection = self.get_action()
-        if action == Action.LINK:
-            self._logger.debug("Linking existing user")
-            return self.handle_existing_user_link()
         if not connection:
             return redirect("/")
+        if action == Action.LINK:
+            self._logger.debug("Linking existing user")
+            return self.handle_existing_user_link(connection)
         if action == Action.AUTH:
             self._logger.debug("Handling auth user")
             return self.handle_auth_user(connection)
         if action == Action.ENROLL:
             self._logger.debug("Handling enrollment of new user")
             return self.handle_enroll(connection)
+        # Default case, assume deny
+        messages.error(
+            self.request,
+            _(
+                "Request to authenticate with %(source)s has been denied!"
+                % {"source": self.source.name}
+            ),
+        )
         return redirect("/")
 
     # pylint: disable=unused-argument
@@ -216,9 +226,11 @@ class SourceFlowManager:
 
     def handle_existing_user_link(
         self,
+        connection: UserSourceConnection,
     ) -> HttpResponse:
         """Handler when the user was already authenticated and linked an external source
         to their account."""
+        # Connection has already been saved
         Event.new(
             EventAction.SOURCE_LINKED,
             message="Linked Source",
@@ -228,6 +240,9 @@ class SourceFlowManager:
             self.request,
             _("Successfully linked %(source)s!" % {"source": self.source.name}),
         )
+        # When request isn't authenticated we jump straight to auth
+        if not self.request.user.is_authenticated:
+            return self.handle_auth_user(connection)
         return redirect(
             reverse(
                 "authentik_core:if-admin",

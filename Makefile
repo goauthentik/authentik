@@ -1,4 +1,4 @@
-all: lint-fix lint coverage gen
+all: lint-fix lint test gen
 
 test-integration:
 	k3d cluster create || exit 0
@@ -8,7 +8,7 @@ test-integration:
 test-e2e:
 	coverage run manage.py test --failfast -v 3 tests/e2e
 
-coverage:
+test:
 	coverage run manage.py test -v 3 authentik
 	coverage html
 	coverage report

@@ -201,7 +201,7 @@ stages:
             displayName: Run full test suite
             inputs:
               script: |
-                pipenv run make coverage
+                pipenv run make test
           - task: CmdLine@2
             inputs:
               script: |
