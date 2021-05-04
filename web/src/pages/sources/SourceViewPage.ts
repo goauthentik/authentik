@@ -9,6 +9,7 @@ import "../../elements/PageHeader";
 import "./ldap/LDAPSourceViewPage";
 import "./oauth/OAuthSourceViewPage";
 import "./saml/SAMLSourceViewPage";
+import "./plex/PlexSourceViewPage";
 import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-source-view")
@@ -37,6 +38,8 @@ export class SourceViewPage extends LitElement {
                 return html`<ak-source-oauth-view sourceSlug=${this.source.slug}></ak-source-oauth-view>`;
             case "ak-source-saml-form":
                 return html`<ak-source-saml-view sourceSlug=${this.source.slug}></ak-source-saml-view>`;
+            case "ak-source-plex-form":
+                return html`<ak-source-plex-view sourceSlug=${this.source.slug}></ak-source-plex-view>`;
             default:
                 return html`<p>Invalid source type ${this.source.component}</p>`;
         }
