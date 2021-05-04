@@ -371,12 +371,36 @@ stages:
           - task: CmdLine@2
             inputs:
               script: bash <(curl -s https://codecov.io/bash)
+  - stage: generate
+    jobs:
+      - job: swagger_generate
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '14.x'
+            displayName: 'Install Node.js'
+          - task: CmdLine@2
+            inputs:
+              script: |
+                docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate -i /local/swagger.yaml -g typescript-fetch -o /local/web/api --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: 'web/api/'
+              artifact: 'ts_swagger_client'
+              publishLocation: 'pipeline'
   - stage: Build
     jobs:
       - job: build_server
         pool:
           vmImage: 'ubuntu-latest'
         steps:
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            buildType: 'current'
+            artifactName: 'ts_swagger_client'
+            path: "web/api/"
         - task: Bash@3
           inputs:
             targetType: 'inline'
