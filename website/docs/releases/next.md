@@ -13,11 +13,37 @@ title: Next
 
     Docker images are now built for amd64, arm64, arm v7 and arm v8.
 
-- Deprecated Group membership has been removed.
+- Reduced setup complexity
+
+    The authentik server now requires less containers. The static container (as well as the traefik when using docker-compose) are no longer required. As the first stage of a migration to Golang instead of Python, authentik now runs behind an in-container reverse proxy, which hosts the static files.
+
+- New Plex authentication source
+
+    The plex source (previously a provider for the OAuth Source) has been rewritten to a dedicated Source.
+
+    You can now limit access to authentik based on which servers a Plex user is member of.
+
+- Configurable source behaviour
+
+    You can now configure how a source behaves after the user has authenticated themselves to the source. Previously, authentik always checked the unique identifier from the source, enrolled the user when the identifier didn't exist and authenticated the user otherwise.
+
+    Now you can configure how the matching should be done:
+
+        - Identifier: Keeps the old behaviour, can lead to duplicate user accounts
+        - Email (link): If a user with the same Email address exists, they are linked. Can have security implications when a source doesn't validate email addresses.
+        - Email (deny): Deny the flow if the Email address is already used.
+        - Username (link): If a user with the same username address exists, they are linked. Can have security implications when a username is used with another source.
+        - Username (deny): Deny the flow if the username address is already used.
 
 ## Minor changes
 
 - Improved compatibility of the flow interface with password managers.
+- Improved compatibility when using SAML Sources with a redirect binding.
+- Improved configurability of outpost docker image name for managed Outposts.
+- Add customization of access code validity for OAuth2 Providers.
+- Add ability to configure no login fields on identification stage to only allow logins with Sources.
+- Add single-use flag for invitations to delete token after use.
+- Fix sidebar not collapsible on mobile.
 
 ## Upgrading
 
@@ -25,8 +51,12 @@ This release does not introduce any new requirements.
 
 ### docker-compose
 
-Download the latest docker-compose file from [here](https://raw.githubusercontent.com/goauthentik/authentik/version-2021.4/docker-compose.yml). Afterwards, simply run `docker-compose up -d` and then the standard upgrade command of `docker-compose run --rm server migrate`.
+Download the latest docker-compose file from [here](https://raw.githubusercontent.com/goauthentik/authentik/version-2021.5/docker-compose.yml). Afterwards, simply run `docker-compose up -d`.
+
+:::warning
+The public port of the compose stack has been changed from 443 to 9000 and 9443 to prevent port contention.
+:::
 
 ### Kubernetes
 
-Run `helm repo update` and then upgrade your release with `helm upgrade authentik authentik/authentik --devel -f values.yaml`.
+Run `helm repo update` and then upgrade your release with `helm upgrade authentik authentik/authentik -f values.yaml`.
