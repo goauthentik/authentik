@@ -35,7 +35,7 @@ export interface IdentificationChallenge extends Challenge {
 
 export interface UILoginButton {
     name: string;
-    url: string;
+    challenge: Challenge;
     icon_url?: string;
 }
 
@@ -49,7 +49,11 @@ export class IdentificationStage extends BaseStage {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal].concat(
             css`
                 /* login page's icons */
-                .pf-c-login__main-footer-links-item-link img {
+                .pf-c-login__main-footer-links-item button {
+                    background-color: transparent;
+                    border: 0;
+                }
+                .pf-c-login__main-footer-links-item img {
                     fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
                     width: 100px;
                     max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
@@ -131,9 +135,12 @@ export class IdentificationStage extends BaseStage {
             icon = html`<img src="${source.icon_url}" alt="${source.name}">`;
         }
         return html`<li class="pf-c-login__main-footer-links-item">
-                <a href="${source.url}" class="pf-c-login__main-footer-links-item-link">
+                <button type="button" @click=${() => {
+                    if (!this.host) return;
+                    this.host.challenge = source.challenge;
+                }}>
                     ${icon}
-                </a>
+                </button>
             </li>`;
     }
 

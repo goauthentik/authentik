@@ -1,7 +1,7 @@
 """Twitter Type tests"""
 from django.test import Client, TestCase
 
-from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
+from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.twitter import TwitterOAuthCallback
 
 # https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/manage-account-settings/ \
@@ -104,9 +104,7 @@ class TestTypeGitHub(TestCase):
 
     def test_enroll_context(self):
         """Test Twitter Enrollment context"""
-        ak_context = TwitterOAuthCallback().get_user_enroll_context(
-            self.source, UserOAuthSourceConnection(), TWITTER_USER
-        )
+        ak_context = TwitterOAuthCallback().get_user_enroll_context(TWITTER_USER)
         self.assertEqual(ak_context["username"], TWITTER_USER["screen_name"])
         self.assertEqual(ak_context["email"], TWITTER_USER.get("email", None))
         self.assertEqual(ak_context["name"], TWITTER_USER["name"])

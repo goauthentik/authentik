@@ -2021,6 +2021,11 @@ paths:
           description: ''
           required: false
           type: string
+        - name: attributes
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -10534,6 +10539,238 @@ paths:
         description: A unique integer value identifying this User OAuth Source Connection.
         required: true
         type: integer
+  /sources/plex/:
+    get:
+      operationId: sources_plex_list
+      description: Plex source Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: Page Index
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Page Size
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - results
+              - pagination
+            type: object
+            properties:
+              pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/PlexSource'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+      tags:
+        - sources
+    post:
+      operationId: sources_plex_create
+      description: Plex source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PlexSource'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/PlexSource'
+        '400':
+          description: Invalid input.
+          schema:
+            $ref: '#/definitions/ValidationError'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+      tags:
+        - sources
+    parameters: []
+  /sources/plex/redeem_token/:
+    post:
+      operationId: sources_plex_redeem_token
+      description: |-
+        Redeem a plex token, check it's access to resources against what's allowed
+        for the source, and redirect to an authentication/enrollment flow.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PlexTokenRedeem'
+        - name: slug
+          in: query
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/RedirectChallenge'
+        '404':
+          description: Token not found
+        '400':
+          description: Invalid input.
+          schema:
+            $ref: '#/definitions/ValidationError'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+      tags:
+        - sources
+    parameters: []
+  /sources/plex/{slug}/:
+    get:
+      operationId: sources_plex_read
+      description: Plex source Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PlexSource'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+        '404':
+          description: Object does not exist or caller has insufficient permissions
+            to access it.
+          schema:
+            $ref: '#/definitions/APIException'
+      tags:
+        - sources
+    put:
+      operationId: sources_plex_update
+      description: Plex source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PlexSource'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PlexSource'
+        '400':
+          description: Invalid input.
+          schema:
+            $ref: '#/definitions/ValidationError'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+        '404':
+          description: Object does not exist or caller has insufficient permissions
+            to access it.
+          schema:
+            $ref: '#/definitions/APIException'
+      tags:
+        - sources
+    patch:
+      operationId: sources_plex_partial_update
+      description: Plex source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PlexSource'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PlexSource'
+        '400':
+          description: Invalid input.
+          schema:
+            $ref: '#/definitions/ValidationError'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+        '404':
+          description: Object does not exist or caller has insufficient permissions
+            to access it.
+          schema:
+            $ref: '#/definitions/APIException'
+      tags:
+        - sources
+    delete:
+      operationId: sources_plex_delete
+      description: Plex source Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+        '404':
+          description: Object does not exist or caller has insufficient permissions
+            to access it.
+          schema:
+            $ref: '#/definitions/APIException'
+      tags:
+        - sources
+    parameters:
+      - name: slug
+        in: path
+        description: Internal source name, used in URLs.
+        required: true
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
   /sources/saml/:
     get:
       operationId: sources_saml_list
@@ -16578,6 +16815,7 @@ definitions:
           - authentik.recovery
           - authentik.sources.ldap
           - authentik.sources.oauth
+          - authentik.sources.plex
           - authentik.sources.saml
           - authentik.stages.authenticator_static
           - authentik.stages.authenticator_totp
@@ -17481,6 +17719,17 @@ definitions:
         enum:
           - all
           - any
+      user_matching_mode:
+        title: User matching mode
+        description: How the source determines if an existing user should be authenticated
+          or a new user enrolled.
+        type: string
+        enum:
+          - identifier
+          - email_link
+          - email_deny
+          - username_link
+          - username_deny
   UserSetting:
     required:
       - object_uid
@@ -17561,6 +17810,17 @@ definitions:
         enum:
           - all
           - any
+      user_matching_mode:
+        title: User matching mode
+        description: How the source determines if an existing user should be authenticated
+          or a new user enrolled.
+        type: string
+        enum:
+          - identifier
+          - email_link
+          - email_deny
+          - username_link
+          - username_deny
       server_uri:
         title: Server URI
         type: string
@@ -17741,6 +18001,17 @@ definitions:
         enum:
           - all
           - any
+      user_matching_mode:
+        title: User matching mode
+        description: How the source determines if an existing user should be authenticated
+          or a new user enrolled.
+        type: string
+        enum:
+          - identifier
+          - email_link
+          - email_deny
+          - username_link
+          - username_deny
       provider_type:
         title: Provider type
         type: string
@@ -17811,6 +18082,132 @@ definitions:
         type: string
         maxLength: 255
         minLength: 1
+  PlexSource:
+    required:
+      - name
+      - slug
+    type: object
+    properties:
+      pk:
+        title: Pbm uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        description: Source's display Name.
+        type: string
+        minLength: 1
+      slug:
+        title: Slug
+        description: Internal source name, used in URLs.
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
+        maxLength: 50
+        minLength: 1
+      enabled:
+        title: Enabled
+        type: boolean
+      authentication_flow:
+        title: Authentication flow
+        description: Flow to use when authenticating existing users.
+        type: string
+        format: uuid
+        x-nullable: true
+      enrollment_flow:
+        title: Enrollment flow
+        description: Flow to use when enrolling new users.
+        type: string
+        format: uuid
+        x-nullable: true
+      component:
+        title: Component
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
+      policy_engine_mode:
+        title: Policy engine mode
+        type: string
+        enum:
+          - all
+          - any
+      user_matching_mode:
+        title: User matching mode
+        description: How the source determines if an existing user should be authenticated
+          or a new user enrolled.
+        type: string
+        enum:
+          - identifier
+          - email_link
+          - email_deny
+          - username_link
+          - username_deny
+      client_id:
+        title: Client id
+        description: Client identifier used to talk to Plex.
+        type: string
+        minLength: 1
+      allowed_servers:
+        description: Which servers a user has to be a member of to be granted access.
+          Empty list allows every server.
+        type: array
+        items:
+          title: Allowed servers
+          type: string
+          minLength: 1
+  PlexTokenRedeem:
+    required:
+      - plex_token
+    type: object
+    properties:
+      plex_token:
+        title: Plex token
+        type: string
+        minLength: 1
+  RedirectChallenge:
+    required:
+      - type
+      - to
+    type: object
+    properties:
+      type:
+        title: Type
+        type: string
+        enum:
+          - native
+          - shell
+          - redirect
+      component:
+        title: Component
+        type: string
+        minLength: 1
+      title:
+        title: Title
+        type: string
+        minLength: 1
+      background:
+        title: Background
+        type: string
+        minLength: 1
+      response_errors:
+        title: Response errors
+        type: object
+        additionalProperties:
+          type: array
+          items:
+            $ref: '#/definitions/ErrorDetail'
+      to:
+        title: To
+        type: string
+        minLength: 1
   SAMLSource:
     required:
       - name
@@ -17870,6 +18267,17 @@ definitions:
         enum:
           - all
           - any
+      user_matching_mode:
+        title: User matching mode
+        description: How the source determines if an existing user should be authenticated
+          or a new user enrolled.
+        type: string
+        enum:
+          - identifier
+          - email_link
+          - email_deny
+          - username_link
+          - username_deny
       pre_authentication_flow:
         title: Pre authentication flow
         description: Flow used before authentication.
@@ -18615,6 +19023,17 @@ definitions:
                 enabled:
                   title: Enabled
                   type: boolean
+                user_matching_mode:
+                  title: User matching mode
+                  description: How the source determines if an existing user should
+                    be authenticated or a new user enrolled.
+                  type: string
+                  enum:
+                    - identifier
+                    - email_link
+                    - email_deny
+                    - username_link
+                    - username_deny
                 authentication_flow:
                   title: Authentication flow
                   description: Flow to use when authenticating existing users.
@@ -18673,6 +19092,10 @@ definitions:
                   x-nullable: true
             readOnly: true
         readOnly: true
+      single_use:
+        title: Single use
+        description: When enabled, the invitation will be deleted after usage.
+        type: boolean
   InvitationStage:
     required:
       - name

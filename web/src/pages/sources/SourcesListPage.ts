@@ -17,6 +17,7 @@ import { ifDefined } from "lit-html/directives/if-defined";
 import "./ldap/LDAPSourceForm";
 import "./saml/SAMLSourceForm";
 import "./oauth/OAuthSourceForm";
+import "./plex/PlexSourceForm";
 
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {

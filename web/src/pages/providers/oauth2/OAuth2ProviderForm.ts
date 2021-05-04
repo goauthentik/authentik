@@ -192,7 +192,11 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                                 hasKey: "true",
                             }).then(keys => {
                                 return keys.results.map(key => {
-                                    return html`<option value=${ifDefined(key.pk)} ?selected=${this.provider?.rsaKey === key.pk}>${key.name}</option>`;
+                                    let selected = this.provider?.rsaKey === key.pk;
+                                    if (keys.results.length === 1) {
+                                        selected = true;
+                                    }
+                                    return html`<option value=${ifDefined(key.pk)} ?selected=${selected}>${key.name}</option>`;
                                 });
                             }), html`<option>${t`Loading...`}</option>`)}
                         </select>

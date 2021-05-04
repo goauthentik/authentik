@@ -1,32 +1,30 @@
-"""OAuth Stages"""
+"""Source flow manager stages"""
 from django.http import HttpRequest, HttpResponse
 
-from authentik.core.models import User
+from authentik.core.models import User, UserSourceConnection
 from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView
-from authentik.sources.oauth.models import UserOAuthSourceConnection
 
-PLAN_CONTEXT_SOURCES_OAUTH_ACCESS = "sources_oauth_access"
+PLAN_CONTEXT_SOURCES_CONNECTION = "goauthentik.io/sources/connection"
 
 
 class PostUserEnrollmentStage(StageView):
-    """Dynamically injected stage which saves the OAuth Connection after
+    """Dynamically injected stage which saves the Connection after
     the user has been enrolled."""
 
     # pylint: disable=unused-argument
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Stage used after the user has been enrolled"""
-        access: UserOAuthSourceConnection = self.executor.plan.context[
-            PLAN_CONTEXT_SOURCES_OAUTH_ACCESS
+        connection: UserSourceConnection = self.executor.plan.context[
+            PLAN_CONTEXT_SOURCES_CONNECTION
         ]
         user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
-        access.user = user
-        access.save()
-        UserOAuthSourceConnection.objects.filter(pk=access.pk).update(user=user)
+        connection.user = user
+        connection.save()
         Event.new(
             EventAction.SOURCE_LINKED,
-            message="Linked OAuth Source",
-            source=access.source,
+            message="Linked Source",
+            source=connection.source,
         ).from_http(self.request)
         return self.executor.stage_ok()

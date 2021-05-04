@@ -1,4 +1,4 @@
-all: lint-fix lint coverage gen
+all: lint-fix lint test gen
 
 test-integration:
 	k3d cluster create || exit 0
@@ -8,7 +8,7 @@ test-integration:
 test-e2e:
 	coverage run manage.py test --failfast -v 3 tests/e2e
 
-coverage:
+test:
 	coverage run manage.py test -v 3 authentik
 	coverage html
 	coverage report
@@ -22,7 +22,7 @@ lint:
 	bandit -r authentik tests lifecycle -x node_modules
 	pylint authentik tests lifecycle
 
-gen: coverage
+gen:
 	./manage.py generate_swagger -o swagger.yaml -f yaml
 
 local-stack:
@@ -31,7 +31,5 @@ local-stack:
 	docker-compose up -d
 	docker-compose run --rm server migrate
 
-build-static:
-	docker-compose -f scripts/ci.docker-compose.yml up -d
-	docker build -t beryju/authentik-static -f static.Dockerfile --network=scripts_default .
-	docker-compose -f scripts/ci.docker-compose.yml down -v
+run:
+	go run -v cmd/server/main.go

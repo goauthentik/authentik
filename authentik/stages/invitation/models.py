@@ -53,6 +53,11 @@ class Invitation(models.Model):
 
     invite_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
+    single_use = models.BooleanField(
+        default=False,
+        help_text=_("When enabled, the invitation will be deleted after usage."),
+    )
+
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     expires = models.DateTimeField(default=None, blank=True, null=True)
     fixed_data = models.JSONField(

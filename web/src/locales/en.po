@@ -156,6 +156,10 @@ msgstr "Allow users to use Applications based on properties, enforce Password Cr
 msgid "Allowed count"
 msgstr "Allowed count"
 
+#: src/pages/sources/plex/PlexSourceForm.ts:141
+msgid "Allowed servers"
+msgstr "Allowed servers"
+
 #: src/pages/sources/saml/SAMLSourceForm.ts:144
 msgid "Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done."
 msgstr "Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done."
@@ -277,11 +281,16 @@ msgstr "Attributes"
 msgid "Audience"
 msgstr "Audience"
 
+#: src/flows/sources/plex/PlexLoginInit.ts:56
+msgid "Authenticating with Plex..."
+msgstr "Authenticating with Plex..."
+
 #: src/pages/flows/FlowForm.ts:55
 msgid "Authentication"
 msgstr "Authentication"
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:189
+#: src/pages/sources/oauth/OAuthSourceForm.ts:211
+#: src/pages/sources/plex/PlexSourceForm.ts:171
 #: src/pages/sources/saml/SAMLSourceForm.ts:245
 msgid "Authentication flow"
 msgstr "Authentication flow"
@@ -349,19 +358,19 @@ msgstr "Backup status"
 msgid "Base DN"
 msgstr "Base DN"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:213
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:217
 msgid "Based on the Hashed User ID"
 msgstr "Based on the Hashed User ID"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:219
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:223
 msgid "Based on the User's Email. This is recommended over the UPN method."
 msgstr "Based on the User's Email. This is recommended over the UPN method."
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:222
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:226
 msgid "Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains."
 msgstr "Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains."
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:216
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:220
 msgid "Based on the username"
 msgstr "Based on the username"
 
@@ -395,8 +404,8 @@ msgstr "Binding Type"
 msgid "Build hash: {0}"
 msgstr "Build hash: {0}"
 
-#: src/pages/sources/SourcesListPage.ts:103
-#: src/pages/sources/SourcesListPage.ts:105
+#: src/pages/sources/SourcesListPage.ts:104
+#: src/pages/sources/SourcesListPage.ts:106
 msgid "Built-in"
 msgstr "Built-in"
 
@@ -473,13 +482,14 @@ msgstr "Change password"
 msgid "Change your password"
 msgstr "Change your password"
 
-#: src/pages/applications/ApplicationViewPage.ts:123
+#: src/pages/applications/ApplicationViewPage.ts:136
 #: src/pages/flows/FlowViewPage.ts:110
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:136
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:135
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:129
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:113
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:133
+#: src/pages/sources/plex/PlexSourceViewPage.ts:92
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:119
 #: src/pages/users/UserViewPage.ts:185
 msgid "Changelog"
@@ -544,6 +554,7 @@ msgstr "Click to copy token"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:107
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:99
+#: src/pages/sources/plex/PlexSourceForm.ts:135
 msgid "Client ID"
 msgstr "Client ID"
 
@@ -611,7 +622,7 @@ msgstr "Configure how long refresh tokens and their id_tokens are valid for."
 msgid "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected."
 msgstr "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected."
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:251
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:255
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr "Configure how the issuer field of the ID Token should be filled."
 
@@ -623,7 +634,7 @@ msgstr "Configure settings relevant to your user profile."
 msgid "Configure the maximum allowed time drift for an asseration."
 msgstr "Configure the maximum allowed time drift for an asseration."
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:226
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:230
 msgid "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
 msgstr "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
 
@@ -668,11 +679,11 @@ msgstr "Consider Objects matching this filter to be Groups."
 msgid "Consider Objects matching this filter to be Users."
 msgstr "Consider Objects matching this filter to be Users."
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:126
+#: src/pages/sources/oauth/OAuthSourceForm.ts:148
 msgid "Consumer key"
 msgstr "Consumer key"
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:132
+#: src/pages/sources/oauth/OAuthSourceForm.ts:154
 msgid "Consumer secret"
 msgstr "Consumer secret"
 
@@ -744,8 +755,8 @@ msgstr "Copy Key"
 #: src/pages/providers/ProviderListPage.ts:116
 #: src/pages/providers/RelatedApplicationButton.ts:27
 #: src/pages/providers/RelatedApplicationButton.ts:35
-#: src/pages/sources/SourcesListPage.ts:113
-#: src/pages/sources/SourcesListPage.ts:122
+#: src/pages/sources/SourcesListPage.ts:114
+#: src/pages/sources/SourcesListPage.ts:123
 #: src/pages/stages/StageListPage.ts:119
 #: src/pages/stages/StageListPage.ts:128
 #: src/pages/stages/invitation/InvitationListPage.ts:77
@@ -842,7 +853,7 @@ msgstr "Create provider"
 #: src/pages/policies/PolicyListPage.ts:136
 #: src/pages/property-mappings/PropertyMappingListPage.ts:125
 #: src/pages/providers/ProviderListPage.ts:119
-#: src/pages/sources/SourcesListPage.ts:125
+#: src/pages/sources/SourcesListPage.ts:126
 #: src/pages/stages/StageListPage.ts:131
 msgid "Create {0}"
 msgstr "Create {0}"
@@ -898,7 +909,7 @@ msgstr "Define how notifications are sent to users, like Email or Webhook."
 #: src/pages/policies/PolicyListPage.ts:115
 #: src/pages/property-mappings/PropertyMappingListPage.ts:104
 #: src/pages/providers/ProviderListPage.ts:98
-#: src/pages/sources/SourcesListPage.ts:94
+#: src/pages/sources/SourcesListPage.ts:95
 #: src/pages/stages/StageListPage.ts:110
 #: src/pages/stages/invitation/InvitationListPage.ts:68
 #: src/pages/stages/prompt/PromptListPage.ts:87
@@ -1008,7 +1019,7 @@ msgstr "Disable Static Tokens"
 msgid "Disable Time-based OTP"
 msgstr "Disable Time-based OTP"
 
-#: src/pages/sources/SourcesListPage.ts:63
+#: src/pages/sources/SourcesListPage.ts:64
 msgid "Disabled"
 msgstr "Disabled"
 
@@ -1029,7 +1040,7 @@ msgstr "Download"
 msgid "Dummy stage used for testing. Shows a simple continue button and always passes."
 msgstr "Dummy stage used for testing. Shows a simple continue button and always passes."
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:244
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:248
 msgid "Each provider has a different issuer, based on the application slug."
 msgstr "Each provider has a different issuer, based on the application slug."
 
@@ -1049,9 +1060,10 @@ msgstr "Each provider has a different issuer, based on the application slug."
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:128
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:127
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:121
-#: src/pages/sources/SourcesListPage.ts:82
+#: src/pages/sources/SourcesListPage.ts:83
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:105
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:125
+#: src/pages/sources/plex/PlexSourceViewPage.ts:84
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:111
 #: src/pages/stages/StageListPage.ts:98
 #: src/pages/stages/prompt/PromptListPage.ts:75
@@ -1086,7 +1098,7 @@ msgstr "Edit User"
 msgid "Either no applications are defined, or you don't have access to any."
 msgstr "Either no applications are defined, or you don't have access to any."
 
-#: src/flows/stages/identification/IdentificationStage.ts:138
+#: src/flows/stages/identification/IdentificationStage.ts:146
 #: src/pages/events/TransportForm.ts:46
 #: src/pages/stages/identification/IdentificationStageForm.ts:81
 #: src/pages/user-settings/UserDetailsPage.ts:71
@@ -1099,7 +1111,7 @@ msgstr "Email"
 msgid "Email address"
 msgstr "Email address"
 
-#: src/flows/stages/identification/IdentificationStage.ts:145
+#: src/flows/stages/identification/IdentificationStage.ts:153
 msgid "Email or username"
 msgstr "Email or username"
 
@@ -1136,6 +1148,7 @@ msgstr "Enable this if you don't want to use this provider as a proxy, and want 
 #: src/pages/policies/PolicyBindingForm.ts:199
 #: src/pages/sources/ldap/LDAPSourceForm.ts:69
 #: src/pages/sources/oauth/OAuthSourceForm.ts:115
+#: src/pages/sources/plex/PlexSourceForm.ts:102
 #: src/pages/sources/saml/SAMLSourceForm.ts:69
 msgid "Enabled"
 msgstr "Enabled"
@@ -1144,7 +1157,8 @@ msgstr "Enabled"
 msgid "Enrollment"
 msgstr "Enrollment"
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:210
+#: src/pages/sources/oauth/OAuthSourceForm.ts:232
+#: src/pages/sources/plex/PlexSourceForm.ts:192
 #: src/pages/sources/saml/SAMLSourceForm.ts:266
 #: src/pages/stages/identification/IdentificationStageForm.ts:106
 msgid "Enrollment flow"
@@ -1356,17 +1370,20 @@ msgstr "Flow"
 msgid "Flow Overview"
 msgstr "Flow Overview"
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:185
+#: src/pages/sources/oauth/OAuthSourceForm.ts:207
+#: src/pages/sources/plex/PlexSourceForm.ts:167
 #: src/pages/sources/saml/SAMLSourceForm.ts:220
 msgid "Flow settings"
 msgstr "Flow settings"
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:207
+#: src/pages/sources/oauth/OAuthSourceForm.ts:229
+#: src/pages/sources/plex/PlexSourceForm.ts:189
 #: src/pages/sources/saml/SAMLSourceForm.ts:263
 msgid "Flow to use when authenticating existing users."
 msgstr "Flow to use when authenticating existing users."
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:228
+#: src/pages/sources/oauth/OAuthSourceForm.ts:250
+#: src/pages/sources/plex/PlexSourceForm.ts:210
 #: src/pages/sources/saml/SAMLSourceForm.ts:284
 msgid "Flow to use when enrolling new users."
 msgstr "Flow to use when enrolling new users."
@@ -1410,7 +1427,7 @@ msgstr "Force the user to configure an authenticator"
 msgid "Forgot password?"
 msgstr "Forgot password?"
 
-#: src/flows/stages/identification/IdentificationStage.ts:124
+#: src/flows/stages/identification/IdentificationStage.ts:132
 msgid "Forgot username or password?"
 msgstr "Forgot username or password?"
 
@@ -1510,6 +1527,7 @@ msgstr "Hide managed mappings"
 #: src/pages/providers/saml/SAMLProviderForm.ts:177
 #: src/pages/sources/ldap/LDAPSourceForm.ts:167
 #: src/pages/sources/ldap/LDAPSourceForm.ts:193
+#: src/pages/sources/plex/PlexSourceForm.ts:154
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:114
 #: src/pages/stages/identification/IdentificationStageForm.ts:85
 #: src/pages/stages/password/PasswordStageForm.ts:86
@@ -1580,11 +1598,11 @@ msgstr "Import certificates of external providers or create certificates to sign
 msgid "In case you can't access any other method."
 msgstr "In case you can't access any other method."
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:236
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:240
 msgid "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
 msgstr "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:233
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:237
 msgid "Include claims in id_token"
 msgstr "Include claims in id_token"
 
@@ -1628,7 +1646,7 @@ msgstr "Is superuser"
 msgid "Issuer"
 msgstr "Issuer"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:239
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:243
 msgid "Issuer mode"
 msgstr "Issuer mode"
 
@@ -1636,7 +1654,7 @@ msgstr "Issuer mode"
 msgid "JWT Algorithm"
 msgstr "JWT Algorithm"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:205
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:209
 msgid "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
 msgstr "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
 
@@ -1680,6 +1698,11 @@ msgstr "Last seen: {0}"
 msgid "Last sync: {0}"
 msgstr "Last sync: {0}"
 
+#: src/pages/applications/ApplicationViewPage.ts:114
+#: src/pages/applications/ApplicationViewPage.ts:119
+msgid "Launch"
+msgstr "Launch"
+
 #: src/pages/applications/ApplicationForm.ts:159
 msgid "Launch URL"
 msgstr "Launch URL"
@@ -1692,9 +1715,28 @@ msgstr "Let the user identify themselves with their username or Email address."
 msgid "Library"
 msgstr "Library"
 
+#: src/pages/sources/oauth/OAuthSourceForm.ts:128
+#: src/pages/sources/plex/PlexSourceForm.ts:115
+msgid "Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses"
+msgstr "Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses"
+
+#: src/pages/sources/oauth/OAuthSourceForm.ts:134
+#: src/pages/sources/plex/PlexSourceForm.ts:121
+msgid "Link to a user with identical username address. Can have security implications when a username is used with another source."
+msgstr "Link to a user with identical username address. Can have security implications when a username is used with another source."
+
+#: src/pages/sources/oauth/OAuthSourceForm.ts:125
+#: src/pages/sources/plex/PlexSourceForm.ts:112
+msgid "Link users on unique identifier"
+msgstr "Link users on unique identifier"
+
+#: src/pages/sources/plex/PlexSourceForm.ts:159
+msgid "Load servers"
+msgstr "Load servers"
+
 #: src/elements/table/Table.ts:120
-#: src/flows/FlowExecutor.ts:167
-#: src/flows/FlowExecutor.ts:213
+#: src/flows/FlowExecutor.ts:168
+#: src/flows/FlowExecutor.ts:216
 #: src/flows/access_denied/FlowAccessDenied.ts:27
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts:43
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts:33
@@ -1705,7 +1747,7 @@ msgstr "Library"
 #: src/flows/stages/consent/ConsentStage.ts:28
 #: src/flows/stages/dummy/DummyStage.ts:27
 #: src/flows/stages/email/EmailStage.ts:26
-#: src/flows/stages/identification/IdentificationStage.ts:170
+#: src/flows/stages/identification/IdentificationStage.ts:179
 #: src/flows/stages/password/PasswordStage.ts:31
 #: src/flows/stages/prompt/PromptStage.ts:126
 #: src/pages/applications/ApplicationViewPage.ts:43
@@ -1736,7 +1778,7 @@ msgstr "Loading"
 #: src/pages/property-mappings/PropertyMappingTestForm.ts:61
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:74
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:185
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:203
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:207
 #: src/pages/providers/proxy/ProxyProviderForm.ts:116
 #: src/pages/providers/proxy/ProxyProviderForm.ts:168
 #: src/pages/providers/saml/SAMLProviderForm.ts:71
@@ -1747,9 +1789,11 @@ msgstr "Loading"
 #: src/pages/providers/saml/SAMLProviderImportForm.ts:55
 #: src/pages/sources/ldap/LDAPSourceForm.ts:164
 #: src/pages/sources/ldap/LDAPSourceForm.ts:190
-#: src/pages/sources/oauth/OAuthSourceForm.ts:177
-#: src/pages/sources/oauth/OAuthSourceForm.ts:205
-#: src/pages/sources/oauth/OAuthSourceForm.ts:226
+#: src/pages/sources/oauth/OAuthSourceForm.ts:199
+#: src/pages/sources/oauth/OAuthSourceForm.ts:227
+#: src/pages/sources/oauth/OAuthSourceForm.ts:248
+#: src/pages/sources/plex/PlexSourceForm.ts:187
+#: src/pages/sources/plex/PlexSourceForm.ts:208
 #: src/pages/sources/saml/SAMLSourceForm.ts:126
 #: src/pages/sources/saml/SAMLSourceForm.ts:240
 #: src/pages/sources/saml/SAMLSourceForm.ts:261
@@ -1780,7 +1824,7 @@ msgstr "Log the currently pending user in."
 msgid "Login password is synced from LDAP into authentik automatically. Enable this option only to write password changes in authentik back to LDAP."
 msgstr "Login password is synced from LDAP into authentik automatically. Enable this option only to write password changes in authentik back to LDAP."
 
-#: src/flows/stages/identification/IdentificationStage.ts:182
+#: src/flows/stages/identification/IdentificationStage.ts:191
 msgid "Login to continue to {0}."
 msgstr "Login to continue to {0}."
 
@@ -1789,7 +1833,7 @@ msgid "Logins"
 msgstr "Logins"
 
 #: src/pages/admin-overview/AdminOverviewPage.ts:40
-#: src/pages/applications/ApplicationViewPage.ts:115
+#: src/pages/applications/ApplicationViewPage.ts:128
 msgid "Logins over the last 24 hours"
 msgstr "Logins over the last 24 hours"
 
@@ -1913,11 +1957,13 @@ msgstr "Monitor"
 #: src/pages/providers/saml/SAMLProviderForm.ts:53
 #: src/pages/providers/saml/SAMLProviderImportForm.ts:38
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:66
-#: src/pages/sources/SourcesListPage.ts:51
+#: src/pages/sources/SourcesListPage.ts:52
 #: src/pages/sources/ldap/LDAPSourceForm.ts:54
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:64
 #: src/pages/sources/oauth/OAuthSourceForm.ts:100
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:64
+#: src/pages/sources/plex/PlexSourceForm.ts:87
+#: src/pages/sources/plex/PlexSourceViewPage.ts:63
 #: src/pages/sources/saml/SAMLSourceForm.ts:54
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:66
 #: src/pages/stages/StageListPage.ts:65
@@ -1957,7 +2003,7 @@ msgstr "NameID Policy"
 msgid "NameID Property Mapping"
 msgstr "NameID Property Mapping"
 
-#: src/flows/stages/identification/IdentificationStage.ts:119
+#: src/flows/stages/identification/IdentificationStage.ts:127
 msgid "Need an account?"
 msgstr "Need an account?"
 
@@ -2227,6 +2273,7 @@ msgstr "Outposts are deployments of authentik components to support different en
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:58
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:56
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:56
+#: src/pages/sources/plex/PlexSourceViewPage.ts:55
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:58
 #: src/pages/users/UserViewPage.ts:74
 msgid "Overview"
@@ -2297,7 +2344,7 @@ msgstr "Policies without binding exist."
 msgid "Policy"
 msgstr "Policy"
 
-#: src/pages/applications/ApplicationViewPage.ts:134
+#: src/pages/applications/ApplicationViewPage.ts:147
 #: src/pages/flows/FlowViewPage.ts:101
 msgid "Policy / Group / User Bindings"
 msgstr "Policy / Group / User Bindings"
@@ -2307,6 +2354,7 @@ msgid "Policy / User / Group"
 msgstr "Policy / User / Group"
 
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:144
+#: src/pages/sources/plex/PlexSourceViewPage.ts:103
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:150
 msgid "Policy Bindings"
 msgstr "Policy Bindings"
@@ -2348,7 +2396,7 @@ msgstr "Post binding"
 msgid "Post binding (auto-submit)"
 msgstr "Post binding (auto-submit)"
 
-#: src/flows/FlowExecutor.ts:255
+#: src/flows/FlowExecutor.ts:258
 msgid "Powered by authentik"
 msgstr "Powered by authentik"
 
@@ -2411,7 +2459,8 @@ msgstr "Property mappings used to user creation."
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:81
 #: src/pages/providers/proxy/ProxyProviderForm.ts:123
 #: src/pages/providers/saml/SAMLProviderForm.ts:78
-#: src/pages/sources/oauth/OAuthSourceForm.ts:122
+#: src/pages/sources/oauth/OAuthSourceForm.ts:144
+#: src/pages/sources/plex/PlexSourceForm.ts:131
 #: src/pages/sources/saml/SAMLSourceForm.ts:76
 msgid "Protocol settings"
 msgstr "Protocol settings"
@@ -2433,7 +2482,7 @@ msgstr "Provider"
 msgid "Provider Type"
 msgstr "Provider Type"
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:138
+#: src/pages/sources/oauth/OAuthSourceForm.ts:160
 msgid "Provider type"
 msgstr "Provider type"
 
@@ -2602,7 +2651,7 @@ msgstr "Retry Task"
 msgid "Retry authentication"
 msgstr "Retry authentication"
 
-#: src/flows/FlowExecutor.ts:145
+#: src/flows/FlowExecutor.ts:146
 msgid "Return"
 msgstr "Return"
 
@@ -2665,7 +2714,7 @@ msgstr "SMTP Username"
 msgid "SSO URL"
 msgstr "SSO URL"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:247
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:251
 msgid "Same identifier is used for all providers"
 msgstr "Same identifier is used for all providers"
 
@@ -2710,7 +2759,7 @@ msgstr "Select all rows"
 msgid "Select an identification method."
 msgstr "Select an identification method."
 
-#: src/flows/stages/identification/IdentificationStage.ts:134
+#: src/flows/stages/identification/IdentificationStage.ts:142
 msgid "Select one of the sources below to login."
 msgstr "Select one of the sources below to login."
 
@@ -2721,6 +2770,10 @@ msgstr "Select users to add"
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:187
 msgid "Select which scopes can be used by the client. The client stil has to specify the scope to access the data."
 msgstr "Select which scopes can be used by the client. The client stil has to specify the scope to access the data."
+
+#: src/pages/sources/plex/PlexSourceForm.ts:153
+msgid "Select which server a user has to be a member of to be allowed to authenticate."
+msgstr "Select which server a user has to be a member of to be allowed to authenticate."
 
 #: src/pages/events/RuleForm.ts:92
 msgid "Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI."
@@ -2820,7 +2873,7 @@ msgstr "Show matched user"
 msgid "Shown as the Title in Flow pages."
 msgstr "Shown as the Title in Flow pages."
 
-#: src/flows/stages/identification/IdentificationStage.ts:120
+#: src/flows/stages/identification/IdentificationStage.ts:128
 msgid "Sign up."
 msgstr "Sign up."
 
@@ -2841,6 +2894,10 @@ msgstr "Signing keypair"
 msgid "Single Prompts that can be used for Prompt Stages."
 msgstr "Single Prompts that can be used for Prompt Stages."
 
+#: src/pages/stages/invitation/InvitationForm.ts:62
+msgid "Single use"
+msgstr "Single use"
+
 #: src/pages/providers/proxy/ProxyProviderForm.ts:173
 msgid "Skip path regex"
 msgstr "Skip path regex"
@@ -2850,16 +2907,17 @@ msgstr "Skip path regex"
 #: src/pages/flows/FlowForm.ts:94
 #: src/pages/sources/ldap/LDAPSourceForm.ts:60
 #: src/pages/sources/oauth/OAuthSourceForm.ts:106
+#: src/pages/sources/plex/PlexSourceForm.ts:93
 #: src/pages/sources/saml/SAMLSourceForm.ts:60
 msgid "Slug"
 msgstr "Slug"
 
-#: src/flows/FlowExecutor.ts:138
+#: src/flows/FlowExecutor.ts:139
 msgid "Something went wrong! Please try again later."
 msgstr "Something went wrong! Please try again later."
 
 #: src/pages/providers/ProviderListPage.ts:91
-#: src/pages/sources/SourcesListPage.ts:87
+#: src/pages/sources/SourcesListPage.ts:88
 msgid "Source"
 msgstr "Source"
 
@@ -2868,11 +2926,11 @@ msgid "Source {0}"
 msgstr "Source {0}"
 
 #: src/interfaces/AdminInterface.ts:20
-#: src/pages/sources/SourcesListPage.ts:30
+#: src/pages/sources/SourcesListPage.ts:31
 msgid "Sources"
 msgstr "Sources"
 
-#: src/pages/sources/SourcesListPage.ts:33
+#: src/pages/sources/SourcesListPage.ts:34
 msgid "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
 msgstr "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
 
@@ -2979,7 +3037,7 @@ msgstr "Stop impersonation"
 msgid "Subject"
 msgstr "Subject"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:208
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:212
 msgid "Subject mode"
 msgstr "Subject mode"
 
@@ -3069,6 +3127,7 @@ msgstr "Successfully created service-connection."
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts:47
 #: src/pages/sources/oauth/OAuthSourceForm.ts:51
+#: src/pages/sources/plex/PlexSourceForm.ts:60
 #: src/pages/sources/saml/SAMLSourceForm.ts:47
 msgid "Successfully created source."
 msgstr "Successfully created source."
@@ -3205,6 +3264,7 @@ msgstr "Successfully updated service-connection."
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts:44
 #: src/pages/sources/oauth/OAuthSourceForm.ts:48
+#: src/pages/sources/plex/PlexSourceForm.ts:57
 #: src/pages/sources/saml/SAMLSourceForm.ts:44
 msgid "Successfully updated source."
 msgstr "Successfully updated source."
@@ -3363,6 +3423,7 @@ msgid "These bindings control which users can access this flow."
 msgstr "These bindings control which users can access this flow."
 
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:146
+#: src/pages/sources/plex/PlexSourceViewPage.ts:105
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:152
 msgid ""
 "These bindings control which users can access this source.\n"
@@ -3371,7 +3432,7 @@ msgstr ""
 "These bindings control which users can access this source.\n"
 "You can only use policies here as access is checked before the user is authenticated."
 
-#: src/pages/applications/ApplicationViewPage.ts:136
+#: src/pages/applications/ApplicationViewPage.ts:149
 msgid "These policies control which users can access this application."
 msgstr "These policies control which users can access this application."
 
@@ -3460,7 +3521,7 @@ msgstr "Transports"
 #: src/pages/policies/PolicyListPage.ts:57
 #: src/pages/property-mappings/PropertyMappingListPage.ts:55
 #: src/pages/providers/ProviderListPage.ts:54
-#: src/pages/sources/SourcesListPage.ts:52
+#: src/pages/sources/SourcesListPage.ts:53
 #: src/pages/stages/prompt/PromptForm.ts:97
 #: src/pages/stages/prompt/PromptListPage.ts:48
 msgid "Type"
@@ -3539,9 +3600,10 @@ msgstr "Up-to-date!"
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:118
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:117
 #: src/pages/providers/saml/SAMLProviderViewPage.ts:111
-#: src/pages/sources/SourcesListPage.ts:69
+#: src/pages/sources/SourcesListPage.ts:70
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:95
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:115
+#: src/pages/sources/plex/PlexSourceViewPage.ts:74
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:101
 #: src/pages/stages/StageListPage.ts:85
 #: src/pages/stages/prompt/PromptListPage.ts:67
@@ -3602,6 +3664,10 @@ msgstr "Update OAuth2 Provider"
 msgid "Update Outpost"
 msgstr "Update Outpost"
 
+#: src/pages/sources/plex/PlexSourceViewPage.ts:77
+msgid "Update Plex Source"
+msgstr "Update Plex Source"
+
 #: src/pages/stages/prompt/PromptListPage.ts:70
 msgid "Update Prompt"
 msgstr "Update Prompt"
@@ -3642,7 +3708,7 @@ msgstr "Update details"
 #: src/pages/policies/PolicyListPage.ts:80
 #: src/pages/property-mappings/PropertyMappingListPage.ts:69
 #: src/pages/providers/ProviderListPage.ts:76
-#: src/pages/sources/SourcesListPage.ts:72
+#: src/pages/sources/SourcesListPage.ts:73
 #: src/pages/stages/StageListPage.ts:88
 #: src/pages/users/UserActiveForm.ts:41
 msgid "Update {0}"
@@ -3671,6 +3737,16 @@ msgstr "Use a security key to prove your identity."
 #: src/pages/stages/email/EmailStageForm.ts:139
 msgid "Use global settings"
 msgstr "Use global settings"
+
+#: src/pages/sources/oauth/OAuthSourceForm.ts:131
+#: src/pages/sources/plex/PlexSourceForm.ts:118
+msgid "Use the user's email address, but deny enrollment when the email address already exists."
+msgstr "Use the user's email address, but deny enrollment when the email address already exists."
+
+#: src/pages/sources/oauth/OAuthSourceForm.ts:137
+#: src/pages/sources/plex/PlexSourceForm.ts:124
+msgid "Use the user's username, but deny enrollment when the username already exists."
+msgstr "Use the user's username, but deny enrollment when the username already exists."
 
 #: src/elements/events/ObjectChangelog.ts:39
 #: src/elements/events/UserEvents.ts:36
@@ -3712,6 +3788,11 @@ msgstr "User events"
 msgid "User fields"
 msgstr "User fields"
 
+#: src/pages/sources/oauth/OAuthSourceForm.ts:120
+#: src/pages/sources/plex/PlexSourceForm.ts:107
+msgid "User matching mode"
+msgstr "User matching mode"
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts:208
 msgid "User object filter"
 msgstr "User object filter"
@@ -3746,7 +3827,7 @@ msgstr "User/Group Attribute used for the user part of the HTTP-Basic Header. If
 msgid "Userinfo URL"
 msgstr "Userinfo URL"
 
-#: src/flows/stages/identification/IdentificationStage.ts:142
+#: src/flows/stages/identification/IdentificationStage.ts:150
 #: src/pages/stages/identification/IdentificationStageForm.ts:78
 #: src/pages/user-settings/UserDetailsPage.ts:57
 #: src/pages/users/UserForm.ts:47
@@ -3877,6 +3958,10 @@ msgstr "When a valid username/email has been entered, and this option is enabled
 msgid "When enabled, global Email connection settings will be used and connection settings below will be ignored."
 msgstr "When enabled, global Email connection settings will be used and connection settings below will be ignored."
 
+#: src/pages/stages/invitation/InvitationForm.ts:66
+msgid "When enabled, the invitation will be deleted after usage."
+msgstr "When enabled, the invitation will be deleted after usage."
+
 #: src/pages/stages/identification/IdentificationStageForm.ts:94
 msgid "When enabled, user fields are matched regardless of their casing."
 msgstr "When enabled, user fields are matched regardless of their casing."
@@ -3895,7 +3980,7 @@ msgstr "When selected, incoming assertion's Signatures will be validated against
 msgid "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
 msgstr "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
 
-#: src/flows/FlowExecutor.ts:134
+#: src/flows/FlowExecutor.ts:135
 msgid "Whoops!"
 msgstr "Whoops!"
 

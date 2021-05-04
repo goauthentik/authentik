@@ -10,6 +10,7 @@ from rest_framework.serializers import Serializer
 from authentik.core.models import Source
 from authentik.core.types import UILoginButton
 from authentik.crypto.models import CertificateKeyPair
+from authentik.flows.challenge import ChallengeTypes, RedirectChallenge
 from authentik.flows.models import Flow
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.saml.processors.constants import (
@@ -169,10 +170,16 @@ class SAMLSource(Source):
     @property
     def ui_login_button(self) -> UILoginButton:
         return UILoginButton(
-            name=self.name,
-            url=reverse(
-                "authentik_sources_saml:login", kwargs={"source_slug": self.slug}
+            challenge=RedirectChallenge(
+                instance={
+                    "type": ChallengeTypes.REDIRECT.value,
+                    "to": reverse(
+                        "authentik_sources_saml:login",
+                        kwargs={"source_slug": self.slug},
+                    ),
+                }
             ),
+            name=self.name,
         )
 
     def __str__(self):

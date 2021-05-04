@@ -1,6 +1,4 @@
 """authentik URL Configuration"""
-from django.conf import settings
-from django.conf.urls.static import static
 from django.urls import include, path
 from structlog.stdlib import get_logger
 
@@ -49,11 +47,3 @@ urlpatterns += [
     path("-/health/live/", LiveView.as_view(), name="health-live"),
     path("-/health/ready/", ReadyView.as_view(), name="health-ready"),
 ]
-
-if settings.DEBUG:  # pragma: no cover
-
-    urlpatterns = (
-        static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-        + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-        + urlpatterns
-    )

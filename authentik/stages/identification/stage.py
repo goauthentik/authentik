@@ -112,7 +112,9 @@ class IdentificationStageView(ChallengeStageView):
         for source in sources:
             ui_login_button = source.ui_login_button
             if ui_login_button:
-                ui_sources.append(asdict(ui_login_button))
+                button = asdict(ui_login_button)
+                button["challenge"] = ui_login_button.challenge.data
+                ui_sources.append(button)
         challenge.initial_data["sources"] = ui_sources
         return challenge
 

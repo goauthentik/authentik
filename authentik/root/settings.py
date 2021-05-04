@@ -108,6 +108,7 @@ INSTALLED_APPS = [
     "authentik.recovery",
     "authentik.sources.ldap",
     "authentik.sources.oauth",
+    "authentik.sources.plex",
     "authentik.sources.saml",
     "authentik.stages.authenticator_static",
     "authentik.stages.authenticator_totp",

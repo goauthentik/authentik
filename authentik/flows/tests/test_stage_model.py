@@ -16,17 +16,14 @@ def model_tester_factory(test_model: Type[Stage]) -> Callable:
     """Test a form"""
 
     def tester(self: TestModels):
-        try:
-            model_class = None
-            if test_model._meta.abstract:
-                model_class = test_model.__bases__[0]()
-            else:
-                model_class = test_model()
-            self.assertTrue(issubclass(model_class.type, StageView))
-            self.assertIsNotNone(test_model.component)
-            _ = test_model.ui_user_settings
-        except NotImplementedError:
-            pass
+        model_class = None
+        if test_model._meta.abstract:
+            model_class = test_model.__bases__[0]()
+        else:
+            model_class = test_model()
+        self.assertTrue(issubclass(model_class.type, StageView))
+        self.assertIsNotNone(test_model.component)
+        _ = test_model.ui_user_settings
 
     return tester
 

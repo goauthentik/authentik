@@ -45,6 +45,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
             "verbose_name",
             "verbose_name_plural",
             "policy_engine_mode",
+            "user_matching_mode",
         ]
 
 

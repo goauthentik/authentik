@@ -54,7 +54,7 @@ export class Tabs extends LitElement {
         this.currentPage = slot;
         const currentUrl = window.location.hash.slice(1, Infinity).split(ROUTE_SEPARATOR)[0];
         const newUrl = `#${currentUrl};${slot}`;
-        window.location.hash = newUrl;
+        history.replaceState(undefined, "", newUrl);
     }
 
     renderTab(page: Element): TemplateResult {

@@ -32,24 +32,4 @@ spec:
             backend:
               serviceName: {{ $fullName }}-web
               servicePort: http
-          - path: /static/
-            backend:
-              serviceName: {{ $fullName }}-static
-              servicePort: http
-          - path: /if/
-            backend:
-              serviceName: {{ $fullName }}-static
-              servicePort: http
-          - path: /media/
-            backend:
-              serviceName: {{ $fullName }}-static
-              servicePort: http
-          - path: /robots.txt
-            backend:
-              serviceName: {{ $fullName }}-static
-              servicePort: http
-          - path: /favicon.ico
-            backend:
-              serviceName: {{ $fullName }}-static
-              servicePort: http
   {{- end }}

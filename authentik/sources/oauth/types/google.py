@@ -1,7 +1,6 @@
 """Google OAuth Views"""
 from typing import Any
 
-from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from authentik.sources.oauth.types.manager import MANAGER, SourceType
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
@@ -21,8 +20,6 @@ class GoogleOAuth2Callback(OAuthCallback):
 
     def get_user_enroll_context(
         self,
-        source: OAuthSource,
-        access: UserOAuthSourceConnection,
         info: dict[str, Any],
     ) -> dict[str, Any]:
         return {

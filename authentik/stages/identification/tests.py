@@ -117,7 +117,10 @@ class TestIdentificationStage(TestCase):
                     {
                         "icon_url": "/static/authentik/sources/.svg",
                         "name": "test",
-                        "url": "/source/oauth/login/test/",
+                        "challenge": {
+                            "to": "/source/oauth/login/test/",
+                            "type": "redirect",
+                        },
                     }
                 ],
             },
@@ -158,9 +161,12 @@ class TestIdentificationStage(TestCase):
                 "title": self.flow.title,
                 "sources": [
                     {
+                        "challenge": {
+                            "to": "/source/oauth/login/test/",
+                            "type": "redirect",
+                        },
                         "icon_url": "/static/authentik/sources/.svg",
                         "name": "test",
-                        "url": "/source/oauth/login/test/",
                     }
                 ],
             },
