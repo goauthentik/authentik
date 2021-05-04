@@ -23,6 +23,9 @@ func DefaultConfig() {
 			Media: "./media",
 		},
 		LogLevel: "info",
+		ErrorReporting: ErrorReportingConfig{
+			Enabled: false,
+		},
 	}
 }
 

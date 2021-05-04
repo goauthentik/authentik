@@ -28,11 +28,14 @@ type WebServer struct {
 
 func NewWebServer() *WebServer {
 	mainHandler := mux.NewRouter()
-	mainHandler.Use(recoveryMiddleware())
+	if config.G.ErrorReporting.Enabled {
+		mainHandler.Use(recoveryMiddleware())
+	}
 	mainHandler.Use(handlers.ProxyHeaders)
 	mainHandler.Use(handlers.CompressHandler)
 	logginRouter := mainHandler.NewRoute().Subrouter()
 	logginRouter.Use(loggingMiddleware)
+
 	ws := &WebServer{
 		LegacyProxy: true,
 
