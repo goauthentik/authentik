@@ -89,11 +89,7 @@ The docker-compose project contains the following containers:
 
 - server
 
-    This is the backend service, which does all the logic, runs the API and the actual SSO part.
-
-- static
-
-    This container runs the frontend, hosts the JS/CSS files, and also servers the files you've uploaded for icons/etc.
+    This is the backend service, which does all the logic, runs the API and the actual SSO part. It also runs the frontend, hosts the JS/CSS files, and also servers the files you've uploaded for icons/etc.
 
 - worker
 
@@ -102,15 +98,5 @@ The docker-compose project contains the following containers:
 - redis & postgresql
 
     Cache and database respectively.
-
-- traefik
-
-    Traefik is used so that you only have a single entry point, and don't need to configure a reverse proxy yourself.
-
-    It does the following things:
-
-    - Routes everything that starts with `/static`, `/if`, `/media`, `/robots.txt` or `/favicon.ico` to the *static* container on port 80
-    - Routes everything else to the *server* container on port 8000
-    - Does some minor health checking
 
 Additionally, if you've enabled GeoIP, there is a container running which regularly updates the GeoIP database.

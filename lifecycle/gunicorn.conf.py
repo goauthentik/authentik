@@ -6,7 +6,7 @@ from multiprocessing import cpu_count
 import structlog
 from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
 
-bind = "0.0.0.0:8000"
+bind = "127.0.0.1:8000"
 
 user = "authentik"
 group = "authentik"
