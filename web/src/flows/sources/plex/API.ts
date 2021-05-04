@@ -11,6 +11,7 @@ export interface PlexResource {
     name: string;
     provides: string;
     clientIdentifier: string;
+    owned: boolean;
 }
 
 export const DEFAULT_HEADERS = {
@@ -88,7 +89,7 @@ export class PlexAPIClient {
         });
         const resources: PlexResource[] = await resourcesResponse.json();
         return resources.filter(r => {
-            return r.provides === "server";
+            return r.provides.toLowerCase().includes("server") && r.owned;
         });
     }
 
