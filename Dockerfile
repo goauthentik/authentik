@@ -1,3 +1,4 @@
+# Stage 1: Lock python dependencies
 FROM python:3.9-slim-buster as locker
 
 COPY ./Pipfile /app/
@@ -9,6 +10,34 @@ RUN pip install pipenv && \
     pipenv lock -r > requirements.txt && \
     pipenv lock -rd > requirements-dev.txt
 
+# Stage 2: Build webui
+FROM node as npm-builder
+
+COPY ./web /static/
+
+ENV NODE_ENV=production
+RUN cd /static && npm i --production=false && npm run build
+
+# Stage 3: Build go proxy
+FROM golang:1.16.3 AS builder
+
+WORKDIR /work
+
+COPY --from=npm-builder /static/robots.txt /work/web/robots.txt
+COPY --from=npm-builder /static/security.txt /work/web/security.txt
+COPY --from=npm-builder /static/dist/ /work/web/dist/
+COPY --from=npm-builder /static/authentik/ /work/web/authentik/
+
+# RUN ls /work/web/static/authentik/ && exit 1
+COPY ./cmd /work/cmd
+COPY ./web/static.go /work/web/static.go
+COPY ./internal /work/internal
+COPY ./go.mod /work/go.mod
+COPY ./go.sum /work/go.sum
+
+RUN go build -o /work/authentik ./cmd/server/main.go
+
+# Stage 4: Run
 FROM python:3.9-slim-buster
 
 WORKDIR /
@@ -44,6 +73,7 @@ COPY ./pyproject.toml /
 COPY ./xml /xml
 COPY ./manage.py /
 COPY ./lifecycle/ /lifecycle
+COPY --from=builder /work/authentik /authentik-proxy
 
 USER authentik
 STOPSIGNAL SIGINT
