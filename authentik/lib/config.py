@@ -87,7 +87,7 @@ class ConfigLoader:
         if url.scheme == "env":
             value = os.getenv(url.netloc, url.query)
         if url.scheme == "file":
-            with open(url.netloc, 'r') as _file:
+            with open(url.netloc, "r") as _file:
                 value = _file.read()
         return value
 

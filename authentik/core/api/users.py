@@ -1,6 +1,7 @@
 """User API Views"""
 from json import loads
 
+from django.db.models.query import QuerySet
 from django.http.response import Http404
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
@@ -19,6 +20,7 @@ from rest_framework.serializers import (
     ValidationError,
 )
 from rest_framework.viewsets import ModelViewSet
+from rest_framework_guardian.filters import ObjectPermissionsFilter
 
 from authentik.admin.api.metrics import CoordinateSerializer, get_events_per_1h
 from authentik.api.decorators import permission_required
@@ -185,3 +187,16 @@ class UserViewSet(ModelViewSet):
             reverse_lazy("authentik_flows:default-recovery") + f"?{querystring}"
         )
         return Response({"link": link})
+
+    def _filter_queryset_for_list(self, queryset: QuerySet) -> QuerySet:
+        """Custom filter_queryset method which ignores guardian, but still supports sorting"""
+        for backend in list(self.filter_backends):
+            if backend == ObjectPermissionsFilter:
+                continue
+            queryset = backend().filter_queryset(self.request, queryset, self)
+        return queryset
+
+    def filter_queryset(self, queryset):
+        if self.request.user.has_perm("authentik_core.view_group"):
+            return self._filter_queryset_for_list(queryset)
+        return super().filter_queryset(queryset)

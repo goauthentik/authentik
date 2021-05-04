@@ -1,7 +1,7 @@
 """Outpost models"""
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from typing import Any, Iterable, Optional, Union
+from typing import Iterable, Optional, Union
 from uuid import uuid4
 
 from dacite import from_dict
@@ -336,7 +336,7 @@ class Outpost(models.Model):
         # the ones the user needs
         with transaction.atomic():
             UserObjectPermission.objects.filter(user=user).delete()
-            Permission.objects.filter(user=user).delete()
+            user.user_permissions.clear()
             for model_or_perm in self.get_required_objects():
                 if isinstance(model_or_perm, models.Model):
                     model_or_perm: models.Model
@@ -346,7 +346,15 @@ class Outpost(models.Model):
                     )
                     assign_perm(code_name, user, model_or_perm)
                 else:
-                    assign_perm(model_or_perm, user)
+                    app_label, perm = model_or_perm.split(".")
+                    permission = Permission.objects.filter(
+                        codename=perm,
+                        content_type__app_label=app_label,
+                    )
+                    if not permission.exists():
+                        LOGGER.warning("permission doesn't exist", perm=model_or_perm)
+                        continue
+                    user.user_permissions.add(permission.first())
             LOGGER.debug("Updated service account's permissions")
         return user
 
