@@ -1,22 +1,17 @@
 package config
 
 type Config struct {
-	Debug bool
-	Web   WebConfig
-	Paths PathsConfig
-	Log   LogConfig
+	Debug    bool        `yaml:"debug"`
+	Web      WebConfig   `yaml:"web"`
+	Paths    PathsConfig `yaml:"paths"`
+	LogLevel string      `yaml:"log_level"`
 }
 
 type WebConfig struct {
-	Listen    string
-	ListenTLS string
+	Listen    string `yaml:"listen"`
+	ListenTLS string `yaml:"listen_tls"`
 }
 
 type PathsConfig struct {
-	Media string
-}
-
-type LogConfig struct {
-	Level  string
-	Format string
+	Media string `yaml:"media"`
 }

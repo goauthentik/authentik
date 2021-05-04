@@ -5,6 +5,10 @@ postgresql:
   user: authentik
   password: 'env://POSTGRES_PASSWORD'
 
+web:
+  listen: 0.0.0.0:9000
+  listen_tls: 0.0.0.0:9443
+
 redis:
   host: localhost
   password: ''

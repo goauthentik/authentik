@@ -10,7 +10,10 @@ import (
 )
 
 func main() {
+	log.SetLevel(log.DebugLevel)
 	config.DefaultConfig()
+	config.LoadConfig("./authentik/lib/default.yml")
+	config.LoadConfig("./local.env.yml")
 	config.ConfigureLogger()
 
 	rl := log.WithField("logger", "authentik.g")
