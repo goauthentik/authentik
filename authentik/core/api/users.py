@@ -1,14 +1,18 @@
 """User API Views"""
+from json import loads
+
 from django.http.response import Http404
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
+from django_filters.filters import CharFilter
+from django_filters.filterset import FilterSet
 from drf_yasg.utils import swagger_auto_schema, swagger_serializer_method
 from guardian.utils import get_anonymous_user
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, JSONField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import BooleanField, ModelSerializer
+from rest_framework.serializers import BooleanField, ModelSerializer, ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.admin.api.metrics import CoordinateSerializer, get_events_per_1h
@@ -84,13 +88,42 @@ class UserMetricsSerializer(PassiveSerializer):
         )
 
 
+class UsersFilter(FilterSet):
+    """Filter for users"""
+
+    attributes = CharFilter(
+        field_name="attributes",
+        lookup_expr="",
+        label="Attributes",
+        method="filter_attributes",
+    )
+
+    # pylint: disable=unused-argument
+    def filter_attributes(self, queryset, name, value):
+        """Filter attributes by query args"""
+        try:
+            value = loads(value)
+        except ValueError:
+            raise ValidationError(detail="filter: failed to parse JSON")
+        if not isinstance(value, dict):
+            raise ValidationError(detail="filter: value must be key:value mapping")
+        qs = {}
+        for key, _value in value.items():
+            qs[f"attributes__{key}"] = _value
+        return queryset.filter(**qs)
+
+    class Meta:
+        model = User
+        fields = ["username", "name", "is_active", "attributes"]
+
+
 class UserViewSet(ModelViewSet):
     """User Viewset"""
 
     queryset = User.objects.none()
     serializer_class = UserSerializer
     search_fields = ["username", "name", "is_active"]
-    filterset_fields = ["username", "name", "is_active"]
+    filterset_class = UsersFilter
 
     def get_queryset(self):
         return User.objects.all().exclude(pk=get_anonymous_user().pk)

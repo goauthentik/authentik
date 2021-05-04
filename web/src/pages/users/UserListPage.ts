@@ -35,12 +35,18 @@ export class UserListPage extends TablePage<User> {
     @property()
     order = "last_login";
 
+    @property({ type: Boolean })
+    hideServiceAccounts = true;
+
     apiEndpoint(page: number): Promise<AKResponse<User>> {
         return new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ordering: this.order,
             page: page,
             pageSize: PAGE_SIZE,
             search: this.search || "",
+            attributes: this.hideServiceAccounts ? JSON.stringify({
+                "goauthentik.io/user/service-account__isnull": "true"
+            }) : undefined
         });
     }
 
@@ -161,6 +167,31 @@ export class UserListPage extends TablePage<User> {
         </ak-forms-modal>
         ${super.renderToolbar()}
         `;
+    }
+
+    renderToolbarAfter(): TemplateResult {
+        return html`&nbsp;
+        <div class="pf-c-toolbar__group pf-m-filter-group">
+            <div class="pf-c-toolbar__item pf-m-search-filter">
+                <div class="pf-c-input-group">
+                    <div class="pf-c-check">
+                        <input class="pf-c-check__input"
+                            type="checkbox"
+                            id="hide-service-accounts"
+                            name="hide-service-accounts"
+                            ?checked=${this.hideServiceAccounts}
+                            @change=${() => {
+                                this.hideServiceAccounts = !this.hideServiceAccounts;
+                                this.page = 1;
+                                this.fetch();
+                            }} />
+                        <label class="pf-c-check__label" for="hide-service-accounts">
+                            ${t`Hide service-accounts`}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>`;
     }
 
 }
