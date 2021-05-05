@@ -51,7 +51,7 @@ export class OutpostForm extends Form<Outpost> {
                 name="type">
                 <select class="pf-c-form-control">
                     <option value=${OutpostTypeEnum.Proxy} ?selected=${this.outpost?.type === OutpostTypeEnum.Proxy}>${t`Proxy`}</option>
-                    <option value=${OutpostTypeEnum.Ldap} ?selected=${this.outpost?.type === OutpostTypeEnum.Ldap}>${t`LDAP`}</option>
+                    <option value=${OutpostTypeEnum.Ldap} ?selected=${this.outpost?.type === OutpostTypeEnum.Ldap}>${t`LDAP (Technical preview)`}</option>
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal

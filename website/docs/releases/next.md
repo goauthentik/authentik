@@ -4,6 +4,18 @@ title: Next
 
 ## Headline Changes
 
+- LDAP Provider
+
+:::info
+This feature is still in technical preview, so please report any Bugs you run into on [GitHub](https://github.com/goauthentik/authentik/issues)
+:::
+
+    You can now configure an LDAP Provider for applications that don't support any newer protocols or require LDAP.
+
+    All users and groups in authentik's database are searchable. Currently, there is a limited support for filters (you can only search for objectClass), but this will be expanded in further releases.
+
+    Binding against the LDAP Server uses a flow in the background. This allows you to use the same policies and flows as you do for web-based logins. The only limitation is that currently only identification and password stages are supported, due to how LDAP works.
+
 - Compatibility with forwardAuth/auth_request
 
     The authentik proxy is now compatible with forwardAuth (traefik) / auth_request (nginx). All that is required is the latest version of the outpost,
