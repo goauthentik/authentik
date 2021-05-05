@@ -23,7 +23,7 @@ class PlexSource(Source):
     """Authenticate against plex.tv"""
 
     client_id = models.TextField(
-        default=generate_client_id(),
+        default=generate_client_id,
         help_text=_("Client identifier used to talk to Plex."),
     )
     allowed_servers = ArrayField(

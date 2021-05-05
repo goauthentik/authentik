@@ -3,6 +3,7 @@
 import django.contrib.postgres.fields
 import django.db.models.deletion
 from django.db import migrations, models
+import authentik.providers.oauth2.generators
 
 
 class Migration(migrations.Migration):
@@ -31,7 +32,7 @@ class Migration(migrations.Migration):
                 (
                     "client_id",
                     models.TextField(
-                        default="yOuPQQvgNfBGreZZ38WoOY1d3qk3Xso2AuQHi6RG",
+                        default=authentik.providers.oauth2.generators.generate_client_id,
                         help_text="Client identifier used to talk to Plex.",
                     ),
                 ),
