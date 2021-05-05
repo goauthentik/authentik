@@ -1,5 +1,4 @@
 import { css, CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
-import { SidebarItem } from "../elements/sidebar/Sidebar";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -9,6 +8,7 @@ import "../elements/router/RouterOutlet";
 import "../elements/messages/MessageContainer";
 import "../elements/notifications/NotificationDrawer";
 import "../elements/Banner";
+import "../elements/sidebar/Sidebar";
 import { until } from "lit-html/directives/until";
 import { me } from "../api/Users";
 import { t } from "@lingui/macro";
@@ -22,8 +22,6 @@ export abstract class Interface extends LitElement {
 
     @property({type: Boolean})
     notificationOpen = false;
-
-    abstract get sidebar(): SidebarItem[];
 
     static get styles(): CSSResult[] {
         return [PFBase, PFPage, PFButton, PFDrawer, css`
@@ -45,6 +43,10 @@ export abstract class Interface extends LitElement {
         window.addEventListener(EVENT_NOTIFICATION_TOGGLE, () => {
             this.notificationOpen = !this.notificationOpen;
         });
+    }
+
+    renderSidebarItems(): TemplateResult {
+        return html``;
     }
 
     render(): TemplateResult {
@@ -72,7 +74,8 @@ export abstract class Interface extends LitElement {
                 return html``;
             }))}
             <div class="pf-c-page">
-                <ak-sidebar class="pf-c-page__sidebar ${this.sidebarOpen ? "pf-m-expanded" : "pf-m-collapsed"}" .items=${this.sidebar}>
+                <ak-sidebar class="pf-c-page__sidebar ${this.sidebarOpen ? "pf-m-expanded" : "pf-m-collapsed"}">
+                    ${this.renderSidebarItems()}
                 </ak-sidebar>
                 <div class="pf-c-page__drawer">
                     <div class="pf-c-drawer ${this.notificationOpen ? "pf-m-expanded" : "pf-m-collapsed"}">
