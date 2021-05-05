@@ -1,5 +1,5 @@
 import { css, CSSResult, html, LitElement, TemplateResult } from "lit-element";
-import { Chart, ChartDataset, Tick, LineController, TimeScale, LinearScale, BarController, BarElement, ChartConfiguration, Legend } from "chart.js";
+import { Chart, ChartDataset, Tick, LineController, TimeScale, LinearScale, BarController, BarElement, ChartConfiguration, Legend, ChartData } from "chart.js";
 import "chartjs-adapter-moment";
 
 Chart.register(LineController, TimeScale, LinearScale, BarController, BarElement, Legend);
@@ -7,7 +7,7 @@ Chart.register(LineController, TimeScale, LinearScale, BarController, BarElement
 export abstract class AKChart<T> extends LitElement {
 
     abstract apiRequest(): Promise<T>;
-    abstract getDatasets(data: T): ChartDataset[];
+    abstract getChartData(data: T): ChartData;
 
     chart?: Chart;
 
@@ -39,9 +39,7 @@ export abstract class AKChart<T> extends LitElement {
     configureChart(data: T, ctx: CanvasRenderingContext2D): Chart {
         const config = {
             type: "bar",
-            data: {
-                datasets: this.getDatasets(data),
-            },
+            data: this.getChartData(data),
             options: {
                 maintainAspectRatio: false,
                 scales: {
