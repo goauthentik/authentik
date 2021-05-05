@@ -42,6 +42,7 @@ class UserSerializer(ModelSerializer):
     avatar = CharField(read_only=True)
     attributes = JSONField(validators=[is_dict], required=False)
     groups = ListSerializer(child=GroupSerializer(), read_only=True, source="ak_groups")
+    uid = CharField(read_only=True)
 
     class Meta:
 
@@ -57,6 +58,7 @@ class UserSerializer(ModelSerializer):
             "email",
             "avatar",
             "attributes",
+            "uid",
         ]
 
 

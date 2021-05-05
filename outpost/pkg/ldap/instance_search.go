@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"net"
-	"strconv"
 	"strings"
 
 	"github.com/nmcclain/ldap"
@@ -79,7 +78,7 @@ func (pi *ProviderInstance) Search(bindDN string, searchReq ldap.SearchRequest, 
 				},
 				{
 					Name:   "uid",
-					Values: []string{strconv.Itoa(int(u.Pk))},
+					Values: []string{u.UID},
 				},
 				{
 					Name:   "name",

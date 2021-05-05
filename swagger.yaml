@@ -15395,6 +15395,11 @@ definitions:
       attributes:
         title: Attributes
         type: object
+      uid:
+        title: Uid
+        type: string
+        readOnly: true
+        minLength: 1
   Token:
     required:
       - identifier
