@@ -21,6 +21,7 @@ export class PlexSourceForm extends Form<PlexSource> {
         }).then(source => {
             this.source = source;
             this.plexToken = source.plexToken;
+            this.loadServers();
         });
     }
 
