@@ -1,8 +1,8 @@
 ---
-title: docker-compose configuration
+title: Configuration
 ---
 
-These are all the configuration options you can set via docker-compose. These don't apply to Kubernetes, as those settings are configured via helm.
+These are all the configuration options you can set via environment variables.
 
 Append any of the following keys to your `.env` file, and run `docker-compose up -d` to apply them.
 
