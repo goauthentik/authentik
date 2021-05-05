@@ -24,10 +24,10 @@ jobs:
         with:
           push: true
           tags: |
-            beryju/authentik-proxy:2021.4.5,
-            beryju/authentik-proxy:latest,
-            ghcr.io/goauthentik/authentik:2021.4.5,
-            ghcr.io/goauthentik/authentik:latest
+            beryju/authentik:2021.4.5,
+            beryju/authentik:latest,
+            ghcr.io/goauthentik/server:2021.4.5,
+            ghcr.io/goauthentik/server:latest
           platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v8
   build-proxy:
     runs-on: ubuntu-latest
@@ -60,16 +60,22 @@ jobs:
             beryju/authentik-proxy:latest,
             ghcr.io/goauthentik/proxy:2021.4.5,
             ghcr.io/goauthentik/proxy:latest
-          context: proxy/
-          file: proxy/proxy.Dockerfile
+          context: outpost/
+          file: outpost/proxy.Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v8
-  build-static:
+  build-ldap:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: prepare ts api client
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "^1.15"
+      - name: prepare go api client
         run: |
-          docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate -i /local/swagger.yaml -g typescript-fetch -o /local/web/api --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
+          cd outpost
+          go get -u github.com/go-swagger/go-swagger/cmd/swagger
+          swagger generate client -f ../swagger.yaml -A authentik -t pkg/
+          go build -v .
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -84,17 +90,18 @@ jobs:
         with:
           push: true
           tags: |
-            beryju/authentik-static:2021.4.5,
-            beryju/authentik-static:latest,
-            ghcr.io/goauthentik/static:2021.4.5,
-            ghcr.io/goauthentik/static:latest
-          context: web/
+            beryju/authentik-ldap:2021.4.5,
+            beryju/authentik-ldap:latest,
+            ghcr.io/goauthentik/ldap:2021.4.5,
+            ghcr.io/goauthentik/ldap:latest
+          context: outpost/
+          file: outpost/ldap.Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v8
   test-release:
     needs:
       - build-server
-      - build-static
       - build-proxy
+      - build-ldap
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
