@@ -51,7 +51,7 @@ export class ProviderListPage extends TablePage<Provider> {
         return [
             new TableColumn(t`Name`, "name"),
             new TableColumn(t`Application`),
-            new TableColumn(t`Type`, "type"),
+            new TableColumn(t`Type`),
             new TableColumn(""),
         ];
     }

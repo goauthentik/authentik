@@ -7,6 +7,7 @@ import "../../elements/PageHeader";
 import "./saml/SAMLProviderViewPage";
 import "./oauth2/OAuth2ProviderViewPage";
 import "./proxy/ProxyProviderViewPage";
+import "./ldap/LDAPProviderViewPage";
 import { Provider, ProvidersApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
@@ -35,6 +36,8 @@ export class ProviderViewPage extends LitElement {
                 return html`<ak-provider-oauth2-view providerID=${ifDefined(this.provider.pk)}></ak-provider-oauth2-view>`;
             case "ak-provider-proxy-form":
                 return html`<ak-provider-proxy-view providerID=${ifDefined(this.provider.pk)}></ak-provider-proxy-view>`;
+            case "ak-provider-ldap-form":
+                return html`<ak-provider-ldap-view providerID=${ifDefined(this.provider.pk)}></ak-provider-ldap-view>`;
             default:
                 return html`<p>Invalid provider type ${this.provider?.component}</p>`;
         }
