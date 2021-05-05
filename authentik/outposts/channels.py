@@ -82,7 +82,8 @@ class OutpostConsumer(AuthJsonConsumer):
             state.version = msg.args.get("version", None)
         elif msg.instruction == WebsocketMessageInstruction.ACK:
             return
-        state.save(timeout=OUTPOST_HELLO_INTERVAL * 1.5)
+        if state.version:
+            state.save(timeout=OUTPOST_HELLO_INTERVAL * 1.5)
 
         response = WebsocketMessage(instruction=WebsocketMessageInstruction.ACK)
         self.send_json(asdict(response))
