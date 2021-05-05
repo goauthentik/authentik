@@ -45,7 +45,11 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
         selector_labels = DeploymentReconciler(self.controller).get_pod_meta()
         return V1Service(
             metadata=meta,
-            spec=V1ServiceSpec(ports=ports, selector=selector_labels, type="ClusterIP"),
+            spec=V1ServiceSpec(
+                ports=ports,
+                selector=selector_labels,
+                type=self.controller.outpost.config.kubernetes_service_type,
+            ),
         )
 
     def create(self, reference: V1Service):
