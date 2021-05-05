@@ -86,6 +86,12 @@ class ConfigLoader:
         url = urlparse(value)
         if url.scheme == "env":
             value = os.getenv(url.netloc, url.query)
+        if url.scheme == "file":
+            try:
+                with open(url.netloc, "r") as _file:
+                    value = _file.read()
+            except OSError:
+                self._log("error", f"Failed to read config value from {url.netloc}")
         return value
 
     def update_from_file(self, path: str):
@@ -163,6 +169,7 @@ class ConfigLoader:
         # Walk each component of the path
         path_parts = path.split(sep)
         for comp in path_parts[:-1]:
+            # pyright: reportGeneralTypeIssues=false
             if comp not in root:
                 root[comp] = {}
             root = root.get(comp)

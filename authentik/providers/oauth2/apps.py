@@ -1,11 +1,11 @@
-"""authentik auth oauth provider app config"""
+"""authentik oauth provider app config"""
 from importlib import import_module
 
 from django.apps import AppConfig
 
 
 class AuthentikProviderOAuth2Config(AppConfig):
-    """authentik auth oauth provider app config"""
+    """authentik oauth provider app config"""
 
     name = "authentik.providers.oauth2"
     label = "authentik_providers_oauth2"

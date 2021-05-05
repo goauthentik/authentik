@@ -156,6 +156,7 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                     <ak-form-element-horizontal
                         label=${t`Consumer secret`}
                         ?required=${true}
+                        ?writeOnly=${this.source !== undefined}
                         name="consumerSecret">
                         <input type="text" value="${ifDefined(this.source?.consumerSecret)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>

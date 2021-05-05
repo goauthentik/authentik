@@ -54,4 +54,4 @@ class UserConsentViewSet(
         user = self.request.user if self.request else get_anonymous_user()
         if user.is_superuser:
             return super().get_queryset()
-        return super().get_queryset().filter(user=user)
+        return super().get_queryset().filter(user=user.pk)

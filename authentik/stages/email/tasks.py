@@ -51,6 +51,7 @@ def send_mail(
         try:
             backend = stage.backend
         except ValueError as exc:
+            # pyright: reportGeneralTypeIssues=false
             LOGGER.warning(exc)
             self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
             return

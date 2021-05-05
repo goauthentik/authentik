@@ -47,6 +47,7 @@ from authentik.policies.reputation.api import (
     ReputationPolicyViewSet,
     UserReputationViewSet,
 )
+from authentik.providers.ldap.api import LDAPOutpostConfigViewSet, LDAPProviderViewSet
 from authentik.providers.oauth2.api.provider import OAuth2ProviderViewSet
 from authentik.providers.oauth2.api.scope import ScopeMappingViewSet
 from authentik.providers.oauth2.api.tokens import (
@@ -121,6 +122,7 @@ router.register(
     "outposts/service_connections/kubernetes", KubernetesServiceConnectionViewSet
 )
 router.register("outposts/proxy", ProxyOutpostConfigViewSet)
+router.register("outposts/ldap", LDAPOutpostConfigViewSet)
 
 router.register("flows/instances", FlowViewSet)
 router.register("flows/bindings", FlowStageBindingViewSet)
@@ -151,6 +153,7 @@ router.register("policies/reputation/ips", IPReputationViewSet)
 router.register("policies/reputation", ReputationPolicyViewSet)
 
 router.register("providers/all", ProviderViewSet)
+router.register("providers/ldap", LDAPProviderViewSet)
 router.register("providers/proxy", ProxyProviderViewSet)
 router.register("providers/oauth2", OAuth2ProviderViewSet)
 router.register("providers/saml", SAMLProviderViewSet)

@@ -91,7 +91,7 @@ msgid "Action"
 msgstr "Action"
 
 #: src/pages/groups/MemberSelectModal.ts:46
-#: src/pages/users/UserListPage.ts:51
+#: src/pages/users/UserListPage.ts:55
 #: src/pages/users/UserViewPage.ts:116
 msgid "Active"
 msgstr "Active"
@@ -767,8 +767,8 @@ msgstr "Copy Key"
 #: src/pages/stages/prompt/PromptStageForm.ts:98
 #: src/pages/user-settings/tokens/UserTokenList.ts:50
 #: src/pages/user-settings/tokens/UserTokenList.ts:58
-#: src/pages/users/UserListPage.ts:151
-#: src/pages/users/UserListPage.ts:159
+#: src/pages/users/UserListPage.ts:155
+#: src/pages/users/UserListPage.ts:163
 msgid "Create"
 msgstr "Create"
 
@@ -838,7 +838,7 @@ msgstr "Create Stage binding"
 msgid "Create Token"
 msgstr "Create Token"
 
-#: src/pages/users/UserListPage.ts:154
+#: src/pages/users/UserListPage.ts:158
 msgid "Create User"
 msgstr "Create User"
 
@@ -916,7 +916,7 @@ msgstr "Define how notifications are sent to users, like Email or Webhook."
 #: src/pages/tokens/TokenListPage.ts:68
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:40
 #: src/pages/user-settings/tokens/UserTokenList.ts:125
-#: src/pages/users/UserListPage.ts:115
+#: src/pages/users/UserListPage.ts:119
 msgid "Delete"
 msgstr "Delete"
 
@@ -1006,8 +1006,8 @@ msgstr "Digest algorithm"
 msgid "Digits"
 msgstr "Digits"
 
-#: src/pages/users/UserListPage.ts:81
-#: src/pages/users/UserListPage.ts:100
+#: src/pages/users/UserListPage.ts:85
+#: src/pages/users/UserListPage.ts:104
 msgid "Disable"
 msgstr "Disable"
 
@@ -1068,7 +1068,7 @@ msgstr "Each provider has a different issuer, based on the application slug."
 #: src/pages/stages/StageListPage.ts:98
 #: src/pages/stages/prompt/PromptListPage.ts:75
 #: src/pages/user-settings/tokens/UserTokenList.ts:113
-#: src/pages/users/UserListPage.ts:76
+#: src/pages/users/UserListPage.ts:80
 #: src/pages/users/UserViewPage.ts:147
 msgid "Edit"
 msgstr "Edit"
@@ -1119,8 +1119,8 @@ msgstr "Email or username"
 msgid "Email: Text field with Email type."
 msgstr "Email: Text field with Email type."
 
-#: src/pages/users/UserListPage.ts:81
-#: src/pages/users/UserListPage.ts:100
+#: src/pages/users/UserListPage.ts:85
+#: src/pages/users/UserListPage.ts:104
 msgid "Enable"
 msgstr "Enable"
 
@@ -1520,6 +1520,10 @@ msgstr "Hidden: Hidden field, can be used to insert data into form."
 msgid "Hide managed mappings"
 msgstr "Hide managed mappings"
 
+#: src/pages/users/UserListPage.ts:186
+msgid "Hide service-accounts"
+msgstr "Hide service-accounts"
+
 #: src/pages/events/RuleForm.ts:93
 #: src/pages/groups/GroupForm.ts:131
 #: src/pages/outposts/OutpostForm.ts:98
@@ -1577,7 +1581,7 @@ msgstr "If this flag is set, this Stage will jump to the next Stage when no Invi
 msgid "If your authentik Instance is using a self-signed certificate, set this value."
 msgstr "If your authentik Instance is using a self-signed certificate, set this value."
 
-#: src/pages/users/UserListPage.ts:143
+#: src/pages/users/UserListPage.ts:147
 msgid "Impersonate"
 msgstr "Impersonate"
 
@@ -1680,7 +1684,7 @@ msgid "Label shown next to/above the prompt."
 msgstr "Label shown next to/above the prompt."
 
 #: src/pages/groups/MemberSelectModal.ts:47
-#: src/pages/users/UserListPage.ts:52
+#: src/pages/users/UserListPage.ts:56
 #: src/pages/users/UserViewPage.ts:108
 msgid "Last login"
 msgstr "Last login"
@@ -1986,7 +1990,7 @@ msgstr "Monitor"
 #: src/pages/stages/user_write/UserWriteStageForm.ts:55
 #: src/pages/user-settings/UserDetailsPage.ts:64
 #: src/pages/users/UserForm.ts:54
-#: src/pages/users/UserListPage.ts:50
+#: src/pages/users/UserListPage.ts:54
 #: src/pages/users/UserViewPage.ts:92
 msgid "Name"
 msgstr "Name"
@@ -2020,7 +2024,7 @@ msgstr "New version available!"
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:108
 #: src/pages/tokens/TokenListPage.ts:56
 #: src/pages/user-settings/tokens/UserTokenList.ts:83
-#: src/pages/users/UserListPage.ts:63
+#: src/pages/users/UserListPage.ts:67
 msgid "No"
 msgstr "No"
 
@@ -2070,7 +2074,7 @@ msgstr "No policies are currently bound to this object."
 msgid "No policies cached. Users may experience slow response times."
 msgstr "No policies cached. Users may experience slow response times."
 
-#: src/pages/users/UserListPage.ts:135
+#: src/pages/users/UserListPage.ts:139
 msgid "No recovery flow is configured."
 msgstr "No recovery flow is configured."
 
@@ -2628,7 +2632,7 @@ msgstr "Required"
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 
-#: src/pages/users/UserListPage.ts:140
+#: src/pages/users/UserListPage.ts:144
 #: src/pages/users/UserViewPage.ts:165
 msgid "Reset Password"
 msgstr "Reset Password"
@@ -3172,7 +3176,7 @@ msgstr "Successfully deleted {0} {1}"
 msgid "Successfully generated certificate-key pair."
 msgstr "Successfully generated certificate-key pair."
 
-#: src/pages/users/UserListPage.ts:128
+#: src/pages/users/UserListPage.ts:132
 #: src/pages/users/UserViewPage.ts:160
 msgid "Successfully generated recovery link"
 msgstr "Successfully generated recovery link"
@@ -3613,7 +3617,7 @@ msgstr "Up-to-date!"
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:71
 #: src/pages/user-settings/tokens/UserTokenList.ts:105
 #: src/pages/users/UserActiveForm.ts:66
-#: src/pages/users/UserListPage.ts:68
+#: src/pages/users/UserListPage.ts:72
 #: src/pages/users/UserViewPage.ts:139
 msgid "Update"
 msgstr "Update"
@@ -3693,7 +3697,7 @@ msgid "Update Token"
 msgstr "Update Token"
 
 #: src/pages/policies/BoundPoliciesList.ts:106
-#: src/pages/users/UserListPage.ts:71
+#: src/pages/users/UserListPage.ts:75
 #: src/pages/users/UserViewPage.ts:142
 msgid "Update User"
 msgstr "Update User"
@@ -3758,8 +3762,8 @@ msgstr "Use the user's username, but deny enrollment when the username already e
 #: src/pages/property-mappings/PropertyMappingTestForm.ts:51
 #: src/pages/tokens/TokenListPage.ts:45
 #: src/pages/user-settings/tokens/UserTokenList.ts:72
-#: src/pages/users/UserListPage.ts:88
-#: src/pages/users/UserListPage.ts:108
+#: src/pages/users/UserListPage.ts:92
+#: src/pages/users/UserListPage.ts:112
 msgid "User"
 msgstr "User"
 
@@ -3841,7 +3845,7 @@ msgstr "Username: Same as Text input, but checks for and prevents duplicate user
 
 #: src/interfaces/AdminInterface.ts:32
 #: src/pages/admin-overview/AdminOverviewPage.ts:50
-#: src/pages/users/UserListPage.ts:32
+#: src/pages/users/UserListPage.ts:33
 msgid "Users"
 msgstr "Users"
 
@@ -4013,7 +4017,7 @@ msgstr "X509 Subject"
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:105
 #: src/pages/tokens/TokenListPage.ts:56
 #: src/pages/user-settings/tokens/UserTokenList.ts:83
-#: src/pages/users/UserListPage.ts:63
+#: src/pages/users/UserListPage.ts:67
 msgid "Yes"
 msgstr "Yes"
 

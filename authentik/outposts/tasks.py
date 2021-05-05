@@ -3,7 +3,7 @@ from os import R_OK, access
 from os.path import expanduser
 from pathlib import Path
 from socket import gethostname
-from typing import Any
+from typing import Any, Optional
 from urllib.parse import urlparse
 
 import yaml
@@ -19,7 +19,7 @@ from structlog.stdlib import get_logger
 
 from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.lib.utils.reflection import path_to_class
-from authentik.outposts.controllers.base import ControllerException
+from authentik.outposts.controllers.base import BaseController, ControllerException
 from authentik.outposts.models import (
     DockerServiceConnection,
     KubernetesServiceConnection,
@@ -29,11 +29,31 @@ from authentik.outposts.models import (
     OutpostState,
     OutpostType,
 )
+from authentik.providers.ldap.controllers.docker import LDAPDockerController
+from authentik.providers.ldap.controllers.kubernetes import LDAPKubernetesController
 from authentik.providers.proxy.controllers.docker import ProxyDockerController
 from authentik.providers.proxy.controllers.kubernetes import ProxyKubernetesController
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
+
+
+def controller_for_outpost(outpost: Outpost) -> Optional[BaseController]:
+    """Get a controller for the outpost, when a service connection is defined"""
+    if not outpost.service_connection:
+        return None
+    service_connection = outpost.service_connection
+    if outpost.type == OutpostType.PROXY:
+        if isinstance(service_connection, DockerServiceConnection):
+            return ProxyDockerController(outpost, service_connection)
+        if isinstance(service_connection, KubernetesServiceConnection):
+            return ProxyKubernetesController(outpost, service_connection)
+    if outpost.type == OutpostType.LDAP:
+        if isinstance(service_connection, DockerServiceConnection):
+            return LDAPDockerController(outpost, service_connection)
+        if isinstance(service_connection, KubernetesServiceConnection):
+            return LDAPKubernetesController(outpost, service_connection)
+    return None
 
 
 @CELERY_APP.task()
@@ -76,16 +96,10 @@ def outpost_controller(self: MonitoredTask, outpost_pk: str):
     outpost: Outpost = Outpost.objects.get(pk=outpost_pk)
     self.set_uid(slugify(outpost.name))
     try:
-        if not outpost.service_connection:
+        controller = controller_for_outpost(outpost)
+        if not controller:
             return
-        if outpost.type == OutpostType.PROXY:
-            service_connection = outpost.service_connection
-            if isinstance(service_connection, DockerServiceConnection):
-                logs = ProxyDockerController(outpost, service_connection).up_with_logs()
-            if isinstance(service_connection, KubernetesServiceConnection):
-                logs = ProxyKubernetesController(
-                    outpost, service_connection
-                ).up_with_logs()
+        logs = controller.up_with_logs()
         LOGGER.debug("---------------Outpost Controller logs starting----------------")
         for log in logs:
             LOGGER.debug(log)
@@ -100,12 +114,10 @@ def outpost_controller(self: MonitoredTask, outpost_pk: str):
 def outpost_pre_delete(outpost_pk: str):
     """Delete outpost objects before deleting the DB Object"""
     outpost = Outpost.objects.get(pk=outpost_pk)
-    if outpost.type == OutpostType.PROXY:
-        service_connection = outpost.service_connection
-        if isinstance(service_connection, DockerServiceConnection):
-            ProxyDockerController(outpost, service_connection).down()
-        if isinstance(service_connection, KubernetesServiceConnection):
-            ProxyKubernetesController(outpost, service_connection).down()
+    controller = controller_for_outpost(outpost)
+    if not controller:
+        return
+    controller.down()
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)

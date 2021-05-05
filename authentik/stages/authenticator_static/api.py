@@ -46,7 +46,7 @@ class StaticDeviceViewSet(ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user if self.request else get_anonymous_user()
-        return StaticDevice.objects.filter(user=user)
+        return StaticDevice.objects.filter(user=user.pk)
 
 
 class StaticAdminDeviceViewSet(ReadOnlyModelViewSet):

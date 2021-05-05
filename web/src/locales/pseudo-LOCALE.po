@@ -91,7 +91,7 @@ msgid "Action"
 msgstr ""
 
 #: src/pages/groups/MemberSelectModal.ts:46
-#: src/pages/users/UserListPage.ts:51
+#: src/pages/users/UserListPage.ts:55
 #: src/pages/users/UserViewPage.ts:116
 msgid "Active"
 msgstr ""
@@ -761,8 +761,8 @@ msgstr ""
 #: src/pages/stages/prompt/PromptStageForm.ts:98
 #: src/pages/user-settings/tokens/UserTokenList.ts:50
 #: src/pages/user-settings/tokens/UserTokenList.ts:58
-#: src/pages/users/UserListPage.ts:151
-#: src/pages/users/UserListPage.ts:159
+#: src/pages/users/UserListPage.ts:155
+#: src/pages/users/UserListPage.ts:163
 msgid "Create"
 msgstr ""
 
@@ -832,7 +832,7 @@ msgstr ""
 msgid "Create Token"
 msgstr ""
 
-#: src/pages/users/UserListPage.ts:154
+#: src/pages/users/UserListPage.ts:158
 msgid "Create User"
 msgstr ""
 
@@ -910,7 +910,7 @@ msgstr ""
 #: src/pages/tokens/TokenListPage.ts:68
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:40
 #: src/pages/user-settings/tokens/UserTokenList.ts:125
-#: src/pages/users/UserListPage.ts:115
+#: src/pages/users/UserListPage.ts:119
 msgid "Delete"
 msgstr ""
 
@@ -998,8 +998,8 @@ msgstr ""
 msgid "Digits"
 msgstr ""
 
-#: src/pages/users/UserListPage.ts:81
-#: src/pages/users/UserListPage.ts:100
+#: src/pages/users/UserListPage.ts:85
+#: src/pages/users/UserListPage.ts:104
 msgid "Disable"
 msgstr ""
 
@@ -1060,7 +1060,7 @@ msgstr ""
 #: src/pages/stages/StageListPage.ts:98
 #: src/pages/stages/prompt/PromptListPage.ts:75
 #: src/pages/user-settings/tokens/UserTokenList.ts:113
-#: src/pages/users/UserListPage.ts:76
+#: src/pages/users/UserListPage.ts:80
 #: src/pages/users/UserViewPage.ts:147
 msgid "Edit"
 msgstr ""
@@ -1111,8 +1111,8 @@ msgstr ""
 msgid "Email: Text field with Email type."
 msgstr ""
 
-#: src/pages/users/UserListPage.ts:81
-#: src/pages/users/UserListPage.ts:100
+#: src/pages/users/UserListPage.ts:85
+#: src/pages/users/UserListPage.ts:104
 msgid "Enable"
 msgstr ""
 
@@ -1512,6 +1512,10 @@ msgstr ""
 msgid "Hide managed mappings"
 msgstr ""
 
+#: src/pages/users/UserListPage.ts:186
+msgid "Hide service-accounts"
+msgstr ""
+
 #: src/pages/events/RuleForm.ts:93
 #: src/pages/groups/GroupForm.ts:131
 #: src/pages/outposts/OutpostForm.ts:98
@@ -1569,7 +1573,7 @@ msgstr ""
 msgid "If your authentik Instance is using a self-signed certificate, set this value."
 msgstr ""
 
-#: src/pages/users/UserListPage.ts:143
+#: src/pages/users/UserListPage.ts:147
 msgid "Impersonate"
 msgstr ""
 
@@ -1672,7 +1676,7 @@ msgid "Label shown next to/above the prompt."
 msgstr ""
 
 #: src/pages/groups/MemberSelectModal.ts:47
-#: src/pages/users/UserListPage.ts:52
+#: src/pages/users/UserListPage.ts:56
 #: src/pages/users/UserViewPage.ts:108
 msgid "Last login"
 msgstr ""
@@ -1978,7 +1982,7 @@ msgstr ""
 #: src/pages/stages/user_write/UserWriteStageForm.ts:55
 #: src/pages/user-settings/UserDetailsPage.ts:64
 #: src/pages/users/UserForm.ts:54
-#: src/pages/users/UserListPage.ts:50
+#: src/pages/users/UserListPage.ts:54
 #: src/pages/users/UserViewPage.ts:92
 msgid "Name"
 msgstr ""
@@ -2012,7 +2016,7 @@ msgstr ""
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:108
 #: src/pages/tokens/TokenListPage.ts:56
 #: src/pages/user-settings/tokens/UserTokenList.ts:83
-#: src/pages/users/UserListPage.ts:63
+#: src/pages/users/UserListPage.ts:67
 msgid "No"
 msgstr ""
 
@@ -2062,7 +2066,7 @@ msgstr ""
 msgid "No policies cached. Users may experience slow response times."
 msgstr ""
 
-#: src/pages/users/UserListPage.ts:135
+#: src/pages/users/UserListPage.ts:139
 msgid "No recovery flow is configured."
 msgstr ""
 
@@ -2620,7 +2624,7 @@ msgstr ""
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr ""
 
-#: src/pages/users/UserListPage.ts:140
+#: src/pages/users/UserListPage.ts:144
 #: src/pages/users/UserViewPage.ts:165
 msgid "Reset Password"
 msgstr ""
@@ -3164,7 +3168,7 @@ msgstr ""
 msgid "Successfully generated certificate-key pair."
 msgstr ""
 
-#: src/pages/users/UserListPage.ts:128
+#: src/pages/users/UserListPage.ts:132
 #: src/pages/users/UserViewPage.ts:160
 msgid "Successfully generated recovery link"
 msgstr ""
@@ -3601,7 +3605,7 @@ msgstr ""
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:71
 #: src/pages/user-settings/tokens/UserTokenList.ts:105
 #: src/pages/users/UserActiveForm.ts:66
-#: src/pages/users/UserListPage.ts:68
+#: src/pages/users/UserListPage.ts:72
 #: src/pages/users/UserViewPage.ts:139
 msgid "Update"
 msgstr ""
@@ -3681,7 +3685,7 @@ msgid "Update Token"
 msgstr ""
 
 #: src/pages/policies/BoundPoliciesList.ts:106
-#: src/pages/users/UserListPage.ts:71
+#: src/pages/users/UserListPage.ts:75
 #: src/pages/users/UserViewPage.ts:142
 msgid "Update User"
 msgstr ""
@@ -3746,8 +3750,8 @@ msgstr ""
 #: src/pages/property-mappings/PropertyMappingTestForm.ts:51
 #: src/pages/tokens/TokenListPage.ts:45
 #: src/pages/user-settings/tokens/UserTokenList.ts:72
-#: src/pages/users/UserListPage.ts:88
-#: src/pages/users/UserListPage.ts:108
+#: src/pages/users/UserListPage.ts:92
+#: src/pages/users/UserListPage.ts:112
 msgid "User"
 msgstr ""
 
@@ -3829,7 +3833,7 @@ msgstr ""
 
 #: src/interfaces/AdminInterface.ts:32
 #: src/pages/admin-overview/AdminOverviewPage.ts:50
-#: src/pages/users/UserListPage.ts:32
+#: src/pages/users/UserListPage.ts:33
 msgid "Users"
 msgstr ""
 
@@ -3999,7 +4003,7 @@ msgstr ""
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts:105
 #: src/pages/tokens/TokenListPage.ts:56
 #: src/pages/user-settings/tokens/UserTokenList.ts:83
-#: src/pages/users/UserListPage.ts:63
+#: src/pages/users/UserListPage.ts:67
 msgid "Yes"
 msgstr ""
 

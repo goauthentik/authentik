@@ -8,6 +8,7 @@ import "../../elements/buttons/Dropdown";
 import "../../elements/forms/DeleteForm";
 import "../../elements/forms/ModalForm";
 import "../../elements/forms/ProxyForm";
+import "./ldap/LDAPProviderForm";
 import "./oauth2/OAuth2ProviderForm";
 import "./proxy/ProxyProviderForm";
 import "./saml/SAMLProviderForm";

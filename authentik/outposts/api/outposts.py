@@ -24,6 +24,7 @@ class OutpostSerializer(ModelSerializer):
         fields = [
             "pk",
             "name",
+            "type",
             "providers",
             "providers_obj",
             "service_connection",
