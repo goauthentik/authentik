@@ -41,7 +41,7 @@ export class AggregateCard extends LitElement {
 
     renderHeaderLink(): TemplateResult {
         return html`${this.headerLink ? html`<a href="${this.headerLink}">
-            <i class="fa fa-external-link-alt"> </i>
+            <i class="fa fa-link"> </i>
         </a>` : ""}`;
     }
 
