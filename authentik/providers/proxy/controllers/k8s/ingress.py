@@ -52,7 +52,7 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
         expected_hosts_tls = []
         for proxy_provider in ProxyProvider.objects.filter(
             outpost__in=[self.controller.outpost],
-            forward_auth_mode=True,
+            forward_auth_mode=False,
         ):
             proxy_provider: ProxyProvider
             external_host_name = urlparse(proxy_provider.external_host)
@@ -101,7 +101,7 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
         tls_hosts = []
         for proxy_provider in ProxyProvider.objects.filter(
             outpost__in=[self.controller.outpost],
-            forward_auth_mode=True,
+            forward_auth_mode=False,
         ):
             proxy_provider: ProxyProvider
             external_host_name = urlparse(proxy_provider.external_host)
