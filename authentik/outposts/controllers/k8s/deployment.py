@@ -37,10 +37,6 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         self.api = AppsV1Api(controller.client)
         self.outpost = self.controller.outpost
 
-    @property
-    def name(self) -> str:
-        return f"authentik-outpost-{self.controller.outpost.uuid.hex}"
-
     def reconcile(self, current: V1Deployment, reference: V1Deployment):
         super().reconcile(current, reference)
         if current.spec.replicas != reference.spec.replicas:

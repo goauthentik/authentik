@@ -33,10 +33,6 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
         super().__init__(controller)
         self.api = NetworkingV1beta1Api(controller.client)
 
-    @property
-    def name(self) -> str:
-        return f"authentik-outpost-{self.controller.outpost.uuid.hex}"
-
     def _check_annotations(self, reference: NetworkingV1beta1Ingress):
         """Check that all annotations *we* set are correct"""
         for key, value in self.get_ingress_annotations().items():

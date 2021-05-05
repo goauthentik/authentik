@@ -56,6 +56,7 @@ class OutpostConfig:
         "error_reporting.environment", "customer"
     )
 
+    object_naming_template: str = field(default="ak-outpost-%(name)s")
     kubernetes_replicas: int = field(default=1)
     kubernetes_namespace: str = field(default="default")
     kubernetes_ingress_annotations: dict[str, str] = field(default_factory=dict)
