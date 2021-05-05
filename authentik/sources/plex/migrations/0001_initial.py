@@ -3,6 +3,7 @@
 import django.contrib.postgres.fields
 import django.db.models.deletion
 from django.db import migrations, models
+
 import authentik.providers.oauth2.generators
 
 

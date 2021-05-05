@@ -18168,6 +18168,15 @@ definitions:
           title: Allowed servers
           type: string
           minLength: 1
+      allow_friends:
+        title: Allow friends
+        description: Allow friends to authenticate, even if you don't share a server.
+        type: boolean
+      plex_token:
+        title: Plex token
+        description: Plex token used to check firends
+        type: string
+        minLength: 1
   PlexTokenRedeem:
     required:
       - plex_token

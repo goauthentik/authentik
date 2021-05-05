@@ -1,8 +1,7 @@
 """Plex Views"""
 from urllib.parse import urlencode
 
-from django.http.request import HttpRequest
-from django.http.response import Http404, HttpResponse
+from django.http.response import Http404
 from requests import Session
 from requests.exceptions import RequestException
 from structlog.stdlib import get_logger
@@ -52,6 +51,18 @@ class PlexAuth:
         response.raise_for_status()
         return response.json()
 
+    def get_friends(self) -> list[dict]:
+        """Get plex friends"""
+        qs = {
+            "X-Plex-Token": self._token,
+            "X-Plex-Client-Identifier": self._source.client_id,
+        }
+        response = self._session.get(
+            f"https://plex.tv/api/v2/friends?{urlencode(qs)}",
+        )
+        response.raise_for_status()
+        return response.json()
+
     def get_user_info(self) -> tuple[dict, int]:
         """Get user info of the plex token"""
         qs = {
@@ -86,17 +97,6 @@ class PlexAuth:
                     )
                     return True
         return False
-
-    def get_user_url(self, request: HttpRequest) -> HttpResponse:
-        """Get a URL to a flow executor for either enrollment or authentication"""
-        user_info, identifier = self.get_user_info()
-        sfm = PlexSourceFlowManager(
-            source=self._source,
-            request=request,
-            identifier=str(identifier),
-            enroll_info=user_info,
-        )
-        return sfm.get_flow(plex_token=self._token)
 
 
 class PlexSourceFlowManager(SourceFlowManager):

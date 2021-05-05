@@ -29,12 +29,20 @@ class PlexSource(Source):
     allowed_servers = ArrayField(
         models.TextField(),
         default=list,
+        blank=True,
         help_text=_(
             (
                 "Which servers a user has to be a member of to be granted access. "
                 "Empty list allows every server."
             )
         ),
+    )
+    allow_friends = models.BooleanField(
+        default=True,
+        help_text=_("Allow friends to authenticate, even if you don't share a server."),
+    )
+    plex_token = models.TextField(
+        default="", help_text=_("Plex token used to check firends")
     )
 
     @property

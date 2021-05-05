@@ -9,14 +9,16 @@ from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from structlog.stdlib import get_logger
 
 from authentik.api.decorators import permission_required
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.utils import PassiveSerializer
 from authentik.flows.challenge import RedirectChallenge
-from authentik.flows.views import to_stage_response
 from authentik.sources.plex.models import PlexSource
-from authentik.sources.plex.plex import PlexAuth
+from authentik.sources.plex.plex import PlexAuth, PlexSourceFlowManager
+
+LOGGER = get_logger()
 
 
 class PlexSourceSerializer(SourceSerializer):
@@ -24,7 +26,13 @@ class PlexSourceSerializer(SourceSerializer):
 
     class Meta:
         model = PlexSource
-        fields = SourceSerializer.Meta.fields + ["client_id", "allowed_servers"]
+        fields = SourceSerializer.Meta.fields + [
+            "client_id",
+            "allowed_servers",
+            "allow_friends",
+            "plex_token",
+        ]
+        extra_kwargs = {"plex_token": {"write_only": True}}
 
 
 class PlexTokenRedeemSerializer(PassiveSerializer):
@@ -69,7 +77,29 @@ class PlexSourceViewSet(ModelViewSet):
         if not plex_token:
             raise Http404
         auth_api = PlexAuth(source, plex_token)
-        if not auth_api.check_server_overlap():
+        user_info, identifier = auth_api.get_user_info()
+        # Check friendship first, then check server overlay
+        friends_allowed = False
+        if source.allow_friends:
+            owner_api = PlexAuth(source, source.plex_token)
+            owner_friends = owner_api.get_friends()
+            for friend in owner_friends:
+                if int(friend.get("id", "0")) == int(identifier):
+                    friends_allowed = True
+                    LOGGER.info(
+                        "allowing user for plex because of friend",
+                        user=user_info["username"],
+                    )
+        if not auth_api.check_server_overlap() or not friends_allowed:
+            LOGGER.warning(
+                "Denying plex auth because no server overlay and no friends",
+                user=user_info["username"],
+            )
             raise Http404
-        response = auth_api.get_user_url(request)
-        return to_stage_response(request, response)
+        sfm = PlexSourceFlowManager(
+            source=source,
+            request=request,
+            identifier=str(identifier),
+            enroll_info=user_info,
+        )
+        return sfm.get_flow(plex_token=plex_token)

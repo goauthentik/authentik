@@ -20,6 +20,7 @@ export class PlexSourceForm extends Form<PlexSource> {
             slug: value,
         }).then(source => {
             this.source = source;
+            this.plexToken = source.plexToken;
         });
     }
 
@@ -43,6 +44,7 @@ export class PlexSourceForm extends Form<PlexSource> {
     }
 
     send = (data: PlexSource): Promise<PlexSource> => {
+        data.plexToken = this.plexToken;
         if (this.source.slug) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesPlexUpdate({
                 slug: this.source.slug,
@@ -127,6 +129,14 @@ export class PlexSourceForm extends Form<PlexSource> {
                         ?required=${true}
                         name="clientId">
                         <input type="text" value="${first(this.source?.clientId)}" class="pf-c-form-control" required>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal name="allowFriends">
+                        <div class="pf-c-check">
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.source?.allowFriends, true)}>
+                            <label class="pf-c-check__label">
+                                ${t`Allow friends to authenticate via Plex, even if you don't share any servers`}
+                            </label>
+                        </div>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Allowed servers`}
