@@ -4,6 +4,13 @@
     text-align: center;
     position: relative;
     overflow: hidden;
+    overflow-wrap: normal;
+}
+
+@media (max-width: 996px) {
+    .heroBanner img {
+        margin-top: 1rem;
+    }
 }
 
 @media screen and (max-width: 966px) {

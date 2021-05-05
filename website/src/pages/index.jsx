@@ -68,7 +68,7 @@ function Home() {
                     <div className="row">
                         <div className="col padding-top--lg">
                             <h1 className="hero__title">
-                                {siteConfig.tagline}
+                                Making authentication simple.
                             </h1>
                             <p className="hero__subtitle">
                                 authentik is an open-source Identity Provider
