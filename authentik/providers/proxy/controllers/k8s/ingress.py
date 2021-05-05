@@ -17,6 +17,7 @@ from kubernetes.client.models.networking_v1beta1_ingress_rule import (
 
 from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import (
+    Disabled,
     KubernetesObjectReconciler,
     NeedsUpdate,
 )
@@ -50,7 +51,8 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
         expected_hosts = []
         expected_hosts_tls = []
         for proxy_provider in ProxyProvider.objects.filter(
-            outpost__in=[self.controller.outpost]
+            outpost__in=[self.controller.outpost],
+            forward_auth_mode=True,
         ):
             proxy_provider: ProxyProvider
             external_host_name = urlparse(proxy_provider.external_host)
@@ -98,7 +100,8 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
         rules = []
         tls_hosts = []
         for proxy_provider in ProxyProvider.objects.filter(
-            outpost__in=[self.controller.outpost]
+            outpost__in=[self.controller.outpost],
+            forward_auth_mode=True,
         ):
             proxy_provider: ProxyProvider
             external_host_name = urlparse(proxy_provider.external_host)
@@ -119,6 +122,8 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
                 ),
             )
             rules.append(rule)
+        if not rules:
+            raise Disabled()
         tls_config = None
         if tls_hosts:
             tls_config = NetworkingV1beta1IngressTLS(

@@ -29,6 +29,11 @@ class NeedsUpdate(ReconcileTrigger):
     """Exception to trigger an update to the Kubernetes Object"""
 
 
+class Disabled(SentryIgnoredException):
+    """Exception which can be thrown in a reconciler to signal than an
+    object should not be created."""
+
+
 class KubernetesObjectReconciler(Generic[T]):
     """Base Kubernetes Reconciler, handles the basic logic."""
 
@@ -50,7 +55,11 @@ class KubernetesObjectReconciler(Generic[T]):
     def up(self):
         """Create object if it doesn't exist, update if needed or recreate if needed."""
         current = None
-        reference = self.get_reference_object()
+        try:
+            reference = self.get_reference_object()
+        except Disabled:
+            self.logger.debug("Object not required")
+            return
         try:
             try:
                 current = self.retrieve()
