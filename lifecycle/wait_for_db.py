@@ -35,9 +35,9 @@ while True:
         )
         conn.cursor()
         break
-    except OperationalError:
+    except OperationalError as exc:
         sleep(1)
-        j_print("PostgreSQL Connection failed, retrying...")
+        j_print(f"PostgreSQL Connection failed, retrying... ({exc})")
 
 while True:
     try:
@@ -49,6 +49,6 @@ while True:
         )
         redis.ping()
         break
-    except RedisError:
+    except RedisError as exc:
         sleep(1)
-        j_print("Redis Connection failed, retrying...")
+        j_print(f"Redis Connection failed, retrying... ({exc})")
