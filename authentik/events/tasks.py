@@ -61,7 +61,13 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
         return
 
     LOGGER.debug("e(trigger): checking if trigger applies", trigger=trigger)
-    user = User.objects.filter(pk=event.user.get("pk")).first() or get_anonymous_user()
+    try:
+        user = (
+            User.objects.filter(pk=event.user.get("pk")).first() or get_anonymous_user()
+        )
+    except User.DoesNotExist:
+        LOGGER.warning("e(trigger): failed to get user", trigger=trigger)
+        return
     policy_engine = PolicyEngine(trigger, user)
     policy_engine.mode = PolicyEngineMode.MODE_ANY
     policy_engine.empty_result = False
