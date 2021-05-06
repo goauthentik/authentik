@@ -68,7 +68,6 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
                 )
             )
         meta = self.get_object_meta(name=self.name)
-        secret_name = f"authentik-outpost-{self.controller.outpost.uuid.hex}-api"
         image_name = self.controller.get_container_image()
         return V1Deployment(
             metadata=meta,
@@ -88,7 +87,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
                                         name="AUTHENTIK_HOST",
                                         value_from=V1EnvVarSource(
                                             secret_key_ref=V1SecretKeySelector(
-                                                name=secret_name,
+                                                name=self.name,
                                                 key="authentik_host",
                                             )
                                         ),
@@ -97,7 +96,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
                                         name="AUTHENTIK_TOKEN",
                                         value_from=V1EnvVarSource(
                                             secret_key_ref=V1SecretKeySelector(
-                                                name=secret_name,
+                                                name=self.name,
                                                 key="token",
                                             )
                                         ),
