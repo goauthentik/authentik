@@ -1,7 +1,10 @@
 trigger:
-  - master
-  - next
-  - version-*
+  batch: true
+  branches:
+    include:
+      - master
+      - next
+      - version-*
 
 stages:
   - stage: generate
