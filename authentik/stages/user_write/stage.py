@@ -7,7 +7,8 @@ from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
 from authentik.core.middleware import SESSION_IMPERSONATE_USER
-from authentik.core.models import User
+from authentik.core.models import USER_ATTRIBUTE_SOURCES, User, UserSourceConnection
+from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView
 from authentik.lib.utils.reflection import class_to_path
@@ -41,7 +42,7 @@ class UserWriteStageView(StageView):
                 flow_slug=self.executor.flow.slug,
             )
             user_created = True
-        user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
+        user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         # Before we change anything, check if the user is the same as in the request
         # and we're updating a password. In that case we need to update the session hash
         # Also check that we're not currently impersonating, so we don't update the session
@@ -73,6 +74,16 @@ class UserWriteStageView(StageView):
         if user.username == "":
             LOGGER.warning("Aborting write to empty username", user=user)
             return self.executor.stage_invalid()
+        # Check if we're writing from a source, and save the source to the attributes
+        if PLAN_CONTEXT_SOURCES_CONNECTION in self.executor.plan.context:
+            if USER_ATTRIBUTE_SOURCES not in user.attributes or not isinstance(
+                user.attributes.get(USER_ATTRIBUTE_SOURCES), list
+            ):
+                user.attributes[USER_ATTRIBUTE_SOURCES] = []
+            connection: UserSourceConnection = self.executor.plan.context[
+                PLAN_CONTEXT_SOURCES_CONNECTION
+            ]
+            user.attributes[USER_ATTRIBUTE_SOURCES].append(connection.source.name)
         user.save()
         user_write.send(
             sender=self, request=request, user=user, data=data, created=user_created
