@@ -1,6 +1,6 @@
 """Event notification tasks"""
 from guardian.shortcuts import get_anonymous_user
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.events.models import (

@@ -13,7 +13,7 @@ from django.db.models.query_utils import Q
 from django.db.utils import IntegrityError
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer, Serializer
-from structlog import BoundLogger, get_logger
+from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.flows.models import Flow, FlowStageBinding, Stage
 from authentik.flows.transfer.common import (

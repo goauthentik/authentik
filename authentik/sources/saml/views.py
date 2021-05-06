@@ -11,7 +11,8 @@ from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from xmlsec import VerificationError
+from structlog.stdlib import get_logger
+from xmlsec import InternalError, VerificationError
 
 from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.flows.models import in_memory_stage
@@ -44,6 +45,7 @@ from authentik.stages.consent.stage import (
 PLAN_CONTEXT_TITLE = "title"
 PLAN_CONTEXT_URL = "url"
 PLAN_CONTEXT_ATTRS = "attrs"
+LOGGER = get_logger()
 
 
 class AutosubmitStageView(ChallengeStageView):
@@ -125,7 +127,11 @@ class InitiateView(View):
             final_url = urlunparse(res)
             return redirect(final_url)
         # As POST Binding we show a form
-        saml_request = nice64(auth_n_req.build_auth_n())
+        try:
+            saml_request = nice64(auth_n_req.build_auth_n())
+        except InternalError as exc:
+            LOGGER.warning(str(exc))
+            return bad_request_message(request, str(exc))
         injected_stages = []
         plan_kwargs = {
             PLAN_CONTEXT_TITLE: _("Redirecting to %(app)s..." % {"app": source.name}),
