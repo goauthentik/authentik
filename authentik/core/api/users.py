@@ -110,10 +110,7 @@ class UsersFilter(FilterSet):
         method="filter_attributes",
     )
 
-    is_superuser = BooleanFilter(
-        field_name="ak_groups",
-        lookup_expr="is_superuser"
-    )
+    is_superuser = BooleanFilter(field_name="ak_groups", lookup_expr="is_superuser")
 
     # pylint: disable=unused-argument
     def filter_attributes(self, queryset, name, value):
