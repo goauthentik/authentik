@@ -105,8 +105,8 @@ class PlexSourceFlowManager(SourceFlowManager):
     connection_type = PlexSourceConnection
 
     def update_connection(
-        self, connection: PlexSourceConnection, plex_token: str
+        self, connection: PlexSourceConnection, **kwargs
     ) -> PlexSourceConnection:
         """Set the access_token on the connection"""
-        connection.plex_token = plex_token
+        connection.plex_token = kwargs.get("plex_token")
         return connection

@@ -13,6 +13,8 @@ import { BaseStage } from "../../stages/base";
 import { PlexAPIClient, popupCenterScreen } from "./API";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { SourcesApi } from "authentik-api";
+import { showMessage } from "../../../elements/messages/MessageContainer";
+import { MessageLevel } from "../../../elements/messages/Message";
 
 export interface PlexAuthenticationChallenge extends Challenge {
 
@@ -41,8 +43,18 @@ export class PlexLoginInit extends BaseStage {
                     plexToken: token,
                 },
                 slug: this.challenge?.slug || "",
-            }).then(r => {
+            }).then((r) => {
                 window.location.assign(r.to);
+            }).catch((r: Response) => {
+                r.json().then((body: {detail: string}) => {
+                    showMessage({
+                        level: MessageLevel.error,
+                        message: body.detail
+                    });
+                    setTimeout(() => {
+                        window.location.assign("/");
+                    }, 5000);
+                });
             });
         });
     }
