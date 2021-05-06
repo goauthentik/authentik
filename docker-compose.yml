@@ -3,7 +3,7 @@ version: '3.2'
 
 services:
   postgresql:
-    image: postgres:12
+    image: postgres:12-alpine
     restart: unless-stopped
     volumes:
       - database:/var/lib/postgresql/data
@@ -16,7 +16,7 @@ services:
     env_file:
       - .env
   redis:
-    image: redis
+    image: redis:alpine
     restart: unless-stopped
     networks:
       - internal
