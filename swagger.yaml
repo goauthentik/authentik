@@ -10658,8 +10658,6 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/RedirectChallenge'
-        '404':
-          description: Token not found
         '400':
           description: Invalid input.
           schema:

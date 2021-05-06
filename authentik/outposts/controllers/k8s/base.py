@@ -42,7 +42,7 @@ class KubernetesObjectReconciler(Generic[T]):
     def __init__(self, controller: "KubernetesController"):
         self.controller = controller
         self.namespace = controller.outpost.config.kubernetes_namespace
-        self.logger = get_logger()
+        self.logger = get_logger().bind(type=self.__class__.__name__)
 
     @property
     def name(self) -> str:
@@ -79,7 +79,7 @@ class KubernetesObjectReconciler(Generic[T]):
                 self.delete(current)
             else:
                 self.logger.debug("No old found, creating")
-            self.logger.debug("Created")
+            self.logger.debug("Creating")
             self.create(reference)
         except NeedsUpdate:
             self.logger.debug("Updating")
