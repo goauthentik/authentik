@@ -144,6 +144,10 @@ msgstr ""
 msgid "Allow IDP-initiated logins"
 msgstr ""
 
+#: src/pages/sources/plex/PlexSourceForm.ts:147
+msgid "Allow friends to authenticate via Plex, even if you don't share any servers"
+msgstr ""
+
 #: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:90
 msgid "Allow up to N occurrences in the HIBP database."
 msgstr ""
@@ -156,7 +160,7 @@ msgstr ""
 msgid "Allowed count"
 msgstr ""
 
-#: src/pages/sources/plex/PlexSourceForm.ts:141
+#: src/pages/sources/plex/PlexSourceForm.ts:152
 msgid "Allowed servers"
 msgstr ""
 
@@ -182,7 +186,7 @@ msgid "App"
 msgstr ""
 
 #: src/elements/user/UserConsentList.ts:29
-#: src/pages/admin-overview/TopApplicationsTable.ts:42
+#: src/pages/admin-overview/TopApplicationsTable.ts:43
 #: src/pages/applications/ApplicationListPage.ts:105
 #: src/pages/providers/ProviderListPage.ts:54
 msgid "Application"
@@ -207,20 +211,8 @@ msgstr ""
 msgid "Applications"
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:43
+#: src/pages/admin-overview/AdminOverviewPage.ts:105
 msgid "Apps with most usage"
-msgstr ""
-
-#: src/pages/admin-overview/cards/FlowCacheStatusCard.ts:44
-msgid ""
-"Are you sure you want to clear the flow cache?\n"
-"This will cause all flows to be re-evaluated on their next usage."
-msgstr ""
-
-#: src/pages/admin-overview/cards/PolicyCacheStatusCard.ts:45
-msgid ""
-"Are you sure you want to clear the policy cache?\n"
-"This will cause all policies to be re-evaluated on their next usage."
 msgstr ""
 
 #: src/elements/forms/DeleteForm.ts:69
@@ -287,7 +279,7 @@ msgid "Authentication"
 msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts:212
-#: src/pages/sources/plex/PlexSourceForm.ts:171
+#: src/pages/sources/plex/PlexSourceForm.ts:182
 #: src/pages/sources/saml/SAMLSourceForm.ts:245
 msgid "Authentication flow"
 msgstr ""
@@ -346,7 +338,7 @@ msgstr ""
 msgid "Backup finished with warnings."
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:60
+#: src/pages/admin-overview/AdminOverviewPage.ts:84
 msgid "Backup status"
 msgstr ""
 
@@ -416,12 +408,12 @@ msgstr ""
 msgid "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:58
-msgid "Cached Flows"
+#: src/pages/admin-overview/graphs/FlowStatusCard.ts:54
+msgid "Cached flows"
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:56
-msgid "Cached Policies"
+#: src/pages/admin-overview/graphs/PolicyStatusCard.ts:59
+msgid "Cached policies"
 msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:80
@@ -533,19 +525,6 @@ msgstr ""
 msgid "Checks the value from the policy request against several rules, mostly used to ensure password strength."
 msgstr ""
 
-#: src/pages/admin-overview/cards/FlowCacheStatusCard.ts:41
-msgid "Clear Flow cache"
-msgstr ""
-
-#: src/pages/admin-overview/cards/PolicyCacheStatusCard.ts:42
-msgid "Clear Policy cache"
-msgstr ""
-
-#: src/pages/admin-overview/cards/FlowCacheStatusCard.ts:36
-#: src/pages/admin-overview/cards/PolicyCacheStatusCard.ts:37
-msgid "Clear cache"
-msgstr ""
-
 #: src/elements/forms/HorizontalFormElement.ts:82
 msgid "Click to change value"
 msgstr ""
@@ -556,7 +535,7 @@ msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:107
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:99
-#: src/pages/sources/plex/PlexSourceForm.ts:135
+#: src/pages/sources/plex/PlexSourceForm.ts:138
 msgid "Client ID"
 msgstr ""
 
@@ -1146,10 +1125,10 @@ msgid "Enable this if you don't want to use this provider as a proxy, and want t
 msgstr ""
 
 #: src/pages/policies/BoundPoliciesList.ts:41
-#: src/pages/policies/PolicyBindingForm.ts:199
+#: src/pages/policies/PolicyBindingForm.ts:198
 #: src/pages/sources/ldap/LDAPSourceForm.ts:69
 #: src/pages/sources/oauth/OAuthSourceForm.ts:115
-#: src/pages/sources/plex/PlexSourceForm.ts:102
+#: src/pages/sources/plex/PlexSourceForm.ts:105
 #: src/pages/sources/saml/SAMLSourceForm.ts:69
 msgid "Enabled"
 msgstr ""
@@ -1159,7 +1138,7 @@ msgid "Enrollment"
 msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts:233
-#: src/pages/sources/plex/PlexSourceForm.ts:192
+#: src/pages/sources/plex/PlexSourceForm.ts:203
 #: src/pages/sources/saml/SAMLSourceForm.ts:266
 #: src/pages/stages/identification/IdentificationStageForm.ts:106
 msgid "Enrollment flow"
@@ -1313,12 +1292,8 @@ msgstr ""
 msgid "Failed attempts before cancel"
 msgstr ""
 
-#: src/pages/admin-overview/cards/FlowCacheStatusCard.ts:35
-msgid "Failed to delete flow cache"
-msgstr ""
-
-#: src/pages/admin-overview/cards/PolicyCacheStatusCard.ts:36
-msgid "Failed to delete policy cache"
+#: src/pages/admin-overview/graphs/LDAPSyncStatusCard.ts:76
+msgid "Failed sources"
 msgstr ""
 
 #: src/elements/forms/DeleteForm.ts:46
@@ -1372,19 +1347,19 @@ msgid "Flow Overview"
 msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts:208
-#: src/pages/sources/plex/PlexSourceForm.ts:167
+#: src/pages/sources/plex/PlexSourceForm.ts:178
 #: src/pages/sources/saml/SAMLSourceForm.ts:220
 msgid "Flow settings"
 msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts:230
-#: src/pages/sources/plex/PlexSourceForm.ts:189
+#: src/pages/sources/plex/PlexSourceForm.ts:200
 #: src/pages/sources/saml/SAMLSourceForm.ts:263
 msgid "Flow to use when authenticating existing users."
 msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts:251
-#: src/pages/sources/plex/PlexSourceForm.ts:210
+#: src/pages/sources/plex/PlexSourceForm.ts:221
 #: src/pages/sources/saml/SAMLSourceForm.ts:284
 msgid "Flow to use when enrolling new users."
 msgstr ""
@@ -1415,6 +1390,7 @@ msgstr ""
 
 #: src/interfaces/AdminInterface.ts:82
 #: src/interfaces/AdminInterface.ts:84
+#: src/pages/admin-overview/AdminOverviewPage.ts:61
 #: src/pages/flows/FlowListPage.ts:28
 #: src/pages/stages/StageListPage.ts:66
 msgid "Flows"
@@ -1448,7 +1424,7 @@ msgstr ""
 msgid "From address"
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:36
+#: src/pages/admin-overview/AdminOverviewPage.ts:50
 msgid "General system status"
 msgstr ""
 
@@ -1471,8 +1447,8 @@ msgstr ""
 
 #: src/pages/events/RuleForm.ts:65
 #: src/pages/groups/GroupListPage.ts:74
-#: src/pages/policies/PolicyBindingForm.ts:125
-#: src/pages/policies/PolicyBindingForm.ts:161
+#: src/pages/policies/PolicyBindingForm.ts:124
+#: src/pages/policies/PolicyBindingForm.ts:160
 #: src/pages/providers/ldap/LDAPProviderForm.ts:77
 msgid "Group"
 msgstr ""
@@ -1518,6 +1494,14 @@ msgstr ""
 msgid "Health and Version"
 msgstr ""
 
+#: src/pages/admin-overview/graphs/OutpostStatusCard.ts:70
+msgid "Healthy outposts"
+msgstr ""
+
+#: src/pages/admin-overview/graphs/LDAPSyncStatusCard.ts:75
+msgid "Healthy sources"
+msgstr ""
+
 #: src/pages/stages/prompt/PromptForm.ts:72
 msgid "Hidden: Hidden field, can be used to insert data into form."
 msgstr ""
@@ -1537,7 +1521,7 @@ msgstr ""
 #: src/pages/providers/saml/SAMLProviderForm.ts:177
 #: src/pages/sources/ldap/LDAPSourceForm.ts:167
 #: src/pages/sources/ldap/LDAPSourceForm.ts:193
-#: src/pages/sources/plex/PlexSourceForm.ts:154
+#: src/pages/sources/plex/PlexSourceForm.ts:165
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:114
 #: src/pages/stages/identification/IdentificationStageForm.ts:85
 #: src/pages/stages/password/PasswordStageForm.ts:86
@@ -1684,8 +1668,8 @@ msgstr ""
 msgid "LDAP DN under which bind requests and search requests can be made."
 msgstr ""
 
-#: src/pages/admin-overview/cards/LDAPSyncStatusCardContainer.ts:24
-msgid "LDAP Sync status {0}"
+#: src/pages/admin-overview/AdminOverviewPage.ts:66
+msgid "LDAP Sync status"
 msgstr ""
 
 #: src/pages/stages/prompt/PromptForm.ts:90
@@ -1711,7 +1695,6 @@ msgstr ""
 msgid "Last seen: {0}"
 msgstr ""
 
-#: src/pages/admin-overview/cards/LDAPSyncStatusCard.ts:25
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:143
 msgid "Last sync: {0}"
 msgstr ""
@@ -1734,21 +1717,21 @@ msgid "Library"
 msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts:128
-#: src/pages/sources/plex/PlexSourceForm.ts:115
+#: src/pages/sources/plex/PlexSourceForm.ts:118
 msgid "Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses"
 msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts:134
-#: src/pages/sources/plex/PlexSourceForm.ts:121
+#: src/pages/sources/plex/PlexSourceForm.ts:124
 msgid "Link to a user with identical username address. Can have security implications when a username is used with another source."
 msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts:125
-#: src/pages/sources/plex/PlexSourceForm.ts:112
+#: src/pages/sources/plex/PlexSourceForm.ts:115
 msgid "Link users on unique identifier"
 msgstr ""
 
-#: src/pages/sources/plex/PlexSourceForm.ts:159
+#: src/pages/sources/plex/PlexSourceForm.ts:170
 msgid "Load servers"
 msgstr ""
 
@@ -1788,9 +1771,9 @@ msgstr ""
 #: src/pages/outposts/OutpostForm.ts:108
 #: src/pages/outposts/ServiceConnectionDockerForm.ts:86
 #: src/pages/outposts/ServiceConnectionDockerForm.ts:102
-#: src/pages/policies/PolicyBindingForm.ts:157
-#: src/pages/policies/PolicyBindingForm.ts:173
-#: src/pages/policies/PolicyBindingForm.ts:189
+#: src/pages/policies/PolicyBindingForm.ts:156
+#: src/pages/policies/PolicyBindingForm.ts:172
+#: src/pages/policies/PolicyBindingForm.ts:188
 #: src/pages/policies/PolicyTestForm.ts:71
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:88
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:108
@@ -1813,8 +1796,8 @@ msgstr ""
 #: src/pages/sources/oauth/OAuthSourceForm.ts:200
 #: src/pages/sources/oauth/OAuthSourceForm.ts:228
 #: src/pages/sources/oauth/OAuthSourceForm.ts:249
-#: src/pages/sources/plex/PlexSourceForm.ts:187
-#: src/pages/sources/plex/PlexSourceForm.ts:208
+#: src/pages/sources/plex/PlexSourceForm.ts:198
+#: src/pages/sources/plex/PlexSourceForm.ts:219
 #: src/pages/sources/saml/SAMLSourceForm.ts:126
 #: src/pages/sources/saml/SAMLSourceForm.ts:240
 #: src/pages/sources/saml/SAMLSourceForm.ts:261
@@ -1849,11 +1832,11 @@ msgstr ""
 msgid "Login to continue to {0}."
 msgstr ""
 
-#: src/pages/admin-overview/TopApplicationsTable.ts:43
+#: src/pages/admin-overview/TopApplicationsTable.ts:44
 msgid "Logins"
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:40
+#: src/pages/admin-overview/AdminOverviewPage.ts:100
 #: src/pages/applications/ApplicationViewPage.ts:128
 msgid "Logins over the last 24 hours"
 msgstr ""
@@ -1985,7 +1968,7 @@ msgstr ""
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:64
 #: src/pages/sources/oauth/OAuthSourceForm.ts:100
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:64
-#: src/pages/sources/plex/PlexSourceForm.ts:87
+#: src/pages/sources/plex/PlexSourceForm.ts:90
 #: src/pages/sources/plex/PlexSourceViewPage.ts:63
 #: src/pages/sources/saml/SAMLSourceForm.ts:54
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:66
@@ -2072,10 +2055,6 @@ msgstr ""
 msgid "No elements found."
 msgstr ""
 
-#: src/pages/admin-overview/cards/FlowCacheStatusCard.ts:23
-msgid "No flows cached."
-msgstr ""
-
 #: src/elements/forms/ModalForm.ts:29
 msgid "No form found"
 msgstr ""
@@ -2087,10 +2066,6 @@ msgstr ""
 
 #: src/pages/policies/BoundPoliciesList.ts:157
 msgid "No policies are currently bound to this object."
-msgstr ""
-
-#: src/pages/admin-overview/cards/PolicyCacheStatusCard.ts:24
-msgid "No policies cached. Users may experience slow response times."
 msgstr ""
 
 #: src/pages/users/UserListPage.ts:139
@@ -2127,10 +2102,6 @@ msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:154
 msgid "Not synced yet."
-msgstr ""
-
-#: src/pages/admin-overview/cards/LDAPSyncStatusCard.ts:40
-msgid "Not synced."
 msgstr ""
 
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts:58
@@ -2258,10 +2229,14 @@ msgstr ""
 #: src/pages/flows/BoundStagesList.ts:38
 #: src/pages/flows/StageBindingForm.ts:110
 #: src/pages/policies/BoundPoliciesList.ts:42
-#: src/pages/policies/PolicyBindingForm.ts:204
+#: src/pages/policies/PolicyBindingForm.ts:203
 #: src/pages/stages/prompt/PromptForm.ts:119
 #: src/pages/stages/prompt/PromptListPage.ts:49
 msgid "Order"
+msgstr ""
+
+#: src/pages/admin-overview/graphs/OutpostStatusCard.ts:71
+msgid "Outdated outposts"
 msgstr ""
 
 #: src/pages/outposts/OutpostListPage.ts:80
@@ -2274,6 +2249,10 @@ msgstr ""
 
 #: src/pages/outposts/ServiceConnectionListPage.ts:94
 msgid "Outpost Service-connection"
+msgstr ""
+
+#: src/pages/admin-overview/AdminOverviewPage.ts:71
+msgid "Outpost status"
 msgstr ""
 
 #: src/interfaces/AdminInterface.ts:49
@@ -2349,18 +2328,15 @@ msgid "Please enter your password"
 msgstr ""
 
 #: src/interfaces/AdminInterface.ts:74
+#: src/pages/admin-overview/AdminOverviewPage.ts:56
 #: src/pages/flows/FlowListPage.ts:50
 #: src/pages/policies/PolicyListPage.ts:38
 msgid "Policies"
 msgstr ""
 
-#: src/pages/admin-overview/cards/PolicyUnboundStatusCard.ts:25
-msgid "Policies without binding exist."
-msgstr ""
-
-#: src/pages/policies/PolicyBindingForm.ts:108
-#: src/pages/policies/PolicyBindingForm.ts:117
-#: src/pages/policies/PolicyBindingForm.ts:148
+#: src/pages/policies/PolicyBindingForm.ts:107
+#: src/pages/policies/PolicyBindingForm.ts:116
+#: src/pages/policies/PolicyBindingForm.ts:147
 #: src/pages/policies/PolicyListPage.ts:108
 msgid "Policy"
 msgstr ""
@@ -2482,7 +2458,7 @@ msgstr ""
 #: src/pages/providers/proxy/ProxyProviderForm.ts:123
 #: src/pages/providers/saml/SAMLProviderForm.ts:78
 #: src/pages/sources/oauth/OAuthSourceForm.ts:144
-#: src/pages/sources/plex/PlexSourceForm.ts:131
+#: src/pages/sources/plex/PlexSourceForm.ts:134
 #: src/pages/sources/saml/SAMLSourceForm.ts:76
 msgid "Protocol settings"
 msgstr ""
@@ -2513,10 +2489,6 @@ msgstr ""
 #: src/pages/outposts/OutpostListPage.ts:51
 #: src/pages/providers/ProviderListPage.ts:35
 msgid "Providers"
-msgstr ""
-
-#: src/pages/admin-overview/AdminOverviewPage.ts:46
-msgid "Providers without application"
 msgstr ""
 
 #: src/pages/outposts/OutpostForm.ts:57
@@ -2793,7 +2765,7 @@ msgstr ""
 msgid "Select which scopes can be used by the client. The client stil has to specify the scope to access the data."
 msgstr ""
 
-#: src/pages/sources/plex/PlexSourceForm.ts:153
+#: src/pages/sources/plex/PlexSourceForm.ts:164
 msgid "Select which server a user has to be a member of to be allowed to authenticate."
 msgstr ""
 
@@ -2933,7 +2905,7 @@ msgstr ""
 #: src/pages/flows/FlowForm.ts:94
 #: src/pages/sources/ldap/LDAPSourceForm.ts:60
 #: src/pages/sources/oauth/OAuthSourceForm.ts:106
-#: src/pages/sources/plex/PlexSourceForm.ts:93
+#: src/pages/sources/plex/PlexSourceForm.ts:96
 #: src/pages/sources/saml/SAMLSourceForm.ts:60
 msgid "Slug"
 msgstr ""
@@ -3075,14 +3047,6 @@ msgstr ""
 msgid "Successful"
 msgstr ""
 
-#: src/pages/admin-overview/cards/FlowCacheStatusCard.ts:34
-msgid "Successfully cleared flow cache"
-msgstr ""
-
-#: src/pages/admin-overview/cards/PolicyCacheStatusCard.ts:35
-msgid "Successfully cleared policy cache"
-msgstr ""
-
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts:63
 msgid "Successfully copied TOTP Config."
 msgstr ""
@@ -3154,7 +3118,7 @@ msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts:47
 #: src/pages/sources/oauth/OAuthSourceForm.ts:51
-#: src/pages/sources/plex/PlexSourceForm.ts:60
+#: src/pages/sources/plex/PlexSourceForm.ts:63
 #: src/pages/sources/saml/SAMLSourceForm.ts:47
 msgid "Successfully created source."
 msgstr ""
@@ -3292,7 +3256,7 @@ msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts:44
 #: src/pages/sources/oauth/OAuthSourceForm.ts:48
-#: src/pages/sources/plex/PlexSourceForm.ts:57
+#: src/pages/sources/plex/PlexSourceForm.ts:60
 #: src/pages/sources/saml/SAMLSourceForm.ts:44
 msgid "Successfully updated source."
 msgstr ""
@@ -3349,10 +3313,6 @@ msgstr ""
 msgid "Sync"
 msgstr ""
 
-#: src/pages/admin-overview/cards/LDAPSyncStatusCard.ts:31
-msgid "Sync failed."
-msgstr ""
-
 #: src/pages/sources/ldap/LDAPSourceForm.ts:94
 msgid "Sync groups"
 msgstr ""
@@ -3365,7 +3325,7 @@ msgstr ""
 msgid "Sync users"
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:35
+#: src/pages/admin-overview/AdminOverviewPage.ts:49
 msgid "System Overview"
 msgstr ""
 
@@ -3485,7 +3445,7 @@ msgid "Time-based One-Time Passwords"
 msgstr ""
 
 #: src/pages/policies/BoundPoliciesList.ts:43
-#: src/pages/policies/PolicyBindingForm.ts:210
+#: src/pages/policies/PolicyBindingForm.ts:209
 #: src/pages/stages/email/EmailStageForm.ts:101
 msgid "Timeout"
 msgstr ""
@@ -3525,6 +3485,14 @@ msgstr ""
 
 #: src/pages/tokens/TokenListPage.ts:29
 msgid "Tokens are used throughout authentik for Email validation stages, Recovery keys and API access."
+msgstr ""
+
+#: src/pages/admin-overview/graphs/FlowStatusCard.ts:53
+msgid "Total flows"
+msgstr ""
+
+#: src/pages/admin-overview/graphs/PolicyStatusCard.ts:58
+msgid "Total policies"
 msgstr ""
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts:80
@@ -3583,7 +3551,7 @@ msgstr ""
 msgid "URL used to request the initial token. This URL is only required for OAuth 1."
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:48
+#: src/pages/admin-overview/graphs/PolicyStatusCard.ts:60
 msgid "Unbound policies"
 msgstr ""
 
@@ -3595,8 +3563,16 @@ msgstr ""
 msgid "Unhealthy"
 msgstr ""
 
+#: src/pages/admin-overview/graphs/OutpostStatusCard.ts:72
+msgid "Unhealthy outposts"
+msgstr ""
+
 #: src/pages/system-tasks/SystemTaskListPage.ts:70
 msgid "Unknown"
+msgstr ""
+
+#: src/pages/admin-overview/graphs/LDAPSyncStatusCard.ts:77
+msgid "Unsynced sources"
 msgstr ""
 
 #: src/pages/admin-overview/cards/VersionStatusCard.ts:32
@@ -3768,12 +3744,12 @@ msgid "Use global settings"
 msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts:131
-#: src/pages/sources/plex/PlexSourceForm.ts:118
+#: src/pages/sources/plex/PlexSourceForm.ts:121
 msgid "Use the user's email address, but deny enrollment when the email address already exists."
 msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts:137
-#: src/pages/sources/plex/PlexSourceForm.ts:124
+#: src/pages/sources/plex/PlexSourceForm.ts:127
 msgid "Use the user's username, but deny enrollment when the username already exists."
 msgstr ""
 
@@ -3781,8 +3757,8 @@ msgstr ""
 #: src/elements/events/UserEvents.ts:36
 #: src/pages/events/EventInfo.ts:83
 #: src/pages/events/EventListPage.ts:44
-#: src/pages/policies/PolicyBindingForm.ts:133
-#: src/pages/policies/PolicyBindingForm.ts:177
+#: src/pages/policies/PolicyBindingForm.ts:132
+#: src/pages/policies/PolicyBindingForm.ts:176
 #: src/pages/policies/PolicyTestForm.ts:61
 #: src/pages/property-mappings/PropertyMappingTestForm.ts:51
 #: src/pages/tokens/TokenListPage.ts:45
@@ -3818,7 +3794,7 @@ msgid "User fields"
 msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts:120
-#: src/pages/sources/plex/PlexSourceForm.ts:107
+#: src/pages/sources/plex/PlexSourceForm.ts:110
 msgid "User matching mode"
 msgstr ""
 
@@ -3869,7 +3845,7 @@ msgid "Username: Same as Text input, but checks for and prevents duplicate usern
 msgstr ""
 
 #: src/interfaces/AdminInterface.ts:100
-#: src/pages/admin-overview/AdminOverviewPage.ts:50
+#: src/pages/admin-overview/AdminOverviewPage.ts:88
 #: src/pages/users/UserListPage.ts:33
 msgid "Users"
 msgstr ""
@@ -3918,7 +3894,7 @@ msgstr ""
 msgid "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity."
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:52
+#: src/pages/admin-overview/AdminOverviewPage.ts:80
 msgid "Version"
 msgstr ""
 
@@ -4021,7 +3997,7 @@ msgstr ""
 msgid "Windows"
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:54
+#: src/pages/admin-overview/AdminOverviewPage.ts:92
 msgid "Workers"
 msgstr ""
 

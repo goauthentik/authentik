@@ -1,8 +1,15 @@
-import { css, CSSResult, html, LitElement, TemplateResult } from "lit-element";
-import { Chart, ChartDataset, Tick, LineController, TimeScale, LinearScale, BarController, BarElement, ChartConfiguration, Legend, ChartData } from "chart.js";
+import { css, CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
+import { Chart, Plugin, Tick, ChartConfiguration, ChartData, ChartOptions } from "chart.js";
+import { Legend, Tooltip } from "chart.js";
+import { DoughnutController, LineController, BarController } from "chart.js";
+import { ArcElement, BarElement } from "chart.js";
+import { TimeScale, LinearScale } from "chart.js";
 import "chartjs-adapter-moment";
 
-Chart.register(LineController, TimeScale, LinearScale, BarController, BarElement, Legend);
+Chart.register(Legend, Tooltip);
+Chart.register(LineController, BarController, DoughnutController);
+Chart.register(ArcElement, BarElement);
+Chart.register(TimeScale, LinearScale);
 
 export abstract class AKChart<T> extends LitElement {
 
@@ -11,14 +18,13 @@ export abstract class AKChart<T> extends LitElement {
 
     chart?: Chart;
 
+    @property()
+    centerText?: string;
+
     static get styles(): CSSResult[] {
         return [css`
-            :host {
-                position: relative;
+            .container {
                 height: 100%;
-                width: 100%;
-                display: block;
-                min-height: 25rem;
             }
             canvas {
                 width: 100px;
@@ -36,45 +42,78 @@ export abstract class AKChart<T> extends LitElement {
         });
     }
 
+    getChartType(): string {
+        return "bar";
+    }
+
+    getPlugins(): Plugin[] {
+        return [
+            {
+                id: "center-text",
+                beforeDraw: (chart) => {
+                    if (!chart.ctx) return;
+                    if (!this.centerText) return;
+                    const width = chart.width || 0;
+                    const height = chart.height || 0;
+
+                    const fontSize = (height / 114).toFixed(2);
+                    chart.ctx.font = fontSize + "em RedHatText, Overpass, overpass, helvetica, arial, sans-serif";
+                    chart.ctx.textBaseline = "middle";
+
+                    const textX = Math.round((width - chart.ctx.measureText(this.centerText).width) / 2);
+                    const textY = height / 2;
+
+                    chart.ctx.fillText(this.centerText, textX, textY);
+                }
+            }
+        ];
+    }
+
+    getOptions(): ChartOptions {
+        return {
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    type: "time",
+                    display: true,
+                    ticks: {
+                        callback: function (tickValue: string | number, index: number, ticks: Tick[]): string {
+                            const valueStamp = (ticks[index]);
+                            const delta = Date.now() - valueStamp.value;
+                            const ago = Math.round(delta / 1000 / 3600);
+                            return `${ago} Hours ago`;
+                        },
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                    },
+                    stacked: true,
+                    grid: {
+                        color: "rgba(0, 0, 0, 0)",
+                    },
+                    offset: true
+                },
+                y: {
+                    type: "linear",
+                    display: true,
+                    stacked: true,
+                    grid: {
+                        color: "rgba(0, 0, 0, 0)",
+                    },
+                }
+            },
+        } as ChartOptions;
+    }
+
     configureChart(data: T, ctx: CanvasRenderingContext2D): Chart {
         const config = {
-            type: "bar",
+            type: this.getChartType(),
             data: this.getChartData(data),
-            options: {
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        type: "time",
-                        display: true,
-                        ticks: {
-                            callback: function (tickValue: string | number, index: number, ticks: Tick[]): string {
-                                const valueStamp = (ticks[index]);
-                                const delta = Date.now() - valueStamp.value;
-                                const ago = Math.round(delta / 1000 / 3600);
-                                return `${ago} Hours ago`;
-                            },
-                            autoSkip: true,
-                            maxTicksLimit: 8,
-                        },
-                        stacked: true,
-                        grid: {
-                            color: "rgba(0, 0, 0, 0)",
-                        },
-                        offset: true
-                    },
-                    y: {
-                        type: "linear",
-                        display: true,
-                        stacked: true,
-                        grid: {
-                            color: "rgba(0, 0, 0, 0)",
-                        },
-                    }
-                },
-            },
+            options: this.getOptions(),
+            plugins: this.getPlugins(),
         };
         return new Chart(ctx, config as ChartConfiguration);
     }
+
 
     firstUpdated(): void {
         this.apiRequest().then((r) => {
@@ -93,6 +132,10 @@ export abstract class AKChart<T> extends LitElement {
     }
 
     render(): TemplateResult {
-        return html`<canvas></canvas>`;
+        return html`
+            <div class="container">
+                <canvas></canvas>
+            </div>
+        `;
     }
 }

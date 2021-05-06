@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
+import { css, CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
 
 import "../../elements/charts/AdminLoginsChart";
 import "../../elements/cards/AggregatePromiseCard";
@@ -7,18 +7,19 @@ import "./TopApplicationsTable";
 
 import "./cards/AdminStatusCard";
 import "./cards/BackupStatusCard";
-import "./cards/FlowCacheStatusCard";
-import "./cards/LDAPSyncStatusCardContainer";
-import "./cards/PolicyCacheStatusCard";
-import "./cards/PolicyUnboundStatusCard";
 import "./cards/ProviderStatusCard";
 import "./cards/UserCountStatusCard";
 import "./cards/VersionStatusCard";
 import "./cards/WorkerStatusCard";
 
+import "./graphs/FlowStatusCard";
+import "./graphs/LDAPSyncStatusCard";
+import "./graphs/OutpostStatusCard";
+import "./graphs/PolicyStatusCard";
+
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import AKGlobal from "../../authentik.css";
 import "../../elements/PageHeader";
 
@@ -26,7 +27,21 @@ import "../../elements/PageHeader";
 export class AdminOverviewPage extends LitElement {
 
     static get styles(): CSSResult[] {
-        return [PFGallery, PFPage, PFContent, AKGlobal];
+        return [PFGrid, PFPage, PFContent, AKGlobal, css`
+            .row-divider {
+                margin-top: -4px;
+                margin-bottom: -4px;
+            }
+            .graph-container {
+                height: 20em;
+            }
+            .big-graph-container {
+                height: 35em;
+            }
+            .card-container {
+                height: 10em;
+            }
+        `];
     }
 
     render(): TemplateResult {
@@ -37,31 +52,62 @@ export class AdminOverviewPage extends LitElement {
             description=${t`General system status`}>
         </ak-page-header>
         <section class="pf-c-page__main-section">
-            <div class="pf-l-gallery pf-m-gutter">
-                <ak-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header=${t`Logins over the last 24 hours`} style="grid-column-end: span 3;grid-row-end: span 2;">
-                    <ak-charts-admin-login></ak-charts-admin-login>
-                </ak-aggregate-card>
-                <ak-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header=${t`Apps with most usage`} style="grid-column-end: span 2;grid-row-end: span 3;">
-                    <ak-top-applications-table></ak-top-applications-table>
-                </ak-aggregate-card>
-                <ak-admin-status-card-provider class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-plugged" header=${t`Providers without application`} headerLink="#/core/providers">
-                </ak-admin-status-card-provider>
-                <ak-admin-status-card-policy-unbound class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-infrastructure" header=${t`Unbound policies`} headerLink="#/policy/policies">
-                </ak-admin-status-card-policy-unbound>
-                <ak-admin-status-card-user-count class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-user" header=${t`Users`} headerLink="#/identity/users">
-                </ak-admin-status-card-user-count>
-                <ak-admin-status-version class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-bundle" header=${t`Version`} headerLink="https://github.com/goauthentik/authentik/releases">
-                </ak-admin-status-version>
-                <ak-admin-status-card-workers class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header=${t`Workers`}>
-                </ak-admin-status-card-workers>
-                <ak-admin-status-card-policy-cache class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header=${t`Cached Policies`}>
-                </ak-admin-status-card-policy-cache>
-                <ak-admin-status-card-flow-cache class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header=${t`Cached Flows`}>
-                </ak-admin-status-card-flow-cache>
-                <ak-admin-status-card-backup class="pf-l-gallery__item pf-m-4-col" icon="fa fa-database" header=${t`Backup status`} headerLink="#/administration/system-tasks">
-                </ak-admin-status-card-backup>
-                <ak-admin-status-card-ldap-sync-container >
-                </ak-admin-status-card-ldap-sync-container>
+            <div class="pf-l-grid pf-m-gutter">
+                <!-- row 1 -->
+                <div class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-3-col-on-xl graph-container">
+                    <ak-aggregate-card icon="pf-icon pf-icon-infrastructure" header=${t`Policies`} headerLink="#/policy/policies">
+                        <ak-admin-status-card-policy></ak-admin-status-card-policy>
+                    </ak-aggregate-card>
+                </div>
+                <div class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-3-col-on-xl graph-container">
+                    <ak-aggregate-card icon="pf-icon pf-icon-server" header=${t`Flows`} headerLink="#/flow/flows">
+                        <ak-admin-status-card-flow></ak-admin-status-card-flow>
+                    </ak-aggregate-card>
+                </div>
+                <div class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-3-col-on-xl graph-container">
+                    <ak-aggregate-card icon="fa fa-sync-alt" header=${t`LDAP Sync status`} headerLink="#/core/sources">
+                        <ak-admin-status-card-ldap-sync></ak-admin-status-card-ldap-sync>
+                    </ak-aggregate-card>
+                </div>
+                <div class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-3-col-on-xl graph-container">
+                    <ak-aggregate-card icon="fa fa-sync-alt" header=${t`Outpost status`} headerLink="#/outpost/outposts">
+                        <ak-admin-status-card-outpost></ak-admin-status-card-outpost>
+                    </ak-aggregate-card>
+                </div>
+                <div class="pf-l-grid__item pf-m-12-col row-divider">
+                    <hr>
+                </div>
+                <!-- row 2 -->
+                <div class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-3-col-on-xl card-container">
+                    <ak-admin-status-version icon="pf-icon pf-icon-bundle" header=${t`Version`} headerLink="https://github.com/goauthentik/authentik/releases">
+                    </ak-admin-status-version>
+                </div>
+                <div class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-3-col-on-xl card-container">
+                    <ak-admin-status-card-backup icon="fa fa-database" header=${t`Backup status`} headerLink="#/administration/system-tasks">
+                    </ak-admin-status-card-backup>
+                </div>
+                <div class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-3-col-on-xl card-container">
+                    <ak-admin-status-card-user-count icon="pf-icon pf-icon-user" header=${t`Users`} headerLink="#/identity/users">
+                    </ak-admin-status-card-user-count>
+                </div>
+                <div class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-3-col-on-xl card-container">
+                    <ak-admin-status-card-workers icon="pf-icon pf-icon-server" header=${t`Workers`}>
+                    </ak-admin-status-card-workers>
+                </div>
+                <div class="pf-l-grid__item pf-m-12-col row-divider">
+                    <hr>
+                </div>
+                <!-- row 3 -->
+                <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-md pf-m-6-col-on-xl big-graph-container">
+                    <ak-aggregate-card icon="pf-icon pf-icon-server" header=${t`Logins over the last 24 hours`}>
+                        <ak-charts-admin-login></ak-charts-admin-login>
+                    </ak-aggregate-card>
+                </div>
+                <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-md pf-m-6-col-on-xl big-graph-container">
+                    <ak-aggregate-card icon="pf-icon pf-icon-server" header=${t`Apps with most usage`}>
+                        <ak-top-applications-table></ak-top-applications-table>
+                    </ak-aggregate-card>
+                </div>
             </div>
         </section>`;
     }

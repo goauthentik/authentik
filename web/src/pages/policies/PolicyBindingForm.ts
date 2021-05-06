@@ -105,7 +105,6 @@ export class PolicyBindingForm extends Form<PolicyBinding> {
     }
 
     renderModeSelector(): TemplateResult {
-        console.log(this.policyOnly);
         if (this.policyOnly) {
             this.policyGroupUser = target.policy;
             return html`

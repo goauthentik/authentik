@@ -20,6 +20,7 @@ export class TopApplicationsTable extends LitElement {
     firstUpdated(): void {
         new EventsApi(DEFAULT_CONFIG).eventsEventsTopPerUser({
             action: "authorize_application",
+            topN: 11,
         }).then((events) => {
             this.topN = events;
         });
