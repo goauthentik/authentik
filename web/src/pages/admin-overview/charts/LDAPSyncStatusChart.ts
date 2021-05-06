@@ -12,8 +12,8 @@ interface LDAPSyncStats {
     unsynced: number;
 }
 
-@customElement("ak-admin-status-card-ldap-sync")
-export class LDAPSyncStatusCard extends AKChart<LDAPSyncStats> {
+@customElement("ak-admin-status-chart-ldap-sync")
+export class LDAPSyncStatusChart extends AKChart<LDAPSyncStats> {
 
     getChartType(): string {
         return "doughnut";

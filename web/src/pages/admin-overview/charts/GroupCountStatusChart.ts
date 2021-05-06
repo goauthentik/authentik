@@ -10,8 +10,8 @@ interface GroupMetrics {
     superusers: number;
 }
 
-@customElement("ak-admin-status-card-group-count")
-export class GroupCountStatusCard extends AKChart<GroupMetrics> {
+@customElement("ak-admin-status-chart-group-count")
+export class GroupCountStatusChart extends AKChart<GroupMetrics> {
 
     getChartType(): string {
         return "doughnut";

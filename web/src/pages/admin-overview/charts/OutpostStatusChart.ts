@@ -12,8 +12,8 @@ interface OutpostStats {
     unhealthy: number;
 }
 
-@customElement("ak-admin-status-card-outpost")
-export class OutpostStatusCard extends AKChart<OutpostStats> {
+@customElement("ak-admin-status-chart-outpost")
+export class OutpostStatusChart extends AKChart<OutpostStats> {
 
     getChartType(): string {
         return "doughnut";

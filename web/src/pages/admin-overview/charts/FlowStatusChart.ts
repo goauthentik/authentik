@@ -1,19 +1,18 @@
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
-import { PoliciesApi } from "authentik-api";
+import { FlowsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import "../../../elements/forms/ConfirmationForm";
 import { AKChart } from "../../../elements/charts/Chart";
 import { ChartData, ChartOptions } from "chart.js";
 
-interface PolicyMetrics {
+interface FlowMetrics {
     count: number;
     cached: number;
-    unbound: number;
 }
 
-@customElement("ak-admin-status-card-policy")
-export class PolicyStatusCard extends AKChart<PolicyMetrics> {
+@customElement("ak-admin-status-chart-flow")
+export class PolicyStatusChart extends AKChart<FlowMetrics> {
 
     getChartType(): string {
         return "doughnut";
@@ -30,43 +29,35 @@ export class PolicyStatusCard extends AKChart<PolicyMetrics> {
         };
     }
 
-    async apiRequest(): Promise<PolicyMetrics> {
-        const api = new PoliciesApi(DEFAULT_CONFIG);
-        const cached = (await api.policiesAllCacheInfo()).count || 0;
-        const count = (await api.policiesAllList({
+    async apiRequest(): Promise<FlowMetrics> {
+        const api = new FlowsApi(DEFAULT_CONFIG);
+        const cached = (await api.flowsInstancesCacheInfo()).count || 0;
+        const count = (await api.flowsInstancesList({
             pageSize: 1
-        })).pagination.count;
-        const unbound = (await api.policiesAllList({
-            bindingsIsnull: "true",
-            promptstageIsnull: "true",
         })).pagination.count;
         this.centerText = count.toString();
         return {
-            count: count - cached - unbound,
+            count: count - cached,
             cached: cached,
-            unbound: unbound,
         };
     }
 
-    getChartData(data: PolicyMetrics): ChartData {
+    getChartData(data: FlowMetrics): ChartData {
         return {
             labels: [
-                t`Total policies`,
-                t`Cached policies`,
-                t`Unbound policies`,
+                t`Total flows`,
+                t`Cached flows`,
             ],
             datasets: [
                 {
                     backgroundColor: [
                         "#2b9af3",
                         "#3e8635",
-                        "#f0ab00",
                     ],
                     spanGaps: true,
                     data: [
                         data.count,
                         data.cached,
-                        data.unbound
                     ],
                 },
             ]

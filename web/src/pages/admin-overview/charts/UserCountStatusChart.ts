@@ -10,8 +10,8 @@ interface UserMetrics {
     superusers: number;
 }
 
-@customElement("ak-admin-status-card-user-count")
-export class UserCountStatusCard extends AKChart<UserMetrics> {
+@customElement("ak-admin-status-chart-user-count")
+export class UserCountStatusChart extends AKChart<UserMetrics> {
 
     getChartType(): string {
         return "doughnut";

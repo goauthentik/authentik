@@ -10,12 +10,12 @@ import "./cards/BackupStatusCard";
 import "./cards/VersionStatusCard";
 import "./cards/WorkerStatusCard";
 
-import "./graphs/FlowStatusCard";
-import "./graphs/LDAPSyncStatusCard";
-import "./graphs/OutpostStatusCard";
-import "./graphs/UserCountStatusCard";
-import "./graphs/GroupCountStatusCard";
-import "./graphs/PolicyStatusCard";
+import "./charts/FlowStatusChart";
+import "./charts/LDAPSyncStatusChart";
+import "./charts/OutpostStatusChart";
+import "./charts/UserCountStatusChart";
+import "./charts/GroupCountStatusChart";
+import "./charts/PolicyStatusChart";
 
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -39,7 +39,7 @@ export class AdminOverviewPage extends LitElement {
                 height: 35em;
             }
             .card-container {
-                height: 10em;
+                max-height: 10em;
             }
         `];
     }
@@ -54,34 +54,34 @@ export class AdminOverviewPage extends LitElement {
         <section class="pf-c-page__main-section">
             <div class="pf-l-grid pf-m-gutter">
                 <!-- row 1 -->
-                <div class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-xl pf-m-2-col-on-xl2 graph-container">
+                <div class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-xl pf-m-2-col-on-2xl graph-container">
                     <ak-aggregate-card icon="pf-icon pf-icon-infrastructure" header=${t`Policies`} headerLink="#/policy/policies">
-                        <ak-admin-status-card-policy></ak-admin-status-card-policy>
+                        <ak-admin-status-chart-policy></ak-admin-status-chart-policy>
                     </ak-aggregate-card>
                 </div>
-                <div class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-xl pf-m-2-col-on-xl2 graph-container">
+                <div class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-xl pf-m-2-col-on-2xl graph-container">
                     <ak-aggregate-card icon="pf-icon pf-icon-server" header=${t`Flows`} headerLink="#/flow/flows">
-                        <ak-admin-status-card-flow></ak-admin-status-card-flow>
+                        <ak-admin-status-chart-flow></ak-admin-status-chart-flow>
                     </ak-aggregate-card>
                 </div>
-                <div class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-xl pf-m-2-col-on-xl2 graph-container">
+                <div class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-xl pf-m-2-col-on-2xl graph-container">
                     <ak-aggregate-card icon="fa fa-sync-alt" header=${t`Outpost status`} headerLink="#/outpost/outposts">
-                        <ak-admin-status-card-outpost></ak-admin-status-card-outpost>
+                        <ak-admin-status-chart-outpost></ak-admin-status-chart-outpost>
                     </ak-aggregate-card>
                 </div>
-                <div class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-xl pf-m-2-col-on-xl2 graph-container">
+                <div class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-xl pf-m-2-col-on-2xl graph-container">
                     <ak-aggregate-card icon="fa fa-sync-alt" header=${t`Users`} headerLink="#/identity/users">
-                        <ak-admin-status-card-user-count></ak-admin-status-card-user-count>
+                        <ak-admin-status-chart-user-count></ak-admin-status-chart-user-count>
                     </ak-aggregate-card>
                 </div>
-                <div class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-xl pf-m-2-col-on-xl2 graph-container">
+                <div class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-xl pf-m-2-col-on-2xl graph-container">
                     <ak-aggregate-card icon="fa fa-sync-alt" header=${t`Groups`} headerLink="#/identity/groups">
-                        <ak-admin-status-card-group-count></ak-admin-status-card-group-count>
+                        <ak-admin-status-chart-group-count></ak-admin-status-chart-group-count>
                     </ak-aggregate-card>
                 </div>
-                <div class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-xl pf-m-2-col-on-xl2 graph-container">
+                <div class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-xl pf-m-2-col-on-2xl graph-container">
                     <ak-aggregate-card icon="fa fa-sync-alt" header=${t`LDAP Sync status`} headerLink="#/core/sources">
-                        <ak-admin-status-card-ldap-sync></ak-admin-status-card-ldap-sync>
+                        <ak-admin-status-chart-ldap-sync></ak-admin-status-chart-ldap-sync>
                     </ak-aggregate-card>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col row-divider">
@@ -104,12 +104,12 @@ export class AdminOverviewPage extends LitElement {
                     <hr>
                 </div>
                 <!-- row 3 -->
-                <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-9-col-on-xl2 big-graph-container">
+                <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-8-col-on-2xl big-graph-container">
                     <ak-aggregate-card icon="pf-icon pf-icon-server" header=${t`Logins over the last 24 hours`}>
                         <ak-charts-admin-login></ak-charts-admin-login>
                     </ak-aggregate-card>
                 </div>
-                <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-3-col-on-xl2 big-graph-container">
+                <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl big-graph-container">
                     <ak-aggregate-card icon="pf-icon pf-icon-server" header=${t`Apps with most usage`}>
                         <ak-top-applications-table></ak-top-applications-table>
                     </ak-aggregate-card>
