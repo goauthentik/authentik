@@ -2021,6 +2021,11 @@ paths:
           description: ''
           required: false
           type: string
+        - name: is_superuser
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: attributes
           in: query
           description: ''

@@ -5,7 +5,7 @@ from django.db.models.query import QuerySet
 from django.http.response import Http404
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
-from django_filters.filters import CharFilter
+from django_filters.filters import BooleanFilter, CharFilter
 from django_filters.filterset import FilterSet
 from drf_yasg.utils import swagger_auto_schema, swagger_serializer_method
 from guardian.utils import get_anonymous_user
@@ -110,6 +110,11 @@ class UsersFilter(FilterSet):
         method="filter_attributes",
     )
 
+    is_superuser = BooleanFilter(
+        field_name="ak_groups",
+        lookup_expr="is_superuser"
+    )
+
     # pylint: disable=unused-argument
     def filter_attributes(self, queryset, name, value):
         """Filter attributes by query args"""
@@ -126,7 +131,7 @@ class UsersFilter(FilterSet):
 
     class Meta:
         model = User
-        fields = ["username", "name", "is_active", "attributes"]
+        fields = ["username", "name", "is_active", "is_superuser", "attributes"]
 
 
 class UserViewSet(ModelViewSet):

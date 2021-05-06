@@ -8,7 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.fields import CharField, DictField, IntegerField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer, Serializer
+from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from authentik.core.api.utils import PassiveSerializer, TypeCreateSerializer
