@@ -5,6 +5,7 @@ import { DoughnutController, LineController, BarController } from "chart.js";
 import { ArcElement, BarElement } from "chart.js";
 import { TimeScale, LinearScale } from "chart.js";
 import "chartjs-adapter-moment";
+import { FONT_COLOUR_DARK_MODE, FONT_COLOUR_LIGHT_MODE } from "../../pages/flows/FlowDiagram";
 
 Chart.register(Legend, Tooltip);
 Chart.register(LineController, BarController, DoughnutController);
@@ -20,6 +21,8 @@ export abstract class AKChart<T> extends LitElement {
 
     @property()
     centerText?: string;
+
+    fontColour = FONT_COLOUR_LIGHT_MODE;
 
     static get styles(): CSSResult[] {
         return [css`
@@ -40,6 +43,17 @@ export abstract class AKChart<T> extends LitElement {
                 this.chart.resize();
             }
         });
+        const matcher = window.matchMedia("(prefers-color-scheme: light)");
+        const handler = (ev?: MediaQueryListEvent) => {
+            if (ev?.matches || matcher.matches) {
+                this.fontColour = FONT_COLOUR_LIGHT_MODE;
+            } else {
+                this.fontColour = FONT_COLOUR_DARK_MODE;
+            }
+            this.chart?.update();
+        };
+        matcher.addEventListener("change", handler);
+        handler();
     }
 
     getChartType(): string {
@@ -59,6 +73,7 @@ export abstract class AKChart<T> extends LitElement {
                     const fontSize = (height / 114).toFixed(2);
                     chart.ctx.font = fontSize + "em RedHatText, Overpass, overpass, helvetica, arial, sans-serif";
                     chart.ctx.textBaseline = "middle";
+                    chart.ctx.fillStyle = this.fontColour;
 
                     const textX = Math.round((width - chart.ctx.measureText(this.centerText).width) / 2);
                     const textY = height / 2;

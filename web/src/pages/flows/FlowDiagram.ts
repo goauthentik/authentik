@@ -44,15 +44,19 @@ export class FlowDiagram extends LitElement {
             if (!this._flowSlug) return;
             this.flowSlug = this._flowSlug;
         });
-        window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", (ev) => {
-            if (ev.matches) {
+        const matcher = window.matchMedia("(prefers-color-scheme: light)");
+        const handler = (ev?: MediaQueryListEvent) => {
+            if (ev?.matches || matcher.matches) {
                 this.fontColour = FONT_COLOUR_LIGHT_MODE;
                 this.fill = FILL_LIGHT_MODE;
             } else {
                 this.fontColour = FONT_COLOUR_DARK_MODE;
                 this.fill = FILL_DARK_MODE;
             }
-        });
+            this.requestUpdate();
+        };
+        matcher.addEventListener("change", handler);
+        handler();
     }
 
     render(): TemplateResult {
