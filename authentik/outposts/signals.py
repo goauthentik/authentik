@@ -46,7 +46,7 @@ def pre_delete_cleanup(sender, instance: Outpost, **_):
     # Service connection here
     try:
         outpost_pre_delete.delay(instance.pk.hex).get()
-    except RuntimeError:
+    except RuntimeError:  # pragma: no cover
         # In e2e/integration tests, this might run inside a thread/process and
         # trigger the celery `Never call result.get() within a task` detection
         if settings.TEST:

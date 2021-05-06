@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from authentik.core.api.utils import TypeCreateSerializer
+from authentik.core.api.utils import PassiveSerializer, TypeCreateSerializer
 from authentik.events.models import Event, EventAction
 
 
@@ -38,30 +38,18 @@ class EventSerializer(ModelSerializer):
         ]
 
 
-class EventTopPerUserParams(Serializer):
+class EventTopPerUserParams(PassiveSerializer):
     """Query params for top_per_user"""
 
     top_n = IntegerField(default=15)
 
-    def create(self, request: Request) -> Response:
-        raise NotImplementedError
 
-    def update(self, request: Request) -> Response:
-        raise NotImplementedError
-
-
-class EventTopPerUserSerializer(Serializer):
+class EventTopPerUserSerializer(PassiveSerializer):
     """Response object of Event's top_per_user"""
 
     application = DictField()
     counted_events = IntegerField()
     unique_users = IntegerField()
-
-    def create(self, request: Request) -> Response:
-        raise NotImplementedError
-
-    def update(self, request: Request) -> Response:
-        raise NotImplementedError
 
 
 class EventsFilter(django_filters.FilterSet):
@@ -132,7 +120,7 @@ class EventViewSet(ReadOnlyModelViewSet):
     def top_per_user(self, request: Request):
         """Get the top_n events grouped by user count"""
         filtered_action = request.query_params.get("action", EventAction.LOGIN)
-        top_n = request.query_params.get("top_n", 15)
+        top_n = int(request.query_params.get("top_n", "15"))
         return Response(
             get_objects_for_user(request.user, "authentik_events.view_event")
             .filter(action=filtered_action)
