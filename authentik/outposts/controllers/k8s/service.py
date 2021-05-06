@@ -39,7 +39,7 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
                     name=port.name,
                     port=port.port,
                     protocol=port.protocol.upper(),
-                    target_port=port.port,
+                    target_port=port.inner_port or port.port,
                 )
             )
         selector_labels = DeploymentReconciler(self.controller).get_pod_meta()

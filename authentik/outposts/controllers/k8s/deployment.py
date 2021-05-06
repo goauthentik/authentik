@@ -62,7 +62,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         for port in self.controller.deployment_ports:
             container_ports.append(
                 V1ContainerPort(
-                    container_port=port.port,
+                    container_port=port.inner_port or port.port,
                     name=port.name,
                     protocol=port.protocol.upper(),
                 )
@@ -105,7 +105,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
                                         name="AUTHENTIK_INSECURE",
                                         value_from=V1EnvVarSource(
                                             secret_key_ref=V1SecretKeySelector(
-                                                name=secret_name,
+                                                name=self.name,
                                                 key="authentik_host_insecure",
                                             )
                                         ),

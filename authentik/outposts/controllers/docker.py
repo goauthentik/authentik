@@ -66,7 +66,7 @@ class DockerController(BaseController):
                 "name": f"authentik-proxy-{self.outpost.uuid.hex}",
                 "detach": True,
                 "ports": {
-                    f"{port.port}/{port.protocol.lower()}": port.port
+                    f"{port.port}/{port.protocol.lower()}": port.inner_port or port.port
                     for port in self.deployment_ports
                 },
                 "environment": self._get_env(),
@@ -141,7 +141,7 @@ class DockerController(BaseController):
     def get_static_deployment(self) -> str:
         """Generate docker-compose yaml for proxy, version 3.5"""
         ports = [
-            f"{port.port}:{port.port}/{port.protocol.lower()}"
+            f"{port.port}:{port.inner_port or port.port}/{port.protocol.lower()}"
             for port in self.deployment_ports
         ]
         image_name = self.get_container_image()

@@ -10,5 +10,5 @@ class LDAPDockerController(DockerController):
     def __init__(self, outpost: Outpost, connection: DockerServiceConnection):
         super().__init__(outpost, connection)
         self.deployment_ports = [
-            DeploymentPort(3389, "ldap", "tcp"),
+            DeploymentPort(389, "ldap", "tcp", 3389),
         ]
