@@ -148,7 +148,7 @@ class SourceFlowManager:
 
     def get_flow(self, **kwargs) -> HttpResponse:
         """Get the flow response based on user_matching_mode"""
-        action, connection = self.get_action()
+        action, connection = self.get_action(**kwargs)
         self._logger.debug("get_action() says", action=action, connection=connection)
         if connection:
             if action == Action.LINK:
