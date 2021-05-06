@@ -9,6 +9,7 @@ import "../../../elements/forms/HorizontalFormElement";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
 import { first } from "../../../utils";
+import { AppURLManager } from "../../../api/legacy";
 
 @customElement("ak-source-oauth-form")
 export class OAuthSourceForm extends Form<OAuthSource> {
@@ -97,6 +98,14 @@ export class OAuthSourceForm extends Form<OAuthSource> {
             </ak-form-group>`;
     }
 
+    getRedirectURI(slug?: string): string {
+        if (!slug) {
+            return "";
+        }
+        const path = AppURLManager.sourceOAuth(slug, "callback");
+        return `${window.location.protocol}//${window.location.host}${path}`;
+    }
+
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
@@ -109,7 +118,16 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                 label=${t`Slug`}
                 ?required=${true}
                 name="slug">
-                <input type="text" value="${ifDefined(this.source?.slug)}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.source?.slug)}" class="pf-c-form-control" required @input=${(ev: Event) => {
+                    const current = (ev.target as HTMLInputElement).value;
+                    const label = this.shadowRoot?.querySelector<HTMLSpanElement>("#callback-url");
+                    if (!label) return;
+                    label.innerText = this.getRedirectURI(current);
+                }}>
+                <p class="pf-c-form__helper-text">
+                    ${t`Use this redirect URL:`}
+                    <span id="callback-url">${this.getRedirectURI(this.source?.slug)}</span>
+                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="enabled">
                 <div class="pf-c-check">
