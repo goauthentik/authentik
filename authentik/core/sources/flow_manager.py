@@ -11,6 +11,7 @@ from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
 from authentik.core.models import (
+    USER_ATTRIBUTE_SOURCES,
     Source,
     SourceUserMatchingModes,
     User,
@@ -269,6 +270,11 @@ class SourceFlowManager:
         if not self.source.enrollment_flow:
             self._logger.warning("source has no enrollment flow")
             return HttpResponseBadRequest()
+        if USER_ATTRIBUTE_SOURCES not in self.enroll_info or not isinstance(
+            self.enroll_info[USER_ATTRIBUTE_SOURCES], list
+        ):
+            self.enroll_info[USER_ATTRIBUTE_SOURCES] = []
+        self.enroll_info[USER_ATTRIBUTE_SOURCES].append(self.source.name)
         return self._handle_login_flow(
             self.source.enrollment_flow,
             **{
