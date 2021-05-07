@@ -88,10 +88,10 @@
         },
         "attrs": {
             "hashes": [
-                "sha256:31b2eced602aa8423c2aea9c76a724617ed67cf9513173fd3a4f03e3a929c7e6",
-                "sha256:832aa3cde19744e49938b91fea06d69ecb9e649c93ba974535d08ad92164f700"
+                "sha256:3901be1cb7c2a780f14668691474d9252c070a756be0a9ead98cfeabfa11aeb8",
+                "sha256:8ee1e5f5a1afc5b19bdfae4fdf0c35ed324074bdce3500c939842c8f818645d9"
             ],
-            "version": "==20.3.0"
+            "version": "==21.1.0"
         },
         "autobahn": {
             "hashes": [
@@ -116,18 +116,18 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:1db618cfe0e9d8c6ff4fc31ef4f9620bd72f472da0f3095f0be9372d77b671e9",
-                "sha256:61fe8cbb2d4bf1c9a69a73b3f2c68464e0ab587c9367b35f0ef691f372d5ce67"
+                "sha256:56f1766f1271b6b4e979c7b56225377f8912050e5935adc5c1c9e3a0338b949e",
+                "sha256:c61c809d288e88b9a0d926f56f803d0128b498aa9b45a42a6e03cd9a83e5c124"
             ],
             "index": "pypi",
-            "version": "==1.17.67"
+            "version": "==1.17.68"
         },
         "botocore": {
             "hashes": [
-                "sha256:4666fb5bdf7d78c51d465bac7d9eb1d31c34be46990cd1ad2d1b338bbec8c049",
-                "sha256:adb26d8bc65761b5a46744f67b7e7096dedb2071aff876e0962cd648f28e9a8f"
+                "sha256:0f693f5ad6348ec1a62b3a66fee2840d3b722d66b44896022d644275ff8b143d",
+                "sha256:eb3544911cb0316a33b328a27d137130af278a9c0006be0c95e5e402b01d9865"
             ],
-            "version": "==1.20.67"
+            "version": "==1.20.68"
         },
         "cachetools": {
             "hashes": [
@@ -1424,10 +1424,10 @@
         },
         "attrs": {
             "hashes": [
-                "sha256:31b2eced602aa8423c2aea9c76a724617ed67cf9513173fd3a4f03e3a929c7e6",
-                "sha256:832aa3cde19744e49938b91fea06d69ecb9e649c93ba974535d08ad92164f700"
+                "sha256:3901be1cb7c2a780f14668691474d9252c070a756be0a9ead98cfeabfa11aeb8",
+                "sha256:8ee1e5f5a1afc5b19bdfae4fdf0c35ed324074bdce3500c939842c8f818645d9"
             ],
-            "version": "==20.3.0"
+            "version": "==21.1.0"
         },
         "bandit": {
             "hashes": [
