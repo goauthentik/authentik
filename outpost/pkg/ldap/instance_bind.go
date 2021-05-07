@@ -29,7 +29,7 @@ type PasswordResponse struct {
 }
 
 func (pi *ProviderInstance) getUsername(dn string) (string, error) {
-	if !strings.HasSuffix(dn, pi.BaseDN) {
+	if !strings.HasSuffix(strings.ToLower(dn), strings.ToLower(pi.BaseDN)) {
 		return "", errors.New("invalid base DN")
 	}
 	dns, err := goldap.ParseDN(dn)
@@ -38,12 +38,12 @@ func (pi *ProviderInstance) getUsername(dn string) (string, error) {
 	}
 	for _, part := range dns.RDNs {
 		for _, attribute := range part.Attributes {
-			if attribute.Type == "DN" {
+			if strings.ToLower(attribute.Type) == "cn" {
 				return attribute.Value, nil
 			}
 		}
 	}
-	return "", errors.New("failed to find dn")
+	return "", errors.New("failed to find cn")
 }
 
 func (pi *ProviderInstance) Bind(username string, bindPW string, conn net.Conn) (ldap.LDAPResultCode, error) {
@@ -150,6 +150,8 @@ func (pi *ProviderInstance) solveFlowChallenge(bindDN string, password string, c
 		responseParams.Data = &UIDResponse{UIDFIeld: bindDN}
 	case "ak-stage-password":
 		responseParams.Data = &PasswordResponse{Password: password}
+	case "ak-stage-access-denied":
+		return false, errors.New("got ak-stage-access-denied")
 	default:
 		return false, fmt.Errorf("unsupported challenge type: %s", challenge.Payload.Component)
 	}

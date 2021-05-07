@@ -20,8 +20,8 @@ func (ls *LDAPServer) Refresh() error {
 	}
 	providers := make([]*ProviderInstance, len(outposts.Payload.Results))
 	for idx, provider := range outposts.Payload.Results {
-		userDN := strings.ToLower(fmt.Sprintf("cn=users,%s", provider.BaseDn))
-		groupDN := strings.ToLower(fmt.Sprintf("cn=groups,%s", provider.BaseDn))
+		userDN := strings.ToLower(fmt.Sprintf("ou=users,%s", provider.BaseDn))
+		groupDN := strings.ToLower(fmt.Sprintf("ou=groups,%s", provider.BaseDn))
 		providers[idx] = &ProviderInstance{
 			BaseDN:              provider.BaseDn,
 			GroupDN:             groupDN,
