@@ -19,7 +19,7 @@ ENV NODE_ENV=production
 RUN cd /static && npm i --production=false && npm run build
 
 # Stage 3: Build go proxy
-FROM golang:1.16.3 AS builder
+FROM golang:1.16.4 AS builder
 
 WORKDIR /work
 
