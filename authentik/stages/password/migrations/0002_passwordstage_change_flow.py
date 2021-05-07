@@ -86,7 +86,7 @@ def update_default_stage_change(apps: Apps, schema_editor: BaseDatabaseSchemaEdi
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_flows", "0006_auto_20200629_0857"),
+        ("authentik_flows", "0008_default_flows"),
         ("authentik_stages_password", "0001_initial"),
         ("authentik_stages_prompt", "0001_initial"),
         ("authentik_stages_user_write", "0001_initial"),
