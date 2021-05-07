@@ -128,5 +128,5 @@ jobs:
           SENTRY_PROJECT: authentik
           SENTRY_URL: https://sentry.beryju.org
         with:
-          tagName: 2021.4.5
+          version: authentik@2021.4.5
           environment: beryjuorg-prod
