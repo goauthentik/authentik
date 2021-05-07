@@ -14,9 +14,9 @@
         <link rel="stylesheet" type="text/css" href="{% static 'dist/page.css' %}?v={{ ak_version }}">
         <link rel="stylesheet" type="text/css" href="{% static 'dist/empty-state.css' %}?v={{ ak_version }}">
         <link rel="stylesheet" type="text/css" href="{% static 'dist/spinner.css' %}?v={{ ak_version }}">
-        <link rel="stylesheet" type="text/css" href="{% static 'dist/authentik.css' %}?v={{ ak_version }}">
         {% block head_before %}
         {% endblock %}
+        <link rel="stylesheet" type="text/css" href="{% static 'dist/authentik.css' %}?v={{ ak_version }}">
         <script src="{% static 'dist/poly.js' %}?v={{ ak_version }}" type="module"></script>
         <script>window["polymerSkipLoadingFontRoboto"] = true;</script>
         {% block head %}
