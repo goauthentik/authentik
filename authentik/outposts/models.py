@@ -357,7 +357,10 @@ class Outpost(models.Model):
                         LOGGER.warning("permission doesn't exist", perm=model_or_perm)
                         continue
                     user.user_permissions.add(permission.first())
-        LOGGER.debug("Updated service account's permissions", perms=UserObjectPermission.objects.filter(user=user))
+        LOGGER.debug(
+            "Updated service account's permissions",
+            perms=UserObjectPermission.objects.filter(user=user),
+        )
         return user
 
     @property
