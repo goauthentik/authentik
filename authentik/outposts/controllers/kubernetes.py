@@ -8,7 +8,7 @@ from structlog.testing import capture_logs
 from yaml import dump_all
 
 from authentik.outposts.controllers.base import BaseController, ControllerException
-from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
+from authentik.outposts.controllers.k8s.base import Disabled, KubernetesObjectReconciler
 from authentik.outposts.controllers.k8s.deployment import DeploymentReconciler
 from authentik.outposts.controllers.k8s.secret import SecretReconciler
 from authentik.outposts.controllers.k8s.service import ServiceReconciler
@@ -70,7 +70,10 @@ class KubernetesController(BaseController):
         documents = []
         for reconcile_key in self.reconcile_order:
             reconciler = self.reconcilers[reconcile_key](self)
-            documents.append(reconciler.get_reference_object().to_dict())
+            try:
+                documents.append(reconciler.get_reference_object().to_dict())
+            except Disabled:
+                continue
 
         with StringIO() as _str:
             dump_all(
