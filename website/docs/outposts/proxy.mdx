@@ -124,6 +124,7 @@ http:
 ```
   </TabItem>
   <TabItem value="docker-compose">
+
 ```yaml
 version: '3.7'
 services:
@@ -185,6 +186,7 @@ services:
       traefik.http.routers.whoami.middlewares: authentik@docker
     restart: unless-stopped
 ```
+
   </TabItem>
   <TabItem value="ingress">
 Create a middleware:
