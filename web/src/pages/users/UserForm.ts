@@ -62,7 +62,7 @@ export class UserForm extends Form<User> {
             <ak-form-element-horizontal
                 name="isActive">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.user?.isActive, false)}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.user?.isActive, true)}>
                     <label class="pf-c-check__label">
                         ${t`Is active`}
                     </label>
