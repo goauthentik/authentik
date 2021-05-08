@@ -92,6 +92,7 @@ class ConfigLoader:
                     value = _file.read()
             except OSError:
                 self._log("error", f"Failed to read config value from {url.netloc}")
+                value = url.query
         return value
 
     def update_from_file(self, path: str):

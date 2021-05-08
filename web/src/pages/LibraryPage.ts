@@ -88,7 +88,7 @@ export class LibraryPage extends LitElement {
     apps?: AKResponse<Application>;
 
     pageTitle(): string {
-        return t`Applications`;
+        return t`My Applications`;
     }
 
     static get styles(): CSSResult[] {
