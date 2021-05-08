@@ -32,6 +32,7 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey
 from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.utils.http import USER_ATTRIBUTE_CAN_OVERRIDE_IP
 from authentik.outposts.docker_tls import DockerInlineTLS
 
 OUR_VERSION = parse(__version__)
@@ -330,6 +331,7 @@ class Outpost(models.Model):
         if not users.exists():
             user: User = User.objects.create(username=self.user_identifier)
             user.attributes[USER_ATTRIBUTE_SA] = True
+            user.attributes[USER_ATTRIBUTE_CAN_OVERRIDE_IP] = True
             user.set_unusable_password()
             user.save()
         else:
