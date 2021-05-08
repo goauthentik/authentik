@@ -6,12 +6,38 @@ These are all the configuration options you can set via environment variables.
 
 Append any of the following keys to your `.env` file, and run `docker-compose up -d` to apply them.
 
-## AUTHENTIK_LOG_LEVEL
+:::info
+The double-underscores are intentional, as all these settings are translated to yaml internally, a double-underscore indicates the next level.
+:::
+
+All of these variables can be set to values, but you can also use a URI-like format to load values from other places:
+
+- `env://<name>` Loads the value from the environment variable `<name>`. Fallback can be optionally set like `env://<name>?<default>`
+- `file://<name>` Loads the value from the file `<name>`. Fallback can be optionally set like `file://<name>?<default>`
+
+## PostgreSQL Settings
+
+- `AUTHENTIK_POSTGRESQL__HOST`: Hostname of your PostgreSQL Server
+- `AUTHENTIK_POSTGRESQL__NAME`: Database name
+- `AUTHENTIK_POSTGRESQL__USER`: Database user
+- `AUTHENTIK_POSTGRESQL__PASSWORD`: Database password, defaults to the environment variable `POSTGRES_PASSWORD`
+
+## Redis Settings
+
+- `AUTHENTIK_REDIS__HOST`: Hostname of your Redis Server
+- `AUTHENTIK_REDIS__PASSWORD`: Password for your Redis Server
+- `AUTHENTIK_REDIS__CACHE_DB`: Database for caching, defaults to 0
+- `AUTHENTIK_REDIS__MESSAGE_QUEUE_DB`: Database for the message queue, defaults to 1
+- `AUTHENTIK_REDIS__WS_DB`: Database for websocket connections, defaults to 2
+
+## authentik Settings
+
+### AUTHENTIK_LOG_LEVEL
 
 Log level for the server and worker containers. Possible values: debug, info, warning, error
 Defaults to `info`.
 
-## AUTHENTIK_ERROR_REPORTING
+### AUTHENTIK_ERROR_REPORTING
 
 - `AUTHENTIK_ERROR_REPORTING__ENABLED`
 
@@ -27,7 +53,7 @@ Defaults to `info`.
 
   Whether or not to send personal data, like usernames. Defaults to `false`.
 
-## AUTHENTIK_EMAIL
+### AUTHENTIK_EMAIL
 
 - `AUTHENTIK_EMAIL__HOST`
 
@@ -63,13 +89,13 @@ Defaults to `info`.
 
   Email address authentik will send from, should have a correct @domain
 
-## AUTHENTIK_OUTPOSTS
+### AUTHENTIK_OUTPOSTS
 
 - `AUTHENTIK_OUTPOSTS__DOCKER_IMAGE_BASE`
 
   This is the prefix used for authentik-managed outposts. Default: `beryju/authentik`.
 
-## AUTHENTIK_AUTHENTIK
+### AUTHENTIK_AUTHENTIK
 
 - `AUTHENTIK_AUTHENTIK__AVATARS`
 
