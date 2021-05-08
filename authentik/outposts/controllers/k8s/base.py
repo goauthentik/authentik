@@ -1,6 +1,7 @@
 """Base Kubernetes Reconciler"""
 from typing import TYPE_CHECKING, Generic, TypeVar
 
+from django.utils.text import slugify
 from kubernetes.client import V1ObjectMeta
 from kubernetes.client.models.v1_deployment import V1Deployment
 from kubernetes.client.models.v1_pod import V1Pod
@@ -48,7 +49,7 @@ class KubernetesObjectReconciler(Generic[T]):
     def name(self) -> str:
         """Get the name of the object this reconciler manages"""
         return self.controller.outpost.config.object_naming_template % {
-            "name": self.controller.outpost.name,
+            "name": slugify(self.controller.outpost.name),
             "uuid": self.controller.outpost.uuid.hex,
         }
 
@@ -132,7 +133,7 @@ class KubernetesObjectReconciler(Generic[T]):
             namespace=self.namespace,
             labels={
                 "app.kubernetes.io/name": f"authentik-{self.controller.outpost.type.lower()}",
-                "app.kubernetes.io/instance": self.controller.outpost.name,
+                "app.kubernetes.io/instance": slugify(self.controller.outpost.name),
                 "app.kubernetes.io/version": __version__,
                 "app.kubernetes.io/managed-by": "goauthentik.io",
                 "goauthentik.io/outpost-uuid": self.controller.outpost.uuid.hex,
