@@ -60,7 +60,7 @@ class OutpostConfig:
     kubernetes_replicas: int = field(default=1)
     kubernetes_namespace: str = field(default="default")
     kubernetes_ingress_annotations: dict[str, str] = field(default_factory=dict)
-    kubernetes_ingress_secret_name: str = field(default="authentik-outpost")
+    kubernetes_ingress_secret_name: str = field(default="authentik-outpost-tls")
     kubernetes_service_type: str = field(default="ClusterIP")
 
 

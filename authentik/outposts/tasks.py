@@ -111,7 +111,7 @@ def outpost_controller(self: MonitoredTask, outpost_pk: str):
 
 
 @CELERY_APP.task()
-def outpost_pre_delete(outpost_pk: str):
+def outpost_controller_down(outpost_pk: str):
     """Delete outpost objects before deleting the DB Object"""
     outpost = Outpost.objects.get(pk=outpost_pk)
     controller = controller_for_outpost(outpost)
