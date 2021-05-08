@@ -14,10 +14,10 @@ module.exports = {
             items: [
                 "installation/index",
                 "installation/docker-compose",
-                "installation/configuration",
-                "installation/reverse-proxy",
                 "installation/kubernetes",
                 "installation/beta",
+                "installation/configuration",
+                "installation/reverse-proxy",
             ],
         },
         {

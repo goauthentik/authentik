@@ -25,15 +25,6 @@ jobs:
           docker-compose up --no-start
           docker-compose start postgresql redis
           docker-compose run -u root --entrypoint /bin/bash server -c "pip install --no-cache -r requirements-dev.txt && ./manage.py test authentik"
-      - name: Install Helm
-        run: |
-          apt update && apt install -y curl
-          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-      - name: Helm package
-        run: |
-          helm dependency update helm/
-          helm package helm/
-          mv authentik-*.tgz authentik-chart.tgz
       - name: Extract version number
         id: get_version
         uses: actions/github-script@0.2.0
@@ -51,13 +42,3 @@ jobs:
           release_name: Release ${{ steps.get_version.outputs.result }}
           draft: true
           prerelease: false
-      - name: Upload packaged Helm Chart
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./authentik-chart.tgz
-          asset_name: authentik-chart.tgz
-          asset_content_type: application/gzip
