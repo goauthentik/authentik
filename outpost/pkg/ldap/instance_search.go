@@ -30,10 +30,10 @@ func (pi *ProviderInstance) Search(bindDN string, searchReq ldap.SearchRequest, 
 	defer pi.boundUsersMutex.RUnlock()
 	flags, ok := pi.boundUsers[bindDN]
 	if !ok {
-		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, errors.New("Access denied")
+		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, errors.New("access denied")
 	}
 	if !flags.CanSearch {
-		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, errors.New("Access denied")
+		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, errors.New("access denied")
 	}
 
 	switch filterEntity {

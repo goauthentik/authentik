@@ -3,7 +3,9 @@ package ldap
 import (
 	"errors"
 	"fmt"
+	"net/http"
 	"strings"
+	"sync"
 
 	"github.com/go-openapi/strfmt"
 	log "github.com/sirupsen/logrus"
@@ -29,6 +31,8 @@ func (ls *LDAPServer) Refresh() error {
 			appSlug:             *provider.ApplicationSlug,
 			flowSlug:            *provider.BindFlowSlug,
 			searchAllowedGroups: []*strfmt.UUID{provider.SearchGroup},
+			boundUsersMutex:     sync.RWMutex{},
+			boundUsers:          make(map[string]UserFlags),
 			s:                   ls,
 			log:                 log.WithField("logger", "authentik.outpost.ldap").WithField("provider", provider.Name),
 		}
@@ -47,4 +51,18 @@ func (ls *LDAPServer) Start() error {
 		return err
 	}
 	return nil
+}
+
+type transport struct {
+	headers map[string]string
+}
+
+func (t *transport) RoundTrip(req *http.Request) (*http.Response, error) {
+	for key, value := range t.headers {
+		req.Header.Add(key, value)
+	}
+	return http.DefaultTransport.RoundTrip(req)
+}
+func newTransport(headers map[string]string) *transport {
+	return &transport{headers}
 }
