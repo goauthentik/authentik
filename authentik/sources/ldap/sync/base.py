@@ -19,7 +19,7 @@ class BaseLDAPSynchronizer:
 
     def __init__(self, source: LDAPSource):
         self._source = source
-        self._logger = get_logger().bind(source=source)
+        self._logger = get_logger().bind(source=source, syncer=self.__class__.__name__)
 
     @property
     def base_dn_users(self) -> str:

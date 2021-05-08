@@ -89,7 +89,7 @@ export class ProviderListPage extends TablePage<Provider> {
             </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
-                objectLabel=${t`Source`}
+                objectLabel=${t`Provider`}
                 .delete=${() => {
                     return new ProvidersApi(DEFAULT_CONFIG).providersAllDelete({
                         id: item.pk || 0

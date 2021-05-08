@@ -1,5 +1,8 @@
 """ProxyProvider API Views"""
+from typing import Any
+
 from drf_yasg.utils import swagger_serializer_method
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ListField, SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
@@ -29,6 +32,17 @@ class OpenIDConnectConfigurationSerializer(PassiveSerializer):
 
 class ProxyProviderSerializer(ProviderSerializer):
     """ProxyProvider Serializer"""
+
+    def validate(self, attrs) -> dict[Any, str]:
+        """Check that internal_host is set when forward_auth_mode is disabled"""
+        if (
+            not attrs.get("forward_auth_mode", False)
+            and attrs.get("internal_host", "") == ""
+        ):
+            raise ValidationError(
+                "Internal host cannot be empty when forward auth is disabled."
+            )
+        return attrs
 
     def create(self, validated_data):
         instance: ProxyProvider = super().create(validated_data)
