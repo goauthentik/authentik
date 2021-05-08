@@ -37,6 +37,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
+                sudo apt update
                 sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
@@ -53,6 +54,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
+                sudo apt update
                 sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
@@ -69,6 +71,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
+                sudo apt update
                 sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
@@ -85,6 +88,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
+                sudo apt update
                 sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
@@ -107,6 +111,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
+                sudo apt update
                 sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
@@ -131,6 +136,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
+                sudo apt update
                 sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
@@ -160,6 +166,7 @@ stages:
                 # Copy current, latest config to local
                 cp authentik/lib/default.yml local.env.yml
                 git checkout $(git describe --abbrev=0 --match 'version/*')
+                sudo apt update
                 sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
@@ -197,6 +204,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
+                sudo apt update
                 sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
@@ -232,6 +240,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
+                sudo apt update
                 sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
@@ -277,6 +286,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
+                sudo apt update
                 sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
                 pipenv install --dev --python python3.9
@@ -354,6 +364,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
+                sudo apt update
                 sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
