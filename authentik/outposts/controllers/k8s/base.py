@@ -90,6 +90,12 @@ class KubernetesObjectReconciler(Generic[T]):
 
     def down(self):
         """Delete object if found"""
+        # Call self.get_reference_object to check if we even need to do anything
+        try:
+            self.get_reference_object()
+        except Disabled:
+            self.logger.debug("Object not required")
+            return
         try:
             current = self.retrieve()
             self.delete(current)
