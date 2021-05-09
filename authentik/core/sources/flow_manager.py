@@ -116,9 +116,11 @@ class SourceFlowManager:
                 )
                 return Action.DENY, None
             query = Q(username__exact=self.enroll_info.get("username", None))
+        self._logger.debug("trying to link with existing user", query=query)
         matching_users = User.objects.filter(query)
         # No matching users, always enroll
         if not matching_users.exists():
+            self._logger.debug("no matching users found, enrolling")
             return Action.ENROLL, self.update_connection(new_connection, **kwargs)
 
         user = matching_users.first()
