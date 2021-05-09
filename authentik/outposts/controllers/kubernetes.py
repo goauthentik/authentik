@@ -61,6 +61,7 @@ class KubernetesController(BaseController):
         try:
             for reconcile_key in self.reconcile_order:
                 reconciler = self.reconcilers[reconcile_key](self)
+                self.logger.debug("Tearing down object", name=reconcile_key)
                 reconciler.down()
 
         except ApiException as exc:

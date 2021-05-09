@@ -344,7 +344,11 @@ func (p *OAuthProxy) AuthenticateOnly(rw http.ResponseWriter, req *http.Request)
 			}
 			if _, ok := req.URL.Query()["traefik"]; ok {
 				host := getHost(req)
-				http.Redirect(rw, req, fmt.Sprintf("//%s%s", host, p.OAuthStartPath), http.StatusTemporaryRedirect)
+				proto := req.Header.Get("X-Forwarded-Proto")
+				if proto != "" {
+					proto = proto + ":"
+				}
+				http.Redirect(rw, req, fmt.Sprintf("%s//%s%s", proto, host, p.OAuthStartPath), http.StatusTemporaryRedirect)
 				return
 			}
 		}
