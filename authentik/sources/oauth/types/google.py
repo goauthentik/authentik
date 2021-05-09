@@ -23,7 +23,6 @@ class GoogleOAuth2Callback(OAuthCallback):
         info: dict[str, Any],
     ) -> dict[str, Any]:
         return {
-            "username": info.get("email"),
             "email": info.get("email"),
             "name": info.get("name"),
         }
