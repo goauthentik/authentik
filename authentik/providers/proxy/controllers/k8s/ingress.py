@@ -101,26 +101,41 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
         tls_hosts = []
         for proxy_provider in ProxyProvider.objects.filter(
             outpost__in=[self.controller.outpost],
-            forward_auth_mode=False,
         ):
             proxy_provider: ProxyProvider
             external_host_name = urlparse(proxy_provider.external_host)
             if external_host_name.scheme == "https":
                 tls_hosts.append(external_host_name.hostname)
-            rule = NetworkingV1beta1IngressRule(
-                host=external_host_name.hostname,
-                http=NetworkingV1beta1HTTPIngressRuleValue(
-                    paths=[
-                        NetworkingV1beta1HTTPIngressPath(
-                            backend=NetworkingV1beta1IngressBackend(
-                                service_name=self.name,
-                                service_port="http",
-                            ),
-                            path="/",
-                        )
-                    ]
-                ),
-            )
+            if proxy_provider.forward_auth_mode:
+                rule = NetworkingV1beta1IngressRule(
+                    host=external_host_name.hostname,
+                    http=NetworkingV1beta1HTTPIngressRuleValue(
+                        paths=[
+                            NetworkingV1beta1HTTPIngressPath(
+                                backend=NetworkingV1beta1IngressBackend(
+                                    service_name=self.name,
+                                    service_port="http",
+                                ),
+                                path="/akprox",
+                            )
+                        ]
+                    ),
+                )
+            else:
+                rule = NetworkingV1beta1IngressRule(
+                    host=external_host_name.hostname,
+                    http=NetworkingV1beta1HTTPIngressRuleValue(
+                        paths=[
+                            NetworkingV1beta1HTTPIngressPath(
+                                backend=NetworkingV1beta1IngressBackend(
+                                    service_name=self.name,
+                                    service_port="http",
+                                ),
+                                path="/",
+                            )
+                        ]
+                    ),
+                )
             rules.append(rule)
         if not rules:
             self.logger.debug("No providers use proxying, no ingress needed")
