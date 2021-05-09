@@ -32,6 +32,7 @@ jobs:
             ghcr.io/goauthentik/server:2021.5.1-rc3,
             ghcr.io/goauthentik/server:latest
           platforms: linux/amd64,linux/arm64,linux/arm
+          context: .
   build-proxy:
     runs-on: ubuntu-latest
     steps:
@@ -66,6 +67,7 @@ jobs:
           context: outpost/
           file: outpost/proxy.Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm
+          context: .
   build-ldap:
     runs-on: ubuntu-latest
     steps:
@@ -100,6 +102,7 @@ jobs:
           context: outpost/
           file: outpost/ldap.Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm
+          context: .
   test-release:
     needs:
       - build-server
