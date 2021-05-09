@@ -75,6 +75,7 @@ class OAuthSourceSerializer(SourceSerializer):
             "callback_url",
             "type",
         ]
+        extra_kwargs = {"consumer_secret": {"write_only": True}}
 
 
 class OAuthSourceViewSet(ModelViewSet):

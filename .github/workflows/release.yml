@@ -3,36 +3,43 @@ name: authentik-on-release
 on:
   release:
     types: [published, created]
+  push:
+    branches:
+      - version-*
 
 jobs:
   # Build
   build-server:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v1.1.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Docker Login Registry
         uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKER_PASSWORD }}
-          password: ${{ secrets.DOCKER_USERNAME }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: prepare ts api client
+        run: |
+          docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate -i /local/swagger.yaml -g typescript-fetch -o /local/web/api --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
       - name: Building Docker Image
         uses: docker/build-push-action@v2
         with:
-          push: true
+          push: ${{ github.event_name == 'release' }}
           tags: |
-            beryju/authentik:2021.4.5,
+            beryju/authentik:2021.5.1-rc4,
             beryju/authentik:latest,
-            ghcr.io/goauthentik/server:2021.4.5,
+            ghcr.io/goauthentik/server:2021.5.1-rc4,
             ghcr.io/goauthentik/server:latest
-          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v8
+          platforms: linux/amd64,linux/arm64,linux/arm/v8
+          context: .
   build-proxy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
         with:
           go-version: "^1.15"
@@ -41,32 +48,32 @@ jobs:
           cd outpost
           go get -u github.com/go-swagger/go-swagger/cmd/swagger
           swagger generate client -f ../swagger.yaml -A authentik -t pkg/
-          go build -v .
+          go build -v ./cmd/proxy/server.go
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v1.1.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Docker Login Registry
         uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKER_PASSWORD }}
-          password: ${{ secrets.DOCKER_USERNAME }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Building Docker Image
         uses: docker/build-push-action@v2
         with:
-          push: true
+          push: ${{ github.event_name == 'release' }}
           tags: |
-            beryju/authentik-proxy:2021.4.5,
+            beryju/authentik-proxy:2021.5.1-rc4,
             beryju/authentik-proxy:latest,
-            ghcr.io/goauthentik/proxy:2021.4.5,
+            ghcr.io/goauthentik/proxy:2021.5.1-rc4,
             ghcr.io/goauthentik/proxy:latest
           context: outpost/
           file: outpost/proxy.Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v8
+          platforms: linux/amd64,linux/arm64,linux/arm/v8
   build-ldap:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
         with:
           go-version: "^1.15"
@@ -75,36 +82,37 @@ jobs:
           cd outpost
           go get -u github.com/go-swagger/go-swagger/cmd/swagger
           swagger generate client -f ../swagger.yaml -A authentik -t pkg/
-          go build -v .
+          go build -v ./cmd/ldap/server.go
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v1.1.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Docker Login Registry
         uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKER_PASSWORD }}
-          password: ${{ secrets.DOCKER_USERNAME }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Building Docker Image
         uses: docker/build-push-action@v2
         with:
-          push: true
+          push: ${{ github.event_name == 'release' }}
           tags: |
-            beryju/authentik-ldap:2021.4.5,
+            beryju/authentik-ldap:2021.5.1-rc4,
             beryju/authentik-ldap:latest,
-            ghcr.io/goauthentik/ldap:2021.4.5,
+            ghcr.io/goauthentik/ldap:2021.5.1-rc4,
             ghcr.io/goauthentik/ldap:latest
           context: outpost/
           file: outpost/ldap.Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v8
+          platforms: linux/amd64,linux/arm64,linux/arm/v8
   test-release:
+    if: ${{ github.event_name == 'release' }}
     needs:
       - build-server
       - build-proxy
       - build-ldap
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Run test suite in final docker images
         run: |
           sudo apt-get install -y pwgen
@@ -115,11 +123,12 @@ jobs:
           docker-compose start postgresql redis
           docker-compose run -u root --entrypoint /bin/bash server -c "pip install --no-cache -r requirements-dev.txt && ./manage.py test authentik"
   sentry-release:
+    if: ${{ github.event_name == 'release' }}
     needs:
       - test-release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Create a Sentry.io release
         uses: getsentry/action-release@v1
         env:
@@ -128,5 +137,5 @@ jobs:
           SENTRY_PROJECT: authentik
           SENTRY_URL: https://sentry.beryju.org
         with:
-          version: authentik@2021.4.5
+          version: authentik@2021.5.1-rc4
           environment: beryjuorg-prod
