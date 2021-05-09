@@ -67,7 +67,6 @@ jobs:
           context: outpost/
           file: outpost/proxy.Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm
-          context: .
   build-ldap:
     runs-on: ubuntu-latest
     steps:
@@ -102,7 +101,6 @@ jobs:
           context: outpost/
           file: outpost/ldap.Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm
-          context: .
   test-release:
     needs:
       - build-server
