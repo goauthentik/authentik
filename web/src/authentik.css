@@ -205,6 +205,9 @@ body {
         color: var(--ak-dark-foreground);
     }
     /* inputs */
+    optgroup, option {
+        color: var(--ak-dark-foreground);
+    }
     .pf-c-input-group {
         --pf-c-input-group--BackgroundColor: transparent;
     }
