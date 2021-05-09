@@ -1,7 +1,9 @@
 """Notification API Views"""
+from django_filters.rest_framework import DjangoFilterBackend
 from guardian.utils import get_anonymous_user
 from rest_framework import mixins
 from rest_framework.fields import ReadOnlyField
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 
@@ -46,6 +48,11 @@ class NotificationViewSet(
         "created",
         "event",
         "seen",
+    ]
+    filter_backends = [
+        DjangoFilterBackend,
+        OrderingFilter,
+        SearchFilter,
     ]
 
     def get_queryset(self):
