@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v1.1.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Docker Login Registry
@@ -46,7 +46,7 @@ jobs:
           swagger generate client -f ../swagger.yaml -A authentik -t pkg/
           go build -v ./cmd/proxy/server.go
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v1.1.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Docker Login Registry
@@ -80,7 +80,7 @@ jobs:
           swagger generate client -f ../swagger.yaml -A authentik -t pkg/
           go build -v ./cmd/ldap/server.go
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v1.1.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Docker Login Registry
