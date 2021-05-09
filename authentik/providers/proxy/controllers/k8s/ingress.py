@@ -123,6 +123,7 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
             )
             rules.append(rule)
         if not rules:
+            self.logger.debug("No providers use proxying, no ingress needed")
             raise Disabled()
         tls_config = None
         if tls_hosts:

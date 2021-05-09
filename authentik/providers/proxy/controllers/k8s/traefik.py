@@ -91,8 +91,10 @@ class TraefikMiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware])
             outpost__in=[self.controller.outpost],
             forward_auth_mode=True,
         ).exists():
+            self.logger.debug("No providers with forward auth enabled.")
             raise Disabled()
         if not self._crd_exists():
+            self.logger.debug("CRD doesn't exist")
             raise Disabled()
         return TraefikMiddleware(
             apiVersion=f"{CRD_GROUP}/{CRD_VERSION}",

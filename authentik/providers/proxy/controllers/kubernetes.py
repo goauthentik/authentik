@@ -18,6 +18,6 @@ class ProxyKubernetesController(KubernetesController):
             DeploymentPort(4443, "https", "tcp"),
         ]
         self.reconcilers["ingress"] = IngressReconciler
-        self.reconcilers["traefik_middleware"] = TraefikMiddlewareReconciler
+        self.reconcilers["traefik middleware"] = TraefikMiddlewareReconciler
         self.reconcile_order.append("ingress")
-        self.reconcile_order.append("traefik_middleware")
+        self.reconcile_order.append("traefik middleware")

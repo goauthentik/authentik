@@ -71,7 +71,6 @@ class KubernetesObjectReconciler(Generic[T]):
                 self.logger.debug("Other unhandled error", exc=exc)
                 raise exc
             else:
-                self.logger.debug("Got current, running reconcile")
                 self.reconcile(current, reference)
         except NeedsRecreate:
             self.logger.debug("Recreate requested")
@@ -86,7 +85,7 @@ class KubernetesObjectReconciler(Generic[T]):
             self.logger.debug("Updating")
             self.update(current, reference)
         else:
-            self.logger.debug("Nothing to do...")
+            self.logger.debug("Object is up-to-date.")
 
     def down(self):
         """Delete object if found"""
