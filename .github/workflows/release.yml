@@ -3,6 +3,9 @@ name: authentik-on-release
 on:
   release:
     types: [published, created]
+  push:
+    branches:
+      - version-*
 
 jobs:
   # Build
@@ -25,7 +28,7 @@ jobs:
       - name: Building Docker Image
         uses: docker/build-push-action@v2
         with:
-          push: true
+          push: ${{ github.event_name == 'release' }}
           tags: |
             beryju/authentik:2021.5.1-rc4,
             beryju/authentik:latest,
@@ -58,7 +61,7 @@ jobs:
       - name: Building Docker Image
         uses: docker/build-push-action@v2
         with:
-          push: true
+          push: ${{ github.event_name == 'release' }}
           tags: |
             beryju/authentik-proxy:2021.5.1-rc4,
             beryju/authentik-proxy:latest,
@@ -92,7 +95,7 @@ jobs:
       - name: Building Docker Image
         uses: docker/build-push-action@v2
         with:
-          push: true
+          push: ${{ github.event_name == 'release' }}
           tags: |
             beryju/authentik-ldap:2021.5.1-rc4,
             beryju/authentik-ldap:latest,
@@ -102,6 +105,7 @@ jobs:
           file: outpost/ldap.Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm
   test-release:
+    if: ${{ github.event_name == 'release' }}
     needs:
       - build-server
       - build-proxy
@@ -119,6 +123,7 @@ jobs:
           docker-compose start postgresql redis
           docker-compose run -u root --entrypoint /bin/bash server -c "pip install --no-cache -r requirements-dev.txt && ./manage.py test authentik"
   sentry-release:
+    if: ${{ github.event_name == 'release' }}
     needs:
       - test-release
     runs-on: ubuntu-latest
