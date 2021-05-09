@@ -48,10 +48,10 @@ class KubernetesObjectReconciler(Generic[T]):
     @property
     def name(self) -> str:
         """Get the name of the object this reconciler manages"""
-        return self.controller.outpost.config.object_naming_template % {
+        return (self.controller.outpost.config.object_naming_template % {
             "name": slugify(self.controller.outpost.name),
             "uuid": self.controller.outpost.uuid.hex,
-        }
+        }).lower()
 
     def up(self):
         """Create object if it doesn't exist, update if needed or recreate if needed."""
