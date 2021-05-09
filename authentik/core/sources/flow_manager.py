@@ -3,6 +3,7 @@ from enum import Enum
 from typing import Any, Optional, Type
 
 from django.contrib import messages
+from django.db import IntegrityError
 from django.db.models.query_utils import Q
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect
@@ -149,7 +150,11 @@ class SourceFlowManager:
 
     def get_flow(self, **kwargs) -> HttpResponse:
         """Get the flow response based on user_matching_mode"""
-        action, connection = self.get_action(**kwargs)
+        try:
+            action, connection = self.get_action(**kwargs)
+        except IntegrityError as exc:
+            self._logger.warning("failed to get action", exc=exc)
+            return redirect("/")
         self._logger.debug("get_action() says", action=action, connection=connection)
         if connection:
             if action == Action.LINK:
