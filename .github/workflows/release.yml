@@ -31,7 +31,7 @@ jobs:
             beryju/authentik:latest,
             ghcr.io/goauthentik/server:2021.5.1-rc2,
             ghcr.io/goauthentik/server:latest
-          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v8
+          platforms: linux/amd64,linux/arm64,linux/arm
   build-proxy:
     runs-on: ubuntu-latest
     steps:
@@ -65,7 +65,7 @@ jobs:
             ghcr.io/goauthentik/proxy:latest
           context: outpost/
           file: outpost/proxy.Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v8
+          platforms: linux/amd64,linux/arm64,linux/arm
   build-ldap:
     runs-on: ubuntu-latest
     steps:
@@ -99,7 +99,7 @@ jobs:
             ghcr.io/goauthentik/ldap:latest
           context: outpost/
           file: outpost/ldap.Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v8
+          platforms: linux/amd64,linux/arm64,linux/arm
   test-release:
     needs:
       - build-server
