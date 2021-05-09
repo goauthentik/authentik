@@ -22,9 +22,9 @@ See all configurable values on [artifacthub](https://artifacthub.io/packages/hel
 Afterwards, run these commands to install authentik:
 
 ```
-helm repo add authentik https://helm.goauthentik.io
+helm repo add authentik https://charts.goauthentik.io
 helm repo update
-helm install authentik/authentik -f values.yaml
+helm install authentik authentik/authentik -f values.yaml
 ```
 
 This installation automatically applies database migrations on startup. After the installation is done, navigate to the `https://<ingress you've specified>/if/flow/initial-setup/`, to set a password for the akadmin user.
