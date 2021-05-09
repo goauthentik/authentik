@@ -33,6 +33,7 @@ from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.http import USER_ATTRIBUTE_CAN_OVERRIDE_IP
+from authentik.outposts.controllers.k8s.utils import get_namespace
 from authentik.outposts.docker_tls import DockerInlineTLS
 
 OUR_VERSION = parse(__version__)
@@ -59,7 +60,7 @@ class OutpostConfig:
 
     object_naming_template: str = field(default="ak-outpost-%(name)s")
     kubernetes_replicas: int = field(default=1)
-    kubernetes_namespace: str = field(default="default")
+    kubernetes_namespace: str = field(default_factory=get_namespace)
     kubernetes_ingress_annotations: dict[str, str] = field(default_factory=dict)
     kubernetes_ingress_secret_name: str = field(default="authentik-outpost-tls")
     kubernetes_service_type: str = field(default="ClusterIP")
