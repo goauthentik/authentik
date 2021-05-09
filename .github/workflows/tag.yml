@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+      - name: prepare ts api client
+        run: |
+          docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate -i /local/swagger.yaml -g typescript-fetch -o /local/web/api --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
       - name: Pre-release test
         run: |
           sudo apt-get install -y pwgen
