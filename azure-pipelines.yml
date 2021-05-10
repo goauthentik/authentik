@@ -19,7 +19,7 @@ variables:
     branchName: ${{ replace(variables['Build.SourceBranchName'], 'refs/heads/', '') }}
 
 stages:
-  - stage: Lint
+  - stage: Lint_and_test
     jobs:
       - job: pylint
         pool:
@@ -118,8 +118,6 @@ stages:
           - task: CmdLine@2
             inputs:
               script: pipenv run pyright e2e lifecycle
-  - stage: Test
-    jobs:
       - job: migrations
         pool:
           vmImage: 'ubuntu-latest'
