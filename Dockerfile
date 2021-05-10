@@ -52,7 +52,7 @@ RUN apt-get update && \
     curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
     echo "deb http://apt.postgresql.org/pub/repos/apt buster-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
     apt-get update && \
-    apt-get install -y --no-install-recommends libpq-dev postgresql-client-12 postgresql-client-11 build-essential libxmlsec1-dev pkg-config libmaxminddb0 && \
+    apt-get install -y --no-install-recommends libpq-dev postgresql-client build-essential libxmlsec1-dev pkg-config libmaxminddb0 && \
     pip install -r /requirements.txt --no-cache-dir && \
     apt-get remove --purge -y build-essential && \
     apt-get autoremove --purge -y && \
