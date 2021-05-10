@@ -20,6 +20,8 @@ func doGlobalSetup(config map[string]interface{}) {
 		},
 	})
 	switch config[ConfigLogLevel].(string) {
+	case "trace":
+		log.SetLevel(log.TraceLevel)
 	case "debug":
 		log.SetLevel(log.DebugLevel)
 	case "info":

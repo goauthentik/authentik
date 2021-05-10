@@ -16,6 +16,7 @@ func (s *Server) Refresh() error {
 		s.logger.Debug("Providers have not changed, not updating")
 		return nil
 	}
+	s.logger.Tracef("%+v\n", providers)
 	bundles := s.bundleProviders(providers)
 	s.updateHTTPServer(bundles)
 	return nil
