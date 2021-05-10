@@ -67,6 +67,18 @@ class KubernetesController(BaseController):
         except ApiException as exc:
             raise ControllerException(str(exc)) from exc
 
+    def down_with_logs(self) -> list[str]:
+        try:
+            all_logs = []
+            for reconcile_key in self.reconcile_order:
+                with capture_logs() as logs:
+                    reconciler = self.reconcilers[reconcile_key](self)
+                    reconciler.down()
+                all_logs += [f"{reconcile_key.title()}: {x['event']}" for x in logs]
+            return all_logs
+        except ApiException as exc:
+            raise ControllerException(str(exc)) from exc
+
     def get_static_deployment(self) -> str:
         documents = []
         for reconcile_key in self.reconcile_order:
