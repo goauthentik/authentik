@@ -69,6 +69,7 @@ class TraefikMiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware])
         self.api_ex = ApiextensionsV1Api(controller.client)
         self.api = CustomObjectsApi(controller.client)
 
+    @property
     def noop(self) -> bool:
         if not ProxyProvider.objects.filter(
             outpost__in=[self.controller.outpost],
