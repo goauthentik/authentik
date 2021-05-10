@@ -248,6 +248,7 @@ DATABASES = {
         "NAME": CONFIG.y("postgresql.name"),
         "USER": CONFIG.y("postgresql.user"),
         "PASSWORD": CONFIG.y("postgresql.password"),
+        "PORT": int(CONFIG.y("postgresql.port")),
     }
 }
 

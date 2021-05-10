@@ -29,17 +29,19 @@ class TestOutpostServiceConnectionsAPI(APITestCase):
 
     def test_outpost_config(self):
         """Test Outpost's config field"""
-        provider = ProxyProvider.objects.create(name="test", authorization_flow=Flow.objects.first())
-        invalid = OutpostSerializer(data={
-            "name": "foo",
-            "providers": [provider.pk],
-            "config": {}
-        })
+        provider = ProxyProvider.objects.create(
+            name="test", authorization_flow=Flow.objects.first()
+        )
+        invalid = OutpostSerializer(
+            data={"name": "foo", "providers": [provider.pk], "config": {}}
+        )
         self.assertFalse(invalid.is_valid())
         self.assertIn("config", invalid.errors)
-        valid = OutpostSerializer(data={
-            "name": "foo",
-            "providers": [provider.pk],
-            "config": default_outpost_config("foo")
-        })
+        valid = OutpostSerializer(
+            data={
+                "name": "foo",
+                "providers": [provider.pk],
+                "config": default_outpost_config("foo"),
+            }
+        )
         self.assertTrue(valid.is_valid())
