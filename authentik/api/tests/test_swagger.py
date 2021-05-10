@@ -22,3 +22,10 @@ class TestSwaggerGeneration(APITestCase):
             reverse("authentik_api:schema-json", kwargs={"format": ".json"}),
         )
         self.assertTrue(loads(response.content.decode()))
+
+    def test_browser(self):
+        """Test API Browser"""
+        response = self.client.get(
+            reverse("authentik_api:swagger"),
+        )
+        self.assertEqual(response.status_code, 200)
