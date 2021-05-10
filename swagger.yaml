@@ -16198,7 +16198,7 @@ definitions:
     required:
       - name
       - providers
-      - _config
+      - config
     type: object
     properties:
       pk:
@@ -16237,8 +16237,8 @@ definitions:
         title: Token identifier
         type: string
         readOnly: true
-      _config:
-        title: config
+      config:
+        title: Config
         type: object
   OutpostDefaultConfig:
     type: object

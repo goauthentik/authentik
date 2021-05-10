@@ -3,6 +3,10 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import PropertyMapping, User
+from authentik.flows.models import Flow
+from authentik.outposts.api.outposts import OutpostSerializer
+from authentik.outposts.models import default_outpost_config
+from authentik.providers.proxy.models import ProxyProvider
 
 
 class TestOutpostServiceConnectionsAPI(APITestCase):
@@ -22,3 +26,20 @@ class TestOutpostServiceConnectionsAPI(APITestCase):
             reverse("authentik_api:outpostserviceconnection-types"),
         )
         self.assertEqual(response.status_code, 200)
+
+    def test_outpost_config(self):
+        """Test Outpost's config field"""
+        provider = ProxyProvider.objects.create(name="test", authorization_flow=Flow.objects.first())
+        invalid = OutpostSerializer(data={
+            "name": "foo",
+            "providers": [provider.pk],
+            "config": {}
+        })
+        self.assertFalse(invalid.is_valid())
+        self.assertIn("config", invalid.errors)
+        valid = OutpostSerializer(data={
+            "name": "foo",
+            "providers": [provider.pk],
+            "config": default_outpost_config("foo")
+        })
+        self.assertTrue(valid.is_valid())
