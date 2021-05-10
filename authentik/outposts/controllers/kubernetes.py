@@ -49,6 +49,9 @@ class KubernetesController(BaseController):
         try:
             all_logs = []
             for reconcile_key in self.reconcile_order:
+                if reconcile_key in self.outpost.config.kubernetes_disabled_components:
+                    all_logs += [f"{reconcile_key.title()}: Disabled"]
+                    continue
                 with capture_logs() as logs:
                     reconciler = self.reconcilers[reconcile_key](self)
                     reconciler.up()
@@ -71,6 +74,9 @@ class KubernetesController(BaseController):
         try:
             all_logs = []
             for reconcile_key in self.reconcile_order:
+                if reconcile_key in self.outpost.config.kubernetes_disabled_components:
+                    all_logs += [f"{reconcile_key.title()}: Disabled"]
+                    continue
                 with capture_logs() as logs:
                     reconciler = self.reconcilers[reconcile_key](self)
                     reconciler.down()
