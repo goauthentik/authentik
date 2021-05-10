@@ -17,7 +17,6 @@ from kubernetes.client.models.networking_v1beta1_ingress_rule import (
 
 from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import (
-    Disabled,
     KubernetesObjectReconciler,
     NeedsUpdate,
 )
@@ -137,9 +136,6 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
                     ),
                 )
             rules.append(rule)
-        if not rules:
-            self.logger.debug("No providers use proxying, no ingress needed")
-            raise Disabled()
         tls_config = None
         if tls_hosts:
             tls_config = NetworkingV1beta1IngressTLS(

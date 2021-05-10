@@ -7,7 +7,6 @@ from kubernetes.client import ApiextensionsV1Api, CustomObjectsApi
 
 from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import (
-    Disabled,
     KubernetesObjectReconciler,
     NeedsUpdate,
 )
@@ -70,6 +69,18 @@ class TraefikMiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware])
         self.api_ex = ApiextensionsV1Api(controller.client)
         self.api = CustomObjectsApi(controller.client)
 
+    def noop(self) -> bool:
+        if not ProxyProvider.objects.filter(
+            outpost__in=[self.controller.outpost],
+            forward_auth_mode=True,
+        ).exists():
+            self.logger.debug("No providers with forward auth enabled.")
+            return True
+        if not self._crd_exists():
+            self.logger.debug("CRD doesn't exist")
+            return True
+        return False
+
     def _crd_exists(self) -> bool:
         """Check if the traefik middleware exists"""
         return bool(
@@ -87,15 +98,6 @@ class TraefikMiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware])
 
     def get_reference_object(self) -> TraefikMiddleware:
         """Get deployment object for outpost"""
-        if not ProxyProvider.objects.filter(
-            outpost__in=[self.controller.outpost],
-            forward_auth_mode=True,
-        ).exists():
-            self.logger.debug("No providers with forward auth enabled.")
-            raise Disabled()
-        if not self._crd_exists():
-            self.logger.debug("CRD doesn't exist")
-            raise Disabled()
         return TraefikMiddleware(
             apiVersion=f"{CRD_GROUP}/{CRD_VERSION}",
             kind="Middleware",
