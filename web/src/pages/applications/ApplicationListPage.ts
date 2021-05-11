@@ -89,7 +89,7 @@ export class ApplicationListPage extends TablePage<Application> {
                 <span slot="header">
                     ${t`Update Application`}
                 </span>
-                <ak-application-form slot="form" .application=${item}>
+                <ak-application-form slot="form" .instancePk=${item.slug}>
                 </ak-application-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${t`Edit`}

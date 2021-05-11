@@ -3,7 +3,7 @@ import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { Form } from "../../../elements/forms/Form";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
@@ -11,20 +11,17 @@ import "../../../elements/forms/FormGroup";
 import { first } from "../../../utils";
 
 @customElement("ak-provider-proxy-form")
-export class ProxyProviderFormPage extends Form<ProxyProvider> {
+export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
 
-    set providerUUID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG).providersProxyRead({
-            id: value,
+    loadInstance(pk: number): Promise<ProxyProvider> {
+        return new ProvidersApi(DEFAULT_CONFIG).providersProxyRead({
+            id: pk,
         }).then(provider => {
-            this.provider = provider;
             this.showHttpBasic = first(provider.basicAuthEnabled, true);
             this.showInternalServer = first(!provider.forwardAuthMode, true);
+            return provider;
         });
     }
-
-    @property({attribute: false})
-    provider?: ProxyProvider;
 
     @property({type: Boolean})
     showHttpBasic = true;
@@ -33,7 +30,7 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
     showInternalServer = true;
 
     getSuccessMessage(): string {
-        if (this.provider) {
+        if (this.instance) {
             return t`Successfully updated provider.`;
         } else {
             return t`Successfully created provider.`;
@@ -41,9 +38,9 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
     }
 
     send = (data: ProxyProvider): Promise<ProxyProvider> => {
-        if (this.provider) {
+        if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersProxyUpdate({
-                id: this.provider.pk || 0,
+                id: this.instance.pk || 0,
                 data: data
             });
         } else {
@@ -60,13 +57,13 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
         return html`<ak-form-element-horizontal
                 label=${t`HTTP-Basic Username Key`}
                 name="basicAuthUserAttribute">
-                <input type="text" value="${ifDefined(this.provider?.basicAuthUserAttribute)}" class="pf-c-form-control">
+                <input type="text" value="${ifDefined(this.instance?.basicAuthUserAttribute)}" class="pf-c-form-control">
                 <p class="pf-c-form__helper-text">${t`User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`HTTP-Basic Password Key`}
                 name="basicAuthPasswordAttribute">
-                <input type="text" value="${ifDefined(this.provider?.basicAuthPasswordAttribute)}" class="pf-c-form-control">
+                <input type="text" value="${ifDefined(this.instance?.basicAuthPasswordAttribute)}" class="pf-c-form-control">
                 <p class="pf-c-form__helper-text">${t`User/Group Attribute used for the password part of the HTTP-Basic Header.`}</p>
             </ak-form-element-horizontal>`;
     }
@@ -79,12 +76,12 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
                     label=${t`Internal host`}
                     ?required=${true}
                     name="internalHost">
-                    <input type="text" value="${ifDefined(this.provider?.internalHost)}" class="pf-c-form-control" required>
+                    <input type="text" value="${ifDefined(this.instance?.internalHost)}" class="pf-c-form-control" required>
                     <p class="pf-c-form__helper-text">${t`Upstream host that the requests are forwarded to.`}</p>
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal name="internalHostSslValidation">
                     <div class="pf-c-check">
-                        <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.provider?.internalHostSslValidation, true)}>
+                        <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.internalHostSslValidation, true)}>
                         <label class="pf-c-check__label">
                             ${t`Internal host SSL Validation`}
                         </label>
@@ -99,7 +96,7 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.provider?.name)}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.name)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Authorization flow`}
@@ -111,7 +108,7 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
                         designation: FlowDesignationEnum.Authorization,
                     }).then(flows => {
                         return flows.results.map(flow => {
-                            return html`<option value=${ifDefined(flow.pk)} ?selected=${this.provider?.authorizationFlow === flow.pk}>${flow.name} (${flow.slug})</option>`;
+                            return html`<option value=${ifDefined(flow.pk)} ?selected=${this.instance?.authorizationFlow === flow.pk}>${flow.name} (${flow.slug})</option>`;
                         });
                     }), html`<option>${t`Loading...`}</option>`)}
                 </select>
@@ -127,12 +124,12 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
                         label=${t`External host`}
                         ?required=${true}
                         name="externalHost">
-                        <input type="text" value="${ifDefined(this.provider?.externalHost)}" class="pf-c-form-control" required>
+                        <input type="text" value="${ifDefined(this.instance?.externalHost)}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`The external URL you'll access the outpost at.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="forwardAuthMode">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.provider?.forwardAuthMode, false)} @change=${(ev: Event) => {
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.forwardAuthMode, false)} @change=${(ev: Event) => {
                                 const el = ev.target as HTMLInputElement;
                                 this.showInternalServer = !el.checked;
                             }}>
@@ -162,7 +159,7 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
                                 hasKey: "true",
                             }).then(keys => {
                                 return keys.results.map(key => {
-                                    return html`<option value=${ifDefined(key.pk)} ?selected=${this.provider?.certificate === key.pk}>${key.name}</option>`;
+                                    return html`<option value=${ifDefined(key.pk)} ?selected=${this.instance?.certificate === key.pk}>${key.name}</option>`;
                                 });
                             }), html`<option>${t`Loading...`}</option>`)}
                         </select>
@@ -171,13 +168,13 @@ export class ProxyProviderFormPage extends Form<ProxyProvider> {
                     <ak-form-element-horizontal
                         label=${t`Skip path regex`}
                         name="skipPathRegex">
-                        <textarea class="pf-c-form-control">${this.provider?.skipPathRegex}</textarea>
+                        <textarea class="pf-c-form-control">${this.instance?.skipPathRegex}</textarea>
                         <p class="pf-c-form__helper-text">${t`Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression.`}</p>
                     </ak-form-element-horizontal>
 
                     <ak-form-element-horizontal name="basicAuthEnabled">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.provider?.basicAuthEnabled, false)} @change=${(ev: Event) => {
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.basicAuthEnabled, false)} @change=${(ev: Event) => {
                                 const el = ev.target as HTMLInputElement;
                                 this.showHttpBasic = el.checked;
                             }}>

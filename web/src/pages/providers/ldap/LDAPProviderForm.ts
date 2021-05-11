@@ -3,7 +3,7 @@ import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { Form } from "../../../elements/forms/Form";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
@@ -11,21 +11,16 @@ import "../../../elements/forms/FormGroup";
 import { first } from "../../../utils";
 
 @customElement("ak-provider-ldap-form")
-export class LDAPProviderFormPage extends Form<LDAPProvider> {
+export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
 
-    set providerUUID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG).providersLdapRead({
-            id: value,
-        }).then(provider => {
-            this.provider = provider;
+    loadInstance(pk: number): Promise<LDAPProvider> {
+        return new ProvidersApi(DEFAULT_CONFIG).providersLdapRead({
+            id: pk,
         });
     }
 
-    @property({attribute: false})
-    provider?: LDAPProvider;
-
     getSuccessMessage(): string {
-        if (this.provider) {
+        if (this.instance) {
             return t`Successfully updated provider.`;
         } else {
             return t`Successfully created provider.`;
@@ -33,9 +28,9 @@ export class LDAPProviderFormPage extends Form<LDAPProvider> {
     }
 
     send = (data: LDAPProvider): Promise<LDAPProvider> => {
-        if (this.provider) {
+        if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersLdapUpdate({
-                id: this.provider.pk || 0,
+                id: this.instance.pk || 0,
                 data: data
             });
         } else {
@@ -51,7 +46,7 @@ export class LDAPProviderFormPage extends Form<LDAPProvider> {
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.provider?.name)}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.name)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Bind flow`}
@@ -63,7 +58,7 @@ export class LDAPProviderFormPage extends Form<LDAPProvider> {
                         designation: FlowDesignationEnum.Authentication,
                     }).then(flows => {
                         return flows.results.map(flow => {
-                            return html`<option value=${ifDefined(flow.pk)} ?selected=${this.provider?.authorizationFlow === flow.pk}>${flow.name} (${flow.slug})</option>`;
+                            return html`<option value=${ifDefined(flow.pk)} ?selected=${this.instance?.authorizationFlow === flow.pk}>${flow.name} (${flow.slug})</option>`;
                         });
                     }), html`<option>${t`Loading...`}</option>`)}
                 </select>
@@ -73,10 +68,10 @@ export class LDAPProviderFormPage extends Form<LDAPProvider> {
                 label=${t`Group`}
                 name="searchGroup">
                 <select class="pf-c-form-control">
-                    <option value="" ?selected=${this.provider?.searchGroup === undefined}>---------</option>
+                    <option value="" ?selected=${this.instance?.searchGroup === undefined}>---------</option>
                     ${until(new CoreApi(DEFAULT_CONFIG).coreGroupsList({}).then(groups => {
                         return groups.results.map(group => {
-                            return html`<option value=${ifDefined(group.pk)} ?selected=${this.provider?.searchGroup === group.pk}>${group.name}</option>`;
+                            return html`<option value=${ifDefined(group.pk)} ?selected=${this.instance?.searchGroup === group.pk}>${group.name}</option>`;
                         });
                     }), html`<option>${t`Loading...`}</option>`)}
                 </select>
@@ -92,7 +87,7 @@ export class LDAPProviderFormPage extends Form<LDAPProvider> {
                         label=${t`Base DN`}
                         ?required=${true}
                         name="baseDn">
-                        <input type="text" value="${first(this.provider?.baseDn, "DC=ldap,DC=goauthentik,DC=io")}" class="pf-c-form-control" required>
+                        <input type="text" value="${first(this.instance?.baseDn, "DC=ldap,DC=goauthentik,DC=io")}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`LDAP DN under which bind requests and search requests can be made.`}</p>
                     </ak-form-element-horizontal>
                 </div>

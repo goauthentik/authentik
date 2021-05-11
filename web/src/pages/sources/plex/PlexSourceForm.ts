@@ -10,25 +10,21 @@ import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
 import { first, randomString } from "../../../utils";
 import { PlexAPIClient, PlexResource, popupCenterScreen} from "../../../flows/sources/plex/API";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 
 
 @customElement("ak-source-plex-form")
-export class PlexSourceForm extends Form<PlexSource> {
+export class PlexSourceForm extends ModelForm<PlexSource, string> {
 
-    set sourceSlug(value: string) {
-        new SourcesApi(DEFAULT_CONFIG).sourcesPlexRead({
-            slug: value,
+    loadInstance(pk: string): Promise<PlexSource> {
+        return new SourcesApi(DEFAULT_CONFIG).sourcesPlexRead({
+            slug: pk,
         }).then(source => {
-            this.source = source;
             this.plexToken = source.plexToken;
             this.loadServers();
+            return source;
         });
     }
-
-    @property({attribute: false})
-    source: PlexSource = {
-        clientId: randomString(40)
-    } as PlexSource;
 
     @property()
     plexToken?: string;
@@ -37,7 +33,7 @@ export class PlexSourceForm extends Form<PlexSource> {
     plexResources?: PlexResource[];
 
     getSuccessMessage(): string {
-        if (this.source) {
+        if (this.instance) {
             return t`Successfully updated source.`;
         } else {
             return t`Successfully created source.`;
@@ -46,9 +42,9 @@ export class PlexSourceForm extends Form<PlexSource> {
 
     send = (data: PlexSource): Promise<PlexSource> => {
         data.plexToken = this.plexToken;
-        if (this.source.slug) {
+        if (this.instance?.slug) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesPlexUpdate({
-                slug: this.source.slug,
+                slug: this.instance.slug,
                 data: data
             });
         } else {
@@ -59,9 +55,9 @@ export class PlexSourceForm extends Form<PlexSource> {
     };
 
     async doAuth(): Promise<void> {
-        const authInfo = await PlexAPIClient.getPin(this.source?.clientId || "");
+        const authInfo = await PlexAPIClient.getPin(this.instance?.clientId || "");
         const authWindow = popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
-        PlexAPIClient.pinPoll(this.source?.clientId || "", authInfo.pin.id).then(token => {
+        PlexAPIClient.pinPoll(this.instance?.clientId || "", authInfo.pin.id).then(token => {
             authWindow?.close();
             this.plexToken = token;
             this.loadServers();
@@ -81,17 +77,17 @@ export class PlexSourceForm extends Form<PlexSource> {
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.source?.name)}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.name)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Slug`}
                 ?required=${true}
                 name="slug">
-                <input type="text" value="${ifDefined(this.source?.slug)}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.slug)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="enabled">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.source?.enabled, true)}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.enabled, true)}>
                     <label class="pf-c-check__label">
                         ${t`Enabled`}
                     </label>
@@ -102,19 +98,19 @@ export class PlexSourceForm extends Form<PlexSource> {
                 ?required=${true}
                 name="userMatchingMode">
                 <select class="pf-c-form-control">
-                    <option value=${PlexSourceUserMatchingModeEnum.Identifier} ?selected=${this.source?.userMatchingMode === PlexSourceUserMatchingModeEnum.Identifier}>
+                    <option value=${PlexSourceUserMatchingModeEnum.Identifier} ?selected=${this.instance?.userMatchingMode === PlexSourceUserMatchingModeEnum.Identifier}>
                         ${t`Link users on unique identifier`}
                     </option>
-                    <option value=${PlexSourceUserMatchingModeEnum.UsernameLink} ?selected=${this.source?.userMatchingMode === PlexSourceUserMatchingModeEnum.UsernameLink}>
+                    <option value=${PlexSourceUserMatchingModeEnum.UsernameLink} ?selected=${this.instance?.userMatchingMode === PlexSourceUserMatchingModeEnum.UsernameLink}>
                         ${t`Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses`}
                     </option>
-                    <option value=${PlexSourceUserMatchingModeEnum.UsernameDeny} ?selected=${this.source?.userMatchingMode === PlexSourceUserMatchingModeEnum.UsernameDeny}>
+                    <option value=${PlexSourceUserMatchingModeEnum.UsernameDeny} ?selected=${this.instance?.userMatchingMode === PlexSourceUserMatchingModeEnum.UsernameDeny}>
                         ${t`Use the user's email address, but deny enrollment when the email address already exists.`}
                     </option>
-                    <option value=${PlexSourceUserMatchingModeEnum.EmailLink} ?selected=${this.source?.userMatchingMode === PlexSourceUserMatchingModeEnum.EmailLink}>
+                    <option value=${PlexSourceUserMatchingModeEnum.EmailLink} ?selected=${this.instance?.userMatchingMode === PlexSourceUserMatchingModeEnum.EmailLink}>
                         ${t`Link to a user with identical username address. Can have security implications when a username is used with another source.`}
                     </option>
-                    <option value=${PlexSourceUserMatchingModeEnum.EmailDeny} ?selected=${this.source?.userMatchingMode === PlexSourceUserMatchingModeEnum.EmailDeny}>
+                    <option value=${PlexSourceUserMatchingModeEnum.EmailDeny} ?selected=${this.instance?.userMatchingMode === PlexSourceUserMatchingModeEnum.EmailDeny}>
                         ${t`Use the user's username, but deny enrollment when the username already exists.`}
                     </option>
                 </select>
@@ -129,11 +125,11 @@ export class PlexSourceForm extends Form<PlexSource> {
                         label=${t`Client ID`}
                         ?required=${true}
                         name="clientId">
-                        <input type="text" value="${first(this.source?.clientId)}" class="pf-c-form-control" required>
+                        <input type="text" value="${first(this.instance?.clientId)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="allowFriends">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.source?.allowFriends, true)}>
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.allowFriends, true)}>
                             <label class="pf-c-check__label">
                                 ${t`Allow friends to authenticate via Plex, even if you don't share any servers`}
                             </label>
@@ -145,7 +141,7 @@ export class PlexSourceForm extends Form<PlexSource> {
                         name="allowedServers">
                         <select class="pf-c-form-control" multiple>
                             ${this.plexResources?.map(r => {
-                                const selected = Array.from(this.source?.allowedServers || []).some(server => {
+                                const selected = Array.from(this.instance?.allowedServers || []).some(server => {
                                     return server == r.clientIdentifier;
                                 });
                                 return html`<option value=${r.clientIdentifier} ?selected=${selected}>${r.name}</option>`;
@@ -178,8 +174,8 @@ export class PlexSourceForm extends Form<PlexSource> {
                                 designation: FlowDesignationEnum.Authentication,
                             }).then(flows => {
                                 return flows.results.map(flow => {
-                                    let selected = this.source?.authenticationFlow === flow.pk;
-                                    if (!this.source?.pk && !this.source?.authenticationFlow && flow.slug === "default-source-authentication") {
+                                    let selected = this.instance?.authenticationFlow === flow.pk;
+                                    if (!this.instance?.pk && !this.instance?.authenticationFlow && flow.slug === "default-source-authentication") {
                                         selected = true;
                                     }
                                     return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
@@ -198,8 +194,8 @@ export class PlexSourceForm extends Form<PlexSource> {
                                 designation: FlowDesignationEnum.Enrollment,
                             }).then(flows => {
                                 return flows.results.map(flow => {
-                                    let selected = this.source?.enrollmentFlow === flow.pk;
-                                    if (!this.source?.pk && !this.source?.enrollmentFlow && flow.slug === "default-source-enrollment") {
+                                    let selected = this.instance?.enrollmentFlow === flow.pk;
+                                    if (!this.instance?.pk && !this.instance?.enrollmentFlow && flow.slug === "default-source-enrollment") {
                                         selected = true;
                                     }
                                     return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;

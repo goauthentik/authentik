@@ -3,28 +3,24 @@ import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { Form } from "../../../elements/forms/Form";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
 
 @customElement("ak-provider-saml-form")
-export class SAMLProviderFormPage extends Form<SAMLProvider> {
+export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
 
-    set providerUUID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG).providersSamlRead({
-            id: value,
-        }).then(provider => {
-            this.provider = provider;
+    loadInstance(pk: number): Promise<SAMLProvider> {
+        console.log("reading saml provider")
+        return new ProvidersApi(DEFAULT_CONFIG).providersSamlRead({
+            id: pk,
         });
     }
 
-    @property({attribute: false})
-    provider?: SAMLProvider;
-
     getSuccessMessage(): string {
-        if (this.provider) {
+        if (this.instance) {
             return t`Successfully updated provider.`;
         } else {
             return t`Successfully created provider.`;
@@ -32,9 +28,9 @@ export class SAMLProviderFormPage extends Form<SAMLProvider> {
     }
 
     send = (data: SAMLProvider): Promise<SAMLProvider> => {
-        if (this.provider) {
+        if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersSamlUpdate({
-                id: this.provider.pk || 0,
+                id: this.instance.pk || 0,
                 data: data
             });
         } else {
@@ -50,7 +46,7 @@ export class SAMLProviderFormPage extends Form<SAMLProvider> {
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.provider?.name)}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.name)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Authorization flow`}
@@ -62,7 +58,7 @@ export class SAMLProviderFormPage extends Form<SAMLProvider> {
                         designation: FlowDesignationEnum.Authorization,
                     }).then(flows => {
                         return flows.results.map(flow => {
-                            return html`<option value=${ifDefined(flow.pk)} ?selected=${this.provider?.authorizationFlow === flow.pk}>${flow.name} (${flow.slug})</option>`;
+                            return html`<option value=${ifDefined(flow.pk)} ?selected=${this.instance?.authorizationFlow === flow.pk}>${flow.name} (${flow.slug})</option>`;
                         });
                     }), html`<option>${t`Loading...`}</option>`)}
                 </select>
@@ -78,23 +74,23 @@ export class SAMLProviderFormPage extends Form<SAMLProvider> {
                         label=${t`ACS URL`}
                         ?required=${true}
                         name="acsUrl">
-                        <input type="text" value="${ifDefined(this.provider?.acsUrl)}" class="pf-c-form-control" required>
+                        <input type="text" value="${ifDefined(this.instance?.acsUrl)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Issuer`}
                         ?required=${true}
                         name="issuer">
-                        <input type="text" value="${this.provider?.issuer || "authentik"}" class="pf-c-form-control" required>
+                        <input type="text" value="${this.instance?.issuer || "authentik"}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Service Provider Binding`}
                         ?required=${true}
                         name="spBinding">
                         <select class="pf-c-form-control">
-                            <option value=${SAMLProviderSpBindingEnum.Redirect} ?selected=${this.provider?.spBinding === SAMLProviderSpBindingEnum.Redirect}>
+                            <option value=${SAMLProviderSpBindingEnum.Redirect} ?selected=${this.instance?.spBinding === SAMLProviderSpBindingEnum.Redirect}>
                                 ${t`Redirect`}
                             </option>
-                            <option value=${SAMLProviderSpBindingEnum.Post} ?selected=${this.provider?.spBinding === SAMLProviderSpBindingEnum.Post}>
+                            <option value=${SAMLProviderSpBindingEnum.Post} ?selected=${this.instance?.spBinding === SAMLProviderSpBindingEnum.Post}>
                                 ${t`Post`}
                             </option>
                         </select>
@@ -103,7 +99,7 @@ export class SAMLProviderFormPage extends Form<SAMLProvider> {
                     <ak-form-element-horizontal
                         label=${t`Audience`}
                         name="audience">
-                        <input type="text" value="${ifDefined(this.provider?.audience)}" class="pf-c-form-control">
+                        <input type="text" value="${ifDefined(this.instance?.audience)}" class="pf-c-form-control">
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
@@ -117,13 +113,13 @@ export class SAMLProviderFormPage extends Form<SAMLProvider> {
                         label=${t`Signing Certificate`}
                         name="signingKp">
                         <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.provider?.signingKp === undefined}>---------</option>
+                            <option value="" ?selected=${this.instance?.signingKp === undefined}>---------</option>
                             ${until(new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
                                 ordering: "pk",
                                 hasKey: "true",
                             }).then(keys => {
                                 return keys.results.map(key => {
-                                    return html`<option value=${ifDefined(key.pk)} ?selected=${this.provider?.signingKp === key.pk}>${key.name}</option>`;
+                                    return html`<option value=${ifDefined(key.pk)} ?selected=${this.instance?.signingKp === key.pk}>${key.name}</option>`;
                                 });
                             }), html`<option>${t`Loading...`}</option>`)}
                         </select>
@@ -133,12 +129,12 @@ export class SAMLProviderFormPage extends Form<SAMLProvider> {
                         label=${t`Verification Certificate`}
                         name="verificationKp">
                         <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.provider?.verificationKp === undefined}>---------</option>
+                            <option value="" ?selected=${this.instance?.verificationKp === undefined}>---------</option>
                             ${until(new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
                                 ordering: "pk",
                             }).then(keys => {
                                 return keys.results.map(key => {
-                                    return html`<option value=${ifDefined(key.pk)} ?selected=${this.provider?.verificationKp === key.pk}>${key.name}</option>`;
+                                    return html`<option value=${ifDefined(key.pk)} ?selected=${this.instance?.verificationKp === key.pk}>${key.name}</option>`;
                                 });
                             }), html`<option>${t`Loading...`}</option>`)}
                         </select>
@@ -155,10 +151,10 @@ export class SAMLProviderFormPage extends Form<SAMLProvider> {
                             }).then(mappings => {
                                 return mappings.results.map(mapping => {
                                     let selected = false;
-                                    if (!this.provider?.propertyMappings) {
+                                    if (!this.instance?.propertyMappings) {
                                         selected = mapping.managed?.startsWith("goauthentik.io/providers/saml") || false;
                                     } else {
-                                        selected = Array.from(this.provider?.propertyMappings).some(su => {
+                                        selected = Array.from(this.instance?.propertyMappings).some(su => {
                                             return su == mapping.pk;
                                         });
                                     }
@@ -172,12 +168,12 @@ export class SAMLProviderFormPage extends Form<SAMLProvider> {
                         label=${t`NameID Property Mapping`}
                         name="nameIdMapping">
                         <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.provider?.nameIdMapping === undefined}>---------</option>
+                            <option value="" ?selected=${this.instance?.nameIdMapping === undefined}>---------</option>
                             ${until(new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlList({
                                 ordering: "saml_name"
                             }).then(mappings => {
                                 return mappings.results.map(mapping => {
-                                    return html`<option value=${ifDefined(mapping.pk)} ?selected=${this.provider?.nameIdMapping === mapping.pk}>${mapping.name}</option>`;
+                                    return html`<option value=${ifDefined(mapping.pk)} ?selected=${this.instance?.nameIdMapping === mapping.pk}>${mapping.name}</option>`;
                                 });
                             }), html`<option>${t`Loading...`}</option>`)}
                         </select>
@@ -188,7 +184,7 @@ export class SAMLProviderFormPage extends Form<SAMLProvider> {
                         label=${t`Assertion valid not before`}
                         ?required=${true}
                         name="assertionValidNotBefore">
-                        <input type="text" value="${this.provider?.assertionValidNotBefore || "minutes=-5"}" class="pf-c-form-control" required>
+                        <input type="text" value="${this.instance?.assertionValidNotBefore || "minutes=-5"}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`Configure the maximum allowed time drift for an asseration.`}</p>
                         <p class="pf-c-form__helper-text">${t`(Format: hours=-1;minutes=-2;seconds=-3).`}</p>
                     </ak-form-element-horizontal>
@@ -196,14 +192,14 @@ export class SAMLProviderFormPage extends Form<SAMLProvider> {
                         label=${t`Assertion valid not on or after`}
                         ?required=${true}
                         name="assertionValidNotOnOrAfter">
-                        <input type="text" value="${this.provider?.assertionValidNotOnOrAfter || "minutes=5"}" class="pf-c-form-control" required>
+                        <input type="text" value="${this.instance?.assertionValidNotOnOrAfter || "minutes=5"}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Session valid not on or after`}
                         ?required=${true}
                         name="sessionValidNotOnOrAfter">
-                        <input type="text" value="${this.provider?.sessionValidNotOnOrAfter || "minutes=86400"}" class="pf-c-form-control" required>
+                        <input type="text" value="${this.instance?.sessionValidNotOnOrAfter || "minutes=86400"}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).`}</p>
                     </ak-form-element-horizontal>
 
@@ -212,16 +208,16 @@ export class SAMLProviderFormPage extends Form<SAMLProvider> {
                         ?required=${true}
                         name="digestAlgorithm">
                         <select class="pf-c-form-control">
-                            <option value=${SAMLProviderDigestAlgorithmEnum._200009Xmldsigsha1} ?selected=${this.provider?.digestAlgorithm === SAMLProviderDigestAlgorithmEnum._200009Xmldsigsha1}>
+                            <option value=${SAMLProviderDigestAlgorithmEnum._200009Xmldsigsha1} ?selected=${this.instance?.digestAlgorithm === SAMLProviderDigestAlgorithmEnum._200009Xmldsigsha1}>
                                 ${t`SHA1`}
                             </option>
-                            <option value=${SAMLProviderDigestAlgorithmEnum._200104Xmlencsha256} ?selected=${this.provider?.digestAlgorithm === SAMLProviderDigestAlgorithmEnum._200104Xmlencsha256 || this.provider?.digestAlgorithm === undefined}>
+                            <option value=${SAMLProviderDigestAlgorithmEnum._200104Xmlencsha256} ?selected=${this.instance?.digestAlgorithm === SAMLProviderDigestAlgorithmEnum._200104Xmlencsha256 || this.instance?.digestAlgorithm === undefined}>
                                 ${t`SHA256`}
                             </option>
-                            <option value=${SAMLProviderDigestAlgorithmEnum._200104XmldsigMoresha384} ?selected=${this.provider?.digestAlgorithm === SAMLProviderDigestAlgorithmEnum._200104XmldsigMoresha384}>
+                            <option value=${SAMLProviderDigestAlgorithmEnum._200104XmldsigMoresha384} ?selected=${this.instance?.digestAlgorithm === SAMLProviderDigestAlgorithmEnum._200104XmldsigMoresha384}>
                                 ${t`SHA384`}
                             </option>
-                            <option value=${SAMLProviderDigestAlgorithmEnum._200104Xmlencsha512} ?selected=${this.provider?.digestAlgorithm === SAMLProviderDigestAlgorithmEnum._200104Xmlencsha512}>
+                            <option value=${SAMLProviderDigestAlgorithmEnum._200104Xmlencsha512} ?selected=${this.instance?.digestAlgorithm === SAMLProviderDigestAlgorithmEnum._200104Xmlencsha512}>
                                 ${t`SHA512`}
                             </option>
                         </select>
@@ -231,19 +227,19 @@ export class SAMLProviderFormPage extends Form<SAMLProvider> {
                         ?required=${true}
                         name="signatureAlgorithm">
                         <select class="pf-c-form-control">
-                            <option value=${SAMLProviderSignatureAlgorithmEnum._200009XmldsigrsaSha1} ?selected=${this.provider?.signatureAlgorithm === SAMLProviderSignatureAlgorithmEnum._200009XmldsigrsaSha1}>
+                            <option value=${SAMLProviderSignatureAlgorithmEnum._200009XmldsigrsaSha1} ?selected=${this.instance?.signatureAlgorithm === SAMLProviderSignatureAlgorithmEnum._200009XmldsigrsaSha1}>
                                 ${t`RSA-SHA1`}
                             </option>
-                            <option value=${SAMLProviderSignatureAlgorithmEnum._200104XmldsigMorersaSha256} ?selected=${this.provider?.signatureAlgorithm === SAMLProviderSignatureAlgorithmEnum._200104XmldsigMorersaSha256 || this.provider?.signatureAlgorithm === undefined}>
+                            <option value=${SAMLProviderSignatureAlgorithmEnum._200104XmldsigMorersaSha256} ?selected=${this.instance?.signatureAlgorithm === SAMLProviderSignatureAlgorithmEnum._200104XmldsigMorersaSha256 || this.instance?.signatureAlgorithm === undefined}>
                                 ${t`RSA-SHA256`}
                             </option>
-                            <option value=${SAMLProviderSignatureAlgorithmEnum._200104XmldsigMorersaSha384} ?selected=${this.provider?.signatureAlgorithm === SAMLProviderSignatureAlgorithmEnum._200104XmldsigMorersaSha384}>
+                            <option value=${SAMLProviderSignatureAlgorithmEnum._200104XmldsigMorersaSha384} ?selected=${this.instance?.signatureAlgorithm === SAMLProviderSignatureAlgorithmEnum._200104XmldsigMorersaSha384}>
                                 ${t`RSA-SHA384`}
                             </option>
-                            <option value=${SAMLProviderSignatureAlgorithmEnum._200104XmldsigMorersaSha512} ?selected=${this.provider?.signatureAlgorithm === SAMLProviderSignatureAlgorithmEnum._200104XmldsigMorersaSha512}>
+                            <option value=${SAMLProviderSignatureAlgorithmEnum._200104XmldsigMorersaSha512} ?selected=${this.instance?.signatureAlgorithm === SAMLProviderSignatureAlgorithmEnum._200104XmldsigMorersaSha512}>
                                 ${t`RSA-SHA512`}
                             </option>
-                            <option value=${SAMLProviderSignatureAlgorithmEnum._200009XmldsigdsaSha1} ?selected=${this.provider?.signatureAlgorithm === SAMLProviderSignatureAlgorithmEnum._200009XmldsigdsaSha1}>
+                            <option value=${SAMLProviderSignatureAlgorithmEnum._200009XmldsigdsaSha1} ?selected=${this.instance?.signatureAlgorithm === SAMLProviderSignatureAlgorithmEnum._200009XmldsigdsaSha1}>
                                 ${t`DSA-SHA1`}
                             </option>
                         </select>

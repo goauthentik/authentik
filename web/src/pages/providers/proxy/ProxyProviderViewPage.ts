@@ -127,7 +127,7 @@ export class ProxyProviderViewPage extends LitElement {
                                         </span>
                                         <ak-provider-proxy-form
                                             slot="form"
-                                            .providerUUID=${this.provider.pk || 0}>
+                                            .instancePk=${this.provider.pk || 0}>
                                         </ak-provider-proxy-form>
                                         <button slot="trigger" class="pf-c-button pf-m-primary">
                                             ${t`Edit`}

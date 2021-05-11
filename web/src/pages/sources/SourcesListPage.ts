@@ -75,7 +75,7 @@ export class SourceListPage extends TablePage<Source> {
                 <ak-proxy-form
                     slot="form"
                     .args=${{
-                        "sourceSlug": item.slug
+                        "instancePk": item.slug
                     }}
                     type=${ifDefined(item.component)}>
                 </ak-proxy-form>

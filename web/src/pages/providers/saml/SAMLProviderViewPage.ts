@@ -120,7 +120,7 @@ export class SAMLProviderViewPage extends LitElement {
                                         </span>
                                         <ak-provider-saml-form
                                             slot="form"
-                                            .providerUUID=${this.provider.pk || 0}>
+                                            .instancePk=${this.provider.pk || 0}>
                                         </ak-provider-saml-form>
                                         <button slot="trigger" class="pf-c-button pf-m-primary">
                                             ${t`Edit`}

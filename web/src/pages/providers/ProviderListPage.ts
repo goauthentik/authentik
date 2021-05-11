@@ -79,7 +79,7 @@ export class ProviderListPage extends TablePage<Provider> {
                 <ak-proxy-form
                     slot="form"
                     .args=${{
-                        "providerUUID": item.pk
+                        "instancePk": item.pk
                     }}
                     type=${ifDefined(item.component)}>
                 </ak-proxy-form>

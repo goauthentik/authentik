@@ -103,7 +103,7 @@ export class LDAPSourceViewPage extends LitElement {
                                         </span>
                                         <ak-source-ldap-form
                                             slot="form"
-                                            .sourceSlug=${this.source.slug}>
+                                            .instancePk=${this.source.slug}>
                                         </ak-source-ldap-form>
                                         <button slot="trigger" class="pf-c-button pf-m-primary">
                                             ${t`Edit`}

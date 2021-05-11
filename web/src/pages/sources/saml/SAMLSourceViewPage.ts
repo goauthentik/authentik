@@ -109,7 +109,7 @@ export class SAMLSourceViewPage extends LitElement {
                                         </span>
                                         <ak-source-saml-form
                                             slot="form"
-                                            .sourceSlug=${this.source.slug}>
+                                            .instancePk=${this.source.slug}>
                                         </ak-source-saml-form>
                                         <button slot="trigger" class="pf-c-button pf-m-primary">
                                             ${t`Edit`}
