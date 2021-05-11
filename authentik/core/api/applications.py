@@ -4,6 +4,7 @@ from typing import Optional
 from django.core.cache import cache
 from django.db.models import QuerySet
 from django.http.response import HttpResponseBadRequest
+from django.shortcuts import get_object_or_404
 from drf_yasg import openapi
 from drf_yasg.utils import no_body, swagger_auto_schema
 from rest_framework.decorators import action
@@ -101,7 +102,9 @@ class ApplicationViewSet(ModelViewSet):
     # pylint: disable=unused-argument
     def check_access(self, request: Request, slug: str) -> Response:
         """Check access to a single application by slug"""
-        application = self.get_object()
+        # Don't use self.get_object as that checks for view_application permission
+        # which the user might not have, even if they have access
+        application = get_object_or_404(Application, slug=slug)
         engine = PolicyEngine(application, self.request.user, self.request)
         engine.build()
         if engine.passing:
