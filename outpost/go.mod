@@ -17,6 +17,7 @@ require (
 	github.com/go-redis/redis/v7 v7.4.0 // indirect
 	github.com/go-swagger/go-swagger v0.27.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/google/uuid v1.2.0 // indirect
 	github.com/gorilla/websocket v1.4.2
 	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a
 	github.com/justinas/alice v1.2.0

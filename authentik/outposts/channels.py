@@ -42,6 +42,8 @@ class OutpostConsumer(AuthJsonConsumer):
 
     outpost: Optional[Outpost] = None
 
+    last_uid: Optional[str] = None
+
     def connect(self):
         super().connect()
         uuid = self.scope["url_route"]["kwargs"]["pk"]
@@ -52,9 +54,7 @@ class OutpostConsumer(AuthJsonConsumer):
             raise DenyConnection()
         self.accept()
         self.outpost = outpost.first()
-        OutpostState(
-            uid=self.channel_name, last_seen=datetime.now(), _outpost=self.outpost
-        ).save(timeout=OUTPOST_HELLO_INTERVAL * 1.5)
+        self.last_uid = self.channel_name
         LOGGER.debug(
             "added outpost instace to cache",
             outpost=self.outpost,
@@ -63,18 +63,20 @@ class OutpostConsumer(AuthJsonConsumer):
 
     # pylint: disable=unused-argument
     def disconnect(self, close_code):
-        if self.outpost:
-            OutpostState.for_channel(self.outpost, self.channel_name).delete()
+        if self.outpost and self.last_uid:
+            OutpostState.for_channel(self.outpost, self.last_uid).delete()
         LOGGER.debug(
             "removed outpost instance from cache",
             outpost=self.outpost,
-            channel_name=self.channel_name,
+            instance_uuid=self.last_uid,
         )
 
     def receive_json(self, content: Data):
         msg = from_dict(WebsocketMessage, content)
+        uid = msg.args.get("uuid", self.channel_name)
+        self.last_uid = uid
         state = OutpostState(
-            uid=self.channel_name,
+            uid=uid,
             last_seen=datetime.now(),
             _outpost=self.outpost,
         )
@@ -82,8 +84,7 @@ class OutpostConsumer(AuthJsonConsumer):
             state.version = msg.args.get("version", None)
         elif msg.instruction == WebsocketMessageInstruction.ACK:
             return
-        if state.version:
-            state.save(timeout=OUTPOST_HELLO_INTERVAL * 1.5)
+        state.save(timeout=OUTPOST_HELLO_INTERVAL * 1.5)
 
         response = WebsocketMessage(instruction=WebsocketMessageInstruction.ACK)
         self.send_json(asdict(response))

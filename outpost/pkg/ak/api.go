@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/go-openapi/runtime"
+	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"github.com/recws-org/recws"
 	"goauthentik.io/outpost/pkg"
@@ -35,7 +36,8 @@ type APIController struct {
 
 	reloadOffset time.Duration
 
-	wsConn *recws.RecConn
+	wsConn       *recws.RecConn
+	instanceUUID uuid.UUID
 }
 
 // NewAPIController initialise new API Controller instance from URL and API token
@@ -70,6 +72,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		logger: log,
 
 		reloadOffset: time.Duration(rand.Intn(10)) * time.Second,
+		instanceUUID: uuid.New(),
 	}
 	ac.logger.Debugf("HA Reload offset: %s", ac.reloadOffset)
 	ac.initWS(akURL, outpost.Pk)

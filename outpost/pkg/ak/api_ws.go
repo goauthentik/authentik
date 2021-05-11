@@ -47,6 +47,7 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID strfmt.UUID) {
 		Instruction: WebsocketInstructionHello,
 		Args: map[string]interface{}{
 			"version": pkg.VERSION,
+			"uuid":    ac.instanceUUID.String(),
 		},
 	}
 	err := ws.WriteJSON(msg)
@@ -100,6 +101,7 @@ func (ac *APIController) startWSHealth() {
 			Instruction: WebsocketInstructionHello,
 			Args: map[string]interface{}{
 				"version": pkg.VERSION,
+				"uuid":    ac.instanceUUID.String(),
 			},
 		}
 		err := ac.wsConn.WriteJSON(aliveMsg)
