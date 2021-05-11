@@ -33,7 +33,7 @@ class UserLoginStageView(StageView):
             backend=backend,
         )
         delta = timedelta_from_string(self.executor.current_stage.session_duration)
-        if delta.seconds == 0:
+        if delta.total_seconds() == 0:
             self.request.session.set_expiry(0)
         else:
             self.request.session.set_expiry(delta)
