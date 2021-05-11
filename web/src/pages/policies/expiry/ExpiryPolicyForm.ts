@@ -1,30 +1,25 @@
 import { PasswordExpiryPolicy, PoliciesApi } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
 import { first } from "../../../utils";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-policy-password-expiry-form")
-export class PasswordExpiryPolicyForm extends Form<PasswordExpiryPolicy> {
+export class PasswordExpiryPolicyForm extends ModelForm<PasswordExpiryPolicy, string> {
 
-    set policyUUID(value: string) {
-        new PoliciesApi(DEFAULT_CONFIG).policiesPasswordExpiryRead({
-            policyUuid: value,
-        }).then(policy => {
-            this.policy = policy;
+    loadInstance(pk: string): Promise<PasswordExpiryPolicy> {
+        return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordExpiryRead({
+            policyUuid: pk,
         });
     }
 
-    @property({attribute: false})
-    policy?: PasswordExpiryPolicy;
-
     getSuccessMessage(): string {
-        if (this.policy) {
+        if (this.instance) {
             return t`Successfully updated policy.`;
         } else {
             return t`Successfully created policy.`;
@@ -32,9 +27,9 @@ export class PasswordExpiryPolicyForm extends Form<PasswordExpiryPolicy> {
     }
 
     send = (data: PasswordExpiryPolicy): Promise<PasswordExpiryPolicy> => {
-        if (this.policy) {
+        if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordExpiryUpdate({
-                policyUuid: this.policy.pk || "",
+                policyUuid: this.instance.pk || "",
                 data: data
             });
         } else {
@@ -53,11 +48,11 @@ export class PasswordExpiryPolicyForm extends Form<PasswordExpiryPolicy> {
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.policy?.name || "")}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.name || "")}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="executionLogging">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.policy?.executionLogging, false)}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.executionLogging, false)}>
                     <label class="pf-c-check__label">
                         ${t`Execution logging`}
                     </label>
@@ -75,11 +70,11 @@ export class PasswordExpiryPolicyForm extends Form<PasswordExpiryPolicy> {
                         label=${t`Maximum age (in days)`}
                         ?required=${true}
                         name="days">
-                        <input type="number" value="${ifDefined(this.policy?.days || "")}" class="pf-c-form-control" required>
+                        <input type="number" value="${ifDefined(this.instance?.days || "")}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="denyOnly">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.policy?.denyOnly, false)}>
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.denyOnly, false)}>
                             <label class="pf-c-check__label">
                                 ${t`Only fail the policy, don't invalidate user's password.`}
                             </label>
