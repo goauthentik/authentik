@@ -7,18 +7,22 @@ import { Form } from "../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
 import { first } from "../../utils";
+import { ModelForm } from "../../elements/forms/ModelForm";
 
 @customElement("ak-event-transport-form")
-export class TransportForm extends Form<NotificationTransport> {
+export class TransportForm extends ModelForm<NotificationTransport, string> {
 
-    @property({attribute: false})
-    transport?: NotificationTransport;
+    loadInstance(pk: string): Promise<NotificationTransport> {
+        return new EventsApi(DEFAULT_CONFIG).eventsTransportsRead({
+            uuid: pk,
+        });
+    }
 
     @property({type: Boolean})
     showWebhook = false;
 
     getSuccessMessage(): string {
-        if (this.transport) {
+        if (this.instance) {
             return t`Successfully updated transport.`;
         } else {
             return t`Successfully created transport.`;
@@ -26,9 +30,9 @@ export class TransportForm extends Form<NotificationTransport> {
     }
 
     send = (data: NotificationTransport): Promise<NotificationTransport> => {
-        if (this.transport) {
+        if (this.instance) {
             return new EventsApi(DEFAULT_CONFIG).eventsTransportsUpdate({
-                uuid: this.transport.pk || "",
+                uuid: this.instance.pk || "",
                 data: data
             });
         } else {
@@ -40,21 +44,21 @@ export class TransportForm extends Form<NotificationTransport> {
 
     renderTransportModes(): TemplateResult {
         return html`
-            <option value=${NotificationTransportModeEnum.Email} ?selected=${this.transport?.mode === NotificationTransportModeEnum.Email}>
+            <option value=${NotificationTransportModeEnum.Email} ?selected=${this.instance?.mode === NotificationTransportModeEnum.Email}>
                 ${t`Email`}
             </option>
-            <option value=${NotificationTransportModeEnum.Webhook} ?selected=${this.transport?.mode === NotificationTransportModeEnum.Webhook}>
+            <option value=${NotificationTransportModeEnum.Webhook} ?selected=${this.instance?.mode === NotificationTransportModeEnum.Webhook}>
                 ${t`Webhook (generic)`}
             </option>
-            <option value=${NotificationTransportModeEnum.WebhookSlack} ?selected=${this.transport?.mode === NotificationTransportModeEnum.WebhookSlack}>
+            <option value=${NotificationTransportModeEnum.WebhookSlack} ?selected=${this.instance?.mode === NotificationTransportModeEnum.WebhookSlack}>
                 ${t`Webhook (Slack/Discord)`}
             </option>
         `;
     }
 
     firstUpdated(): void {
-        if (this.transport) {
-            this.onModeChange(this.transport.mode);
+        if (this.instance) {
+            this.onModeChange(this.instance.mode);
         }
     }
 
@@ -72,7 +76,7 @@ export class TransportForm extends Form<NotificationTransport> {
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.transport?.name)}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.name)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Mode`}
@@ -89,11 +93,11 @@ export class TransportForm extends Form<NotificationTransport> {
                 ?hidden=${!this.showWebhook}
                 label=${t`Webhook URL`}
                 name="webhookUrl">
-                <input type="text" value="${ifDefined(this.transport?.webhookUrl)}" class="pf-c-form-control">
+                <input type="text" value="${ifDefined(this.instance?.webhookUrl)}" class="pf-c-form-control">
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="sendOnce">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.transport?.sendOnce, false)}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.sendOnce, false)}>
                     <label class="pf-c-check__label">
                         ${t`Send once`}
                     </label>

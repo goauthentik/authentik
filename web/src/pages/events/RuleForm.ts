@@ -7,15 +7,19 @@ import { Form } from "../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
 import { until } from "lit-html/directives/until";
+import { ModelForm } from "../../elements/forms/ModelForm";
 
 @customElement("ak-event-rule-form")
-export class RuleForm extends Form<NotificationRule> {
+export class RuleForm extends ModelForm<NotificationRule, string> {
 
-    @property({attribute: false})
-    rule?: NotificationRule;
+    loadInstance(pk: string): Promise<NotificationRule> {
+        return new EventsApi(DEFAULT_CONFIG).eventsRulesRead({
+            pbmUuid: pk,
+        });
+    }
 
     getSuccessMessage(): string {
-        if (this.rule) {
+        if (this.instance) {
             return t`Successfully updated rule.`;
         } else {
             return t`Successfully created rule.`;
@@ -23,9 +27,9 @@ export class RuleForm extends Form<NotificationRule> {
     }
 
     send = (data: NotificationRule): Promise<NotificationRule> => {
-        if (this.rule) {
+        if (this.instance) {
             return new EventsApi(DEFAULT_CONFIG).eventsRulesUpdate({
-                pbmUuid: this.rule.pk || "",
+                pbmUuid: this.instance.pk || "",
                 data: data
             });
         } else {
@@ -37,13 +41,13 @@ export class RuleForm extends Form<NotificationRule> {
 
     renderSeverity(): TemplateResult {
         return html`
-            <option value=${NotificationRuleSeverityEnum.Alert} ?selected=${this.rule?.severity === NotificationRuleSeverityEnum.Alert}>
+            <option value=${NotificationRuleSeverityEnum.Alert} ?selected=${this.instance?.severity === NotificationRuleSeverityEnum.Alert}>
                 ${t`Alert`}
             </option>
-            <option value=${NotificationRuleSeverityEnum.Warning} ?selected=${this.rule?.severity === NotificationRuleSeverityEnum.Warning}>
+            <option value=${NotificationRuleSeverityEnum.Warning} ?selected=${this.instance?.severity === NotificationRuleSeverityEnum.Warning}>
                 ${t`Warning`}
             </option>
-            <option value=${NotificationRuleSeverityEnum.Notice} ?selected=${this.rule?.severity === NotificationRuleSeverityEnum.Notice}>
+            <option value=${NotificationRuleSeverityEnum.Notice} ?selected=${this.instance?.severity === NotificationRuleSeverityEnum.Notice}>
                 ${t`Notice`}
             </option>
         `;
@@ -55,16 +59,16 @@ export class RuleForm extends Form<NotificationRule> {
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.rule?.name)}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.name)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Group`}
                 name="group">
                 <select class="pf-c-form-control">
-                    <option value="" ?selected=${this.rule?.group === undefined}>---------</option>
+                    <option value="" ?selected=${this.instance?.group === undefined}>---------</option>
                     ${until(new CoreApi(DEFAULT_CONFIG).coreGroupsList({}).then(groups => {
                         return groups.results.map(group => {
-                            return html`<option value=${ifDefined(group.pk)} ?selected=${this.rule?.group?.groupUuid === group.pk}>${group.name}</option>`;
+                            return html`<option value=${ifDefined(group.pk)} ?selected=${this.instance?.group?.groupUuid === group.pk}>${group.name}</option>`;
                         });
                     }), html`<option>${t`Loading...`}</option>`)}
                 </select>
@@ -76,7 +80,7 @@ export class RuleForm extends Form<NotificationRule> {
                 <select name="users" class="pf-c-form-control" multiple>
                     ${until(new EventsApi(DEFAULT_CONFIG).eventsTransportsList({}).then(transports => {
                         return transports.results.map(transport => {
-                            const selected = Array.from(this.rule?.transports || []).some(su => {
+                            const selected = Array.from(this.instance?.transports || []).some(su => {
                                 return su.uuid == transport.pk;
                             });
                             return html`<option value=${ifDefined(transport.pk)} ?selected=${selected}>${transport.name}</option>`;

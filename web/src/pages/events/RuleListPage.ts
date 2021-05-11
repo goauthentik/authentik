@@ -64,7 +64,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
                 <span slot="header">
                     ${t`Update Notification Rule`}
                 </span>
-                <ak-event-rule-form slot="form" .rule=${item}>
+                <ak-event-rule-form slot="form" .instancePk=${item.pk}>
                 </ak-event-rule-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${t`Edit`}

@@ -73,7 +73,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                 <span slot="header">
                     ${t`Update Stage binding`}
                 </span>
-                <ak-stage-binding-form slot="form" .fsb=${item}>
+                <ak-stage-binding-form slot="form" .instancePk=${item.pk}>
                 </ak-stage-binding-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${t`Edit Binding`}

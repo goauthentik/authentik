@@ -70,7 +70,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                 <span slot="header">
                     ${t`Update Certificate-Key Pair`}
                 </span>
-                <ak-crypto-certificate-form slot="form" .keyPair=${item}>
+                <ak-crypto-certificate-form slot="form" .instancePk=${item.pk}>
                 </ak-crypto-certificate-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${t`Edit`}
