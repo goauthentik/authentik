@@ -1,21 +1,24 @@
 import { Prompt, PromptTypeEnum, StagesApi } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import { first } from "../../../utils";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-prompt-form")
-export class PromptForm extends Form<Prompt> {
+export class PromptForm extends ModelForm<Prompt, string> {
 
-    @property({attribute: false})
-    prompt?: Prompt;
+    loadInstance(pk: string): Promise<Prompt> {
+        return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsRead({
+            promptUuid: pk
+        });
+    }
 
     getSuccessMessage(): string {
-        if (this.prompt) {
+        if (this.instance) {
             return t`Successfully updated prompt.`;
         } else {
             return t`Successfully created prompt.`;
@@ -23,9 +26,9 @@ export class PromptForm extends Form<Prompt> {
     }
 
     send = (data: Prompt): Promise<Prompt> => {
-        if (this.prompt) {
+        if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsUpdate({
-                promptUuid: this.prompt.pk || "",
+                promptUuid: this.instance.pk || "",
                 data: data
             });
         } else {
@@ -37,37 +40,37 @@ export class PromptForm extends Form<Prompt> {
 
     renderTypes(): TemplateResult {
         return html`
-            <option value=${PromptTypeEnum.Text} ?selected=${this.prompt?.type === PromptTypeEnum.Text}>
+            <option value=${PromptTypeEnum.Text} ?selected=${this.instance?.type === PromptTypeEnum.Text}>
                 ${t`Text: Simple Text input`}
             </option>
-            <option value=${PromptTypeEnum.Username} ?selected=${this.prompt?.type === PromptTypeEnum.Username}>
+            <option value=${PromptTypeEnum.Username} ?selected=${this.instance?.type === PromptTypeEnum.Username}>
                 ${t`Username: Same as Text input, but checks for and prevents duplicate usernames.`}
             </option>
-            <option value=${PromptTypeEnum.Email} ?selected=${this.prompt?.type === PromptTypeEnum.Email}>
+            <option value=${PromptTypeEnum.Email} ?selected=${this.instance?.type === PromptTypeEnum.Email}>
                 ${t`Email: Text field with Email type.`}
             </option>
-            <option value=${PromptTypeEnum.Password} ?selected=${this.prompt?.type === PromptTypeEnum.Password}>
+            <option value=${PromptTypeEnum.Password} ?selected=${this.instance?.type === PromptTypeEnum.Password}>
                 ${t`Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical.`}
             </option>
-            <option value=${PromptTypeEnum.Number} ?selected=${this.prompt?.type === PromptTypeEnum.Number}>
+            <option value=${PromptTypeEnum.Number} ?selected=${this.instance?.type === PromptTypeEnum.Number}>
                 ${t`Number`}
             </option>
-            <option value=${PromptTypeEnum.Checkbox} ?selected=${this.prompt?.type === PromptTypeEnum.Checkbox}>
+            <option value=${PromptTypeEnum.Checkbox} ?selected=${this.instance?.type === PromptTypeEnum.Checkbox}>
                 ${t`Checkbox`}
             </option>
-            <option value=${PromptTypeEnum.Date} ?selected=${this.prompt?.type === PromptTypeEnum.Date}>
+            <option value=${PromptTypeEnum.Date} ?selected=${this.instance?.type === PromptTypeEnum.Date}>
                 ${t`Date`}
             </option>
-            <option value=${PromptTypeEnum.DateTime} ?selected=${this.prompt?.type === PromptTypeEnum.DateTime}>
+            <option value=${PromptTypeEnum.DateTime} ?selected=${this.instance?.type === PromptTypeEnum.DateTime}>
                 ${t`Date Time`}
             </option>
-            <option value=${PromptTypeEnum.Separator} ?selected=${this.prompt?.type === PromptTypeEnum.Separator}>
+            <option value=${PromptTypeEnum.Separator} ?selected=${this.instance?.type === PromptTypeEnum.Separator}>
                 ${t`Separator: Static Separator Line`}
             </option>
-            <option value=${PromptTypeEnum.Hidden} ?selected=${this.prompt?.type === PromptTypeEnum.Hidden}>
+            <option value=${PromptTypeEnum.Hidden} ?selected=${this.instance?.type === PromptTypeEnum.Hidden}>
                 ${t`Hidden: Hidden field, can be used to insert data into form.`}
             </option>
-            <option value=${PromptTypeEnum.Static} ?selected=${this.prompt?.type === PromptTypeEnum.Static}>
+            <option value=${PromptTypeEnum.Static} ?selected=${this.instance?.type === PromptTypeEnum.Static}>
                 ${t`Static: Static value, displayed as-is.`}
             </option>
         `;
@@ -79,14 +82,14 @@ export class PromptForm extends Form<Prompt> {
                 label=${t`Field Key`}
                 ?required=${true}
                 name="fieldKey">
-                <input type="text" value="${ifDefined(this.prompt?.fieldKey)}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.fieldKey)}" class="pf-c-form-control" required>
                 <p class="pf-c-form__helper-text">${t`Name of the form field, also used to store the value.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Label`}
                 ?required=${true}
                 name="label">
-                <input type="text" value="${ifDefined(this.prompt?.label)}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.label)}" class="pf-c-form-control" required>
                 <p class="pf-c-form__helper-text">${t`Label shown next to/above the prompt.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
@@ -99,7 +102,7 @@ export class PromptForm extends Form<Prompt> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="required">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.prompt?.required, false)}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.required, false)}>
                     <label class="pf-c-check__label">
                         ${t`Required`}
                     </label>
@@ -108,14 +111,14 @@ export class PromptForm extends Form<Prompt> {
             <ak-form-element-horizontal
                 label=${t`Placeholder`}
                 name="placeholder">
-                <input type="text" value="${ifDefined(this.prompt?.placeholder)}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.placeholder)}" class="pf-c-form-control" required>
                 <p class="pf-c-form__helper-text">${t`Optionally pre-fill the input value`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Order`}
                 ?required=${true}
                 name="order">
-                <input type="number" value="${ifDefined(this.prompt?.order)}" class="pf-c-form-control" required>
+                <input type="number" value="${ifDefined(this.instance?.order)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
         </form>`;
     }

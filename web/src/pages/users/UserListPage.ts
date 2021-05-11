@@ -75,7 +75,7 @@ export class UserListPage extends TablePage<User> {
                 <span slot="header">
                     ${t`Update User`}
                 </span>
-                <ak-user-form slot="form" .user=${item}>
+                <ak-user-form slot="form" .instancePk=${item.pk}>
                 </ak-user-form>
                 <button slot="trigger" class="pf-m-secondary pf-c-button">
                     ${t`Edit`}

@@ -110,7 +110,7 @@ export class UserTokenList extends Table<Token> {
                 <span slot="header">
                     ${t`Update Token`}
                 </span>
-                <ak-user-token-form slot="form" .token=${item}>
+                <ak-user-token-form slot="form" .instancePk=${item.identifier}>
                 </ak-user-token-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${t`Edit`}

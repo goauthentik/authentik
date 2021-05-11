@@ -144,7 +144,7 @@ export class UserViewPage extends LitElement {
                                     <span slot="header">
                                         ${t`Update User`}
                                     </span>
-                                    <ak-user-form slot="form" .user=${this.user}>
+                                    <ak-user-form slot="form" .instancePk=${this.user.pk}>
                                     </ak-user-form>
                                     <button slot="trigger" class="pf-m-primary pf-c-button">
                                         ${t`Edit`}

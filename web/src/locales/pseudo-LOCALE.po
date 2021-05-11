@@ -16,7 +16,7 @@ msgstr ""
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:141
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:149
 #: src/pages/providers/saml/SAMLProviderForm.ts:201
-#: src/pages/stages/user_login/UserLoginStageForm.ts:71
+#: src/pages/stages/user_login/UserLoginStageForm.ts:69
 msgid "(Format: hours=-1;minutes=-2;seconds=-3)."
 msgstr ""
 
@@ -24,11 +24,11 @@ msgstr ""
 msgid "-"
 msgstr ""
 
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:72
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:70
 msgid "6 digits, widely compatible"
 msgstr ""
 
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:75
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:73
 msgid "8 digits, not compatible with apps like Google Authenticator"
 msgstr ""
 
@@ -86,7 +86,7 @@ msgstr ""
 #: src/elements/events/ObjectChangelog.ts:38
 #: src/elements/events/UserEvents.ts:35
 #: src/pages/events/EventListPage.ts:43
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:79
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:77
 msgid "Action"
 msgstr ""
 
@@ -123,7 +123,7 @@ msgstr ""
 msgid "Advanced protocol settings"
 msgstr ""
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:119
+#: src/pages/policies/password/PasswordPolicyForm.ts:117
 #: src/pages/sources/ldap/LDAPSourceForm.ts:138
 msgid "Advanced settings"
 msgstr ""
@@ -148,7 +148,7 @@ msgstr ""
 msgid "Allow friends to authenticate via Plex, even if you don't share any servers"
 msgstr ""
 
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:90
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:88
 msgid "Allow up to N occurrences in the HIBP database."
 msgstr ""
 
@@ -156,7 +156,7 @@ msgstr ""
 msgid "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages."
 msgstr ""
 
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:86
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:84
 msgid "Allowed count"
 msgstr ""
 
@@ -168,7 +168,7 @@ msgstr ""
 msgid "Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done."
 msgstr ""
 
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:53
+#: src/pages/policies/reputation/ReputationPolicyForm.ts:51
 msgid "Allows/denys requests based on the users and/or the IPs reputation."
 msgstr ""
 
@@ -181,7 +181,7 @@ msgid "Always require consent"
 msgstr ""
 
 #: src/pages/events/EventInfo.ts:59
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:99
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:97
 msgid "App"
 msgstr ""
 
@@ -259,8 +259,8 @@ msgid "Attribute name used for SAML Assertions. Can be a URN OID, a schema refer
 msgstr ""
 
 #: src/pages/groups/GroupForm.ts:139
-#: src/pages/stages/invitation/InvitationForm.ts:52
-#: src/pages/users/UserForm.ts:77
+#: src/pages/stages/invitation/InvitationForm.ts:57
+#: src/pages/users/UserForm.ts:82
 msgid "Attributes"
 msgstr ""
 
@@ -316,7 +316,7 @@ msgstr ""
 msgid "Authorized application:"
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts:74
+#: src/pages/stages/password/PasswordStageForm.ts:72
 msgid "Backends"
 msgstr ""
 
@@ -431,7 +431,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:91
+#: src/pages/stages/identification/IdentificationStageForm.ts:89
 msgid "Case insensitive matching"
 msgstr ""
 
@@ -490,15 +490,15 @@ msgstr ""
 msgid "Changelog"
 msgstr ""
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:127
+#: src/pages/policies/password/PasswordPolicyForm.ts:125
 msgid "Characters which are considered as symbols."
 msgstr ""
 
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:81
+#: src/pages/policies/reputation/ReputationPolicyForm.ts:79
 msgid "Check IP"
 msgstr ""
 
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:89
+#: src/pages/policies/reputation/ReputationPolicyForm.ts:87
 msgid "Check Username"
 msgstr ""
 
@@ -506,21 +506,21 @@ msgstr ""
 msgid "Check your Emails for a password reset link."
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:60
+#: src/pages/stages/prompt/PromptForm.ts:65
 msgid "Checkbox"
 msgstr ""
 
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:53
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:51
 msgid ""
 "Checks a value from the policy request against the Have I been Pwned API, and denys the request based upon that.\n"
 "Note that only a part of the hash of the password is sent, the full comparison is done clientside."
 msgstr ""
 
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:53
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts:51
 msgid "Checks if the request's user's password has been changed in the last x days, and denys based on settings."
 msgstr ""
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:53
+#: src/pages/policies/password/PasswordPolicyForm.ts:51
 msgid "Checks the value from the policy request against several rules, mostly used to ensure password strength."
 msgstr ""
 
@@ -541,7 +541,7 @@ msgstr ""
 #: src/elements/events/ObjectChangelog.ts:41
 #: src/elements/events/UserEvents.ts:38
 #: src/pages/events/EventListPage.ts:46
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:93
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:91
 msgid "Client IP"
 msgstr ""
 
@@ -579,10 +579,10 @@ msgstr ""
 msgid "Configuration"
 msgstr ""
 
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:74
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:80
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:72
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:78
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:118
-#: src/pages/stages/password/PasswordStageForm.ts:89
+#: src/pages/stages/password/PasswordStageForm.ts:87
 msgid "Configuration flow"
 msgstr ""
 
@@ -631,7 +631,7 @@ msgid "Connection error, reconnecting..."
 msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts:98
-#: src/pages/stages/email/EmailStageForm.ts:58
+#: src/pages/stages/email/EmailStageForm.ts:59
 msgid "Connection settings"
 msgstr ""
 
@@ -687,7 +687,7 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationStageForm.ts:70
+#: src/pages/stages/invitation/InvitationStageForm.ts:68
 msgid "Continue flow without invitation"
 msgstr ""
 
@@ -743,8 +743,8 @@ msgstr ""
 #: src/pages/stages/invitation/InvitationListPage.ts:85
 #: src/pages/stages/prompt/PromptListPage.ts:96
 #: src/pages/stages/prompt/PromptListPage.ts:104
-#: src/pages/stages/prompt/PromptStageForm.ts:90
-#: src/pages/stages/prompt/PromptStageForm.ts:98
+#: src/pages/stages/prompt/PromptStageForm.ts:88
+#: src/pages/stages/prompt/PromptStageForm.ts:96
 #: src/pages/user-settings/tokens/UserTokenList.ts:50
 #: src/pages/user-settings/tokens/UserTokenList.ts:58
 #: src/pages/users/UserListPage.ts:155
@@ -801,7 +801,7 @@ msgid "Create Policy"
 msgstr ""
 
 #: src/pages/stages/prompt/PromptListPage.ts:99
-#: src/pages/stages/prompt/PromptStageForm.ts:93
+#: src/pages/stages/prompt/PromptStageForm.ts:91
 msgid "Create Prompt"
 msgstr ""
 
@@ -861,11 +861,11 @@ msgstr ""
 msgid "DSA-SHA1"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:63
+#: src/pages/stages/prompt/PromptForm.ts:68
 msgid "Date"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:66
+#: src/pages/stages/prompt/PromptForm.ts:71
 msgid "Date Time"
 msgstr ""
 
@@ -925,7 +925,7 @@ msgstr ""
 msgid "Delete temporary users after"
 msgstr ""
 
-#: src/pages/stages/user_delete/UserDeleteStageForm.ts:51
+#: src/pages/stages/user_delete/UserDeleteStageForm.ts:49
 msgid ""
 "Delete the currently pending user. CAUTION, this stage does not ask for\n"
 "confirmation. Use a consent stage to ensure the user is aware of their actions."
@@ -942,7 +942,7 @@ msgstr ""
 #: src/pages/applications/ApplicationForm.ts:175
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts:63
 #: src/pages/system-tasks/SystemTaskListPage.ts:55
-#: src/pages/user-settings/tokens/UserTokenForm.ts:50
+#: src/pages/user-settings/tokens/UserTokenForm.ts:55
 msgid "Description"
 msgstr ""
 
@@ -950,7 +950,7 @@ msgstr ""
 msgid "Description shown to the user when consenting. If left empty, the user won't be informed."
 msgstr ""
 
-#: src/pages/users/UserForm.ts:74
+#: src/pages/users/UserForm.ts:79
 msgid "Designates whether this user should be treated as active. Unselect this instead of deleting accounts."
 msgstr ""
 
@@ -963,7 +963,7 @@ msgstr ""
 msgid "Determines how authentik sends the response back to the Service Provider."
 msgstr ""
 
-#: src/pages/stages/user_login/UserLoginStageForm.ts:70
+#: src/pages/stages/user_login/UserLoginStageForm.ts:68
 msgid "Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed."
 msgstr ""
 
@@ -980,7 +980,7 @@ msgstr ""
 msgid "Digest algorithm"
 msgstr ""
 
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:67
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:65
 msgid "Digits"
 msgstr ""
 
@@ -1014,7 +1014,7 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
-#: src/pages/stages/dummy/DummyStageForm.ts:51
+#: src/pages/stages/dummy/DummyStageForm.ts:49
 msgid "Dummy stage used for testing. Shows a simple continue button and always passes."
 msgstr ""
 
@@ -1079,9 +1079,9 @@ msgstr ""
 
 #: src/flows/stages/identification/IdentificationStage.ts:146
 #: src/pages/events/TransportForm.ts:51
-#: src/pages/stages/identification/IdentificationStageForm.ts:81
+#: src/pages/stages/identification/IdentificationStageForm.ts:79
 #: src/pages/user-settings/UserDetailsPage.ts:71
-#: src/pages/users/UserForm.ts:61
+#: src/pages/users/UserForm.ts:66
 #: src/pages/users/UserViewPage.ts:100
 msgid "Email"
 msgstr ""
@@ -1094,7 +1094,7 @@ msgstr ""
 msgid "Email or username"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:51
+#: src/pages/stages/prompt/PromptForm.ts:56
 msgid "Email: Text field with Email type."
 msgstr ""
 
@@ -1139,7 +1139,7 @@ msgstr ""
 #: src/pages/sources/oauth/OAuthSourceForm.ts:252
 #: src/pages/sources/plex/PlexSourceForm.ts:206
 #: src/pages/sources/saml/SAMLSourceForm.ts:264
-#: src/pages/stages/identification/IdentificationStageForm.ts:106
+#: src/pages/stages/identification/IdentificationStageForm.ts:104
 msgid "Enrollment flow"
 msgstr ""
 
@@ -1151,7 +1151,7 @@ msgstr ""
 msgid "Error creating credential: {err}"
 msgstr ""
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:110
+#: src/pages/policies/password/PasswordPolicyForm.ts:108
 msgid "Error message"
 msgstr ""
 
@@ -1213,24 +1213,24 @@ msgstr ""
 msgid "Execute flow"
 msgstr ""
 
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:54
+#: src/pages/policies/expression/ExpressionPolicyForm.ts:52
 msgid "Executes the python snippet to determine whether to allow or deny a request."
 msgstr ""
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts:63
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:66
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:65
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:66
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:66
-#: src/pages/policies/password/PasswordPolicyForm.ts:65
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:65
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:64
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts:63
+#: src/pages/policies/expression/ExpressionPolicyForm.ts:64
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:64
+#: src/pages/policies/password/PasswordPolicyForm.ts:63
+#: src/pages/policies/reputation/ReputationPolicyForm.ts:63
 msgid "Execution logging"
 msgstr ""
 
 #: src/elements/oauth/UserCodeList.ts:30
 #: src/elements/oauth/UserRefreshList.ts:30
 #: src/elements/user/UserConsentList.ts:30
-#: src/pages/stages/invitation/InvitationForm.ts:46
+#: src/pages/stages/invitation/InvitationForm.ts:51
 msgid "Expires"
 msgstr ""
 
@@ -1261,14 +1261,14 @@ msgid "Export"
 msgstr ""
 
 #: src/pages/events/EventInfo.ts:133
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:79
+#: src/pages/policies/expression/ExpressionPolicyForm.ts:77
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts:63
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts:73
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts:70
 msgid "Expression"
 msgstr ""
 
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:85
+#: src/pages/policies/expression/ExpressionPolicyForm.ts:83
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts:69
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts:79
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts:76
@@ -1287,7 +1287,7 @@ msgstr ""
 msgid "External host"
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts:111
+#: src/pages/stages/password/PasswordStageForm.ts:109
 msgid "Failed attempts before cancel"
 msgstr ""
 
@@ -1307,12 +1307,12 @@ msgstr ""
 msgid "Field"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:83
+#: src/pages/stages/prompt/PromptForm.ts:88
 msgid "Field Key"
 msgstr ""
 
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:83
-#: src/pages/policies/password/PasswordPolicyForm.ts:82
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:81
+#: src/pages/policies/password/PasswordPolicyForm.ts:80
 msgid "Field key to check, field keys defined in Prompt stages are available."
 msgstr ""
 
@@ -1328,11 +1328,11 @@ msgstr ""
 msgid "Field which contains members of a group."
 msgstr ""
 
-#: src/pages/stages/prompt/PromptStageForm.ts:69
+#: src/pages/stages/prompt/PromptStageForm.ts:67
 msgid "Fields"
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:84
+#: src/pages/stages/identification/IdentificationStageForm.ts:82
 msgid "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources."
 msgstr ""
 
@@ -1367,12 +1367,12 @@ msgstr ""
 msgid "Flow used before authentication."
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts:108
+#: src/pages/stages/password/PasswordStageForm.ts:106
 msgid "Flow used by an authenticated user to configure their password. If empty, user will not be able to configure change their password."
 msgstr ""
 
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:93
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:98
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:91
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:96
 msgid "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
 msgstr ""
 
@@ -1419,7 +1419,7 @@ msgstr ""
 msgid "Friendly Name"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:107
+#: src/pages/stages/email/EmailStageForm.ts:108
 msgid "From address"
 msgstr ""
 
@@ -1502,7 +1502,7 @@ msgstr ""
 msgid "Healthy sources"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:72
+#: src/pages/stages/prompt/PromptForm.ts:77
 msgid "Hidden: Hidden field, can be used to insert data into form."
 msgstr ""
 
@@ -1523,14 +1523,14 @@ msgstr ""
 #: src/pages/sources/ldap/LDAPSourceForm.ts:191
 #: src/pages/sources/plex/PlexSourceForm.ts:168
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:114
-#: src/pages/stages/identification/IdentificationStageForm.ts:85
-#: src/pages/stages/password/PasswordStageForm.ts:86
-#: src/pages/stages/prompt/PromptStageForm.ts:87
-#: src/pages/stages/prompt/PromptStageForm.ts:121
+#: src/pages/stages/identification/IdentificationStageForm.ts:83
+#: src/pages/stages/password/PasswordStageForm.ts:84
+#: src/pages/stages/prompt/PromptStageForm.ts:85
+#: src/pages/stages/prompt/PromptStageForm.ts:119
 msgid "Hold control/command to select multiple items."
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts:115
+#: src/pages/stages/password/PasswordStageForm.ts:113
 msgid "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage."
 msgstr ""
 
@@ -1545,7 +1545,7 @@ msgstr ""
 #: src/pages/flows/FlowListPage.ts:46
 #: src/pages/system-tasks/SystemTaskListPage.ts:54
 #: src/pages/tokens/TokenListPage.ts:44
-#: src/pages/user-settings/tokens/UserTokenForm.ts:44
+#: src/pages/user-settings/tokens/UserTokenForm.ts:49
 #: src/pages/user-settings/tokens/UserTokenList.ts:39
 msgid "Identifier"
 msgstr ""
@@ -1563,7 +1563,7 @@ msgstr ""
 msgid "If left empty, authentik will try to extract the launch URL based on the selected provider."
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationStageForm.ts:73
+#: src/pages/stages/invitation/InvitationStageForm.ts:71
 msgid "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given."
 msgstr ""
 
@@ -1625,7 +1625,7 @@ msgstr ""
 msgid "Invitations"
 msgstr ""
 
-#: src/pages/users/UserForm.ts:71
+#: src/pages/users/UserForm.ts:76
 msgid "Is active"
 msgstr ""
 
@@ -1672,12 +1672,12 @@ msgstr ""
 msgid "LDAP Sync status"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:90
+#: src/pages/stages/prompt/PromptForm.ts:95
 #: src/pages/stages/prompt/PromptListPage.ts:47
 msgid "Label"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:94
+#: src/pages/stages/prompt/PromptForm.ts:99
 msgid "Label shown next to/above the prompt."
 msgstr ""
 
@@ -1708,7 +1708,7 @@ msgstr ""
 msgid "Launch URL"
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:60
+#: src/pages/stages/identification/IdentificationStageForm.ts:58
 msgid "Let the user identify themselves with their username or Email address."
 msgstr ""
 
@@ -1775,8 +1775,8 @@ msgstr ""
 #: src/pages/policies/PolicyBindingForm.ts:173
 #: src/pages/policies/PolicyBindingForm.ts:189
 #: src/pages/policies/PolicyTestForm.ts:71
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:88
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:108
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:86
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:106
 #: src/pages/property-mappings/PropertyMappingTestForm.ts:61
 #: src/pages/providers/ldap/LDAPProviderForm.ts:70
 #: src/pages/providers/ldap/LDAPProviderForm.ts:84
@@ -1802,15 +1802,15 @@ msgstr ""
 #: src/pages/sources/saml/SAMLSourceForm.ts:238
 #: src/pages/sources/saml/SAMLSourceForm.ts:259
 #: src/pages/sources/saml/SAMLSourceForm.ts:280
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:90
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:96
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:88
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:94
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:131
-#: src/pages/stages/email/EmailStageForm.ts:170
-#: src/pages/stages/identification/IdentificationStageForm.ts:119
-#: src/pages/stages/identification/IdentificationStageForm.ts:137
-#: src/pages/stages/password/PasswordStageForm.ts:106
-#: src/pages/stages/prompt/PromptStageForm.ts:85
-#: src/pages/stages/prompt/PromptStageForm.ts:118
+#: src/pages/stages/email/EmailStageForm.ts:171
+#: src/pages/stages/identification/IdentificationStageForm.ts:117
+#: src/pages/stages/identification/IdentificationStageForm.ts:135
+#: src/pages/stages/password/PasswordStageForm.ts:104
+#: src/pages/stages/prompt/PromptStageForm.ts:83
+#: src/pages/stages/prompt/PromptStageForm.ts:116
 msgid "Loading..."
 msgstr ""
 
@@ -1820,7 +1820,7 @@ msgstr ""
 msgid "Local"
 msgstr ""
 
-#: src/pages/stages/user_login/UserLoginStageForm.ts:52
+#: src/pages/stages/user_login/UserLoginStageForm.ts:50
 msgid "Log the currently pending user in."
 msgstr ""
 
@@ -1853,23 +1853,23 @@ msgstr ""
 msgid "Long-running operations which authentik executes in the background."
 msgstr ""
 
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:90
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:88
 msgid "Match created events with this action type. When left empty, all action types will be matched."
 msgstr ""
 
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:110
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:108
 msgid "Match events created by selected application. When left empty, all applications are matched."
 msgstr ""
 
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:96
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:94
 msgid "Matches Event's Client IP (strict matching, for network matching use an Expression Policy."
 msgstr ""
 
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:54
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:52
 msgid "Matches an event against a set of criteria. If any of the configured values match, the policy passes."
 msgstr ""
 
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:78
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts:76
 msgid "Maximum age (in days)"
 msgstr ""
 
@@ -1891,19 +1891,19 @@ msgstr ""
 msgid "Metadata"
 msgstr ""
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:98
+#: src/pages/policies/password/PasswordPolicyForm.ts:96
 msgid "Minimum amount of Lowercase Characters"
 msgstr ""
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:104
+#: src/pages/policies/password/PasswordPolicyForm.ts:102
 msgid "Minimum amount of Symbols Characters"
 msgstr ""
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:92
+#: src/pages/policies/password/PasswordPolicyForm.ts:90
 msgid "Minimum amount of Uppercase Characters"
 msgstr ""
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:86
+#: src/pages/policies/password/PasswordPolicyForm.ts:84
 msgid "Minimum length"
 msgstr ""
 
@@ -1947,12 +1947,12 @@ msgstr ""
 #: src/pages/outposts/ServiceConnectionListPage.ts:53
 #: src/pages/policies/PolicyListPage.ts:56
 #: src/pages/policies/dummy/DummyPolicyForm.ts:54
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:57
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:56
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:57
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:57
-#: src/pages/policies/password/PasswordPolicyForm.ts:56
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:56
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:55
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts:54
+#: src/pages/policies/expression/ExpressionPolicyForm.ts:55
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:55
+#: src/pages/policies/password/PasswordPolicyForm.ts:54
+#: src/pages/policies/reputation/ReputationPolicyForm.ts:54
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts:50
 #: src/pages/property-mappings/PropertyMappingListPage.ts:54
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts:50
@@ -1977,31 +1977,31 @@ msgstr ""
 #: src/pages/sources/saml/SAMLSourceForm.ts:52
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:66
 #: src/pages/stages/StageListPage.ts:65
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:57
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:56
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:55
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:54
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:64
-#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts:54
-#: src/pages/stages/captcha/CaptchaStageForm.ts:55
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts:52
+#: src/pages/stages/captcha/CaptchaStageForm.ts:53
 #: src/pages/stages/consent/ConsentStageForm.ts:57
-#: src/pages/stages/deny/DenyStageForm.ts:54
-#: src/pages/stages/dummy/DummyStageForm.ts:54
-#: src/pages/stages/email/EmailStageForm.ts:122
-#: src/pages/stages/identification/IdentificationStageForm.ts:63
-#: src/pages/stages/invitation/InvitationStageForm.ts:56
-#: src/pages/stages/password/PasswordStageForm.ts:63
-#: src/pages/stages/prompt/PromptStageForm.ts:58
-#: src/pages/stages/user_delete/UserDeleteStageForm.ts:55
-#: src/pages/stages/user_login/UserLoginStageForm.ts:55
-#: src/pages/stages/user_logout/UserLogoutStageForm.ts:54
-#: src/pages/stages/user_write/UserWriteStageForm.ts:55
+#: src/pages/stages/deny/DenyStageForm.ts:52
+#: src/pages/stages/dummy/DummyStageForm.ts:52
+#: src/pages/stages/email/EmailStageForm.ts:123
+#: src/pages/stages/identification/IdentificationStageForm.ts:61
+#: src/pages/stages/invitation/InvitationStageForm.ts:54
+#: src/pages/stages/password/PasswordStageForm.ts:61
+#: src/pages/stages/prompt/PromptStageForm.ts:56
+#: src/pages/stages/user_delete/UserDeleteStageForm.ts:53
+#: src/pages/stages/user_login/UserLoginStageForm.ts:53
+#: src/pages/stages/user_logout/UserLogoutStageForm.ts:52
+#: src/pages/stages/user_write/UserWriteStageForm.ts:53
 #: src/pages/user-settings/UserDetailsPage.ts:64
-#: src/pages/users/UserForm.ts:54
+#: src/pages/users/UserForm.ts:59
 #: src/pages/users/UserListPage.ts:54
 #: src/pages/users/UserViewPage.ts:92
 msgid "Name"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:87
+#: src/pages/stages/prompt/PromptForm.ts:92
 msgid "Name of the form field, also used to store the value."
 msgstr ""
 
@@ -2143,7 +2143,7 @@ msgstr ""
 msgid "Notifications Transport"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:57
+#: src/pages/stages/prompt/PromptForm.ts:62
 msgid "Number"
 msgstr ""
 
@@ -2178,7 +2178,7 @@ msgstr ""
 msgid "On behalf of {0}"
 msgstr ""
 
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:87
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts:85
 msgid "Only fail the policy, don't invalidate user's password."
 msgstr ""
 
@@ -2206,15 +2206,15 @@ msgstr ""
 msgid "Optional URL if the IDP supports Single-Logout."
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationForm.ts:56
+#: src/pages/stages/invitation/InvitationForm.ts:61
 msgid "Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON."
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:121
+#: src/pages/stages/identification/IdentificationStageForm.ts:119
 msgid "Optional enrollment flow, which is linked at the bottom of the page."
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:139
+#: src/pages/stages/identification/IdentificationStageForm.ts:137
 msgid "Optional recovery flow, which is linked at the bottom of the page."
 msgstr ""
 
@@ -2222,7 +2222,7 @@ msgstr ""
 msgid "Optional, comma-separated SubjectAlt Names."
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:116
+#: src/pages/stages/prompt/PromptForm.ts:121
 msgid "Optionally pre-fill the input value"
 msgstr ""
 
@@ -2234,7 +2234,7 @@ msgstr ""
 #: src/pages/flows/StageBindingForm.ts:115
 #: src/pages/policies/BoundPoliciesList.ts:42
 #: src/pages/policies/PolicyBindingForm.ts:204
-#: src/pages/stages/prompt/PromptForm.ts:119
+#: src/pages/stages/prompt/PromptForm.ts:124
 #: src/pages/stages/prompt/PromptListPage.ts:49
 msgid "Order"
 msgstr ""
@@ -2305,12 +2305,12 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:79
-#: src/pages/policies/password/PasswordPolicyForm.ts:78
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:77
+#: src/pages/policies/password/PasswordPolicyForm.ts:76
 msgid "Password field"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:54
+#: src/pages/stages/prompt/PromptForm.ts:59
 msgid "Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical."
 msgstr ""
 
@@ -2318,7 +2318,7 @@ msgstr ""
 msgid "Persistent"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:113
+#: src/pages/stages/prompt/PromptForm.ts:118
 msgid "Placeholder"
 msgstr ""
 
@@ -2376,12 +2376,12 @@ msgid "Policy {0}"
 msgstr ""
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts:72
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:75
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:74
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:75
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:75
-#: src/pages/policies/password/PasswordPolicyForm.ts:74
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:74
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:73
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts:72
+#: src/pages/policies/expression/ExpressionPolicyForm.ts:73
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:73
+#: src/pages/policies/password/PasswordPolicyForm.ts:72
+#: src/pages/policies/reputation/ReputationPolicyForm.ts:72
 msgid "Policy-specific settings"
 msgstr ""
 
@@ -2406,7 +2406,7 @@ msgid "Pre-authentication flow"
 msgstr ""
 
 #: src/pages/crypto/CertificateKeyPairForm.ts:66
-#: src/pages/stages/captcha/CaptchaStageForm.ts:73
+#: src/pages/stages/captcha/CaptchaStageForm.ts:71
 msgid "Private Key"
 msgstr ""
 
@@ -2414,7 +2414,7 @@ msgstr ""
 msgid "Private key available?"
 msgstr ""
 
-#: src/pages/stages/captcha/CaptchaStageForm.ts:78
+#: src/pages/stages/captcha/CaptchaStageForm.ts:76
 msgid "Private key, acquired from https://www.google.com/recaptcha/intro/v3.html."
 msgstr ""
 
@@ -2504,11 +2504,11 @@ msgstr ""
 msgid "Public"
 msgstr ""
 
-#: src/pages/stages/captcha/CaptchaStageForm.ts:66
+#: src/pages/stages/captcha/CaptchaStageForm.ts:64
 msgid "Public Key"
 msgstr ""
 
-#: src/pages/stages/captcha/CaptchaStageForm.ts:70
+#: src/pages/stages/captcha/CaptchaStageForm.ts:68
 msgid "Public key, acquired from https://www.google.com/recaptcha/intro/v3.html."
 msgstr ""
 
@@ -2552,7 +2552,7 @@ msgstr ""
 msgid "Recovery"
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:124
+#: src/pages/stages/identification/IdentificationStageForm.ts:122
 msgid "Recovery flow"
 msgstr ""
 
@@ -2601,7 +2601,7 @@ msgstr ""
 msgid "Reload"
 msgstr ""
 
-#: src/pages/stages/user_logout/UserLogoutStageForm.ts:51
+#: src/pages/stages/user_logout/UserLogoutStageForm.ts:49
 msgid "Remove the user from the current session."
 msgstr ""
 
@@ -2618,12 +2618,12 @@ msgstr ""
 msgid "Request token URL"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:108
+#: src/pages/stages/prompt/PromptForm.ts:113
 msgid "Required"
 msgstr ""
 
 #: src/pages/user-settings/UserDetailsPage.ts:61
-#: src/pages/users/UserForm.ts:51
+#: src/pages/users/UserForm.ts:56
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr ""
 
@@ -2692,19 +2692,19 @@ msgstr ""
 msgid "SLO URL"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:62
+#: src/pages/stages/email/EmailStageForm.ts:63
 msgid "SMTP Host"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:79
+#: src/pages/stages/email/EmailStageForm.ts:80
 msgid "SMTP Password"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:68
+#: src/pages/stages/email/EmailStageForm.ts:69
 msgid "SMTP Port"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:74
+#: src/pages/stages/email/EmailStageForm.ts:75
 msgid "SMTP Username"
 msgstr ""
 
@@ -2739,7 +2739,7 @@ msgstr ""
 msgid "Secret:"
 msgstr ""
 
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:87
+#: src/pages/policies/expression/ExpressionPolicyForm.ts:85
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts:71
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts:81
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts:78
@@ -2778,7 +2778,7 @@ msgstr ""
 msgid "Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI."
 msgstr ""
 
-#: src/pages/stages/prompt/PromptStageForm.ts:120
+#: src/pages/stages/prompt/PromptStageForm.ts:118
 msgid "Selected policies are executed when the stage is submitted to validate the data."
 msgstr ""
 
@@ -2786,7 +2786,7 @@ msgstr ""
 msgid "Selecting a service-connection enables the management of the outpost by authentik."
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts:85
+#: src/pages/stages/password/PasswordStageForm.ts:83
 msgid "Selection of backends to test the password against."
 msgstr ""
 
@@ -2806,7 +2806,7 @@ msgstr ""
 msgid "Sent to group"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:69
+#: src/pages/stages/prompt/PromptForm.ts:74
 msgid "Separator: Static Separator Line"
 msgstr ""
 
@@ -2831,7 +2831,7 @@ msgstr ""
 msgid "Service connection"
 msgstr ""
 
-#: src/pages/stages/user_login/UserLoginStageForm.ts:66
+#: src/pages/stages/user_login/UserLoginStageForm.ts:64
 msgid "Session duration"
 msgstr ""
 
@@ -2855,7 +2855,7 @@ msgstr ""
 #: src/pages/outposts/OutpostForm.ts:127
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts:71
 #: src/pages/policies/PolicyTestForm.ts:79
-#: src/pages/users/UserForm.ts:82
+#: src/pages/users/UserForm.ts:87
 msgid "Set custom attributes using YAML or JSON."
 msgstr ""
 
@@ -2864,11 +2864,11 @@ msgstr ""
 msgid "Severity"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptStageForm.ts:55
+#: src/pages/stages/prompt/PromptStageForm.ts:53
 msgid "Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable."
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:100
+#: src/pages/stages/identification/IdentificationStageForm.ts:98
 msgid "Show matched user"
 msgstr ""
 
@@ -2897,7 +2897,7 @@ msgstr ""
 msgid "Single Prompts that can be used for Prompt Stages."
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationForm.ts:62
+#: src/pages/stages/invitation/InvitationForm.ts:67
 msgid "Single use"
 msgstr ""
 
@@ -2956,15 +2956,15 @@ msgstr ""
 msgid "Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
 msgstr ""
 
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:53
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:51
 msgid "Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator)."
 msgstr ""
 
-#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts:51
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts:49
 msgid "Stage used to configure a WebAutnn authenticator (i.e. Yubikey, FaceID/Windows Hello)."
 msgstr ""
 
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:54
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:52
 msgid "Stage used to configure a static authenticator (i.e. static tokens). This stage should be used for configuration flows."
 msgstr ""
 
@@ -2972,17 +2972,17 @@ msgstr ""
 msgid "Stage used to validate any authenticator. This stage should be used during authentication or authorization flows."
 msgstr ""
 
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:64
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:63
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:62
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:61
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:71
-#: src/pages/stages/captcha/CaptchaStageForm.ts:62
+#: src/pages/stages/captcha/CaptchaStageForm.ts:60
 #: src/pages/stages/consent/ConsentStageForm.ts:64
-#: src/pages/stages/email/EmailStageForm.ts:129
-#: src/pages/stages/identification/IdentificationStageForm.ts:70
-#: src/pages/stages/invitation/InvitationStageForm.ts:63
-#: src/pages/stages/password/PasswordStageForm.ts:70
-#: src/pages/stages/prompt/PromptStageForm.ts:65
-#: src/pages/stages/user_login/UserLoginStageForm.ts:62
+#: src/pages/stages/email/EmailStageForm.ts:130
+#: src/pages/stages/identification/IdentificationStageForm.ts:68
+#: src/pages/stages/invitation/InvitationStageForm.ts:61
+#: src/pages/stages/password/PasswordStageForm.ts:68
+#: src/pages/stages/prompt/PromptStageForm.ts:63
+#: src/pages/stages/user_login/UserLoginStageForm.ts:60
 msgid "Stage-specific settings"
 msgstr ""
 
@@ -3009,11 +3009,11 @@ msgstr ""
 msgid "Static tokens"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:75
+#: src/pages/stages/prompt/PromptForm.ts:80
 msgid "Static: Static value, displayed as-is."
 msgstr ""
 
-#: src/pages/stages/deny/DenyStageForm.ts:51
+#: src/pages/stages/deny/DenyStageForm.ts:49
 msgid "Statically deny the flow. To use this stage effectively, disable *Evaluate on plan* on the respective binding."
 msgstr ""
 
@@ -3035,7 +3035,7 @@ msgstr ""
 msgid "Stop impersonation"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:152
+#: src/pages/stages/email/EmailStageForm.ts:153
 msgid "Subject"
 msgstr ""
 
@@ -3076,7 +3076,7 @@ msgstr ""
 msgid "Successfully created group."
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationForm.ts:39
+#: src/pages/stages/invitation/InvitationForm.ts:44
 msgid "Successfully created invitation."
 msgstr ""
 
@@ -3091,16 +3091,16 @@ msgid "Successfully created outpost."
 msgstr ""
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts:44
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:47
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:46
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:47
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:46
-#: src/pages/policies/password/PasswordPolicyForm.ts:46
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:46
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:45
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts:44
+#: src/pages/policies/expression/ExpressionPolicyForm.ts:45
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:44
+#: src/pages/policies/password/PasswordPolicyForm.ts:44
+#: src/pages/policies/reputation/ReputationPolicyForm.ts:44
 msgid "Successfully created policy."
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:38
+#: src/pages/stages/prompt/PromptForm.ts:43
 msgid "Successfully created prompt."
 msgstr ""
 
@@ -3127,27 +3127,27 @@ msgstr ""
 msgid "Successfully created source."
 msgstr ""
 
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:47
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:46
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:45
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:44
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:48
-#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts:44
-#: src/pages/stages/captcha/CaptchaStageForm.ts:45
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts:42
+#: src/pages/stages/captcha/CaptchaStageForm.ts:43
 #: src/pages/stages/consent/ConsentStageForm.ts:47
-#: src/pages/stages/deny/DenyStageForm.ts:44
-#: src/pages/stages/dummy/DummyStageForm.ts:44
-#: src/pages/stages/email/EmailStageForm.ts:48
-#: src/pages/stages/identification/IdentificationStageForm.ts:47
-#: src/pages/stages/invitation/InvitationStageForm.ts:46
-#: src/pages/stages/password/PasswordStageForm.ts:47
-#: src/pages/stages/prompt/PromptStageForm.ts:48
-#: src/pages/stages/user_delete/UserDeleteStageForm.ts:44
-#: src/pages/stages/user_login/UserLoginStageForm.ts:45
-#: src/pages/stages/user_logout/UserLogoutStageForm.ts:44
-#: src/pages/stages/user_write/UserWriteStageForm.ts:44
+#: src/pages/stages/deny/DenyStageForm.ts:42
+#: src/pages/stages/dummy/DummyStageForm.ts:42
+#: src/pages/stages/email/EmailStageForm.ts:49
+#: src/pages/stages/identification/IdentificationStageForm.ts:45
+#: src/pages/stages/invitation/InvitationStageForm.ts:44
+#: src/pages/stages/password/PasswordStageForm.ts:45
+#: src/pages/stages/prompt/PromptStageForm.ts:46
+#: src/pages/stages/user_delete/UserDeleteStageForm.ts:42
+#: src/pages/stages/user_login/UserLoginStageForm.ts:43
+#: src/pages/stages/user_logout/UserLogoutStageForm.ts:42
+#: src/pages/stages/user_write/UserWriteStageForm.ts:42
 msgid "Successfully created stage."
 msgstr ""
 
-#: src/pages/user-settings/tokens/UserTokenForm.ts:37
+#: src/pages/user-settings/tokens/UserTokenForm.ts:42
 msgid "Successfully created token."
 msgstr ""
 
@@ -3155,7 +3155,7 @@ msgstr ""
 msgid "Successfully created transport."
 msgstr ""
 
-#: src/pages/users/UserForm.ts:40
+#: src/pages/users/UserForm.ts:45
 msgid "Successfully created user."
 msgstr ""
 
@@ -3214,7 +3214,7 @@ msgstr ""
 msgid "Successfully updated group."
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationForm.ts:36
+#: src/pages/stages/invitation/InvitationForm.ts:41
 msgid "Successfully updated invitation."
 msgstr ""
 
@@ -3229,16 +3229,16 @@ msgid "Successfully updated outpost."
 msgstr ""
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts:41
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:44
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:43
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:44
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:43
-#: src/pages/policies/password/PasswordPolicyForm.ts:43
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:43
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:42
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts:41
+#: src/pages/policies/expression/ExpressionPolicyForm.ts:42
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:41
+#: src/pages/policies/password/PasswordPolicyForm.ts:41
+#: src/pages/policies/reputation/ReputationPolicyForm.ts:41
 msgid "Successfully updated policy."
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:35
+#: src/pages/stages/prompt/PromptForm.ts:40
 msgid "Successfully updated prompt."
 msgstr ""
 
@@ -3265,27 +3265,27 @@ msgstr ""
 msgid "Successfully updated source."
 msgstr ""
 
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:44
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:43
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:42
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:41
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:45
-#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts:41
-#: src/pages/stages/captcha/CaptchaStageForm.ts:42
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts:39
+#: src/pages/stages/captcha/CaptchaStageForm.ts:40
 #: src/pages/stages/consent/ConsentStageForm.ts:44
-#: src/pages/stages/deny/DenyStageForm.ts:41
-#: src/pages/stages/dummy/DummyStageForm.ts:41
-#: src/pages/stages/email/EmailStageForm.ts:45
-#: src/pages/stages/identification/IdentificationStageForm.ts:44
-#: src/pages/stages/invitation/InvitationStageForm.ts:43
-#: src/pages/stages/password/PasswordStageForm.ts:44
-#: src/pages/stages/prompt/PromptStageForm.ts:45
-#: src/pages/stages/user_delete/UserDeleteStageForm.ts:41
-#: src/pages/stages/user_login/UserLoginStageForm.ts:42
-#: src/pages/stages/user_logout/UserLogoutStageForm.ts:41
-#: src/pages/stages/user_write/UserWriteStageForm.ts:41
+#: src/pages/stages/deny/DenyStageForm.ts:39
+#: src/pages/stages/dummy/DummyStageForm.ts:39
+#: src/pages/stages/email/EmailStageForm.ts:46
+#: src/pages/stages/identification/IdentificationStageForm.ts:42
+#: src/pages/stages/invitation/InvitationStageForm.ts:41
+#: src/pages/stages/password/PasswordStageForm.ts:42
+#: src/pages/stages/prompt/PromptStageForm.ts:43
+#: src/pages/stages/user_delete/UserDeleteStageForm.ts:39
+#: src/pages/stages/user_login/UserLoginStageForm.ts:40
+#: src/pages/stages/user_logout/UserLogoutStageForm.ts:39
+#: src/pages/stages/user_write/UserWriteStageForm.ts:39
 msgid "Successfully updated stage."
 msgstr ""
 
-#: src/pages/user-settings/tokens/UserTokenForm.ts:34
+#: src/pages/user-settings/tokens/UserTokenForm.ts:39
 msgid "Successfully updated token."
 msgstr ""
 
@@ -3293,7 +3293,7 @@ msgstr ""
 msgid "Successfully updated transport."
 msgstr ""
 
-#: src/pages/users/UserForm.ts:37
+#: src/pages/users/UserForm.ts:42
 msgid "Successfully updated user."
 msgstr ""
 
@@ -3317,7 +3317,7 @@ msgstr ""
 msgid "Superusers"
 msgstr ""
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:123
+#: src/pages/policies/password/PasswordPolicyForm.ts:121
 msgid "Symbol charset"
 msgstr ""
 
@@ -3370,7 +3370,7 @@ msgstr ""
 msgid "Task finished with warnings"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:158
+#: src/pages/stages/email/EmailStageForm.ts:159
 msgid "Template"
 msgstr ""
 
@@ -3390,7 +3390,7 @@ msgstr ""
 msgid "Test Property Mapping"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:45
+#: src/pages/stages/prompt/PromptForm.ts:50
 msgid "Text: Simple Text input"
 msgstr ""
 
@@ -3432,19 +3432,19 @@ msgstr ""
 msgid "These policies control which users can access this application."
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationStageForm.ts:53
+#: src/pages/stages/invitation/InvitationStageForm.ts:51
 msgid "This stage can be included in enrollment flows to accept invitations."
 msgstr ""
 
-#: src/pages/stages/captcha/CaptchaStageForm.ts:52
+#: src/pages/stages/captcha/CaptchaStageForm.ts:50
 msgid "This stage checks the user's current session against the Google reCaptcha service."
 msgstr ""
 
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:94
+#: src/pages/policies/reputation/ReputationPolicyForm.ts:92
 msgid "Threshold"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:149
+#: src/pages/stages/email/EmailStageForm.ts:150
 msgid "Time in minutes the token sent is valid."
 msgstr ""
 
@@ -3458,7 +3458,7 @@ msgstr ""
 
 #: src/pages/policies/BoundPoliciesList.ts:43
 #: src/pages/policies/PolicyBindingForm.ts:210
-#: src/pages/stages/email/EmailStageForm.ts:101
+#: src/pages/stages/email/EmailStageForm.ts:102
 msgid "Timeout"
 msgstr ""
 
@@ -3476,11 +3476,11 @@ msgstr ""
 msgid "Token URL"
 msgstr ""
 
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:68
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:66
 msgid "Token count"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:145
+#: src/pages/stages/email/EmailStageForm.ts:146
 msgid "Token expiry"
 msgstr ""
 
@@ -3534,7 +3534,7 @@ msgstr ""
 #: src/pages/property-mappings/PropertyMappingListPage.ts:55
 #: src/pages/providers/ProviderListPage.ts:55
 #: src/pages/sources/SourcesListPage.ts:53
-#: src/pages/stages/prompt/PromptForm.ts:97
+#: src/pages/stages/prompt/PromptForm.ts:102
 #: src/pages/stages/prompt/PromptListPage.ts:48
 msgid "Type"
 msgstr ""
@@ -3743,11 +3743,11 @@ msgstr ""
 msgid "Upstream host that the requests are forwarded to."
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:96
+#: src/pages/stages/email/EmailStageForm.ts:97
 msgid "Use SSL"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:88
+#: src/pages/stages/email/EmailStageForm.ts:89
 msgid "Use TLS"
 msgstr ""
 
@@ -3759,7 +3759,7 @@ msgstr ""
 msgid "Use a security key to prove your identity."
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:139
+#: src/pages/stages/email/EmailStageForm.ts:140
 msgid "Use global settings"
 msgstr ""
 
@@ -3813,7 +3813,7 @@ msgid "User events"
 msgstr ""
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:99
-#: src/pages/stages/identification/IdentificationStageForm.ts:74
+#: src/pages/stages/identification/IdentificationStageForm.ts:72
 msgid "User fields"
 msgstr ""
 
@@ -3840,7 +3840,7 @@ msgid "User's avatar"
 msgstr ""
 
 #: src/pages/user-settings/UserDetailsPage.ts:68
-#: src/pages/users/UserForm.ts:58
+#: src/pages/users/UserForm.ts:63
 msgid "User's display name."
 msgstr ""
 
@@ -3857,14 +3857,14 @@ msgid "Userinfo URL"
 msgstr ""
 
 #: src/flows/stages/identification/IdentificationStage.ts:150
-#: src/pages/stages/identification/IdentificationStageForm.ts:78
+#: src/pages/stages/identification/IdentificationStageForm.ts:76
 #: src/pages/user-settings/UserDetailsPage.ts:57
-#: src/pages/users/UserForm.ts:47
+#: src/pages/users/UserForm.ts:52
 #: src/pages/users/UserViewPage.ts:84
 msgid "Username"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:48
+#: src/pages/stages/prompt/PromptForm.ts:53
 msgid "Username: Same as Text input, but checks for and prevents duplicate usernames."
 msgstr ""
 
@@ -3898,11 +3898,11 @@ msgstr ""
 msgid "Validate SSL Certificates of upstream servers."
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts:60
+#: src/pages/stages/password/PasswordStageForm.ts:58
 msgid "Validate the user's password against the selected backend(s)."
 msgstr ""
 
-#: src/pages/stages/prompt/PromptStageForm.ts:103
+#: src/pages/stages/prompt/PromptStageForm.ts:101
 msgid "Validation Policies"
 msgstr ""
 
@@ -3914,7 +3914,7 @@ msgstr ""
 msgid "Verification Certificate"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:119
+#: src/pages/stages/email/EmailStageForm.ts:120
 msgid "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity."
 msgstr ""
 
@@ -3979,19 +3979,19 @@ msgstr ""
 msgid "Webhook URL"
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:103
+#: src/pages/stages/identification/IdentificationStageForm.ts:101
 msgid "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown."
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:142
+#: src/pages/stages/email/EmailStageForm.ts:143
 msgid "When enabled, global Email connection settings will be used and connection settings below will be ignored."
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationForm.ts:66
+#: src/pages/stages/invitation/InvitationForm.ts:71
 msgid "When enabled, the invitation will be deleted after usage."
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:94
+#: src/pages/stages/identification/IdentificationStageForm.ts:92
 msgid "When enabled, user fields are matched regardless of their casing."
 msgstr ""
 
@@ -4000,12 +4000,12 @@ msgid "When selected, incoming assertion's Signatures will be validated against 
 msgstr ""
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts:67
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:70
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:69
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:70
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:70
-#: src/pages/policies/password/PasswordPolicyForm.ts:69
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:69
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:68
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts:67
+#: src/pages/policies/expression/ExpressionPolicyForm.ts:68
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:68
+#: src/pages/policies/password/PasswordPolicyForm.ts:67
+#: src/pages/policies/reputation/ReputationPolicyForm.ts:67
 msgid "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
 msgstr ""
 
@@ -4021,7 +4021,7 @@ msgstr ""
 msgid "Workers"
 msgstr ""
 
-#: src/pages/stages/user_write/UserWriteStageForm.ts:51
+#: src/pages/stages/user_write/UserWriteStageForm.ts:49
 msgid ""
 "Write any data from the flow's context's 'prompt_data' to the currently pending user. If no user\n"
 "is pending, a new user is created, and data is written to them."
@@ -4048,11 +4048,11 @@ msgstr ""
 msgid "You're currently impersonating {0}."
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts:79
+#: src/pages/stages/password/PasswordStageForm.ts:77
 msgid "authentik Builtin Database"
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts:82
+#: src/pages/stages/password/PasswordStageForm.ts:80
 msgid "authentik LDAP Backend"
 msgstr ""
 
@@ -4065,11 +4065,11 @@ msgstr ""
 msgid "{0}"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptStageForm.ts:82
+#: src/pages/stages/prompt/PromptStageForm.ts:80
 msgid "{0} (\"{1}\", of type {2})"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptStageForm.ts:115
+#: src/pages/stages/prompt/PromptStageForm.ts:113
 msgid "{0} ({1})"
 msgstr ""
 

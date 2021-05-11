@@ -1,20 +1,23 @@
 import { CoreApi, Token } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-user-token-form")
-export class UserTokenForm extends Form<Token> {
+export class UserTokenForm extends ModelForm<Token, string> {
 
-    @property({attribute: false})
-    token?: Token;
+    loadInstance(pk: string): Promise<Token> {
+        return new CoreApi(DEFAULT_CONFIG).coreTokensRead({
+            identifier: pk
+        });
+    }
 
     getSuccessMessage(): string {
-        if (this.token) {
+        if (this.instance) {
             return t`Successfully updated token.`;
         } else {
             return t`Successfully created token.`;
@@ -22,9 +25,9 @@ export class UserTokenForm extends Form<Token> {
     }
 
     send = (data: Token): Promise<Token> => {
-        if (this.token) {
+        if (this.instance) {
             return new CoreApi(DEFAULT_CONFIG).coreTokensUpdate({
-                identifier: this.token.identifier,
+                identifier: this.instance.identifier,
                 data: data
             });
         } else {
@@ -40,13 +43,13 @@ export class UserTokenForm extends Form<Token> {
                 label=${t`Identifier`}
                 ?required=${true}
                 name="identifier">
-                <input type="text" value="${ifDefined(this.token?.identifier)}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.identifier)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Description`}
                 ?required=${true}
                 name="description">
-                <input type="text" value="${ifDefined(this.token?.description)}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.description)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
         </form>`;
     }

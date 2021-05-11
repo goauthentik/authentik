@@ -102,7 +102,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 <span slot="header">
                     ${t`Update User`}
                 </span>
-                <ak-user-form slot="form" .user=${item.userObj}>
+                <ak-user-form slot="form" .instancePk=${item.userObj?.pk}>
                 </ak-user-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${t`Edit User`}

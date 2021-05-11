@@ -68,7 +68,7 @@ export class PromptListPage extends TablePage<Prompt> {
                 <span slot="header">
                     ${t`Update Prompt`}
                 </span>
-                <ak-prompt-form slot="form" .prompt=${item}>
+                <ak-prompt-form slot="form" .instancePk=${item.pk}>
                 </ak-prompt-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${t`Edit`}
