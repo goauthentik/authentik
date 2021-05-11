@@ -42,7 +42,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
 
     send = (data: OAuthSource): Promise<OAuthSource> => {
         if (this.instance) {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesOauthUpdate({
+            return new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
                 slug: this.instance.slug,
                 data: data
             });
