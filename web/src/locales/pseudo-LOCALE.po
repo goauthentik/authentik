@@ -41,7 +41,7 @@ msgid "A policy used for testing. Always returns the same result as specified be
 msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts:81
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:84
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:85
 msgid "ACS URL"
 msgstr ""
 
@@ -156,6 +156,10 @@ msgstr ""
 msgid "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages."
 msgstr ""
 
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:156
+msgid "Allowed Redirect URIs"
+msgstr ""
+
 #: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:84
 msgid "Allowed count"
 msgstr ""
@@ -241,8 +245,8 @@ msgstr ""
 #: src/pages/providers/ProviderListPage.ts:66
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts:72
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:81
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:72
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:74
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:70
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:75
 msgid "Assigned to application"
 msgstr ""
 
@@ -265,7 +269,7 @@ msgid "Attributes"
 msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts:107
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:92
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:93
 msgid "Audience"
 msgstr ""
 
@@ -364,7 +368,7 @@ msgstr ""
 msgid "Based on the username"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:98
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:96
 msgid "Basic-Auth"
 msgstr ""
 
@@ -480,8 +484,8 @@ msgstr ""
 #: src/pages/flows/FlowViewPage.ts:110
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts:111
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:136
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:135
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:129
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:170
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:130
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:113
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:133
 #: src/pages/sources/plex/PlexSourceViewPage.ts:92
@@ -704,11 +708,15 @@ msgstr ""
 msgid "Copy Key"
 msgstr ""
 
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:166
+msgid "Copy download URL"
+msgstr ""
+
 #: src/pages/applications/ApplicationForm.ts:125
 #: src/pages/applications/ApplicationListPage.ts:121
 #: src/pages/applications/ApplicationListPage.ts:129
-#: src/pages/crypto/CertificateKeyPairListPage.ts:122
-#: src/pages/crypto/CertificateKeyPairListPage.ts:130
+#: src/pages/crypto/CertificateKeyPairListPage.ts:139
+#: src/pages/crypto/CertificateKeyPairListPage.ts:147
 #: src/pages/events/RuleListPage.ts:91
 #: src/pages/events/RuleListPage.ts:99
 #: src/pages/events/TransportListPage.ts:95
@@ -764,7 +772,7 @@ msgstr ""
 msgid "Create Binding"
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairListPage.ts:125
+#: src/pages/crypto/CertificateKeyPairListPage.ts:142
 msgid "Create Certificate-Key Pair"
 msgstr ""
 
@@ -1009,9 +1017,18 @@ msgstr ""
 msgid "Docker URL"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:155
+#: src/pages/crypto/CertificateKeyPairListPage.ts:114
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:156
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:143
 msgid "Download"
+msgstr ""
+
+#: src/pages/crypto/CertificateKeyPairListPage.ts:120
+msgid "Download Certificate"
+msgstr ""
+
+#: src/pages/crypto/CertificateKeyPairListPage.ts:124
+msgid "Download Private key"
 msgstr ""
 
 #: src/pages/stages/dummy/DummyStageForm.ts:49
@@ -1037,8 +1054,8 @@ msgstr ""
 #: src/pages/providers/ProviderListPage.ts:87
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts:103
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:128
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:127
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:121
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:141
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:122
 #: src/pages/sources/SourcesListPage.ts:83
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:105
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:125
@@ -1279,7 +1296,7 @@ msgstr ""
 msgid "External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access."
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:90
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:88
 msgid "External Host"
 msgstr ""
 
@@ -1415,6 +1432,10 @@ msgstr ""
 msgid "Form didn't return a promise for submitting"
 msgstr ""
 
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:112
+msgid "Forward auth"
+msgstr ""
+
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts:65
 msgid "Friendly Name"
 msgstr ""
@@ -1427,12 +1448,12 @@ msgstr ""
 msgid "General system status"
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairListPage.ts:135
-#: src/pages/crypto/CertificateKeyPairListPage.ts:143
+#: src/pages/crypto/CertificateKeyPairListPage.ts:152
+#: src/pages/crypto/CertificateKeyPairListPage.ts:160
 msgid "Generate"
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairListPage.ts:138
+#: src/pages/crypto/CertificateKeyPairListPage.ts:155
 msgid "Generate Certificate-Key Pair"
 msgstr ""
 
@@ -1600,7 +1621,7 @@ msgstr ""
 msgid "Include claims in id_token"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:82
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:80
 msgid "Internal Host"
 msgstr ""
 
@@ -1634,7 +1655,7 @@ msgid "Is superuser"
 msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts:87
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:100
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:101
 #: src/pages/sources/saml/SAMLSourceForm.ts:91
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:90
 msgid "Issuer"
@@ -1691,7 +1712,7 @@ msgstr ""
 msgid "Last run"
 msgstr ""
 
-#: src/pages/outposts/OutpostHealth.ts:41
+#: src/pages/outposts/OutpostHealth.ts:54
 msgid "Last seen: {0}"
 msgstr ""
 
@@ -1886,7 +1907,7 @@ msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:147
 #: src/pages/providers/saml/SAMLProviderImportForm.ts:61
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:141
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:142
 #: src/pages/sources/saml/SAMLSourceViewPage.ts:130
 msgid "Metadata"
 msgstr ""
@@ -1963,10 +1984,10 @@ msgstr ""
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts:56
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:73
 #: src/pages/providers/proxy/ProxyProviderForm.ts:98
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:64
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:62
 #: src/pages/providers/saml/SAMLProviderForm.ts:52
 #: src/pages/providers/saml/SAMLProviderImportForm.ts:38
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:66
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:67
 #: src/pages/sources/SourcesListPage.ts:52
 #: src/pages/sources/ldap/LDAPSourceForm.ts:52
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:64
@@ -2027,7 +2048,8 @@ msgstr ""
 #: src/pages/outposts/ServiceConnectionListPage.ts:64
 #: src/pages/policies/BoundPoliciesList.ts:122
 #: src/pages/policies/PolicyTestForm.ts:39
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:108
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:106
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:122
 #: src/pages/tokens/TokenListPage.ts:56
 #: src/pages/user-settings/tokens/UserTokenList.ts:83
 #: src/pages/users/UserListPage.ts:67
@@ -2088,7 +2110,7 @@ msgstr ""
 msgid "None (rule disabled)"
 msgstr ""
 
-#: src/pages/outposts/OutpostHealth.ts:31
+#: src/pages/outposts/OutpostHealth.ts:44
 msgid "Not available"
 msgstr ""
 
@@ -2273,8 +2295,8 @@ msgstr ""
 #: src/pages/applications/ApplicationViewPage.ts:59
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts:56
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:65
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:56
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:58
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:54
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:59
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:56
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:56
 #: src/pages/sources/plex/PlexSourceViewPage.ts:55
@@ -2455,6 +2477,10 @@ msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts:164
 msgid "Property mappings used to user creation."
+msgstr ""
+
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:150
+msgid "Protocol Settings"
 msgstr ""
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts:91
@@ -3399,7 +3425,7 @@ msgid "The URL \"{0}\" was not found."
 msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts:131
-msgid "The external URL you'll access the outpost at."
+msgid "The external URL you'll access the application at"
 msgstr ""
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts:88
@@ -3619,8 +3645,8 @@ msgstr ""
 #: src/pages/providers/ProviderListPage.ts:74
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts:93
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:118
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:117
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:111
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:131
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:112
 #: src/pages/sources/SourcesListPage.ts:70
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts:95
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts:115
@@ -3697,11 +3723,11 @@ msgstr ""
 msgid "Update Prompt"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:120
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:134
 msgid "Update Proxy Provider"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:114
+#: src/pages/providers/saml/SAMLProviderViewPage.ts:115
 msgid "Update SAML Provider"
 msgstr ""
 
@@ -3922,7 +3948,7 @@ msgstr ""
 msgid "Version"
 msgstr ""
 
-#: src/pages/outposts/OutpostHealth.ts:47
+#: src/pages/outposts/OutpostHealth.ts:60
 msgid "Version: {0}"
 msgstr ""
 
@@ -4037,7 +4063,8 @@ msgstr ""
 #: src/pages/outposts/ServiceConnectionListPage.ts:64
 #: src/pages/policies/BoundPoliciesList.ts:122
 #: src/pages/policies/PolicyTestForm.ts:39
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:105
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:103
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts:119
 #: src/pages/tokens/TokenListPage.ts:56
 #: src/pages/user-settings/tokens/UserTokenList.ts:83
 #: src/pages/users/UserListPage.ts:67
@@ -4085,7 +4112,7 @@ msgstr ""
 msgid "{0} unread"
 msgstr ""
 
-#: src/pages/outposts/OutpostHealth.ts:46
+#: src/pages/outposts/OutpostHealth.ts:59
 msgid "{0}, should be {1}"
 msgstr ""
 
