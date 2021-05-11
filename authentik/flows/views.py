@@ -298,7 +298,7 @@ class CancelView(View):
         if SESSION_KEY_PLAN in request.session:
             del request.session[SESSION_KEY_PLAN]
             LOGGER.debug("Canceled current plan")
-        return redirect("authentik_core:root-redirect")
+        return redirect("authentik_core:default-invalidation")
 
 
 class ToDefaultFlow(View):
