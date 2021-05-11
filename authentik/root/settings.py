@@ -333,6 +333,7 @@ if CONFIG.y("postgresql.s3_backup"):
         "region_name": CONFIG.y("postgresql.s3_backup.region", "eu-central-1"),
         "default_acl": "private",
         "endpoint_url": CONFIG.y("postgresql.s3_backup.host"),
+        "location": CONFIG.y("postgresql.s3_backup.location", ""),
     }
     j_print(
         "Database backup to S3 is configured",
