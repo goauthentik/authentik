@@ -2,7 +2,9 @@
 import datetime
 
 from django.test import TestCase
+from django.urls import reverse
 
+from authentik.core.models import User
 from authentik.crypto.api import CertificateKeyPairSerializer
 from authentik.crypto.builder import CertificateBuilder
 from authentik.crypto.models import CertificateKeyPair
@@ -47,3 +49,45 @@ class TestCrypto(TestCase):
         now = datetime.datetime.today()
         self.assertEqual(instance.name, "test-cert")
         self.assertEqual((instance.certificate.not_valid_after - now).days, 2)
+
+    def test_certificate_download(self):
+        """Test certificate export (download)"""
+        self.client.force_login(User.objects.get(username="akadmin"))
+        keypair = CertificateKeyPair.objects.first()
+        response = self.client.get(
+            reverse(
+                "authentik_api:certificatekeypair-view-certificate",
+                kwargs={"pk": keypair.pk},
+            )
+        )
+        self.assertEqual(200, response.status_code)
+        response = self.client.get(
+            reverse(
+                "authentik_api:certificatekeypair-view-certificate",
+                kwargs={"pk": keypair.pk},
+            )
+            + "?download",
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertIn("Content-Disposition", response)
+
+    def test_private_key_download(self):
+        """Test private_key export (download)"""
+        self.client.force_login(User.objects.get(username="akadmin"))
+        keypair = CertificateKeyPair.objects.first()
+        response = self.client.get(
+            reverse(
+                "authentik_api:certificatekeypair-view-private-key",
+                kwargs={"pk": keypair.pk},
+            )
+        )
+        self.assertEqual(200, response.status_code)
+        response = self.client.get(
+            reverse(
+                "authentik_api:certificatekeypair-view-private-key",
+                kwargs={"pk": keypair.pk},
+            )
+            + "?download",
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertIn("Content-Disposition", response)

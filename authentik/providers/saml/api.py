@@ -5,6 +5,7 @@ from defusedxml.ElementTree import fromstring
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
+from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, FileField, ReadOnlyField
@@ -83,7 +84,14 @@ class SAMLProviderViewSet(ModelViewSet):
         responses={
             200: SAMLMetadataSerializer(many=False),
             404: "Provider has no application assigned",
-        }
+        },
+        manual_parameters=[
+            openapi.Parameter(
+                name="download",
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_BOOLEAN,
+            )
+        ],
     )
     @action(methods=["GET"], detail=True, permission_classes=[AllowAny])
     # pylint: disable=invalid-name, unused-argument

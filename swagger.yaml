@@ -2527,7 +2527,10 @@ paths:
     get:
       operationId: crypto_certificatekeypairs_view_certificate
       description: Return certificate-key pairs certificate and log access
-      parameters: []
+      parameters:
+        - name: download
+          in: query
+          type: boolean
       responses:
         '200':
           description: ''
@@ -2555,7 +2558,10 @@ paths:
     get:
       operationId: crypto_certificatekeypairs_view_private_key
       description: Return certificate-key pairs private key and log access
-      parameters: []
+      parameters:
+        - name: download
+          in: query
+          type: boolean
       responses:
         '200':
           description: ''
@@ -9696,7 +9702,10 @@ paths:
     get:
       operationId: providers_saml_metadata
       description: Return metadata as XML string
-      parameters: []
+      parameters:
+        - name: download
+          in: query
+          type: boolean
       responses:
         '200':
           description: ''

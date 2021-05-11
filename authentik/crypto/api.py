@@ -3,7 +3,9 @@ import django_filters
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import load_pem_x509_certificate
+from django.http.response import HttpResponse
 from django.utils.translation import gettext_lazy as _
+from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.fields import (
@@ -145,7 +147,16 @@ class CertificateKeyPairViewSet(ModelViewSet):
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
-    @swagger_auto_schema(responses={200: CertificateDataSerializer(many=False)})
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(
+                name="download",
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_BOOLEAN,
+            )
+        ],
+        responses={200: CertificateDataSerializer(many=False)},
+    )
     @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=invalid-name, unused-argument
     def view_certificate(self, request: Request, pk: str) -> Response:
@@ -156,11 +167,29 @@ class CertificateKeyPairViewSet(ModelViewSet):
             secret=certificate,
             type="certificate",
         ).from_http(request)
+        if "download" in request._request.GET:
+            # Mime type from https://pki-tutorial.readthedocs.io/en/latest/mime.html
+            response = HttpResponse(
+                certificate.certificate_data, content_type="application/x-pem-file"
+            )
+            response[
+                "Content-Disposition"
+            ] = f'attachment; filename="{certificate.name}_certificate.pem"'
+            return response
         return Response(
             CertificateDataSerializer({"data": certificate.certificate_data}).data
         )
 
-    @swagger_auto_schema(responses={200: CertificateDataSerializer(many=False)})
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(
+                name="download",
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_BOOLEAN,
+            )
+        ],
+        responses={200: CertificateDataSerializer(many=False)},
+    )
     @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=invalid-name, unused-argument
     def view_private_key(self, request: Request, pk: str) -> Response:
@@ -171,4 +200,13 @@ class CertificateKeyPairViewSet(ModelViewSet):
             secret=certificate,
             type="private_key",
         ).from_http(request)
+        if "download" in request._request.GET:
+            # Mime type from https://pki-tutorial.readthedocs.io/en/latest/mime.html
+            response = HttpResponse(
+                certificate.key_data, content_type="application/x-pem-file"
+            )
+            response[
+                "Content-Disposition"
+            ] = f'attachment; filename="{certificate.name}_private_key.pem"'
+            return response
         return Response(CertificateDataSerializer({"data": certificate.key_data}).data)
