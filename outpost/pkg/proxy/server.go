@@ -57,7 +57,7 @@ func (s *Server) handler(w http.ResponseWriter, r *http.Request) {
 		for k := range s.Handlers {
 			hostKeys = append(hostKeys, k)
 		}
-		s.logger.WithField("host", host).WithField("known-hosts", strings.Join(hostKeys, ", ")).Debug("Host header does not match any we know of")
+		s.logger.WithField("host", host).WithField("known-hosts", strings.Join(hostKeys, ",")).Debug("Host header does not match any we know of")
 		w.WriteHeader(404)
 		return
 	}

@@ -1,12 +1,20 @@
 package proxy
 
-import "net/http"
+import (
+	"net"
+	"net/http"
+)
 
 var xForwardedHost = http.CanonicalHeaderKey("X-Forwarded-Host")
 
 func getHost(req *http.Request) string {
+	host := req.Host
 	if req.Header.Get(xForwardedHost) != "" {
-		return req.Header.Get(xForwardedHost)
+		host = req.Header.Get(xForwardedHost)
 	}
-	return req.Host
+	hostOnly, _, err := net.SplitHostPort(host)
+	if err != nil {
+		return host
+	}
+	return hostOnly
 }
