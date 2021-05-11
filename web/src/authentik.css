@@ -204,6 +204,9 @@ body {
     .pf-c-form__field-group-header-title-text {
         color: var(--ak-dark-foreground);
     }
+    .pf-c-form__field-group {
+        border-bottom: 0;
+    }
     /* inputs */
     optgroup, option {
         color: var(--ak-dark-foreground);
