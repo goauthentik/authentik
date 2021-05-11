@@ -10,4 +10,4 @@ class PgCustom(PgDumpConnector):
             env = kwargs.get("env", {})
             env["PGPASSWORD"] = self.settings["PASSWORD"]
             kwargs["env"] = env
-        return super(PgDumpConnector, self).run_command(*args, **kwargs)
+        return super().run_command(*args, **kwargs)
