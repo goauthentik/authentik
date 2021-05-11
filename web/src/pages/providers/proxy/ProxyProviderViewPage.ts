@@ -7,7 +7,6 @@ import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import AKGlobal from "../../../authentik.css";
 
@@ -21,7 +20,6 @@ import "./ProxyProviderForm";
 import { ProvidersApi, ProxyProvider } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";
-import { until } from "lit-html/directives/until";
 
 @customElement("ak-provider-proxy-view")
 export class ProxyProviderViewPage extends LitElement {
