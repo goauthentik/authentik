@@ -1,30 +1,25 @@
 import { FlowDesignationEnum, FlowsApi, AuthenticatorTOTPStage, StagesApi } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
 import { until } from "lit-html/directives/until";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-stage-authenticator-totp-form")
-export class AuthenticatorTOTPStageForm extends Form<AuthenticatorTOTPStage> {
+export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage, string> {
 
-    set stageUUID(value: string) {
-        new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorTotpRead({
-            stageUuid: value,
-        }).then(stage => {
-            this.stage = stage;
+    loadInstance(pk: string): Promise<AuthenticatorTOTPStage> {
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorTotpRead({
+            stageUuid: pk,
         });
     }
 
-    @property({attribute: false})
-    stage?: AuthenticatorTOTPStage;
-
     getSuccessMessage(): string {
-        if (this.stage) {
+        if (this.instance) {
             return t`Successfully updated stage.`;
         } else {
             return t`Successfully created stage.`;
@@ -32,9 +27,9 @@ export class AuthenticatorTOTPStageForm extends Form<AuthenticatorTOTPStage> {
     }
 
     send = (data: AuthenticatorTOTPStage): Promise<AuthenticatorTOTPStage> => {
-        if (this.stage) {
+        if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorTotpUpdate({
-                stageUuid: this.stage.pk || "",
+                stageUuid: this.instance.pk || "",
                 data: data
             });
         } else {
@@ -53,7 +48,7 @@ export class AuthenticatorTOTPStageForm extends Form<AuthenticatorTOTPStage> {
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.stage?.name || "")}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.name || "")}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header">
@@ -65,10 +60,10 @@ export class AuthenticatorTOTPStageForm extends Form<AuthenticatorTOTPStage> {
                         ?required=${true}
                         name="digits">
                         <select name="users" class="pf-c-form-control">
-                            <option value="6" ?selected=${this.stage?.digits === 6}>
+                            <option value="6" ?selected=${this.instance?.digits === 6}>
                                 ${t`6 digits, widely compatible`}
                             </option>
-                            <option value="8" ?selected=${this.stage?.digits === 8}>
+                            <option value="8" ?selected=${this.instance?.digits === 8}>
                                 ${t`8 digits, not compatible with apps like Google Authenticator`}
                             </option>
                         </select>
@@ -77,14 +72,14 @@ export class AuthenticatorTOTPStageForm extends Form<AuthenticatorTOTPStage> {
                         label=${t`Configuration flow`}
                         name="configureFlow">
                         <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.stage?.configureFlow === undefined}>---------</option>
+                            <option value="" ?selected=${this.instance?.configureFlow === undefined}>---------</option>
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
                                 designation: FlowDesignationEnum.StageConfiguration,
                             }).then(flows => {
                                 return flows.results.map(flow => {
-                                    let selected = this.stage?.configureFlow === flow.pk;
-                                    if (!this.stage?.pk && !this.stage?.configureFlow && flow.slug === "default-otp-time-configure") {
+                                    let selected = this.instance?.configureFlow === flow.pk;
+                                    if (!this.instance?.pk && !this.instance?.configureFlow && flow.slug === "default-otp-time-configure") {
                                         selected = true;
                                     }
                                     return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;

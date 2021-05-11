@@ -127,7 +127,7 @@ export class OAuth2ProviderViewPage extends LitElement {
                                         </span>
                                         <ak-provider-oauth2-form
                                             slot="form"
-                                            .providerUUID=${this.provider.pk || 0}>
+                                            .instancePk=${this.provider.pk || 0}>
                                         </ak-provider-oauth2-form>
                                         <button slot="trigger" class="pf-c-button pf-m-primary">
                                             ${t`Edit`}

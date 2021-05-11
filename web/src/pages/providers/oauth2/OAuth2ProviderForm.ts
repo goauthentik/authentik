@@ -3,7 +3,7 @@ import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { Form } from "../../../elements/forms/Form";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
@@ -11,25 +11,22 @@ import "../../../elements/forms/FormGroup";
 import { first, randomString } from "../../../utils";
 
 @customElement("ak-provider-oauth2-form")
-export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
+export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
 
-    set providerUUID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG).providersOauth2Read({
-            id: value,
+    loadInstance(pk: number): Promise<OAuth2Provider> {
+        return new ProvidersApi(DEFAULT_CONFIG).providersOauth2Read({
+            id: pk,
         }).then(provider => {
-            this.provider = provider;
             this.showClientSecret = provider.clientType === OAuth2ProviderClientTypeEnum.Confidential;
+            return provider;
         });
     }
-
-    @property({attribute: false})
-    provider?: OAuth2Provider;
 
     @property({type: Boolean})
     showClientSecret = true;
 
     getSuccessMessage(): string {
-        if (this.provider) {
+        if (this.instance) {
             return t`Successfully updated provider.`;
         } else {
             return t`Successfully created provider.`;
@@ -37,9 +34,9 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
     }
 
     send = (data: OAuth2Provider): Promise<OAuth2Provider> => {
-        if (this.provider) {
+        if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersOauth2Update({
-                id: this.provider.pk || 0,
+                id: this.instance.pk || 0,
                 data: data
             });
         } else {
@@ -55,7 +52,7 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.provider?.name)}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.name)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Authorization flow`}
@@ -67,7 +64,7 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                         designation: FlowDesignationEnum.Authorization,
                     }).then(flows => {
                         return flows.results.map(flow => {
-                            return html`<option value=${ifDefined(flow.pk)} ?selected=${this.provider?.authorizationFlow === flow.pk}>${flow.name} (${flow.slug})</option>`;
+                            return html`<option value=${ifDefined(flow.pk)} ?selected=${this.instance?.authorizationFlow === flow.pk}>${flow.name} (${flow.slug})</option>`;
                         });
                     }), html`<option>${t`Loading...`}</option>`)}
                 </select>
@@ -91,10 +88,10 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                                 this.showClientSecret = true;
                             }
                         }}>
-                            <option value=${OAuth2ProviderClientTypeEnum.Confidential} ?selected=${this.provider?.clientType === OAuth2ProviderClientTypeEnum.Confidential}>
+                            <option value=${OAuth2ProviderClientTypeEnum.Confidential} ?selected=${this.instance?.clientType === OAuth2ProviderClientTypeEnum.Confidential}>
                                 ${t`Confidential`}
                             </option>
-                            <option value=${OAuth2ProviderClientTypeEnum.Public} ?selected=${this.provider?.clientType === OAuth2ProviderClientTypeEnum.Public}>
+                            <option value=${OAuth2ProviderClientTypeEnum.Public} ?selected=${this.instance?.clientType === OAuth2ProviderClientTypeEnum.Public}>
                                 ${t`Public`}
                             </option>
                         </select>
@@ -104,19 +101,19 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                         label=${t`Client ID`}
                         ?required=${true}
                         name="clientId">
-                        <input type="text" value="${first(this.provider?.clientId, randomString(40))}" class="pf-c-form-control" required>
+                        <input type="text" value="${first(this.instance?.clientId, randomString(40))}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         ?hidden=${!this.showClientSecret}
                         label=${t`Client Secret`}
                         name="clientSecret">
-                        <input type="text" value="${first(this.provider?.clientSecret, randomString(128))}" class="pf-c-form-control">
+                        <input type="text" value="${first(this.instance?.clientSecret, randomString(128))}" class="pf-c-form-control">
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Redirect URIs/Origins`}
                         ?required=${true}
                         name="redirectUris">
-                        <textarea class="pf-c-form-control" required>${this.provider?.redirectUris}</textarea>
+                        <textarea class="pf-c-form-control" required>${this.instance?.redirectUris}</textarea>
                         <p class="pf-c-form__helper-text">
                             ${t`Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows.`}
                         </p>
@@ -133,7 +130,7 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                         label=${t`Access code validity`}
                         ?required=${true}
                         name="accessCodeValidity">
-                        <input type="text" value="${first(this.provider?.accessCodeValidity, "minutes=1")}" class="pf-c-form-control" required>
+                        <input type="text" value="${first(this.instance?.accessCodeValidity, "minutes=1")}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`Configure how long access codes are valid for.`}</p>
                         <p class="pf-c-form__helper-text">${t`(Format: hours=-1;minutes=-2;seconds=-3).`}</p>
                     </ak-form-element-horizontal>
@@ -141,7 +138,7 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                         label=${t`Token validity`}
                         ?required=${true}
                         name="tokenValidity">
-                        <input type="text" value="${first(this.provider?.tokenValidity, "minutes=10")}" class="pf-c-form-control" required>
+                        <input type="text" value="${first(this.instance?.tokenValidity, "minutes=10")}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`Configure how long refresh tokens and their id_tokens are valid for.`}</p>
                         <p class="pf-c-form__helper-text">${t`(Format: hours=-1;minutes=-2;seconds=-3).`}</p>
                     </ak-form-element-horizontal>
@@ -150,10 +147,10 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                         ?required=${true}
                         name="jwtAlg">
                         <select class="pf-c-form-control">
-                            <option value=${OAuth2ProviderJwtAlgEnum.Rs256} ?selected=${this.provider?.jwtAlg === OAuth2ProviderJwtAlgEnum.Rs256}>
+                            <option value=${OAuth2ProviderJwtAlgEnum.Rs256} ?selected=${this.instance?.jwtAlg === OAuth2ProviderJwtAlgEnum.Rs256}>
                                 ${t`RS256 (Asymmetric Encryption)`}
                             </option>
-                            <option value=${OAuth2ProviderJwtAlgEnum.Hs256} ?selected=${this.provider?.jwtAlg === OAuth2ProviderJwtAlgEnum.Hs256}>
+                            <option value=${OAuth2ProviderJwtAlgEnum.Hs256} ?selected=${this.instance?.jwtAlg === OAuth2ProviderJwtAlgEnum.Hs256}>
                                 ${t`HS256 (Symmetric Encryption)`}
                             </option>
                         </select>
@@ -168,10 +165,10 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                             }).then(scopes => {
                                 return scopes.results.map(scope => {
                                     let selected = false;
-                                    if (!this.provider?.propertyMappings) {
+                                    if (!this.instance?.propertyMappings) {
                                         selected = scope.managed?.startsWith("goauthentik.io/providers/oauth2/scope-") || false;
                                     } else {
-                                        selected = Array.from(this.provider?.propertyMappings).some(su => {
+                                        selected = Array.from(this.instance?.propertyMappings).some(su => {
                                             return su == scope.pk;
                                         });
                                     }
@@ -186,13 +183,13 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                         label=${t`RSA Key`}
                         name="rsaKey">
                         <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.provider?.rsaKey === undefined}>---------</option>
+                            <option value="" ?selected=${this.instance?.rsaKey === undefined}>---------</option>
                             ${until(new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
                                 ordering: "pk",
                                 hasKey: "true",
                             }).then(keys => {
                                 return keys.results.map(key => {
-                                    let selected = this.provider?.rsaKey === key.pk;
+                                    let selected = this.instance?.rsaKey === key.pk;
                                     if (keys.results.length === 1) {
                                         selected = true;
                                     }
@@ -207,16 +204,16 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                         ?required=${true}
                         name="subMode">
                         <select class="pf-c-form-control">
-                            <option value="${OAuth2ProviderSubModeEnum.HashedUserId}" ?selected=${this.provider?.subMode === OAuth2ProviderSubModeEnum.HashedUserId}>
+                            <option value="${OAuth2ProviderSubModeEnum.HashedUserId}" ?selected=${this.instance?.subMode === OAuth2ProviderSubModeEnum.HashedUserId}>
                                 ${t`Based on the Hashed User ID`}
                             </option>
-                            <option value="${OAuth2ProviderSubModeEnum.UserUsername}" ?selected=${this.provider?.subMode === OAuth2ProviderSubModeEnum.UserUsername}>
+                            <option value="${OAuth2ProviderSubModeEnum.UserUsername}" ?selected=${this.instance?.subMode === OAuth2ProviderSubModeEnum.UserUsername}>
                                 ${t`Based on the username`}
                             </option>
-                            <option value="${OAuth2ProviderSubModeEnum.UserEmail}" ?selected=${this.provider?.subMode === OAuth2ProviderSubModeEnum.UserEmail}>
+                            <option value="${OAuth2ProviderSubModeEnum.UserEmail}" ?selected=${this.instance?.subMode === OAuth2ProviderSubModeEnum.UserEmail}>
                                 ${t`Based on the User's Email. This is recommended over the UPN method.`}
                             </option>
-                            <option value="${OAuth2ProviderSubModeEnum.UserUpn}" ?selected=${this.provider?.subMode === OAuth2ProviderSubModeEnum.UserUpn}>
+                            <option value="${OAuth2ProviderSubModeEnum.UserUpn}" ?selected=${this.instance?.subMode === OAuth2ProviderSubModeEnum.UserUpn}>
                                 ${t`Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains.`}
                             </option>
                         </select>
@@ -226,7 +223,7 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="includeClaimsInIdToken">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.provider?.includeClaimsInIdToken, true)}>
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.includeClaimsInIdToken, true)}>
                             <label class="pf-c-check__label">
                                 ${t`Include claims in id_token`}
                             </label>
@@ -238,10 +235,10 @@ export class OAuth2ProviderFormPage extends Form<OAuth2Provider> {
                         ?required=${true}
                         name="issuerMode">
                         <select class="pf-c-form-control">
-                            <option value="${OAuth2ProviderIssuerModeEnum.PerProvider}" ?selected=${this.provider?.issuerMode === OAuth2ProviderIssuerModeEnum.PerProvider}>
+                            <option value="${OAuth2ProviderIssuerModeEnum.PerProvider}" ?selected=${this.instance?.issuerMode === OAuth2ProviderIssuerModeEnum.PerProvider}>
                                 ${t`Each provider has a different issuer, based on the application slug.`}
                             </option>
-                            <option value="${OAuth2ProviderIssuerModeEnum.Global}" ?selected=${this.provider?.issuerMode === OAuth2ProviderIssuerModeEnum.Global}>
+                            <option value="${OAuth2ProviderIssuerModeEnum.Global}" ?selected=${this.instance?.issuerMode === OAuth2ProviderIssuerModeEnum.Global}>
                                 ${t`Same identifier is used for all providers`}
                             </option>
                         </select>

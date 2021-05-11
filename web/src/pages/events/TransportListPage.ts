@@ -68,7 +68,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                 <span slot="header">
                     ${t`Update Notification Transport`}
                 </span>
-                <ak-event-transport-form slot="form" .transport=${item}>
+                <ak-event-transport-form slot="form" .instancePk=${item.pk}>
                 </ak-event-transport-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${t`Edit`}

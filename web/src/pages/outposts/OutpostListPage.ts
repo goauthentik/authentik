@@ -66,7 +66,7 @@ export class OutpostListPage extends TablePage<Outpost> {
                 <span slot="header">
                     ${t`Update Outpost`}
                 </span>
-                <ak-outpost-form slot="form" .outpost=${item}>
+                <ak-outpost-form slot="form" .instancePk=${item.pk}>
                 </ak-outpost-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${t`Edit`}

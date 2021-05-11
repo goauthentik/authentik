@@ -1,31 +1,26 @@
 import { AdminApi, EventMatcherPolicy, EventsApi, PoliciesApi } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
 import { until } from "lit-html/directives/until";
 import { first } from "../../../utils";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-policy-event-matcher-form")
-export class EventMatcherPolicyForm extends Form<EventMatcherPolicy> {
+export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string> {
 
-    set policyUUID(value: string) {
-        new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherRead({
-            policyUuid: value,
-        }).then(policy => {
-            this.policy = policy;
+    loadInstance(pk: string): Promise<EventMatcherPolicy> {
+        return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherRead({
+            policyUuid: pk,
         });
     }
 
-    @property({attribute: false})
-    policy?: EventMatcherPolicy;
-
     getSuccessMessage(): string {
-        if (this.policy) {
+        if (this.instance) {
             return t`Successfully updated policy.`;
         } else {
             return t`Successfully created policy.`;
@@ -33,9 +28,9 @@ export class EventMatcherPolicyForm extends Form<EventMatcherPolicy> {
     }
 
     send = (data: EventMatcherPolicy): Promise<EventMatcherPolicy> => {
-        if (this.policy) {
+        if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherUpdate({
-                policyUuid: this.policy.pk || "",
+                policyUuid: this.instance.pk || "",
                 data: data
             });
         } else {
@@ -54,11 +49,11 @@ export class EventMatcherPolicyForm extends Form<EventMatcherPolicy> {
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.policy?.name || "")}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.name || "")}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="executionLogging">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.policy?.executionLogging, false)}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.executionLogging, false)}>
                     <label class="pf-c-check__label">
                         ${t`Execution logging`}
                     </label>
@@ -76,10 +71,10 @@ export class EventMatcherPolicyForm extends Form<EventMatcherPolicy> {
                         label=${t`Action`}
                         name="action">
                         <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.policy?.action === undefined}>---------</option>
+                            <option value="" ?selected=${this.instance?.action === undefined}>---------</option>
                             ${until(new EventsApi(DEFAULT_CONFIG).eventsEventsActions().then(actions => {
                                 return actions.map(action => {
-                                    return html`<option value=${action.component} ?selected=${this.policy?.action === action.component}>${action.name}</option>`;
+                                    return html`<option value=${action.component} ?selected=${this.instance?.action === action.component}>${action.name}</option>`;
                                 });
                             }), html`<option>${t`Loading...`}</option>`)}
                         </select>
@@ -88,17 +83,17 @@ export class EventMatcherPolicyForm extends Form<EventMatcherPolicy> {
                     <ak-form-element-horizontal
                         label=${t`Client IP`}
                         name="clientIp">
-                        <input type="text" value="${ifDefined(this.policy?.clientIp || "")}" class="pf-c-form-control">
+                        <input type="text" value="${ifDefined(this.instance?.clientIp || "")}" class="pf-c-form-control">
                         <p class="pf-c-form__helper-text">${t`Matches Event's Client IP (strict matching, for network matching use an Expression Policy.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`App`}
                         name="app">
                         <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.policy?.app === undefined}>---------</option>
+                            <option value="" ?selected=${this.instance?.app === undefined}>---------</option>
                             ${until(new AdminApi(DEFAULT_CONFIG).adminAppsList().then(apps => {
                                 return apps.map(app => {
-                                    return html`<option value=${app.name} ?selected=${this.policy?.app === app.name}>${app.label}</option>`;
+                                    return html`<option value=${app.name} ?selected=${this.instance?.app === app.name}>${app.label}</option>`;
                                 });
                             }), html`<option>${t`Loading...`}</option>`)}
                         </select>

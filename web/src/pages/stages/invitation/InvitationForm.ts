@@ -1,22 +1,25 @@
 import { Invitation, StagesApi } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { Form } from "../../../elements/forms/Form";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/CodeMirror";
 import YAML from "yaml";
 import { first } from "../../../utils";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-invitation-form")
-export class InvitationForm extends Form<Invitation> {
+export class InvitationForm extends ModelForm<Invitation, string> {
 
-    @property({attribute: false})
-    invitation?: Invitation;
+    loadInstance(pk: string): Promise<Invitation> {
+        return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsRead({
+            inviteUuid: pk,
+        });
+    }
 
     getSuccessMessage(): string {
-        if (this.invitation) {
+        if (this.instance) {
             return t`Successfully updated invitation.`;
         } else {
             return t`Successfully created invitation.`;
@@ -24,9 +27,9 @@ export class InvitationForm extends Form<Invitation> {
     }
 
     send = (data: Invitation): Promise<Invitation> => {
-        if (this.invitation) {
+        if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsUpdate({
-                inviteUuid: this.invitation.pk || "",
+                inviteUuid: this.instance.pk || "",
                 data: data
             });
         } else {
@@ -47,13 +50,13 @@ export class InvitationForm extends Form<Invitation> {
             <ak-form-element-horizontal
                 label=${t`Attributes`}
                 name="fixedData">
-                <ak-codemirror mode="yaml" value="${YAML.stringify(first(this.invitation?.fixedData, {}))}">
+                <ak-codemirror mode="yaml" value="${YAML.stringify(first(this.instance?.fixedData, {}))}">
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">${t`Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="singleUse">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.invitation?.singleUse, true)}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.singleUse, true)}>
                     <label class="pf-c-check__label">
                         ${t`Single use`}
                     </label>

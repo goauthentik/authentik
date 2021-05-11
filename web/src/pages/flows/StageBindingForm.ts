@@ -3,23 +3,26 @@ import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { Form } from "../../elements/forms/Form";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
 import { first, groupBy } from "../../utils";
+import { ModelForm } from "../../elements/forms/ModelForm";
 
 @customElement("ak-stage-binding-form")
-export class StageBindingForm extends Form<FlowStageBinding> {
+export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
 
-    @property({attribute: false})
-    fsb?: FlowStageBinding;
+    loadInstance(pk: string): Promise<FlowStageBinding> {
+        return new FlowsApi(DEFAULT_CONFIG).flowsBindingsRead({
+            fsbUuid: pk,
+        });
+    }
 
     @property()
     targetPk?: string;
 
     getSuccessMessage(): string {
-        if (this.fsb) {
+        if (this.instance) {
             return t`Successfully updated binding.`;
         } else {
             return t`Successfully created binding.`;
@@ -27,9 +30,9 @@ export class StageBindingForm extends Form<FlowStageBinding> {
     }
 
     send = (data: FlowStageBinding): Promise<FlowStageBinding> => {
-        if (this.fsb) {
+        if (this.instance) {
             return new FlowsApi(DEFAULT_CONFIG).flowsBindingsUpdate({
-                fsbUuid: this.fsb.pk || "",
+                fsbUuid: this.instance.pk || "",
                 data: data
             });
         } else {
@@ -45,7 +48,7 @@ export class StageBindingForm extends Form<FlowStageBinding> {
             ${groupBy<Stage>(stages, (s => s.verboseName || "")).map(([group, stages]) => {
                 return html`<optgroup label=${group}>
                     ${stages.map(stage => {
-                        const selected = (this.fsb?.stage === stage.pk);
+                        const selected = (this.instance?.stage === stage.pk);
                         return html`<option ?selected=${selected} value=${ifDefined(stage.pk)}>${stage.name}</option>`;
                     })}
                 </optgroup>`;
@@ -54,8 +57,8 @@ export class StageBindingForm extends Form<FlowStageBinding> {
     }
 
     getOrder(): Promise<number> {
-        if (this.fsb) {
-            return Promise.resolve(this.fsb.order);
+        if (this.instance) {
+            return Promise.resolve(this.instance.order);
         }
         return new FlowsApi(DEFAULT_CONFIG).flowsBindingsList({
             target: this.targetPk || "",
@@ -69,9 +72,9 @@ export class StageBindingForm extends Form<FlowStageBinding> {
     }
 
     renderTarget(): TemplateResult {
-        if (this.fsb?.target || this.targetPk) {
+        if (this.instance?.target || this.targetPk) {
             return html`
-            <input required name="target" type="hidden" value=${ifDefined(this.fsb?.target || this.targetPk)}>
+            <input required name="target" type="hidden" value=${ifDefined(this.instance?.target || this.targetPk)}>
             `;
         }
         return html`<ak-form-element-horizontal
@@ -114,7 +117,7 @@ export class StageBindingForm extends Form<FlowStageBinding> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="evaluateOnPlan">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.fsb?.evaluateOnPlan, true)}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.evaluateOnPlan, true)}>
                     <label class="pf-c-check__label">
                         ${t`Evaluate on plan`}
                     </label>
@@ -125,7 +128,7 @@ export class StageBindingForm extends Form<FlowStageBinding> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="reEvaluatePolicies">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.fsb?.reEvaluatePolicies, false)}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.reEvaluatePolicies, false)}>
                     <label class="pf-c-check__label">
                         ${t`Re-evaluate policies`}
                     </label>
@@ -137,10 +140,10 @@ export class StageBindingForm extends Form<FlowStageBinding> {
                 ?required=${true}
                 name="policyEngineMode">
                 <select class="pf-c-form-control">
-                    <option value=${FlowStageBindingPolicyEngineModeEnum.Any} ?selected=${this.fsb?.policyEngineMode === FlowStageBindingPolicyEngineModeEnum.Any}>
+                    <option value=${FlowStageBindingPolicyEngineModeEnum.Any} ?selected=${this.instance?.policyEngineMode === FlowStageBindingPolicyEngineModeEnum.Any}>
                         ${t`ANY, any policy must match to include this stage access.`}
                     </option>
-                    <option value=${FlowStageBindingPolicyEngineModeEnum.All} ?selected=${this.fsb?.policyEngineMode === FlowStageBindingPolicyEngineModeEnum.All}>
+                    <option value=${FlowStageBindingPolicyEngineModeEnum.All} ?selected=${this.instance?.policyEngineMode === FlowStageBindingPolicyEngineModeEnum.All}>
                         ${t`ALL, all policies must match to include this stage access.`}
                     </option>
                 </select>

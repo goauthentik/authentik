@@ -1,30 +1,25 @@
 import { CryptoApi, DockerServiceConnection, OutpostsApi } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { Form } from "../../elements/forms/Form";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
 import { first } from "../../utils";
+import { ModelForm } from "../../elements/forms/ModelForm";
 
 @customElement("ak-service-connection-docker-form")
-export class ServiceConnectionDockerForm extends Form<DockerServiceConnection> {
+export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnection, string> {
 
-    set scUUID(value: string) {
-        new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerRead({
-            uuid: value,
-        }).then(sc => {
-            this.sc = sc;
+    loadInstance(pk: string): Promise<DockerServiceConnection> {
+        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerRead({
+            uuid: pk,
         });
     }
 
-    @property({attribute: false})
-    sc?: DockerServiceConnection;
-
     getSuccessMessage(): string {
-        if (this.sc) {
+        if (this.instance) {
             return t`Successfully updated service-connection.`;
         } else {
             return t`Successfully created service-connection.`;
@@ -32,9 +27,9 @@ export class ServiceConnectionDockerForm extends Form<DockerServiceConnection> {
     }
 
     send = (data: DockerServiceConnection): Promise<DockerServiceConnection> => {
-        if (this.sc) {
+        if (this.instance) {
             return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerUpdate({
-                uuid: this.sc.pk || "",
+                uuid: this.instance.pk || "",
                 data: data
             });
         } else {
@@ -50,11 +45,11 @@ export class ServiceConnectionDockerForm extends Form<DockerServiceConnection> {
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.sc?.name)}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.name)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="local">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.sc?.local, false)}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.local, false)}>
                     <label class="pf-c-check__label">
                         ${t`Local`}
                     </label>
@@ -65,19 +60,19 @@ export class ServiceConnectionDockerForm extends Form<DockerServiceConnection> {
                 label=${t`Docker URL`}
                 ?required=${true}
                 name="url">
-                <input type="text" value="${ifDefined(this.sc?.url)}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.url)}" class="pf-c-form-control" required>
                 <p class="pf-c-form__helper-text">${t`Can be in the format of 'unix://' when connecting to a local docker daemon, or 'https://:2376' when connecting to a remote system.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`TLS Verification Certificate`}
                 name="tlsVerification">
                 <select class="pf-c-form-control">
-                    <option value="" ?selected=${this.sc?.tlsVerification === undefined}>---------</option>
+                    <option value="" ?selected=${this.instance?.tlsVerification === undefined}>---------</option>
                     ${until(new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
                         ordering: "pk"
                     }).then(certs => {
                         return certs.results.map(cert => {
-                            return html`<option value=${ifDefined(cert.pk)} ?selected=${this.sc?.tlsVerification === cert.pk}>${cert.name}</option>`;
+                            return html`<option value=${ifDefined(cert.pk)} ?selected=${this.instance?.tlsVerification === cert.pk}>${cert.name}</option>`;
                         });
                     }), html`<option>${t`Loading...`}</option>`)}
                 </select>
@@ -87,12 +82,12 @@ export class ServiceConnectionDockerForm extends Form<DockerServiceConnection> {
                 label=${t`TLS Authentication Certificate`}
                 name="tlsAuthentication">
                 <select class="pf-c-form-control">
-                    <option value="" ?selected=${this.sc?.tlsAuthentication === undefined}>---------</option>
+                    <option value="" ?selected=${this.instance?.tlsAuthentication === undefined}>---------</option>
                     ${until(new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
                         ordering: "pk"
                     }).then(certs => {
                         return certs.results.map(cert => {
-                            return html`<option value=${ifDefined(cert.pk)} ?selected=${this.sc?.tlsAuthentication === cert.pk}>${cert.name}</option>`;
+                            return html`<option value=${ifDefined(cert.pk)} ?selected=${this.instance?.tlsAuthentication === cert.pk}>${cert.name}</option>`;
                         });
                     }), html`<option>${t`Loading...`}</option>`)}
                 </select>

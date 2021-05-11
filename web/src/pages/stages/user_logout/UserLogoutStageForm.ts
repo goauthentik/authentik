@@ -1,28 +1,23 @@
 import { UserLogoutStage, StagesApi } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-stage-user-logout-form")
-export class UserLogoutStageForm extends Form<UserLogoutStage> {
+export class UserLogoutStageForm extends ModelForm<UserLogoutStage, string> {
 
-    set stageUUID(value: string) {
-        new StagesApi(DEFAULT_CONFIG).stagesUserLogoutRead({
-            stageUuid: value,
-        }).then(stage => {
-            this.stage = stage;
+    loadInstance(pk: string): Promise<UserLogoutStage> {
+        return new StagesApi(DEFAULT_CONFIG).stagesUserLogoutRead({
+            stageUuid: pk,
         });
     }
 
-    @property({attribute: false})
-    stage?: UserLogoutStage;
-
     getSuccessMessage(): string {
-        if (this.stage) {
+        if (this.instance) {
             return t`Successfully updated stage.`;
         } else {
             return t`Successfully created stage.`;
@@ -30,9 +25,9 @@ export class UserLogoutStageForm extends Form<UserLogoutStage> {
     }
 
     send = (data: UserLogoutStage): Promise<UserLogoutStage> => {
-        if (this.stage) {
+        if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesUserLogoutUpdate({
-                stageUuid: this.stage.pk || "",
+                stageUuid: this.instance.pk || "",
                 data: data
             });
         } else {
@@ -51,7 +46,7 @@ export class UserLogoutStageForm extends Form<UserLogoutStage> {
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.stage?.name || "")}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.name || "")}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
         </form>`;
     }

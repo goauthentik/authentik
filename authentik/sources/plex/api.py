@@ -34,7 +34,6 @@ class PlexSourceSerializer(SourceSerializer):
             "allow_friends",
             "plex_token",
         ]
-        extra_kwargs = {"plex_token": {"write_only": True}}
 
 
 class PlexTokenRedeemSerializer(PassiveSerializer):

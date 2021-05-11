@@ -1,31 +1,26 @@
 import { LDAPSource, SourcesApi, PropertymappingsApi } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { Form } from "../../../elements/forms/Form";
 import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
 import { first } from "../../../utils";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-source-ldap-form")
-export class LDAPSourceForm extends Form<LDAPSource> {
+export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
 
-    set sourceSlug(value: string) {
-        new SourcesApi(DEFAULT_CONFIG).sourcesLdapRead({
-            slug: value,
-        }).then(source => {
-            this.source = source;
+    loadInstance(pk: string): Promise<LDAPSource> {
+        return new SourcesApi(DEFAULT_CONFIG).sourcesLdapRead({
+            slug: pk,
         });
     }
 
-    @property({attribute: false})
-    source?: LDAPSource;
-
     getSuccessMessage(): string {
-        if (this.source) {
+        if (this.instance) {
             return t`Successfully updated source.`;
         } else {
             return t`Successfully created source.`;
@@ -33,9 +28,9 @@ export class LDAPSourceForm extends Form<LDAPSource> {
     }
 
     send = (data: LDAPSource): Promise<LDAPSource> => {
-        if (this.source) {
+        if (this.instance) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesLdapPartialUpdate({
-                slug: this.source.slug,
+                slug: this.instance.slug,
                 data: data
             });
         } else {
@@ -51,17 +46,17 @@ export class LDAPSourceForm extends Form<LDAPSource> {
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.source?.name)}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.name)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Slug`}
                 ?required=${true}
                 name="slug">
-                <input type="text" value="${ifDefined(this.source?.slug)}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.slug)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="enabled">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.source?.enabled, true)}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.enabled, true)}>
                     <label class="pf-c-check__label">
                         ${t`Enabled`}
                     </label>
@@ -69,7 +64,7 @@ export class LDAPSourceForm extends Form<LDAPSource> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="syncUsers">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.source?.syncUsers, true)}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.syncUsers, true)}>
                     <label class="pf-c-check__label">
                         ${t`Sync users`}
                     </label>
@@ -77,7 +72,7 @@ export class LDAPSourceForm extends Form<LDAPSource> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="syncUsersPassword">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.source?.syncUsersPassword, true)}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.syncUsersPassword, true)}>
                     <label class="pf-c-check__label">
                         ${t`User password writeback`}
                     </label>
@@ -86,7 +81,7 @@ export class LDAPSourceForm extends Form<LDAPSource> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="syncGroups">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.source?.syncGroups, true)}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.syncGroups, true)}>
                     <label class="pf-c-check__label">
                         ${t`Sync groups`}
                     </label>
@@ -101,11 +96,11 @@ export class LDAPSourceForm extends Form<LDAPSource> {
                         label=${t`Server URI`}
                         ?required=${true}
                         name="serverUri">
-                        <input type="text" value="${ifDefined(this.source?.serverUri)}" class="pf-c-form-control" required>
+                        <input type="text" value="${ifDefined(this.instance?.serverUri)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="startTls">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.source?.startTls, true)}>
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.startTls, true)}>
                             <label class="pf-c-check__label">
                                 ${t`Enable StartTLS`}
                             </label>
@@ -115,20 +110,20 @@ export class LDAPSourceForm extends Form<LDAPSource> {
                         label=${t`Bind CN`}
                         ?required=${true}
                         name="bindCn">
-                        <input type="text" value="${ifDefined(this.source?.bindCn)}" class="pf-c-form-control" required>
+                        <input type="text" value="${ifDefined(this.instance?.bindCn)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Bind Password`}
                         ?required=${true}
-                        ?writeOnly=${this.source !== undefined}
+                        ?writeOnly=${this.instance !== undefined}
                         name="bindPassword">
-                        <input type="text" value="${ifDefined(this.source?.bindPassword)}" class="pf-c-form-control" required>
+                        <input type="text" value="${ifDefined(this.instance?.bindPassword)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Base DN`}
                         ?required=${true}
                         name="baseDn">
-                        <input type="text" value="${ifDefined(this.source?.baseDn)}" class="pf-c-form-control" required>
+                        <input type="text" value="${ifDefined(this.instance?.baseDn)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
@@ -147,10 +142,10 @@ export class LDAPSourceForm extends Form<LDAPSource> {
                             }).then(mappings => {
                                 return mappings.results.map(mapping => {
                                     let selected = false;
-                                    if (!this.source?.propertyMappings) {
+                                    if (!this.instance?.propertyMappings) {
                                         selected = mapping.managed?.startsWith("goauthentik.io/sources/ldap/default") || mapping.managed?.startsWith("goauthentik.io/sources/ldap/ms") || false;
                                     } else {
-                                        selected = Array.from(this.source?.propertyMappings).some(su => {
+                                        selected = Array.from(this.instance?.propertyMappings).some(su => {
                                             return su == mapping.pk;
                                         });
                                     }
@@ -171,10 +166,10 @@ export class LDAPSourceForm extends Form<LDAPSource> {
                             }).then(mappings => {
                                 return mappings.results.map(mapping => {
                                     let selected = false;
-                                    if (!this.source?.propertyMappingsGroup) {
+                                    if (!this.instance?.propertyMappingsGroup) {
                                         selected = mapping.managed === "goauthentik.io/sources/ldap/default-name";
                                     } else {
-                                        selected = Array.from(this.source?.propertyMappingsGroup).some(su => {
+                                        selected = Array.from(this.instance?.propertyMappingsGroup).some(su => {
                                             return su == mapping.pk;
                                         });
                                     }
@@ -188,41 +183,41 @@ export class LDAPSourceForm extends Form<LDAPSource> {
                     <ak-form-element-horizontal
                         label=${t`Addition User DN`}
                         name="additionalUserDn">
-                        <input type="text" value="${ifDefined(this.source?.additionalUserDn)}" class="pf-c-form-control">
+                        <input type="text" value="${ifDefined(this.instance?.additionalUserDn)}" class="pf-c-form-control">
                         <p class="pf-c-form__helper-text">${t`Additional user DN, prepended to the Base DN.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Addition Group DN`}
                         name="additionalGroupDn">
-                        <input type="text" value="${ifDefined(this.source?.additionalGroupDn)}" class="pf-c-form-control">
+                        <input type="text" value="${ifDefined(this.instance?.additionalGroupDn)}" class="pf-c-form-control">
                         <p class="pf-c-form__helper-text">${t`Additional group DN, prepended to the Base DN.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`User object filter`}
                         ?required=${true}
                         name="userObjectFilter">
-                        <input type="text" value="${this.source?.userObjectFilter || "(objectClass=person)"}" class="pf-c-form-control" required>
+                        <input type="text" value="${this.instance?.userObjectFilter || "(objectClass=person)"}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`Consider Objects matching this filter to be Users.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Group object filter`}
                         ?required=${true}
                         name="groupObjectFilter">
-                        <input type="text" value="${this.source?.groupObjectFilter || "(objectClass=group)"}" class="pf-c-form-control" required>
+                        <input type="text" value="${this.instance?.groupObjectFilter || "(objectClass=group)"}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`Consider Objects matching this filter to be Groups.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Group membership field`}
                         ?required=${true}
                         name="groupMembershipField">
-                        <input type="text" value="${this.source?.groupMembershipField || "member"}" class="pf-c-form-control" required>
+                        <input type="text" value="${this.instance?.groupMembershipField || "member"}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`Field which contains members of a group.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Object uniqueness field`}
                         ?required=${true}
                         name="objectUniquenessField">
-                        <input type="text" value="${this.source?.objectUniquenessField || "objectSid"}" class="pf-c-form-control" required>
+                        <input type="text" value="${this.instance?.objectUniquenessField || "objectSid"}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`Field which contains a unique Identifier.`}</p>
                     </ak-form-element-horizontal>
                 </div>

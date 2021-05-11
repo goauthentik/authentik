@@ -122,7 +122,7 @@ export class OAuthSourceViewPage extends LitElement {
                                         </span>
                                         <ak-source-oauth-form
                                             slot="form"
-                                            .sourceSlug=${this.source.slug}>
+                                            .instancePk=${this.source.slug}>
                                         </ak-source-oauth-form>
                                         <button slot="trigger" class="pf-c-button pf-m-primary">
                                             ${t`Edit`}

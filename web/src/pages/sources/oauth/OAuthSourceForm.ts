@@ -3,31 +3,28 @@ import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { Form } from "../../../elements/forms/Form";
 import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
 import { first } from "../../../utils";
 import { AppURLManager } from "../../../api/legacy";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-source-oauth-form")
-export class OAuthSourceForm extends Form<OAuthSource> {
+export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
 
-    set sourceSlug(value: string) {
-        new SourcesApi(DEFAULT_CONFIG).sourcesOauthRead({
-            slug: value,
+    loadInstance(pk: string): Promise<OAuthSource> {
+        return new SourcesApi(DEFAULT_CONFIG).sourcesOauthRead({
+            slug: pk,
         }).then(source => {
-            this.source = source;
             this.showUrlOptions = first(source.type?.urlsCustomizable, false);
+            return source;
         });
     }
 
     @property()
     modelName?: string;
-
-    @property({attribute: false})
-    source?: OAuthSource;
 
     @property({type: Boolean})
     showUrlOptions = false;
@@ -36,7 +33,7 @@ export class OAuthSourceForm extends Form<OAuthSource> {
     showRequestTokenURL = false;
 
     getSuccessMessage(): string {
-        if (this.source) {
+        if (this.instance) {
             return t`Successfully updated source.`;
         } else {
             return t`Successfully created source.`;
@@ -44,9 +41,9 @@ export class OAuthSourceForm extends Form<OAuthSource> {
     }
 
     send = (data: OAuthSource): Promise<OAuthSource> => {
-        if (this.source) {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesOauthUpdate({
-                slug: this.source.slug,
+        if (this.instance) {
+            return new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
+                slug: this.instance.slug,
                 data: data
             });
         } else {
@@ -70,27 +67,27 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                         label=${t`Authorization URL`}
                         ?required=${true}
                         name="authorizationUrl">
-                        <input type="text" value="${first(this.source?.authorizationUrl, "")}" class="pf-c-form-control" required>
+                        <input type="text" value="${first(this.instance?.authorizationUrl, "")}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`URL the user is redirect to to consent the authorization.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Access token URL`}
                         ?required=${true}
                         name="accessTokenUrl">
-                        <input type="text" value="${first(this.source?.accessTokenUrl, "")}" class="pf-c-form-control" required>
+                        <input type="text" value="${first(this.instance?.accessTokenUrl, "")}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`URL used by authentik to retrieve tokens.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Profile URL`}
                         ?required=${true}
                         name="profileUrl">
-                        <input type="text" value="${first(this.source?.profileUrl, "")}" class="pf-c-form-control" required>
+                        <input type="text" value="${first(this.instance?.profileUrl, "")}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`URL used by authentik to get user information.`}</p>
                     </ak-form-element-horizontal>
                     ${this.showRequestTokenURL ? html`<ak-form-element-horizontal
                         label=${t`Request token URL`}
                         name="requestTokenUrl">
-                        <input type="text" value="${first(this.source?.requestTokenUrl, "")}" class="pf-c-form-control">
+                        <input type="text" value="${first(this.instance?.requestTokenUrl, "")}" class="pf-c-form-control">
                         <p class="pf-c-form__helper-text">${t`URL used to request the initial token. This URL is only required for OAuth 1.`}</p>
                     </ak-form-element-horizontal>
                     ` : html``}
@@ -112,13 +109,13 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.source?.name)}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.name)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Slug`}
                 ?required=${true}
                 name="slug">
-                <input type="text" value="${ifDefined(this.source?.slug)}" class="pf-c-form-control" required @input=${(ev: Event) => {
+                <input type="text" value="${ifDefined(this.instance?.slug)}" class="pf-c-form-control" required @input=${(ev: Event) => {
                     const current = (ev.target as HTMLInputElement).value;
                     const label = this.shadowRoot?.querySelector<HTMLSpanElement>("#callback-url");
                     if (!label) return;
@@ -126,12 +123,12 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                 }}>
                 <p class="pf-c-form__helper-text">
                     ${t`Use this redirect URL:`}
-                    <span id="callback-url">${this.getRedirectURI(this.source?.slug)}</span>
+                    <span id="callback-url">${this.getRedirectURI(this.instance?.slug)}</span>
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="enabled">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.source?.enabled, true)}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.enabled, true)}>
                     <label class="pf-c-check__label">
                         ${t`Enabled`}
                     </label>
@@ -142,19 +139,19 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                 ?required=${true}
                 name="userMatchingMode">
                 <select class="pf-c-form-control">
-                    <option value=${OAuthSourceUserMatchingModeEnum.Identifier} ?selected=${this.source?.userMatchingMode === OAuthSourceUserMatchingModeEnum.Identifier}>
+                    <option value=${OAuthSourceUserMatchingModeEnum.Identifier} ?selected=${this.instance?.userMatchingMode === OAuthSourceUserMatchingModeEnum.Identifier}>
                         ${t`Link users on unique identifier`}
                     </option>
-                    <option value=${OAuthSourceUserMatchingModeEnum.UsernameLink} ?selected=${this.source?.userMatchingMode === OAuthSourceUserMatchingModeEnum.UsernameLink}>
+                    <option value=${OAuthSourceUserMatchingModeEnum.UsernameLink} ?selected=${this.instance?.userMatchingMode === OAuthSourceUserMatchingModeEnum.UsernameLink}>
                         ${t`Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses`}
                     </option>
-                    <option value=${OAuthSourceUserMatchingModeEnum.UsernameDeny} ?selected=${this.source?.userMatchingMode === OAuthSourceUserMatchingModeEnum.UsernameDeny}>
+                    <option value=${OAuthSourceUserMatchingModeEnum.UsernameDeny} ?selected=${this.instance?.userMatchingMode === OAuthSourceUserMatchingModeEnum.UsernameDeny}>
                         ${t`Use the user's email address, but deny enrollment when the email address already exists.`}
                     </option>
-                    <option value=${OAuthSourceUserMatchingModeEnum.EmailLink} ?selected=${this.source?.userMatchingMode === OAuthSourceUserMatchingModeEnum.EmailLink}>
+                    <option value=${OAuthSourceUserMatchingModeEnum.EmailLink} ?selected=${this.instance?.userMatchingMode === OAuthSourceUserMatchingModeEnum.EmailLink}>
                         ${t`Link to a user with identical username address. Can have security implications when a username is used with another source.`}
                     </option>
-                    <option value=${OAuthSourceUserMatchingModeEnum.EmailDeny} ?selected=${this.source?.userMatchingMode === OAuthSourceUserMatchingModeEnum.EmailDeny}>
+                    <option value=${OAuthSourceUserMatchingModeEnum.EmailDeny} ?selected=${this.instance?.userMatchingMode === OAuthSourceUserMatchingModeEnum.EmailDeny}>
                         ${t`Use the user's username, but deny enrollment when the username already exists.`}
                     </option>
                 </select>
@@ -169,14 +166,14 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                         label=${t`Consumer key`}
                         ?required=${true}
                         name="consumerKey">
-                        <input type="text" value="${ifDefined(this.source?.consumerKey)}" class="pf-c-form-control" required>
+                        <input type="text" value="${ifDefined(this.instance?.consumerKey)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Consumer secret`}
                         ?required=${true}
-                        ?writeOnly=${this.source !== undefined}
+                        ?writeOnly=${this.instance !== undefined}
                         name="consumerSecret">
-                        <input type="text" value="${ifDefined(this.source?.consumerSecret)}" class="pf-c-form-control" required>
+                        <input type="text" value="${ifDefined(this.instance?.consumerSecret)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Provider type`}
@@ -194,15 +191,15 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                             } else {
                                 this.showRequestTokenURL = false;
                             }
-                            if (!this.source) {
-                                this.source = {} as OAuthSource;
+                            if (!this.instance) {
+                                this.instance = {} as OAuthSource;
                             }
-                            this.source.providerType = selected.value;
+                            this.instance.providerType = selected.value;
                         }}>
                             ${until(new SourcesApi(DEFAULT_CONFIG).sourcesOauthSourceTypes().then(types => {
                                 return types.map(type => {
-                                    let selected = this.source?.providerType === type.slug;
-                                    if (!this.source?.pk) {
+                                    let selected = this.instance?.providerType === type.slug;
+                                    if (!this.instance?.pk) {
                                         if (this.modelName?.replace("oauthsource", "") === type.slug) {
                                             selected = true;
                                         }
@@ -236,8 +233,8 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                                 designation: FlowDesignationEnum.Authentication,
                             }).then(flows => {
                                 return flows.results.map(flow => {
-                                    let selected = this.source?.authenticationFlow === flow.pk;
-                                    if (!this.source?.pk && !this.source?.authenticationFlow && flow.slug === "default-source-authentication") {
+                                    let selected = this.instance?.authenticationFlow === flow.pk;
+                                    if (!this.instance?.pk && !this.instance?.authenticationFlow && flow.slug === "default-source-authentication") {
                                         selected = true;
                                     }
                                     return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
@@ -256,8 +253,8 @@ export class OAuthSourceForm extends Form<OAuthSource> {
                                 designation: FlowDesignationEnum.Enrollment,
                             }).then(flows => {
                                 return flows.results.map(flow => {
-                                    let selected = this.source?.enrollmentFlow === flow.pk;
-                                    if (!this.source?.pk && !this.source?.enrollmentFlow && flow.slug === "default-source-enrollment") {
+                                    let selected = this.instance?.enrollmentFlow === flow.pk;
+                                    if (!this.instance?.pk && !this.instance?.enrollmentFlow && flow.slug === "default-source-enrollment") {
                                         selected = true;
                                     }
                                     return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;

@@ -82,7 +82,7 @@ export class PlexSourceViewPage extends LitElement {
                                         </span>
                                         <ak-source-plex-form
                                             slot="form"
-                                            .sourceSlug=${this.source.slug}>
+                                            .instancePk=${this.source.slug}>
                                         </ak-source-plex-form>
                                         <button slot="trigger" class="pf-c-button pf-m-primary">
                                             ${t`Edit`}

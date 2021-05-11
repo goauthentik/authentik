@@ -82,7 +82,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                 <ak-proxy-form
                     slot="form"
                     .args=${{
-                        "scUUID": item.pk
+                        "instancePk": item.pk
                     }}
                     type=${ifDefined(item.component)}>
                 </ak-proxy-form>

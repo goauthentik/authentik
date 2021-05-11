@@ -1,30 +1,25 @@
 import { DummyPolicy, PoliciesApi } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
 import { first } from "../../../utils";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-policy-dummy-form")
-export class DummyPolicyForm extends Form<DummyPolicy> {
+export class DummyPolicyForm extends ModelForm<DummyPolicy, string> {
 
-    set policyUUID(value: string) {
-        new PoliciesApi(DEFAULT_CONFIG).policiesDummyRead({
-            policyUuid: value,
-        }).then(policy => {
-            this.policy = policy;
+    loadInstance(pk: string): Promise<DummyPolicy> {
+        return new PoliciesApi(DEFAULT_CONFIG).policiesDummyRead({
+            policyUuid: pk,
         });
     }
 
-    @property({attribute: false})
-    policy?: DummyPolicy;
-
     getSuccessMessage(): string {
-        if (this.policy) {
+        if (this.instance) {
             return t`Successfully updated policy.`;
         } else {
             return t`Successfully created policy.`;
@@ -32,9 +27,9 @@ export class DummyPolicyForm extends Form<DummyPolicy> {
     }
 
     send = (data: DummyPolicy): Promise<DummyPolicy> => {
-        if (this.policy) {
+        if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesDummyUpdate({
-                policyUuid: this.policy.pk || "",
+                policyUuid: this.instance.pk || "",
                 data: data
             });
         } else {
@@ -53,11 +48,11 @@ export class DummyPolicyForm extends Form<DummyPolicy> {
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.policy?.name || "")}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.name || "")}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="executionLogging">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.policy?.executionLogging, false)}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.executionLogging, false)}>
                     <label class="pf-c-check__label">
                         ${t`Execution logging`}
                     </label>
@@ -73,7 +68,7 @@ export class DummyPolicyForm extends Form<DummyPolicy> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="result">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.policy?.result, false)}>
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.result, false)}>
                             <label class="pf-c-check__label">
                                 ${t`Pass policy?`}
                             </label>
@@ -83,14 +78,14 @@ export class DummyPolicyForm extends Form<DummyPolicy> {
                         label=${t`Wait (min)`}
                         ?required=${true}
                         name="waitMin">
-                        <input type="number" value="${first(this.policy?.waitMin, 1)}" class="pf-c-form-control" required>
+                        <input type="number" value="${first(this.instance?.waitMin, 1)}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`The policy takes a random time to execute. This controls the minimum time it will take.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Wait (max)`}
                         ?required=${true}
                         name="waitMax">
-                        <input type="number" value="${first(this.policy?.waitMax, 5)}" class="pf-c-form-control" required>
+                        <input type="number" value="${first(this.instance?.waitMax, 5)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

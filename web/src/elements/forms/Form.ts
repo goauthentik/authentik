@@ -15,6 +15,7 @@ import { MessageLevel } from "../messages/Message";
 import { IronFormElement } from "@polymer/iron-form/iron-form";
 import { camelToSnake, convertToSlug } from "../../utils";
 import { ValidationError } from "authentik-api/src";
+import { EVENT_REFRESH } from "../../constants";
 
 export class APIError extends Error {
 
@@ -140,6 +141,12 @@ export class Form<T> extends LitElement {
                 level: MessageLevel.success,
                 message: this.getSuccessMessage()
             });
+            this.dispatchEvent(
+                new CustomEvent(EVENT_REFRESH, {
+                    bubbles: true,
+                    composed: true,
+                })
+            );
             return r;
         }).catch((ex: Response) => {
             if (ex.status > 399 && ex.status < 500) {

@@ -68,7 +68,7 @@ export class FlowListPage extends TablePage<Flow> {
                 <span slot="header">
                     ${t`Update Flow`}
                 </span>
-                <ak-flow-form slot="form" .flow=${item}>
+                <ak-flow-form slot="form" .instancePk=${item.pk}>
                 </ak-flow-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${t`Edit`}

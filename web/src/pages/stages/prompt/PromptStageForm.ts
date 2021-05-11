@@ -1,32 +1,27 @@
 import { PoliciesApi, PromptStage, StagesApi } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/ModalForm";
 import "./PromptForm";
 import { until } from "lit-html/directives/until";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-stage-prompt-form")
-export class PromptStageForm extends Form<PromptStage> {
+export class PromptStageForm extends ModelForm<PromptStage, string> {
 
-    set stageUUID(value: string) {
-        new StagesApi(DEFAULT_CONFIG).stagesPromptStagesRead({
-            stageUuid: value,
-        }).then(stage => {
-            this.stage = stage;
+    loadInstance(pk: string): Promise<PromptStage> {
+        return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesRead({
+            stageUuid: pk,
         });
     }
 
-    @property({attribute: false})
-    stage?: PromptStage;
-
     getSuccessMessage(): string {
-        if (this.stage) {
+        if (this.instance) {
             return t`Successfully updated stage.`;
         } else {
             return t`Successfully created stage.`;
@@ -34,9 +29,9 @@ export class PromptStageForm extends Form<PromptStage> {
     }
 
     send = (data: PromptStage): Promise<PromptStage> => {
-        if (this.stage) {
+        if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesUpdate({
-                stageUuid: this.stage.pk || "",
+                stageUuid: this.instance.pk || "",
                 data: data
             });
         } else {
@@ -55,7 +50,7 @@ export class PromptStageForm extends Form<PromptStage> {
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.stage?.name || "")}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.name || "")}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header">
@@ -71,7 +66,7 @@ export class PromptStageForm extends Form<PromptStage> {
                                 ordering: "field_name"
                             }).then(prompts => {
                                 return prompts.results.map(prompt => {
-                                    const selected = Array.from(this.stage?.fields || []).some(su => {
+                                    const selected = Array.from(this.instance?.fields || []).some(su => {
                                         return su == prompt.pk;
                                     });
                                     return html`<option value=${ifDefined(prompt.pk)} ?selected=${selected}>
@@ -103,7 +98,7 @@ export class PromptStageForm extends Form<PromptStage> {
                                 ordering: "name"
                             }).then(policies => {
                                 return policies.results.map(policy => {
-                                    const selected = Array.from(this.stage?.validationPolicies || []).some(su => {
+                                    const selected = Array.from(this.instance?.validationPolicies || []).some(su => {
                                         return su == policy.pk;
                                     });
                                     return html`<option value=${ifDefined(policy.pk)} ?selected=${selected}>

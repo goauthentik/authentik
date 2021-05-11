@@ -88,7 +88,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 <span slot="header">
                     ${t`Update Group`}
                 </span>
-                <ak-group-form slot="form" .group=${item.groupObj}>
+                <ak-group-form slot="form" .instancePk=${item.groupObj?.pk}>
                 </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${t`Edit Group`}
@@ -102,7 +102,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 <span slot="header">
                     ${t`Update User`}
                 </span>
-                <ak-user-form slot="form" .user=${item.userObj}>
+                <ak-user-form slot="form" .instancePk=${item.userObj?.pk}>
                 </ak-user-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${t`Edit User`}
@@ -128,7 +128,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 <span slot="header">
                     ${t`Update Binding`}
                 </span>
-                <ak-policy-binding-form slot="form" .binding=${item} targetPk=${ifDefined(this.target)} ?policyOnly=${this.policyOnly}>
+                <ak-policy-binding-form slot="form" .instancePk=${item.pk} targetPk=${ifDefined(this.target)} ?policyOnly=${this.policyOnly}>
                 </ak-policy-binding-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${t`Edit Binding`}

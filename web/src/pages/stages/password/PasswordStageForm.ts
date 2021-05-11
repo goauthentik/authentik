@@ -1,31 +1,26 @@
 import { FlowDesignationEnum, FlowsApi, PasswordStage, PasswordStageBackendsEnum, StagesApi } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
 import { until } from "lit-html/directives/until";
 import { first } from "../../../utils";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-stage-password-form")
-export class PasswordStageForm extends Form<PasswordStage> {
+export class PasswordStageForm extends ModelForm<PasswordStage, string> {
 
-    set stageUUID(value: string) {
-        new StagesApi(DEFAULT_CONFIG).stagesPasswordRead({
-            stageUuid: value,
-        }).then(stage => {
-            this.stage = stage;
+    loadInstance(pk: string): Promise<PasswordStage> {
+        return new StagesApi(DEFAULT_CONFIG).stagesPasswordRead({
+            stageUuid: pk,
         });
     }
 
-    @property({attribute: false})
-    stage?: PasswordStage;
-
     getSuccessMessage(): string {
-        if (this.stage) {
+        if (this.instance) {
             return t`Successfully updated stage.`;
         } else {
             return t`Successfully created stage.`;
@@ -33,9 +28,9 @@ export class PasswordStageForm extends Form<PasswordStage> {
     }
 
     send = (data: PasswordStage): Promise<PasswordStage> => {
-        if (this.stage) {
+        if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesPasswordUpdate({
-                stageUuid: this.stage.pk || "",
+                stageUuid: this.instance.pk || "",
                 data: data
             });
         } else {
@@ -46,7 +41,7 @@ export class PasswordStageForm extends Form<PasswordStage> {
     };
 
     isBackendSelected(field: PasswordStageBackendsEnum): boolean {
-        return (this.stage?.backends || []).filter(isField => {
+        return (this.instance?.backends || []).filter(isField => {
             return field === isField;
         }).length > 0;
     }
@@ -60,7 +55,7 @@ export class PasswordStageForm extends Form<PasswordStage> {
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.stage?.name || "")}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.name || "")}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header">
@@ -87,14 +82,14 @@ export class PasswordStageForm extends Form<PasswordStage> {
                         ?required=${true}
                         name="configureFlow">
                         <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.stage?.configureFlow === undefined}>---------</option>
+                            <option value="" ?selected=${this.instance?.configureFlow === undefined}>---------</option>
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
                                 designation: FlowDesignationEnum.StageConfiguration,
                             }).then(flows => {
                                 return flows.results.map(flow => {
-                                    let selected = this.stage?.configureFlow === flow.pk;
-                                    if (!this.stage?.pk && !this.stage?.configureFlow && flow.slug === "default-password-change") {
+                                    let selected = this.instance?.configureFlow === flow.pk;
+                                    if (!this.instance?.pk && !this.instance?.configureFlow && flow.slug === "default-password-change") {
                                         selected = true;
                                     }
                                     return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
@@ -107,7 +102,7 @@ export class PasswordStageForm extends Form<PasswordStage> {
                         label=${t`Failed attempts before cancel`}
                         ?required=${true}
                         name="failedAttemptsBeforeCancel">
-                        <input type="number" value="${first(this.stage?.failedAttemptsBeforeCancel, 5)}" class="pf-c-form-control" required>
+                        <input type="number" value="${first(this.instance?.failedAttemptsBeforeCancel, 5)}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.`}</p>
                     </ak-form-element-horizontal>
                 </div>
