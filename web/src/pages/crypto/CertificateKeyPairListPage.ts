@@ -112,6 +112,23 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                             <div class="pf-c-description-list__text">${item.certSubject}</div>
                         </dd>
                     </div>
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${t`Download`}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">
+                                <a class="pf-c-button pf-m-secondary" target="_blank"
+                                    href="/api/v2beta/crypto/certificatekeypairs/${item.pk}/view_certificate/?download">
+                                    ${t`Download Certificate`}
+                                </a>
+                                ${item.privateKeyAvailable ? html`<a class="pf-c-button pf-m-secondary" target="_blank"
+                                    href="/api/v2beta/crypto/certificatekeypairs/${item.pk}/view_private_key/?download">
+                                    ${t`Download Private key`}
+                                </a>` : html``}
+                            </div>
+                        </dd>
+                    </div>
                 </dl>
             </div>
         </td>
