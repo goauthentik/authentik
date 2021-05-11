@@ -5,11 +5,6 @@ import { MessageLevel } from "../messages/Message";
 
 @customElement("ak-action-button")
 export class ActionButton extends SpinnerButton {
-    @property()
-    url = "";
-
-    @property()
-    method = "POST";
 
     @property({attribute: false})
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

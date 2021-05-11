@@ -14,6 +14,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 import "../../../elements/buttons/ModalButton";
+import "../../../elements/buttons/ActionButton";
 import "../../../elements/buttons/SpinnerButton";
 import "../../../elements/CodeMirror";
 import "../../../elements/Tabs";
@@ -159,6 +160,15 @@ export class SAMLProviderViewPage extends LitElement {
                                         href="/api/v2beta/providers/saml/${this.provider.pk}/metadata/?download">
                                         ${t`Download`}
                                     </a>
+                                    <ak-action-button
+                                        class="pf-m-secondary"
+                                        .apiRequest=${() => {
+                                            const path = `/api/v2beta/providers/saml/${this.provider?.pk}/metadata/?download`;
+                                            const fullUrl = window.location.origin + path;
+                                            return navigator.clipboard.writeText(fullUrl);
+                                        }}>
+                                        ${t`Copy download URL`}
+                                    </ak-action-button>
                                 </div>
                             </div>
                         </div>
