@@ -11,7 +11,7 @@ channels-redis = "*"
 dacite = "*"
 defusedxml = "*"
 django = "*"
-django-dbbackup = "*"
+django-dbbackup = { git = 'https://github.com/django-dbbackup/django-dbbackup.git', ref = '9d1909c30a3271c8c9c8450add30d6e0b996e145' }
 django-filter = "*"
 django-guardian = "*"
 django-model-utils = "*"
