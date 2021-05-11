@@ -33,6 +33,8 @@ class OpenIDConnectConfigurationSerializer(PassiveSerializer):
 class ProxyProviderSerializer(ProviderSerializer):
     """ProxyProvider Serializer"""
 
+    redirect_uris = CharField(read_only=True)
+
     def validate(self, attrs) -> dict[Any, str]:
         """Check that internal_host is set when forward_auth_mode is disabled"""
         if (
@@ -67,6 +69,7 @@ class ProxyProviderSerializer(ProviderSerializer):
             "basic_auth_password_attribute",
             "basic_auth_user_attribute",
             "forward_auth_mode",
+            "redirect_uris",
         ]
 
 

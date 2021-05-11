@@ -17498,6 +17498,11 @@ definitions:
         description: Enable support for forwardAuth in traefik and nginx auth_request.
           Exclusive with internal_host.
         type: boolean
+      redirect_uris:
+        title: Redirect uris
+        type: string
+        readOnly: true
+        minLength: 1
   SAMLProvider:
     required:
       - name

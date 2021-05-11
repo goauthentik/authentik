@@ -1,3 +1,6 @@
+.SHELLFLAGS += -x -e
+PWD = $(shell pwd)
+
 all: lint-fix lint test gen
 
 test-integration:
@@ -24,6 +27,14 @@ lint:
 
 gen:
 	./manage.py generate_swagger -o swagger.yaml -f yaml
+	docker run \
+		--rm -v ${PWD}:/local \
+		openapitools/openapi-generator-cli generate \
+		-i /local/swagger.yaml \
+		-g typescript-fetch \
+		-o /local/web/api \
+		--additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
+	cd web/api && npx tsc
 
 local-stack:
 	export AUTHENTIK_TAG=testing

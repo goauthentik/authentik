@@ -125,7 +125,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                         ?required=${true}
                         name="externalHost">
                         <input type="text" value="${ifDefined(this.instance?.externalHost)}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${t`The external URL you'll access the outpost at.`}</p>
+                        <p class="pf-c-form__helper-text">${t`The external URL you'll access the application at`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="forwardAuthMode">
                         <div class="pf-c-check">

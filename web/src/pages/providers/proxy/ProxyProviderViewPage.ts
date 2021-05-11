@@ -6,8 +6,7 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
-import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import AKGlobal from "../../../authentik.css";
@@ -22,6 +21,7 @@ import "./ProxyProviderForm";
 import { ProvidersApi, ProxyProvider } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";
+import { until } from "lit-html/directives/until";
 
 @customElement("ak-provider-proxy-view")
 export class ProxyProviderViewPage extends LitElement {
@@ -42,7 +42,7 @@ export class ProxyProviderViewPage extends LitElement {
     provider?: ProxyProvider;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFPage, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, AKGlobal];
+        return [PFBase, PFButton, PFPage, PFGrid, PFGallery, PFContent, PFCard, PFDescriptionList, AKGlobal];
     }
 
     constructor() {
@@ -59,8 +59,8 @@ export class ProxyProviderViewPage extends LitElement {
         }
         return html`<ak-tabs>
                 <section slot="page-overview" data-tab-title="${t`Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
-                    <div class="pf-u-display-flex pf-u-justify-content-center">
-                        <div class="pf-u-w-75">
+                    <div class="pf-l-grid pf-m-gutter">
+                        <div class="pf-l-grid__item pf-m-6-col">
                             <div class="pf-c-card">
                                 <div class="pf-c-card__body">
                                     <dl class="pf-c-description-list pf-m-3-col-on-lg">
@@ -115,6 +115,23 @@ export class ProxyProviderViewPage extends LitElement {
                                                 </div>
                                             </dd>
                                         </div>
+                                        <div class="pf-c-description-list__group">
+                                            <dt class="pf-c-description-list__term">
+                                                <span class="pf-c-description-list__text">${t`Forward auth`}</span>
+                                            </dt>
+                                            <dd class="pf-c-description-list__description">
+                                                <div class="pf-c-description-list__text">
+                                                    ${this.provider.forwardAuthMode ?
+                                                        html`<span class="pf-c-button__icon pf-m-start">
+                                                            <i class="fas fa-check-circle" aria-hidden="true"></i>&nbsp;
+                                                            </span>${t`Yes`}`:
+                                                        html`<span class="pf-c-button__icon pf-m-start">
+                                                            <i class="fas fa-times-circle" aria-hidden="true"></i>&nbsp;
+                                                            </span>${t`No`}`
+                                                    }
+                                                </div>
+                                            </dd>
+                                        </div>
                                     </dl>
                                 </div>
                                 <div class="pf-c-card__footer">
@@ -133,6 +150,27 @@ export class ProxyProviderViewPage extends LitElement {
                                             ${t`Edit`}
                                         </button>
                                     </ak-forms-modal>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pf-l-grid__item pf-m-6-col">
+                            <div class="pf-c-card">
+                                <div class="pf-c-card__title">
+                                    ${t`Protocol Settings`}
+                                </div>
+                                <div class="pf-c-card__body">
+                                    <dl class="pf-c-description-list pf-m-3-col-on-lg">
+                                        <div class="pf-c-description-list__group">
+                                            <dt class="pf-c-description-list__term">
+                                                <span class="pf-c-description-list__text">${t`Allowed Redirect URIs`}</span>
+                                            </dt>
+                                            <dd class="pf-c-description-list__description">
+                                                <div class="pf-c-description-list__text">
+                                                    ${this.provider.redirectUris}
+                                                </div>
+                                            </dd>
+                                        </div>
+                                    </dl>
                                 </div>
                             </div>
                         </div>
