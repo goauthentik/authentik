@@ -1,9 +1,8 @@
 import { SAMLSource, SourcesApi, SAMLSourceBindingTypeEnum, SAMLSourceNameIdPolicyEnum, CryptoApi, SAMLSourceDigestAlgorithmEnum, SAMLSourceSignatureAlgorithmEnum, FlowsApi, FlowDesignationEnum } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { Form } from "../../../elements/forms/Form";
 import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
 import { ifDefined } from "lit-html/directives/if-defined";

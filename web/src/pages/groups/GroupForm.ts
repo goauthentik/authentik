@@ -1,9 +1,8 @@
 import { CoreApi, Group, User } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { Form } from "../../elements/forms/Form";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";

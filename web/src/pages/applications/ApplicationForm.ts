@@ -3,7 +3,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { Form } from "../../elements/forms/Form";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/buttons/Dropdown";

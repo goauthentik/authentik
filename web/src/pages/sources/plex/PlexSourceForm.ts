@@ -3,7 +3,6 @@ import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { Form } from "../../../elements/forms/Form";
 import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
 import { ifDefined } from "lit-html/directives/if-defined";
@@ -31,6 +30,12 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
 
     @property({attribute: false})
     plexResources?: PlexResource[];
+
+    get defaultInstance(): PlexSource | undefined {
+        return {
+            clientId: randomString(40)
+        } as PlexSource;
+    }
 
     getSuccessMessage(): string {
         if (this.instance) {

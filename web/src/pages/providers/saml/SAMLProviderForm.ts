@@ -1,6 +1,6 @@
 import { CryptoApi, FlowDesignationEnum, FlowsApi, SAMLProvider, ProvidersApi, PropertymappingsApi,  SAMLProviderSpBindingEnum, SAMLProviderDigestAlgorithmEnum, SAMLProviderSignatureAlgorithmEnum } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { ModelForm } from "../../../elements/forms/ModelForm";
@@ -13,7 +13,7 @@ import "../../../elements/forms/FormGroup";
 export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
 
     loadInstance(pk: number): Promise<SAMLProvider> {
-        console.log("reading saml provider")
+        console.log("reading saml provider");
         return new ProvidersApi(DEFAULT_CONFIG).providersSamlRead({
             id: pk,
         });

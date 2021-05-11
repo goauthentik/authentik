@@ -1,6 +1,6 @@
 import { Outpost, OutpostsApi, OutpostTypeEnum, ProvidersApi } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { until } from "lit-html/directives/until";

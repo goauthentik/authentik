@@ -102,7 +102,7 @@ export class ApplicationViewPage extends LitElement {
                                                     <span slot="header">
                                                         ${t`Update Application`}
                                                     </span>
-                                                    <ak-application-form slot="form" .application=${this.application}>
+                                                    <ak-application-form slot="form" .instancePk=${this.application.slug}>
                                                     </ak-application-form>
                                                     <button slot="trigger" class="pf-c-button pf-m-secondary">
                                                         ${t`Edit`}

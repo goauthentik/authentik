@@ -1,6 +1,6 @@
 import { FlowDesignationEnum, FlowsApi, ProvidersApi, LDAPProvider, CoreApi } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { ModelForm } from "../../../elements/forms/ModelForm";
