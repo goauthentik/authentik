@@ -3,6 +3,7 @@ postgresql:
   host: localhost
   name: authentik
   user: authentik
+  port: 5432
   password: 'env://POSTGRES_PASSWORD'
 
 web:

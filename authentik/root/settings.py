@@ -248,6 +248,7 @@ DATABASES = {
         "NAME": CONFIG.y("postgresql.name"),
         "USER": CONFIG.y("postgresql.user"),
         "PASSWORD": CONFIG.y("postgresql.password"),
+        "PORT": int(CONFIG.y("postgresql.port")),
     }
 }
 
@@ -320,7 +321,8 @@ CELERY_RESULT_BACKEND = (
 DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
 DBBACKUP_STORAGE_OPTIONS = {"location": "./backups" if DEBUG else "/backups"}
 DBBACKUP_CONNECTOR_MAPPING = {
-    "django_prometheus.db.backends.postgresql": "dbbackup.db.postgresql.PgDumpConnector"
+    "django_prometheus.db.backends.postgresql": "authentik.lib.connector.PgCustom",
+    "django.db.backends.postgresql": "authentik.lib.connector.PgCustom",
 }
 if CONFIG.y("postgresql.s3_backup"):
     DBBACKUP_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
@@ -331,9 +333,10 @@ if CONFIG.y("postgresql.s3_backup"):
         "region_name": CONFIG.y("postgresql.s3_backup.region", "eu-central-1"),
         "default_acl": "private",
         "endpoint_url": CONFIG.y("postgresql.s3_backup.host"),
+        "location": CONFIG.y("postgresql.s3_backup.location", ""),
     }
     j_print(
-        "Database backup to S3 is configured.",
+        "Database backup to S3 is configured",
         host=CONFIG.y("postgresql.s3_backup.host"),
     )
 
@@ -355,7 +358,7 @@ if _ERROR_REPORTING:
         send_default_pii=CONFIG.y_bool("error_reporting.send_pii", False),
     )
     j_print(
-        "Error reporting is enabled.",
+        "Error reporting is enabled",
         env=CONFIG.y("error_reporting.environment", "customer"),
     )
 

@@ -30,11 +30,6 @@ class NeedsUpdate(ReconcileTrigger):
     """Exception to trigger an update to the Kubernetes Object"""
 
 
-class Disabled(SentryIgnoredException):
-    """Exception which can be thrown in a reconciler to signal than an
-    object should not be created."""
-
-
 class KubernetesObjectReconciler(Generic[T]):
     """Base Kubernetes Reconciler, handles the basic logic."""
 
@@ -46,21 +41,28 @@ class KubernetesObjectReconciler(Generic[T]):
         self.logger = get_logger().bind(type=self.__class__.__name__)
 
     @property
+    def noop(self) -> bool:
+        """Return true if this object should not be created/updated/deleted in this cluster"""
+        return False
+
+    @property
     def name(self) -> str:
         """Get the name of the object this reconciler manages"""
-        return self.controller.outpost.config.object_naming_template % {
-            "name": slugify(self.controller.outpost.name),
-            "uuid": self.controller.outpost.uuid.hex,
-        }
+        return (
+            self.controller.outpost.config.object_naming_template
+            % {
+                "name": slugify(self.controller.outpost.name),
+                "uuid": self.controller.outpost.uuid.hex,
+            }
+        ).lower()
 
     def up(self):
         """Create object if it doesn't exist, update if needed or recreate if needed."""
         current = None
-        try:
-            reference = self.get_reference_object()
-        except Disabled:
-            self.logger.debug("Object not required")
+        if self.noop:
+            self.logger.debug("Object is noop")
             return
+        reference = self.get_reference_object()
         try:
             try:
                 current = self.retrieve()
@@ -89,11 +91,8 @@ class KubernetesObjectReconciler(Generic[T]):
 
     def down(self):
         """Delete object if found"""
-        # Call self.get_reference_object to check if we even need to do anything
-        try:
-            self.get_reference_object()
-        except Disabled:
-            self.logger.debug("Object not required")
+        if self.noop:
+            self.logger.debug("Object is noop")
             return
         try:
             current = self.retrieve()

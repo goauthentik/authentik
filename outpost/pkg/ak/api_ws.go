@@ -111,3 +111,14 @@ func (ac *APIController) startWSHealth() {
 		}
 	}
 }
+
+func (ac *APIController) startIntervalUpdater() {
+	logger := ac.logger.WithField("loop", "interval-updater")
+	ticker := time.NewTicker(time.Second * 150)
+	for ; true; <-ticker.C {
+		err := ac.Server.Refresh()
+		if err != nil {
+			logger.WithError(err).Debug("Failed to update")
+		}
+	}
+}

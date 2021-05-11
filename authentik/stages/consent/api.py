@@ -1,6 +1,8 @@
 """ConsentStage API Views"""
+from django_filters.rest_framework import DjangoFilterBackend
 from guardian.utils import get_anonymous_user
 from rest_framework import mixins
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.core.api.applications import ApplicationSerializer
@@ -49,6 +51,11 @@ class UserConsentViewSet(
     serializer_class = UserConsentSerializer
     filterset_fields = ["user", "application"]
     ordering = ["application", "expires"]
+    filter_backends = [
+        DjangoFilterBackend,
+        OrderingFilter,
+        SearchFilter,
+    ]
 
     def get_queryset(self):
         user = self.request.user if self.request else get_anonymous_user()

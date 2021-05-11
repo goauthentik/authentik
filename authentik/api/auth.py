@@ -54,4 +54,4 @@ class AuthentikTokenAuthentication(BaseAuthentication):
         if not token:
             return None
 
-        return (token.user, None)
+        return (token.user, None)  # pragma: no cover

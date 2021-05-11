@@ -6,6 +6,7 @@ import { ArcElement, BarElement } from "chart.js";
 import { TimeScale, LinearScale } from "chart.js";
 import "chartjs-adapter-moment";
 import { FONT_COLOUR_DARK_MODE, FONT_COLOUR_LIGHT_MODE } from "../../pages/flows/FlowDiagram";
+import {EVENT_REFRESH} from "../../constants";
 
 Chart.register(Legend, Tooltip);
 Chart.register(LineController, BarController, DoughnutController);
@@ -43,6 +44,13 @@ export abstract class AKChart<T> extends LitElement {
                 this.chart.resize();
             }
         });
+        window.addEventListener(EVENT_REFRESH, () => {
+            this.apiRequest().then((r: T) => {
+                if (!this.chart) return;
+                this.chart.data = this.getChartData(r);
+                this.chart.update();
+            });
+        });
         const matcher = window.matchMedia("(prefers-color-scheme: light)");
         const handler = (ev?: MediaQueryListEvent) => {
             if (ev?.matches || matcher.matches) {
@@ -54,6 +62,22 @@ export abstract class AKChart<T> extends LitElement {
         };
         matcher.addEventListener("change", handler);
         handler();
+    }
+
+    firstUpdated(): void {
+        this.apiRequest().then((r) => {
+            const canvas = <HTMLCanvasElement>this.shadowRoot?.querySelector("canvas");
+            if (!canvas) {
+                console.warn("Failed to get canvas element");
+                return false;
+            }
+            const ctx = canvas.getContext("2d");
+            if (!ctx) {
+                console.warn("failed to get 2d context");
+                return false;
+            }
+            this.chart = this.configureChart(r, ctx);
+        });
     }
 
     getChartType(): string {
@@ -127,23 +151,6 @@ export abstract class AKChart<T> extends LitElement {
             plugins: this.getPlugins(),
         };
         return new Chart(ctx, config as ChartConfiguration);
-    }
-
-
-    firstUpdated(): void {
-        this.apiRequest().then((r) => {
-            const canvas = <HTMLCanvasElement>this.shadowRoot?.querySelector("canvas");
-            if (!canvas) {
-                console.warn("Failed to get canvas element");
-                return false;
-            }
-            const ctx = canvas.getContext("2d");
-            if (!ctx) {
-                console.warn("failed to get 2d context");
-                return false;
-            }
-            this.chart = this.configureChart(r, ctx);
-        });
     }
 
     render(): TemplateResult {

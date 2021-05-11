@@ -102,18 +102,18 @@ export class OutpostForm extends Form<Outpost> {
                 </select>
                 <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
             </ak-form-element-horizontal>
-            ${until(new OutpostsApi(DEFAULT_CONFIG).outpostsOutpostsDefaultSettings({}).then(config => {
-                let fc = config.config;
-                if (this.outpost) {
-                    fc = this.outpost.config;
-                }
-                return html`<ak-form-element-horizontal
-                    label=${t`Configuration`}
-                    name="config">
-                    <ak-codemirror mode="yaml" value="${YAML.stringify(fc)}"></ak-codemirror>
-                    <p class="pf-c-form__helper-text">${t`Set custom attributes using YAML or JSON.`}</p>
-                </ak-form-element-horizontal>`;
-            }))}
+            <ak-form-element-horizontal
+                label=${t`Configuration`}
+                name="config">
+                <ak-codemirror mode="yaml" value="${until(new OutpostsApi(DEFAULT_CONFIG).outpostsOutpostsDefaultSettings({}).then(config => {
+                        let fc = config.config;
+                        if (this.outpost) {
+                            fc = this.outpost.config;
+                        }
+                        return YAML.stringify(fc);
+                    }))}"></ak-codemirror>
+                <p class="pf-c-form__helper-text">${t`Set custom attributes using YAML or JSON.`}</p>
+            </ak-form-element-horizontal>
         </form>`;
     }
 

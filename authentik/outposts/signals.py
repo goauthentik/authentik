@@ -1,5 +1,5 @@
 """authentik outpost signals"""
-from django.conf import settings
+from django.core.cache import cache
 from django.db.models import Model
 from django.db.models.signals import post_save, pre_delete, pre_save
 from django.dispatch import receiver
@@ -8,9 +8,12 @@ from structlog.stdlib import get_logger
 from authentik.core.models import Provider
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.utils.reflection import class_to_path
-from authentik.outposts.controllers.base import ControllerException
 from authentik.outposts.models import Outpost, OutpostServiceConnection
-from authentik.outposts.tasks import outpost_controller_down, outpost_post_save
+from authentik.outposts.tasks import (
+    CACHE_KEY_OUTPOST_DOWN,
+    outpost_controller,
+    outpost_post_save,
+)
 
 LOGGER = get_logger()
 UPDATE_TRIGGERING_MODELS = (
@@ -39,7 +42,8 @@ def pre_save_outpost(sender, instance: Outpost, **_):
     )
     if bool(dirty):
         LOGGER.info("Outpost needs re-deployment due to changes", instance=instance)
-        outpost_controller_down_wrapper(old_instance)
+        cache.set(CACHE_KEY_OUTPOST_DOWN % instance.pk.hex, old_instance)
+        outpost_controller.delay(instance.pk.hex, action="down", from_cache=True)
 
 
 @receiver(post_save)
@@ -63,23 +67,5 @@ def post_save_update(sender, instance: Model, **_):
 def pre_delete_cleanup(sender, instance: Outpost, **_):
     """Ensure that Outpost's user is deleted (which will delete the token through cascade)"""
     instance.user.delete()
-    outpost_controller_down_wrapper(instance)
-
-
-def outpost_controller_down_wrapper(instance: Outpost):
-    """To ensure that deployment is cleaned up *consistently* we call the controller, and wait
-    for it to finish. We don't want to call it in this thread, as we don't have the Outpost
-    Service connection here"""
-    try:
-        outpost_controller_down.delay(instance.pk.hex).get()
-    except RuntimeError:  # pragma: no cover
-        # In e2e/integration tests, this might run inside a thread/process and
-        # trigger the celery `Never call result.get() within a task` detection
-        if settings.TEST:
-            pass
-        else:
-            raise
-    except ControllerException as exc:
-        LOGGER.warning(
-            "failed to cleanup outpost deployment", exc=exc, instance=instance
-        )
+    cache.set(CACHE_KEY_OUTPOST_DOWN % instance.pk.hex, instance)
+    outpost_controller.delay(instance.pk.hex, action="down", from_cache=True)

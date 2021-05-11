@@ -41,11 +41,9 @@ while True:
 
 while True:
     try:
-        redis = Redis(
-            host=CONFIG.y("redis.host"),
-            port=6379,
-            db=CONFIG.y("redis.message_queue_db"),
-            password=CONFIG.y("redis.password"),
+        redis = Redis.from_url(
+            f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:6379"
+            f"/{CONFIG.y('redis.ws_db')}"
         )
         redis.ping()
         break

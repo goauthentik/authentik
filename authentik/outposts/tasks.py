@@ -36,6 +36,7 @@ from authentik.providers.proxy.controllers.kubernetes import ProxyKubernetesCont
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
+CACHE_KEY_OUTPOST_DOWN = "outpost_teardown_%s"
 
 
 def controller_for_outpost(outpost: Outpost) -> Optional[BaseController]:
@@ -54,13 +55,6 @@ def controller_for_outpost(outpost: Outpost) -> Optional[BaseController]:
         if isinstance(service_connection, KubernetesServiceConnection):
             return LDAPKubernetesController(outpost, service_connection)
     return None
-
-
-@CELERY_APP.task()
-def outpost_controller_all():
-    """Launch Controller for all Outposts which support it"""
-    for outpost in Outpost.objects.exclude(service_connection=None):
-        outpost_controller.delay(outpost.pk.hex)
 
 
 @CELERY_APP.task()
@@ -89,17 +83,29 @@ def outpost_service_connection_monitor(self: MonitoredTask):
     )
 
 
+@CELERY_APP.task()
+def outpost_controller_all():
+    """Launch Controller for all Outposts which support it"""
+    for outpost in Outpost.objects.exclude(service_connection=None):
+        outpost_controller.delay(outpost.pk.hex, "up", from_cache=False)
+
+
 @CELERY_APP.task(bind=True, base=MonitoredTask)
-def outpost_controller(self: MonitoredTask, outpost_pk: str):
-    """Create/update/monitor the deployment of an Outpost"""
+def outpost_controller(
+    self: MonitoredTask, outpost_pk: str, action: str = "up", from_cache: bool = False
+):
+    """Create/update/monitor/delete the deployment of an Outpost"""
     logs = []
-    outpost: Outpost = Outpost.objects.get(pk=outpost_pk)
+    if from_cache:
+        outpost: Outpost = cache.get(CACHE_KEY_OUTPOST_DOWN % outpost_pk)
+    else:
+        outpost: Outpost = Outpost.objects.get(pk=outpost_pk)
     self.set_uid(slugify(outpost.name))
     try:
         controller = controller_for_outpost(outpost)
         if not controller:
             return
-        logs = controller.up_with_logs()
+        logs = getattr(controller, f"{action}_with_logs")()
         LOGGER.debug("---------------Outpost Controller logs starting----------------")
         for log in logs:
             LOGGER.debug(log)
@@ -108,16 +114,6 @@ def outpost_controller(self: MonitoredTask, outpost_pk: str):
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
     else:
         self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, logs))
-
-
-@CELERY_APP.task()
-def outpost_controller_down(outpost_pk: str):
-    """Delete outpost objects before deleting the DB Object"""
-    outpost = Outpost.objects.get(pk=outpost_pk)
-    controller = controller_for_outpost(outpost)
-    if not controller:
-        return
-    controller.down()
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)

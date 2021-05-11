@@ -531,11 +531,6 @@ paths:
           description: ''
           required: false
           type: string
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
         - name: search
           in: query
           description: A search term.
@@ -16203,7 +16198,7 @@ definitions:
     required:
       - name
       - providers
-      - _config
+      - config
     type: object
     properties:
       pk:
@@ -16242,8 +16237,8 @@ definitions:
         title: Token identifier
         type: string
         readOnly: true
-      _config:
-        title: config
+      config:
+        title: Config
         type: object
   OutpostDefaultConfig:
     type: object

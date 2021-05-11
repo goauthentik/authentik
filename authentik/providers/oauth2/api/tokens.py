@@ -1,7 +1,9 @@
 """OAuth2Provider API Views"""
+from django_filters.rest_framework import DjangoFilterBackend
 from guardian.utils import get_anonymous_user
 from rest_framework import mixins
 from rest_framework.fields import CharField, ListField
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 
@@ -37,6 +39,11 @@ class AuthorizationCodeViewSet(
     serializer_class = ExpiringBaseGrantModelSerializer
     filterset_fields = ["user", "provider"]
     ordering = ["provider", "expires"]
+    filter_backends = [
+        DjangoFilterBackend,
+        OrderingFilter,
+        SearchFilter,
+    ]
 
     def get_queryset(self):
         user = self.request.user if self.request else get_anonymous_user()
@@ -57,6 +64,11 @@ class RefreshTokenViewSet(
     serializer_class = ExpiringBaseGrantModelSerializer
     filterset_fields = ["user", "provider"]
     ordering = ["provider", "expires"]
+    filter_backends = [
+        DjangoFilterBackend,
+        OrderingFilter,
+        SearchFilter,
+    ]
 
     def get_queryset(self):
         user = self.request.user if self.request else get_anonymous_user()

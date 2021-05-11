@@ -7,6 +7,7 @@ from django.urls import reverse
 from authentik import __version__
 from authentik.core.models import Group, User
 from authentik.core.tasks import clean_expired_models
+from authentik.events.monitored_tasks import TaskResultStatus
 
 
 class TestAdminAPI(TestCase):
@@ -29,6 +30,26 @@ class TestAdminAPI(TestCase):
         self.assertTrue(
             any(task["task_name"] == "clean_expired_models" for task in body)
         )
+
+    def test_tasks_single(self):
+        """Test Task API (read single)"""
+        clean_expired_models.delay()
+        response = self.client.get(
+            reverse(
+                "authentik_api:admin_system_tasks-detail",
+                kwargs={"pk": "clean_expired_models"},
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        self.assertEqual(body["status"], TaskResultStatus.SUCCESSFUL.name)
+        self.assertEqual(body["task_name"], "clean_expired_models")
+        response = self.client.get(
+            reverse(
+                "authentik_api:admin_system_tasks-detail", kwargs={"pk": "qwerqwer"}
+            )
+        )
+        self.assertEqual(response.status_code, 404)
 
     def test_tasks_retry(self):
         """Test Task API (retry)"""

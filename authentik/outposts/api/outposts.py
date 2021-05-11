@@ -1,22 +1,34 @@
 """Outpost API Views"""
+from dacite.core import from_dict
+from dacite.exceptions import DaciteError
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, DateTimeField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import JSONField, ModelSerializer
+from rest_framework.serializers import JSONField, ModelSerializer, ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.utils import PassiveSerializer, is_dict
-from authentik.outposts.models import Outpost, default_outpost_config
+from authentik.outposts.models import Outpost, OutpostConfig, default_outpost_config
 
 
 class OutpostSerializer(ModelSerializer):
     """Outpost Serializer"""
 
-    _config = JSONField(validators=[is_dict])
+    config = JSONField(validators=[is_dict], source="_config")
+    # TODO: Remove _config again, this is only here for legacy with older outposts
+    _config = JSONField(validators=[is_dict], read_only=True)
     providers_obj = ProviderSerializer(source="providers", many=True, read_only=True)
+
+    def validate_config(self, config) -> dict:
+        """Check that the config has all required fields"""
+        try:
+            from_dict(OutpostConfig, config)
+        except DaciteError as exc:
+            raise ValidationError(f"Failed to validate config: {str(exc)}") from exc
+        return config
 
     class Meta:
 
@@ -29,6 +41,7 @@ class OutpostSerializer(ModelSerializer):
             "providers_obj",
             "service_connection",
             "token_identifier",
+            "config",
             "_config",
         ]
 

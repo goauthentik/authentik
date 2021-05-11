@@ -56,6 +56,12 @@ class BaseController:
         """Handler to delete everything we've created"""
         raise NotImplementedError
 
+    def down_with_logs(self) -> list[str]:
+        """Call .down() but capture all log output and return it."""
+        with capture_logs() as logs:
+            self.down()
+        return [x["event"] for x in logs]
+
     def get_static_deployment(self) -> str:
         """Return a static deployment configuration"""
         raise NotImplementedError

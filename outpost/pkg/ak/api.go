@@ -91,6 +91,10 @@ func (a *APIController) Start() error {
 		a.startWSHealth()
 	}()
 	go func() {
+		a.logger.Debug("Starting Interval updater...")
+		a.startIntervalUpdater()
+	}()
+	go func() {
 		err := a.Server.Start()
 		if err != nil {
 			panic(err)
