@@ -50,7 +50,7 @@ export class OutpostHealthElement extends LitElement {
                 </ul>
             </li>`;
         }
-        return html`${this.outpostHealth.map((h) => {
+        return html`<ul>${this.outpostHealth.map((h) => {
             return html`<li>
                 <ul>
                     <li role="cell">
@@ -64,7 +64,7 @@ export class OutpostHealthElement extends LitElement {
                     </li>
                 </ul>
             </li>`;
-        })}`;
+        })}</ul>`;
     }
 
 }
