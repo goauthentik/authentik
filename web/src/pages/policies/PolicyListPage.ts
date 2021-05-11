@@ -82,7 +82,7 @@ export class PolicyListPage extends TablePage<Policy> {
                 <ak-proxy-form
                     slot="form"
                     .args=${{
-                        "policyUUID": item.pk
+                        "instancePk": item.pk
                     }}
                     type=${ifDefined(item.component)}>
                 </ak-proxy-form>

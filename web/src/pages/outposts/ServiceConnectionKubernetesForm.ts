@@ -1,31 +1,26 @@
 import { KubernetesServiceConnection, OutpostsApi } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { Form } from "../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
 import "../../elements/CodeMirror";
 import YAML from "yaml";
 import { first } from "../../utils";
+import { ModelForm } from "../../elements/forms/ModelForm";
 
 @customElement("ak-service-connection-kubernetes-form")
-export class ServiceConnectionKubernetesForm extends Form<KubernetesServiceConnection> {
+export class ServiceConnectionKubernetesForm extends ModelForm<KubernetesServiceConnection, string> {
 
-    set scUUID(value: string) {
-        new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesRead({
-            uuid: value,
-        }).then(sc => {
-            this.sc = sc;
+    loadInstance(pk: string): Promise<KubernetesServiceConnection> {
+        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesRead({
+            uuid: pk,
         });
     }
 
-    @property({attribute: false})
-    sc?: KubernetesServiceConnection;
-
     getSuccessMessage(): string {
-        if (this.sc) {
+        if (this.instance) {
             return t`Successfully updated service-connection.`;
         } else {
             return t`Successfully created service-connection.`;
@@ -33,9 +28,9 @@ export class ServiceConnectionKubernetesForm extends Form<KubernetesServiceConne
     }
 
     send = (data: KubernetesServiceConnection): Promise<KubernetesServiceConnection> => {
-        if (this.sc) {
+        if (this.instance) {
             return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesUpdate({
-                uuid: this.sc.pk || "",
+                uuid: this.instance.pk || "",
                 data: data
             });
         } else {
@@ -51,11 +46,11 @@ export class ServiceConnectionKubernetesForm extends Form<KubernetesServiceConne
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.sc?.name)}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.name)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="local">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.sc?.local, false)}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.local, false)}>
                     <label class="pf-c-check__label">
                         ${t`Local`}
                     </label>
@@ -65,7 +60,7 @@ export class ServiceConnectionKubernetesForm extends Form<KubernetesServiceConne
             <ak-form-element-horizontal
                 label=${t`Kubeconfig`}
                 name="kubeconfig">
-                <ak-codemirror mode="yaml" value="${YAML.stringify(first(this.sc?.kubeconfig, {}))}">
+                <ak-codemirror mode="yaml" value="${YAML.stringify(first(this.instance?.kubeconfig, {}))}">
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">${t`Set custom attributes using YAML or JSON.`}</p>
             </ak-form-element-horizontal>

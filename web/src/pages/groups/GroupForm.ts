@@ -13,15 +13,19 @@ import "../../elements/chips/Chip";
 import "./MemberSelectModal";
 import YAML from "yaml";
 import { first } from "../../utils";
+import { ModelForm } from "../../elements/forms/ModelForm";
 
 @customElement("ak-group-form")
-export class GroupForm extends Form<Group> {
+export class GroupForm extends ModelForm<Group, string> {
 
-    @property({attribute: false})
-    group?: Group;
+    loadInstance(pk: string): Promise<Group> {
+        return new CoreApi(DEFAULT_CONFIG).coreGroupsRead({
+            groupUuid: pk
+        });
+    }
 
     getSuccessMessage(): string {
-        if (this.group) {
+        if (this.instance) {
             return t`Successfully updated group.`;
         } else {
             return t`Successfully created group.`;
@@ -29,13 +33,13 @@ export class GroupForm extends Form<Group> {
     }
 
     send = (data: Group): Promise<Group> => {
-        if (this.group?.pk) {
+        if (this.instance?.pk) {
             return new CoreApi(DEFAULT_CONFIG).coreGroupsUpdate({
-                groupUuid: this.group.pk || "",
+                groupUuid: this.instance.pk || "",
                 data: data
             });
         } else {
-            data.users = Array.from(this.group?.users || []) as unknown as Set<number>;
+            data.users = Array.from(this.instance?.users || []) as unknown as Set<number>;
             return new CoreApi(DEFAULT_CONFIG).coreGroupsCreate({
                 data: data
             });
@@ -48,11 +52,11 @@ export class GroupForm extends Form<Group> {
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.group?.name)}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.name)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="isSuperuser">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.group?.isSuperuser, false)}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.isSuperuser, false)}>
                     <label class="pf-c-check__label">
                         ${t`Is superuser`}
                     </label>
@@ -63,10 +67,10 @@ export class GroupForm extends Form<Group> {
                 label=${t`Parent`}
                 name="parent">
                 <select class="pf-c-form-control">
-                    <option value="" ?selected=${this.group?.parent === undefined}>---------</option>
+                    <option value="" ?selected=${this.instance?.parent === undefined}>---------</option>
                     ${until(new CoreApi(DEFAULT_CONFIG).coreGroupsList({}).then(groups => {
                         return groups.results.map(group => {
-                            return html`<option value=${ifDefined(group.pk)} ?selected=${this.group?.parent === group.pk}>${group.name}</option>`;
+                            return html`<option value=${ifDefined(group.pk)} ?selected=${this.instance?.parent === group.pk}>${group.name}</option>`;
                         });
                     }), html`<option>${t`Loading...`}</option>`)}
                 </select>
@@ -79,8 +83,8 @@ export class GroupForm extends Form<Group> {
                         .confirm=${(items: User[]) => {
                             // Because the model only has the IDs, map the user list to IDs
                             const ids = items.map(u => u.pk || 0);
-                            if (!this.group) this.group = {} as Group;
-                            this.group.users = new Set(Array.from(this.group?.users || []).concat(ids));
+                            if (!this.instance) this.instance = {} as Group;
+                            this.instance.users = new Set(Array.from(this.instance?.users || []).concat(ids));
                             this.requestUpdate();
                             return Promise.resolve();
                         }}>
@@ -94,7 +98,7 @@ export class GroupForm extends Form<Group> {
                                 ordering: "username",
                             }).then(users => {
                                 return users.results.map(user => {
-                                    const selected = Array.from(this.group?.users || []).some(su => {
+                                    const selected = Array.from(this.instance?.users || []).some(su => {
                                         return su == user.pk;
                                     });
                                     if (!selected) return;
@@ -102,11 +106,11 @@ export class GroupForm extends Form<Group> {
                                         .removable=${true}
                                         value=${ifDefined(user.pk)}
                                         @remove=${() => {
-                                            if (!this.group) return;
-                                            const users = Array.from(this.group?.users || []);
+                                            if (!this.instance) return;
+                                            const users = Array.from(this.instance?.users || []);
                                             const idx = users.indexOf(user.pk || 0);
                                             users.splice(idx, 1);
-                                            this.group.users = new Set(users);
+                                            this.instance.users = new Set(users);
                                             this.requestUpdate();
                                         }}>
                                         ${user.username}
@@ -122,7 +126,7 @@ export class GroupForm extends Form<Group> {
                 label=${t`Attributes`}
                 ?required=${true}
                 name="attributes">
-                <ak-codemirror mode="yaml" value="${YAML.stringify(first(this.group?.attributes, {}))}">
+                <ak-codemirror mode="yaml" value="${YAML.stringify(first(this.instance?.attributes, {}))}">
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">${t`Set custom attributes using YAML or JSON.`}</p>
             </ak-form-element-horizontal>

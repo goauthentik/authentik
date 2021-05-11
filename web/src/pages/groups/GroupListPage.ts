@@ -63,7 +63,7 @@ export class GroupListPage extends TablePage<Group> {
                 <span slot="header">
                     ${t`Update Group`}
                 </span>
-                <ak-group-form slot="form" .group=${item}>
+                <ak-group-form slot="form" .instancePk=${item.pk}>
                 </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${t`Edit`}
