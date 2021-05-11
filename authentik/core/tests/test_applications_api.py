@@ -24,7 +24,7 @@ class TestApplicationsAPI(APITestCase):
         )
 
     def test_check_access(self):
-        """Test check_access operation """
+        """Test check_access operation"""
         self.client.force_login(self.user)
         response = self.client.get(
             reverse(

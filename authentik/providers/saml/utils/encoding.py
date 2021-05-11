@@ -23,7 +23,7 @@ def deflate_and_base64_encode(inflated: str, encoding="utf-8"):
 
 
 def nice64(src: str) -> str:
-    """Returns src base64-encoded and formatted nicely for our XML. """
+    """Returns src base64-encoded and formatted nicely for our XML."""
     return base64.b64encode(src.encode()).decode("utf-8").replace("\n", "")
 
 

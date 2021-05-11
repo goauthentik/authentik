@@ -42,7 +42,7 @@ LOGGER = get_logger()
 
 
 class ServiceConnectionInvalid(SentryIgnoredException):
-    """"Exception raised when a Service Connection has invalid parameters"""
+    """Exception raised when a Service Connection has invalid parameters"""
 
 
 @dataclass
