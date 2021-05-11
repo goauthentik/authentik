@@ -1,29 +1,24 @@
 import { UserLoginStage, StagesApi } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { Form } from "../../../elements/forms/Form";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
 import { first } from "../../../utils";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-stage-user-login-form")
-export class UserLoginStageForm extends Form<UserLoginStage> {
+export class UserLoginStageForm extends ModelForm<UserLoginStage, string> {
 
-    set stageUUID(value: string) {
-        new StagesApi(DEFAULT_CONFIG).stagesUserLoginRead({
-            stageUuid: value,
-        }).then(stage => {
-            this.stage = stage;
+    loadInstance(pk: string): Promise<UserLoginStage> {
+        return new StagesApi(DEFAULT_CONFIG).stagesUserLoginRead({
+            stageUuid: pk,
         });
     }
 
-    @property({attribute: false})
-    stage?: UserLoginStage;
-
     getSuccessMessage(): string {
-        if (this.stage) {
+        if (this.instance) {
             return t`Successfully updated stage.`;
         } else {
             return t`Successfully created stage.`;
@@ -31,9 +26,9 @@ export class UserLoginStageForm extends Form<UserLoginStage> {
     }
 
     send = (data: UserLoginStage): Promise<UserLoginStage> => {
-        if (this.stage) {
+        if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesUserLoginUpdate({
-                stageUuid: this.stage.pk || "",
+                stageUuid: this.instance.pk || "",
                 data: data
             });
         } else {
@@ -52,7 +47,7 @@ export class UserLoginStageForm extends Form<UserLoginStage> {
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${first(this.stage?.name, "")}" class="pf-c-form-control" required>
+                <input type="text" value="${first(this.instance?.name, "")}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header">
@@ -63,7 +58,7 @@ export class UserLoginStageForm extends Form<UserLoginStage> {
                         label=${t`Session duration`}
                         ?required=${true}
                         name="sessionDuration">
-                        <input type="text" value="${first(this.stage?.sessionDuration, "seconds=0")}" class="pf-c-form-control" required>
+                        <input type="text" value="${first(this.instance?.sessionDuration, "seconds=0")}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed.`}</p>
                         <p class="pf-c-form__helper-text">${t`(Format: hours=-1;minutes=-2;seconds=-3).`}</p>
                     </ak-form-element-horizontal>

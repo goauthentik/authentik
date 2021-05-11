@@ -1,29 +1,24 @@
 import { CaptchaStage, StagesApi } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-stage-captcha-form")
-export class CaptchaStageForm extends Form<CaptchaStage> {
+export class CaptchaStageForm extends ModelForm<CaptchaStage, string> {
 
-    set stageUUID(value: string) {
-        new StagesApi(DEFAULT_CONFIG).stagesCaptchaRead({
-            stageUuid: value,
-        }).then(stage => {
-            this.stage = stage;
+    loadInstance(pk: string): Promise<CaptchaStage> {
+        return new StagesApi(DEFAULT_CONFIG).stagesCaptchaRead({
+            stageUuid: pk,
         });
     }
 
-    @property({attribute: false})
-    stage?: CaptchaStage;
-
     getSuccessMessage(): string {
-        if (this.stage) {
+        if (this.instance) {
             return t`Successfully updated stage.`;
         } else {
             return t`Successfully created stage.`;
@@ -31,9 +26,9 @@ export class CaptchaStageForm extends Form<CaptchaStage> {
     }
 
     send = (data: CaptchaStage): Promise<CaptchaStage> => {
-        if (this.stage) {
+        if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesCaptchaPartialUpdate({
-                stageUuid: this.stage.pk || "",
+                stageUuid: this.instance.pk || "",
                 data: data
             });
         } else {
@@ -52,7 +47,7 @@ export class CaptchaStageForm extends Form<CaptchaStage> {
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.stage?.name || "")}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.name || "")}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header">
@@ -63,15 +58,15 @@ export class CaptchaStageForm extends Form<CaptchaStage> {
                         label=${t`Public Key`}
                         ?required=${true}
                         name="publicKey">
-                        <input type="text" value="${ifDefined(this.stage?.publicKey || "")}" class="pf-c-form-control" required>
+                        <input type="text" value="${ifDefined(this.instance?.publicKey || "")}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`Public key, acquired from https://www.google.com/recaptcha/intro/v3.html.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Private Key`}
                         ?required=${true}
-                        ?writeOnly=${this.stage !== undefined}
+                        ?writeOnly=${this.instance !== undefined}
                         name="privateKey">
-                        <input type="text" value="${ifDefined(this.stage?.privateKey || "")}" class="pf-c-form-control" required>
+                        <input type="text" value="${ifDefined(this.instance?.privateKey || "")}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`Private key, acquired from https://www.google.com/recaptcha/intro/v3.html.`}</p>
                     </ak-form-element-horizontal>
                 </div>

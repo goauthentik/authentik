@@ -1,30 +1,25 @@
 import { InvitationStage, StagesApi } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
 import { first } from "../../../utils";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-stage-invitation-form")
-export class InvitationStageForm extends Form<InvitationStage> {
+export class InvitationStageForm extends ModelForm<InvitationStage, string> {
 
-    set stageUUID(value: string) {
-        new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesRead({
-            stageUuid: value,
-        }).then(stage => {
-            this.stage = stage;
+    loadInstance(pk: string): Promise<InvitationStage> {
+        return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesRead({
+            stageUuid: pk,
         });
     }
 
-    @property({attribute: false})
-    stage?: InvitationStage;
-
     getSuccessMessage(): string {
-        if (this.stage) {
+        if (this.instance) {
             return t`Successfully updated stage.`;
         } else {
             return t`Successfully created stage.`;
@@ -32,9 +27,9 @@ export class InvitationStageForm extends Form<InvitationStage> {
     }
 
     send = (data: InvitationStage): Promise<InvitationStage> => {
-        if (this.stage) {
+        if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesUpdate({
-                stageUuid: this.stage.pk || "",
+                stageUuid: this.instance.pk || "",
                 data: data
             });
         } else {
@@ -53,7 +48,7 @@ export class InvitationStageForm extends Form<InvitationStage> {
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.stage?.name || "")}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.name || "")}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header">
@@ -62,7 +57,7 @@ export class InvitationStageForm extends Form<InvitationStage> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="continueFlowWithoutInvitation">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.stage?.continueFlowWithoutInvitation, true)}>
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.continueFlowWithoutInvitation, true)}>
                             <label class="pf-c-check__label">
                                 ${t`Continue flow without invitation`}
                             </label>

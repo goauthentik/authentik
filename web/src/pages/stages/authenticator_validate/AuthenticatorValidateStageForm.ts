@@ -3,32 +3,29 @@ import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
 import { until } from "lit-html/directives/until";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-stage-authenticator-validate-form")
-export class AuthenticatorValidateStageForm extends Form<AuthenticatorValidateStage> {
+export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValidateStage, string> {
 
-    set stageUUID(value: string) {
-        new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateRead({
-            stageUuid: value,
+    loadInstance(pk: string): Promise<AuthenticatorValidateStage> {
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateRead({
+            stageUuid: pk,
         }).then(stage => {
-            this.stage = stage;
             this.showConfigureFlow = stage.notConfiguredAction === AuthenticatorValidateStageNotConfiguredActionEnum.Configure;
+            return stage;
         });
     }
-
-    @property({attribute: false})
-    stage?: AuthenticatorValidateStage;
 
     @property({ type: Boolean })
     showConfigureFlow = false;
 
     getSuccessMessage(): string {
-        if (this.stage) {
+        if (this.instance) {
             return t`Successfully updated stage.`;
         } else {
             return t`Successfully created stage.`;
@@ -36,9 +33,9 @@ export class AuthenticatorValidateStageForm extends Form<AuthenticatorValidateSt
     }
 
     send = (data: AuthenticatorValidateStage): Promise<AuthenticatorValidateStage> => {
-        if (this.stage) {
+        if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateUpdate({
-                stageUuid: this.stage.pk || "",
+                stageUuid: this.instance.pk || "",
                 data: data
             });
         } else {
@@ -49,7 +46,7 @@ export class AuthenticatorValidateStageForm extends Form<AuthenticatorValidateSt
     };
 
     isDeviceClassSelected(field: AuthenticatorValidateStageDeviceClassesEnum): boolean {
-        return (this.stage?.deviceClasses || []).filter(isField => {
+        return (this.instance?.deviceClasses || []).filter(isField => {
             return field === isField;
         }).length > 0;
     }
@@ -63,7 +60,7 @@ export class AuthenticatorValidateStageForm extends Form<AuthenticatorValidateSt
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.stage?.name || "")}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.name || "")}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header">
@@ -82,13 +79,13 @@ export class AuthenticatorValidateStageForm extends Form<AuthenticatorValidateSt
                                 this.showConfigureFlow = false;
                             }
                         }}>
-                            <option value=${AuthenticatorValidateStageNotConfiguredActionEnum.Configure} ?selected=${this.stage?.notConfiguredAction === AuthenticatorValidateStageNotConfiguredActionEnum.Configure}>
+                            <option value=${AuthenticatorValidateStageNotConfiguredActionEnum.Configure} ?selected=${this.instance?.notConfiguredAction === AuthenticatorValidateStageNotConfiguredActionEnum.Configure}>
                                 ${t`Force the user to configure an authenticator`}
                             </option>
-                            <option value=${AuthenticatorValidateStageNotConfiguredActionEnum.Deny} ?selected=${this.stage?.notConfiguredAction === AuthenticatorValidateStageNotConfiguredActionEnum.Deny}>
+                            <option value=${AuthenticatorValidateStageNotConfiguredActionEnum.Deny} ?selected=${this.instance?.notConfiguredAction === AuthenticatorValidateStageNotConfiguredActionEnum.Deny}>
                                 ${t`Deny the user access`}
                             </option>
-                            <option value=${AuthenticatorValidateStageNotConfiguredActionEnum.Skip} ?selected=${this.stage?.notConfiguredAction === AuthenticatorValidateStageNotConfiguredActionEnum.Skip}>
+                            <option value=${AuthenticatorValidateStageNotConfiguredActionEnum.Skip} ?selected=${this.instance?.notConfiguredAction === AuthenticatorValidateStageNotConfiguredActionEnum.Skip}>
                                 ${t`Continue`}
                             </option>
                         </select>
@@ -117,12 +114,12 @@ export class AuthenticatorValidateStageForm extends Form<AuthenticatorValidateSt
                         ?required=${true}
                         name="configureFlow">
                         <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.stage?.configurationStage === undefined}>---------</option>
+                            <option value="" ?selected=${this.instance?.configurationStage === undefined}>---------</option>
                             ${until(new StagesApi(DEFAULT_CONFIG).stagesAllList({
                                 ordering: "pk",
                             }).then(stages => {
                                 return stages.results.map(stage => {
-                                    const selected = this.stage?.configurationStage === stage.pk;
+                                    const selected = this.instance?.configurationStage === stage.pk;
                                     return html`<option value=${ifDefined(stage.pk)} ?selected=${selected}>${stage.name} (${stage.verboseName})</option>`;
                                 });
                             }), html`<option>${t`Loading...`}</option>`)}

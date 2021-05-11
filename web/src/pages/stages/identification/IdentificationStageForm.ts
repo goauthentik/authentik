@@ -1,31 +1,26 @@
 import { FlowDesignationEnum, FlowsApi, IdentificationStage, IdentificationStageUserFieldsEnum, StagesApi } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { Form } from "../../../elements/forms/Form";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
 import { until } from "lit-html/directives/until";
 import { first } from "../../../utils";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-stage-identification-form")
-export class IdentificationStageForm extends Form<IdentificationStage> {
+export class IdentificationStageForm extends ModelForm<IdentificationStage, string> {
 
-    set stageUUID(value: string) {
-        new StagesApi(DEFAULT_CONFIG).stagesIdentificationRead({
-            stageUuid: value,
-        }).then(stage => {
-            this.stage = stage;
+    loadInstance(pk: string): Promise<IdentificationStage> {
+        return new StagesApi(DEFAULT_CONFIG).stagesIdentificationRead({
+            stageUuid: pk,
         });
     }
 
-    @property({attribute: false})
-    stage?: IdentificationStage;
-
     getSuccessMessage(): string {
-        if (this.stage) {
+        if (this.instance) {
             return t`Successfully updated stage.`;
         } else {
             return t`Successfully created stage.`;
@@ -33,9 +28,9 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
     }
 
     send = (data: IdentificationStage): Promise<IdentificationStage> => {
-        if (this.stage) {
+        if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesIdentificationUpdate({
-                stageUuid: this.stage.pk || "",
+                stageUuid: this.instance.pk || "",
                 data: data
             });
         } else {
@@ -46,7 +41,7 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
     };
 
     isUserFieldSelected(field: IdentificationStageUserFieldsEnum): boolean {
-        return (this.stage?.userFields || []).filter(isField => {
+        return (this.instance?.userFields || []).filter(isField => {
             return field === isField;
         }).length > 0;
     }
@@ -60,7 +55,7 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
                 label=${t`Name`}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.stage?.name || "")}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.name || "")}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header">
@@ -83,7 +78,7 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="caseInsensitiveMatching">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.stage?.caseInsensitiveMatching, true)}>
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.caseInsensitiveMatching, true)}>
                             <label class="pf-c-check__label">
                                 ${t`Case insensitive matching`}
                             </label>
@@ -92,7 +87,7 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="showMatchedUser">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.stage?.showMatchedUser, true)}>
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.showMatchedUser, true)}>
                             <label class="pf-c-check__label">
                                 ${t`Show matched user`}
                             </label>
@@ -103,13 +98,13 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
                         label=${t`Enrollment flow`}
                         name="enrollmentFlow">
                         <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.stage?.enrollmentFlow === undefined}>---------</option>
+                            <option value="" ?selected=${this.instance?.enrollmentFlow === undefined}>---------</option>
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
                                 designation: FlowDesignationEnum.Enrollment,
                             }).then(flows => {
                                 return flows.results.map(flow => {
-                                    const selected = this.stage?.enrollmentFlow === flow.pk;
+                                    const selected = this.instance?.enrollmentFlow === flow.pk;
                                     return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
                                 });
                             }), html`<option>${t`Loading...`}</option>`)}
@@ -120,13 +115,13 @@ export class IdentificationStageForm extends Form<IdentificationStage> {
                         label=${t`Recovery flow`}
                         name="recoveryFlow">
                         <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.stage?.recoveryFlow === undefined}>---------</option>
+                            <option value="" ?selected=${this.instance?.recoveryFlow === undefined}>---------</option>
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
                                 designation: FlowDesignationEnum.Recovery,
                             }).then(flows => {
                                 return flows.results.map(flow => {
-                                    const selected = this.stage?.recoveryFlow === flow.pk;
+                                    const selected = this.instance?.recoveryFlow === flow.pk;
                                     return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
                                 });
                             }), html`<option>${t`Loading...`}</option>`)}

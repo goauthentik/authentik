@@ -90,7 +90,7 @@ export class StageListPage extends TablePage<Stage> {
                 <ak-proxy-form
                     slot="form"
                     .args=${{
-                        "stageUUID": item.pk
+                        "instancePk": item.pk
                     }}
                     type=${ifDefined(item.component)}>
                 </ak-proxy-form>
