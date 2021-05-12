@@ -18,8 +18,6 @@ class OutpostSerializer(ModelSerializer):
     """Outpost Serializer"""
 
     config = JSONField(validators=[is_dict], source="_config")
-    # TODO: Remove _config again, this is only here for legacy with older outposts
-    _config = JSONField(validators=[is_dict], read_only=True)
     providers_obj = ProviderSerializer(source="providers", many=True, read_only=True)
 
     def validate_config(self, config) -> dict:
@@ -42,7 +40,6 @@ class OutpostSerializer(ModelSerializer):
             "service_connection",
             "token_identifier",
             "config",
-            "_config",
         ]
 
 
