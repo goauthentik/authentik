@@ -1,6 +1,7 @@
 """Outpost models"""
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
+from os import environ
 from typing import Iterable, Optional, Union
 from uuid import uuid4
 
@@ -26,7 +27,7 @@ from packaging.version import LegacyVersion, Version, parse
 from structlog.stdlib import get_logger
 from urllib3.exceptions import HTTPError
 
-from authentik import __version__
+from authentik import ENV_GIT_HASH_KEY, __version__
 from authentik.core.models import USER_ATTRIBUTE_SA, Provider, Token, TokenIntents, User
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
@@ -411,6 +412,7 @@ class OutpostState:
     last_seen: Optional[datetime] = field(default=None)
     version: Optional[str] = field(default=None)
     version_should: Union[Version, LegacyVersion] = field(default=OUR_VERSION)
+    build_hash: str = field(default="")
 
     _outpost: Optional[Outpost] = field(default=None)
 
@@ -418,6 +420,8 @@ class OutpostState:
     def version_outdated(self) -> bool:
         """Check if outpost version matches our version"""
         if not self.version:
+            return False
+        if self.build_hash != environ.get(ENV_GIT_HASH_KEY, ""):
             return False
         return parse(self.version) < OUR_VERSION
 
