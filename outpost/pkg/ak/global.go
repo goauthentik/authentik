@@ -33,8 +33,7 @@ func doGlobalSetup(config map[string]interface{}) {
 	default:
 		log.SetLevel(log.DebugLevel)
 	}
-	buildHash := os.Getenv("GIT_BUILD_HASH")
-	log.WithField("buildHash", buildHash).WithField("version", pkg.VERSION).Info("Starting authentik outpost")
+	log.WithField("buildHash", pkg.BUILD()).WithField("version", pkg.VERSION).Info("Starting authentik outpost")
 
 	var dsn string
 	if config[ConfigErrorReportingEnabled].(bool) {
