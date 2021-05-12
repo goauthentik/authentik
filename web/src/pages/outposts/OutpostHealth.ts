@@ -42,13 +42,12 @@ export class OutpostHealthElement extends LitElement {
             return html`<ak-spinner></ak-spinner>`;
         }
         if (this.outpostHealth.length === 0) {
-            return html`<li>
+            return html`
                 <ul>
                     <li role="cell">
                         <ak-label color=${PFColor.Grey} text=${t`Not available`}></ak-label>
                     </li>
-                </ul>
-            </li>`;
+                </ul>`;
         }
         return html`<ul>${this.outpostHealth.map((h) => {
             return html`<li>

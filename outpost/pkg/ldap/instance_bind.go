@@ -67,7 +67,7 @@ func (pi *ProviderInstance) Bind(username string, bindPW string, conn net.Conn) 
 	}
 	params := url.Values{}
 	params.Add("goauthentik.io/outpost/ldap", "true")
-	passed, err := pi.solveFlowChallenge(username, bindPW, client, params.Encode())
+	passed, err := pi.solveFlowChallenge(username, bindPW, client, params.Encode(), 1)
 	if err != nil {
 		pi.log.WithField("boundDN", username).WithError(err).Warning("failed to solve challenge")
 		return ldap.LDAPResultOperationsError, nil
@@ -139,7 +139,7 @@ func (pi *ProviderInstance) delayDeleteUserInfo(dn string) {
 	}()
 }
 
-func (pi *ProviderInstance) solveFlowChallenge(bindDN string, password string, client *http.Client, urlParams string) (bool, error) {
+func (pi *ProviderInstance) solveFlowChallenge(bindDN string, password string, client *http.Client, urlParams string, depth int) (bool, error) {
 	challenge, err := pi.s.ac.Client.Flows.FlowsExecutorGet(&flows.FlowsExecutorGetParams{
 		FlowSlug:   pi.flowSlug,
 		Query:      urlParams,
@@ -169,6 +169,10 @@ func (pi *ProviderInstance) solveFlowChallenge(bindDN string, password string, c
 	}
 	response, err := pi.s.ac.Client.Flows.FlowsExecutorSolve(responseParams, pi.s.ac.Auth)
 	pi.log.WithField("component", response.Payload.Component).WithField("type", *response.Payload.Type).Debug("Got response")
+	switch response.Payload.Component {
+	case "ak-stage-access-denied":
+		return false, errors.New("got ak-stage-access-denied")
+	}
 	if *response.Payload.Type == "redirect" {
 		return true, nil
 	}
@@ -184,5 +188,8 @@ func (pi *ProviderInstance) solveFlowChallenge(bindDN string, password string, c
 			}
 		}
 	}
-	return pi.solveFlowChallenge(bindDN, password, client, urlParams)
+	if depth >= 10 {
+		return false, errors.New("exceeded stage recursion depth")
+	}
+	return pi.solveFlowChallenge(bindDN, password, client, urlParams, depth+1)
 }
