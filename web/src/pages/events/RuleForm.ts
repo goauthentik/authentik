@@ -67,7 +67,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                     <option value="" ?selected=${this.instance?.group === undefined}>---------</option>
                     ${until(new CoreApi(DEFAULT_CONFIG).coreGroupsList({}).then(groups => {
                         return groups.results.map(group => {
-                            return html`<option value=${ifDefined(group.pk)} ?selected=${this.instance?.group?.groupUuid === group.pk}>${group.name}</option>`;
+                            return html`<option value=${ifDefined(group.pk)} ?selected=${this.instance?.group === group.pk}>${group.name}</option>`;
                         });
                     }), html`<option>${t`Loading...`}</option>`)}
                 </select>
@@ -80,7 +80,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                     ${until(new EventsApi(DEFAULT_CONFIG).eventsTransportsList({}).then(transports => {
                         return transports.results.map(transport => {
                             const selected = Array.from(this.instance?.transports || []).some(su => {
-                                return su.uuid == transport.pk;
+                                return su == transport.pk;
                             });
                             return html`<option value=${ifDefined(transport.pk)} ?selected=${selected}>${transport.name}</option>`;
                         });

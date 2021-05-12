@@ -15694,6 +15694,7 @@ definitions:
   NotificationRule:
     required:
       - name
+      - transports
     type: object
     properties:
       pk:
@@ -15706,38 +15707,17 @@ definitions:
         type: string
         minLength: 1
       transports:
+        description: Select which transports should be used to notify the user. If
+          none are selected, the notification will only be shown in the authentik
+          UI.
         type: array
         items:
-          required:
-            - name
-            - mode
-          type: object
-          properties:
-            uuid:
-              title: Uuid
-              type: string
-              format: uuid
-              readOnly: true
-            name:
-              title: Name
-              type: string
-              minLength: 1
-            mode:
-              title: Mode
-              type: string
-              enum:
-                - webhook
-                - webhook_slack
-                - email
-            webhook_url:
-              title: Webhook url
-              type: string
-            send_once:
-              title: Send once
-              description: Only send notification once, for example when sending a
-                webhook into a chat channel.
-              type: boolean
-        readOnly: true
+          description: Select which transports should be used to notify the user.
+            If none are selected, the notification will only be shown in the authentik
+            UI.
+          type: string
+          format: uuid
+        uniqueItems: true
       severity:
         title: Severity
         description: Controls which severity level the created notifications will
@@ -15748,57 +15728,14 @@ definitions:
           - warning
           - alert
       group:
-        required:
-          - name
-        type: object
-        properties:
-          group_uuid:
-            title: Group uuid
-            type: string
-            format: uuid
-            readOnly: true
-          name:
-            title: Name
-            type: string
-            maxLength: 80
-            minLength: 1
-          is_superuser:
-            title: Is superuser
-            description: Users added to this group will be superusers.
-            type: boolean
-          attributes:
-            title: Attributes
-            type: object
-          parent:
-            required:
-              - name
-              - parent
-            type: object
-            properties:
-              group_uuid:
-                title: Group uuid
-                type: string
-                format: uuid
-                readOnly: true
-              name:
-                title: Name
-                type: string
-                maxLength: 80
-                minLength: 1
-              is_superuser:
-                title: Is superuser
-                description: Users added to this group will be superusers.
-                type: boolean
-              attributes:
-                title: Attributes
-                type: object
-              parent:
-                title: Parent
-                type: string
-                format: uuid
-                x-nullable: true
-            readOnly: true
-        readOnly: true
+        title: Group
+        description: Define which group of users this notification should be sent
+          and shown to. If left empty, Notification won't ben sent.
+        type: string
+        format: uuid
+        x-nullable: true
+      group_obj:
+        $ref: '#/definitions/Group'
   NotificationTransport:
     required:
       - name

@@ -55,7 +55,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
         return [
             html`${item.name}`,
             html`${item.severity}`,
-            html`${item.group?.name || t`None (rule disabled)`}`,
+            html`${item.groupObj?.name || t`None (rule disabled)`}`,
             html`
             <ak-forms-modal>
                 <span slot="submit">

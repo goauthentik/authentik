@@ -82,6 +82,7 @@ class OutpostConsumer(AuthJsonConsumer):
         )
         if msg.instruction == WebsocketMessageInstruction.HELLO:
             state.version = msg.args.get("version", None)
+            state.build_hash = msg.args.get("buildHash", "")
         elif msg.instruction == WebsocketMessageInstruction.ACK:
             return
         state.save(timeout=OUTPOST_HELLO_INTERVAL * 1.5)

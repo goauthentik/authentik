@@ -8,8 +8,8 @@ import (
 	"github.com/nmcclain/ldap"
 )
 
-func (ls *LDAPServer) Search(boundDN string, searchReq ldap.SearchRequest, conn net.Conn) (ldap.ServerSearchResult, error) {
-	ls.log.WithField("boundDN", boundDN).WithField("baseDN", searchReq.BaseDN).Info("search")
+func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn net.Conn) (ldap.ServerSearchResult, error) {
+	ls.log.WithField("bindDN", bindDN).WithField("baseDN", searchReq.BaseDN).Info("search")
 	if searchReq.BaseDN == "" {
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultSuccess}, nil
 	}
@@ -21,7 +21,7 @@ func (ls *LDAPServer) Search(boundDN string, searchReq ldap.SearchRequest, conn 
 	for _, provider := range ls.providers {
 		providerBase, _ := goldap.ParseDN(provider.BaseDN)
 		if providerBase.AncestorOf(bd) {
-			return provider.Search(boundDN, searchReq, conn)
+			return provider.Search(bindDN, searchReq, conn)
 		}
 	}
 	return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, errors.New("no provider could handle request")

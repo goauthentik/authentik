@@ -23,7 +23,7 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID strfmt.UUID) {
 
 	header := http.Header{
 		"Authorization": []string{authHeader},
-		"User-Agent":    []string{fmt.Sprintf("authentik-proxy@%s", pkg.VERSION)},
+		"User-Agent":    []string{pkg.UserAgent()},
 	}
 
 	value, set := os.LookupEnv("AUTHENTIK_INSECURE")
@@ -46,8 +46,9 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID strfmt.UUID) {
 	msg := websocketMessage{
 		Instruction: WebsocketInstructionHello,
 		Args: map[string]interface{}{
-			"version": pkg.VERSION,
-			"uuid":    ac.instanceUUID.String(),
+			"version":   pkg.VERSION,
+			"buildHash": pkg.BUILD(),
+			"uuid":      ac.instanceUUID.String(),
 		},
 	}
 	err := ws.WriteJSON(msg)
@@ -76,7 +77,7 @@ func (ac *APIController) startWSHandler() {
 		var wsMsg websocketMessage
 		err := ac.wsConn.ReadJSON(&wsMsg)
 		if err != nil {
-			logger.Println("read:", err)
+			logger.WithError(err).Warning("ws write error, reconnecting")
 			ac.wsConn.CloseAndReconnect()
 			continue
 		}
@@ -100,14 +101,15 @@ func (ac *APIController) startWSHealth() {
 		aliveMsg := websocketMessage{
 			Instruction: WebsocketInstructionHello,
 			Args: map[string]interface{}{
-				"version": pkg.VERSION,
-				"uuid":    ac.instanceUUID.String(),
+				"version":   pkg.VERSION,
+				"buildHash": pkg.BUILD(),
+				"uuid":      ac.instanceUUID.String(),
 			},
 		}
 		err := ac.wsConn.WriteJSON(aliveMsg)
 		ac.logger.WithField("loop", "ws-health").Trace("hello'd")
 		if err != nil {
-			ac.logger.WithField("loop", "ws-health").Println("write:", err)
+			ac.logger.WithField("loop", "ws-health").WithError(err).Warning("ws write error, reconnecting")
 			ac.wsConn.CloseAndReconnect()
 			continue
 		}

@@ -70,7 +70,7 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                     <ak-form-element-horizontal
                         label=${t`Not configured action`}
                         ?required=${true}
-                        name="mode">
+                        name="notConfiguredAction">
                         <select class="pf-c-form-control" @change=${(ev: Event) => {
                             const target = ev.target as HTMLSelectElement;
                             if (target.selectedOptions[0].value === AuthenticatorValidateStageNotConfiguredActionEnum.Configure) {

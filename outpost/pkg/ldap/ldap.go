@@ -31,7 +31,7 @@ type ProviderInstance struct {
 }
 
 type UserFlags struct {
-	UserInfo  *models.User
+	UserInfo  models.User
 	CanSearch bool
 }
 

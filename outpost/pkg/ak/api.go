@@ -1,7 +1,6 @@
 package ak
 
 import (
-	"fmt"
 	"math/rand"
 	"net/url"
 	"os"
@@ -43,7 +42,7 @@ type APIController struct {
 // NewAPIController initialise new API Controller instance from URL and API token
 func NewAPIController(akURL url.URL, token string) *APIController {
 	transport := httptransport.New(akURL.Host, client.DefaultBasePath, []string{akURL.Scheme})
-	transport.Transport = SetUserAgent(getTLSTransport(), fmt.Sprintf("authentik-proxy@%s", pkg.VERSION))
+	transport.Transport = SetUserAgent(getTLSTransport(), pkg.UserAgent())
 
 	// create the transport
 	auth := httptransport.BearerToken(token)

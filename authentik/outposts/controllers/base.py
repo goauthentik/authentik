@@ -1,11 +1,12 @@
 """Base Controller"""
 from dataclasses import dataclass
+from os import environ
 from typing import Optional
 
 from structlog.stdlib import get_logger
 from structlog.testing import capture_logs
 
-from authentik import __version__
+from authentik import ENV_GIT_HASH_KEY, __version__
 from authentik.lib.config import CONFIG
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.outposts.models import Outpost, OutpostServiceConnection
@@ -69,4 +70,8 @@ class BaseController:
     def get_container_image(self) -> str:
         """Get container image to use for this outpost"""
         image_name_template: str = CONFIG.y("outposts.docker_image_base")
-        return image_name_template % {"type": self.outpost.type, "version": __version__}
+        return image_name_template % {
+            "type": self.outpost.type,
+            "version": __version__,
+            "build_hash": environ.get(ENV_GIT_HASH_KEY, ""),
+        }
