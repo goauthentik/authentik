@@ -47,7 +47,7 @@ func (pi *ProviderInstance) getUsername(dn string) (string, error) {
 	return "", errors.New("failed to find cn")
 }
 
-func (pi *ProviderInstance) Bind(username string, bindPW string, conn net.Conn) (ldap.LDAPResultCode, error) {
+func (pi *ProviderInstance) Bind(username string, bindDN, bindPW string, conn net.Conn) (ldap.LDAPResultCode, error) {
 	jar, err := cookiejar.New(nil)
 	if err != nil {
 		pi.log.WithError(err).Warning("Failed to create cookiejar")
@@ -69,7 +69,7 @@ func (pi *ProviderInstance) Bind(username string, bindPW string, conn net.Conn) 
 	params.Add("goauthentik.io/outpost/ldap", "true")
 	passed, err := pi.solveFlowChallenge(username, bindPW, client, params.Encode(), 1)
 	if err != nil {
-		pi.log.WithField("boundDN", username).WithError(err).Warning("failed to solve challenge")
+		pi.log.WithField("bindDN", bindDN).WithError(err).Warning("failed to solve challenge")
 		return ldap.LDAPResultOperationsError, nil
 	}
 	if !passed {
@@ -82,25 +82,25 @@ func (pi *ProviderInstance) Bind(username string, bindPW string, conn net.Conn) 
 	}, httptransport.PassThroughAuth)
 	if err != nil {
 		if _, denied := err.(*core.CoreApplicationsCheckAccessForbidden); denied {
-			pi.log.WithField("boundDN", username).Info("Access denied for user")
+			pi.log.WithField("bindDN", bindDN).Info("Access denied for user")
 			return ldap.LDAPResultInsufficientAccessRights, nil
 		}
-		pi.log.WithField("boundDN", username).WithError(err).Warning("failed to check access")
+		pi.log.WithField("bindDN", bindDN).WithError(err).Warning("failed to check access")
 		return ldap.LDAPResultOperationsError, nil
 	}
-	pi.log.WithField("boundDN", username).Info("User has access")
+	pi.log.WithField("bindDN", bindDN).Info("User has access")
 	// Get user info to store in context
 	userInfo, err := pi.s.ac.Client.Core.CoreUsersMe(&core.CoreUsersMeParams{
 		Context:    context.Background(),
 		HTTPClient: client,
 	}, httptransport.PassThroughAuth)
 	if err != nil {
-		pi.log.WithField("boundDN", username).WithError(err).Warning("failed to get user info")
+		pi.log.WithField("bindDN", bindDN).WithError(err).Warning("failed to get user info")
 		return ldap.LDAPResultOperationsError, nil
 	}
 	pi.boundUsersMutex.Lock()
-	pi.boundUsers[username] = UserFlags{
-		UserInfo:  userInfo.Payload.User,
+	pi.boundUsers[bindDN] = UserFlags{
+		UserInfo:  *userInfo.Payload.User,
 		CanSearch: pi.SearchAccessCheck(userInfo.Payload.User),
 	}
 	defer pi.boundUsersMutex.Unlock()
@@ -112,7 +112,8 @@ func (pi *ProviderInstance) Bind(username string, bindPW string, conn net.Conn) 
 func (pi *ProviderInstance) SearchAccessCheck(user *models.User) bool {
 	for _, group := range user.Groups {
 		for _, allowedGroup := range pi.searchAllowedGroups {
-			if &group.Pk == allowedGroup {
+			pi.log.WithField("userGroup", group.Pk).WithField("allowedGroup", allowedGroup).Trace("Checking search access")
+			if group.Pk.String() == allowedGroup.String() {
 				pi.log.WithField("group", group.Name).Info("Allowed access to search")
 				return true
 			}

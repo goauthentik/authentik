@@ -29,10 +29,13 @@ func (pi *ProviderInstance) Search(bindDN string, searchReq ldap.SearchRequest, 
 	pi.boundUsersMutex.RLock()
 	defer pi.boundUsersMutex.RUnlock()
 	flags, ok := pi.boundUsers[bindDN]
+	pi.log.WithField("bindDN", bindDN).WithField("ok", ok).Debugf("%+v\n", flags)
 	if !ok {
+		pi.log.Debug("User info not cached")
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, errors.New("access denied")
 	}
 	if !flags.CanSearch {
+		pi.log.Debug("User can't search")
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, errors.New("access denied")
 	}
 
