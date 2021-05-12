@@ -139,7 +139,7 @@ jobs:
           docker-compose pull -q
           docker-compose up --no-start
           docker-compose start postgresql redis
-          docker-compose run -u root --entrypoint /bin/bash server -c "pip install --no-cache -r requirements-dev.txt && ./manage.py test authentik"
+          docker-compose run -u root --entrypoint /bin/bash server -c "apt-get update && apt-get install -y --no-install-recommends git && pip install --no-cache -r requirements-dev.txt && ./manage.py test authentik"
   sentry-release:
     if: ${{ github.event_name == 'release' }}
     needs:
