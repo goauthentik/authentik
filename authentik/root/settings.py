@@ -320,6 +320,7 @@ CELERY_RESULT_BACKEND = (
 # Database backup
 DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
 DBBACKUP_STORAGE_OPTIONS = {"location": "./backups" if DEBUG else "/backups"}
+DBBACKUP_FILENAME_TEMPLATE = 'authentik-backup-{datetime}.sql'
 if CONFIG.y("postgresql.s3_backup"):
     DBBACKUP_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
     DBBACKUP_STORAGE_OPTIONS = {
