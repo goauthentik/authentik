@@ -116,7 +116,9 @@ stages:
               command: 'buildAndPush'
               Dockerfile: 'outpost/proxy.Dockerfile'
               buildContext: 'outpost/'
-              tags: "gh-$(branchName)"
+              tags: |
+                gh-$(branchName)
+                gh-$(Build.SourceVersion)
               arguments: '--build-arg GIT_BUILD_HASH=$(Build.SourceVersion)'
       - job: ldap_build_docker
         pool:
@@ -142,5 +144,7 @@ stages:
               command: 'buildAndPush'
               Dockerfile: 'outpost/ldap.Dockerfile'
               buildContext: 'outpost/'
-              tags: "gh-$(branchName)"
+              tags: |
+                gh-$(branchName)
+                gh-$(Build.SourceVersion)
               arguments: '--build-arg GIT_BUILD_HASH=$(Build.SourceVersion)'
