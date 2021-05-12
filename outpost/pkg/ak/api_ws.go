@@ -76,7 +76,7 @@ func (ac *APIController) startWSHandler() {
 		var wsMsg websocketMessage
 		err := ac.wsConn.ReadJSON(&wsMsg)
 		if err != nil {
-			logger.Println("read:", err)
+			logger.WithError(err).Warning("ws write error, reconnecting")
 			ac.wsConn.CloseAndReconnect()
 			continue
 		}
@@ -107,7 +107,7 @@ func (ac *APIController) startWSHealth() {
 		err := ac.wsConn.WriteJSON(aliveMsg)
 		ac.logger.WithField("loop", "ws-health").Trace("hello'd")
 		if err != nil {
-			ac.logger.WithField("loop", "ws-health").Println("write:", err)
+			ac.logger.WithField("loop", "ws-health").WithError(err).Warning("ws write error, reconnecting")
 			ac.wsConn.CloseAndReconnect()
 			continue
 		}
