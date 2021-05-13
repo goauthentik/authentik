@@ -210,6 +210,7 @@ class FlowViewSet(ModelViewSet):
                     request.user, "authentik_policies.view_policybinding"
                 )
                 .filter(target=stage_binding)
+                .exclude(policy__isnull=True)
                 .order_by("order")
             ):
                 body.append(
