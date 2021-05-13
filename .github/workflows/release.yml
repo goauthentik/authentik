@@ -36,9 +36,9 @@ jobs:
         with:
           push: ${{ github.event_name == 'release' }}
           tags: |
-            beryju/authentik:2021.5.1-rc10,
+            beryju/authentik:2021.5.1,
             beryju/authentik:latest,
-            ghcr.io/goauthentik/server:2021.5.1-rc10,
+            ghcr.io/goauthentik/server:2021.5.1,
             ghcr.io/goauthentik/server:latest
           platforms: linux/amd64,linux/arm64
           context: .
@@ -75,9 +75,9 @@ jobs:
         with:
           push: ${{ github.event_name == 'release' }}
           tags: |
-            beryju/authentik-proxy:2021.5.1-rc10,
+            beryju/authentik-proxy:2021.5.1,
             beryju/authentik-proxy:latest,
-            ghcr.io/goauthentik/proxy:2021.5.1-rc10,
+            ghcr.io/goauthentik/proxy:2021.5.1,
             ghcr.io/goauthentik/proxy:latest
           context: outpost/
           file: outpost/proxy.Dockerfile
@@ -115,9 +115,9 @@ jobs:
         with:
           push: ${{ github.event_name == 'release' }}
           tags: |
-            beryju/authentik-ldap:2021.5.1-rc10,
+            beryju/authentik-ldap:2021.5.1,
             beryju/authentik-ldap:latest,
-            ghcr.io/goauthentik/ldap:2021.5.1-rc10,
+            ghcr.io/goauthentik/ldap:2021.5.1,
             ghcr.io/goauthentik/ldap:latest
           context: outpost/
           file: outpost/ldap.Dockerfile
@@ -155,5 +155,5 @@ jobs:
           SENTRY_PROJECT: authentik
           SENTRY_URL: https://sentry.beryju.org
         with:
-          version: authentik@2021.5.1-rc10
+          version: authentik@2021.5.1
           environment: beryjuorg-prod
