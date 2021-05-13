@@ -104,5 +104,5 @@ class OutpostDockerTests(TestCase):
         self.assertEqual(compose["version"], "3.5")
         self.assertEqual(
             compose["services"]["authentik_proxy"]["image"],
-            f"beryju/authentik-proxy:{__version__}",
+            f"ghcr.io/goauthentik/proxy:{__version__}",
         )
