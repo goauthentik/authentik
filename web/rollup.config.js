@@ -104,6 +104,7 @@ export default [
                 dir: "dist",
                 sourcemap: true,
                 manualChunks: manualChunks,
+                chunkFileNames: "[name].js"
             },
         ],
         plugins: [
@@ -135,6 +136,7 @@ export default [
                 dir: "dist",
                 sourcemap: true,
                 manualChunks: manualChunks,
+                chunkFileNames: "[name].js"
             },
         ],
         plugins: [
