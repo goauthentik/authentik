@@ -70,7 +70,7 @@ class TestProviderProxy(SeleniumTestCase):
             authorization_flow=Flow.objects.get(
                 slug="default-provider-authorization-implicit-consent"
             ),
-            internal_host="http://localhost:80",
+            internal_host="http://localhost",
             external_host="http://localhost:4180",
         )
         # Ensure OAuth2 Params are set
@@ -123,7 +123,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
             authorization_flow=Flow.objects.get(
                 slug="default-provider-authorization-implicit-consent"
             ),
-            internal_host="http://localhost:80",
+            internal_host="http://localhost",
             external_host="http://localhost:4180",
         )
         # Ensure OAuth2 Params are set
