@@ -113,13 +113,21 @@ stages:
             inputs:
               containerRegistry: 'beryjuorg-harbor'
               repository: 'authentik/outpost-proxy'
-              command: 'buildAndPush'
+              command: 'build'
               Dockerfile: 'outpost/proxy.Dockerfile'
               buildContext: 'outpost/'
               tags: |
                 gh-$(branchName)
                 gh-$(Build.SourceVersion)
               arguments: '--build-arg GIT_BUILD_HASH=$(Build.SourceVersion)'
+          - task: Docker@2
+            inputs:
+              containerRegistry: 'beryjuorg-harbor'
+              repository: 'authentik/outpost-proxy'
+              command: 'push'
+              tags: |
+                gh-$(branchName)
+                gh-$(Build.SourceVersion)
       - job: ldap_build_docker
         pool:
           vmImage: 'ubuntu-latest'
@@ -141,10 +149,18 @@ stages:
             inputs:
               containerRegistry: 'beryjuorg-harbor'
               repository: 'authentik/outpost-ldap'
-              command: 'buildAndPush'
+              command: 'build'
               Dockerfile: 'outpost/ldap.Dockerfile'
               buildContext: 'outpost/'
               tags: |
                 gh-$(branchName)
                 gh-$(Build.SourceVersion)
               arguments: '--build-arg GIT_BUILD_HASH=$(Build.SourceVersion)'
+          - task: Docker@2
+            inputs:
+              containerRegistry: 'beryjuorg-harbor'
+              repository: 'authentik/outpost-ldap'
+              command: 'push'
+              tags: |
+                gh-$(branchName)
+                gh-$(Build.SourceVersion)
