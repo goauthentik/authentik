@@ -64,8 +64,13 @@ services:
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
       # AUTHENTIK_ERROR_REPORTING__ENABLED: "true"
+    # This is optional, and can be removed. If you remove this, the following will happen
+    # - The permissions for the /backups and /media folders aren't fixed, so make sure they are 1000:1000
+    # - The docker socket can't be accessed anymore
+    user: root
     volumes:
       - ./backups:/backups
+      - ./media:/media
       - /var/run/docker.sock:/var/run/docker.sock
       - ./custom-templates:/templates
       - geoip:/geoip
