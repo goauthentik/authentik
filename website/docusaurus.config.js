@@ -34,7 +34,7 @@ module.exports = {
                     position: "left",
                 },
                 {
-                    href: "https://github.com/beryju/authentik",
+                    href: "https://github.com/goauthentik/authentik",
                     label: "GitHub",
                     position: "right",
                 },
@@ -69,7 +69,7 @@ module.exports = {
                     items: [
                         {
                             label: "GitHub",
-                            href: "https://github.com/beryju/authentik",
+                            href: "https://github.com/goauthentik/authentik",
                         },
                         {
                             label: "Discord",
@@ -95,7 +95,7 @@ module.exports = {
                 docs: {
                     id: "docs",
                     sidebarPath: require.resolve("./sidebars.js"),
-                    editUrl: "https://github.com/beryju/authentik/edit/master/website/",
+                    editUrl: "https://github.com/goauthentik/authentik/edit/master/website/",
                 },
                 theme: {
                     customCss: require.resolve("./src/css/custom.css"),
@@ -111,7 +111,7 @@ module.exports = {
                 path: 'developer-docs',
                 routeBasePath: 'developer-docs',
                 sidebarPath: require.resolve('./sidebarsDev.js'),
-                editUrl: "https://github.com/beryju/authentik/edit/master/website/",
+                editUrl: "https://github.com/goauthentik/authentik/edit/master/website/",
             },
         ],
     ],

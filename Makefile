@@ -36,11 +36,5 @@ gen:
 		--additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
 	cd web/api && npx tsc
 
-local-stack:
-	export AUTHENTIK_TAG=testing
-	docker build -t beryju/authentik:testng .
-	docker-compose up -d
-	docker-compose run --rm server migrate
-
 run:
 	go run -v cmd/server/main.go
