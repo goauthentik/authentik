@@ -104,7 +104,7 @@ export default [
                 dir: "dist",
                 sourcemap: true,
                 manualChunks: manualChunks,
-                chunkFileNames: "[name].js"
+                chunkFileNames: "admin-[name].js"
             },
         ],
         plugins: [
@@ -136,7 +136,7 @@ export default [
                 dir: "dist",
                 sourcemap: true,
                 manualChunks: manualChunks,
-                chunkFileNames: "[name].js"
+                chunkFileNames: "flow-[name].js"
             },
         ],
         plugins: [
