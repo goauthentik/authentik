@@ -588,11 +588,11 @@
         },
         "kubernetes": {
             "hashes": [
-                "sha256:23c85d8571df8f56e773f1a413bc081537536dc47e2b5e8dc2e6262edb2c57ca",
-                "sha256:ec52ea01d52e2ec3da255992f7e859f3a76f2bdb51cf65ba8cd71dfc309d8daa"
+                "sha256:225a95a0aadbd5b645ab389d941a7980db8cdad2a776fde64d1b43fc3299bde9",
+                "sha256:c69b318696ba797dcf63eb928a8d4370c52319f4140023c502d7dfdf2080eb79"
             ],
             "index": "pypi",
-            "version": "==12.0.1"
+            "version": "==17.17.0"
         },
         "ldap3": {
             "hashes": [
