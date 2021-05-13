@@ -75,5 +75,6 @@ def backup_database(self: MonitoredTask):  # pragma: no cover
         Boto3Error,
         PermissionError,
         CommandConnectorError,
+        ValueError,
     ) as exc:
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))

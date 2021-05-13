@@ -4,6 +4,7 @@ from typing import Optional
 from aioredis.errors import ConnectionClosedError, ReplyError
 from billiard.exceptions import WorkerLostError
 from botocore.client import ClientError
+from botocore.exceptions import BotoCoreError
 from celery.exceptions import CeleryError
 from channels.middleware import BaseMiddleware
 from channels_redis.core import ChannelFull
@@ -72,6 +73,7 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
         WorkerLostError,
         CeleryError,
         # S3 errors
+        BotoCoreError,
         ClientError,
         # custom baseclass
         SentryIgnoredException,
@@ -87,6 +89,6 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
         if isinstance(exc_value, ignored_classes):
             return None
     if "logger" in event:
-        if event["logger"] in ["dbbackup"]:
+        if event["logger"] in ["dbbackup", "botocore"]:
             return None
     return event
