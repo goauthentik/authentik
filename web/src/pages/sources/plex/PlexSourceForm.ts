@@ -76,6 +76,40 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
         this.plexResources = await new PlexAPIClient(this.plexToken).getServers();
     }
 
+    renderSettings(): TemplateResult {
+        if (!this.plexToken) {
+            return html`
+                <button class="pf-c-button pf-m-primary" type="button" @click=${() => {
+                    this.doAuth();
+                }}>
+                    ${t`Load servers`}
+                </button>`;
+        }
+        return html`<ak-form-element-horizontal name="allowFriends">
+                <div class="pf-c-check">
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.allowFriends, true)}>
+                    <label class="pf-c-check__label">
+                        ${t`Allow friends to authenticate via Plex, even if you don't share any servers`}
+                    </label>
+                </div>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${t`Allowed servers`}
+                ?required=${true}
+                name="allowedServers">
+                <select class="pf-c-form-control" multiple>
+                    ${this.plexResources?.map(r => {
+                        const selected = Array.from(this.instance?.allowedServers || []).some(server => {
+                            return server == r.clientIdentifier;
+                        });
+                        return html`<option value=${r.clientIdentifier} ?selected=${selected}>${r.name}</option>`;
+                    })}
+                </select>
+                <p class="pf-c-form__helper-text">${t`Select which server a user has to be a member of to be allowed to authenticate.`}</p>
+                <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
+            </ak-form-element-horizontal>`;
+    }
+
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
@@ -132,36 +166,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                         name="clientId">
                         <input type="text" value="${first(this.instance?.clientId)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="allowFriends">
-                        <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.allowFriends, true)}>
-                            <label class="pf-c-check__label">
-                                ${t`Allow friends to authenticate via Plex, even if you don't share any servers`}
-                            </label>
-                        </div>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`Allowed servers`}
-                        ?required=${true}
-                        name="allowedServers">
-                        <select class="pf-c-form-control" multiple>
-                            ${this.plexResources?.map(r => {
-                                const selected = Array.from(this.instance?.allowedServers || []).some(server => {
-                                    return server == r.clientIdentifier;
-                                });
-                                return html`<option value=${r.clientIdentifier} ?selected=${selected}>${r.name}</option>`;
-                            })}
-                        </select>
-                        <p class="pf-c-form__helper-text">${t`Select which server a user has to be a member of to be allowed to authenticate.`}</p>
-                        <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
-                        <p class="pf-c-form__helper-text">
-                            <button class="pf-c-button pf-m-primary" type="button" @click=${() => {
-                                this.doAuth();
-                            }}>
-                                ${t`Load servers`}
-                            </button>
-                        </p>
-                    </ak-form-element-horizontal>
+                    ${this.renderSettings()}
                 </div>
             </ak-form-group>
             <ak-form-group>
