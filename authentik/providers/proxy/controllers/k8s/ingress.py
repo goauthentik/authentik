@@ -84,6 +84,7 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
             "traefik.ingress.kubernetes.io/affinity": "true",
             "nginx.ingress.kubernetes.io/proxy-buffers-number": "4",
             "nginx.ingress.kubernetes.io/proxy-buffer-size": "16k",
+            "nginx.ingress.kubernetes.io/backend-protocol": "HTTPS"
         }
         annotations.update(
             self.controller.outpost.config.kubernetes_ingress_annotations
@@ -113,7 +114,7 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
                             NetworkingV1beta1HTTPIngressPath(
                                 backend=NetworkingV1beta1IngressBackend(
                                     service_name=self.name,
-                                    service_port="http",
+                                    service_port="https",
                                 ),
                                 path="/akprox",
                             )
