@@ -73,7 +73,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                 <ak-proxy-form
                     slot="form"
                     .args=${{
-                        "mappingUUID": item.pk
+                        "instancePk": item.pk
                     }}
                     type=${ifDefined(item.component)}>
                 </ak-proxy-form>
