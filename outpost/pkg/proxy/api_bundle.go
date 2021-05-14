@@ -80,19 +80,19 @@ func (pb *providerBundle) prepareOpts(provider *models.ProxyOutpostConfig) *opti
 				ID:                    "default",
 				URI:                   provider.InternalHost,
 				Path:                  "/",
-				InsecureSkipTLSVerify: provider.InternalHostSslValidation,
+				InsecureSkipTLSVerify: !provider.InternalHostSslValidation,
 			},
 		}
 	}
 
 	if provider.Certificate != nil {
-		pb.log.WithField("provider", provider.ClientID).Debug("Enabling TLS")
+		pb.log.WithField("provider", provider.Name).Debug("Enabling TLS")
 		cert, err := pb.s.ak.Client.Crypto.CryptoCertificatekeypairsViewCertificate(&crypto.CryptoCertificatekeypairsViewCertificateParams{
 			Context: context.Background(),
 			KpUUID:  *provider.Certificate,
 		}, pb.s.ak.Auth)
 		if err != nil {
-			pb.log.WithField("provider", provider.ClientID).WithError(err).Warning("Failed to fetch certificate")
+			pb.log.WithField("provider", provider.Name).WithError(err).Warning("Failed to fetch certificate")
 			return providerOpts
 		}
 		key, err := pb.s.ak.Client.Crypto.CryptoCertificatekeypairsViewPrivateKey(&crypto.CryptoCertificatekeypairsViewPrivateKeyParams{
@@ -100,17 +100,17 @@ func (pb *providerBundle) prepareOpts(provider *models.ProxyOutpostConfig) *opti
 			KpUUID:  *provider.Certificate,
 		}, pb.s.ak.Auth)
 		if err != nil {
-			pb.log.WithField("provider", provider.ClientID).WithError(err).Warning("Failed to fetch private key")
+			pb.log.WithField("provider", provider.Name).WithError(err).Warning("Failed to fetch private key")
 			return providerOpts
 		}
 
 		x509cert, err := tls.X509KeyPair([]byte(cert.Payload.Data), []byte(key.Payload.Data))
 		if err != nil {
-			pb.log.WithField("provider", provider.ClientID).WithError(err).Warning("Failed to parse certificate")
+			pb.log.WithField("provider", provider.Name).WithError(err).Warning("Failed to parse certificate")
 			return providerOpts
 		}
 		pb.cert = &x509cert
-		pb.log.WithField("provider", provider.ClientID).Debug("Loaded certificates")
+		pb.log.WithField("provider", provider.Name).Debug("Loaded certificates")
 	}
 	return providerOpts
 }
