@@ -75,7 +75,7 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                         });
                     }), html`<option>${t`Loading...`}</option>`)}
                 </select>
-                <p class="pf-c-form__helper-text">${t`Users in the selected group can do search queries.`}</p>
+                <p class="pf-c-form__helper-text">${t`Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed.`}</p>
             </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>
