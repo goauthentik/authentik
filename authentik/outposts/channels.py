@@ -77,6 +77,7 @@ class OutpostConsumer(AuthJsonConsumer):
         self.last_uid = uid
         state = OutpostState(
             uid=uid,
+            channel_id=self.channel_name,
             last_seen=datetime.now(),
             _outpost=self.outpost,
         )
