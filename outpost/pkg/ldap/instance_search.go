@@ -117,7 +117,7 @@ func (pi *ProviderInstance) Search(bindDN string, searchReq ldap.SearchRequest, 
 
 			attrs = append(attrs, AKAttrsToLDAP(u.Attributes)...)
 
-			dn := fmt.Sprintf("cn=%s,%s", *u.Name, pi.UserDN)
+			dn := fmt.Sprintf("cn=%s,%s", *u.Username, pi.UserDN)
 			entries = append(entries, &ldap.Entry{DN: dn, Attributes: attrs})
 		}
 	}
