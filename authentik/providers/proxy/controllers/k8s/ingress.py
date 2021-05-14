@@ -84,7 +84,7 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
             "traefik.ingress.kubernetes.io/affinity": "true",
             "nginx.ingress.kubernetes.io/proxy-buffers-number": "4",
             "nginx.ingress.kubernetes.io/proxy-buffer-size": "16k",
-            "nginx.ingress.kubernetes.io/backend-protocol": "HTTPS"
+            "nginx.ingress.kubernetes.io/backend-protocol": "HTTPS",
         }
         annotations.update(
             self.controller.outpost.config.kubernetes_ingress_annotations
