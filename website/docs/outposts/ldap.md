@@ -16,7 +16,18 @@ You can configure under which base DN the information should be available. For t
 
 Users are available under `ou=users,<base DN>` and groups under `ou=groups,<base DN>`.
 
-You can bind using the DN `cn=<username>,ou=users,<base DN>`.
+You can bind using the DN `cn=<username>,ou=users,<base DN>`, or using the following ldapsearch command for example:
+
+```
+ldapsearch \
+  -x \ # Only simple binds are currently supported
+  -h *ip* \
+  -p 3389 \
+  -D 'cn=*user*,ou=users,DC=ldap,DC=goauthentik,DC=io' \ # Bind user and password
+  -w '*password*' \
+  -b 'ou=users,DC=ldap,DC=goauthentik,DC=io' \ # The search base
+  '(objectClass=user)'
+```
 
 The following fields are currently sent for users:
 
