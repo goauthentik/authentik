@@ -46,7 +46,7 @@ class TestProviderProxy(SeleniumTestCase):
         """Start proxy container based on outpost created"""
         client: DockerClient = from_env()
         container = client.containers.run(
-            image=f"beryju/authentik-proxy:{__version__}",
+            image=f"ghcr.io/goauthentik/proxy:{__version__}",
             detach=True,
             network_mode="host",
             auto_remove=True,

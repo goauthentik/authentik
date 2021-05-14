@@ -11,10 +11,19 @@ version: "3.5"
 
 services:
   authentik_proxy:
-    image: beryju/authentik-proxy:2021.5.1
+    image: ghcr.io/goauthentik/proxy:2021.5.1
     ports:
       - 4180:4180
       - 4443:4443
+    environment:
+      AUTHENTIK_HOST: https://your-authentik.tld
+      AUTHENTIK_INSECURE: "false"
+      AUTHENTIK_TOKEN: token-generated-by-authentik
+  # Or, for the LDAP Outpost
+  authentik_proxy:
+    image: ghcr.io/goauthentik/ldap:2021.5.1
+    ports:
+      - 389:3389
     environment:
       AUTHENTIK_HOST: https://your-authentik.tld
       AUTHENTIK_INSECURE: "false"

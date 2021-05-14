@@ -88,7 +88,7 @@ spec:
               secretKeyRef:
                 key: authentik_host_insecure
                 name: authentik-outpost-api
-        image: beryju/authentik-proxy:2021.5.1
+        image: ghcr.io/goauthentik/proxy:2021.5.1
         name: proxy
         ports:
           - containerPort: 4180
