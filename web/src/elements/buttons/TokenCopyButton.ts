@@ -29,8 +29,8 @@ export class TokenCopyButton extends ActionButton {
                     this.buttonClass = PRIMARY_CLASS;
                 }, 1500);
             });
-        }).catch((err: Response) => {
-            return err.json().then(errResp => {
+        }).catch((err: Response | undefined) => {
+            return err?.json().then(errResp => {
                 throw new Error(errResp["detail"]);
             });
         });
