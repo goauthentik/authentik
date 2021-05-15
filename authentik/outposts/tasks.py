@@ -100,6 +100,8 @@ def outpost_controller(
         outpost: Outpost = cache.get(CACHE_KEY_OUTPOST_DOWN % outpost_pk)
     else:
         outpost: Outpost = Outpost.objects.get(pk=outpost_pk)
+    if not outpost:
+        return
     self.set_uid(slugify(outpost.name))
     try:
         controller = controller_for_outpost(outpost)
