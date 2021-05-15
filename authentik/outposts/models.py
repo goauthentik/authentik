@@ -440,7 +440,7 @@ class OutpostState:
     def for_channel(outpost: Outpost, channel: str) -> "OutpostState":
         """Get state for a single channel"""
         key = f"{outpost.state_cache_prefix}_{channel}"
-        default_data = {"uid": channel}
+        default_data = {"uid": channel, "channel_id": channel}
         data = cache.get(key, default_data)
         if isinstance(data, str):
             cache.delete(key)
