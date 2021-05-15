@@ -6,7 +6,9 @@ import { me } from "./Users";
 import { config } from "./Config";
 import { Config } from "authentik-api";
 
-export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
+export const TAG_SENTRY_COMPONENT = "authentik:component";
+
+export function configureSentry(canDoPpi: boolean = false, tags: { [key: string]: string; } = {}): Promise<Config> {
     return config().then((config) => {
         if (config.errorReportingEnabled) {
             Sentry.init({
@@ -51,6 +53,12 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
                     return event;
                 },
             });
+            Sentry.setTags(tags);
+            if (window.location.pathname.includes("if/")) {
+                // Get the interface name from URL
+                const intf = window.location.pathname.replace(/.+if\/(.+)\//, "$1");
+                Sentry.setTag(TAG_SENTRY_COMPONENT, `web/${intf}`);
+            }
             console.debug("authentik/config: Sentry enabled.");
             if (config.errorReportingSendPii && canDoPpi) {
                 me().then(user => {
