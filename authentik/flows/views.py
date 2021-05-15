@@ -10,8 +10,8 @@ from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import View
-from drf_yasg import openapi
-from drf_yasg.utils import no_body, swagger_auto_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from sentry_sdk import capture_exception
@@ -125,19 +125,19 @@ class FlowExecutorView(APIView):
         self.current_stage_view.request = request
         return super().dispatch(request)
 
-    @swagger_auto_schema(
+    @extend_schema(
         responses={
             200: Challenge(),
             404: "No Token found",  # This error can be raised by the email stage
         },
-        request_body=no_body,
-        manual_parameters=[
-            openapi.Parameter(
-                "query",
-                openapi.IN_QUERY,
+        request=OpenApiTypes.NONE,
+        parameters=[
+            OpenApiParameter(
+                name="query",
+                location=OpenApiParameter.QUERY,
                 required=True,
                 description="Querystring as received",
-                type=openapi.TYPE_STRING,
+                type=OpenApiTypes.STR,
             )
         ],
         operation_id="flows_executor_get",
@@ -157,16 +157,16 @@ class FlowExecutorView(APIView):
             self._logger.warning(exc)
             return to_stage_response(request, FlowErrorResponse(request, exc))
 
-    @swagger_auto_schema(
+    @extend_schema(
         responses={200: Challenge()},
-        request_body=ChallengeResponse(),
-        manual_parameters=[
-            openapi.Parameter(
-                "query",
-                openapi.IN_QUERY,
+        request=ChallengeResponse(),
+        parameters=[
+            OpenApiParameter(
+                name="query",
+                location=OpenApiParameter.QUERY,
                 required=True,
                 description="Querystring as received",
-                type=openapi.TYPE_STRING,
+                type=OpenApiTypes.STR,
             )
         ],
         operation_id="flows_executor_solve",

@@ -4,7 +4,7 @@ from importlib import import_module
 from django.contrib import messages
 from django.http.response import Http404
 from django.utils.translation import gettext_lazy as _
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, ChoiceField, DateTimeField, ListField
 from rest_framework.permissions import IsAdminUser
@@ -35,9 +35,7 @@ class TaskViewSet(ViewSet):
 
     permission_classes = [IsAdminUser]
 
-    @swagger_auto_schema(
-        responses={200: TaskSerializer(many=False), 404: "Task not found"}
-    )
+    @extend_schema(responses={200: TaskSerializer(many=False), 404: "Task not found"})
     # pylint: disable=invalid-name
     def retrieve(self, request: Request, pk=None) -> Response:
         """Get a single system task"""
@@ -46,13 +44,13 @@ class TaskViewSet(ViewSet):
             raise Http404
         return Response(TaskSerializer(task, many=False).data)
 
-    @swagger_auto_schema(responses={200: TaskSerializer(many=True)})
+    @extend_schema(responses={200: TaskSerializer(many=True)})
     def list(self, request: Request) -> Response:
         """List system tasks"""
         tasks = sorted(TaskInfo.all().values(), key=lambda task: task.task_name)
         return Response(TaskSerializer(tasks, many=True).data)
 
-    @swagger_auto_schema(
+    @extend_schema(
         responses={
             204: "Task retried successfully",
             404: "Task not found",

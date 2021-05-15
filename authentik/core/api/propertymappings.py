@@ -1,8 +1,8 @@
 """PropertyMapping API Views"""
 from json import dumps
 
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins
 from rest_framework.decorators import action
@@ -81,7 +81,7 @@ class PropertyMappingViewSet(
     def get_queryset(self):
         return PropertyMapping.objects.select_subclasses()
 
-    @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
+    @extend_schema(responses={200: TypeCreateSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])
     def types(self, request: Request) -> Response:
         """Get all creatable property-mapping types"""
@@ -100,14 +100,14 @@ class PropertyMappingViewSet(
         return Response(TypeCreateSerializer(data, many=True).data)
 
     @permission_required("authentik_core.view_propertymapping")
-    @swagger_auto_schema(
-        request_body=PolicyTestSerializer(),
+    @extend_schema(
+        request=PolicyTestSerializer(),
         responses={200: PropertyMappingTestResultSerializer, 400: "Invalid parameters"},
-        manual_parameters=[
-            openapi.Parameter(
+        parameters=[
+            OpenApiParameter(
                 name="format_result",
-                in_=openapi.IN_QUERY,
-                type=openapi.TYPE_BOOLEAN,
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.BOOL,
             )
         ],
     )

@@ -1,5 +1,5 @@
 """core Configs API"""
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework.fields import BooleanField, CharField, ListField
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
@@ -34,7 +34,7 @@ class ConfigsViewSet(ViewSet):
 
     permission_classes = [AllowAny]
 
-    @swagger_auto_schema(responses={200: ConfigSerializer(many=False)})
+    @extend_schema(responses={200: ConfigSerializer(many=False)})
     def list(self, request: Request) -> Response:
         """Retrive public configuration options"""
         config = ConfigSerializer(

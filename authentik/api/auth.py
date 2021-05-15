@@ -7,6 +7,7 @@ from rest_framework.authentication import BaseAuthentication, get_authorization_
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.request import Request
 from structlog.stdlib import get_logger
+from drf_spectacular.authentication import OpenApiAuthenticationExtension
 
 from authentik.core.models import Token, TokenIntents, User
 
@@ -55,3 +56,15 @@ class AuthentikTokenAuthentication(BaseAuthentication):
             return None
 
         return (token.user, None)  # pragma: no cover
+
+
+class TokenSchema(OpenApiAuthenticationExtension):
+    target_class = AuthentikTokenAuthentication
+    name = 'authentik'
+
+    def get_security_definition(self, auto_schema):
+        return {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization',
+        }

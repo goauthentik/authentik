@@ -1,7 +1,6 @@
 """api v2 urls"""
 from django.urls import path, re_path
-from drf_yasg import openapi
-from drf_yasg.views import get_schema_view
+from drf_spectacular.views import SpectacularAPIView
 from rest_framework import routers
 from rest_framework.permissions import AllowAny
 
@@ -196,17 +195,6 @@ router.register("stages/user_write", UserWriteStageViewSet)
 router.register("stages/dummy", DummyStageViewSet)
 router.register("policies/dummy", DummyPolicyViewSet)
 
-info = openapi.Info(
-    title="authentik API",
-    default_version="v2beta",
-    contact=openapi.Contact(email="hello@beryju.org"),
-    license=openapi.License(
-        name="GNU GPLv3",
-        url="https://github.com/goauthentik/authentik/blob/master/LICENSE",
-    ),
-)
-SchemaView = get_schema_view(info, public=True, permission_classes=(AllowAny,))
-
 urlpatterns = (
     [
         path("", SwaggerView.as_view(), name="swagger"),
@@ -218,10 +206,6 @@ urlpatterns = (
             FlowExecutorView.as_view(),
             name="flow-executor",
         ),
-        re_path(
-            r"^swagger(?P<format>\.json|\.yaml)$",
-            SchemaView.without_ui(cache_timeout=0),
-            name="schema-json",
-        ),
+        path("schema/", SpectacularAPIView.as_view(), name="schema"),
     ]
 )

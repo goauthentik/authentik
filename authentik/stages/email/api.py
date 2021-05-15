@@ -1,5 +1,5 @@
 """EmailStage API Views"""
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -52,7 +52,7 @@ class EmailStageViewSet(ModelViewSet):
     queryset = EmailStage.objects.all()
     serializer_class = EmailStageSerializer
 
-    @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
+    @extend_schema(responses={200: TypeCreateSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])
     def templates(self, request: Request) -> Response:
         """Get all available templates, including custom templates"""

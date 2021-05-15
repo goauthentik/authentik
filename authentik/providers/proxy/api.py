@@ -1,7 +1,7 @@
 """ProxyProvider API Views"""
 from typing import Any
 
-from drf_yasg.utils import swagger_serializer_method
+from drf_spectacular.utils import extend_schema_field
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ListField, SerializerMethodField
 from rest_framework.serializers import ModelSerializer
@@ -107,7 +107,7 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
             "forward_auth_mode",
         ]
 
-    @swagger_serializer_method(serializer_or_field=OpenIDConnectConfigurationSerializer)
+    @extend_schema_field(OpenIDConnectConfigurationSerializer)
     def get_oidc_configuration(self, obj: ProxyProvider):
         """Embed OpenID Connect provider information"""
         return ProviderInfoView(request=self.context["request"]._request).get_info(obj)

@@ -1,7 +1,7 @@
 """Outpost API Views"""
 from dacite.core import from_dict
 from dacite.exceptions import DaciteError
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, DateTimeField
 from rest_framework.request import Request
@@ -72,7 +72,7 @@ class OutpostViewSet(ModelViewSet):
     ]
     ordering = ["name"]
 
-    @swagger_auto_schema(responses={200: OutpostHealthSerializer(many=True)})
+    @extend_schema(responses={200: OutpostHealthSerializer(many=True)})
     @action(methods=["GET"], detail=True)
     # pylint: disable=invalid-name, unused-argument
     def health(self, request: Request, pk: int) -> Response:
@@ -90,7 +90,7 @@ class OutpostViewSet(ModelViewSet):
             )
         return Response(OutpostHealthSerializer(states, many=True).data)
 
-    @swagger_auto_schema(responses={200: OutpostDefaultConfigSerializer(many=False)})
+    @extend_schema(responses={200: OutpostDefaultConfigSerializer(many=False)})
     @action(detail=False, methods=["GET"])
     def default_settings(self, request: Request) -> Response:
         """Global default outpost config"""

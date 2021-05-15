@@ -2,7 +2,7 @@
 from dataclasses import asdict
 
 from django.utils.translation import gettext_lazy as _
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from kubernetes.client.configuration import Configuration
 from kubernetes.config.config_exception import ConfigException
 from kubernetes.config.kube_config import load_kube_config_from_dict
@@ -69,7 +69,7 @@ class ServiceConnectionViewSet(
     search_fields = ["name"]
     filterset_fields = ["name"]
 
-    @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
+    @extend_schema(responses={200: TypeCreateSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])
     def types(self, request: Request) -> Response:
         """Get all creatable service connection types"""
@@ -87,7 +87,7 @@ class ServiceConnectionViewSet(
             )
         return Response(TypeCreateSerializer(data, many=True).data)
 
-    @swagger_auto_schema(responses={200: ServiceConnectionStateSerializer(many=False)})
+    @extend_schema(responses={200: ServiceConnectionStateSerializer(many=False)})
     @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=unused-argument, invalid-name
     def state(self, request: Request, pk: str) -> Response:

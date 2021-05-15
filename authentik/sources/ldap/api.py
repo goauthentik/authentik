@@ -1,7 +1,7 @@
 """Source API Views"""
 from django.http.response import Http404
 from django.utils.text import slugify
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -48,9 +48,7 @@ class LDAPSourceViewSet(ModelViewSet):
     serializer_class = LDAPSourceSerializer
     lookup_field = "slug"
 
-    @swagger_auto_schema(
-        responses={200: TaskSerializer(many=False), 404: "Task not found"}
-    )
+    @extend_schema(responses={200: TaskSerializer(many=False), 404: "Task not found"})
     @action(methods=["GET"], detail=True)
     # pylint: disable=unused-argument
     def sync_status(self, request: Request, slug: str) -> Response:

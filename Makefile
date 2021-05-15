@@ -26,11 +26,11 @@ lint:
 	pylint authentik tests lifecycle
 
 gen:
-	./manage.py generate_swagger -o swagger.yaml -f yaml
+	./manage.py spectacular --file schema.yml
 	docker run \
 		--rm -v ${PWD}:/local \
 		openapitools/openapi-generator-cli generate \
-		-i /local/swagger.yaml \
+		-i /local/schema.yml \
 		-g typescript-fetch \
 		-o /local/web/api \
 		--additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0

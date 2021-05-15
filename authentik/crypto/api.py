@@ -5,8 +5,8 @@ from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import load_pem_x509_certificate
 from django.http.response import HttpResponse
 from django.utils.translation import gettext_lazy as _
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import (
     CharField,
@@ -125,8 +125,8 @@ class CertificateKeyPairViewSet(ModelViewSet):
     filterset_class = CertificateKeyPairFilter
 
     @permission_required(None, ["authentik_crypto.add_certificatekeypair"])
-    @swagger_auto_schema(
-        request_body=CertificateGenerationSerializer(),
+    @extend_schema(
+        request=CertificateGenerationSerializer(),
         responses={200: CertificateKeyPairSerializer, 400: "Bad request"},
     )
     @action(detail=False, methods=["POST"])
@@ -147,12 +147,12 @@ class CertificateKeyPairViewSet(ModelViewSet):
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
-    @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter(
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
                 name="download",
-                in_=openapi.IN_QUERY,
-                type=openapi.TYPE_BOOLEAN,
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.BOOL,
             )
         ],
         responses={200: CertificateDataSerializer(many=False)},
@@ -180,12 +180,12 @@ class CertificateKeyPairViewSet(ModelViewSet):
             CertificateDataSerializer({"data": certificate.certificate_data}).data
         )
 
-    @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter(
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
                 name="download",
-                in_=openapi.IN_QUERY,
-                type=openapi.TYPE_BOOLEAN,
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.BOOL,
             )
         ],
         responses={200: CertificateDataSerializer(many=False)},

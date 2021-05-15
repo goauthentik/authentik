@@ -1,7 +1,7 @@
 """Plex Source Serializer"""
 from django.shortcuts import get_object_or_404
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.fields import CharField
@@ -50,18 +50,18 @@ class PlexSourceViewSet(ModelViewSet):
     lookup_field = "slug"
 
     @permission_required(None)
-    @swagger_auto_schema(
-        request_body=PlexTokenRedeemSerializer(),
+    @extend_schema(
+        request=PlexTokenRedeemSerializer(),
         responses={
             200: RedirectChallenge(),
             400: "Token not found",
             403: "Access denied",
         },
-        manual_parameters=[
-            openapi.Parameter(
+        parameters=[
+            OpenApiParameter(
                 name="slug",
-                in_=openapi.IN_QUERY,
-                type=openapi.TYPE_STRING,
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.STR,
             )
         ],
     )

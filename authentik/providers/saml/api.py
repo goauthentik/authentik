@@ -5,8 +5,8 @@ from defusedxml.ElementTree import fromstring
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, FileField, ReadOnlyField
 from rest_framework.parsers import MultiPartParser
@@ -80,16 +80,16 @@ class SAMLProviderViewSet(ModelViewSet):
     queryset = SAMLProvider.objects.all()
     serializer_class = SAMLProviderSerializer
 
-    @swagger_auto_schema(
+    @extend_schema(
         responses={
             200: SAMLMetadataSerializer(many=False),
             404: "Provider has no application assigned",
         },
-        manual_parameters=[
-            openapi.Parameter(
+        parameters=[
+            OpenApiParameter(
                 name="download",
-                in_=openapi.IN_QUERY,
-                type=openapi.TYPE_BOOLEAN,
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.BOOL,
             )
         ],
     )
@@ -118,8 +118,8 @@ class SAMLProviderViewSet(ModelViewSet):
             "authentik_crypto.add_certificatekeypair",
         ],
     )
-    @swagger_auto_schema(
-        request_body=SAMLProviderImportSerializer(),
+    @extend_schema(
+        request=SAMLProviderImportSerializer(),
         responses={204: "Successfully imported provider", 400: "Bad request"},
     )
     @action(detail=False, methods=["POST"], parser_classes=(MultiPartParser,))

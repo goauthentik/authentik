@@ -130,7 +130,7 @@ INSTALLED_APPS = [
     "authentik.stages.user_write",
     "rest_framework",
     "django_filters",
-    "drf_yasg",
+    "drf_spectacular",
     "guardian",
     "django_prometheus",
     "channels",
@@ -139,14 +139,17 @@ INSTALLED_APPS = [
 
 GUARDIAN_MONKEY_PATCH = False
 
-SWAGGER_SETTINGS = {
-    "DEFAULT_AUTO_SCHEMA_CLASS": "authentik.api.schema.ErrorResponseAutoSchema",
-    "DEFAULT_INFO": "authentik.api.v2.urls.info",
-    "DEFAULT_PAGINATOR_INSPECTORS": [
-        "authentik.api.pagination_schema.PaginationInspector",
-    ],
-    "SECURITY_DEFINITIONS": {
-        "Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"}
+SPECTACULAR_SETTINGS = {
+    "TITLE": "authentik",
+    "DESCRIPTION": "Making authentication simple.",
+    "VERSION": __version__,
+    "COMPONENT_SPLIT_REQUEST": True,
+    "CONTACT": {
+        "email": "hello@beryju.org",
+    },
+    "LICENSE": {
+        "name": "GNU GPLv3",
+        "url": "https://github.com/goauthentik/authentik/blob/master/LICENSE",
     },
 }
 
@@ -169,6 +172,7 @@ REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 CACHES = {

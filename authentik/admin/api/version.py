@@ -2,7 +2,7 @@
 from os import environ
 
 from django.core.cache import cache
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from packaging.version import parse
 from rest_framework.fields import SerializerMethodField
 from rest_framework.mixins import ListModelMixin
@@ -57,7 +57,7 @@ class VersionViewSet(ListModelMixin, GenericViewSet):
     def get_queryset(self):  # pragma: no cover
         return None
 
-    @swagger_auto_schema(responses={200: VersionSerializer(many=False)})
+    @extend_schema(responses={200: VersionSerializer(many=False)})
     def list(self, request: Request) -> Response:
         """Get running and latest version."""
         return Response(VersionSerializer(True).data)

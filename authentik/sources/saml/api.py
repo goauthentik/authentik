@@ -1,5 +1,5 @@
 """SAMLSource API Views"""
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -39,7 +39,7 @@ class SAMLSourceViewSet(ModelViewSet):
     serializer_class = SAMLSourceSerializer
     lookup_field = "slug"
 
-    @swagger_auto_schema(responses={200: SAMLMetadataSerializer(many=False)})
+    @extend_schema(responses={200: SAMLMetadataSerializer(many=False)})
     @action(methods=["GET"], detail=True)
     # pylint: disable=unused-argument
     def metadata(self, request: Request, slug: str) -> Response:

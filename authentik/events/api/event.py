@@ -1,8 +1,9 @@
 """Events API Views"""
+from drf_spectacular.types import OpenApiTypes
 import django_filters
 from django.db.models.aggregates import Count
 from django.db.models.fields.json import KeyTextTransform
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, DictField, IntegerField
@@ -36,12 +37,6 @@ class EventSerializer(ModelSerializer):
             "created",
             "expires",
         ]
-
-
-class EventTopPerUserParams(PassiveSerializer):
-    """Query params for top_per_user"""
-
-    top_n = IntegerField(default=15)
 
 
 class EventTopPerUserSerializer(PassiveSerializer):
@@ -111,10 +106,17 @@ class EventViewSet(ReadOnlyModelViewSet):
     ]
     filterset_class = EventsFilter
 
-    @swagger_auto_schema(
-        method="GET",
+    @extend_schema(
+        methods=["GET"],
         responses={200: EventTopPerUserSerializer(many=True)},
-        query_serializer=EventTopPerUserParams,
+        parameters=[
+            OpenApiParameter(
+                "top_n",
+                type=OpenApiTypes.INT,
+                location=OpenApiParameter.QUERY,
+                required=False,
+            )
+        ]
     )
     @action(detail=False, methods=["GET"])
     def top_per_user(self, request: Request):
@@ -134,7 +136,7 @@ class EventViewSet(ReadOnlyModelViewSet):
             .order_by("-counted_events")[:top_n]
         )
 
-    @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
+    @extend_schema(responses={200: TypeCreateSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])
     def actions(self, request: Request) -> Response:
         """Get all actions"""
