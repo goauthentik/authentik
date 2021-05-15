@@ -14,6 +14,8 @@ import (
 	goldap "github.com/go-ldap/ldap/v3"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/nmcclain/ldap"
+	"goauthentik.io/outpost/pkg"
+	"goauthentik.io/outpost/pkg/ak"
 	"goauthentik.io/outpost/pkg/client/core"
 	"goauthentik.io/outpost/pkg/client/flows"
 	"goauthentik.io/outpost/pkg/models"
@@ -61,7 +63,7 @@ func (pi *ProviderInstance) Bind(username string, bindDN, bindPW string, conn ne
 	// Create new http client that also sets the correct ip
 	client := &http.Client{
 		Jar: jar,
-		Transport: newTransport(map[string]string{
+		Transport: newTransport(ak.SetUserAgent(ak.GetTLSTransport(), pkg.UserAgent()), map[string]string{
 			"X-authentik-remote-ip": host,
 		}),
 	}

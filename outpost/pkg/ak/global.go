@@ -52,7 +52,8 @@ func doGlobalSetup(config map[string]interface{}) {
 	defer sentry.Flush(2 * time.Second)
 }
 
-func getTLSTransport() http.RoundTripper {
+// GetTLSTransport Get a TLS transport instance, that skips verification if configured via environment variables.
+func GetTLSTransport() http.RoundTripper {
 	value, set := os.LookupEnv("AUTHENTIK_INSECURE")
 	if !set {
 		value = "false"

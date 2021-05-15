@@ -55,14 +55,18 @@ func (ls *LDAPServer) Start() error {
 
 type transport struct {
 	headers map[string]string
+	inner   http.RoundTripper
 }
 
 func (t *transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	for key, value := range t.headers {
 		req.Header.Add(key, value)
 	}
-	return http.DefaultTransport.RoundTrip(req)
+	return t.inner.RoundTrip(req)
 }
-func newTransport(headers map[string]string) *transport {
-	return &transport{headers}
+func newTransport(inner http.RoundTripper, headers map[string]string) *transport {
+	return &transport{
+		inner:   inner,
+		headers: headers,
+	}
 }
