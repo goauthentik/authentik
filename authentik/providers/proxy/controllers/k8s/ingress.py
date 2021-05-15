@@ -129,7 +129,7 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
                             NetworkingV1beta1HTTPIngressPath(
                                 backend=NetworkingV1beta1IngressBackend(
                                     service_name=self.name,
-                                    service_port="http",
+                                    service_port="https",
                                 ),
                                 path="/",
                             )
