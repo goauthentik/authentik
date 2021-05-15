@@ -13,12 +13,14 @@ func getTemplates() *template.Template {
 <head>
 	<title>{{.Title}}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<style>* { font-family: sans-serif; }</style>
 </head>
 <body>
 	<h2>{{.Title}}</h2>
 	<p>{{.Message}}</p>
 	<hr>
 	<p><a href="{{.ProxyPrefix}}/sign_in">Sign In</a></p>
+	<p>Powered by <a href="https://goauthentik.io">authentik</a></p>
 </body>
 </html>{{end}}`)
 	if err != nil {

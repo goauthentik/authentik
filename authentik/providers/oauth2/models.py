@@ -12,7 +12,6 @@ from uuid import uuid4
 
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from dacite import from_dict
-from django.conf import settings
 from django.db import models
 from django.http import HttpRequest
 from django.utils import dateformat, timezone
@@ -457,7 +456,7 @@ class RefreshToken(ExpiringModel, BaseGrantModel):
         See: http://openid.net/specs/openid-connect-core-1_0.html#IDToken"""
         sub = ""
         if self.provider.sub_mode == SubModes.HASHED_USER_ID:
-            sub = sha256(f"{user.id}-{settings.SECRET_KEY}".encode("ascii")).hexdigest()
+            sub = user.uid
         elif self.provider.sub_mode == SubModes.USER_EMAIL:
             sub = user.email
         elif self.provider.sub_mode == SubModes.USER_USERNAME:
