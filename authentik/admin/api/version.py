@@ -5,11 +5,10 @@ from django.core.cache import cache
 from drf_spectacular.utils import extend_schema
 from packaging.version import parse
 from rest_framework.fields import SerializerMethodField
-from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.views import APIView
 
 from authentik import ENV_GIT_HASH_KEY, __version__
 from authentik.admin.tasks import VERSION_CACHE_KEY, update_latest_version
@@ -47,17 +46,14 @@ class VersionSerializer(PassiveSerializer):
         )
 
 
-class VersionViewSet(ListModelMixin, GenericViewSet):
+class VersionView(APIView):
     """Get running and latest version."""
 
     permission_classes = [IsAuthenticated]
     pagination_class = None
     filter_backends = []
 
-    def get_queryset(self):  # pragma: no cover
-        return None
-
     @extend_schema(responses={200: VersionSerializer(many=False)})
-    def list(self, request: Request) -> Response:
+    def get(self, request: Request) -> Response:
         """Get running and latest version."""
         return Response(VersionSerializer(True).data)

@@ -121,7 +121,7 @@ paths:
           description: Failed to retry task
   /api/v2beta/admin/version/:
     get:
-      operationId: admin_version_list
+      operationId: admin_version_retrieve
       description: Get running and latest version.
       tags:
       - admin
@@ -133,9 +133,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Version'
+                $ref: '#/components/schemas/Version'
           description: ''
   /api/v2beta/admin/workers/:
     get:

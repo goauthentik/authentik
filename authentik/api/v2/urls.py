@@ -6,7 +6,7 @@ from rest_framework import routers
 from authentik.admin.api.meta import AppsViewSet
 from authentik.admin.api.metrics import AdministrationMetricsViewSet
 from authentik.admin.api.tasks import TaskViewSet
-from authentik.admin.api.version import VersionViewSet
+from authentik.admin.api.version import VersionView
 from authentik.admin.api.workers import WorkerViewSet
 from authentik.api.v2.config import ConfigView
 from authentik.api.views import APIBrowserView
@@ -98,7 +98,6 @@ from authentik.stages.user_write.api import UserWriteStageViewSet
 
 router = routers.DefaultRouter()
 
-router.register("admin/version", VersionViewSet, basename="admin_version")
 router.register("admin/workers", WorkerViewSet, basename="admin_workers")
 router.register("admin/system_tasks", TaskViewSet, basename="admin_system_tasks")
 router.register("admin/apps", AppsViewSet, basename="apps")
@@ -198,6 +197,7 @@ urlpatterns = (
     + router.urls
     + [
         path("admin/metrics/", AdministrationMetricsViewSet.as_view(), name="admin_metrics"),
+        path("admin/version/", VersionView.as_view(), name="admin_version"),
         path("root/config/", ConfigView.as_view(), name="config"),
         path(
             "flows/executor/<slug:flow_slug>/",
