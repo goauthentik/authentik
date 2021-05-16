@@ -22,7 +22,6 @@ from authentik.events.models import cleanse_dict
 from authentik.flows.challenge import (
     AccessDeniedChallenge,
     Challenge,
-    ChallengeResponse,
     ChallengeTypes,
     HttpChallengeResponse,
     RedirectChallenge,
