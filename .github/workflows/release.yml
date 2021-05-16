@@ -30,7 +30,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: prepare ts api client
         run: |
-          docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate -i /local/schema.yml -g typescript-fetch -o /local/web/api --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
+          make gen-web
       - name: Building Docker Image
         uses: docker/build-push-action@v2
         with:
@@ -51,18 +51,8 @@ jobs:
           go-version: "^1.15"
       - name: prepare go api client
         run: |
+          make gen-outpost
           cd outpost
-          cp ../schema.yml .
-          docker run \
-            --rm -v $(pwd):/local \
-            openapitools/openapi-generator-cli generate \
-            --git-host goauthentik.io \
-            --git-repo-id outpost \
-            --git-user-id api \
-            -i /local/schema.yml \
-            -g go \
-            -o /local/api \
-            --additional-properties=packageName=api,enumClassPrefix=true
           go build -v ./cmd/proxy/server.go
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.1.0
@@ -100,18 +90,8 @@ jobs:
           go-version: "^1.15"
       - name: prepare go api client
         run: |
+          make gen-outpost
           cd outpost
-          cp ../schema.yml .
-          docker run \
-            --rm -v $(pwd):/local \
-            openapitools/openapi-generator-cli generate \
-            --git-host goauthentik.io \
-            --git-repo-id outpost \
-            --git-user-id api \
-            -i /local/schema.yml \
-            -g go \
-            -o /local/api \
-            --additional-properties=packageName=api,enumClassPrefix=true
           go build -v ./cmd/ldap/server.go
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.1.0

@@ -24,19 +24,7 @@ stages:
               version: '1.16.3'
           - task: CmdLine@2
             inputs:
-              script: |
-                cp ../schema.yml .
-                docker run \
-                  --rm -v $(pwd):/local \
-                  openapitools/openapi-generator-cli generate \
-                  --git-host goauthentik.io \
-                  --git-repo-id outpost \
-                  --git-user-id api \
-                  -i /local/schema.yml \
-                  -g go \
-                  -o /local/api \
-                  --additional-properties=packageName=api,enumClassPrefix=true
-              workingDirectory: 'outpost/'
+              script: make gen-outpost
           - task: PublishPipelineArtifact@1
             inputs:
               targetPath: 'outpost/api/'

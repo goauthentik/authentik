@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: prepare ts api client
         run: |
-          docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate -i /local/schema.yml -g typescript-fetch -o /local/web/api --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
+          make gen-web
       - name: Pre-release test
         run: |
           sudo apt-get install -y pwgen

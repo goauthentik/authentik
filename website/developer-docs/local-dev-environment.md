@@ -36,18 +36,12 @@ Run `make gen` to run all unittests and generated an updated swagger document fo
 
 By default, no transpiled bundle of the frontend is included. To build the UI, you need Node 12 or newer.
 
-The Frontend also uses a generated API client to talk with the backend. To generate this client, you can use the [openapitools/openapi-generator-cli](https://github.com/OpenAPITools/openapi-generator) CLI tool.
+The Frontend also uses a generated API client to talk with the backend. To generate this client, [openapitools/openapi-generator-cli](https://github.com/OpenAPITools/openapi-generator) is used.
 
 If you want to generate the client without installing anything, run this command:
 
 ```shell
-docker run \
-  --rm -v $(pwd):/local \
-  openapitools/openapi-generator-cli generate \
-  -i /local/schema.yml \
-  -g typescript-fetch \
-  -o /local/web/api \
-  --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
+make gen-web
 ```
 
 To build the UI, run these commands:
