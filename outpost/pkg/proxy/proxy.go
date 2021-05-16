@@ -21,7 +21,7 @@ import (
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/sessions"
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/upstream"
 	"github.com/oauth2-proxy/oauth2-proxy/providers"
-	"goauthentik.io/outpost/pkg/models"
+	"goauthentik.io/outpost/api"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -94,7 +94,7 @@ type OAuthProxy struct {
 }
 
 // NewOAuthProxy creates a new instance of OAuthProxy from the options provided
-func NewOAuthProxy(opts *options.Options, provider *models.ProxyOutpostConfig) (*OAuthProxy, error) {
+func NewOAuthProxy(opts *options.Options, provider api.ProxyOutpostConfig) (*OAuthProxy, error) {
 	logger := log.WithField("logger", "authentik.outpost.proxy").WithField("provider", provider.Name)
 	sessionStore, err := sessions.NewSessionStore(&opts.Session, &opts.Cookie)
 	if err != nil {
@@ -133,7 +133,7 @@ func NewOAuthProxy(opts *options.Options, provider *models.ProxyOutpostConfig) (
 		CookieRefresh:  opts.Cookie.Refresh,
 		CookieSameSite: opts.Cookie.SameSite,
 
-		forwardAuthMode:   provider.ForwardAuthMode,
+		forwardAuthMode:   *provider.ForwardAuthMode,
 		RobotsPath:        "/robots.txt",
 		SignInPath:        fmt.Sprintf("%s/sign_in", opts.ProxyPrefix),
 		SignOutPath:       fmt.Sprintf("%s/sign_out", opts.ProxyPrefix),

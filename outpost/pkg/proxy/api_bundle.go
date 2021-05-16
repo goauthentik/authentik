@@ -15,8 +15,7 @@ import (
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/middleware"
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/validation"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/outpost/pkg/client/crypto"
-	"goauthentik.io/outpost/pkg/models"
+	"goauthentik.io/outpost/api"
 )
 
 type providerBundle struct {
@@ -35,8 +34,8 @@ func intToPointer(i int) *int {
 	return &i
 }
 
-func (pb *providerBundle) prepareOpts(provider *models.ProxyOutpostConfig) *options.Options {
-	externalHost, err := url.Parse(*provider.ExternalHost)
+func (pb *providerBundle) prepareOpts(provider api.ProxyOutpostConfig) *options.Options {
+	externalHost, err := url.Parse(provider.ExternalHost)
 	if err != nil {
 		log.WithError(err).Warning("Failed to parse URL, skipping provider")
 		return nil
@@ -47,25 +46,25 @@ func (pb *providerBundle) prepareOpts(provider *models.ProxyOutpostConfig) *opti
 		log.WithError(err).Warning("Failed to copy options, skipping provider")
 		return nil
 	}
-	providerOpts.ClientID = provider.ClientID
-	providerOpts.ClientSecret = provider.ClientSecret
+	providerOpts.ClientID = *provider.ClientId
+	providerOpts.ClientSecret = *provider.ClientSecret
 
-	providerOpts.Cookie.Secret = provider.CookieSecret
+	providerOpts.Cookie.Secret = *provider.CookieSecret
 	providerOpts.Cookie.Secure = externalHost.Scheme == "https"
 
 	providerOpts.SkipOIDCDiscovery = true
-	providerOpts.OIDCIssuerURL = *provider.OidcConfiguration.Issuer
-	providerOpts.LoginURL = *provider.OidcConfiguration.AuthorizationEndpoint
-	providerOpts.RedeemURL = *provider.OidcConfiguration.TokenEndpoint
-	providerOpts.OIDCJwksURL = *provider.OidcConfiguration.JwksURI
-	providerOpts.ProfileURL = *provider.OidcConfiguration.UserinfoEndpoint
+	providerOpts.OIDCIssuerURL = provider.OidcConfiguration.Issuer
+	providerOpts.LoginURL = provider.OidcConfiguration.AuthorizationEndpoint
+	providerOpts.RedeemURL = provider.OidcConfiguration.TokenEndpoint
+	providerOpts.OIDCJwksURL = provider.OidcConfiguration.JwksUri
+	providerOpts.ProfileURL = provider.OidcConfiguration.UserinfoEndpoint
 
-	if provider.SkipPathRegex != "" {
-		skipRegexes := strings.Split(provider.SkipPathRegex, "\n")
+	if *provider.SkipPathRegex != "" {
+		skipRegexes := strings.Split(*provider.SkipPathRegex, "\n")
 		providerOpts.SkipAuthRegex = skipRegexes
 	}
 
-	if provider.ForwardAuthMode {
+	if *provider.ForwardAuthMode {
 		providerOpts.UpstreamServers = []options.Upstream{
 			{
 				ID:         "static",
@@ -78,33 +77,27 @@ func (pb *providerBundle) prepareOpts(provider *models.ProxyOutpostConfig) *opti
 		providerOpts.UpstreamServers = []options.Upstream{
 			{
 				ID:                    "default",
-				URI:                   provider.InternalHost,
+				URI:                   *provider.InternalHost,
 				Path:                  "/",
-				InsecureSkipTLSVerify: !provider.InternalHostSslValidation,
+				InsecureSkipTLSVerify: !(*provider.InternalHostSslValidation),
 			},
 		}
 	}
 
-	if provider.Certificate != nil {
+	if provider.Certificate.Get() != nil {
 		pb.log.WithField("provider", provider.Name).Debug("Enabling TLS")
-		cert, err := pb.s.ak.Client.Crypto.CryptoCertificatekeypairsViewCertificate(&crypto.CryptoCertificatekeypairsViewCertificateParams{
-			Context: context.Background(),
-			KpUUID:  *provider.Certificate,
-		}, pb.s.ak.Auth)
+		cert, _, err := pb.s.ak.Client.CryptoApi.CryptoCertificatekeypairsViewCertificateRetrieveExecute(pb.s.ak.Client.CryptoApi.CryptoCertificatekeypairsViewCertificateRetrieve(context.Background(), *provider.Certificate.Get()))
 		if err != nil {
 			pb.log.WithField("provider", provider.Name).WithError(err).Warning("Failed to fetch certificate")
 			return providerOpts
 		}
-		key, err := pb.s.ak.Client.Crypto.CryptoCertificatekeypairsViewPrivateKey(&crypto.CryptoCertificatekeypairsViewPrivateKeyParams{
-			Context: context.Background(),
-			KpUUID:  *provider.Certificate,
-		}, pb.s.ak.Auth)
+		key, _, err := pb.s.ak.Client.CryptoApi.CryptoCertificatekeypairsViewPrivateKeyRetrieveExecute(pb.s.ak.Client.CryptoApi.CryptoCertificatekeypairsViewPrivateKeyRetrieve(context.Background(), *provider.Certificate.Get()))
 		if err != nil {
 			pb.log.WithField("provider", provider.Name).WithError(err).Warning("Failed to fetch private key")
 			return providerOpts
 		}
 
-		x509cert, err := tls.X509KeyPair([]byte(cert.Payload.Data), []byte(key.Payload.Data))
+		x509cert, err := tls.X509KeyPair([]byte(cert.Data), []byte(key.Data))
 		if err != nil {
 			pb.log.WithField("provider", provider.Name).WithError(err).Warning("Failed to parse certificate")
 			return providerOpts
@@ -115,7 +108,7 @@ func (pb *providerBundle) prepareOpts(provider *models.ProxyOutpostConfig) *opti
 	return providerOpts
 }
 
-func (pb *providerBundle) Build(provider *models.ProxyOutpostConfig) {
+func (pb *providerBundle) Build(provider api.ProxyOutpostConfig) {
 	opts := pb.prepareOpts(provider)
 
 	chain := alice.New()
@@ -154,10 +147,10 @@ func (pb *providerBundle) Build(provider *models.ProxyOutpostConfig) {
 		os.Exit(1)
 	}
 
-	if provider.BasicAuthEnabled {
+	if *provider.BasicAuthEnabled {
 		oauthproxy.SetBasicAuth = true
-		oauthproxy.BasicAuthUserAttribute = provider.BasicAuthUserAttribute
-		oauthproxy.BasicAuthPasswordAttribute = provider.BasicAuthPasswordAttribute
+		oauthproxy.BasicAuthUserAttribute = *provider.BasicAuthUserAttribute
+		oauthproxy.BasicAuthPasswordAttribute = *provider.BasicAuthPasswordAttribute
 	}
 
 	pb.proxy = oauthproxy

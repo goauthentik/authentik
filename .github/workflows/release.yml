@@ -52,8 +52,17 @@ jobs:
       - name: prepare go api client
         run: |
           cd outpost
-          go get -u github.com/go-swagger/go-swagger/cmd/swagger
-          swagger generate client -f ../schema.yml -A authentik -t pkg/
+          cp ../schema.yml .
+          docker run \
+            --rm -v $(pwd):/local \
+            openapitools/openapi-generator-cli generate \
+            --git-host goauthentik.io \
+            --git-repo-id outpost \
+            --git-user-id api \
+            -i /local/schema.yml \
+            -g go \
+            -o /local/api \
+            --additional-properties=packageName=api,enumClassPrefix=true
           go build -v ./cmd/proxy/server.go
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.1.0
@@ -92,8 +101,17 @@ jobs:
       - name: prepare go api client
         run: |
           cd outpost
-          go get -u github.com/go-swagger/go-swagger/cmd/swagger
-          swagger generate client -f ../schema.yml -A authentik -t pkg/
+          cp ../schema.yml .
+          docker run \
+            --rm -v $(pwd):/local \
+            openapitools/openapi-generator-cli generate \
+            --git-host goauthentik.io \
+            --git-repo-id outpost \
+            --git-user-id api \
+            -i /local/schema.yml \
+            -g go \
+            -o /local/api \
+            --additional-properties=packageName=api,enumClassPrefix=true
           go build -v ./cmd/ldap/server.go
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.1.0

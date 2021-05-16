@@ -1,13 +1,16 @@
 # authentik outpost
 
-[![CI Build status](https://img.shields.io/azure-devops/build/beryjuorg/authentik/3?style=flat-square)](https://dev.azure.com/beryjuorg/authentik/_build?definitionId=8)
+[![CI Build status](https://img.shields.io/azure-devops/build/beryjuorg/authentik/8?style=flat-square)](https://dev.azure.com/beryjuorg/authentik/_build?definitionId=8)
 ![Docker pulls (proxy)](https://img.shields.io/docker/pulls/beryju/authentik-proxy.svg?style=flat-square)
+![Docker pulls (ldap)](https://img.shields.io/docker/pulls/beryju/authentik-ldap.svg?style=flat-square)
 
 Reverse Proxy based on [oauth2_proxy](https://github.com/oauth2-proxy/oauth2-proxy), completely managed and monitored by authentik.
 
+LDAP Server using [ldap](https://github.com/nmcclain/ldap), completely managed and monitored by authentik.
+
 ## Usage
 
-authentik Proxy is built to be configured by authentik itself, hence the only options you can directly give it are connection params.
+authentik Outpost is built to be configured by authentik itself, hence the only options you can directly give it are connection params.
 
 The following environment variable are implemented:
 
@@ -19,6 +22,6 @@ The following environment variable are implemented:
 
 ## Development
 
-authentik Proxy uses an auto-generated API Client to communicate with authentik. This client is not kept in git. To generate the client locally, run `make generate`.
+authentik outpost uses an auto-generated API Client to communicate with authentik. This client is not kept in git. To generate the client locally, run `make gen-outpost` in the root directory of the repo.
 
-Afterwards you can build the proxy like any other Go project, using `go build`.
+Afterwards you can build the outpost like any other Go project, using `go build ./cmd/proxy/server.go` or `go build ./cmd/ldap/server.go`.

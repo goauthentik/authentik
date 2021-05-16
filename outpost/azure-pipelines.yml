@@ -25,14 +25,21 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                sudo wget -O /usr/local/bin/swagger https://github.com/go-swagger/go-swagger/releases/latest/download/swagger_linux_amd64
-                sudo chmod +x /usr/local/bin/swagger
-                mkdir -p $(go env GOPATH)
-                swagger generate client -f ../schema.yml -A authentik -t pkg/
+                cp ../schema.yml .
+                docker run \
+                  --rm -v $(pwd):/local \
+                  openapitools/openapi-generator-cli generate \
+                  --git-host goauthentik.io \
+                  --git-repo-id outpost \
+                  --git-user-id api \
+                  -i /local/schema.yml \
+                  -g go \
+                  -o /local/api \
+                  --additional-properties=packageName=api,enumClassPrefix=true
               workingDirectory: 'outpost/'
           - task: PublishPipelineArtifact@1
             inputs:
-              targetPath: 'outpost/pkg/'
+              targetPath: 'outpost/api/'
               artifact: 'go_swagger_client'
               publishLocation: 'pipeline'
   - stage: lint
@@ -48,11 +55,16 @@ stages:
             inputs:
               buildType: 'current'
               artifactName: 'go_swagger_client'
-              path: "outpost/pkg/"
+              path: "outpost/api/"
           - task: CmdLine@2
             inputs:
               script: |
-                docker run --rm -v $(pwd):/app -w /app golangci/golangci-lint:v1.39.0 golangci-lint run -v --timeout 200s
+                docker run \
+                  --rm \
+                  -v $(pwd):/app \
+                  -w /app \
+                  golangci/golangci-lint:v1.39.0 \
+                  golangci-lint run -v --timeout 200s
               workingDirectory: 'outpost/'
   - stage: build_go
     jobs:
@@ -67,7 +79,7 @@ stages:
             inputs:
               buildType: 'current'
               artifactName: 'go_swagger_client'
-              path: "outpost/pkg/"
+              path: "outpost/api/"
           - task: Go@0
             inputs:
               command: 'build'
@@ -84,7 +96,7 @@ stages:
             inputs:
               buildType: 'current'
               artifactName: 'go_swagger_client'
-              path: "outpost/pkg/"
+              path: "outpost/api/"
           - task: Go@0
             inputs:
               command: 'build'
@@ -103,7 +115,7 @@ stages:
             inputs:
               buildType: 'current'
               artifactName: 'go_swagger_client'
-              path: "outpost/pkg/"
+              path: "outpost/api/"
           - task: Bash@3
             inputs:
               targetType: 'inline'
@@ -139,7 +151,7 @@ stages:
             inputs:
               buildType: 'current'
               artifactName: 'go_swagger_client'
-              path: "outpost/pkg/"
+              path: "outpost/api/"
           - task: Bash@3
             inputs:
               targetType: 'inline'

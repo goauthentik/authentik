@@ -1,13 +1,13 @@
 package ldap
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net"
 	"strings"
 
 	"github.com/nmcclain/ldap"
-	"goauthentik.io/outpost/pkg/client/core"
 )
 
 func (pi *ProviderInstance) Search(bindDN string, searchReq ldap.SearchRequest, conn net.Conn) (ldap.ServerSearchResult, error) {
@@ -43,16 +43,16 @@ func (pi *ProviderInstance) Search(bindDN string, searchReq ldap.SearchRequest, 
 	default:
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: unhandled filter type: %s [%s]", filterEntity, searchReq.Filter)
 	case GroupObjectClass:
-		groups, err := pi.s.ac.Client.Core.CoreGroupsList(core.NewCoreGroupsListParams(), pi.s.ac.Auth)
+		groups, _, err := pi.s.ac.Client.CoreApi.CoreGroupsListExecute(pi.s.ac.Client.CoreApi.CoreGroupsList(context.Background()))
 		if err != nil {
 			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("API Error: %s", err)
 		}
-		pi.log.WithField("count", len(groups.Payload.Results)).Trace("Got results from API")
-		for _, g := range groups.Payload.Results {
+		pi.log.WithField("count", len(groups.Results)).Trace("Got results from API")
+		for _, g := range groups.Results {
 			attrs := []*ldap.EntryAttribute{
 				{
 					Name:   "cn",
-					Values: []string{*g.Name},
+					Values: []string{g.Name},
 				},
 				{
 					Name:   "uid",
@@ -69,31 +69,31 @@ func (pi *ProviderInstance) Search(bindDN string, searchReq ldap.SearchRequest, 
 			entries = append(entries, &ldap.Entry{DN: dn, Attributes: attrs})
 		}
 	case UserObjectClass, "":
-		users, err := pi.s.ac.Client.Core.CoreUsersList(core.NewCoreUsersListParams(), pi.s.ac.Auth)
+		users, _, err := pi.s.ac.Client.CoreApi.CoreUsersListExecute(pi.s.ac.Client.CoreApi.CoreUsersList(context.Background()))
 		if err != nil {
 			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("API Error: %s", err)
 		}
-		for _, u := range users.Payload.Results {
+		for _, u := range users.Results {
 			attrs := []*ldap.EntryAttribute{
 				{
 					Name:   "cn",
-					Values: []string{*u.Username},
+					Values: []string{u.Username},
 				},
 				{
 					Name:   "uid",
-					Values: []string{u.UID},
+					Values: []string{u.Uid},
 				},
 				{
 					Name:   "name",
-					Values: []string{*u.Name},
+					Values: []string{u.Name},
 				},
 				{
 					Name:   "displayName",
-					Values: []string{*u.Name},
+					Values: []string{u.Name},
 				},
 				{
 					Name:   "mail",
-					Values: []string{u.Email.String()},
+					Values: []string{*u.Email},
 				},
 				{
 					Name:   "objectClass",
@@ -101,13 +101,13 @@ func (pi *ProviderInstance) Search(bindDN string, searchReq ldap.SearchRequest, 
 				},
 			}
 
-			if u.IsActive {
+			if *u.IsActive {
 				attrs = append(attrs, &ldap.EntryAttribute{Name: "accountStatus", Values: []string{"inactive"}})
 			} else {
 				attrs = append(attrs, &ldap.EntryAttribute{Name: "accountStatus", Values: []string{"active"}})
 			}
 
-			if *u.IsSuperuser {
+			if u.IsSuperuser {
 				attrs = append(attrs, &ldap.EntryAttribute{Name: "superuser", Values: []string{"inactive"}})
 			} else {
 				attrs = append(attrs, &ldap.EntryAttribute{Name: "superuser", Values: []string{"active"}})
@@ -117,7 +117,7 @@ func (pi *ProviderInstance) Search(bindDN string, searchReq ldap.SearchRequest, 
 
 			attrs = append(attrs, AKAttrsToLDAP(u.Attributes)...)
 
-			dn := fmt.Sprintf("cn=%s,%s", *u.Username, pi.UserDN)
+			dn := fmt.Sprintf("cn=%s,%s", u.Username, pi.UserDN)
 			entries = append(entries, &ldap.Entry{DN: dn, Attributes: attrs})
 		}
 	}

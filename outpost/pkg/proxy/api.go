@@ -4,7 +4,7 @@ import (
 	"net/url"
 
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/outpost/pkg/models"
+	"goauthentik.io/outpost/api"
 )
 
 func (s *Server) Refresh() error {
@@ -21,10 +21,10 @@ func (s *Server) Refresh() error {
 	return nil
 }
 
-func (s *Server) bundleProviders(providers []*models.ProxyOutpostConfig) []*providerBundle {
+func (s *Server) bundleProviders(providers []api.ProxyOutpostConfig) []*providerBundle {
 	bundles := make([]*providerBundle, len(providers))
 	for idx, provider := range providers {
-		externalHost, err := url.Parse(*provider.ExternalHost)
+		externalHost, err := url.Parse(provider.ExternalHost)
 		if err != nil {
 			log.WithError(err).Warning("Failed to parse URL, skipping provider")
 		}

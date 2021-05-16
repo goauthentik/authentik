@@ -1,15 +1,16 @@
 package ak
 
 import (
-	"goauthentik.io/outpost/pkg/client/outposts"
-	"goauthentik.io/outpost/pkg/models"
+	"context"
+
+	"goauthentik.io/outpost/api"
 )
 
-func (a *APIController) Update() ([]*models.ProxyOutpostConfig, error) {
-	providers, err := a.Client.Outposts.OutpostsProxyList(outposts.NewOutpostsProxyListParams(), a.Auth)
+func (a *APIController) Update() ([]api.ProxyOutpostConfig, error) {
+	providers, _, err := a.Client.OutpostsApi.OutpostsProxyListExecute(a.Client.OutpostsApi.OutpostsProxyList(context.Background()))
 	if err != nil {
 		a.logger.WithError(err).Error("Failed to fetch providers")
 		return nil, err
 	}
-	return providers.Payload.Results, nil
+	return providers.Results, nil
 }

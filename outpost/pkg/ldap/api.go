@@ -1,6 +1,7 @@
 package ldap
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -9,28 +10,27 @@ import (
 
 	"github.com/go-openapi/strfmt"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/outpost/pkg/client/outposts"
 )
 
 func (ls *LDAPServer) Refresh() error {
-	outposts, err := ls.ac.Client.Outposts.OutpostsLdapList(outposts.NewOutpostsLdapListParams(), ls.ac.Auth)
+	outposts, _, err := ls.ac.Client.OutpostsApi.OutpostsLdapListExecute(ls.ac.Client.OutpostsApi.OutpostsLdapList(context.Background()))
 	if err != nil {
 		return err
 	}
-	if len(outposts.Payload.Results) < 1 {
+	if len(outposts.Results) < 1 {
 		return errors.New("no ldap provider defined")
 	}
-	providers := make([]*ProviderInstance, len(outposts.Payload.Results))
-	for idx, provider := range outposts.Payload.Results {
-		userDN := strings.ToLower(fmt.Sprintf("ou=users,%s", provider.BaseDn))
-		groupDN := strings.ToLower(fmt.Sprintf("ou=groups,%s", provider.BaseDn))
+	providers := make([]*ProviderInstance, len(outposts.Results))
+	for idx, provider := range outposts.Results {
+		userDN := strings.ToLower(fmt.Sprintf("ou=users,%s", *provider.BaseDn))
+		groupDN := strings.ToLower(fmt.Sprintf("ou=groups,%s", *provider.BaseDn))
 		providers[idx] = &ProviderInstance{
-			BaseDN:              provider.BaseDn,
+			BaseDN:              *provider.BaseDn,
 			GroupDN:             groupDN,
 			UserDN:              userDN,
-			appSlug:             *provider.ApplicationSlug,
-			flowSlug:            *provider.BindFlowSlug,
-			searchAllowedGroups: []*strfmt.UUID{provider.SearchGroup},
+			appSlug:             provider.ApplicationSlug,
+			flowSlug:            provider.BindFlowSlug,
+			searchAllowedGroups: []*strfmt.UUID{(*strfmt.UUID)(provider.SearchGroup.Get())},
 			boundUsersMutex:     sync.RWMutex{},
 			boundUsers:          make(map[string]UserFlags),
 			s:                   ls,
@@ -55,14 +55,18 @@ func (ls *LDAPServer) Start() error {
 
 type transport struct {
 	headers map[string]string
+	inner   http.RoundTripper
 }
 
 func (t *transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	for key, value := range t.headers {
 		req.Header.Add(key, value)
 	}
-	return http.DefaultTransport.RoundTrip(req)
+	return t.inner.RoundTrip(req)
 }
-func newTransport(headers map[string]string) *transport {
-	return &transport{headers}
+func newTransport(inner http.RoundTripper, headers map[string]string) *transport {
+	return &transport{
+		inner:   inner,
+		headers: headers,
+	}
 }

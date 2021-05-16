@@ -52,7 +52,7 @@ func doGlobalSetup(config map[string]interface{}) {
 	defer sentry.Flush(2 * time.Second)
 }
 
-func getTLSTransport() http.RoundTripper {
+func GetTLSTransport() http.RoundTripper {
 	value, set := os.LookupEnv("AUTHENTIK_INSECURE")
 	if !set {
 		value = "false"
