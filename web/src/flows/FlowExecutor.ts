@@ -114,7 +114,7 @@ export class FlowExecutor extends LitElement implements StageHost {
         this.loading = true;
         return new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolveRaw({
             flowSlug: this.flowSlug,
-            data: formData || {},
+            requestBody: formData || {},
             query: window.location.search.substring(1),
         }).then((challengeRaw) => {
             return challengeRaw.raw.json();

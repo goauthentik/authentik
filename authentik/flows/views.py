@@ -161,7 +161,7 @@ class FlowExecutorView(APIView):
 
     @extend_schema(
         responses={200: Challenge()},
-        request=ChallengeResponse(),
+        request=OpenApiTypes.OBJECT,
         parameters=[
             OpenApiParameter(
                 name="query",
