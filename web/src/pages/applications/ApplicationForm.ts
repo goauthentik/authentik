@@ -1,4 +1,4 @@
-import { CoreApi, Application, ProvidersApi, Provider, PolicyEngineModeEnum } from "authentik-api";
+import { CoreApi, Application, ProvidersApi, Provider, PolicyEngineMode } from "authentik-api";
 import { t } from "@lingui/macro";
 import { CSSResult, customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -145,10 +145,10 @@ export class ApplicationForm extends ModelForm<Application, string> {
                 ?required=${true}
                 name="policyEngineMode">
                 <select class="pf-c-form-control">
-                    <option value=${PolicyEngineModeEnum.Any} ?selected=${this.instance?.policyEngineMode === PolicyEngineModeEnum.Any}>
+                    <option value=${PolicyEngineMode.Any} ?selected=${this.instance?.policyEngineMode === PolicyEngineMode.Any}>
                         ${t`ANY, any policy must match to grant access.`}
                     </option>
-                    <option value=${PolicyEngineModeEnum.All} ?selected=${this.instance?.policyEngineMode === PolicyEngineModeEnum.All}>
+                    <option value=${PolicyEngineMode.All} ?selected=${this.instance?.policyEngineMode === PolicyEngineMode.All}>
                         ${t`ALL, all policies must match to grant access.`}
                     </option>
                 </select>

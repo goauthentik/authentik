@@ -60,7 +60,17 @@ class Pagination(pagination.PageNumberPagination):
                             "type": "number",
                         },
                     },
+                    "required": [
+                        "next",
+                        "previous",
+                        "count",
+                        "current",
+                        "total_pages",
+                        "start_index",
+                        "end_index",
+                    ]
                 },
                 "results": schema,
             },
+            "required": ["pagination", "results"],
         }

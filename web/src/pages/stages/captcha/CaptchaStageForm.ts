@@ -66,7 +66,7 @@ export class CaptchaStageForm extends ModelForm<CaptchaStage, string> {
                         ?required=${true}
                         ?writeOnly=${this.instance !== undefined}
                         name="privateKey">
-                        <input type="text" value="${ifDefined(this.instance?.privateKey || "")}" class="pf-c-form-control" required>
+                        <input type="text" value="" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`Private key, acquired from https://www.google.com/recaptcha/intro/v3.html.`}</p>
                     </ak-form-element-horizontal>
                 </div>
