@@ -9,7 +9,7 @@ trigger:
 stages:
   - stage: generate
     jobs:
-      - job: swagger_generate
+      - job: generate_api
         pool:
           vmImage: 'ubuntu-latest'
         steps:
@@ -23,7 +23,7 @@ stages:
           - task: PublishPipelineArtifact@1
             inputs:
               targetPath: 'web/api/'
-              artifact: 'ts_swagger_client'
+              artifact: 'ts_api_client'
               publishLocation: 'pipeline'
   - stage: lint
     jobs:
@@ -38,7 +38,7 @@ stages:
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
-              artifactName: 'ts_swagger_client'
+              artifactName: 'ts_api_client'
               path: "web/api/"
           - task: Npm@1
             inputs:
@@ -60,7 +60,7 @@ stages:
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
-              artifactName: 'ts_swagger_client'
+              artifactName: 'ts_api_client'
               path: "web/api/"
           - task: Npm@1
             inputs:
@@ -84,7 +84,7 @@ stages:
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
-              artifactName: 'ts_swagger_client'
+              artifactName: 'ts_api_client'
               path: "web/api/"
           - task: Npm@1
             inputs:

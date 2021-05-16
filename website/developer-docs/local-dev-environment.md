@@ -30,7 +30,7 @@ Most functions and classes have type-hints and docstrings, so it is recommended 
 
 Before committing code, run `make lint` to ensure your code is formatted well. This also requires `pyright`, which can be installed with npm.
 
-Run `make gen` to run all unittests and generated an updated swagger document for any changes you made.
+Run `make gen` to generate an updated OpenAPI document for any changes you made.
 
 ## Frontend
 

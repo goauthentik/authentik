@@ -15,7 +15,7 @@ variables:
 stages:
   - stage: generate
     jobs:
-      - job: swagger_generate
+      - job: generate_api
         pool:
           vmImage: 'ubuntu-latest'
         steps:
