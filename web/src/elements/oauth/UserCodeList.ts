@@ -11,7 +11,7 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 @customElement("ak-user-oauth-code-list")
 export class UserOAuthCodeList extends Table<ExpiringBaseGrantModel> {
     @property()
-    userId?: string;
+    userId?: number;
 
     apiEndpoint(page: number): Promise<AKResponse<ExpiringBaseGrantModel>> {
         return new Oauth2Api(DEFAULT_CONFIG).oauth2AuthorizationCodesList({

@@ -11,7 +11,7 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 @customElement("ak-user-consent-list")
 export class UserConsentList extends Table<UserConsent> {
     @property()
-    userId?: string;
+    userId?: number;
 
     apiEndpoint(page: number): Promise<AKResponse<UserConsent>> {
         return new CoreApi(DEFAULT_CONFIG).coreUserConsentList({

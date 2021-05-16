@@ -198,7 +198,7 @@ export class UserViewPage extends LitElement {
                 <section slot="page-consent" data-tab-title="${t`Explicit Consent`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
-                            <ak-user-consent-list .userId="${(this.user.pk || 0).toString()}">
+                            <ak-user-consent-list userId=${(this.user.pk || 0)}>
                             </ak-user-consent-list>
                         </div>
                     </div>
@@ -206,7 +206,7 @@ export class UserViewPage extends LitElement {
                 <section slot="page-oauth-code" data-tab-title="${t`OAuth Authorization Codes`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
-                            <ak-user-oauth-code-list .userId="${(this.user.pk || 0).toString()}">
+                            <ak-user-oauth-code-list userId=${this.user.pk || 0}>
                             </ak-user-oauth-code-list>
                         </div>
                     </div>
@@ -214,7 +214,7 @@ export class UserViewPage extends LitElement {
                 <section slot="page-oauth-refresh" data-tab-title="${t`OAuth Refresh Codes`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
-                            <ak-user-oauth-refresh-list .userId="${(this.user.pk || 0).toString()}">
+                            <ak-user-oauth-refresh-list userId=${this.user.pk || 0}>
                             </ak-user-oauth-refresh-list>
                         </div>
                     </div>

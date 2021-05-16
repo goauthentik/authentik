@@ -31,7 +31,7 @@ export class PolicyStatusChart extends AKChart<FlowMetrics> {
 
     async apiRequest(): Promise<FlowMetrics> {
         const api = new FlowsApi(DEFAULT_CONFIG);
-        const cached = (await api.flowsInstancesCacheInfo()).count || 0;
+        const cached = (await api.flowsInstancesCacheInfoRetrieve()).count || 0;
         const count = (await api.flowsInstancesList({
             pageSize: 1
         })).pagination.count;

@@ -3960,18 +3960,6 @@ paths:
         description: Which field to use when ordering the results.
         schema:
           type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
       - in: query
         name: providers__isnull
         schema:
@@ -3999,7 +3987,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedOutpostHealthList'
+                type: array
+                items:
+                  $ref: '#/components/schemas/OutpostHealth'
           description: ''
   /api/v2beta/outposts/instances/default_settings/:
     get:
@@ -4276,18 +4266,6 @@ paths:
         description: Which field to use when ordering the results.
         schema:
           type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
       - in: query
         name: providers__isnull
         schema:
@@ -4315,7 +4293,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedOutpostHealthList'
+                type: array
+                items:
+                  $ref: '#/components/schemas/OutpostHealth'
           description: ''
   /api/v2beta/outposts/outposts/default_settings/:
     get:
@@ -17512,41 +17492,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OAuthSource'
-      required:
-      - pagination
-      - results
-    PaginatedOutpostHealthList:
-      type: object
-      properties:
-        pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/OutpostHealth'
       required:
       - pagination
       - results

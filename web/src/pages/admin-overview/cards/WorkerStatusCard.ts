@@ -8,8 +8,8 @@ import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
 export class WorkersStatusCard extends AdminStatusCard<number> {
 
     getPrimaryValue(): Promise<number> {
-        return new AdminApi(DEFAULT_CONFIG).adminWorkersList({}).then((workers) => {
-            return workers.pagination.count;
+        return new AdminApi(DEFAULT_CONFIG).adminWorkersRetrieve().then((workers) => {
+            return workers.count;
         });
     }
 

@@ -51,11 +51,11 @@ export abstract class Interface extends LitElement {
 
     render(): TemplateResult {
         return html`
-            ${until(new AdminApi(DEFAULT_CONFIG).adminVersionList().then(version => {
+            ${until(new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve().then(version => {
                 if (version.versionCurrent !== VERSION) {
                     return html`<ak-banner>
                         ${t`A newer version of the frontend is available.`}
-                        <button @click=${() => { window.location.reload(); }}>
+                        <button @click=${() => { window.location.reload(true); }}>
                             ${t`Reload`}
                         </button>
                     </ak-banner>`;
