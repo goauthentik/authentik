@@ -13457,7 +13457,7 @@ components:
         meta_publisher:
           type: string
         policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineModeEnum'
+          $ref: '#/components/schemas/PolicyEngineMode'
       required:
       - launch_url
       - name
@@ -13492,7 +13492,7 @@ components:
         meta_publisher:
           type: string
         policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineModeEnum'
+          $ref: '#/components/schemas/PolicyEngineMode'
       required:
       - name
       - slug
@@ -14073,16 +14073,6 @@ components:
             $ref: '#/components/schemas/FlowRequest'
       required:
       - name
-    DesignationEnum:
-      enum:
-      - authentication
-      - authorization
-      - invalidation
-      - enrollment
-      - unenrollment
-      - recovery
-      - stage_configuration
-      type: string
     DeviceClassesEnum:
       enum:
       - static
@@ -14658,7 +14648,7 @@ components:
           description: Shown as the Title in Flow pages.
         designation:
           allOf:
-          - $ref: '#/components/schemas/DesignationEnum'
+          - $ref: '#/components/schemas/FlowDesignationEnum'
           description: Decides what this Flow is used for. For example, the Authentication
             flow is redirect to when an un-authenticated user visits authentik.
         background:
@@ -14681,7 +14671,7 @@ components:
           type: integer
           readOnly: true
         policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineModeEnum'
+          $ref: '#/components/schemas/PolicyEngineMode'
       required:
       - cache_count
       - designation
@@ -14692,6 +14682,16 @@ components:
       - slug
       - stages
       - title
+    FlowDesignationEnum:
+      enum:
+      - authentication
+      - authorization
+      - invalidation
+      - enrollment
+      - unenrollment
+      - recovery
+      - stage_configuration
+      type: string
     FlowDiagram:
       type: object
       description: response of the flow's diagram action
@@ -14717,7 +14717,7 @@ components:
           description: Shown as the Title in Flow pages.
         designation:
           allOf:
-          - $ref: '#/components/schemas/DesignationEnum'
+          - $ref: '#/components/schemas/FlowDesignationEnum'
           description: Decides what this Flow is used for. For example, the Authentication
             flow is redirect to when an un-authenticated user visits authentik.
         background:
@@ -14725,7 +14725,7 @@ components:
           format: binary
           description: Background shown during execution
         policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineModeEnum'
+          $ref: '#/components/schemas/PolicyEngineMode'
       required:
       - designation
       - name
@@ -14766,7 +14766,7 @@ components:
           maximum: 2147483647
           minimum: -2147483648
         policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineModeEnum'
+          $ref: '#/components/schemas/PolicyEngineMode'
       required:
       - order
       - pk
@@ -14796,7 +14796,7 @@ components:
           maximum: 2147483647
           minimum: -2147483648
         policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineModeEnum'
+          $ref: '#/components/schemas/PolicyEngineMode'
       required:
       - order
       - stage
@@ -15429,7 +15429,7 @@ components:
           type: string
           readOnly: true
         policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineModeEnum'
+          $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
@@ -15523,7 +15523,7 @@ components:
           nullable: true
           description: Flow to use when enrolling new users.
         policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineModeEnum'
+          $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
@@ -16020,7 +16020,7 @@ components:
           type: string
           readOnly: true
         policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineModeEnum'
+          $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
@@ -16095,7 +16095,7 @@ components:
           nullable: true
           description: Flow to use when enrolling new users.
         policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineModeEnum'
+          $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
@@ -18228,7 +18228,7 @@ components:
         meta_publisher:
           type: string
         policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineModeEnum'
+          $ref: '#/components/schemas/PolicyEngineMode'
     PatchedAuthenticateWebAuthnStageRequest:
       type: object
       description: AuthenticateWebAuthnStage Serializer
@@ -18526,7 +18526,7 @@ components:
           description: Shown as the Title in Flow pages.
         designation:
           allOf:
-          - $ref: '#/components/schemas/DesignationEnum'
+          - $ref: '#/components/schemas/FlowDesignationEnum'
           description: Decides what this Flow is used for. For example, the Authentication
             flow is redirect to when an un-authenticated user visits authentik.
         background:
@@ -18534,7 +18534,7 @@ components:
           format: binary
           description: Background shown during execution
         policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineModeEnum'
+          $ref: '#/components/schemas/PolicyEngineMode'
     PatchedFlowStageBindingRequest:
       type: object
       description: FlowStageBinding Serializer
@@ -18557,7 +18557,7 @@ components:
           maximum: 2147483647
           minimum: -2147483648
         policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineModeEnum'
+          $ref: '#/components/schemas/PolicyEngineMode'
     PatchedGroupRequest:
       type: object
       description: Group Serializer
@@ -18755,7 +18755,7 @@ components:
           nullable: true
           description: Flow to use when enrolling new users.
         policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineModeEnum'
+          $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
@@ -18951,7 +18951,7 @@ components:
           nullable: true
           description: Flow to use when enrolling new users.
         policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineModeEnum'
+          $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
@@ -19111,7 +19111,7 @@ components:
           nullable: true
           description: Flow to use when enrolling new users.
         policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineModeEnum'
+          $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
@@ -19391,7 +19391,7 @@ components:
           nullable: true
           description: Flow to use when enrolling new users.
         policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineModeEnum'
+          $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
@@ -19655,7 +19655,7 @@ components:
           type: string
           readOnly: true
         policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineModeEnum'
+          $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
@@ -19708,7 +19708,7 @@ components:
           nullable: true
           description: Flow to use when enrolling new users.
         policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineModeEnum'
+          $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
@@ -19859,7 +19859,7 @@ components:
       required:
       - order
       - target
-    PolicyEngineModeEnum:
+    PolicyEngineMode:
       enum:
       - all
       - any
@@ -20747,7 +20747,7 @@ components:
           type: string
           readOnly: true
         policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineModeEnum'
+          $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
@@ -20833,7 +20833,7 @@ components:
           nullable: true
           description: Flow to use when enrolling new users.
         policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineModeEnum'
+          $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
@@ -21070,7 +21070,7 @@ components:
           type: string
           readOnly: true
         policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineModeEnum'
+          $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'

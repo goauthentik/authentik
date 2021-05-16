@@ -1,5 +1,4 @@
 """OAuth2Provider API Views"""
-from django.db.models.base import Model
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import OpenApiResponse, extend_schema

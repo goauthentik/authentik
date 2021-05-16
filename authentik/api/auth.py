@@ -59,10 +59,13 @@ class AuthentikTokenAuthentication(BaseAuthentication):
 
 
 class TokenSchema(OpenApiAuthenticationExtension):
+    """Auth schema"""
+
     target_class = AuthentikTokenAuthentication
     name = "authentik"
 
     def get_security_definition(self, auto_schema):
+        """Auth schema"""
         return {
             "type": "apiKey",
             "in": "header",

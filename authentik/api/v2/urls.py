@@ -1,8 +1,7 @@
 """api v2 urls"""
-from django.urls import path, re_path
+from django.urls import path
 from drf_spectacular.views import SpectacularAPIView
 from rest_framework import routers
-from rest_framework.permissions import AllowAny
 
 from authentik.admin.api.meta import AppsViewSet
 from authentik.admin.api.metrics import AdministrationMetricsViewSet
@@ -10,7 +9,7 @@ from authentik.admin.api.tasks import TaskViewSet
 from authentik.admin.api.version import VersionViewSet
 from authentik.admin.api.workers import WorkerViewSet
 from authentik.api.v2.config import ConfigsViewSet
-from authentik.api.views import SwaggerView
+from authentik.api.views import APIBrowserView
 from authentik.core.api.applications import ApplicationViewSet
 from authentik.core.api.groups import GroupViewSet
 from authentik.core.api.propertymappings import PropertyMappingViewSet
@@ -197,7 +196,7 @@ router.register("policies/dummy", DummyPolicyViewSet)
 
 urlpatterns = (
     [
-        path("", SwaggerView.as_view(), name="swagger"),
+        path("", APIBrowserView.as_view(), name="schema-browser"),
     ]
     + router.urls
     + [
