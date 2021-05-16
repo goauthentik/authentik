@@ -1,4 +1,4 @@
-import { FlowDesignationEnum, FlowsApi, PasswordStage, BackendsEnum, StagesApi } from "authentik-api";
+import { FlowDesignationEnum, FlowsApi, PasswordStage, BackendsEnum, StagesApi, FlowsInstancesListDesignationEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -85,7 +85,7 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
                             <option value="" ?selected=${this.instance?.configureFlow === undefined}>---------</option>
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
-                                designation: FlowDesignationEnum.StageConfiguration,
+                                designation: FlowsInstancesListDesignationEnum.StageConfiguration,
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     let selected = this.instance?.configureFlow === flow.pk;

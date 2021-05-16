@@ -1,4 +1,4 @@
-import { CryptoApi, FlowDesignationEnum, FlowsApi, OAuth2Provider, ClientTypeEnum, IssuerModeEnum, JwtAlgEnum, SubModeEnum, PropertymappingsApi, ProvidersApi } from "authentik-api";
+import { CryptoApi, FlowDesignationEnum, FlowsApi, OAuth2Provider, ClientTypeEnum, IssuerModeEnum, JwtAlgEnum, SubModeEnum, PropertymappingsApi, ProvidersApi, FlowsInstancesListDesignationEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -61,7 +61,7 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                 <select class="pf-c-form-control">
                     ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                         ordering: "pk",
-                        designation: FlowDesignationEnum.Authorization,
+                        designation: FlowsInstancesListDesignationEnum.Authorization,
                     }).then(flows => {
                         return flows.results.map(flow => {
                             return html`<option value=${ifDefined(flow.pk)} ?selected=${this.instance?.authorizationFlow === flow.pk}>${flow.name} (${flow.slug})</option>`;

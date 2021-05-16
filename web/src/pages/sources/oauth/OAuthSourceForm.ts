@@ -1,4 +1,4 @@
-import { OAuthSource, SourcesApi, FlowsApi, FlowDesignationEnum, UserMatchingModeEnum, OAuthSourceRequest } from "authentik-api";
+import { OAuthSource, SourcesApi, FlowsApi, FlowDesignationEnum, UserMatchingModeEnum, OAuthSourceRequest, FlowsInstancesListDesignationEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -230,7 +230,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         <select class="pf-c-form-control">
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
-                                designation: FlowDesignationEnum.Authentication,
+                                designation: FlowsInstancesListDesignationEnum.Authentication,
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     let selected = this.instance?.authenticationFlow === flow.pk;
@@ -250,7 +250,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         <select class="pf-c-form-control">
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
-                                designation: FlowDesignationEnum.Enrollment,
+                                designation: FlowsInstancesListDesignationEnum.Enrollment,
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     let selected = this.instance?.enrollmentFlow === flow.pk;

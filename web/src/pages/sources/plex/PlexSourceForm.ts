@@ -1,4 +1,4 @@
-import { PlexSource, SourcesApi, FlowsApi, FlowDesignationEnum, UserMatchingModeEnum } from "authentik-api";
+import { PlexSource, SourcesApi, FlowsApi, FlowDesignationEnum, UserMatchingModeEnum, FlowsInstancesListDesignationEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -181,7 +181,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                         <select class="pf-c-form-control">
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
-                                designation: FlowDesignationEnum.Authentication,
+                                designation: FlowsInstancesListDesignationEnum.Authentication,
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     let selected = this.instance?.authenticationFlow === flow.pk;
@@ -201,7 +201,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                         <select class="pf-c-form-control">
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
-                                designation: FlowDesignationEnum.Enrollment,
+                                designation: FlowsInstancesListDesignationEnum.Enrollment,
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     let selected = this.instance?.enrollmentFlow === flow.pk;

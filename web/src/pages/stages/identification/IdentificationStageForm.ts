@@ -1,4 +1,4 @@
-import { FlowDesignationEnum, FlowsApi, IdentificationStage, UserFieldsEnum, StagesApi } from "authentik-api";
+import { FlowDesignationEnum, FlowsApi, IdentificationStage, UserFieldsEnum, StagesApi, FlowsInstancesListDesignationEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -101,7 +101,7 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                             <option value="" ?selected=${this.instance?.enrollmentFlow === undefined}>---------</option>
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
-                                designation: FlowDesignationEnum.Enrollment,
+                                designation: FlowsInstancesListDesignationEnum.Enrollment,
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     const selected = this.instance?.enrollmentFlow === flow.pk;
@@ -118,7 +118,7 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                             <option value="" ?selected=${this.instance?.recoveryFlow === undefined}>---------</option>
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
-                                designation: FlowDesignationEnum.Recovery,
+                                designation: FlowsInstancesListDesignationEnum.Recovery,
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     const selected = this.instance?.recoveryFlow === flow.pk;

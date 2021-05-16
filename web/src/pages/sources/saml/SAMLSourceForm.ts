@@ -1,4 +1,4 @@
-import { SAMLSource, SourcesApi, BindingTypeEnum, NameIdPolicyEnum, CryptoApi, DigestAlgorithmEnum, SignatureAlgorithmEnum, FlowsApi, FlowDesignatio } from "authentik-api";
+import { SAMLSource, SourcesApi, BindingTypeEnum, NameIdPolicyEnum, CryptoApi, DigestAlgorithmEnum, SignatureAlgorithmEnum, FlowsApi, FlowDesignatio, FlowsInstancesListDesignationEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -218,7 +218,7 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         <select class="pf-c-form-control">
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
-                                designation: FlowDesignationEnum.StageConfiguration,
+                                designation: FlowsInstancesListDesignationEnum.StageConfiguration,
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     let selected = this.instance?.preAuthenticationFlow === flow.pk;
@@ -238,7 +238,7 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         <select class="pf-c-form-control">
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
-                                designation: FlowDesignationEnum.Authentication,
+                                designation: FlowsInstancesListDesignationEnum.Authentication,
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     let selected = this.instance?.authenticationFlow === flow.pk;
@@ -258,7 +258,7 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         <select class="pf-c-form-control">
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
-                                designation: FlowDesignationEnum.Enrollment,
+                                designation: FlowsInstancesListDesignationEnum.Enrollment,
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     let selected = this.instance?.enrollmentFlow === flow.pk;
