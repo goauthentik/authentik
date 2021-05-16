@@ -32,7 +32,7 @@ VALIDATION_ERROR = build_object_type(
         "code": build_standard_type(OpenApiTypes.STR),
     },
     required=["detail"],
-    additionalProperties={}
+    additionalProperties={},
 )
 
 
