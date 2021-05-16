@@ -88,10 +88,10 @@ class ConfigLoader:
             value = os.getenv(url.netloc, url.query)
         if url.scheme == "file":
             try:
-                with open(url.netloc, "r") as _file:
+                with open(url.path, "r") as _file:
                     value = _file.read()
             except OSError:
-                self._log("error", f"Failed to read config value from {url.netloc}")
+                self._log("error", f"Failed to read config value from {url.path}")
                 value = url.query
         return value
 
