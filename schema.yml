@@ -8469,7 +8469,7 @@ paths:
           description: Bad request
   /api/v2beta/root/config/:
     get:
-      operationId: root_config_list
+      operationId: root_config_retrieve
       description: Retrive public configuration options
       tags:
       - root
@@ -8482,9 +8482,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Config'
+                $ref: '#/components/schemas/Config'
           description: ''
   /api/v2beta/schema/:
     get:

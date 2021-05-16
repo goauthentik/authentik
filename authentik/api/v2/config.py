@@ -4,7 +4,7 @@ from rest_framework.fields import BooleanField, CharField, ListField
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.viewsets import ViewSet
+from rest_framework.views import APIView
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.config import CONFIG
@@ -29,13 +29,13 @@ class ConfigSerializer(PassiveSerializer):
     error_reporting_send_pii = BooleanField(read_only=True)
 
 
-class ConfigsViewSet(ViewSet):
+class ConfigView(APIView):
     """Read-only view set that returns the current session's Configs"""
 
     permission_classes = [AllowAny]
 
     @extend_schema(responses={200: ConfigSerializer(many=False)})
-    def list(self, request: Request) -> Response:
+    def get(self, request: Request) -> Response:
         """Retrive public configuration options"""
         config = ConfigSerializer(
             {
