@@ -12,7 +12,7 @@ from rest_framework.fields import IntegerField, SerializerMethodField
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.viewsets import ViewSet
+from rest_framework.views import APIView
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.events.models import Event, EventAction
@@ -69,13 +69,13 @@ class LoginMetricsSerializer(PassiveSerializer):
         return get_events_per_1h(action=EventAction.LOGIN_FAILED)
 
 
-class AdministrationMetricsViewSet(ViewSet):
+class AdministrationMetricsViewSet(APIView):
     """Login Metrics per 1h"""
 
     permission_classes = [IsAdminUser]
 
     @extend_schema(responses={200: LoginMetricsSerializer(many=False)})
-    def list(self, request: Request) -> Response:
+    def get(self, request: Request) -> Response:
         """Login Metrics per 1h"""
         serializer = LoginMetricsSerializer(True)
         return Response(serializer.data)

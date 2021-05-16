@@ -29,7 +29,7 @@ paths:
           description: ''
   /api/v2beta/admin/metrics/:
     get:
-      operationId: admin_metrics_list
+      operationId: admin_metrics_retrieve
       description: Login Metrics per 1h
       tags:
       - admin
@@ -41,9 +41,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/LoginMetrics'
+                $ref: '#/components/schemas/LoginMetrics'
           description: ''
   /api/v2beta/admin/system_tasks/:
     get:

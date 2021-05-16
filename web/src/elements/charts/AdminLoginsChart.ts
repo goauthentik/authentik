@@ -8,7 +8,7 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 export class AdminLoginsChart extends AKChart<LoginMetrics> {
 
     apiRequest(): Promise<LoginMetrics> {
-        return new AdminApi(DEFAULT_CONFIG).adminMetricsList();
+        return new AdminApi(DEFAULT_CONFIG).adminMetricsRetrieve();
     }
 
     getChartData(data: LoginMetrics): ChartData {

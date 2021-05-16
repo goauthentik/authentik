@@ -15,7 +15,7 @@ export class LoggingMiddleware implements Middleware {
 let globalConfigPromise: Promise<Config>;
 export function config(): Promise<Config> {
     if (!globalConfigPromise) {
-        globalConfigPromise = new RootApi(DEFAULT_CONFIG).rootConfigList();
+        globalConfigPromise = new RootApi(DEFAULT_CONFIG).rootConfigRetrieve();
     }
     return globalConfigPromise;
 }

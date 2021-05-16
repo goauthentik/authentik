@@ -100,7 +100,6 @@ router = routers.DefaultRouter()
 
 router.register("admin/version", VersionViewSet, basename="admin_version")
 router.register("admin/workers", WorkerViewSet, basename="admin_workers")
-router.register("admin/metrics", AdministrationMetricsViewSet, basename="admin_metrics")
 router.register("admin/system_tasks", TaskViewSet, basename="admin_system_tasks")
 router.register("admin/apps", AppsViewSet, basename="apps")
 
@@ -198,6 +197,7 @@ urlpatterns = (
     ]
     + router.urls
     + [
+        path("admin/metrics/", AdministrationMetricsViewSet.as_view(), name="admin_metrics"),
         path("root/config/", ConfigView.as_view(), name="config"),
         path(
             "flows/executor/<slug:flow_slug>/",
