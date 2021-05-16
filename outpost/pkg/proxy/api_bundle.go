@@ -86,12 +86,12 @@ func (pb *providerBundle) prepareOpts(provider api.ProxyOutpostConfig) *options.
 
 	if provider.Certificate.Get() != nil {
 		pb.log.WithField("provider", provider.Name).Debug("Enabling TLS")
-		cert, _, err := pb.s.ak.Client.CryptoApi.CryptoCertificatekeypairsViewCertificateRetrieveExecute(pb.s.ak.Client.CryptoApi.CryptoCertificatekeypairsViewCertificateRetrieve(context.Background(), *provider.Certificate.Get()))
+		cert, _, err := pb.s.ak.Client.CryptoApi.CryptoCertificatekeypairsViewCertificateRetrieve(context.Background(), *provider.Certificate.Get()).Execute()
 		if err != nil {
 			pb.log.WithField("provider", provider.Name).WithError(err).Warning("Failed to fetch certificate")
 			return providerOpts
 		}
-		key, _, err := pb.s.ak.Client.CryptoApi.CryptoCertificatekeypairsViewPrivateKeyRetrieveExecute(pb.s.ak.Client.CryptoApi.CryptoCertificatekeypairsViewPrivateKeyRetrieve(context.Background(), *provider.Certificate.Get()))
+		key, _, err := pb.s.ak.Client.CryptoApi.CryptoCertificatekeypairsViewPrivateKeyRetrieve(context.Background(), *provider.Certificate.Get()).Execute()
 		if err != nil {
 			pb.log.WithField("provider", provider.Name).WithError(err).Warning("Failed to fetch private key")
 			return providerOpts

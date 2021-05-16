@@ -43,7 +43,7 @@ func (pi *ProviderInstance) Search(bindDN string, searchReq ldap.SearchRequest, 
 	default:
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: unhandled filter type: %s [%s]", filterEntity, searchReq.Filter)
 	case GroupObjectClass:
-		groups, _, err := pi.s.ac.Client.CoreApi.CoreGroupsListExecute(pi.s.ac.Client.CoreApi.CoreGroupsList(context.Background()))
+		groups, _, err := pi.s.ac.Client.CoreApi.CoreGroupsList(context.Background()).Execute()
 		if err != nil {
 			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("API Error: %s", err)
 		}
@@ -69,7 +69,7 @@ func (pi *ProviderInstance) Search(bindDN string, searchReq ldap.SearchRequest, 
 			entries = append(entries, &ldap.Entry{DN: dn, Attributes: attrs})
 		}
 	case UserObjectClass, "":
-		users, _, err := pi.s.ac.Client.CoreApi.CoreUsersListExecute(pi.s.ac.Client.CoreApi.CoreUsersList(context.Background()))
+		users, _, err := pi.s.ac.Client.CoreApi.CoreUsersList(context.Background()).Execute()
 		if err != nil {
 			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("API Error: %s", err)
 		}

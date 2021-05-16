@@ -7,7 +7,7 @@ import (
 )
 
 func (a *APIController) Update() ([]api.ProxyOutpostConfig, error) {
-	providers, _, err := a.Client.OutpostsApi.OutpostsProxyListExecute(a.Client.OutpostsApi.OutpostsProxyList(context.Background()))
+	providers, _, err := a.Client.OutpostsApi.OutpostsProxyList(context.Background()).Execute()
 	if err != nil {
 		a.logger.WithError(err).Error("Failed to fetch providers")
 		return nil, err

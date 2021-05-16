@@ -13,7 +13,7 @@ import (
 )
 
 func (ls *LDAPServer) Refresh() error {
-	outposts, _, err := ls.ac.Client.OutpostsApi.OutpostsLdapListExecute(ls.ac.Client.OutpostsApi.OutpostsLdapList(context.Background()))
+	outposts, _, err := ls.ac.Client.OutpostsApi.OutpostsLdapList(context.Background()).Execute()
 	if err != nil {
 		return err
 	}
