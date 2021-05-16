@@ -40,7 +40,7 @@ stages:
           - task: PublishPipelineArtifact@1
             inputs:
               targetPath: 'outpost/api/'
-              artifact: 'go_swagger_client'
+              artifact: 'go_api_client'
               publishLocation: 'pipeline'
   - stage: lint
     jobs:
@@ -54,7 +54,7 @@ stages:
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
-              artifactName: 'go_swagger_client'
+              artifactName: 'go_api_client'
               path: "outpost/api/"
           - task: CmdLine@2
             inputs:
@@ -78,7 +78,7 @@ stages:
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
-              artifactName: 'go_swagger_client'
+              artifactName: 'go_api_client'
               path: "outpost/api/"
           - task: Go@0
             inputs:
@@ -95,7 +95,7 @@ stages:
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
-              artifactName: 'go_swagger_client'
+              artifactName: 'go_api_client'
               path: "outpost/api/"
           - task: Go@0
             inputs:
@@ -114,7 +114,7 @@ stages:
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
-              artifactName: 'go_swagger_client'
+              artifactName: 'go_api_client'
               path: "outpost/api/"
           - task: Bash@3
             inputs:
@@ -150,7 +150,7 @@ stages:
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
-              artifactName: 'go_swagger_client'
+              artifactName: 'go_api_client'
               path: "outpost/api/"
           - task: Bash@3
             inputs:

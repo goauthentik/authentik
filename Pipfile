@@ -22,7 +22,7 @@ django-storages = "*"
 djangorestframework = "*"
 djangorestframework-guardian = "*"
 docker = "*"
-drf_yasg = "*"
+drf-spectacular = "*"
 facebook-sdk = "*"
 geoip2 = "*"
 gunicorn = "*"
@@ -44,7 +44,6 @@ urllib3 = {extras = ["secure"],version = "*"}
 uvicorn = {extras = ["standard"],version = "*"}
 webauthn = "*"
 xmlsec = "*"
-drf-spectacular = "*"
 
 [requires]
 python_version = "3.9"

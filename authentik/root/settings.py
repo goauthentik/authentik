@@ -462,7 +462,6 @@ _LOGGING_HANDLER_MAP = {
     "kubernetes": "INFO",
     "asyncio": "WARNING",
     "aioredis": "WARNING",
-    "drf_yasg.utils": "WARNING",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false
