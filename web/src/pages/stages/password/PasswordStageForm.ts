@@ -1,4 +1,4 @@
-import { FlowDesignationEnum, FlowsApi, PasswordStage, BackendsEnum, StagesApi, FlowsInstancesListDesignationEnum } from "authentik-api";
+import { FlowsApi, PasswordStage, BackendsEnum, StagesApi, FlowsInstancesListDesignationEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";

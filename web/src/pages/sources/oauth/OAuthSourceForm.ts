@@ -1,4 +1,4 @@
-import { OAuthSource, SourcesApi, FlowsApi, FlowDesignationEnum, UserMatchingModeEnum, OAuthSourceRequest, FlowsInstancesListDesignationEnum } from "authentik-api";
+import { OAuthSource, SourcesApi, FlowsApi, UserMatchingModeEnum, OAuthSourceRequest, FlowsInstancesListDesignationEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";

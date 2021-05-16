@@ -1,4 +1,4 @@
-import { CryptoApi, FlowDesignationEnum, FlowsApi, FlowsInstancesListDesignationEnum, ProvidersApi, ProxyProvider } from "authentik-api";
+import { CryptoApi, FlowsApi, FlowsInstancesListDesignationEnum, ProvidersApi, ProxyProvider } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";

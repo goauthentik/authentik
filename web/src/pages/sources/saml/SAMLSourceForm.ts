@@ -1,4 +1,4 @@
-import { SAMLSource, SourcesApi, BindingTypeEnum, NameIdPolicyEnum, CryptoApi, DigestAlgorithmEnum, SignatureAlgorithmEnum, FlowsApi, FlowDesignatio, FlowsInstancesListDesignationEnum } from "authentik-api";
+import { SAMLSource, SourcesApi, BindingTypeEnum, NameIdPolicyEnum, CryptoApi, DigestAlgorithmEnum, SignatureAlgorithmEnum, FlowsApi, FlowsInstancesListDesignationEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";

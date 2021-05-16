@@ -1,4 +1,4 @@
-import { FlowDesignationEnum, FlowsApi, FlowsInstancesListDesignationEnum, ProvidersApi, SAMLProvider } from "authentik-api";
+import { FlowsApi, FlowsInstancesListDesignationEnum, ProvidersApi, SAMLProvider } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -21,7 +21,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
         if (!file) {
             throw new Error("No form data");
         }
-        return new ProvidersApi(DEFAULT_CONFIG).providersSamlImportMetadata({
+        return new ProvidersApi(DEFAULT_CONFIG).providersSamlImportMetadataCreate({
             file: file,
             name: data.name,
             authorizationFlow: data.authorizationFlow,

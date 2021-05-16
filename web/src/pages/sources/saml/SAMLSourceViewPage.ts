@@ -136,7 +136,7 @@ export class SAMLSourceViewPage extends LitElement {
                         <div class="pf-u-w-75">
                             <div class="pf-c-card">
                                 <div class="pf-c-card__body">
-                                    ${until(new SourcesApi(DEFAULT_CONFIG).sourcesSamlMetadata({
+                                    ${until(new SourcesApi(DEFAULT_CONFIG).sourcesSamlMetadataRetrieve({
                                             slug: this.source.slug,
                                         }).then(m => {
                                             return html`<ak-codemirror mode="xml" ?readOnly=${true} value="${ifDefined(m.metadata)}"></ak-codemirror>`;

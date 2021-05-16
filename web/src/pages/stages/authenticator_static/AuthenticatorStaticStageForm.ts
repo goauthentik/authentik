@@ -1,4 +1,4 @@
-import { FlowDesignationEnum, FlowsApi, AuthenticatorStaticStage, StagesApi, FlowsInstancesListDesignationEnum } from "authentik-api";
+import { FlowsApi, AuthenticatorStaticStage, StagesApi, FlowsInstancesListDesignationEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -35,7 +35,7 @@ export class AuthenticatorStaticStageForm extends ModelForm<AuthenticatorStaticS
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesUserWriteCreate({
-                authenticatorStaticStageRequest: data
+                userWriteStageRequest: data
             });
         }
     };

@@ -133,7 +133,7 @@ export class LDAPSourceViewPage extends LitElement {
                                     <p>${t`Sync status`}</p>
                                 </div>
                                 <div class="pf-c-card__body">
-                                    ${until(new SourcesApi(DEFAULT_CONFIG).sourcesLdapSyncStatus({
+                                    ${until(new SourcesApi(DEFAULT_CONFIG).sourcesLdapSyncStatusRetrieve({
                                         slug: this.source.slug
                                     }).then((ls) => {
                                         let header = html``;

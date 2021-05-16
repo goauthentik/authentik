@@ -149,7 +149,7 @@ export class SAMLProviderViewPage extends LitElement {
                         <div class="pf-u-w-75">
                             <div class="pf-c-card">
                                 <div class="pf-c-card__body">
-                                    ${until(new ProvidersApi(DEFAULT_CONFIG).providersSamlMetadata({
+                                    ${until(new ProvidersApi(DEFAULT_CONFIG).providersSamlMetadataRetrieve({
                                         id: this.provider.pk || 0,
                                     }).then(m => {
                                         return html`<ak-codemirror mode="xml" ?readOnly=${true} value="${ifDefined(m.metadata)}"></ak-codemirror>`;
