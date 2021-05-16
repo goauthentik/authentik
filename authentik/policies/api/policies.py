@@ -1,7 +1,7 @@
 """policy API Views"""
 from django.core.cache import cache
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins
 from rest_framework.decorators import action
@@ -124,7 +124,10 @@ class PolicyViewSet(
     @permission_required(None, ["authentik_policies.clear_policy_cache"])
     @extend_schema(
         request=OpenApiTypes.NONE,
-        responses={204: "Successfully cleared cache", 400: "Bad request"},
+        responses={
+            204: OpenApiResponse(description="Successfully cleared cache"),
+            400: OpenApiResponse(description="Bad request"),
+        },
     )
     @action(detail=False, methods=["POST"])
     def cache_clear(self, request: Request) -> Response:
@@ -140,7 +143,10 @@ class PolicyViewSet(
     @permission_required("authentik_policies.view_policy")
     @extend_schema(
         request=PolicyTestSerializer(),
-        responses={200: PolicyTestResultSerializer(), 400: "Invalid parameters"},
+        responses={
+            200: PolicyTestResultSerializer(),
+            400: OpenApiResponse(description="Invalid parameters"),
+        },
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
     # pylint: disable=unused-argument, invalid-name

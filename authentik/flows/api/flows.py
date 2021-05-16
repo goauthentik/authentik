@@ -7,12 +7,7 @@ from django.http.response import HttpResponseBadRequest, JsonResponse
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import (
-    OpenApiParameter,
-    OpenApiResponse,
-    OpenApiSchemaBase,
-    extend_schema,
-)
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
@@ -46,7 +41,7 @@ class FlowSerializer(ModelSerializer):
 
     cache_count = SerializerMethodField()
 
-    def get_cache_count(self, flow: Flow):
+    def get_cache_count(self, flow: Flow) -> int:
         """Get count of cached flows"""
         return len(cache.keys(f"{cache_key(flow)}*"))
 
@@ -111,7 +106,10 @@ class FlowViewSet(ModelViewSet):
     @permission_required(None, ["authentik_flows.clear_flow_cache"])
     @extend_schema(
         request=OpenApiTypes.NONE,
-        responses={204: "Successfully cleared cache", 400: "Bad request"},
+        responses={
+            204: OpenApiResponse(description="Successfully cleared cache"),
+            400: OpenApiResponse(description="Bad request"),
+        },
     )
     @action(detail=False, methods=["POST"])
     def cache_clear(self, request: Request) -> Response:
@@ -148,7 +146,10 @@ class FlowViewSet(ModelViewSet):
                 required=True,
             )
         ],
-        responses={204: "Successfully imported flow", 400: "Bad request"},
+        responses={
+            204: OpenApiResponse(description="Successfully imported flow"),
+            400: OpenApiResponse(description="Bad request"),
+        },
     )
     @action(detail=False, methods=["POST"], parser_classes=(MultiPartParser,))
     def import_flow(self, request: Request) -> Response:
@@ -178,9 +179,7 @@ class FlowViewSet(ModelViewSet):
     )
     @extend_schema(
         responses={
-            "200": OpenApiResponse(
-                response=OpenApiParameter("File Attachment", type=OpenApiTypes.BINARY)
-            ),
+            "200": OpenApiResponse(response=OpenApiTypes.BINARY),
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
@@ -274,7 +273,10 @@ class FlowViewSet(ModelViewSet):
                 required=True,
             )
         ],
-        responses={200: "Success", 400: "Bad request"},
+        responses={
+            200: OpenApiResponse(description="Success"),
+            400: OpenApiResponse(description="Bad request"),
+        },
     )
     @action(
         detail=True,
@@ -295,7 +297,10 @@ class FlowViewSet(ModelViewSet):
         return Response({})
 
     @extend_schema(
-        responses={200: LinkSerializer(many=False), 400: "Flow not applicable"},
+        responses={
+            200: LinkSerializer(many=False),
+            400: OpenApiResponse(description="Flow not applicable"),
+        },
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=unused-argument

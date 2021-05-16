@@ -3,11 +3,11 @@ from base64 import b64decode
 from binascii import Error
 from typing import Any, Optional, Union
 
+from drf_spectacular.authentication import OpenApiAuthenticationExtension
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.request import Request
 from structlog.stdlib import get_logger
-from drf_spectacular.authentication import OpenApiAuthenticationExtension
 
 from authentik.core.models import Token, TokenIntents, User
 
@@ -60,11 +60,11 @@ class AuthentikTokenAuthentication(BaseAuthentication):
 
 class TokenSchema(OpenApiAuthenticationExtension):
     target_class = AuthentikTokenAuthentication
-    name = 'authentik'
+    name = "authentik"
 
     def get_security_definition(self, auto_schema):
         return {
-            'type': 'apiKey',
-            'in': 'header',
-            'name': 'Authorization',
+            "type": "apiKey",
+            "in": "header",
+            "name": "Authorization",
         }

@@ -6,7 +6,7 @@ from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, extend_schema
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema, extend_schema_field
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, FileField, ReadOnlyField
 from rest_framework.parsers import MultiPartParser
@@ -83,7 +83,7 @@ class SAMLProviderViewSet(ModelViewSet):
     @extend_schema(
         responses={
             200: SAMLMetadataSerializer(many=False),
-            404: "Provider has no application assigned",
+            404: OpenApiResponse(description="Provider has no application assigned"),
         },
         parameters=[
             OpenApiParameter(
@@ -120,7 +120,10 @@ class SAMLProviderViewSet(ModelViewSet):
     )
     @extend_schema(
         request=SAMLProviderImportSerializer(),
-        responses={204: "Successfully imported provider", 400: "Bad request"},
+        responses={
+            204: OpenApiResponse(description="Successfully imported provider"),
+            400: OpenApiResponse(description="Bad request"),
+        },
     )
     @action(detail=False, methods=["POST"], parser_classes=(MultiPartParser,))
     def import_metadata(self, request: Request) -> Response:

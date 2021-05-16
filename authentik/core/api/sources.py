@@ -24,7 +24,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
 
     component = SerializerMethodField()
 
-    def get_component(self, obj: Source):
+    def get_component(self, obj: Source) -> str:
         """Get object component so that we know how to edit the object"""
         # pyright: reportGeneralTypeIssues=false
         if obj.__class__ == Source:

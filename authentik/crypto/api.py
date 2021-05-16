@@ -6,7 +6,7 @@ from cryptography.x509 import load_pem_x509_certificate
 from django.http.response import HttpResponse
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, extend_schema
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import (
     CharField,
@@ -127,7 +127,10 @@ class CertificateKeyPairViewSet(ModelViewSet):
     @permission_required(None, ["authentik_crypto.add_certificatekeypair"])
     @extend_schema(
         request=CertificateGenerationSerializer(),
-        responses={200: CertificateKeyPairSerializer, 400: "Bad request"},
+        responses={
+            200: CertificateKeyPairSerializer,
+            400: OpenApiResponse(description="Bad request"),
+        },
     )
     @action(detail=False, methods=["POST"])
     def generate(self, request: Request) -> Response:

@@ -6,7 +6,7 @@ from django.db.models import QuerySet
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, extend_schema
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import SerializerMethodField
 from rest_framework.parsers import MultiPartParser
@@ -94,8 +94,8 @@ class ApplicationViewSet(ModelViewSet):
 
     @extend_schema(
         responses={
-            204: "Access granted",
-            403: "Access denied",
+            204: OpenApiResponse(description="Access granted"),
+            403: OpenApiResponse(description="Access denied"),
         }
     )
     @action(detail=True, methods=["GET"])
@@ -161,7 +161,10 @@ class ApplicationViewSet(ModelViewSet):
                 required=True,
             )
         ],
-        responses={200: "Success", 400: "Bad request"},
+        responses={
+            200: OpenApiResponse(description="Success"),
+            400: OpenApiResponse(description="Bad request"),
+        },
     )
     @action(
         detail=True,

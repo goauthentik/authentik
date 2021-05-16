@@ -1,8 +1,8 @@
 """Events API Views"""
-from drf_spectacular.types import OpenApiTypes
 import django_filters
 from django.db.models.aggregates import Count
 from django.db.models.fields.json import KeyTextTransform
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
@@ -116,7 +116,7 @@ class EventViewSet(ReadOnlyModelViewSet):
                 location=OpenApiParameter.QUERY,
                 required=False,
             )
-        ]
+        ],
     )
     @action(detail=False, methods=["GET"])
     def top_per_user(self, request: Request):

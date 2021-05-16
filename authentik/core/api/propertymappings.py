@@ -2,7 +2,7 @@
 from json import dumps
 
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, extend_schema
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins
 from rest_framework.decorators import action
@@ -102,7 +102,10 @@ class PropertyMappingViewSet(
     @permission_required("authentik_core.view_propertymapping")
     @extend_schema(
         request=PolicyTestSerializer(),
-        responses={200: PropertyMappingTestResultSerializer, 400: "Invalid parameters"},
+        responses={
+            200: PropertyMappingTestResultSerializer,
+            400: OpenApiResponse(description="Invalid parameters"),
+        },
         parameters=[
             OpenApiParameter(
                 name="format_result",

@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django.utils.http import urlencode
 from django_filters.filters import BooleanFilter, CharFilter
 from django_filters.filterset import FilterSet
-from drf_spectacular.utils import extend_schema, extend_schema_field
+from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_field
 from guardian.utils import get_anonymous_user
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, JSONField, SerializerMethodField
@@ -170,7 +170,10 @@ class UserViewSet(ModelViewSet):
 
     @permission_required("authentik_core.reset_user_password")
     @extend_schema(
-        responses={"200": LinkSerializer(many=False), "404": "No recovery flow found."},
+        responses={
+            "200": LinkSerializer(many=False),
+            "404": OpenApiResponse(description="No recovery flow found."),
+        },
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=invalid-name, unused-argument

@@ -2,7 +2,7 @@
 from django.db.models.base import Model
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import ReadOnlyField
 from rest_framework.generics import get_object_or_404
@@ -61,9 +61,6 @@ class OAuth2ProviderSetupURLs(PassiveSerializer):
     provider_info = ReadOnlyField()
     logout = ReadOnlyField()
 
-    class Meta:
-        model = Model
-
 
 class OAuth2ProviderViewSet(ModelViewSet):
     """OAuth2Provider Viewset"""
@@ -74,7 +71,7 @@ class OAuth2ProviderViewSet(ModelViewSet):
     @extend_schema(
         responses={
             200: OAuth2ProviderSetupURLs,
-            404: "Provider has no application assigned",
+            404: OpenApiResponse(description="Provider has no application assigned"),
         }
     )
     @action(methods=["GET"], detail=True)

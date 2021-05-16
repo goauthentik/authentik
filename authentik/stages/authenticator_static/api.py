@@ -34,7 +34,6 @@ class StaticDeviceSerializer(ModelSerializer):
 
         model = StaticDevice
         fields = ["name", "token_set", "pk"]
-        depth = 2
 
 
 class StaticDeviceViewSet(ModelViewSet):

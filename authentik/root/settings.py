@@ -151,6 +151,9 @@ SPECTACULAR_SETTINGS = {
         "name": "GNU GPLv3",
         "url": "https://github.com/goauthentik/authentik/blob/master/LICENSE",
     },
+    "ENUM_NAME_OVERRIDES": {
+        "ChallengeChoices": "authentik.flows.challenge.ChallengeTypes"
+    },
 }
 
 REST_FRAMEWORK = {

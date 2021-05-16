@@ -22,7 +22,7 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
 
     component = SerializerMethodField()
 
-    def get_component(self, obj: Provider):  # pragma: no cover
+    def get_component(self, obj: Provider) -> str:  # pragma: no cover
         """Get object component so that we know how to edit the object"""
         # pyright: reportGeneralTypeIssues=false
         if obj.__class__ == Provider:
