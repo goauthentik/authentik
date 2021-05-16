@@ -1,5 +1,7 @@
 .SHELLFLAGS += -x -e
 PWD = $(shell pwd)
+UID = $(shell id -u)
+GID = $(shell id -g)
 
 all: lint-fix lint test gen
 
@@ -31,6 +33,7 @@ gen-build:
 gen-web:
 	docker run \
 		--rm -v ${PWD}:/local \
+		--user ${UID}:${GID} \
 		openapitools/openapi-generator-cli generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
@@ -41,6 +44,7 @@ gen-web:
 gen-outpost:
 	docker run \
 		--rm -v ${PWD}:/local \
+		--user ${UID}:${GID} \
 		openapitools/openapi-generator-cli generate \
 		--git-host goauthentik.io \
 		--git-repo-id outpost \

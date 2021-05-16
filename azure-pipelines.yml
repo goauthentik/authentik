@@ -299,7 +299,6 @@ stages:
             inputs:
               script: |
                 make gen-web
-                sudo chmod 777 -R web/api/
                 cd web
                 cd api && npm i && cd ..
                 npm i
