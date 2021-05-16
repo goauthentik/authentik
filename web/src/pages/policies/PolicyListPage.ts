@@ -107,7 +107,7 @@ export class PolicyListPage extends TablePage<Policy> {
                 .obj=${item}
                 objectLabel=${t`Policy`}
                 .delete=${() => {
-                    return new PoliciesApi(DEFAULT_CONFIG).policiesAllDelete({
+                    return new PoliciesApi(DEFAULT_CONFIG).policiesAllDestroy({
                         policyUuid: item.pk || ""
                     });
                 }}>

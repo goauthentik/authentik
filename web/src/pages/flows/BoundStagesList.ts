@@ -83,7 +83,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                 .obj=${item}
                 objectLabel=${t`Stage binding`}
                 .delete=${() => {
-                    return new FlowsApi(DEFAULT_CONFIG).flowsBindingsDelete({
+                    return new FlowsApi(DEFAULT_CONFIG).flowsBindingsDestroy({
                         fsbUuid: item.pk || "",
                     });
                 }}>

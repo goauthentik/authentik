@@ -78,7 +78,7 @@ export class PromptListPage extends TablePage<Prompt> {
                 .obj=${item}
                 objectLabel=${t`Prompt`}
                 .delete=${() => {
-                    return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsDelete({
+                    return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsDestroy({
                         promptUuid: item.pk || ""
                     });
                 }}>

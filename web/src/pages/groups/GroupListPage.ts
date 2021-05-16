@@ -73,7 +73,7 @@ export class GroupListPage extends TablePage<Group> {
                 .obj=${item}
                 objectLabel=${t`Group`}
                 .delete=${() => {
-                    return new CoreApi(DEFAULT_CONFIG).coreGroupsDelete({
+                    return new CoreApi(DEFAULT_CONFIG).coreGroupsDestroy({
                         groupUuid: item.pk || ""
                     });
                 }}>

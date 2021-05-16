@@ -76,7 +76,7 @@ export class OutpostListPage extends TablePage<Outpost> {
                 .obj=${item}
                 objectLabel=${t`Outpost`}
                 .delete=${() => {
-                    return new OutpostsApi(DEFAULT_CONFIG).outpostsOutpostsDelete({
+                    return new OutpostsApi(DEFAULT_CONFIG).outpostsOutpostsDestroy({
                         uuid: item.pk || ""
                     });
                 }}>

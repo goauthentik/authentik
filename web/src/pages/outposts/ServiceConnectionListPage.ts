@@ -94,7 +94,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                 .obj=${item}
                 objectLabel=${t`Outpost Service-connection`}
                 .delete=${() => {
-                    return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllDelete({
+                    return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllDestroy({
                         uuid: item.pk || ""
                     });
                 }}>

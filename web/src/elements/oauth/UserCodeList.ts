@@ -45,7 +45,7 @@ export class UserOAuthCodeList extends Table<ExpiringBaseGrantModel> {
                 .obj=${item}
                 objectLabel=${t`Authorization Code`}
                 .delete=${() => {
-                    return new Oauth2Api(DEFAULT_CONFIG).oauth2AuthorizationCodesDelete({
+                    return new Oauth2Api(DEFAULT_CONFIG).oauth2AuthorizationCodesDestroy({
                         id: item.pk || 0,
                     });
                 }}>

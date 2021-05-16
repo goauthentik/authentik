@@ -45,7 +45,7 @@ export class UserOAuthRefreshList extends Table<ExpiringBaseGrantModel> {
                 .obj=${item}
                 objectLabel=${t`Refresh Code`}
                 .delete=${() => {
-                    return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensDelete({
+                    return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensDestroy({
                         id: item.pk || 0,
                     });
                 }}>

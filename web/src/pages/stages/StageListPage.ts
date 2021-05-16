@@ -102,7 +102,7 @@ export class StageListPage extends TablePage<Stage> {
                 .obj=${item}
                 objectLabel=${item.verboseName || ""}
                 .delete=${() => {
-                    return new StagesApi(DEFAULT_CONFIG).stagesAllDelete({
+                    return new StagesApi(DEFAULT_CONFIG).stagesAllDestroy({
                         stageUuid: item.pk || ""
                     });
                 }}>

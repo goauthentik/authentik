@@ -87,7 +87,7 @@ export class SourceListPage extends TablePage<Source> {
                 .obj=${item}
                 objectLabel=${t`Source`}
                 .delete=${() => {
-                    return new SourcesApi(DEFAULT_CONFIG).sourcesAllDelete({
+                    return new SourcesApi(DEFAULT_CONFIG).sourcesAllDestroy({
                         slug: item.slug || ""
                     });
                 }}>

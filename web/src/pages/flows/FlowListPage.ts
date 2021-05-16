@@ -78,7 +78,7 @@ export class FlowListPage extends TablePage<Flow> {
                 .obj=${item}
                 objectLabel=${t`Flow`}
                 .delete=${() => {
-                    return new FlowsApi(DEFAULT_CONFIG).flowsInstancesDelete({
+                    return new FlowsApi(DEFAULT_CONFIG).flowsInstancesDestroy({
                         slug: item.slug
                     });
                 }}>

@@ -29,7 +29,7 @@ export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
             .obj=${device}
             objectLabel=${t`Authenticator`}
             .delete=${() => {
-                return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsWebauthnDelete({
+                return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsWebauthnDestroy({
                     id: device.pk || 0
                 });
             }}>

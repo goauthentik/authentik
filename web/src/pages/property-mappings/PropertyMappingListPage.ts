@@ -98,7 +98,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                 .obj=${item}
                 objectLabel=${t`Property Mapping`}
                 .delete=${() => {
-                    return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllDelete({
+                    return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllDestroy({
                         pmUuid: item.pk || ""
                     });
                 }}>

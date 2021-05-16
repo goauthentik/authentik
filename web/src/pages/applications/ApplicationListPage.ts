@@ -104,7 +104,7 @@ export class ApplicationListPage extends TablePage<Application> {
                 .obj=${item}
                 objectLabel=${t`Application`}
                 .delete=${() => {
-                    return new CoreApi(DEFAULT_CONFIG).coreApplicationsDelete({
+                    return new CoreApi(DEFAULT_CONFIG).coreApplicationsDestroy({
                         slug: item.slug || ""
                     });
                 }}>

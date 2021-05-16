@@ -138,7 +138,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 .obj=${item}
                 objectLabel=${t`Policy binding`}
                 .delete=${() => {
-                    return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsDelete({
+                    return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsDestroy({
                         policyBindingUuid: item.pk || "",
                     });
                 }}>

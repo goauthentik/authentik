@@ -41,7 +41,7 @@ export class UserConsentList extends Table<UserConsent> {
                 .obj=${item}
                 objectLabel=${t`Consent`}
                 .delete=${() => {
-                    return new CoreApi(DEFAULT_CONFIG).coreUserConsentDelete({
+                    return new CoreApi(DEFAULT_CONFIG).coreUserConsentDestroy({
                         id: item.pk || 0,
                     });
                 }}>

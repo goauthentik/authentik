@@ -91,7 +91,7 @@ export class ProviderListPage extends TablePage<Provider> {
                 .obj=${item}
                 objectLabel=${t`Provider`}
                 .delete=${() => {
-                    return new ProvidersApi(DEFAULT_CONFIG).providersAllDelete({
+                    return new ProvidersApi(DEFAULT_CONFIG).providersAllDestroy({
                         id: item.pk || 0
                     });
                 }}>

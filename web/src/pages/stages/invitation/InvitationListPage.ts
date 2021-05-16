@@ -59,7 +59,7 @@ export class InvitationListPage extends TablePage<Invitation> {
                 .obj=${item}
                 objectLabel=${t`Prompt`}
                 .delete=${() => {
-                    return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsDelete({
+                    return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsDestroy({
                         inviteUuid: item.pk || ""
                     });
                 }}>

@@ -154,7 +154,7 @@ export class UserViewPage extends LitElement {
                             <div class="pf-c-card__footer">
                                 <ak-action-button
                                     .apiRequest=${() => {
-                                        return new CoreApi(DEFAULT_CONFIG).coreUsersRecovery({
+                                        return new CoreApi(DEFAULT_CONFIG).coreUsersRecoveryRetrieve({
                                             id: this.user?.pk || 0,
                                         }).then(rec => {
                                             showMessage({
