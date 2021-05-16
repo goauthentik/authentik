@@ -1,4 +1,4 @@
-import { OAuthSource, SourcesApi, FlowsApi, FlowDesignationEnum, OAuthSourceUserMatchingModeEnum } from "authentik-api";
+import { OAuthSource, SourcesApi, FlowsApi, FlowDesignationEnum, UserMatchingModeEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -139,19 +139,19 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                 ?required=${true}
                 name="userMatchingMode">
                 <select class="pf-c-form-control">
-                    <option value=${OAuthSourceUserMatchingModeEnum.Identifier} ?selected=${this.instance?.userMatchingMode === OAuthSourceUserMatchingModeEnum.Identifier}>
+                    <option value=${UserMatchingModeEnum.Identifier} ?selected=${this.instance?.userMatchingMode === UserMatchingModeEnum.Identifier}>
                         ${t`Link users on unique identifier`}
                     </option>
-                    <option value=${OAuthSourceUserMatchingModeEnum.UsernameLink} ?selected=${this.instance?.userMatchingMode === OAuthSourceUserMatchingModeEnum.UsernameLink}>
+                    <option value=${UserMatchingModeEnum.UsernameLink} ?selected=${this.instance?.userMatchingMode === UserMatchingModeEnum.UsernameLink}>
                         ${t`Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses`}
                     </option>
-                    <option value=${OAuthSourceUserMatchingModeEnum.UsernameDeny} ?selected=${this.instance?.userMatchingMode === OAuthSourceUserMatchingModeEnum.UsernameDeny}>
+                    <option value=${UserMatchingModeEnum.UsernameDeny} ?selected=${this.instance?.userMatchingMode === UserMatchingModeEnum.UsernameDeny}>
                         ${t`Use the user's email address, but deny enrollment when the email address already exists.`}
                     </option>
-                    <option value=${OAuthSourceUserMatchingModeEnum.EmailLink} ?selected=${this.instance?.userMatchingMode === OAuthSourceUserMatchingModeEnum.EmailLink}>
+                    <option value=${UserMatchingModeEnum.EmailLink} ?selected=${this.instance?.userMatchingMode === UserMatchingModeEnum.EmailLink}>
                         ${t`Link to a user with identical username address. Can have security implications when a username is used with another source.`}
                     </option>
-                    <option value=${OAuthSourceUserMatchingModeEnum.EmailDeny} ?selected=${this.instance?.userMatchingMode === OAuthSourceUserMatchingModeEnum.EmailDeny}>
+                    <option value=${UserMatchingModeEnum.EmailDeny} ?selected=${this.instance?.userMatchingMode === UserMatchingModeEnum.EmailDeny}>
                         ${t`Use the user's username, but deny enrollment when the username already exists.`}
                     </option>
                 </select>

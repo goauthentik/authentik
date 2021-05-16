@@ -1,4 +1,4 @@
-import { FlowsApi, FlowStageBinding, FlowStageBindingPolicyEngineModeEnum, Stage, StagesApi } from "authentik-api";
+import { FlowsApi, FlowStageBinding, PolicyEngineMode, Stage, StagesApi } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -140,10 +140,10 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 ?required=${true}
                 name="policyEngineMode">
                 <select class="pf-c-form-control">
-                    <option value=${FlowStageBindingPolicyEngineModeEnum.Any} ?selected=${this.instance?.policyEngineMode === FlowStageBindingPolicyEngineModeEnum.Any}>
+                    <option value=${PolicyEngineMode.Any} ?selected=${this.instance?.policyEngineMode === PolicyEngineMode.Any}>
                         ${t`ANY, any policy must match to include this stage access.`}
                     </option>
-                    <option value=${FlowStageBindingPolicyEngineModeEnum.All} ?selected=${this.instance?.policyEngineMode === FlowStageBindingPolicyEngineModeEnum.All}>
+                    <option value=${PolicyEngineMode.All} ?selected=${this.instance?.policyEngineMode === PolicyEngineMode.All}>
                         ${t`ALL, all policies must match to include this stage access.`}
                     </option>
                 </select>

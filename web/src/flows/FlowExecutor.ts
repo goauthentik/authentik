@@ -37,7 +37,7 @@ import { AuthenticatorValidateStageChallenge } from "./stages/authenticator_vali
 import { WebAuthnAuthenticatorRegisterChallenge } from "./stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
 import { CaptchaChallenge } from "./stages/captcha/CaptchaStage";
 import { StageHost } from "./stages/base";
-import { Challenge, ChallengeTypeEnum, Config, FlowsApi } from "authentik-api";
+import { Challenge, ChallengeChoices, Config, FlowsApi } from "authentik-api";
 import { config, DEFAULT_CONFIG } from "../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
@@ -155,7 +155,7 @@ export class FlowExecutor extends LitElement implements StageHost {
 
     errorMessage(error: string): void {
         this.challenge = <ShellChallenge>{
-            type: ChallengeTypeEnum.Shell,
+            type: ChallengeChoices.Shell,
             body: `<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">
                     ${t`Whoops!`}
@@ -188,16 +188,16 @@ export class FlowExecutor extends LitElement implements StageHost {
             return html``;
         }
         switch (this.challenge.type) {
-            case ChallengeTypeEnum.Redirect:
+            case ChallengeChoices.Redirect:
                 console.debug("authentik/flows: redirecting to url from server", (this.challenge as RedirectChallenge).to);
                 window.location.assign((this.challenge as RedirectChallenge).to);
                 return html`<ak-empty-state
                         ?loading=${true}
                         header=${t`Loading`}>
                     </ak-empty-state>`;
-            case ChallengeTypeEnum.Shell:
+            case ChallengeChoices.Shell:
                 return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
-            case ChallengeTypeEnum.Native:
+            case ChallengeChoices.Native:
                 switch (this.challenge.component) {
                     case "ak-stage-access-denied":
                         return html`<ak-stage-access-denied .host=${this} .challenge=${this.challenge as AccessDeniedChallenge}></ak-stage-access-denied>`;

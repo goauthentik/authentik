@@ -21,7 +21,7 @@ import "../../../elements/events/ObjectChangelog";
 import "../../../elements/forms/ModalForm";
 import "./LDAPSourceForm";
 import { until } from "lit-html/directives/until";
-import { LDAPSource, SourcesApi, TaskStatusEnum } from "authentik-api";
+import { LDAPSource, SourcesApi, StatusEnum } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";
 
@@ -137,9 +137,9 @@ export class LDAPSourceViewPage extends LitElement {
                                         slug: this.source.slug
                                     }).then((ls) => {
                                         let header = html``;
-                                        if (ls.status === TaskStatusEnum.Warning) {
+                                        if (ls.status === StatusEnum.Warning) {
                                             header = html`<p>${t`Task finished with warnings`}</p>`;
-                                        } else if (status === TaskStatusEnum.Error) {
+                                        } else if (status === StatusEnum.Error) {
                                             header = html`<p>${t`Task finished with errors`}</p>`;
                                         } else {
                                             header = html`<p>${t`Last sync: ${ls.taskFinishTimestamp.toLocaleString()}`}</p>`;

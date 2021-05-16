@@ -1,4 +1,4 @@
-import { CoreApi, Application, ProvidersApi, Provider, ApplicationPolicyEngineModeEnum } from "authentik-api";
+import { CoreApi, Application, ProvidersApi, Provider, PolicyEngineModeEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { CSSResult, customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -43,17 +43,17 @@ export class ApplicationForm extends ModelForm<Application, string> {
         if (this.instance) {
             writeOp = new CoreApi(DEFAULT_CONFIG).coreApplicationsUpdate({
                 slug: this.instance.slug,
-                data: data
+                applicationRequest: data
             });
         } else {
             writeOp = new CoreApi(DEFAULT_CONFIG).coreApplicationsCreate({
-                data: data
+                applicationRequest: data
             });
         }
         const icon = this.getFormFile();
         if (icon) {
             return writeOp.then(app => {
-                return new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIcon({
+                return new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
                     slug: app.slug,
                     file: icon
                 });
@@ -145,10 +145,10 @@ export class ApplicationForm extends ModelForm<Application, string> {
                 ?required=${true}
                 name="policyEngineMode">
                 <select class="pf-c-form-control">
-                    <option value=${ApplicationPolicyEngineModeEnum.Any} ?selected=${this.instance?.policyEngineMode === ApplicationPolicyEngineModeEnum.Any}>
+                    <option value=${PolicyEngineModeEnum.Any} ?selected=${this.instance?.policyEngineMode === PolicyEngineModeEnum.Any}>
                         ${t`ANY, any policy must match to grant access.`}
                     </option>
-                    <option value=${ApplicationPolicyEngineModeEnum.All} ?selected=${this.instance?.policyEngineMode === ApplicationPolicyEngineModeEnum.All}>
+                    <option value=${PolicyEngineModeEnum.All} ?selected=${this.instance?.policyEngineMode === PolicyEngineModeEnum.All}>
                         ${t`ALL, all policies must match to grant access.`}
                     </option>
                 </select>

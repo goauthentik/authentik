@@ -1,4 +1,4 @@
-import { Flow, FlowDesignationEnum, FlowPolicyEngineModeEnum, FlowsApi } from "authentik-api";
+import { Flow, FlowDesignationEnum, PolicyEngineMode, FlowsApi } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -101,10 +101,10 @@ export class FlowForm extends ModelForm<Flow, string> {
                 ?required=${true}
                 name="policyEngineMode">
                 <select class="pf-c-form-control">
-                    <option value=${FlowPolicyEngineModeEnum.Any} ?selected=${this.instance?.policyEngineMode === FlowPolicyEngineModeEnum.Any}>
+                    <option value=${PolicyEngineMode.Any} ?selected=${this.instance?.policyEngineMode === PolicyEngineMode.Any}>
                         ${t`ANY, any policy must match to grant access.`}
                     </option>
-                    <option value=${FlowPolicyEngineModeEnum.All} ?selected=${this.instance?.policyEngineMode === FlowPolicyEngineModeEnum.All}>
+                    <option value=${PolicyEngineMode.All} ?selected=${this.instance?.policyEngineMode === PolicyEngineMode.All}>
                         ${t`ALL, all policies must match to grant access.`}
                     </option>
                 </select>

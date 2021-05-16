@@ -1,4 +1,4 @@
-import { ChallengeTypeEnum } from "authentik-api";
+import { ChallengeChoices } from "authentik-api";
 
 export interface Error {
     code: string;
@@ -10,7 +10,7 @@ export interface ErrorDict {
 }
 
 export interface Challenge {
-    type: ChallengeTypeEnum;
+    type: ChallengeChoices;
     component?: string;
     title?: string;
     response_errors?: ErrorDict;

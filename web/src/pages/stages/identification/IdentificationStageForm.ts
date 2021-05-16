@@ -1,4 +1,4 @@
-import { FlowDesignationEnum, FlowsApi, IdentificationStage, IdentificationStageUserFieldsEnum, StagesApi } from "authentik-api";
+import { FlowDesignationEnum, FlowsApi, IdentificationStage, UserFieldsEnum, StagesApi } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -40,7 +40,7 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
         }
     };
 
-    isUserFieldSelected(field: IdentificationStageUserFieldsEnum): boolean {
+    isUserFieldSelected(field: UserFieldsEnum): boolean {
         return (this.instance?.userFields || []).filter(isField => {
             return field === isField;
         }).length > 0;
@@ -66,10 +66,10 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                         label=${t`User fields`}
                         name="userFields">
                         <select name="users" class="pf-c-form-control" multiple>
-                            <option value=${IdentificationStageUserFieldsEnum.Username} ?selected=${this.isUserFieldSelected(IdentificationStageUserFieldsEnum.Username)}>
+                            <option value=${UserFieldsEnum.Username} ?selected=${this.isUserFieldSelected(UserFieldsEnum.Username)}>
                                 ${t`Username`}
                             </option>
-                            <option value=${IdentificationStageUserFieldsEnum.Email} ?selected=${this.isUserFieldSelected(IdentificationStageUserFieldsEnum.Email)}>
+                            <option value=${UserFieldsEnum.Email} ?selected=${this.isUserFieldSelected(UserFieldsEnum.Email)}>
                                 ${t`Email`}
                             </option>
                         </select>
