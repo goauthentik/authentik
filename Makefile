@@ -26,7 +26,7 @@ lint:
 	pylint authentik tests lifecycle
 
 gen:
-	./manage.py spectacular --file schema.yaml --validate --fail-on-warn
+	./manage.py spectacular --file schema.yml
 	docker run \
 		--rm -v ${PWD}:/local \
 		openapitools/openapi-generator-cli generate \

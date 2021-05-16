@@ -30,7 +30,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: prepare ts api client
         run: |
-          docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate -i /local/swagger.yaml -g typescript-fetch -o /local/web/api --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
+          docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate -i /local/schema.yml -g typescript-fetch -o /local/web/api --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
       - name: Building Docker Image
         uses: docker/build-push-action@v2
         with:
@@ -53,7 +53,7 @@ jobs:
         run: |
           cd outpost
           go get -u github.com/go-swagger/go-swagger/cmd/swagger
-          swagger generate client -f ../swagger.yaml -A authentik -t pkg/
+          swagger generate client -f ../schema.yml -A authentik -t pkg/
           go build -v ./cmd/proxy/server.go
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.1.0
@@ -93,7 +93,7 @@ jobs:
         run: |
           cd outpost
           go get -u github.com/go-swagger/go-swagger/cmd/swagger
-          swagger generate client -f ../swagger.yaml -A authentik -t pkg/
+          swagger generate client -f ../schema.yml -A authentik -t pkg/
           go build -v ./cmd/ldap/server.go
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.1.0

@@ -154,6 +154,7 @@ SPECTACULAR_SETTINGS = {
     "ENUM_NAME_OVERRIDES": {
         "ChallengeChoices": "authentik.flows.challenge.ChallengeTypes"
     },
+    "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False
 }
 
 REST_FRAMEWORK = {

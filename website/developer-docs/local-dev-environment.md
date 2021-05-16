@@ -44,7 +44,7 @@ If you want to generate the client without installing anything, run this command
 docker run \
   --rm -v $(pwd):/local \
   openapitools/openapi-generator-cli generate \
-  -i /local/swagger.yaml \
+  -i /local/schema.yml \
   -g typescript-fetch \
   -o /local/web/api \
   --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0

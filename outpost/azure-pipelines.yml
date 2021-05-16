@@ -28,7 +28,7 @@ stages:
                 sudo wget -O /usr/local/bin/swagger https://github.com/go-swagger/go-swagger/releases/latest/download/swagger_linux_amd64
                 sudo chmod +x /usr/local/bin/swagger
                 mkdir -p $(go env GOPATH)
-                swagger generate client -f ../swagger.yaml -A authentik -t pkg/
+                swagger generate client -f ../schema.yml -A authentik -t pkg/
               workingDirectory: 'outpost/'
           - task: PublishPipelineArtifact@1
             inputs:

@@ -298,7 +298,7 @@ stages:
             displayName: Build static files for e2e
             inputs:
               script: |
-                docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate -i /local/swagger.yaml -g typescript-fetch -o /local/web/api --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
+                docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate -i /local/schema.yml -g typescript-fetch -o /local/web/api --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
                 sudo chmod 777 -R web/api/
                 cd web
                 cd api && npm i && cd ..
@@ -399,7 +399,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate -i /local/swagger.yaml -g typescript-fetch -o /local/web/api --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
+                docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate -i /local/schema.yml -g typescript-fetch -o /local/web/api --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
           - task: PublishPipelineArtifact@1
             inputs:
               targetPath: 'web/api/'
