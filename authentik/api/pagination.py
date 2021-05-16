@@ -30,3 +30,37 @@ class Pagination(pagination.PageNumberPagination):
                 "results": data,
             }
         )
+
+    def get_paginated_response_schema(self, schema):
+        return {
+            "type": "object",
+            "properties": {
+                "pagination": {
+                    "type": "object",
+                    "properties": {
+                        "next": {
+                            "type": "number",
+                        },
+                        "previous": {
+                            "type": "number",
+                        },
+                        "count": {
+                            "type": "number",
+                        },
+                        "current": {
+                            "type": "number",
+                        },
+                        "total_pages": {
+                            "type": "number",
+                        },
+                        "start_index": {
+                            "type": "number",
+                        },
+                        "end_index": {
+                            "type": "number",
+                        },
+                    },
+                },
+                "results": schema,
+            },
+        }
