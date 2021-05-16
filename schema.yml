@@ -27,6 +27,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/App'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/admin/metrics/:
     get:
       operationId: admin_metrics_retrieve
@@ -43,6 +47,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/LoginMetrics'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/admin/system_tasks/:
     get:
       operationId: admin_system_tasks_list
@@ -61,6 +69,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/Task'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/admin/system_tasks/{id}/:
     get:
       operationId: admin_system_tasks_retrieve
@@ -85,6 +97,10 @@ paths:
           description: ''
         '404':
           description: Task not found
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/admin/system_tasks/{id}/retry/:
     post:
       operationId: admin_system_tasks_retry_create
@@ -107,6 +123,10 @@ paths:
           description: Task not found
         '500':
           description: Failed to retry task
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/admin/version/:
     get:
       operationId: admin_version_retrieve
@@ -123,6 +143,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Version'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/admin/workers/:
     get:
       operationId: admin_workers_retrieve
@@ -139,6 +163,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Workers'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/authenticators/admin/static/:
     get:
       operationId: authenticators_admin_static_list
@@ -184,6 +212,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedStaticDeviceList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/authenticators/admin/static/{id}/:
     get:
       operationId: authenticators_admin_static_retrieve
@@ -207,6 +239,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/StaticDevice'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/authenticators/admin/totp/:
     get:
       operationId: authenticators_admin_totp_list
@@ -252,6 +288,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedTOTPDeviceList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/authenticators/admin/totp/{id}/:
     get:
       operationId: authenticators_admin_totp_retrieve
@@ -275,6 +315,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/TOTPDevice'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/authenticators/admin/webauthn/:
     get:
       operationId: authenticators_admin_webauthn_list
@@ -320,6 +364,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedWebAuthnDeviceList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/authenticators/admin/webauthn/{id}/:
     get:
       operationId: authenticators_admin_webauthn_retrieve
@@ -343,6 +391,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/WebAuthnDevice'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/authenticators/static/:
     get:
       operationId: authenticators_static_list
@@ -388,6 +440,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedStaticDeviceList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: authenticators_static_create
       description: Viewset for static authenticator devices
@@ -415,6 +471,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/StaticDevice'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/authenticators/static/{id}/:
     get:
       operationId: authenticators_static_retrieve
@@ -438,6 +498,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/StaticDevice'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: authenticators_static_update
       description: Viewset for static authenticator devices
@@ -472,6 +536,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/StaticDevice'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: authenticators_static_partial_update
       description: Viewset for static authenticator devices
@@ -505,6 +573,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/StaticDevice'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: authenticators_static_destroy
       description: Viewset for static authenticator devices
@@ -523,6 +595,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/authenticators/totp/:
     get:
       operationId: authenticators_totp_list
@@ -568,6 +644,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedTOTPDeviceList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: authenticators_totp_create
       description: Viewset for totp authenticator devices
@@ -595,6 +675,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/TOTPDevice'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/authenticators/totp/{id}/:
     get:
       operationId: authenticators_totp_retrieve
@@ -618,6 +702,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/TOTPDevice'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: authenticators_totp_update
       description: Viewset for totp authenticator devices
@@ -652,6 +740,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/TOTPDevice'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: authenticators_totp_partial_update
       description: Viewset for totp authenticator devices
@@ -685,6 +777,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/TOTPDevice'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: authenticators_totp_destroy
       description: Viewset for totp authenticator devices
@@ -703,6 +799,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/authenticators/webauthn/:
     get:
       operationId: authenticators_webauthn_list
@@ -748,6 +848,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedWebAuthnDeviceList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: authenticators_webauthn_create
       description: Viewset for WebAuthn authenticator devices
@@ -775,6 +879,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/WebAuthnDevice'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/authenticators/webauthn/{id}/:
     get:
       operationId: authenticators_webauthn_retrieve
@@ -798,6 +906,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/WebAuthnDevice'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: authenticators_webauthn_update
       description: Viewset for WebAuthn authenticator devices
@@ -832,6 +944,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/WebAuthnDevice'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: authenticators_webauthn_partial_update
       description: Viewset for WebAuthn authenticator devices
@@ -865,6 +981,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/WebAuthnDevice'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: authenticators_webauthn_destroy
       description: Viewset for WebAuthn authenticator devices
@@ -883,6 +1003,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/applications/:
     get:
       operationId: core_applications_list
@@ -928,6 +1052,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedApplicationList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: core_applications_create
       description: Application Viewset
@@ -955,6 +1083,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Application'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/applications/{slug}/:
     get:
       operationId: core_applications_retrieve
@@ -978,6 +1110,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Application'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: core_applications_update
       description: Application Viewset
@@ -1012,6 +1148,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Application'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: core_applications_partial_update
       description: Application Viewset
@@ -1045,6 +1185,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Application'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: core_applications_destroy
       description: Application Viewset
@@ -1063,6 +1207,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/applications/{slug}/check_access/:
     get:
       operationId: core_applications_check_access_retrieve
@@ -1083,7 +1231,9 @@ paths:
         '204':
           description: Access granted
         '403':
-          description: Access denied
+          $ref: '#/components/schemas/GenericError'
+        '400':
+          $ref: '#/components/schemas/ValidationError'
   /api/v2beta/core/applications/{slug}/metrics/:
     get:
       operationId: core_applications_metrics_list
@@ -1109,6 +1259,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/Coordinate'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/applications/{slug}/set_icon/:
     post:
       operationId: core_applications_set_icon_create
@@ -1135,7 +1289,9 @@ paths:
         '200':
           description: Success
         '400':
-          description: Bad request
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/groups/:
     get:
       operationId: core_groups_list
@@ -1185,6 +1341,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedGroupList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: core_groups_create
       description: Group Viewset
@@ -1212,6 +1372,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Group'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/groups/{group_uuid}/:
     get:
       operationId: core_groups_retrieve
@@ -1236,6 +1400,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Group'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: core_groups_update
       description: Group Viewset
@@ -1271,6 +1439,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Group'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: core_groups_partial_update
       description: Group Viewset
@@ -1305,6 +1477,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Group'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: core_groups_destroy
       description: Group Viewset
@@ -1324,6 +1500,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/tokens/:
     get:
       operationId: core_tokens_list
@@ -1385,6 +1565,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedTokenList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: core_tokens_create
       description: Token Viewset
@@ -1412,6 +1596,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Token'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/tokens/{identifier}/:
     get:
       operationId: core_tokens_retrieve
@@ -1434,6 +1622,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Token'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: core_tokens_update
       description: Token Viewset
@@ -1467,6 +1659,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Token'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: core_tokens_partial_update
       description: Token Viewset
@@ -1499,6 +1695,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Token'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: core_tokens_destroy
       description: Token Viewset
@@ -1516,6 +1716,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/tokens/{identifier}/view_key/:
     get:
       operationId: core_tokens_view_key_retrieve
@@ -1540,6 +1744,10 @@ paths:
           description: ''
         '404':
           description: Token not found or expired
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/user_consent/:
     get:
       operationId: core_user_consent_list
@@ -1590,6 +1798,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedUserConsentList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/user_consent/{id}/:
     get:
       operationId: core_user_consent_retrieve
@@ -1613,6 +1825,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserConsent'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: core_user_consent_destroy
       description: UserConsent Viewset
@@ -1631,6 +1847,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/users/:
     get:
       operationId: core_users_list
@@ -1697,6 +1917,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedUserList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: core_users_create
       description: User Viewset
@@ -1724,6 +1948,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/users/{id}/:
     get:
       operationId: core_users_retrieve
@@ -1747,6 +1975,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: core_users_update
       description: User Viewset
@@ -1781,6 +2013,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: core_users_partial_update
       description: User Viewset
@@ -1814,6 +2050,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: core_users_destroy
       description: User Viewset
@@ -1832,6 +2072,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/users/{id}/metrics/:
     get:
       operationId: core_users_metrics_retrieve
@@ -1855,6 +2099,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserMetrics'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/users/{id}/recovery/:
     get:
       operationId: core_users_recovery_retrieve
@@ -1880,6 +2128,10 @@ paths:
           description: ''
         '404':
           description: No recovery flow found.
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/users/me/:
     get:
       operationId: core_users_me_retrieve
@@ -1896,6 +2148,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/SessionUser'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/crypto/certificatekeypairs/:
     get:
       operationId: crypto_certificatekeypairs_list
@@ -1946,6 +2202,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedCertificateKeyPairList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: crypto_certificatekeypairs_create
       description: CertificateKeyPair Viewset
@@ -1973,6 +2233,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/CertificateKeyPair'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/crypto/certificatekeypairs/{kp_uuid}/:
     get:
       operationId: crypto_certificatekeypairs_retrieve
@@ -1997,6 +2261,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/CertificateKeyPair'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: crypto_certificatekeypairs_update
       description: CertificateKeyPair Viewset
@@ -2032,6 +2300,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/CertificateKeyPair'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: crypto_certificatekeypairs_partial_update
       description: CertificateKeyPair Viewset
@@ -2066,6 +2338,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/CertificateKeyPair'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: crypto_certificatekeypairs_destroy
       description: CertificateKeyPair Viewset
@@ -2085,6 +2361,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/crypto/certificatekeypairs/{kp_uuid}/view_certificate/:
     get:
       operationId: crypto_certificatekeypairs_view_certificate_retrieve
@@ -2113,6 +2393,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/CertificateData'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/crypto/certificatekeypairs/{kp_uuid}/view_private_key/:
     get:
       operationId: crypto_certificatekeypairs_view_private_key_retrieve
@@ -2141,6 +2425,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/CertificateData'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/crypto/certificatekeypairs/generate/:
     post:
       operationId: crypto_certificatekeypairs_generate_create
@@ -2170,7 +2458,9 @@ paths:
                 $ref: '#/components/schemas/CertificateKeyPair'
           description: ''
         '400':
-          description: Bad request
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/events/events/:
     get:
       operationId: events_events_list
@@ -2245,6 +2535,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedEventList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/events/events/{event_uuid}/:
     get:
       operationId: events_events_retrieve
@@ -2269,6 +2563,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Event'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/events/events/actions/:
     get:
       operationId: events_events_actions_list
@@ -2287,6 +2585,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/TypeCreate'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/events/events/top_per_user/:
     get:
       operationId: events_events_top_per_user_list
@@ -2355,6 +2657,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/EventTopPerUser'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/events/notifications/:
     get:
       operationId: events_notifications_list
@@ -2422,6 +2728,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedNotificationList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/events/notifications/{uuid}/:
     get:
       operationId: events_notifications_retrieve
@@ -2446,6 +2756,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Notification'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: events_notifications_update
       description: Notification Viewset
@@ -2480,6 +2794,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Notification'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: events_notifications_partial_update
       description: Notification Viewset
@@ -2514,6 +2832,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Notification'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: events_notifications_destroy
       description: Notification Viewset
@@ -2533,6 +2855,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/events/rules/:
     get:
       operationId: events_rules_list
@@ -2574,6 +2900,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedNotificationRuleList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: events_rules_create
       description: NotificationRule Viewset
@@ -2601,6 +2931,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotificationRule'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/events/rules/{pbm_uuid}/:
     get:
       operationId: events_rules_retrieve
@@ -2625,6 +2959,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotificationRule'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: events_rules_update
       description: NotificationRule Viewset
@@ -2660,6 +2998,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotificationRule'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: events_rules_partial_update
       description: NotificationRule Viewset
@@ -2694,6 +3036,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotificationRule'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: events_rules_destroy
       description: NotificationRule Viewset
@@ -2713,6 +3059,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/events/transports/:
     get:
       operationId: events_transports_list
@@ -2754,6 +3104,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedNotificationTransportList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: events_transports_create
       description: NotificationTransport Viewset
@@ -2781,6 +3135,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotificationTransport'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/events/transports/{uuid}/:
     get:
       operationId: events_transports_retrieve
@@ -2805,6 +3163,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotificationTransport'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: events_transports_update
       description: NotificationTransport Viewset
@@ -2840,6 +3202,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotificationTransport'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: events_transports_partial_update
       description: NotificationTransport Viewset
@@ -2874,6 +3240,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotificationTransport'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: events_transports_destroy
       description: NotificationTransport Viewset
@@ -2893,6 +3263,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/events/transports/{uuid}/test/:
     post:
       operationId: events_transports_test_create
@@ -2921,6 +3295,10 @@ paths:
           description: ''
         '500':
           description: Failed to test transport
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/flows/bindings/:
     get:
       operationId: flows_bindings_list
@@ -3010,6 +3388,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedFlowStageBindingList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: flows_bindings_create
       description: FlowStageBinding Viewset
@@ -3037,6 +3419,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/FlowStageBinding'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/flows/bindings/{fsb_uuid}/:
     get:
       operationId: flows_bindings_retrieve
@@ -3061,6 +3447,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/FlowStageBinding'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: flows_bindings_update
       description: FlowStageBinding Viewset
@@ -3096,6 +3486,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/FlowStageBinding'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: flows_bindings_partial_update
       description: FlowStageBinding Viewset
@@ -3130,6 +3524,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/FlowStageBinding'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: flows_bindings_destroy
       description: FlowStageBinding Viewset
@@ -3149,6 +3547,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/flows/executor/{flow_slug}/:
     get:
       operationId: flows_executor_get
@@ -3180,6 +3582,10 @@ paths:
           description: ''
         '404':
           description: No Token found
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: flows_executor_solve
       description: Solve the previously retrieved challenge and advanced to the next
@@ -3223,6 +3629,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Challenge'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/flows/instances/:
     get:
       operationId: flows_instances_list
@@ -3291,6 +3701,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedFlowList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: flows_instances_create
       description: Flow Viewset
@@ -3318,6 +3732,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Flow'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/flows/instances/{slug}/:
     get:
       operationId: flows_instances_retrieve
@@ -3341,6 +3759,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Flow'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: flows_instances_update
       description: Flow Viewset
@@ -3375,6 +3797,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Flow'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: flows_instances_partial_update
       description: Flow Viewset
@@ -3408,6 +3834,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Flow'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: flows_instances_destroy
       description: Flow Viewset
@@ -3426,6 +3856,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/flows/instances/{slug}/diagram/:
     get:
       operationId: flows_instances_diagram_retrieve
@@ -3450,6 +3884,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/FlowDiagram'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/flows/instances/{slug}/execute/:
     get:
       operationId: flows_instances_execute_retrieve
@@ -3474,7 +3912,9 @@ paths:
                 $ref: '#/components/schemas/Link'
           description: ''
         '400':
-          description: Flow not applicable
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/flows/instances/{slug}/export/:
     get:
       operationId: flows_instances_export_retrieve
@@ -3499,6 +3939,10 @@ paths:
                 type: string
                 format: binary
           description: null
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/flows/instances/{slug}/set_background/:
     post:
       operationId: flows_instances_set_background_create
@@ -3525,7 +3969,9 @@ paths:
         '200':
           description: Success
         '400':
-          description: Bad request
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/flows/instances/cache_clear/:
     post:
       operationId: flows_instances_cache_clear_create
@@ -3539,7 +3985,9 @@ paths:
         '204':
           description: Successfully cleared cache
         '400':
-          description: Bad request
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/flows/instances/cache_info/:
     get:
       operationId: flows_instances_cache_info_retrieve
@@ -3556,6 +4004,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Cache'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/flows/instances/import_flow/:
     post:
       operationId: flows_instances_import_flow_create
@@ -3576,7 +4028,9 @@ paths:
         '204':
           description: Successfully imported flow
         '400':
-          description: Bad request
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/oauth2/authorization_codes/:
     get:
       operationId: oauth2_authorization_codes_list
@@ -3626,6 +4080,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedExpiringBaseGrantModelList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/oauth2/authorization_codes/{id}/:
     get:
       operationId: oauth2_authorization_codes_retrieve
@@ -3649,6 +4107,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ExpiringBaseGrantModel'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: oauth2_authorization_codes_destroy
       description: AuthorizationCode Viewset
@@ -3667,6 +4129,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/oauth2/refresh_tokens/:
     get:
       operationId: oauth2_refresh_tokens_list
@@ -3716,6 +4182,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedExpiringBaseGrantModelList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/oauth2/refresh_tokens/{id}/:
     get:
       operationId: oauth2_refresh_tokens_retrieve
@@ -3739,6 +4209,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ExpiringBaseGrantModel'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: oauth2_refresh_tokens_destroy
       description: RefreshToken Viewset
@@ -3757,6 +4231,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/outposts/instances/:
     get:
       operationId: outposts_instances_list
@@ -3802,6 +4280,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedOutpostList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: outposts_instances_create
       description: Outpost Viewset
@@ -3829,6 +4311,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Outpost'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/outposts/instances/{uuid}/:
     get:
       operationId: outposts_instances_retrieve
@@ -3853,6 +4339,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Outpost'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: outposts_instances_update
       description: Outpost Viewset
@@ -3888,6 +4378,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Outpost'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: outposts_instances_partial_update
       description: Outpost Viewset
@@ -3922,6 +4416,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Outpost'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: outposts_instances_destroy
       description: Outpost Viewset
@@ -3941,6 +4439,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/outposts/instances/{uuid}/health/:
     get:
       operationId: outposts_instances_health_list
@@ -3983,6 +4485,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/OutpostHealth'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/outposts/instances/default_settings/:
     get:
       operationId: outposts_instances_default_settings_retrieve
@@ -3999,6 +4505,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/OutpostDefaultConfig'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/outposts/ldap/:
     get:
       operationId: outposts_ldap_list
@@ -4040,6 +4550,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedLDAPOutpostConfigList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/outposts/ldap/{id}/:
     get:
       operationId: outposts_ldap_retrieve
@@ -4063,6 +4577,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/LDAPOutpostConfig'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/outposts/proxy/:
     get:
       operationId: outposts_proxy_list
@@ -4104,6 +4622,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedProxyOutpostConfigList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/outposts/proxy/{id}/:
     get:
       operationId: outposts_proxy_retrieve
@@ -4127,6 +4649,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProxyOutpostConfig'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/outposts/service_connections/all/:
     get:
       operationId: outposts_service_connections_all_list
@@ -4172,6 +4698,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedServiceConnectionList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/outposts/service_connections/all/{uuid}/:
     get:
       operationId: outposts_service_connections_all_retrieve
@@ -4196,6 +4726,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ServiceConnection'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: outposts_service_connections_all_destroy
       description: ServiceConnection Viewset
@@ -4215,6 +4749,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/outposts/service_connections/all/{uuid}/state/:
     get:
       operationId: outposts_service_connections_all_state_retrieve
@@ -4239,6 +4777,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ServiceConnectionState'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/outposts/service_connections/all/types/:
     get:
       operationId: outposts_service_connections_all_types_list
@@ -4257,6 +4799,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/TypeCreate'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/outposts/service_connections/docker/:
     get:
       operationId: outposts_service_connections_docker_list
@@ -4298,6 +4844,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedDockerServiceConnectionList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: outposts_service_connections_docker_create
       description: DockerServiceConnection Viewset
@@ -4325,6 +4875,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/DockerServiceConnection'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/outposts/service_connections/docker/{uuid}/:
     get:
       operationId: outposts_service_connections_docker_retrieve
@@ -4349,6 +4903,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/DockerServiceConnection'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: outposts_service_connections_docker_update
       description: DockerServiceConnection Viewset
@@ -4384,6 +4942,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/DockerServiceConnection'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: outposts_service_connections_docker_partial_update
       description: DockerServiceConnection Viewset
@@ -4418,6 +4980,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/DockerServiceConnection'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: outposts_service_connections_docker_destroy
       description: DockerServiceConnection Viewset
@@ -4437,6 +5003,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/outposts/service_connections/kubernetes/:
     get:
       operationId: outposts_service_connections_kubernetes_list
@@ -4478,6 +5048,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedKubernetesServiceConnectionList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: outposts_service_connections_kubernetes_create
       description: KubernetesServiceConnection Viewset
@@ -4505,6 +5079,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/KubernetesServiceConnection'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/outposts/service_connections/kubernetes/{uuid}/:
     get:
       operationId: outposts_service_connections_kubernetes_retrieve
@@ -4529,6 +5107,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/KubernetesServiceConnection'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: outposts_service_connections_kubernetes_update
       description: KubernetesServiceConnection Viewset
@@ -4564,6 +5146,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/KubernetesServiceConnection'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: outposts_service_connections_kubernetes_partial_update
       description: KubernetesServiceConnection Viewset
@@ -4598,6 +5184,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/KubernetesServiceConnection'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: outposts_service_connections_kubernetes_destroy
       description: KubernetesServiceConnection Viewset
@@ -4617,6 +5207,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/all/:
     get:
       operationId: policies_all_list
@@ -4666,6 +5260,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedPolicyList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/all/{policy_uuid}/:
     get:
       operationId: policies_all_retrieve
@@ -4690,6 +5288,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Policy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: policies_all_destroy
       description: Policy Viewset
@@ -4709,6 +5311,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/all/{policy_uuid}/test/:
     post:
       operationId: policies_all_test_create
@@ -4746,7 +5352,9 @@ paths:
                 $ref: '#/components/schemas/PolicyTestResult'
           description: ''
         '400':
-          description: Invalid parameters
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/all/cache_clear/:
     post:
       operationId: policies_all_cache_clear_create
@@ -4760,7 +5368,9 @@ paths:
         '204':
           description: Successfully cleared cache
         '400':
-          description: Bad request
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/all/cache_info/:
     get:
       operationId: policies_all_cache_info_retrieve
@@ -4777,6 +5387,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Cache'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/all/types/:
     get:
       operationId: policies_all_types_list
@@ -4795,6 +5409,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/TypeCreate'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/bindings/:
     get:
       operationId: policies_bindings_list
@@ -4858,6 +5476,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedPolicyBindingList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: policies_bindings_create
       description: PolicyBinding Viewset
@@ -4885,6 +5507,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PolicyBinding'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/bindings/{policy_binding_uuid}/:
     get:
       operationId: policies_bindings_retrieve
@@ -4909,6 +5535,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PolicyBinding'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: policies_bindings_update
       description: PolicyBinding Viewset
@@ -4944,6 +5574,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PolicyBinding'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: policies_bindings_partial_update
       description: PolicyBinding Viewset
@@ -4978,6 +5612,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PolicyBinding'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: policies_bindings_destroy
       description: PolicyBinding Viewset
@@ -4997,6 +5635,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/dummy/:
     get:
       operationId: policies_dummy_list
@@ -5038,6 +5680,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedDummyPolicyList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: policies_dummy_create
       description: Dummy Viewset
@@ -5064,6 +5710,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/DummyPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/dummy/{policy_uuid}/:
     get:
       operationId: policies_dummy_retrieve
@@ -5088,6 +5738,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/DummyPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: policies_dummy_update
       description: Dummy Viewset
@@ -5122,6 +5776,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/DummyPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: policies_dummy_partial_update
       description: Dummy Viewset
@@ -5156,6 +5814,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/DummyPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: policies_dummy_destroy
       description: Dummy Viewset
@@ -5175,6 +5837,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/event_matcher/:
     get:
       operationId: policies_event_matcher_list
@@ -5216,6 +5882,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedEventMatcherPolicyList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: policies_event_matcher_create
       description: Event Matcher Policy Viewset
@@ -5242,6 +5912,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/EventMatcherPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/event_matcher/{policy_uuid}/:
     get:
       operationId: policies_event_matcher_retrieve
@@ -5266,6 +5940,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/EventMatcherPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: policies_event_matcher_update
       description: Event Matcher Policy Viewset
@@ -5300,6 +5978,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/EventMatcherPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: policies_event_matcher_partial_update
       description: Event Matcher Policy Viewset
@@ -5334,6 +6016,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/EventMatcherPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: policies_event_matcher_destroy
       description: Event Matcher Policy Viewset
@@ -5353,6 +6039,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/expression/:
     get:
       operationId: policies_expression_list
@@ -5394,6 +6084,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedExpressionPolicyList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: policies_expression_create
       description: Source Viewset
@@ -5421,6 +6115,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ExpressionPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/expression/{policy_uuid}/:
     get:
       operationId: policies_expression_retrieve
@@ -5445,6 +6143,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ExpressionPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: policies_expression_update
       description: Source Viewset
@@ -5480,6 +6182,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ExpressionPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: policies_expression_partial_update
       description: Source Viewset
@@ -5514,6 +6220,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ExpressionPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: policies_expression_destroy
       description: Source Viewset
@@ -5533,6 +6243,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/haveibeenpwned/:
     get:
       operationId: policies_haveibeenpwned_list
@@ -5574,6 +6288,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedHaveIBeenPwendPolicyList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: policies_haveibeenpwned_create
       description: Source Viewset
@@ -5600,6 +6318,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/HaveIBeenPwendPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/haveibeenpwned/{policy_uuid}/:
     get:
       operationId: policies_haveibeenpwned_retrieve
@@ -5624,6 +6346,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/HaveIBeenPwendPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: policies_haveibeenpwned_update
       description: Source Viewset
@@ -5658,6 +6384,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/HaveIBeenPwendPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: policies_haveibeenpwned_partial_update
       description: Source Viewset
@@ -5692,6 +6422,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/HaveIBeenPwendPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: policies_haveibeenpwned_destroy
       description: Source Viewset
@@ -5711,6 +6445,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/password/:
     get:
       operationId: policies_password_list
@@ -5752,6 +6490,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedPasswordPolicyList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: policies_password_create
       description: Password Policy Viewset
@@ -5779,6 +6521,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PasswordPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/password/{policy_uuid}/:
     get:
       operationId: policies_password_retrieve
@@ -5803,6 +6549,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PasswordPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: policies_password_update
       description: Password Policy Viewset
@@ -5838,6 +6588,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PasswordPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: policies_password_partial_update
       description: Password Policy Viewset
@@ -5872,6 +6626,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PasswordPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: policies_password_destroy
       description: Password Policy Viewset
@@ -5891,6 +6649,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/password_expiry/:
     get:
       operationId: policies_password_expiry_list
@@ -5932,6 +6694,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedPasswordExpiryPolicyList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: policies_password_expiry_create
       description: Password Expiry Viewset
@@ -5959,6 +6725,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PasswordExpiryPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/password_expiry/{policy_uuid}/:
     get:
       operationId: policies_password_expiry_retrieve
@@ -5983,6 +6753,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PasswordExpiryPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: policies_password_expiry_update
       description: Password Expiry Viewset
@@ -6018,6 +6792,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PasswordExpiryPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: policies_password_expiry_partial_update
       description: Password Expiry Viewset
@@ -6052,6 +6830,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PasswordExpiryPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: policies_password_expiry_destroy
       description: Password Expiry Viewset
@@ -6071,6 +6853,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/reputation/:
     get:
       operationId: policies_reputation_list
@@ -6112,6 +6898,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedReputationPolicyList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: policies_reputation_create
       description: Reputation Policy Viewset
@@ -6138,6 +6928,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReputationPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/reputation/{policy_uuid}/:
     get:
       operationId: policies_reputation_retrieve
@@ -6162,6 +6956,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReputationPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: policies_reputation_update
       description: Reputation Policy Viewset
@@ -6196,6 +6994,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReputationPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: policies_reputation_partial_update
       description: Reputation Policy Viewset
@@ -6230,6 +7032,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReputationPolicy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: policies_reputation_destroy
       description: Reputation Policy Viewset
@@ -6249,6 +7055,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/reputation/ips/:
     get:
       operationId: policies_reputation_ips_list
@@ -6290,6 +7100,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedIPReputationList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: policies_reputation_ips_create
       description: IPReputation Viewset
@@ -6317,6 +7131,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/IPReputation'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/reputation/ips/{id}/:
     get:
       operationId: policies_reputation_ips_retrieve
@@ -6340,6 +7158,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/IPReputation'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: policies_reputation_ips_update
       description: IPReputation Viewset
@@ -6374,6 +7196,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/IPReputation'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: policies_reputation_ips_partial_update
       description: IPReputation Viewset
@@ -6407,6 +7233,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/IPReputation'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: policies_reputation_ips_destroy
       description: IPReputation Viewset
@@ -6425,6 +7255,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/reputation/users/:
     get:
       operationId: policies_reputation_users_list
@@ -6466,6 +7300,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedUserReputationList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: policies_reputation_users_create
       description: UserReputation Viewset
@@ -6493,6 +7331,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserReputation'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/reputation/users/{id}/:
     get:
       operationId: policies_reputation_users_retrieve
@@ -6516,6 +7358,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserReputation'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: policies_reputation_users_update
       description: UserReputation Viewset
@@ -6550,6 +7396,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserReputation'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: policies_reputation_users_partial_update
       description: UserReputation Viewset
@@ -6583,6 +7433,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserReputation'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: policies_reputation_users_destroy
       description: UserReputation Viewset
@@ -6601,6 +7455,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/propertymappings/all/:
     get:
       operationId: propertymappings_all_list
@@ -6646,6 +7504,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedPropertyMappingList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/propertymappings/all/{pm_uuid}/:
     get:
       operationId: propertymappings_all_retrieve
@@ -6670,6 +7532,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PropertyMapping'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: propertymappings_all_destroy
       description: PropertyMapping Viewset
@@ -6689,6 +7555,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/propertymappings/all/{pm_uuid}/test/:
     post:
       operationId: propertymappings_all_test_create
@@ -6730,7 +7600,9 @@ paths:
                 $ref: '#/components/schemas/PropertyMappingTestResult'
           description: ''
         '400':
-          description: Invalid parameters
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/propertymappings/all/types/:
     get:
       operationId: propertymappings_all_types_list
@@ -6749,6 +7621,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/TypeCreate'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/propertymappings/ldap/:
     get:
       operationId: propertymappings_ldap_list
@@ -6790,6 +7666,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedLDAPPropertyMappingList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: propertymappings_ldap_create
       description: LDAP PropertyMapping Viewset
@@ -6817,6 +7697,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/LDAPPropertyMapping'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/propertymappings/ldap/{pm_uuid}/:
     get:
       operationId: propertymappings_ldap_retrieve
@@ -6841,6 +7725,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/LDAPPropertyMapping'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: propertymappings_ldap_update
       description: LDAP PropertyMapping Viewset
@@ -6876,6 +7764,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/LDAPPropertyMapping'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: propertymappings_ldap_partial_update
       description: LDAP PropertyMapping Viewset
@@ -6910,6 +7802,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/LDAPPropertyMapping'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: propertymappings_ldap_destroy
       description: LDAP PropertyMapping Viewset
@@ -6929,6 +7825,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/propertymappings/saml/:
     get:
       operationId: propertymappings_saml_list
@@ -6970,6 +7870,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedSAMLPropertyMappingList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: propertymappings_saml_create
       description: SAMLPropertyMapping Viewset
@@ -6997,6 +7901,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/SAMLPropertyMapping'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/propertymappings/saml/{pm_uuid}/:
     get:
       operationId: propertymappings_saml_retrieve
@@ -7021,6 +7929,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/SAMLPropertyMapping'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: propertymappings_saml_update
       description: SAMLPropertyMapping Viewset
@@ -7056,6 +7968,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/SAMLPropertyMapping'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: propertymappings_saml_partial_update
       description: SAMLPropertyMapping Viewset
@@ -7090,6 +8006,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/SAMLPropertyMapping'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: propertymappings_saml_destroy
       description: SAMLPropertyMapping Viewset
@@ -7109,6 +8029,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/propertymappings/scope/:
     get:
       operationId: propertymappings_scope_list
@@ -7150,6 +8074,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedScopeMappingList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: propertymappings_scope_create
       description: ScopeMapping Viewset
@@ -7177,6 +8105,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ScopeMapping'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/propertymappings/scope/{pm_uuid}/:
     get:
       operationId: propertymappings_scope_retrieve
@@ -7201,6 +8133,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ScopeMapping'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: propertymappings_scope_update
       description: ScopeMapping Viewset
@@ -7236,6 +8172,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ScopeMapping'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: propertymappings_scope_partial_update
       description: ScopeMapping Viewset
@@ -7270,6 +8210,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ScopeMapping'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: propertymappings_scope_destroy
       description: ScopeMapping Viewset
@@ -7289,6 +8233,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/providers/all/:
     get:
       operationId: providers_all_list
@@ -7334,6 +8282,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedProviderList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/providers/all/{id}/:
     get:
       operationId: providers_all_retrieve
@@ -7357,6 +8309,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Provider'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: providers_all_destroy
       description: Provider Viewset
@@ -7375,6 +8331,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/providers/all/types/:
     get:
       operationId: providers_all_types_list
@@ -7393,6 +8353,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/TypeCreate'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/providers/ldap/:
     get:
       operationId: providers_ldap_list
@@ -7434,6 +8398,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedLDAPProviderList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: providers_ldap_create
       description: LDAPProvider Viewset
@@ -7461,6 +8429,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/LDAPProvider'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/providers/ldap/{id}/:
     get:
       operationId: providers_ldap_retrieve
@@ -7484,6 +8456,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/LDAPProvider'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: providers_ldap_update
       description: LDAPProvider Viewset
@@ -7518,6 +8494,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/LDAPProvider'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: providers_ldap_partial_update
       description: LDAPProvider Viewset
@@ -7551,6 +8531,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/LDAPProvider'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: providers_ldap_destroy
       description: LDAPProvider Viewset
@@ -7569,6 +8553,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/providers/oauth2/:
     get:
       operationId: providers_oauth2_list
@@ -7610,6 +8598,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedOAuth2ProviderList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: providers_oauth2_create
       description: OAuth2Provider Viewset
@@ -7637,6 +8629,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/OAuth2Provider'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/providers/oauth2/{id}/:
     get:
       operationId: providers_oauth2_retrieve
@@ -7660,6 +8656,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/OAuth2Provider'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: providers_oauth2_update
       description: OAuth2Provider Viewset
@@ -7694,6 +8694,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/OAuth2Provider'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: providers_oauth2_partial_update
       description: OAuth2Provider Viewset
@@ -7727,6 +8731,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/OAuth2Provider'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: providers_oauth2_destroy
       description: OAuth2Provider Viewset
@@ -7745,6 +8753,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/providers/oauth2/{id}/setup_urls/:
     get:
       operationId: providers_oauth2_setup_urls_retrieve
@@ -7770,6 +8782,10 @@ paths:
           description: ''
         '404':
           description: Provider has no application assigned
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/providers/proxy/:
     get:
       operationId: providers_proxy_list
@@ -7811,6 +8827,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedProxyProviderList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: providers_proxy_create
       description: ProxyProvider Viewset
@@ -7838,6 +8858,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProxyProvider'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/providers/proxy/{id}/:
     get:
       operationId: providers_proxy_retrieve
@@ -7861,6 +8885,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProxyProvider'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: providers_proxy_update
       description: ProxyProvider Viewset
@@ -7895,6 +8923,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProxyProvider'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: providers_proxy_partial_update
       description: ProxyProvider Viewset
@@ -7928,6 +8960,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProxyProvider'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: providers_proxy_destroy
       description: ProxyProvider Viewset
@@ -7946,6 +8982,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/providers/saml/:
     get:
       operationId: providers_saml_list
@@ -7987,6 +9027,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedSAMLProviderList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: providers_saml_create
       description: SAMLProvider Viewset
@@ -8014,6 +9058,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/SAMLProvider'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/providers/saml/{id}/:
     get:
       operationId: providers_saml_retrieve
@@ -8037,6 +9085,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/SAMLProvider'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: providers_saml_update
       description: SAMLProvider Viewset
@@ -8071,6 +9123,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/SAMLProvider'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: providers_saml_partial_update
       description: SAMLProvider Viewset
@@ -8104,6 +9160,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/SAMLProvider'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: providers_saml_destroy
       description: SAMLProvider Viewset
@@ -8122,6 +9182,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/providers/saml/{id}/metadata/:
     get:
       operationId: providers_saml_metadata_retrieve
@@ -8152,6 +9216,10 @@ paths:
           description: ''
         '404':
           description: Provider has no application assigned
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/providers/saml/import_metadata/:
     post:
       operationId: providers_saml_import_metadata_create
@@ -8171,7 +9239,9 @@ paths:
         '204':
           description: Successfully imported provider
         '400':
-          description: Bad request
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/root/config/:
     get:
       operationId: root_config_retrieve
@@ -8189,6 +9259,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Config'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/schema/:
     get:
       operationId: schema_retrieve
@@ -8332,6 +9406,10 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/sources/all/:
     get:
       operationId: sources_all_list
@@ -8373,6 +9451,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedSourceList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/sources/all/{slug}/:
     get:
       operationId: sources_all_retrieve
@@ -8396,6 +9478,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Source'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: sources_all_destroy
       description: Source Viewset
@@ -8414,6 +9500,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/sources/all/types/:
     get:
       operationId: sources_all_types_list
@@ -8432,6 +9522,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/TypeCreate'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/sources/all/user_settings/:
     get:
       operationId: sources_all_user_settings_list
@@ -8450,6 +9544,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/UserSetting'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/sources/ldap/:
     get:
       operationId: sources_ldap_list
@@ -8491,6 +9589,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedLDAPSourceList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: sources_ldap_create
       description: LDAP Source Viewset
@@ -8518,6 +9620,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/LDAPSource'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/sources/ldap/{slug}/:
     get:
       operationId: sources_ldap_retrieve
@@ -8541,6 +9647,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/LDAPSource'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: sources_ldap_update
       description: LDAP Source Viewset
@@ -8575,6 +9685,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/LDAPSource'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: sources_ldap_partial_update
       description: LDAP Source Viewset
@@ -8608,6 +9722,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/LDAPSource'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: sources_ldap_destroy
       description: LDAP Source Viewset
@@ -8626,6 +9744,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/sources/ldap/{slug}/sync_status/:
     get:
       operationId: sources_ldap_sync_status_retrieve
@@ -8651,6 +9773,10 @@ paths:
           description: ''
         '404':
           description: Task not found
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/sources/oauth/:
     get:
       operationId: sources_oauth_list
@@ -8692,6 +9818,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedOAuthSourceList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: sources_oauth_create
       description: Source Viewset
@@ -8719,6 +9849,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/OAuthSource'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/sources/oauth/{slug}/:
     get:
       operationId: sources_oauth_retrieve
@@ -8742,6 +9876,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/OAuthSource'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: sources_oauth_update
       description: Source Viewset
@@ -8776,6 +9914,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/OAuthSource'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: sources_oauth_partial_update
       description: Source Viewset
@@ -8809,6 +9951,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/OAuthSource'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: sources_oauth_destroy
       description: Source Viewset
@@ -8827,6 +9973,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/sources/oauth/source_types/:
     get:
       operationId: sources_oauth_source_types_list
@@ -8845,6 +9995,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/SourceType'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/sources/oauth_user_connections/:
     get:
       operationId: sources_oauth_user_connections_list
@@ -8890,6 +10044,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedUserOAuthSourceConnectionList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: sources_oauth_user_connections_create
       description: Source Viewset
@@ -8917,6 +10075,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserOAuthSourceConnection'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/sources/oauth_user_connections/{id}/:
     get:
       operationId: sources_oauth_user_connections_retrieve
@@ -8940,6 +10102,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserOAuthSourceConnection'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: sources_oauth_user_connections_update
       description: Source Viewset
@@ -8974,6 +10140,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserOAuthSourceConnection'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: sources_oauth_user_connections_partial_update
       description: Source Viewset
@@ -9007,6 +10177,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserOAuthSourceConnection'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: sources_oauth_user_connections_destroy
       description: Source Viewset
@@ -9025,6 +10199,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/sources/plex/:
     get:
       operationId: sources_plex_list
@@ -9066,6 +10244,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedPlexSourceList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: sources_plex_create
       description: Plex source Viewset
@@ -9093,6 +10275,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PlexSource'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/sources/plex/{slug}/:
     get:
       operationId: sources_plex_retrieve
@@ -9116,6 +10302,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PlexSource'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: sources_plex_update
       description: Plex source Viewset
@@ -9150,6 +10340,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PlexSource'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: sources_plex_partial_update
       description: Plex source Viewset
@@ -9183,6 +10377,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PlexSource'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: sources_plex_destroy
       description: Plex source Viewset
@@ -9201,6 +10399,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/sources/plex/redeem_token/:
     post:
       operationId: sources_plex_redeem_token_create
@@ -9238,9 +10440,9 @@ paths:
                 $ref: '#/components/schemas/RedirectChallenge'
           description: ''
         '400':
-          description: Token not found
+          $ref: '#/components/schemas/ValidationError'
         '403':
-          description: Access denied
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/sources/saml/:
     get:
       operationId: sources_saml_list
@@ -9282,6 +10484,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedSAMLSourceList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: sources_saml_create
       description: SAMLSource Viewset
@@ -9309,6 +10515,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/SAMLSource'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/sources/saml/{slug}/:
     get:
       operationId: sources_saml_retrieve
@@ -9332,6 +10542,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/SAMLSource'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: sources_saml_update
       description: SAMLSource Viewset
@@ -9366,6 +10580,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/SAMLSource'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: sources_saml_partial_update
       description: SAMLSource Viewset
@@ -9399,6 +10617,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/SAMLSource'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: sources_saml_destroy
       description: SAMLSource Viewset
@@ -9417,6 +10639,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/sources/saml/{slug}/metadata/:
     get:
       operationId: sources_saml_metadata_retrieve
@@ -9440,6 +10666,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/SAMLMetadata'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/all/:
     get:
       operationId: stages_all_list
@@ -9485,6 +10715,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedStageList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/all/{stage_uuid}/:
     get:
       operationId: stages_all_retrieve
@@ -9509,6 +10743,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Stage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: stages_all_destroy
       description: Stage Viewset
@@ -9528,6 +10766,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/all/types/:
     get:
       operationId: stages_all_types_list
@@ -9546,6 +10788,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/TypeCreate'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/all/user_settings/:
     get:
       operationId: stages_all_user_settings_list
@@ -9564,6 +10810,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/StageUserSetting'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/authenticator/static/:
     get:
       operationId: stages_authenticator_static_list
@@ -9605,6 +10855,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedAuthenticatorStaticStageList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: stages_authenticator_static_create
       description: AuthenticatorStaticStage Viewset
@@ -9632,6 +10886,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/AuthenticatorStaticStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/authenticator/static/{stage_uuid}/:
     get:
       operationId: stages_authenticator_static_retrieve
@@ -9656,6 +10914,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/AuthenticatorStaticStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: stages_authenticator_static_update
       description: AuthenticatorStaticStage Viewset
@@ -9691,6 +10953,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/AuthenticatorStaticStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: stages_authenticator_static_partial_update
       description: AuthenticatorStaticStage Viewset
@@ -9725,6 +10991,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/AuthenticatorStaticStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: stages_authenticator_static_destroy
       description: AuthenticatorStaticStage Viewset
@@ -9744,6 +11014,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/authenticator/totp/:
     get:
       operationId: stages_authenticator_totp_list
@@ -9785,6 +11059,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedAuthenticatorTOTPStageList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: stages_authenticator_totp_create
       description: AuthenticatorTOTPStage Viewset
@@ -9812,6 +11090,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/AuthenticatorTOTPStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/authenticator/totp/{stage_uuid}/:
     get:
       operationId: stages_authenticator_totp_retrieve
@@ -9836,6 +11118,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/AuthenticatorTOTPStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: stages_authenticator_totp_update
       description: AuthenticatorTOTPStage Viewset
@@ -9871,6 +11157,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/AuthenticatorTOTPStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: stages_authenticator_totp_partial_update
       description: AuthenticatorTOTPStage Viewset
@@ -9905,6 +11195,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/AuthenticatorTOTPStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: stages_authenticator_totp_destroy
       description: AuthenticatorTOTPStage Viewset
@@ -9924,6 +11218,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/authenticator/validate/:
     get:
       operationId: stages_authenticator_validate_list
@@ -9965,6 +11263,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedAuthenticatorValidateStageList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: stages_authenticator_validate_create
       description: AuthenticatorValidateStage Viewset
@@ -9992,6 +11294,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/AuthenticatorValidateStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/authenticator/validate/{stage_uuid}/:
     get:
       operationId: stages_authenticator_validate_retrieve
@@ -10016,6 +11322,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/AuthenticatorValidateStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: stages_authenticator_validate_update
       description: AuthenticatorValidateStage Viewset
@@ -10051,6 +11361,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/AuthenticatorValidateStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: stages_authenticator_validate_partial_update
       description: AuthenticatorValidateStage Viewset
@@ -10085,6 +11399,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/AuthenticatorValidateStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: stages_authenticator_validate_destroy
       description: AuthenticatorValidateStage Viewset
@@ -10104,6 +11422,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/authenticator/webauthn/:
     get:
       operationId: stages_authenticator_webauthn_list
@@ -10145,6 +11467,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedAuthenticateWebAuthnStageList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: stages_authenticator_webauthn_create
       description: AuthenticateWebAuthnStage Viewset
@@ -10172,6 +11498,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/AuthenticateWebAuthnStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/authenticator/webauthn/{stage_uuid}/:
     get:
       operationId: stages_authenticator_webauthn_retrieve
@@ -10196,6 +11526,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/AuthenticateWebAuthnStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: stages_authenticator_webauthn_update
       description: AuthenticateWebAuthnStage Viewset
@@ -10231,6 +11565,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/AuthenticateWebAuthnStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: stages_authenticator_webauthn_partial_update
       description: AuthenticateWebAuthnStage Viewset
@@ -10265,6 +11603,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/AuthenticateWebAuthnStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: stages_authenticator_webauthn_destroy
       description: AuthenticateWebAuthnStage Viewset
@@ -10284,6 +11626,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/captcha/:
     get:
       operationId: stages_captcha_list
@@ -10325,6 +11671,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedCaptchaStageList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: stages_captcha_create
       description: CaptchaStage Viewset
@@ -10352,6 +11702,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/CaptchaStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/captcha/{stage_uuid}/:
     get:
       operationId: stages_captcha_retrieve
@@ -10376,6 +11730,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/CaptchaStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: stages_captcha_update
       description: CaptchaStage Viewset
@@ -10411,6 +11769,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/CaptchaStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: stages_captcha_partial_update
       description: CaptchaStage Viewset
@@ -10445,6 +11807,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/CaptchaStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: stages_captcha_destroy
       description: CaptchaStage Viewset
@@ -10464,6 +11830,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/consent/:
     get:
       operationId: stages_consent_list
@@ -10505,6 +11875,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedConsentStageList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: stages_consent_create
       description: ConsentStage Viewset
@@ -10532,6 +11906,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ConsentStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/consent/{stage_uuid}/:
     get:
       operationId: stages_consent_retrieve
@@ -10556,6 +11934,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ConsentStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: stages_consent_update
       description: ConsentStage Viewset
@@ -10591,6 +11973,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ConsentStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: stages_consent_partial_update
       description: ConsentStage Viewset
@@ -10625,6 +12011,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ConsentStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: stages_consent_destroy
       description: ConsentStage Viewset
@@ -10644,6 +12034,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/deny/:
     get:
       operationId: stages_deny_list
@@ -10685,6 +12079,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedDenyStageList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: stages_deny_create
       description: DenyStage Viewset
@@ -10712,6 +12110,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/DenyStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/deny/{stage_uuid}/:
     get:
       operationId: stages_deny_retrieve
@@ -10736,6 +12138,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/DenyStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: stages_deny_update
       description: DenyStage Viewset
@@ -10771,6 +12177,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/DenyStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: stages_deny_partial_update
       description: DenyStage Viewset
@@ -10805,6 +12215,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/DenyStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: stages_deny_destroy
       description: DenyStage Viewset
@@ -10824,6 +12238,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/dummy/:
     get:
       operationId: stages_dummy_list
@@ -10865,6 +12283,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedDummyStageList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: stages_dummy_create
       description: DummyStage Viewset
@@ -10892,6 +12314,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/DummyStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/dummy/{stage_uuid}/:
     get:
       operationId: stages_dummy_retrieve
@@ -10916,6 +12342,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/DummyStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: stages_dummy_update
       description: DummyStage Viewset
@@ -10951,6 +12381,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/DummyStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: stages_dummy_partial_update
       description: DummyStage Viewset
@@ -10985,6 +12419,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/DummyStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: stages_dummy_destroy
       description: DummyStage Viewset
@@ -11004,6 +12442,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/email/:
     get:
       operationId: stages_email_list
@@ -11045,6 +12487,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedEmailStageList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: stages_email_create
       description: EmailStage Viewset
@@ -11072,6 +12518,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmailStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/email/{stage_uuid}/:
     get:
       operationId: stages_email_retrieve
@@ -11096,6 +12546,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmailStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: stages_email_update
       description: EmailStage Viewset
@@ -11131,6 +12585,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmailStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: stages_email_partial_update
       description: EmailStage Viewset
@@ -11165,6 +12623,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmailStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: stages_email_destroy
       description: EmailStage Viewset
@@ -11184,6 +12646,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/email/templates/:
     get:
       operationId: stages_email_templates_list
@@ -11202,6 +12668,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/TypeCreate'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/identification/:
     get:
       operationId: stages_identification_list
@@ -11243,6 +12713,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedIdentificationStageList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: stages_identification_create
       description: IdentificationStage Viewset
@@ -11270,6 +12744,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/IdentificationStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/identification/{stage_uuid}/:
     get:
       operationId: stages_identification_retrieve
@@ -11294,6 +12772,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/IdentificationStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: stages_identification_update
       description: IdentificationStage Viewset
@@ -11329,6 +12811,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/IdentificationStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: stages_identification_partial_update
       description: IdentificationStage Viewset
@@ -11363,6 +12849,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/IdentificationStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: stages_identification_destroy
       description: IdentificationStage Viewset
@@ -11382,6 +12872,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/invitation/invitations/:
     get:
       operationId: stages_invitation_invitations_list
@@ -11432,6 +12926,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedInvitationList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: stages_invitation_invitations_create
       description: Invitation Viewset
@@ -11458,6 +12956,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Invitation'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/invitation/invitations/{invite_uuid}/:
     get:
       operationId: stages_invitation_invitations_retrieve
@@ -11482,6 +12984,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Invitation'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: stages_invitation_invitations_update
       description: Invitation Viewset
@@ -11516,6 +13022,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Invitation'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: stages_invitation_invitations_partial_update
       description: Invitation Viewset
@@ -11550,6 +13060,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Invitation'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: stages_invitation_invitations_destroy
       description: Invitation Viewset
@@ -11569,6 +13083,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/invitation/stages/:
     get:
       operationId: stages_invitation_stages_list
@@ -11610,6 +13128,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedInvitationStageList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: stages_invitation_stages_create
       description: InvitationStage Viewset
@@ -11637,6 +13159,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/InvitationStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/invitation/stages/{stage_uuid}/:
     get:
       operationId: stages_invitation_stages_retrieve
@@ -11661,6 +13187,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/InvitationStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: stages_invitation_stages_update
       description: InvitationStage Viewset
@@ -11696,6 +13226,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/InvitationStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: stages_invitation_stages_partial_update
       description: InvitationStage Viewset
@@ -11730,6 +13264,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/InvitationStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: stages_invitation_stages_destroy
       description: InvitationStage Viewset
@@ -11749,6 +13287,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/password/:
     get:
       operationId: stages_password_list
@@ -11790,6 +13332,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedPasswordStageList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: stages_password_create
       description: PasswordStage Viewset
@@ -11817,6 +13363,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PasswordStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/password/{stage_uuid}/:
     get:
       operationId: stages_password_retrieve
@@ -11841,6 +13391,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PasswordStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: stages_password_update
       description: PasswordStage Viewset
@@ -11876,6 +13430,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PasswordStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: stages_password_partial_update
       description: PasswordStage Viewset
@@ -11910,6 +13468,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PasswordStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: stages_password_destroy
       description: PasswordStage Viewset
@@ -11929,6 +13491,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/prompt/prompts/:
     get:
       operationId: stages_prompt_prompts_list
@@ -11998,6 +13564,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedPromptList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: stages_prompt_prompts_create
       description: Prompt Viewset
@@ -12025,6 +13595,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Prompt'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/prompt/prompts/{prompt_uuid}/:
     get:
       operationId: stages_prompt_prompts_retrieve
@@ -12049,6 +13623,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Prompt'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: stages_prompt_prompts_update
       description: Prompt Viewset
@@ -12084,6 +13662,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Prompt'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: stages_prompt_prompts_partial_update
       description: Prompt Viewset
@@ -12118,6 +13700,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Prompt'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: stages_prompt_prompts_destroy
       description: Prompt Viewset
@@ -12137,6 +13723,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/prompt/stages/:
     get:
       operationId: stages_prompt_stages_list
@@ -12178,6 +13768,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedPromptStageList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: stages_prompt_stages_create
       description: PromptStage Viewset
@@ -12205,6 +13799,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PromptStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/prompt/stages/{stage_uuid}/:
     get:
       operationId: stages_prompt_stages_retrieve
@@ -12229,6 +13827,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PromptStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: stages_prompt_stages_update
       description: PromptStage Viewset
@@ -12264,6 +13866,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PromptStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: stages_prompt_stages_partial_update
       description: PromptStage Viewset
@@ -12298,6 +13904,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PromptStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: stages_prompt_stages_destroy
       description: PromptStage Viewset
@@ -12317,6 +13927,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/user_delete/:
     get:
       operationId: stages_user_delete_list
@@ -12358,6 +13972,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedUserDeleteStageList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: stages_user_delete_create
       description: UserDeleteStage Viewset
@@ -12385,6 +14003,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserDeleteStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/user_delete/{stage_uuid}/:
     get:
       operationId: stages_user_delete_retrieve
@@ -12409,6 +14031,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserDeleteStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: stages_user_delete_update
       description: UserDeleteStage Viewset
@@ -12444,6 +14070,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserDeleteStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: stages_user_delete_partial_update
       description: UserDeleteStage Viewset
@@ -12478,6 +14108,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserDeleteStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: stages_user_delete_destroy
       description: UserDeleteStage Viewset
@@ -12497,6 +14131,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/user_login/:
     get:
       operationId: stages_user_login_list
@@ -12538,6 +14176,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedUserLoginStageList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: stages_user_login_create
       description: UserLoginStage Viewset
@@ -12565,6 +14207,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserLoginStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/user_login/{stage_uuid}/:
     get:
       operationId: stages_user_login_retrieve
@@ -12589,6 +14235,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserLoginStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: stages_user_login_update
       description: UserLoginStage Viewset
@@ -12624,6 +14274,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserLoginStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: stages_user_login_partial_update
       description: UserLoginStage Viewset
@@ -12658,6 +14312,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserLoginStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: stages_user_login_destroy
       description: UserLoginStage Viewset
@@ -12677,6 +14335,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/user_logout/:
     get:
       operationId: stages_user_logout_list
@@ -12718,6 +14380,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedUserLogoutStageList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: stages_user_logout_create
       description: UserLogoutStage Viewset
@@ -12745,6 +14411,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserLogoutStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/user_logout/{stage_uuid}/:
     get:
       operationId: stages_user_logout_retrieve
@@ -12769,6 +14439,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserLogoutStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: stages_user_logout_update
       description: UserLogoutStage Viewset
@@ -12804,6 +14478,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserLogoutStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: stages_user_logout_partial_update
       description: UserLogoutStage Viewset
@@ -12838,6 +14516,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserLogoutStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: stages_user_logout_destroy
       description: UserLogoutStage Viewset
@@ -12857,6 +14539,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/user_write/:
     get:
       operationId: stages_user_write_list
@@ -12898,6 +14584,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedUserWriteStageList'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     post:
       operationId: stages_user_write_create
       description: UserWriteStage Viewset
@@ -12925,6 +14615,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserWriteStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/user_write/{stage_uuid}/:
     get:
       operationId: stages_user_write_retrieve
@@ -12949,6 +14643,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserWriteStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     put:
       operationId: stages_user_write_update
       description: UserWriteStage Viewset
@@ -12984,6 +14682,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserWriteStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     patch:
       operationId: stages_user_write_partial_update
       description: UserWriteStage Viewset
@@ -13018,6 +14720,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserWriteStage'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
     delete:
       operationId: stages_user_write_destroy
       description: UserWriteStage Viewset
@@ -13037,6 +14743,10 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
 components:
   schemas:
     ActionEnum:
@@ -14514,6 +16224,16 @@ components:
       required:
       - href
       - name
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
     Group:
       type: object
       description: Group Serializer
@@ -22173,6 +23893,19 @@ components:
             $ref: '#/components/schemas/FlowRequest'
       required:
       - name
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+      required:
+      - detail
     Version:
       type: object
       description: Get running and latest version.

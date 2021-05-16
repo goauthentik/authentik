@@ -157,6 +157,10 @@ SPECTACULAR_SETTINGS = {
         "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
+    "POSTPROCESSING_HOOKS": [
+        "authentik.api.schema.postprocess_schema_responses",
+        "drf_spectacular.hooks.postprocess_schema_enums",
+    ],
 }
 
 REST_FRAMEWORK = {
