@@ -58,6 +58,9 @@ class ApplicationSerializer(ModelSerializer):
             "meta_publisher",
             "policy_engine_mode",
         ]
+        extra_kwargs = {
+            "meta_icon": {"read_only": True},
+        }
 
 
 class ApplicationViewSet(ModelViewSet):

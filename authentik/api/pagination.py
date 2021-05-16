@@ -68,7 +68,7 @@ class Pagination(pagination.PageNumberPagination):
                         "total_pages",
                         "start_index",
                         "end_index",
-                    ]
+                    ],
                 },
                 "results": schema,
             },

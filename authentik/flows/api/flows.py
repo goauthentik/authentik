@@ -61,6 +61,9 @@ class FlowSerializer(ModelSerializer):
             "cache_count",
             "policy_engine_mode",
         ]
+        extra_kwargs = {
+            "background": {"read_only": True},
+        }
 
 
 class FlowDiagramSerializer(Serializer):

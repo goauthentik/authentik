@@ -13452,6 +13452,7 @@ components:
         meta_icon:
           type: string
           format: uri
+          readOnly: true
         meta_description:
           type: string
         meta_publisher:
@@ -13460,6 +13461,7 @@ components:
           $ref: '#/components/schemas/PolicyEngineMode'
       required:
       - launch_url
+      - meta_icon
       - name
       - pk
       - slug
@@ -13484,9 +13486,6 @@ components:
           type: string
           format: uri
           maxLength: 200
-        meta_icon:
-          type: string
-          format: binary
         meta_description:
           type: string
         meta_publisher:
@@ -14654,6 +14653,7 @@ components:
         background:
           type: string
           format: uri
+          readOnly: true
           description: Background shown during execution
         stages:
           type: array
@@ -14673,6 +14673,7 @@ components:
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
       required:
+      - background
       - cache_count
       - designation
       - name
@@ -14720,10 +14721,6 @@ components:
           - $ref: '#/components/schemas/FlowDesignationEnum'
           description: Decides what this Flow is used for. For example, the Authentication
             flow is redirect to when an un-authenticated user visits authentik.
-        background:
-          type: string
-          format: binary
-          description: Background shown during execution
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
       required:
@@ -16305,10 +16302,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/Application'
+      required:
+      - pagination
+      - results
     PaginatedAuthenticateWebAuthnStageList:
       type: object
       properties:
@@ -16329,10 +16337,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/AuthenticateWebAuthnStage'
+      required:
+      - pagination
+      - results
     PaginatedAuthenticatorStaticStageList:
       type: object
       properties:
@@ -16353,10 +16372,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/AuthenticatorStaticStage'
+      required:
+      - pagination
+      - results
     PaginatedAuthenticatorTOTPStageList:
       type: object
       properties:
@@ -16377,10 +16407,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/AuthenticatorTOTPStage'
+      required:
+      - pagination
+      - results
     PaginatedAuthenticatorValidateStageList:
       type: object
       properties:
@@ -16401,10 +16442,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/AuthenticatorValidateStage'
+      required:
+      - pagination
+      - results
     PaginatedCaptchaStageList:
       type: object
       properties:
@@ -16425,10 +16477,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/CaptchaStage'
+      required:
+      - pagination
+      - results
     PaginatedCertificateKeyPairList:
       type: object
       properties:
@@ -16449,10 +16512,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/CertificateKeyPair'
+      required:
+      - pagination
+      - results
     PaginatedConsentStageList:
       type: object
       properties:
@@ -16473,10 +16547,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/ConsentStage'
+      required:
+      - pagination
+      - results
     PaginatedDenyStageList:
       type: object
       properties:
@@ -16497,10 +16582,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/DenyStage'
+      required:
+      - pagination
+      - results
     PaginatedDockerServiceConnectionList:
       type: object
       properties:
@@ -16521,10 +16617,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/DockerServiceConnection'
+      required:
+      - pagination
+      - results
     PaginatedDummyPolicyList:
       type: object
       properties:
@@ -16545,10 +16652,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/DummyPolicy'
+      required:
+      - pagination
+      - results
     PaginatedDummyStageList:
       type: object
       properties:
@@ -16569,10 +16687,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/DummyStage'
+      required:
+      - pagination
+      - results
     PaginatedEmailStageList:
       type: object
       properties:
@@ -16593,10 +16722,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/EmailStage'
+      required:
+      - pagination
+      - results
     PaginatedEventList:
       type: object
       properties:
@@ -16617,10 +16757,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/Event'
+      required:
+      - pagination
+      - results
     PaginatedEventMatcherPolicyList:
       type: object
       properties:
@@ -16641,10 +16792,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/EventMatcherPolicy'
+      required:
+      - pagination
+      - results
     PaginatedEventTopPerUserList:
       type: object
       properties:
@@ -16665,10 +16827,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/EventTopPerUser'
+      required:
+      - pagination
+      - results
     PaginatedExpiringBaseGrantModelList:
       type: object
       properties:
@@ -16689,10 +16862,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/ExpiringBaseGrantModel'
+      required:
+      - pagination
+      - results
     PaginatedExpressionPolicyList:
       type: object
       properties:
@@ -16713,10 +16897,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/ExpressionPolicy'
+      required:
+      - pagination
+      - results
     PaginatedFlowList:
       type: object
       properties:
@@ -16737,10 +16932,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/Flow'
+      required:
+      - pagination
+      - results
     PaginatedFlowStageBindingList:
       type: object
       properties:
@@ -16761,10 +16967,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/FlowStageBinding'
+      required:
+      - pagination
+      - results
     PaginatedGroupList:
       type: object
       properties:
@@ -16785,10 +17002,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/Group'
+      required:
+      - pagination
+      - results
     PaginatedHaveIBeenPwendPolicyList:
       type: object
       properties:
@@ -16809,10 +17037,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/HaveIBeenPwendPolicy'
+      required:
+      - pagination
+      - results
     PaginatedIPReputationList:
       type: object
       properties:
@@ -16833,10 +17072,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/IPReputation'
+      required:
+      - pagination
+      - results
     PaginatedIdentificationStageList:
       type: object
       properties:
@@ -16857,10 +17107,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/IdentificationStage'
+      required:
+      - pagination
+      - results
     PaginatedInvitationList:
       type: object
       properties:
@@ -16881,10 +17142,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/Invitation'
+      required:
+      - pagination
+      - results
     PaginatedInvitationStageList:
       type: object
       properties:
@@ -16905,10 +17177,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/InvitationStage'
+      required:
+      - pagination
+      - results
     PaginatedKubernetesServiceConnectionList:
       type: object
       properties:
@@ -16929,10 +17212,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/KubernetesServiceConnection'
+      required:
+      - pagination
+      - results
     PaginatedLDAPOutpostConfigList:
       type: object
       properties:
@@ -16953,10 +17247,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/LDAPOutpostConfig'
+      required:
+      - pagination
+      - results
     PaginatedLDAPPropertyMappingList:
       type: object
       properties:
@@ -16977,10 +17282,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/LDAPPropertyMapping'
+      required:
+      - pagination
+      - results
     PaginatedLDAPProviderList:
       type: object
       properties:
@@ -17001,10 +17317,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/LDAPProvider'
+      required:
+      - pagination
+      - results
     PaginatedLDAPSourceList:
       type: object
       properties:
@@ -17025,10 +17352,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/LDAPSource'
+      required:
+      - pagination
+      - results
     PaginatedNotificationList:
       type: object
       properties:
@@ -17049,10 +17387,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/Notification'
+      required:
+      - pagination
+      - results
     PaginatedNotificationRuleList:
       type: object
       properties:
@@ -17073,10 +17422,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/NotificationRule'
+      required:
+      - pagination
+      - results
     PaginatedNotificationTransportList:
       type: object
       properties:
@@ -17097,10 +17457,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/NotificationTransport'
+      required:
+      - pagination
+      - results
     PaginatedOAuth2ProviderList:
       type: object
       properties:
@@ -17121,10 +17492,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/OAuth2Provider'
+      required:
+      - pagination
+      - results
     PaginatedOAuthSourceList:
       type: object
       properties:
@@ -17145,10 +17527,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/OAuthSource'
+      required:
+      - pagination
+      - results
     PaginatedOutpostHealthList:
       type: object
       properties:
@@ -17169,10 +17562,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/OutpostHealth'
+      required:
+      - pagination
+      - results
     PaginatedOutpostList:
       type: object
       properties:
@@ -17193,10 +17597,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/Outpost'
+      required:
+      - pagination
+      - results
     PaginatedPasswordExpiryPolicyList:
       type: object
       properties:
@@ -17217,10 +17632,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/PasswordExpiryPolicy'
+      required:
+      - pagination
+      - results
     PaginatedPasswordPolicyList:
       type: object
       properties:
@@ -17241,10 +17667,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/PasswordPolicy'
+      required:
+      - pagination
+      - results
     PaginatedPasswordStageList:
       type: object
       properties:
@@ -17265,10 +17702,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/PasswordStage'
+      required:
+      - pagination
+      - results
     PaginatedPlexSourceList:
       type: object
       properties:
@@ -17289,10 +17737,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/PlexSource'
+      required:
+      - pagination
+      - results
     PaginatedPolicyBindingList:
       type: object
       properties:
@@ -17313,10 +17772,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/PolicyBinding'
+      required:
+      - pagination
+      - results
     PaginatedPolicyList:
       type: object
       properties:
@@ -17337,10 +17807,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/Policy'
+      required:
+      - pagination
+      - results
     PaginatedPromptList:
       type: object
       properties:
@@ -17361,10 +17842,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/Prompt'
+      required:
+      - pagination
+      - results
     PaginatedPromptStageList:
       type: object
       properties:
@@ -17385,10 +17877,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/PromptStage'
+      required:
+      - pagination
+      - results
     PaginatedPropertyMappingList:
       type: object
       properties:
@@ -17409,10 +17912,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/PropertyMapping'
+      required:
+      - pagination
+      - results
     PaginatedProviderList:
       type: object
       properties:
@@ -17433,10 +17947,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/Provider'
+      required:
+      - pagination
+      - results
     PaginatedProxyOutpostConfigList:
       type: object
       properties:
@@ -17457,10 +17982,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/ProxyOutpostConfig'
+      required:
+      - pagination
+      - results
     PaginatedProxyProviderList:
       type: object
       properties:
@@ -17481,10 +18017,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/ProxyProvider'
+      required:
+      - pagination
+      - results
     PaginatedReputationPolicyList:
       type: object
       properties:
@@ -17505,10 +18052,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/ReputationPolicy'
+      required:
+      - pagination
+      - results
     PaginatedSAMLPropertyMappingList:
       type: object
       properties:
@@ -17529,10 +18087,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/SAMLPropertyMapping'
+      required:
+      - pagination
+      - results
     PaginatedSAMLProviderList:
       type: object
       properties:
@@ -17553,10 +18122,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/SAMLProvider'
+      required:
+      - pagination
+      - results
     PaginatedSAMLSourceList:
       type: object
       properties:
@@ -17577,10 +18157,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/SAMLSource'
+      required:
+      - pagination
+      - results
     PaginatedScopeMappingList:
       type: object
       properties:
@@ -17601,10 +18192,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/ScopeMapping'
+      required:
+      - pagination
+      - results
     PaginatedServiceConnectionList:
       type: object
       properties:
@@ -17625,10 +18227,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/ServiceConnection'
+      required:
+      - pagination
+      - results
     PaginatedSourceList:
       type: object
       properties:
@@ -17649,10 +18262,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/Source'
+      required:
+      - pagination
+      - results
     PaginatedStageList:
       type: object
       properties:
@@ -17673,10 +18297,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/Stage'
+      required:
+      - pagination
+      - results
     PaginatedStaticDeviceList:
       type: object
       properties:
@@ -17697,10 +18332,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/StaticDevice'
+      required:
+      - pagination
+      - results
     PaginatedTOTPDeviceList:
       type: object
       properties:
@@ -17721,10 +18367,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/TOTPDevice'
+      required:
+      - pagination
+      - results
     PaginatedTokenList:
       type: object
       properties:
@@ -17745,10 +18402,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/Token'
+      required:
+      - pagination
+      - results
     PaginatedUserConsentList:
       type: object
       properties:
@@ -17769,10 +18437,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/UserConsent'
+      required:
+      - pagination
+      - results
     PaginatedUserDeleteStageList:
       type: object
       properties:
@@ -17793,10 +18472,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/UserDeleteStage'
+      required:
+      - pagination
+      - results
     PaginatedUserList:
       type: object
       properties:
@@ -17817,10 +18507,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/User'
+      required:
+      - pagination
+      - results
     PaginatedUserLoginStageList:
       type: object
       properties:
@@ -17841,10 +18542,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/UserLoginStage'
+      required:
+      - pagination
+      - results
     PaginatedUserLogoutStageList:
       type: object
       properties:
@@ -17865,10 +18577,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/UserLogoutStage'
+      required:
+      - pagination
+      - results
     PaginatedUserOAuthSourceConnectionList:
       type: object
       properties:
@@ -17889,10 +18612,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/UserOAuthSourceConnection'
+      required:
+      - pagination
+      - results
     PaginatedUserReputationList:
       type: object
       properties:
@@ -17913,10 +18647,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/UserReputation'
+      required:
+      - pagination
+      - results
     PaginatedUserWriteStageList:
       type: object
       properties:
@@ -17937,10 +18682,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/UserWriteStage'
+      required:
+      - pagination
+      - results
     PaginatedWebAuthnDeviceList:
       type: object
       properties:
@@ -17961,10 +18717,21 @@ components:
               type: number
             end_index:
               type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
         results:
           type: array
           items:
             $ref: '#/components/schemas/WebAuthnDevice'
+      required:
+      - pagination
+      - results
     PasswordExpiryPolicy:
       type: object
       description: Password Expiry Policy Serializer
@@ -18220,9 +18987,6 @@ components:
           type: string
           format: uri
           maxLength: 200
-        meta_icon:
-          type: string
-          format: binary
         meta_description:
           type: string
         meta_publisher:
@@ -18529,10 +19293,6 @@ components:
           - $ref: '#/components/schemas/FlowDesignationEnum'
           description: Decides what this Flow is used for. For example, the Authentication
             flow is redirect to when an un-authenticated user visits authentik.
-        background:
-          type: string
-          format: binary
-          description: Background shown during execution
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
     PatchedFlowStageBindingRequest:
