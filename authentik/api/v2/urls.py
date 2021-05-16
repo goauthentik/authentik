@@ -194,7 +194,11 @@ urlpatterns = (
     ]
     + router.urls
     + [
-        path("admin/metrics/", AdministrationMetricsViewSet.as_view(), name="admin_metrics"),
+        path(
+            "admin/metrics/",
+            AdministrationMetricsViewSet.as_view(),
+            name="admin_metrics",
+        ),
         path("admin/version/", VersionView.as_view(), name="admin_version"),
         path("admin/workers/", WorkerView.as_view(), name="admin_workers"),
         path("root/config/", ConfigView.as_view(), name="config"),

@@ -1,9 +1,9 @@
 """authentik administration overview"""
 from drf_spectacular.utils import extend_schema, inline_serializer
+from rest_framework.fields import IntegerField
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.fields import IntegerField
 from rest_framework.views import APIView
 
 from authentik.root.celery import CELERY_APP
@@ -15,12 +15,8 @@ class WorkerView(APIView):
     permission_classes = [IsAdminUser]
 
     @extend_schema(
-        responses=inline_serializer("Workers", fields={
-            "count": IntegerField()
-        })
+        responses=inline_serializer("Workers", fields={"count": IntegerField()})
     )
     def get(self, request: Request) -> Response:
         """Get currently connected worker count."""
-        return Response(
-            {"count": len(CELERY_APP.control.ping(timeout=0.5))}
-        )
+        return Response({"count": len(CELERY_APP.control.ping(timeout=0.5))})

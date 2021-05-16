@@ -4,6 +4,7 @@ from importlib import import_module
 from django.contrib import messages
 from django.http.response import Http404
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, ChoiceField, DateTimeField, ListField
@@ -57,11 +58,12 @@ class TaskViewSet(ViewSet):
         return Response(TaskSerializer(tasks, many=True).data)
 
     @extend_schema(
+        request=OpenApiTypes.NONE,
         responses={
             204: OpenApiResponse(description="Task retried successfully"),
             404: OpenApiResponse(description="Task not found"),
             500: OpenApiResponse(description="Failed to retry task"),
-        }
+        },
     )
     @action(detail=True, methods=["post"])
     # pylint: disable=invalid-name

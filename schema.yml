@@ -97,18 +97,6 @@ paths:
         required: true
       tags:
       - admin
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TaskRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/TaskRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/TaskRequest'
-        required: true
       security:
       - authentik: []
       - cookieAuth: []
@@ -21645,28 +21633,6 @@ components:
       required:
       - name
     Task:
-      type: object
-      description: Serialize TaskInfo and TaskResult
-      properties:
-        task_name:
-          type: string
-        task_description:
-          type: string
-        task_finish_timestamp:
-          type: string
-          format: date-time
-        status:
-          $ref: '#/components/schemas/StatusEnum'
-        messages:
-          type: array
-          items: {}
-      required:
-      - messages
-      - status
-      - task_description
-      - task_finish_timestamp
-      - task_name
-    TaskRequest:
       type: object
       description: Serialize TaskInfo and TaskResult
       properties:

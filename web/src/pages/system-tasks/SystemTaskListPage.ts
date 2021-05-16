@@ -105,8 +105,8 @@ export class SystemTaskListPage extends TablePage<Task> {
             this.taskStatus(item),
             html`<ak-action-button
                 .apiRequest=${() => {
-                    return new AdminApi(DEFAULT_CONFIG).adminSystemTasksRetry({
-                        id: item.taskName
+                    return new AdminApi(DEFAULT_CONFIG).adminSystemTasksRetryCreate({
+                        id: item.taskName,
                     });
                 }}>
                 ${t`Retry Task`}
