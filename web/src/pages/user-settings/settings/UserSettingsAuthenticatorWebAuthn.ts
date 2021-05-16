@@ -53,7 +53,7 @@ export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
                 .send=${(data: unknown) => {
                     return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsWebauthnUpdate({
                         id: device.pk || 0,
-                        data: data as WebAuthnDevice
+                        webAuthnDeviceRequest: data as WebAuthnDevice
                     });
                 }}>
                 <form class="pf-c-form pf-m-horizontal">

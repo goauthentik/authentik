@@ -64,11 +64,11 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsUpdate({
                 policyBindingUuid: this.instance.pk || "",
-                data: data
+                policyBindingRequest: data
             });
         } else {
             return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsCreate({
-                data: data
+                policyBindingRequest: data
             });
         }
     };

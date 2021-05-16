@@ -30,11 +30,11 @@ export class HaveIBeenPwnedPolicyForm extends ModelForm<HaveIBeenPwendPolicy, st
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesHaveibeenpwnedUpdate({
                 policyUuid: this.instance.pk || "",
-                data: data
+                haveIBeenPwendPolicyRequest: data
             });
         } else {
             return new PoliciesApi(DEFAULT_CONFIG).policiesHaveibeenpwnedCreate({
-                data: data
+                haveIBeenPwendPolicyRequest: data
             });
         }
     };

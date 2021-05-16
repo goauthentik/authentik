@@ -31,11 +31,11 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
         if (this.instance) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesSamlUpdate({
                 slug: this.instance.slug,
-                data: data
+                sAMLSourceRequest: data
             });
         } else {
             return new SourcesApi(DEFAULT_CONFIG).sourcesSamlCreate({
-                data: data
+                sAMLSourceRequest: data
             });
         }
     };

@@ -30,11 +30,11 @@ export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorTotpUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                authenticatorTOTPStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorTotpCreate({
-                data: data
+                authenticatorTOTPStageRequest: data
             });
         }
     };

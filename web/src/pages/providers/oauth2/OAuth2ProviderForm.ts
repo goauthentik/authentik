@@ -37,11 +37,11 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersOauth2Update({
                 id: this.instance.pk || 0,
-                data: data
+                oAuth2ProviderRequest: data
             });
         } else {
             return new ProvidersApi(DEFAULT_CONFIG).providersOauth2Create({
-                data: data
+                oAuth2ProviderRequest: data
             });
         }
     };

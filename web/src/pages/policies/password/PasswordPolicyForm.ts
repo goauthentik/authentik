@@ -30,11 +30,11 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordUpdate({
                 policyUuid: this.instance.pk || "",
-                data: data
+                passwordPolicyRequest: data
             });
         } else {
             return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordCreate({
-                data: data
+                passwordPolicyRequest: data
             });
         }
     };

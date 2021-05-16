@@ -35,11 +35,11 @@ export class ConsentStageForm extends ModelForm<ConsentStage, string> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesConsentUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                consentStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesConsentCreate({
-                data: data
+                consentStageRequest: data
             });
         }
     };

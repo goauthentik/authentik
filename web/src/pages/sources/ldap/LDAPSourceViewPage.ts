@@ -161,7 +161,7 @@ export class LDAPSourceViewPage extends LitElement {
                                         .apiRequest=${() => {
                                             return new SourcesApi(DEFAULT_CONFIG).sourcesLdapPartialUpdate({
                                                 slug: this.source?.slug || "",
-                                                data: this.source,
+                                                patchedLDAPSourceRequest: this.source,
                                             });
                                         }}>
                                         ${t`Retry Task`}

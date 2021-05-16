@@ -32,11 +32,11 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
         if (this.instance) {
             return new EventsApi(DEFAULT_CONFIG).eventsTransportsUpdate({
                 uuid: this.instance.pk || "",
-                data: data
+                notificationTransportRequest: data
             });
         } else {
             return new EventsApi(DEFAULT_CONFIG).eventsTransportsCreate({
-                data: data
+                notificationTransportRequest: data
             });
         }
     };

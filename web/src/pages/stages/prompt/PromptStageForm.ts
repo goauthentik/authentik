@@ -32,11 +32,11 @@ export class PromptStageForm extends ModelForm<PromptStage, string> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                promptStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesCreate({
-                data: data
+                promptStageRequest: data
             });
         }
     };

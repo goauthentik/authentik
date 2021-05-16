@@ -28,11 +28,11 @@ export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuth
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                authenticateWebAuthnStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnCreate({
-                data: data
+                authenticateWebAuthnStageRequest: data
             });
         }
     };

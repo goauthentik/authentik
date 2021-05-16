@@ -1,4 +1,4 @@
-import { OAuthSource, SourcesApi, FlowsApi, FlowDesignationEnum, UserMatchingModeEnum } from "authentik-api";
+import { OAuthSource, SourcesApi, FlowsApi, FlowDesignationEnum, UserMatchingModeEnum, OAuthSourceRequest } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -44,11 +44,11 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
         if (this.instance) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
                 slug: this.instance.slug,
-                data: data
+                patchedOAuthSourceRequest: data
             });
         } else {
             return new SourcesApi(DEFAULT_CONFIG).sourcesOauthCreate({
-                data: data
+                oAuthSourceRequest: data as unknown as OAuthSourceRequest
             });
         }
     };
@@ -173,7 +173,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         ?required=${true}
                         ?writeOnly=${this.instance !== undefined}
                         name="consumerSecret">
-                        <input type="text" value="${ifDefined(this.instance?.consumerSecret)}" class="pf-c-form-control" required>
+                        <input type="text" value="" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Provider type`}

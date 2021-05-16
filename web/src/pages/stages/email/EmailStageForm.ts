@@ -37,11 +37,11 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesEmailPartialUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                patchedEmailStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesEmailCreate({
-                data: data
+                emailStageRequest: data
             });
         }
     };

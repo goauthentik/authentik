@@ -29,17 +29,17 @@ export class FlowForm extends ModelForm<Flow, string> {
         if (this.instance) {
             writeOp = new FlowsApi(DEFAULT_CONFIG).flowsInstancesUpdate({
                 slug: this.instance.slug,
-                data: data
+                flowRequest: data
             });
         } else {
             writeOp = new FlowsApi(DEFAULT_CONFIG).flowsInstancesCreate({
-                data: data
+                flowRequest: data
             });
         }
         const background = this.getFormFile();
         if (background) {
             return writeOp.then(flow => {
-                return new FlowsApi(DEFAULT_CONFIG).flowsInstancesSetBackground({
+                return new FlowsApi(DEFAULT_CONFIG).flowsInstancesSetBackgroundCreate({
                     slug: flow.slug,
                     file: background
                 });

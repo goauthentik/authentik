@@ -31,11 +31,11 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersLdapUpdate({
                 id: this.instance.pk || 0,
-                data: data
+                lDAPProviderRequest: data
             });
         } else {
             return new ProvidersApi(DEFAULT_CONFIG).providersLdapCreate({
-                data: data
+                lDAPProviderRequest: data
             });
         }
     };

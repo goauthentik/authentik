@@ -29,11 +29,11 @@ export class PropertyMappingScopeForm extends ModelForm<ScopeMapping, string> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsScopeUpdate({
                 pmUuid: this.instance.pk || "",
-                data: data
+                scopeMappingRequest: data
             });
         } else {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsScopeCreate({
-                data: data
+                scopeMappingRequest: data
             });
         }
     };

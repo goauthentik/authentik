@@ -29,11 +29,11 @@ export class PropertyMappingLDAPForm extends ModelForm<LDAPPropertyMapping, stri
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapUpdate({
                 pmUuid: this.instance.pk || "",
-                data: data
+                lDAPPropertyMappingRequest: data
             });
         } else {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapCreate({
-                data: data
+                lDAPPropertyMappingRequest: data
             });
         }
     };

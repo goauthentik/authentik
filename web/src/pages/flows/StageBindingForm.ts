@@ -33,11 +33,11 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         if (this.instance) {
             return new FlowsApi(DEFAULT_CONFIG).flowsBindingsUpdate({
                 fsbUuid: this.instance.pk || "",
-                data: data
+                flowStageBindingRequest: data
             });
         } else {
             return new FlowsApi(DEFAULT_CONFIG).flowsBindingsCreate({
-                data: data
+                flowStageBindingRequest: data
             });
         }
     };

@@ -28,11 +28,11 @@ export class DenyStageForm extends ModelForm<DenyStage, string> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesDenyUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                denyStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesDenyCreate({
-                data: data
+                denyStageRequest: data
             });
         }
     };

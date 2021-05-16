@@ -30,11 +30,11 @@ export class DummyPolicyForm extends ModelForm<DummyPolicy, string> {
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesDummyUpdate({
                 policyUuid: this.instance.pk || "",
-                data: data
+                dummyPolicyRequest: data
             });
         } else {
             return new PoliciesApi(DEFAULT_CONFIG).policiesDummyCreate({
-                data: data
+                dummyPolicyRequest: data
             });
         }
     };

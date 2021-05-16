@@ -1,4 +1,4 @@
-import { CoreApi, PropertyMapping, PropertymappingsApi, PropertyMappingTestResult } from "authentik-api";
+import { CoreApi, PolicyTestRequest, PropertyMapping, PropertymappingsApi, PropertyMappingTestResult } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -8,11 +8,10 @@ import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
 import "../../elements/CodeMirror";
-import { PolicyTest } from "authentik-api/src";
 import YAML from "yaml";
 
 @customElement("ak-property-mapping-test-form")
-export class PolicyTestForm extends Form<PolicyTest> {
+export class PolicyTestForm extends Form<PolicyTestRequest> {
 
     @property({attribute: false})
     mapping?: PropertyMapping;
@@ -24,10 +23,10 @@ export class PolicyTestForm extends Form<PolicyTest> {
         return t`Successfully sent test-request.`;
     }
 
-    send = (data: PolicyTest): Promise<PropertyMappingTestResult> => {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllTest({
+    send = (data: PolicyTestRequest): Promise<PropertyMappingTestResult> => {
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllTestCreate({
             pmUuid: this.mapping?.pk || "",
-            data: data,
+            policyTestRequest: data,
             formatResult: true,
         }).then(result => this.result = result);
     };

@@ -29,11 +29,11 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
         if (this.instance) {
             return new EventsApi(DEFAULT_CONFIG).eventsRulesUpdate({
                 pbmUuid: this.instance.pk || "",
-                data: data
+                notificationRuleRequest: data
             });
         } else {
             return new EventsApi(DEFAULT_CONFIG).eventsRulesCreate({
-                data: data
+                notificationRuleRequest: data
             });
         }
     };

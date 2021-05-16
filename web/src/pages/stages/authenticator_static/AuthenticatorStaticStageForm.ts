@@ -31,11 +31,11 @@ export class AuthenticatorStaticStageForm extends ModelForm<AuthenticatorStaticS
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                authenticatorStaticStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesUserWriteCreate({
-                data: data
+                authenticatorStaticStageRequest: data
             });
         }
     };

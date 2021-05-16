@@ -31,11 +31,11 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersSamlUpdate({
                 id: this.instance.pk || 0,
-                data: data
+                sAMLProviderRequest: data
             });
         } else {
             return new ProvidersApi(DEFAULT_CONFIG).providersSamlCreate({
-                data: data
+                sAMLProviderRequest: data
             });
         }
     };

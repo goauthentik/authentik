@@ -28,11 +28,11 @@ export class UserDeleteStageForm extends ModelForm<UserDeleteStage, string> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesUserDeleteUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                userDeleteStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesUserDeleteCreate({
-                data: data
+                userDeleteStageRequest: data
             });
         }
     };

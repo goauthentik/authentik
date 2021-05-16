@@ -28,11 +28,11 @@ export class UserTokenForm extends ModelForm<Token, string> {
         if (this.instance) {
             return new CoreApi(DEFAULT_CONFIG).coreTokensUpdate({
                 identifier: this.instance.identifier,
-                data: data
+                tokenRequest: data
             });
         } else {
             return new CoreApi(DEFAULT_CONFIG).coreTokensCreate({
-                data: data
+                tokenRequest: data
             });
         }
     };

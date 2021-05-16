@@ -50,11 +50,11 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
         if (this.instance?.slug) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesPlexUpdate({
                 slug: this.instance.slug,
-                data: data
+                plexSourceRequest: data
             });
         } else {
             return new SourcesApi(DEFAULT_CONFIG).sourcesPlexCreate({
-                data: data
+                plexSourceRequest: data
             });
         }
     };

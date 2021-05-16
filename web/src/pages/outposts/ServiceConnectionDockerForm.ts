@@ -30,11 +30,11 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
         if (this.instance) {
             return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerUpdate({
                 uuid: this.instance.pk || "",
-                data: data
+                dockerServiceConnectionRequest: data
             });
         } else {
             return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerCreate({
-                data: data
+                dockerServiceConnectionRequest: data
             });
         }
     };

@@ -30,11 +30,11 @@ export class PasswordExpiryPolicyForm extends ModelForm<PasswordExpiryPolicy, st
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordExpiryUpdate({
                 policyUuid: this.instance.pk || "",
-                data: data
+                passwordExpiryPolicyRequest: data
             });
         } else {
             return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordExpiryCreate({
-                data: data
+                passwordExpiryPolicyRequest: data
             });
         }
     };

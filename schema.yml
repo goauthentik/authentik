@@ -2338,18 +2338,6 @@ paths:
         description: Which field to use when ordering the results.
         schema:
           type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
       - name: search
         required: false
         in: query
@@ -2375,7 +2363,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedEventTopPerUserList'
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventTopPerUser'
           description: ''
   /api/v2beta/events/notifications/:
     get:
@@ -16757,41 +16747,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EventMatcherPolicy'
-      required:
-      - pagination
-      - results
-    PaginatedEventTopPerUserList:
-      type: object
-      properties:
-        pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/EventTopPerUser'
       required:
       - pagination
       - results

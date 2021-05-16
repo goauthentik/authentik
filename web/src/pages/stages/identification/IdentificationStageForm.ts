@@ -31,11 +31,11 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesIdentificationUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                identificationStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesIdentificationCreate({
-                data: data
+                identificationStageRequest: data
             });
         }
     };

@@ -31,11 +31,11 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherUpdate({
                 policyUuid: this.instance.pk || "",
-                data: data
+                eventMatcherPolicyRequest: data
             });
         } else {
             return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherCreate({
-                data: data
+                eventMatcherPolicyRequest: data
             });
         }
     };

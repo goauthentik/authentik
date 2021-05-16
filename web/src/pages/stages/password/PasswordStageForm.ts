@@ -31,11 +31,11 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesPasswordUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                passwordStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesPasswordCreate({
-                data: data
+                passwordStageRequest: data
             });
         }
     };

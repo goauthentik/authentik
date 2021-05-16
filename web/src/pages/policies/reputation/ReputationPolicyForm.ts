@@ -30,11 +30,11 @@ export class ReputationPolicyForm extends ModelForm<ReputationPolicy, string> {
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesReputationUpdate({
                 policyUuid: this.instance.pk || "",
-                data: data
+                reputationPolicyRequest: data
             });
         } else {
             return new PoliciesApi(DEFAULT_CONFIG).policiesReputationCreate({
-                data: data
+                reputationPolicyRequest: data
             });
         }
     };

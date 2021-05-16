@@ -35,12 +35,12 @@ export class GroupForm extends ModelForm<Group, string> {
         if (this.instance?.pk) {
             return new CoreApi(DEFAULT_CONFIG).coreGroupsUpdate({
                 groupUuid: this.instance.pk || "",
-                data: data
+                groupRequest: data
             });
         } else {
             data.users = Array.from(this.instance?.users || []) as unknown as Set<number>;
             return new CoreApi(DEFAULT_CONFIG).coreGroupsCreate({
-                data: data
+                groupRequest: data
             });
         }
     };

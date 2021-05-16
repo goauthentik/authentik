@@ -1,4 +1,4 @@
-import { CertificateKeyPair, CryptoApi } from "authentik-api";
+import { CertificateKeyPair, CertificateKeyPairRequest, CryptoApi } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -29,11 +29,11 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
         if (this.instance) {
             return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsPartialUpdate({
                 kpUuid: this.instance.pk || "",
-                data: data
+                patchedCertificateKeyPairRequest: data
             });
         } else {
             return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsCreate({
-                data: data
+                certificateKeyPairRequest: data as unknown as CertificateKeyPairRequest
             });
         }
     };
@@ -51,14 +51,14 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
                 name="certificateData"
                 ?writeOnly=${this.instance !== undefined}
                 ?required=${true}>
-                <textarea class="pf-c-form-control" required>${ifDefined(this.instance?.certificateData)}</textarea>
+                <textarea class="pf-c-form-control" required></textarea>
                 <p class="pf-c-form__helper-text">${t`PEM-encoded Certificate data.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 name="keyData"
                 ?writeOnly=${this.instance !== undefined}
                 label=${t`Private Key`}>
-                <textarea class="pf-c-form-control" >${ifDefined(this.instance?.keyData)}</textarea>
+                <textarea class="pf-c-form-control" ></textarea>
                 <p class="pf-c-form__helper-text">${t`Optional Private Key. If this is set, you can use this keypair for encryption.`}</p>
             </ak-form-element-horizontal>
         </form>`;

@@ -126,7 +126,7 @@ export class PolicyListPage extends TablePage<Policy> {
                     <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                 </button>
                 <ul class="pf-c-dropdown__menu" hidden>
-                    ${until(new PoliciesApi(DEFAULT_CONFIG).policiesAllTypes().then((types) => {
+                    ${until(new PoliciesApi(DEFAULT_CONFIG).policiesAllTypesList().then((types) => {
                         return types.map((type) => {
                             return html`<li>
                                 <ak-forms-modal>

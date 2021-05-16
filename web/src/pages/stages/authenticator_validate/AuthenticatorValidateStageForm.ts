@@ -36,11 +36,11 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                authenticatorValidateStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateCreate({
-                data: data
+                authenticatorValidateStageRequest: data
             });
         }
     };

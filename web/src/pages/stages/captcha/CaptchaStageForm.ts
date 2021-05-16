@@ -1,4 +1,4 @@
-import { CaptchaStage, StagesApi } from "authentik-api";
+import { CaptchaStage, CaptchaStageRequest, StagesApi } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -29,11 +29,11 @@ export class CaptchaStageForm extends ModelForm<CaptchaStage, string> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesCaptchaPartialUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                patchedCaptchaStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesCaptchaCreate({
-                data: data
+                captchaStageRequest: data as unknown as CaptchaStageRequest
             });
         }
     };

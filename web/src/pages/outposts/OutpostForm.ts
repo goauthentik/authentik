@@ -31,11 +31,11 @@ export class OutpostForm extends ModelForm<Outpost, string> {
         if (this.instance) {
             return new OutpostsApi(DEFAULT_CONFIG).outpostsOutpostsUpdate({
                 uuid: this.instance.pk || "",
-                data: data
+                outpostRequest: data
             });
         } else {
             return new OutpostsApi(DEFAULT_CONFIG).outpostsOutpostsCreate({
-                data: data
+                outpostRequest: data
             });
         }
     };

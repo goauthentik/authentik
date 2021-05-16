@@ -118,7 +118,7 @@ class EventViewSet(ReadOnlyModelViewSet):
             )
         ],
     )
-    @action(detail=False, methods=["GET"])
+    @action(detail=False, methods=["GET"], pagination_class=None)
     def top_per_user(self, request: Request):
         """Get the top_n events grouped by user count"""
         filtered_action = request.query_params.get("action", EventAction.LOGIN)

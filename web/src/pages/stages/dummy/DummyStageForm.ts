@@ -28,11 +28,11 @@ export class DummyStageForm extends ModelForm<DummyStage, string> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesDummyUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                dummyStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesDummyCreate({
-                data: data
+                dummyStageRequest: data
             });
         }
     };

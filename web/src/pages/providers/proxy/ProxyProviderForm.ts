@@ -41,11 +41,11 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersProxyUpdate({
                 id: this.instance.pk || 0,
-                data: data
+                proxyProviderRequest: data
             });
         } else {
             return new ProvidersApi(DEFAULT_CONFIG).providersProxyCreate({
-                data: data
+                proxyProviderRequest: data
             });
         }
     };

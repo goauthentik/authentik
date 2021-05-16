@@ -31,11 +31,11 @@ export class ExpressionPolicyForm extends ModelForm<ExpressionPolicy, string> {
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesExpressionUpdate({
                 policyUuid: this.instance.pk || "",
-                data: data
+                expressionPolicyRequest: data
             });
         } else {
             return new PoliciesApi(DEFAULT_CONFIG).policiesExpressionCreate({
-                data: data
+                expressionPolicyRequest: data
             });
         }
     };

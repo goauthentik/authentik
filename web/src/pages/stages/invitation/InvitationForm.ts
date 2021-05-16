@@ -30,11 +30,11 @@ export class InvitationForm extends ModelForm<Invitation, string> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsUpdate({
                 inviteUuid: this.instance.pk || "",
-                data: data
+                invitationRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsCreate({
-                data: data
+                invitationRequest: data
             });
         }
     };

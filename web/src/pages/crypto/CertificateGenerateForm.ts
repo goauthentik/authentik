@@ -1,4 +1,4 @@
-import { CertificateGeneration, CryptoApi } from "authentik-api";
+import { CertificateGenerationRequest, CryptoApi } from "authentik-api";
 import { CertificateKeyPair } from "authentik-api/src";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
@@ -8,15 +8,15 @@ import { Form } from "../../elements/forms/Form";
 import "../../elements/forms/HorizontalFormElement";
 
 @customElement("ak-crypto-certificate-generate-form")
-export class CertificateKeyPairForm extends Form<CertificateGeneration> {
+export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {
 
     getSuccessMessage(): string {
         return t`Successfully generated certificate-key pair.`;
     }
 
-    send = (data: CertificateGeneration): Promise<CertificateKeyPair> => {
-        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsGenerate({
-            data: data
+    send = (data: CertificateGenerationRequest): Promise<CertificateKeyPair> => {
+        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsGenerateCreate({
+            certificateGenerationRequest: data
         });
     };
 
