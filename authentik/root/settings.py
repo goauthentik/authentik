@@ -53,11 +53,11 @@ STATIC_ROOT = BASE_DIR + "/static"
 STATICFILES_DIRS = [BASE_DIR + "/web"]
 MEDIA_ROOT = BASE_DIR + "/media"
 
-SECRET_KEY = CONFIG.y(
-    "secret_key", "9$@r!d^1^jrn#fk#1#@ks#9&i$^s#1)_13%$rwjrhd=e8jfi_s"
-)  # noqa Debug
-
 DEBUG = CONFIG.y_bool("debug")
+SECRET_KEY = CONFIG.y("secret_key")
+if DEBUG:
+    SECRET_KEY = "9$@r!d^1^jrn#fk#1#@ks#9&i$^s#1)_13%$rwjrhd=e8jfi_s"  # noqa Debug # nosec
+
 INTERNAL_IPS = ["127.0.0.1"]
 ALLOWED_HOSTS = ["*"]
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
