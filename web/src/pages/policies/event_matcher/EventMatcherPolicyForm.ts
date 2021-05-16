@@ -72,7 +72,7 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
                         name="action">
                         <select class="pf-c-form-control">
                             <option value="" ?selected=${this.instance?.action === undefined}>---------</option>
-                            ${until(new EventsApi(DEFAULT_CONFIG).eventsEventsActions().then(actions => {
+                            ${until(new EventsApi(DEFAULT_CONFIG).eventsEventsActionsList().then(actions => {
                                 return actions.map(action => {
                                     return html`<option value=${action.component} ?selected=${this.instance?.action === action.component}>${action.name}</option>`;
                                 });

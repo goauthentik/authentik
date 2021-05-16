@@ -37,7 +37,7 @@ export class OAuth2ProviderViewPage extends LitElement {
         }).then((prov) => {
             this.provider = prov;
         });
-        api.providersOauth2SetupUrls({
+        api.providersOauth2SetupUrlsRetrieve({
             id: value
         }).then((prov) => {
             this.providerUrls = prov;

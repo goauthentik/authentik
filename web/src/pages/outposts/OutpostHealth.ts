@@ -30,7 +30,7 @@ export class OutpostHealthElement extends LitElement {
 
     firstUpdated(): void {
         if (!this.outpostId) return;
-        new OutpostsApi(DEFAULT_CONFIG).outpostsOutpostsHealth({
+        new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesHealthList({
             uuid: this.outpostId
         }).then(health => {
             this.outpostHealth = health;

@@ -71,7 +71,7 @@ export class FlowViewPage extends LitElement {
                                                 <button
                                                     class="pf-c-button pf-m-secondary"
                                                     @click=${() => {
-                                                    new FlowsApi(DEFAULT_CONFIG).flowsInstancesExecute({
+                                                    new FlowsApi(DEFAULT_CONFIG).flowsInstancesExecuteRetrieve({
                                                         slug: this.flow.slug
                                                     }).then(link => {
                                                         const finalURL = `${link.link}?next=/%23${window.location.href}`;

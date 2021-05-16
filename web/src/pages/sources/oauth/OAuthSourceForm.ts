@@ -196,7 +196,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                             }
                             this.instance.providerType = selected.value;
                         }}>
-                            ${until(new SourcesApi(DEFAULT_CONFIG).sourcesOauthSourceTypes().then(types => {
+                            ${until(new SourcesApi(DEFAULT_CONFIG).sourcesOauthSourceTypesList().then(types => {
                                 return types.map(type => {
                                     let selected = this.instance?.providerType === type.slug;
                                     if (!this.instance?.pk) {

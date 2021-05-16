@@ -32,7 +32,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         return true;
     }
     apiEndpoint(page: number): Promise<AKResponse<Outpost>> {
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsOutpostsList({
+        return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesList({
             ordering: this.order,
             page: page,
             pageSize: PAGE_SIZE,
@@ -76,7 +76,7 @@ export class OutpostListPage extends TablePage<Outpost> {
                 .obj=${item}
                 objectLabel=${t`Outpost`}
                 .delete=${() => {
-                    return new OutpostsApi(DEFAULT_CONFIG).outpostsOutpostsDestroy({
+                    return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesDestroy({
                         uuid: item.pk || ""
                     });
                 }}>

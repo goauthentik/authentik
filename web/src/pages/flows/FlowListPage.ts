@@ -89,7 +89,7 @@ export class FlowListPage extends TablePage<Flow> {
             <button
                 class="pf-c-button pf-m-secondary"
                 @click=${() => {
-                    new FlowsApi(DEFAULT_CONFIG).flowsInstancesExecute({
+                    new FlowsApi(DEFAULT_CONFIG).flowsInstancesExecuteRetrieve({
                         slug: item.slug
                     }).then(link => {
                         window.location.assign(`${link.link}?next=/%23${window.location.href}`);

@@ -29,12 +29,12 @@ export class OutpostForm extends ModelForm<Outpost, string> {
 
     send = (data: Outpost): Promise<Outpost> => {
         if (this.instance) {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsOutpostsUpdate({
+            return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesUpdate({
                 uuid: this.instance.pk || "",
                 outpostRequest: data
             });
         } else {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsOutpostsCreate({
+            return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesCreate({
                 outpostRequest: data
             });
         }
@@ -108,7 +108,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
             <ak-form-element-horizontal
                 label=${t`Configuration`}
                 name="config">
-                <ak-codemirror mode="yaml" value="${until(new OutpostsApi(DEFAULT_CONFIG).outpostsOutpostsDefaultSettings({}).then(config => {
+                <ak-codemirror mode="yaml" value="${until(new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesDefaultSettingsRetrieve().then(config => {
                         let fc = config.config;
                         if (this.instance) {
                             fc = this.instance.config;

@@ -76,7 +76,7 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
                         label=${t`SMTP Password`}
                         ?writeOnly=${this.instance !== undefined}
                         name="password">
-                        <input type="text" value="${ifDefined(this.instance?.password || "")}" class="pf-c-form-control">
+                        <input type="text" value="" class="pf-c-form-control">
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="useTls">
                         <div class="pf-c-check">
@@ -156,7 +156,7 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
                         ?required=${true}
                         name="template">
                         <select name="users" class="pf-c-form-control">
-                            ${until(new StagesApi(DEFAULT_CONFIG).stagesEmailTemplates().then(templates => {
+                            ${until(new StagesApi(DEFAULT_CONFIG).stagesEmailTemplatesList().then(templates => {
                                 return templates.map(template => {
                                     const selected = this.instance?.template === template.name;
                                     return html`<option value=${ifDefined(template.name)} ?selected=${selected}>
