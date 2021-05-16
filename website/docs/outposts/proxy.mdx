@@ -43,8 +43,10 @@ import TabItem from '@theme/TabItem';
 ```
     location /akprox {
         proxy_pass http://*ip of your outpost*:4180;
-        proxy_set_header X-Forwarded-Host $http_host;
         error_page 401 = @akprox_signin;
+        proxy_set_header    X-Forwarded-Host $http_host;
+        auth_request_set    $auth_cookie $upstream_http_set_cookie;
+        add_header          Set-Cookie $auth_cookie;
     }
 
     location @akprox_signin {
