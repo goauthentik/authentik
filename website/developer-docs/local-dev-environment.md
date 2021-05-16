@@ -22,6 +22,7 @@ postgresql:
   user: postgres
 
 log_level: debug
+secret_key: "A long key you can generate with `pwgen 40 1` for example"
 ```
 
 Afterwards, you can start authentik by running `./manage.py runserver`. Generally speaking, authentik is a Django application.
