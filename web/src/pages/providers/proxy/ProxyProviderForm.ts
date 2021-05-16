@@ -14,7 +14,7 @@ import { first } from "../../../utils";
 export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
 
     loadInstance(pk: number): Promise<ProxyProvider> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersProxyRead({
+        return new ProvidersApi(DEFAULT_CONFIG).providersProxyRetrieve({
             id: pk,
         }).then(provider => {
             this.showHttpBasic = first(provider.basicAuthEnabled, true);

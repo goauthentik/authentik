@@ -13,7 +13,7 @@ import { ModelForm } from "../../elements/forms/ModelForm";
 export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnection, string> {
 
     loadInstance(pk: string): Promise<DockerServiceConnection> {
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerRead({
+        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerRetrieve({
             uuid: pk,
         });
     }

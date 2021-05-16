@@ -12,7 +12,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class PromptForm extends ModelForm<Prompt, string> {
 
     loadInstance(pk: string): Promise<Prompt> {
-        return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsRetrieve({
             promptUuid: pk
         });
     }

@@ -11,7 +11,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuthnStage, string> {
 
     loadInstance(pk: string): Promise<AuthenticateWebAuthnStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnRetrieve({
             stageUuid: pk,
         });
     }

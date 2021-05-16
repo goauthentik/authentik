@@ -23,7 +23,7 @@ import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 export class FlowViewPage extends LitElement {
     @property()
     set flowSlug(value: string) {
-        new FlowsApi(DEFAULT_CONFIG).flowsInstancesRead({
+        new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({
             slug: value
         }).then((flow) => {
             this.flow = flow;

@@ -33,7 +33,7 @@ export class LDAPProviderViewPage extends LitElement {
 
     @property({type: Number})
     set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG).providersLdapRead({
+        new ProvidersApi(DEFAULT_CONFIG).providersLdapRetrieve({
             id: value,
         }).then((prov) => (this.provider = prov));
     }

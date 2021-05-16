@@ -14,7 +14,7 @@ import { ModelForm } from "../../elements/forms/ModelForm";
 export class OutpostForm extends ModelForm<Outpost, string> {
 
     loadInstance(pk: string): Promise<Outpost> {
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesRead({
+        return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesRetrieve({
             uuid: pk
         });
     }

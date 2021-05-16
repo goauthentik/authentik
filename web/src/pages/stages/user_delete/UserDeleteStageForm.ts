@@ -11,7 +11,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class UserDeleteStageForm extends ModelForm<UserDeleteStage, string> {
 
     loadInstance(pk: string): Promise<UserDeleteStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesUserDeleteRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesUserDeleteRetrieve({
             stageUuid: pk,
         });
     }

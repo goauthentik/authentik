@@ -12,7 +12,7 @@ import { ModelForm } from "../../elements/forms/ModelForm";
 export class PropertyMappingLDAPForm extends ModelForm<LDAPPropertyMapping, string> {
 
     loadInstance(pk: string): Promise<LDAPPropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapRead({
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapRetrieve({
             pmUuid: pk,
         });
     }

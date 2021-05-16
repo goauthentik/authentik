@@ -14,7 +14,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class ExpressionPolicyForm extends ModelForm<ExpressionPolicy, string> {
 
     loadInstance(pk: string): Promise<ExpressionPolicy> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesExpressionRead({
+        return new PoliciesApi(DEFAULT_CONFIG).policiesExpressionRetrieve({
             policyUuid: pk,
         });
     }

@@ -13,7 +13,7 @@ import { ModelForm } from "../../elements/forms/ModelForm";
 export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
 
     loadInstance(pk: string): Promise<FlowStageBinding> {
-        return new FlowsApi(DEFAULT_CONFIG).flowsBindingsRead({
+        return new FlowsApi(DEFAULT_CONFIG).flowsBindingsRetrieve({
             fsbUuid: pk,
         });
     }

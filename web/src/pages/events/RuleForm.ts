@@ -12,7 +12,7 @@ import { ModelForm } from "../../elements/forms/ModelForm";
 export class RuleForm extends ModelForm<NotificationRule, string> {
 
     loadInstance(pk: string): Promise<NotificationRule> {
-        return new EventsApi(DEFAULT_CONFIG).eventsRulesRead({
+        return new EventsApi(DEFAULT_CONFIG).eventsRulesRetrieve({
             pbmUuid: pk,
         });
     }

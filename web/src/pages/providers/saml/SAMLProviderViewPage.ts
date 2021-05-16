@@ -36,7 +36,7 @@ export class SAMLProviderViewPage extends LitElement {
 
     @property({type: Number})
     set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG).providersSamlRead({
+        new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({
             id: value,
         }).then((prov) => (this.provider = prov));
     }

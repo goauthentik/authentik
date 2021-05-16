@@ -14,7 +14,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
 
     loadInstance(pk: string): Promise<SAMLSource> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesSamlRead({
+        return new SourcesApi(DEFAULT_CONFIG).sourcesSamlRetrieve({
             slug: pk,
         });
     }

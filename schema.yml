@@ -86,13 +86,7 @@ paths:
                 $ref: '#/components/schemas/Task'
           description: ''
         '404':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Task not found
   /api/v2beta/admin/system_tasks/{id}/retry/:
     post:
       operationId: admin_system_tasks_retry_create
@@ -122,29 +116,11 @@ paths:
       - cookieAuth: []
       responses:
         '204':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Task retried successfully
         '404':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Task not found
         '500':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Failed to retry task
   /api/v2beta/admin/version/:
     get:
       operationId: admin_version_list
@@ -1142,21 +1118,9 @@ paths:
       - cookieAuth: []
       responses:
         '204':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Access granted
         '403':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Access denied
   /api/v2beta/core/applications/{slug}/metrics/:
     get:
       operationId: core_applications_metrics_list
@@ -1206,21 +1170,9 @@ paths:
       - cookieAuth: []
       responses:
         '200':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Success
         '400':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Bad request
   /api/v2beta/core/groups/:
     get:
       operationId: core_groups_list
@@ -1624,13 +1576,7 @@ paths:
                 $ref: '#/components/schemas/TokenView'
           description: ''
         '404':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Token not found or expired
   /api/v2beta/core/user_consent/:
     get:
       operationId: core_user_consent_list
@@ -1970,13 +1916,7 @@ paths:
                 $ref: '#/components/schemas/Link'
           description: ''
         '404':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: No recovery flow found.
   /api/v2beta/core/users/me/:
     get:
       operationId: core_users_me_retrieve
@@ -2267,13 +2207,7 @@ paths:
                 $ref: '#/components/schemas/CertificateKeyPair'
           description: ''
         '400':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Bad request
   /api/v2beta/events/events/:
     get:
       operationId: events_events_list
@@ -3032,14 +2966,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotificationTransportTest'
           description: ''
-        '503':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+        '500':
+          description: Failed to test transport
   /api/v2beta/flows/bindings/:
     get:
       operationId: flows_bindings_list
@@ -3298,13 +3226,7 @@ paths:
                 $ref: '#/components/schemas/Challenge'
           description: ''
         '404':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: No Token found
     post:
       operationId: flows_executor_solve
       description: Solve the previously retrieved challenge and advanced to the next
@@ -3585,13 +3507,7 @@ paths:
                 $ref: '#/components/schemas/Link'
           description: ''
         '400':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Flow not applicable
   /api/v2beta/flows/instances/{slug}/export/:
     get:
       operationId: flows_instances_export_retrieve
@@ -3613,9 +3529,8 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
+                type: string
+                format: binary
           description: null
   /api/v2beta/flows/instances/{slug}/set_background/:
     post:
@@ -3641,21 +3556,9 @@ paths:
       - cookieAuth: []
       responses:
         '200':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Success
         '400':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Bad request
   /api/v2beta/flows/instances/cache_clear/:
     post:
       operationId: flows_instances_cache_clear_create
@@ -3667,21 +3570,9 @@ paths:
       - cookieAuth: []
       responses:
         '204':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Successfully cleared cache
         '400':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Bad request
   /api/v2beta/flows/instances/cache_info/:
     get:
       operationId: flows_instances_cache_info_retrieve
@@ -3716,21 +3607,9 @@ paths:
       - cookieAuth: []
       responses:
         '204':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Successfully imported flow
         '400':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Bad request
   /api/v2beta/oauth2/authorization_codes/:
     get:
       operationId: oauth2_authorization_codes_list
@@ -5162,13 +5041,7 @@ paths:
                 $ref: '#/components/schemas/PolicyTestResult'
           description: ''
         '400':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Invalid parameters
   /api/v2beta/policies/all/cache_clear/:
     post:
       operationId: policies_all_cache_clear_create
@@ -5180,21 +5053,9 @@ paths:
       - cookieAuth: []
       responses:
         '204':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Successfully cleared cache
         '400':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Bad request
   /api/v2beta/policies/all/cache_info/:
     get:
       operationId: policies_all_cache_info_retrieve
@@ -7164,13 +7025,7 @@ paths:
                 $ref: '#/components/schemas/PropertyMappingTestResult'
           description: ''
         '400':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Invalid parameters
   /api/v2beta/propertymappings/all/types/:
     get:
       operationId: propertymappings_all_types_list
@@ -8209,13 +8064,7 @@ paths:
                 $ref: '#/components/schemas/OAuth2ProviderSetupURLs'
           description: ''
         '404':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Provider has no application assigned
   /api/v2beta/providers/proxy/:
     get:
       operationId: providers_proxy_list
@@ -8597,13 +8446,7 @@ paths:
                 $ref: '#/components/schemas/SAMLMetadata'
           description: ''
         '404':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Provider has no application assigned
   /api/v2beta/providers/saml/import_metadata/:
     post:
       operationId: providers_saml_import_metadata_create
@@ -8621,21 +8464,9 @@ paths:
       - cookieAuth: []
       responses:
         '204':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Successfully imported provider
         '400':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Bad request
   /api/v2beta/root/config/:
     get:
       operationId: root_config_list
@@ -9116,13 +8947,7 @@ paths:
                 $ref: '#/components/schemas/Task'
           description: ''
         '404':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Task not found
   /api/v2beta/sources/oauth/:
     get:
       operationId: sources_oauth_list
@@ -9710,21 +9535,9 @@ paths:
                 $ref: '#/components/schemas/RedirectChallenge'
           description: ''
         '400':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Token not found
         '403':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Access denied
   /api/v2beta/sources/saml/:
     get:
       operationId: sources_saml_list
@@ -13946,9 +13759,6 @@ components:
       - POST
       - POST_AUTO
       type: string
-    BlankEnum:
-      enum:
-      - ''
     Cache:
       type: object
       description: Generic cache stats for an object
@@ -14091,7 +13901,7 @@ components:
         is currently active
       properties:
         type:
-          $ref: '#/components/schemas/Type4f1Enum'
+          $ref: '#/components/schemas/ChallengeChoices'
         component:
           type: string
         title:
@@ -14106,6 +13916,12 @@ components:
               $ref: '#/components/schemas/ErrorDetail'
       required:
       - type
+    ChallengeChoices:
+      enum:
+      - native
+      - shell
+      - redirect
+      type: string
     ClientTypeEnum:
       enum:
       - confidential
@@ -14655,21 +14471,19 @@ components:
           type: integer
           readOnly: true
         action:
+          allOf:
+          - $ref: '#/components/schemas/ActionEnum'
           description: Match created events with this action type. When left empty,
             all action types will be matched.
-          oneOf:
-          - $ref: '#/components/schemas/ActionEnum'
-          - $ref: '#/components/schemas/BlankEnum'
         client_ip:
           type: string
           description: Matches Event's Client IP (strict matching, for network matching
             use an Expression Policy)
         app:
+          allOf:
+          - $ref: '#/components/schemas/AppEnum'
           description: Match events created by selected application. When left empty,
             all applications are matched.
-          oneOf:
-          - $ref: '#/components/schemas/AppEnum'
-          - $ref: '#/components/schemas/BlankEnum'
       required:
       - bound_to
       - component
@@ -14688,21 +14502,19 @@ components:
           description: When this option is enabled, all executions of this policy
             will be logged. By default, only execution errors are logged.
         action:
+          allOf:
+          - $ref: '#/components/schemas/ActionEnum'
           description: Match created events with this action type. When left empty,
             all action types will be matched.
-          oneOf:
-          - $ref: '#/components/schemas/ActionEnum'
-          - $ref: '#/components/schemas/BlankEnum'
         client_ip:
           type: string
           description: Matches Event's Client IP (strict matching, for network matching
             use an Expression Policy)
         app:
+          allOf:
+          - $ref: '#/components/schemas/AppEnum'
           description: Match events created by selected application. When left empty,
             all applications are matched.
-          oneOf:
-          - $ref: '#/components/schemas/AppEnum'
-          - $ref: '#/components/schemas/BlankEnum'
     EventRequest:
       type: object
       description: Event Serializer
@@ -14866,7 +14678,7 @@ components:
             format: uuid
           readOnly: true
         cache_count:
-          type: string
+          type: integer
           readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineModeEnum'
@@ -15813,31 +15625,6 @@ components:
       - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
       - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
       type: string
-    Nested:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        token:
-          type: string
-          maxLength: 16
-        device:
-          allOf:
-          - $ref: '#/components/schemas/Nested'
-          readOnly: true
-      required:
-      - device
-      - id
-      - token
-    NestedRequest:
-      type: object
-      properties:
-        token:
-          type: string
-          maxLength: 16
-      required:
-      - token
     NotConfiguredActionEnum:
       enum:
       - skip
@@ -18417,21 +18204,19 @@ components:
           description: When this option is enabled, all executions of this policy
             will be logged. By default, only execution errors are logged.
         action:
+          allOf:
+          - $ref: '#/components/schemas/ActionEnum'
           description: Match created events with this action type. When left empty,
             all action types will be matched.
-          oneOf:
-          - $ref: '#/components/schemas/ActionEnum'
-          - $ref: '#/components/schemas/BlankEnum'
         client_ip:
           type: string
           description: Matches Event's Client IP (strict matching, for network matching
             use an Expression Policy)
         app:
+          allOf:
+          - $ref: '#/components/schemas/AppEnum'
           description: Match events created by selected application. When left empty,
             all applications are matched.
-          oneOf:
-          - $ref: '#/components/schemas/AppEnum'
-          - $ref: '#/components/schemas/BlankEnum'
     PatchedExpressionPolicyRequest:
       type: object
       description: Group Membership Policy Serializer
@@ -19409,6 +19194,10 @@ components:
           type: string
           description: The human-readable name of this device.
           maxLength: 64
+        token_set:
+          type: array
+          items:
+            type: integer
     PatchedTOTPDeviceRequest:
       type: object
       description: Serializer for totp authenticator devices
@@ -20295,7 +20084,7 @@ components:
       description: Challenge type to redirect the client
       properties:
         type:
-          $ref: '#/components/schemas/Type4f1Enum'
+          $ref: '#/components/schemas/ChallengeChoices'
         component:
           type: string
         title:
@@ -21122,8 +20911,7 @@ components:
         token_set:
           type: array
           items:
-            $ref: '#/components/schemas/Nested'
-          readOnly: true
+            type: integer
         pk:
           type: integer
           readOnly: true
@@ -21140,8 +20928,13 @@ components:
           type: string
           description: The human-readable name of this device.
           maxLength: 64
+        token_set:
+          type: array
+          items:
+            type: integer
       required:
       - name
+      - token_set
     StatusEnum:
       enum:
       - SUCCESSFUL
@@ -21297,12 +21090,6 @@ components:
           readOnly: true
       required:
       - key
-    Type4f1Enum:
-      enum:
-      - native
-      - shell
-      - redirect
-      type: string
     TypeCreate:
       type: object
       description: Types of an object that can be created

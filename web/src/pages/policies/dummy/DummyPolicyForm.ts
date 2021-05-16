@@ -13,7 +13,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class DummyPolicyForm extends ModelForm<DummyPolicy, string> {
 
     loadInstance(pk: string): Promise<DummyPolicy> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesDummyRead({
+        return new PoliciesApi(DEFAULT_CONFIG).policiesDummyRetrieve({
             policyUuid: pk,
         });
     }

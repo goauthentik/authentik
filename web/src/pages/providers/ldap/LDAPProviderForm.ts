@@ -14,7 +14,7 @@ import { first } from "../../../utils";
 export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
 
     loadInstance(pk: number): Promise<LDAPProvider> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersLdapRead({
+        return new ProvidersApi(DEFAULT_CONFIG).providersLdapRetrieve({
             id: pk,
         });
     }

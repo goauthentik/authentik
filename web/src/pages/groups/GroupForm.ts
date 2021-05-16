@@ -18,7 +18,7 @@ import { ModelForm } from "../../elements/forms/ModelForm";
 export class GroupForm extends ModelForm<Group, string> {
 
     loadInstance(pk: string): Promise<Group> {
-        return new CoreApi(DEFAULT_CONFIG).coreGroupsRead({
+        return new CoreApi(DEFAULT_CONFIG).coreGroupsRetrieve({
             groupUuid: pk
         });
     }

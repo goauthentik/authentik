@@ -18,7 +18,7 @@ import { ModelForm } from "../../elements/forms/ModelForm";
 export class ApplicationForm extends ModelForm<Application, string> {
 
     loadInstance(pk: string): Promise<Application> {
-        return new CoreApi(DEFAULT_CONFIG).coreApplicationsRead({
+        return new CoreApi(DEFAULT_CONFIG).coreApplicationsRetrieve({
             slug: pk
         });
     }

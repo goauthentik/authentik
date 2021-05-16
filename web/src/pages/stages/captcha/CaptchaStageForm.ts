@@ -12,7 +12,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class CaptchaStageForm extends ModelForm<CaptchaStage, string> {
 
     loadInstance(pk: string): Promise<CaptchaStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesCaptchaRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesCaptchaRetrieve({
             stageUuid: pk,
         });
     }

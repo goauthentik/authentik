@@ -12,7 +12,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class UserLoginStageForm extends ModelForm<UserLoginStage, string> {
 
     loadInstance(pk: string): Promise<UserLoginStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesUserLoginRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesUserLoginRetrieve({
             stageUuid: pk,
         });
     }

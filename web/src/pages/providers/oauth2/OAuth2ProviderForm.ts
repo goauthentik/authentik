@@ -14,7 +14,7 @@ import { first, randomString } from "../../../utils";
 export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
 
     loadInstance(pk: number): Promise<OAuth2Provider> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersOauth2Read({
+        return new ProvidersApi(DEFAULT_CONFIG).providersOauth2Retrieve({
             id: pk,
         }).then(provider => {
             this.showClientSecret = provider.clientType === OAuth2ProviderClientTypeEnum.Confidential;

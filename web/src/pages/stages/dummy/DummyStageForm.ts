@@ -11,7 +11,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class DummyStageForm extends ModelForm<DummyStage, string> {
 
     loadInstance(pk: string): Promise<DummyStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesDummyRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesDummyRetrieve({
             stageUuid: pk,
         });
     }

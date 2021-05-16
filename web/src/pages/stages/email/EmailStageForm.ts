@@ -14,7 +14,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class EmailStageForm extends ModelForm<EmailStage, string> {
 
     loadInstance(pk: string): Promise<EmailStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesEmailRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesEmailRetrieve({
             stageUuid: pk,
         }).then(stage => {
             this.showConnectionSettings = !stage.useGlobalSettings;

@@ -15,7 +15,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
 
     loadInstance(pk: string): Promise<OAuthSource> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesOauthRead({
+        return new SourcesApi(DEFAULT_CONFIG).sourcesOauthRetrieve({
             slug: pk,
         }).then(source => {
             this.showUrlOptions = first(source.type?.urlsCustomizable, false);

@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
-import { SourcesApi, TaskStatusEnum } from "authentik-api";
+import { SourcesApi, StatusEnum } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import "../../../elements/forms/ConfirmationForm";
 import { AKChart } from "../../../elements/charts/Chart";
@@ -38,10 +38,10 @@ export class LDAPSyncStatusChart extends AKChart<LDAPSyncStats> {
         let unsynced = 0;
         await Promise.all(sources.results.map(async (element) => {
             try {
-                const health = await api.sourcesLdapSyncStatus({
+                const health = await api.sourcesLdapSyncStatusRetrieve({
                     slug: element.slug,
                 });
-                if (health.status !== TaskStatusEnum.Successful) {
+                if (health.status !== StatusEnum.Successful) {
                     failed += 1;
                 }
                 const now = new Date().getTime();

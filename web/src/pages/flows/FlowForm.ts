@@ -11,7 +11,7 @@ import { ModelForm } from "../../elements/forms/ModelForm";
 export class FlowForm extends ModelForm<Flow, string> {
 
     loadInstance(pk: string): Promise<Flow> {
-        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesRead({
+        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({
             slug: pk,
         });
     }

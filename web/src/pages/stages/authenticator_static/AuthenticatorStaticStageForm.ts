@@ -14,7 +14,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class AuthenticatorStaticStageForm extends ModelForm<AuthenticatorStaticStage, string> {
 
     loadInstance(pk: string): Promise<AuthenticatorStaticStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticRetrieve({
             stageUuid: pk,
         });
     }

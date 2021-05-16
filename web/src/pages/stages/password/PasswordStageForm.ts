@@ -14,7 +14,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class PasswordStageForm extends ModelForm<PasswordStage, string> {
 
     loadInstance(pk: string): Promise<PasswordStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesPasswordRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesPasswordRetrieve({
             stageUuid: pk,
         });
     }

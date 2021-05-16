@@ -12,7 +12,7 @@ import "../../elements/CodeMirror";
 export class PropertyMappingScopeForm extends ModelForm<ScopeMapping, string> {
 
     loadInstance(pk: string): Promise<ScopeMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsScopeRead({
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsScopeRetrieve({
             pmUuid: pk,
         });
     }

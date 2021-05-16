@@ -17,7 +17,7 @@ export class SourceViewPage extends LitElement {
 
     @property({ type: String })
     set sourceSlug(slug: string) {
-        new SourcesApi(DEFAULT_CONFIG).sourcesAllRead({
+        new SourcesApi(DEFAULT_CONFIG).sourcesAllRetrieve({
             slug: slug
         }).then((source) => {
             this.source = source;

@@ -14,7 +14,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
 
     loadInstance(pk: string): Promise<LDAPSource> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesLdapRead({
+        return new SourcesApi(DEFAULT_CONFIG).sourcesLdapRetrieve({
             slug: pk,
         });
     }

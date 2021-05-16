@@ -14,7 +14,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class IdentificationStageForm extends ModelForm<IdentificationStage, string> {
 
     loadInstance(pk: string): Promise<IdentificationStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesIdentificationRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesIdentificationRetrieve({
             stageUuid: pk,
         });
     }

@@ -32,7 +32,7 @@ export class OAuth2ProviderViewPage extends LitElement {
     @property({type: Number})
     set providerID(value: number) {
         const api = new ProvidersApi(DEFAULT_CONFIG);
-        api.providersOauth2Read({
+        api.providersOauth2Retrieve({
             id: value
         }).then((prov) => {
             this.provider = prov;

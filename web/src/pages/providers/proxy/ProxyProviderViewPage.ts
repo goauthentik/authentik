@@ -31,7 +31,7 @@ export class ProxyProviderViewPage extends LitElement {
 
     @property({type: Number})
     set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG).providersProxyRead({
+        new ProvidersApi(DEFAULT_CONFIG).providersProxyRetrieve({
             id: value,
         }).then((prov) => (this.provider = prov));
     }

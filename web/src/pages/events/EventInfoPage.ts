@@ -16,7 +16,7 @@ export class EventInfoPage extends LitElement {
 
     @property()
     set eventID(value: string) {
-        new EventsApi(DEFAULT_CONFIG).eventsEventsRead({
+        new EventsApi(DEFAULT_CONFIG).eventsEventsRetrieve({
             eventUuid: value
         }).then((ev) => {
             this.event = ev as EventWithContext;

@@ -38,7 +38,7 @@ export class UserViewPage extends LitElement {
 
     @property({ type: Number })
     set userId(id: number) {
-        new CoreApi(DEFAULT_CONFIG).coreUsersRead({
+        new CoreApi(DEFAULT_CONFIG).coreUsersRetrieve({
             id: id,
         }).then((user) => {
             this.user = user;

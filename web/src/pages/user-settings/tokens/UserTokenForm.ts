@@ -11,7 +11,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class UserTokenForm extends ModelForm<Token, string> {
 
     loadInstance(pk: string): Promise<Token> {
-        return new CoreApi(DEFAULT_CONFIG).coreTokensRead({
+        return new CoreApi(DEFAULT_CONFIG).coreTokensRetrieve({
             identifier: pk
         });
     }

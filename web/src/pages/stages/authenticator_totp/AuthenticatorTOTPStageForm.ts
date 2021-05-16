@@ -13,7 +13,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage, string> {
 
     loadInstance(pk: string): Promise<AuthenticatorTOTPStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorTotpRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorTotpRetrieve({
             stageUuid: pk,
         });
     }

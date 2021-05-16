@@ -11,7 +11,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class UserLogoutStageForm extends ModelForm<UserLogoutStage, string> {
 
     loadInstance(pk: string): Promise<UserLogoutStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesUserLogoutRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesUserLogoutRetrieve({
             stageUuid: pk,
         });
     }

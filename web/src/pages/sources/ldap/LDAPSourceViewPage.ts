@@ -30,7 +30,7 @@ export class LDAPSourceViewPage extends LitElement {
 
     @property({ type: String })
     set sourceSlug(slug: string) {
-        new SourcesApi(DEFAULT_CONFIG).sourcesLdapRead({
+        new SourcesApi(DEFAULT_CONFIG).sourcesLdapRetrieve({
             slug: slug
         }).then((source) => {
             this.source = source;

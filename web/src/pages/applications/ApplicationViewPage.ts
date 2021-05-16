@@ -26,7 +26,7 @@ export class ApplicationViewPage extends LitElement {
 
     @property()
     set applicationSlug(value: string) {
-        new CoreApi(DEFAULT_CONFIG).coreApplicationsRead({
+        new CoreApi(DEFAULT_CONFIG).coreApplicationsRetrieve({
             slug: value
         }).then((app) => {
             this.application = app;

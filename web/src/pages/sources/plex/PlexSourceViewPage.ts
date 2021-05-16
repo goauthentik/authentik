@@ -29,7 +29,7 @@ export class PlexSourceViewPage extends LitElement {
 
     @property({ type: String })
     set sourceSlug(value: string) {
-        new SourcesApi(DEFAULT_CONFIG).sourcesPlexRead({
+        new SourcesApi(DEFAULT_CONFIG).sourcesPlexRetrieve({
             slug: value
         }).then((source) => {
             this.source = source;

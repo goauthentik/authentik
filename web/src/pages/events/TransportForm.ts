@@ -12,7 +12,7 @@ import { ModelForm } from "../../elements/forms/ModelForm";
 export class TransportForm extends ModelForm<NotificationTransport, string> {
 
     loadInstance(pk: string): Promise<NotificationTransport> {
-        return new EventsApi(DEFAULT_CONFIG).eventsTransportsRead({
+        return new EventsApi(DEFAULT_CONFIG).eventsTransportsRetrieve({
             uuid: pk,
         });
     }

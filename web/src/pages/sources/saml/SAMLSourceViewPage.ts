@@ -32,7 +32,7 @@ export class SAMLSourceViewPage extends LitElement {
 
     @property({ type: String })
     set sourceSlug(slug: string) {
-        new SourcesApi(DEFAULT_CONFIG).sourcesSamlRead({
+        new SourcesApi(DEFAULT_CONFIG).sourcesSamlRetrieve({
             slug: slug
         }).then((source) => {
             this.source = source;

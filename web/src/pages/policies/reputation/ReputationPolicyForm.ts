@@ -13,7 +13,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class ReputationPolicyForm extends ModelForm<ReputationPolicy, string> {
 
     loadInstance(pk: string): Promise<ReputationPolicy> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesReputationRead({
+        return new PoliciesApi(DEFAULT_CONFIG).policiesReputationRetrieve({
             policyUuid: pk,
         });
     }

@@ -13,7 +13,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValidateStage, string> {
 
     loadInstance(pk: string): Promise<AuthenticatorValidateStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateRetrieve({
             stageUuid: pk,
         }).then(stage => {
             this.showConfigureFlow = stage.notConfiguredAction === AuthenticatorValidateStageNotConfiguredActionEnum.Configure;

@@ -19,7 +19,7 @@ enum target {
 export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
 
     loadInstance(pk: string): Promise<PolicyBinding> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsRead({
+        return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsRetrieve({
             policyBindingUuid: pk
         }).then(binding => {
             if (binding?.policyObj) {

@@ -13,7 +13,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class InvitationForm extends ModelForm<Invitation, string> {
 
     loadInstance(pk: string): Promise<Invitation> {
-        return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsRetrieve({
             inviteUuid: pk,
         });
     }

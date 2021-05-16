@@ -13,7 +13,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class HaveIBeenPwnedPolicyForm extends ModelForm<HaveIBeenPwendPolicy, string> {
 
     loadInstance(pk: string): Promise<HaveIBeenPwendPolicy> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesHaveibeenpwnedRead({
+        return new PoliciesApi(DEFAULT_CONFIG).policiesHaveibeenpwnedRetrieve({
             policyUuid: pk,
         });
     }

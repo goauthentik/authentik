@@ -14,7 +14,7 @@ import { ModelForm } from "../../elements/forms/ModelForm";
 export class ServiceConnectionKubernetesForm extends ModelForm<KubernetesServiceConnection, string> {
 
     loadInstance(pk: string): Promise<KubernetesServiceConnection> {
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesRead({
+        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesRetrieve({
             uuid: pk,
         });
     }

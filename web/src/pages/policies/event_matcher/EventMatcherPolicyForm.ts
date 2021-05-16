@@ -14,7 +14,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string> {
 
     loadInstance(pk: string): Promise<EventMatcherPolicy> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherRead({
+        return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherRetrieve({
             policyUuid: pk,
         });
     }

@@ -12,7 +12,7 @@ import { ModelForm } from "../../elements/forms/ModelForm";
 export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string> {
 
     loadInstance(pk: string): Promise<CertificateKeyPair> {
-        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsRead({
+        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsRetrieve({
             kpUuid: pk,
         });
     }
