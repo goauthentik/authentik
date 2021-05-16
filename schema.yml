@@ -1231,7 +1231,7 @@ paths:
         '204':
           description: Access granted
         '403':
-          $ref: '#/components/schemas/GenericError'
+          description: Access denied
         '400':
           $ref: '#/components/schemas/ValidationError'
   /api/v2beta/core/applications/{slug}/metrics/:
@@ -1289,7 +1289,7 @@ paths:
         '200':
           description: Success
         '400':
-          $ref: '#/components/schemas/ValidationError'
+          description: Bad request
         '403':
           $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/groups/:
@@ -2458,7 +2458,7 @@ paths:
                 $ref: '#/components/schemas/CertificateKeyPair'
           description: ''
         '400':
-          $ref: '#/components/schemas/ValidationError'
+          description: Bad request
         '403':
           $ref: '#/components/schemas/GenericError'
   /api/v2beta/events/events/:
@@ -3912,7 +3912,7 @@ paths:
                 $ref: '#/components/schemas/Link'
           description: ''
         '400':
-          $ref: '#/components/schemas/ValidationError'
+          description: Flow not applicable
         '403':
           $ref: '#/components/schemas/GenericError'
   /api/v2beta/flows/instances/{slug}/export/:
@@ -3969,7 +3969,7 @@ paths:
         '200':
           description: Success
         '400':
-          $ref: '#/components/schemas/ValidationError'
+          description: Bad request
         '403':
           $ref: '#/components/schemas/GenericError'
   /api/v2beta/flows/instances/cache_clear/:
@@ -3985,7 +3985,7 @@ paths:
         '204':
           description: Successfully cleared cache
         '400':
-          $ref: '#/components/schemas/ValidationError'
+          description: Bad request
         '403':
           $ref: '#/components/schemas/GenericError'
   /api/v2beta/flows/instances/cache_info/:
@@ -4028,7 +4028,7 @@ paths:
         '204':
           description: Successfully imported flow
         '400':
-          $ref: '#/components/schemas/ValidationError'
+          description: Bad request
         '403':
           $ref: '#/components/schemas/GenericError'
   /api/v2beta/oauth2/authorization_codes/:
@@ -5352,7 +5352,7 @@ paths:
                 $ref: '#/components/schemas/PolicyTestResult'
           description: ''
         '400':
-          $ref: '#/components/schemas/ValidationError'
+          description: Invalid parameters
         '403':
           $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/all/cache_clear/:
@@ -5368,7 +5368,7 @@ paths:
         '204':
           description: Successfully cleared cache
         '400':
-          $ref: '#/components/schemas/ValidationError'
+          description: Bad request
         '403':
           $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/all/cache_info/:
@@ -7600,7 +7600,7 @@ paths:
                 $ref: '#/components/schemas/PropertyMappingTestResult'
           description: ''
         '400':
-          $ref: '#/components/schemas/ValidationError'
+          description: Invalid parameters
         '403':
           $ref: '#/components/schemas/GenericError'
   /api/v2beta/propertymappings/all/types/:
@@ -9239,7 +9239,7 @@ paths:
         '204':
           description: Successfully imported provider
         '400':
-          $ref: '#/components/schemas/ValidationError'
+          description: Bad request
         '403':
           $ref: '#/components/schemas/GenericError'
   /api/v2beta/root/config/:
@@ -10440,9 +10440,9 @@ paths:
                 $ref: '#/components/schemas/RedirectChallenge'
           description: ''
         '400':
-          $ref: '#/components/schemas/ValidationError'
+          description: Token not found
         '403':
-          $ref: '#/components/schemas/GenericError'
+          description: Access denied
   /api/v2beta/sources/saml/:
     get:
       operationId: sources_saml_list

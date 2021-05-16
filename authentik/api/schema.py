@@ -60,8 +60,8 @@ def postprocess_schema_responses(result, generator, **kwargs):  # noqa: W0613
 
     for path in result["paths"].values():
         for method in path.values():
-            method["responses"]["400"] = validation_error.ref
-            method["responses"]["403"] = generic_error.ref
+            method["responses"].setdefault("400", validation_error.ref)
+            method["responses"].setdefault("403", generic_error.ref)
 
     result["components"] = generator.registry.build(
         spectacular_settings.APPEND_COMPONENTS
