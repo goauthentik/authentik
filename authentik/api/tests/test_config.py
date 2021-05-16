@@ -11,6 +11,6 @@ class TestConfig(APITestCase):
     def test_config(self):
         """Test YAML generation"""
         response = self.client.get(
-            reverse("authentik_api:configs-list"),
+            reverse("authentik_api:configs"),
         )
         self.assertTrue(loads(response.content.decode()))
