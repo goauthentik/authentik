@@ -19853,10 +19853,6 @@ components:
           type: string
           description: The human-readable name of this device.
           maxLength: 64
-        token_set:
-          type: array
-          items:
-            type: integer
     PatchedTOTPDeviceRequest:
       type: object
       description: Serializer for totp authenticator devices
@@ -21570,7 +21566,8 @@ components:
         token_set:
           type: array
           items:
-            type: integer
+            $ref: '#/components/schemas/StaticDeviceToken'
+          readOnly: true
         pk:
           type: integer
           readOnly: true
@@ -21587,13 +21584,26 @@ components:
           type: string
           description: The human-readable name of this device.
           maxLength: 64
-        token_set:
-          type: array
-          items:
-            type: integer
       required:
       - name
-      - token_set
+    StaticDeviceToken:
+      type: object
+      description: Serializer for static device's tokens
+      properties:
+        token:
+          type: string
+          maxLength: 16
+      required:
+      - token
+    StaticDeviceTokenRequest:
+      type: object
+      description: Serializer for static device's tokens
+      properties:
+        token:
+          type: string
+          maxLength: 16
+      required:
+      - token
     StatusEnum:
       enum:
       - SUCCESSFUL
