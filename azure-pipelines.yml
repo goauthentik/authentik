@@ -44,7 +44,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                python -m scripts.generate_ci_config
+                pipenv run python -m scripts.generate_ci_config
                 pipenv run pylint authentik tests lifecycle
       - job: black
         pool:
@@ -143,7 +143,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                python -m scripts.generate_ci_config
+                pipenv run python -m scripts.generate_ci_config
                 pipenv run ./manage.py migrate
       - job: migrations_from_previous_release
         pool:
@@ -176,7 +176,7 @@ stages:
             displayName: Migrate to last tagged release
             inputs:
               script: |
-                python -m scripts.generate_ci_config
+                pipenv run python -m scripts.generate_ci_config
                 pipenv run python -m lifecycle.migrate
           - task: CmdLine@2
             displayName: Install current branch
@@ -189,6 +189,7 @@ stages:
             displayName: Migrate to current branch
             inputs:
               script: |
+                pipenv run python -m scripts.generate_ci_config
                 pipenv run python -m lifecycle.migrate
       - job: coverage_unittest
         pool:
@@ -214,7 +215,7 @@ stages:
             displayName: Run full test suite
             inputs:
               script: |
-                python -m scripts.generate_ci_config
+                pipenv run python -m scripts.generate_ci_config
                 pipenv run make test
           - task: CmdLine@2
             inputs:
@@ -258,7 +259,7 @@ stages:
             displayName: Run full test suite
             inputs:
               script: |
-                python -m scripts.generate_ci_config
+                pipenv run python -m scripts.generate_ci_config
                 pipenv run make test-integration
           - task: CmdLine@2
             inputs:
@@ -313,7 +314,7 @@ stages:
             displayName: Run full test suite
             inputs:
               script: |
-                python -m scripts.generate_ci_config
+                pipenv run python -m scripts.generate_ci_config
                 pipenv run make test-e2e
           - task: CmdLine@2
             condition: always()
