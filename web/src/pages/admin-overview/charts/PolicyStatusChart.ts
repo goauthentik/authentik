@@ -32,13 +32,13 @@ export class PolicyStatusChart extends AKChart<PolicyMetrics> {
 
     async apiRequest(): Promise<PolicyMetrics> {
         const api = new PoliciesApi(DEFAULT_CONFIG);
-        const cached = (await api.policiesAllCacheInfo()).count || 0;
+        const cached = (await api.policiesAllCacheInfoRetrieve()).count || 0;
         const count = (await api.policiesAllList({
             pageSize: 1
         })).pagination.count;
         const unbound = (await api.policiesAllList({
-            bindingsIsnull: "true",
-            promptstageIsnull: "true",
+            bindingsIsnull: true,
+            promptstageIsnull: true,
         })).pagination.count;
         this.centerText = count.toString();
         return {

@@ -14,7 +14,7 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import { MessageLevel } from "../messages/Message";
 import { IronFormElement } from "@polymer/iron-form/iron-form";
 import { camelToSnake, convertToSlug } from "../../utils";
-import { ValidationError } from "authentik-api/src";
+import { ValidationError } from "authentik-api";
 import { EVENT_REFRESH } from "../../constants";
 
 export class APIError extends Error {
