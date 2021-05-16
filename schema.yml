@@ -137,33 +137,8 @@ paths:
           description: ''
   /api/v2beta/admin/workers/:
     get:
-      operationId: admin_workers_list
+      operationId: admin_workers_retrieve
       description: Get currently connected worker count.
-      parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
       tags:
       - admin
       security:
@@ -171,7 +146,11 @@ paths:
       - cookieAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workers'
+          description: ''
   /api/v2beta/authenticators/admin/static/:
     get:
       operationId: authenticators_admin_static_list
@@ -22595,6 +22574,13 @@ components:
           maxLength: 200
       required:
       - name
+    Workers:
+      type: object
+      properties:
+        count:
+          type: integer
+      required:
+      - count
   securitySchemes:
     authentik:
       type: apiKey
