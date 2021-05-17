@@ -80,7 +80,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                 .obj=${item}
                 objectLabel=${t`Certificate-Key Pair`}
                 .delete=${() => {
-                    return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsDelete({
+                    return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsDestroy({
                         kpUuid: item.pk || ""
                     });
                 }}>

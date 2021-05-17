@@ -29,7 +29,7 @@ export class OAuthSourceViewPage extends LitElement {
 
     @property({ type: String })
     set sourceSlug(value: string) {
-        new SourcesApi(DEFAULT_CONFIG).sourcesOauthRead({
+        new SourcesApi(DEFAULT_CONFIG).sourcesOauthRetrieve({
             slug: value
         }).then((source) => {
             this.source = source;

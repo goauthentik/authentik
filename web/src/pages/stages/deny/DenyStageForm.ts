@@ -11,7 +11,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class DenyStageForm extends ModelForm<DenyStage, string> {
 
     loadInstance(pk: string): Promise<DenyStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesDenyRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesDenyRetrieve({
             stageUuid: pk,
         });
     }
@@ -28,11 +28,11 @@ export class DenyStageForm extends ModelForm<DenyStage, string> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesDenyUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                denyStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesDenyCreate({
-                data: data
+                denyStageRequest: data
             });
         }
     };

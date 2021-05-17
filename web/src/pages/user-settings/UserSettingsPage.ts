@@ -21,8 +21,8 @@ import "../../elements/Tabs";
 import "../../elements/PageHeader";
 import "./tokens/UserTokenList";
 import "./UserDetailsPage";
-import "./settings/UserSettingsAuthenticatorTOTP";
 import "./settings/UserSettingsAuthenticatorStatic";
+import "./settings/UserSettingsAuthenticatorTOTP";
 import "./settings/UserSettingsAuthenticatorWebAuthn";
 import "./settings/UserSettingsPassword";
 import "./settings/SourceSettingsOAuth";
@@ -78,14 +78,14 @@ export class UserSettingsPage extends LitElement {
                     <section slot="page-tokens" data-tab-title="${t`Tokens`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                         <ak-user-token-list></ak-user-token-list>
                     </section>
-                    ${until(new StagesApi(DEFAULT_CONFIG).stagesAllUserSettings().then((stages) => {
+                    ${until(new StagesApi(DEFAULT_CONFIG).stagesAllUserSettingsList().then((stages) => {
                         return stages.map((stage) => {
                             return html`<section slot="page-${stage.objectUid}" data-tab-title="${ifDefined(stage.title)}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                                 ${this.renderStageSettings(stage)}
                             </section>`;
                         });
                     }))}
-                    ${until(new SourcesApi(DEFAULT_CONFIG).sourcesAllUserSettings().then((source) => {
+                    ${until(new SourcesApi(DEFAULT_CONFIG).sourcesAllUserSettingsList().then((source) => {
                         return source.map((stage) => {
                             return html`<section slot="page-${stage.objectUid}" data-tab-title="${ifDefined(stage.title)}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                                 ${this.renderSourceSettings(stage)}

@@ -1,4 +1,4 @@
-import { CryptoApi, FlowDesignationEnum, FlowsApi, OAuth2Provider, OAuth2ProviderClientTypeEnum, OAuth2ProviderIssuerModeEnum, OAuth2ProviderJwtAlgEnum, OAuth2ProviderSubModeEnum, PropertymappingsApi, ProvidersApi } from "authentik-api";
+import { CryptoApi, FlowsApi, OAuth2Provider, ClientTypeEnum, IssuerModeEnum, JwtAlgEnum, SubModeEnum, PropertymappingsApi, ProvidersApi, FlowsInstancesListDesignationEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -14,10 +14,10 @@ import { first, randomString } from "../../../utils";
 export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
 
     loadInstance(pk: number): Promise<OAuth2Provider> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersOauth2Read({
+        return new ProvidersApi(DEFAULT_CONFIG).providersOauth2Retrieve({
             id: pk,
         }).then(provider => {
-            this.showClientSecret = provider.clientType === OAuth2ProviderClientTypeEnum.Confidential;
+            this.showClientSecret = provider.clientType === ClientTypeEnum.Confidential;
             return provider;
         });
     }
@@ -37,11 +37,11 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersOauth2Update({
                 id: this.instance.pk || 0,
-                data: data
+                oAuth2ProviderRequest: data
             });
         } else {
             return new ProvidersApi(DEFAULT_CONFIG).providersOauth2Create({
-                data: data
+                oAuth2ProviderRequest: data
             });
         }
     };
@@ -61,7 +61,7 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                 <select class="pf-c-form-control">
                     ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                         ordering: "pk",
-                        designation: FlowDesignationEnum.Authorization,
+                        designation: FlowsInstancesListDesignationEnum.Authorization,
                     }).then(flows => {
                         return flows.results.map(flow => {
                             return html`<option value=${ifDefined(flow.pk)} ?selected=${this.instance?.authorizationFlow === flow.pk}>${flow.name} (${flow.slug})</option>`;
@@ -82,16 +82,16 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                         name="clientType">
                         <select class="pf-c-form-control" @change=${(ev: Event) => {
                             const target = ev.target as HTMLSelectElement;
-                            if (target.selectedOptions[0].value === OAuth2ProviderClientTypeEnum.Public) {
+                            if (target.selectedOptions[0].value === ClientTypeEnum.Public) {
                                 this.showClientSecret = false;
                             } else {
                                 this.showClientSecret = true;
                             }
                         }}>
-                            <option value=${OAuth2ProviderClientTypeEnum.Confidential} ?selected=${this.instance?.clientType === OAuth2ProviderClientTypeEnum.Confidential}>
+                            <option value=${ClientTypeEnum.Confidential} ?selected=${this.instance?.clientType === ClientTypeEnum.Confidential}>
                                 ${t`Confidential`}
                             </option>
-                            <option value=${OAuth2ProviderClientTypeEnum.Public} ?selected=${this.instance?.clientType === OAuth2ProviderClientTypeEnum.Public}>
+                            <option value=${ClientTypeEnum.Public} ?selected=${this.instance?.clientType === ClientTypeEnum.Public}>
                                 ${t`Public`}
                             </option>
                         </select>
@@ -147,10 +147,10 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                         ?required=${true}
                         name="jwtAlg">
                         <select class="pf-c-form-control">
-                            <option value=${OAuth2ProviderJwtAlgEnum.Rs256} ?selected=${this.instance?.jwtAlg === OAuth2ProviderJwtAlgEnum.Rs256}>
+                            <option value=${JwtAlgEnum.Rs256} ?selected=${this.instance?.jwtAlg === JwtAlgEnum.Rs256}>
                                 ${t`RS256 (Asymmetric Encryption)`}
                             </option>
-                            <option value=${OAuth2ProviderJwtAlgEnum.Hs256} ?selected=${this.instance?.jwtAlg === OAuth2ProviderJwtAlgEnum.Hs256}>
+                            <option value=${JwtAlgEnum.Hs256} ?selected=${this.instance?.jwtAlg === JwtAlgEnum.Hs256}>
                                 ${t`HS256 (Symmetric Encryption)`}
                             </option>
                         </select>
@@ -204,16 +204,16 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                         ?required=${true}
                         name="subMode">
                         <select class="pf-c-form-control">
-                            <option value="${OAuth2ProviderSubModeEnum.HashedUserId}" ?selected=${this.instance?.subMode === OAuth2ProviderSubModeEnum.HashedUserId}>
+                            <option value="${SubModeEnum.HashedUserId}" ?selected=${this.instance?.subMode === SubModeEnum.HashedUserId}>
                                 ${t`Based on the Hashed User ID`}
                             </option>
-                            <option value="${OAuth2ProviderSubModeEnum.UserUsername}" ?selected=${this.instance?.subMode === OAuth2ProviderSubModeEnum.UserUsername}>
+                            <option value="${SubModeEnum.UserUsername}" ?selected=${this.instance?.subMode === SubModeEnum.UserUsername}>
                                 ${t`Based on the username`}
                             </option>
-                            <option value="${OAuth2ProviderSubModeEnum.UserEmail}" ?selected=${this.instance?.subMode === OAuth2ProviderSubModeEnum.UserEmail}>
+                            <option value="${SubModeEnum.UserEmail}" ?selected=${this.instance?.subMode === SubModeEnum.UserEmail}>
                                 ${t`Based on the User's Email. This is recommended over the UPN method.`}
                             </option>
-                            <option value="${OAuth2ProviderSubModeEnum.UserUpn}" ?selected=${this.instance?.subMode === OAuth2ProviderSubModeEnum.UserUpn}>
+                            <option value="${SubModeEnum.UserUpn}" ?selected=${this.instance?.subMode === SubModeEnum.UserUpn}>
                                 ${t`Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains.`}
                             </option>
                         </select>
@@ -235,10 +235,10 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                         ?required=${true}
                         name="issuerMode">
                         <select class="pf-c-form-control">
-                            <option value="${OAuth2ProviderIssuerModeEnum.PerProvider}" ?selected=${this.instance?.issuerMode === OAuth2ProviderIssuerModeEnum.PerProvider}>
+                            <option value="${IssuerModeEnum.PerProvider}" ?selected=${this.instance?.issuerMode === IssuerModeEnum.PerProvider}>
                                 ${t`Each provider has a different issuer, based on the application slug.`}
                             </option>
-                            <option value="${OAuth2ProviderIssuerModeEnum.Global}" ?selected=${this.instance?.issuerMode === OAuth2ProviderIssuerModeEnum.Global}>
+                            <option value="${IssuerModeEnum.Global}" ?selected=${this.instance?.issuerMode === IssuerModeEnum.Global}>
                                 ${t`Same identifier is used for all providers`}
                             </option>
                         </select>

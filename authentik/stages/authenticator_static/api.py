@@ -1,6 +1,6 @@
 """AuthenticatorStaticStage API Views"""
 from django_filters.rest_framework import DjangoFilterBackend
-from django_otp.plugins.otp_static.models import StaticDevice
+from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 from guardian.utils import get_anonymous_user
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAdminUser
@@ -27,14 +27,24 @@ class AuthenticatorStaticStageViewSet(ModelViewSet):
     serializer_class = AuthenticatorStaticStageSerializer
 
 
+class StaticDeviceTokenSerializer(ModelSerializer):
+    """Serializer for static device's tokens"""
+
+    class Meta:
+
+        model = StaticToken
+        fields = ["token"]
+
+
 class StaticDeviceSerializer(ModelSerializer):
     """Serializer for static authenticator devices"""
+
+    token_set = StaticDeviceTokenSerializer(many=True, read_only=True)
 
     class Meta:
 
         model = StaticDevice
         fields = ["name", "token_set", "pk"]
-        depth = 2
 
 
 class StaticDeviceViewSet(ModelViewSet):

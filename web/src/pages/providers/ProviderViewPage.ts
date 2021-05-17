@@ -17,7 +17,7 @@ export class ProviderViewPage extends LitElement {
 
     @property({type: Number})
     set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG).providersAllRead({
+        new ProvidersApi(DEFAULT_CONFIG).providersAllRetrieve({
             id: value,
         }).then((prov) => (this.provider = prov));
     }

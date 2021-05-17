@@ -94,7 +94,7 @@ export class UserListPage extends TablePage<User> {
                             .delete=${() => {
                                 return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
                                     id: item.pk || 0,
-                                    data: {
+                                    patchedUserRequest: {
                                         username: item.username,
                                         name: item.name,
                                         isActive: !item.isActive,
@@ -112,7 +112,7 @@ export class UserListPage extends TablePage<User> {
                             .obj=${item}
                             objectLabel=${t`User`}
                             .delete=${() => {
-                                return new CoreApi(DEFAULT_CONFIG).coreUsersDelete({
+                                return new CoreApi(DEFAULT_CONFIG).coreUsersDestroy({
                                     id: item.pk || 0
                                 });
                             }}>
@@ -125,7 +125,7 @@ export class UserListPage extends TablePage<User> {
             </ak-dropdown>
             <ak-action-button
                 .apiRequest=${() => {
-                    return new CoreApi(DEFAULT_CONFIG).coreUsersRecovery({
+                    return new CoreApi(DEFAULT_CONFIG).coreUsersRecoveryRetrieve({
                         id: item.pk || 0,
                     }).then(rec => {
                         showMessage({

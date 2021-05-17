@@ -5,8 +5,8 @@ from django.core.cache import cache
 from django.db.models import QuerySet
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
-from drf_yasg import openapi
-from drf_yasg.utils import no_body, swagger_auto_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import SerializerMethodField
 from rest_framework.parsers import MultiPartParser
@@ -58,6 +58,9 @@ class ApplicationSerializer(ModelSerializer):
             "meta_publisher",
             "policy_engine_mode",
         ]
+        extra_kwargs = {
+            "meta_icon": {"read_only": True},
+        }
 
 
 class ApplicationViewSet(ModelViewSet):
@@ -92,10 +95,10 @@ class ApplicationViewSet(ModelViewSet):
                 applications.append(application)
         return applications
 
-    @swagger_auto_schema(
+    @extend_schema(
         responses={
-            204: "Access granted",
-            403: "Access denied",
+            204: OpenApiResponse(description="Access granted"),
+            403: OpenApiResponse(description="Access denied"),
         }
     )
     @action(detail=True, methods=["GET"])
@@ -111,12 +114,12 @@ class ApplicationViewSet(ModelViewSet):
             return Response(status=204)
         return Response(status=403)
 
-    @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter(
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
                 name="superuser_full_list",
-                in_=openapi.IN_QUERY,
-                type=openapi.TYPE_BOOLEAN,
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.BOOL,
             )
         ]
     )
@@ -151,17 +154,20 @@ class ApplicationViewSet(ModelViewSet):
         return self.get_paginated_response(serializer.data)
 
     @permission_required("authentik_core.change_application")
-    @swagger_auto_schema(
-        request_body=no_body,
-        manual_parameters=[
-            openapi.Parameter(
+    @extend_schema(
+        request=OpenApiTypes.NONE,
+        parameters=[
+            OpenApiParameter(
                 name="file",
-                in_=openapi.IN_FORM,
-                type=openapi.TYPE_FILE,
+                location=OpenApiParameter.QUERY,  # TODO: In Form
+                type=OpenApiTypes.BINARY,
                 required=True,
             )
         ],
-        responses={200: "Success", 400: "Bad request"},
+        responses={
+            200: OpenApiResponse(description="Success"),
+            400: OpenApiResponse(description="Bad request"),
+        },
     )
     @action(
         detail=True,
@@ -184,7 +190,7 @@ class ApplicationViewSet(ModelViewSet):
     @permission_required(
         "authentik_core.view_application", ["authentik_events.view_event"]
     )
-    @swagger_auto_schema(responses={200: CoordinateSerializer(many=True)})
+    @extend_schema(responses={200: CoordinateSerializer(many=True)})
     @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=unused-argument
     def metrics(self, request: Request, slug: str):

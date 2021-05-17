@@ -11,7 +11,7 @@ import { ModelForm } from "../../elements/forms/ModelForm";
 @customElement("ak-property-mapping-saml-form")
 export class PropertyMappingLDAPForm extends ModelForm<SAMLPropertyMapping, string> {
     loadInstance(pk: string): Promise<SAMLPropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlRead({
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlRetrieve({
             pmUuid: pk,
         });
     }
@@ -28,11 +28,11 @@ export class PropertyMappingLDAPForm extends ModelForm<SAMLPropertyMapping, stri
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlUpdate({
                 pmUuid: this.instance.pk || "",
-                data: data
+                sAMLPropertyMappingRequest: data
             });
         } else {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlCreate({
-                data: data
+                sAMLPropertyMappingRequest: data
             });
         }
     };

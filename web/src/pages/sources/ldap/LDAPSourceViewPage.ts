@@ -21,7 +21,7 @@ import "../../../elements/events/ObjectChangelog";
 import "../../../elements/forms/ModalForm";
 import "./LDAPSourceForm";
 import { until } from "lit-html/directives/until";
-import { LDAPSource, SourcesApi, TaskStatusEnum } from "authentik-api";
+import { LDAPSource, SourcesApi, StatusEnum } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";
 
@@ -30,7 +30,7 @@ export class LDAPSourceViewPage extends LitElement {
 
     @property({ type: String })
     set sourceSlug(slug: string) {
-        new SourcesApi(DEFAULT_CONFIG).sourcesLdapRead({
+        new SourcesApi(DEFAULT_CONFIG).sourcesLdapRetrieve({
             slug: slug
         }).then((source) => {
             this.source = source;
@@ -133,13 +133,13 @@ export class LDAPSourceViewPage extends LitElement {
                                     <p>${t`Sync status`}</p>
                                 </div>
                                 <div class="pf-c-card__body">
-                                    ${until(new SourcesApi(DEFAULT_CONFIG).sourcesLdapSyncStatus({
+                                    ${until(new SourcesApi(DEFAULT_CONFIG).sourcesLdapSyncStatusRetrieve({
                                         slug: this.source.slug
                                     }).then((ls) => {
                                         let header = html``;
-                                        if (ls.status === TaskStatusEnum.Warning) {
+                                        if (ls.status === StatusEnum.Warning) {
                                             header = html`<p>${t`Task finished with warnings`}</p>`;
-                                        } else if (status === TaskStatusEnum.Error) {
+                                        } else if (status === StatusEnum.Error) {
                                             header = html`<p>${t`Task finished with errors`}</p>`;
                                         } else {
                                             header = html`<p>${t`Last sync: ${ls.taskFinishTimestamp.toLocaleString()}`}</p>`;
@@ -161,7 +161,7 @@ export class LDAPSourceViewPage extends LitElement {
                                         .apiRequest=${() => {
                                             return new SourcesApi(DEFAULT_CONFIG).sourcesLdapPartialUpdate({
                                                 slug: this.source?.slug || "",
-                                                data: this.source,
+                                                patchedLDAPSourceRequest: this.source,
                                             });
                                         }}>
                                         ${t`Retry Task`}

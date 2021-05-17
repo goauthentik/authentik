@@ -10,8 +10,8 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-user-consent-list")
 export class UserConsentList extends Table<UserConsent> {
-    @property()
-    userId?: string;
+    @property({ type: Number })
+    userId?: number;
 
     apiEndpoint(page: number): Promise<AKResponse<UserConsent>> {
         return new CoreApi(DEFAULT_CONFIG).coreUserConsentList({
@@ -41,7 +41,7 @@ export class UserConsentList extends Table<UserConsent> {
                 .obj=${item}
                 objectLabel=${t`Consent`}
                 .delete=${() => {
-                    return new CoreApi(DEFAULT_CONFIG).coreUserConsentDelete({
+                    return new CoreApi(DEFAULT_CONFIG).coreUserConsentDestroy({
                         id: item.pk || 0,
                     });
                 }}>

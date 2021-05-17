@@ -10,8 +10,8 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-user-oauth-refresh-list")
 export class UserOAuthRefreshList extends Table<ExpiringBaseGrantModel> {
-    @property()
-    userId?: string;
+    @property({ type: Number })
+    userId?: number;
 
     apiEndpoint(page: number): Promise<AKResponse<ExpiringBaseGrantModel>> {
         return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensList({
@@ -45,7 +45,7 @@ export class UserOAuthRefreshList extends Table<ExpiringBaseGrantModel> {
                 .obj=${item}
                 objectLabel=${t`Refresh Code`}
                 .delete=${() => {
-                    return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensDelete({
+                    return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensDestroy({
                         id: item.pk || 0,
                     });
                 }}>

@@ -3,6 +3,7 @@ from base64 import b64decode
 from binascii import Error
 from typing import Any, Optional, Union
 
+from drf_spectacular.authentication import OpenApiAuthenticationExtension
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.request import Request
@@ -55,3 +56,18 @@ class AuthentikTokenAuthentication(BaseAuthentication):
             return None
 
         return (token.user, None)  # pragma: no cover
+
+
+class TokenSchema(OpenApiAuthenticationExtension):
+    """Auth schema"""
+
+    target_class = AuthentikTokenAuthentication
+    name = "authentik"
+
+    def get_security_definition(self, auto_schema):
+        """Auth schema"""
+        return {
+            "type": "apiKey",
+            "in": "header",
+            "name": "Authorization",
+        }

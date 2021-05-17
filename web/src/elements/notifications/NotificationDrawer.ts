@@ -32,7 +32,7 @@ export class NotificationDrawer extends LitElement {
 
     firstUpdated(): void {
         new EventsApi(DEFAULT_CONFIG).eventsNotificationsList({
-            seen: "false",
+            seen: false,
             ordering: "-created",
         }).then(r => {
             this.notifications = r;
@@ -73,7 +73,7 @@ export class NotificationDrawer extends LitElement {
                 <button class="pf-c-dropdown__toggle pf-m-plain" type="button" @click=${() => {
                     new EventsApi(DEFAULT_CONFIG).eventsNotificationsPartialUpdate({
                         uuid: item.pk || "",
-                        data: {
+                        patchedNotificationRequest: {
                             seen: true,
                         }
                     }).then(() => {

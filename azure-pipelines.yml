@@ -305,8 +305,7 @@ stages:
             displayName: Build static files for e2e
             inputs:
               script: |
-                docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate -i /local/swagger.yaml -g typescript-fetch -o /local/web/api --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
-                sudo chmod 777 -R web/api/
+                make gen-web
                 cd web
                 cd api && npm i && cd ..
                 npm i
@@ -394,36 +393,19 @@ stages:
           - task: CmdLine@2
             inputs:
               script: bash <(curl -s https://codecov.io/bash)
-  - stage: generate
-    jobs:
-      - job: swagger_generate
-        pool:
-          vmImage: 'ubuntu-latest'
-        steps:
-          - task: NodeTool@0
-            inputs:
-              versionSpec: '16.x'
-            displayName: 'Install Node.js'
-          - task: CmdLine@2
-            inputs:
-              script: |
-                docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate -i /local/swagger.yaml -g typescript-fetch -o /local/web/api --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
-          - task: PublishPipelineArtifact@1
-            inputs:
-              targetPath: 'web/api/'
-              artifact: 'ts_swagger_client'
-              publishLocation: 'pipeline'
   - stage: Build
     jobs:
       - job: build_server
         pool:
           vmImage: 'ubuntu-latest'
         steps:
-        - task: DownloadPipelineArtifact@2
+        - task: NodeTool@0
           inputs:
-            buildType: 'current'
-            artifactName: 'ts_swagger_client'
-            path: "web/api/"
+            versionSpec: '16.x'
+          displayName: 'Install Node.js'
+        - task: CmdLine@2
+          inputs:
+            script: make gen-web
         - task: Bash@3
           inputs:
             targetType: 'inline'

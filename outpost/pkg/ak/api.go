@@ -1,21 +1,21 @@
 package ak
 
 import (
+	"context"
+	"fmt"
 	"math/rand"
+	"net/http"
 	"net/url"
 	"os"
 	"time"
 
-	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"github.com/recws-org/recws"
+	"goauthentik.io/outpost/api"
 	"goauthentik.io/outpost/pkg"
-	"goauthentik.io/outpost/pkg/client"
-	"goauthentik.io/outpost/pkg/client/outposts"
 
-	httptransport "github.com/go-openapi/runtime/client"
-	"github.com/go-openapi/strfmt"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -25,8 +25,7 @@ const ConfigErrorReportingEnvironment = "error_reporting_environment"
 
 // APIController main controller which connects to the authentik api via http and ws
 type APIController struct {
-	Client *client.Authentik
-	Auth   runtime.ClientAuthInfoWriter
+	Client *api.APIClient
 	token  string
 
 	Server Outpost
@@ -41,31 +40,32 @@ type APIController struct {
 
 // NewAPIController initialise new API Controller instance from URL and API token
 func NewAPIController(akURL url.URL, token string) *APIController {
-	transport := httptransport.New(akURL.Host, client.DefaultBasePath, []string{akURL.Scheme})
-	transport.Transport = SetUserAgent(GetTLSTransport(), pkg.UserAgent())
-
-	// create the transport
-	auth := httptransport.BearerToken(token)
+	config := api.NewConfiguration()
+	config.Host = akURL.Host
+	config.Scheme = akURL.Scheme
+	config.HTTPClient = &http.Client{
+		Transport: SetUserAgent(GetTLSTransport(), pkg.UserAgent()),
+	}
+	config.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
 
 	// create the API client, with the transport
-	apiClient := client.New(transport, strfmt.Default)
+	apiClient := api.NewAPIClient(config)
 
 	log := log.WithField("logger", "authentik.outpost.ak-api-controller")
 
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
-	outposts, err := apiClient.Outposts.OutpostsInstancesList(outposts.NewOutpostsInstancesListParams(), auth)
+	outposts, _, err := apiClient.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
 
 	if err != nil {
 		log.WithError(err).Error("Failed to fetch configuration")
 		os.Exit(1)
 	}
-	outpost := outposts.Payload.Results[0]
-	doGlobalSetup(outpost.Config.(map[string]interface{}))
+	outpost := outposts.Results[0]
+	doGlobalSetup(outpost.Config)
 
 	ac := &APIController{
 		Client: apiClient,
-		Auth:   auth,
 		token:  token,
 
 		logger: log,
@@ -74,7 +74,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		instanceUUID: uuid.New(),
 	}
 	ac.logger.Debugf("HA Reload offset: %s", ac.reloadOffset)
-	ac.initWS(akURL, outpost.Pk)
+	ac.initWS(akURL, strfmt.UUID(outpost.Pk))
 	return ac
 }
 

@@ -49,7 +49,7 @@ export class UserDetailsPage extends LitElement {
                     .send=${(data: unknown) => {
                         return new CoreApi(DEFAULT_CONFIG).coreUsersUpdate({
                             id: this.user?.pk || 0,
-                            data: data as User
+                            userRequest: data as User
                         });
                     }}>
                     <form class="pf-c-form pf-m-horizontal">

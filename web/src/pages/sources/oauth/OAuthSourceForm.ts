@@ -1,4 +1,4 @@
-import { OAuthSource, SourcesApi, FlowsApi, FlowDesignationEnum, OAuthSourceUserMatchingModeEnum } from "authentik-api";
+import { OAuthSource, SourcesApi, FlowsApi, UserMatchingModeEnum, OAuthSourceRequest, FlowsInstancesListDesignationEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -15,7 +15,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
 
     loadInstance(pk: string): Promise<OAuthSource> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesOauthRead({
+        return new SourcesApi(DEFAULT_CONFIG).sourcesOauthRetrieve({
             slug: pk,
         }).then(source => {
             this.showUrlOptions = first(source.type?.urlsCustomizable, false);
@@ -44,11 +44,11 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
         if (this.instance) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
                 slug: this.instance.slug,
-                data: data
+                patchedOAuthSourceRequest: data
             });
         } else {
             return new SourcesApi(DEFAULT_CONFIG).sourcesOauthCreate({
-                data: data
+                oAuthSourceRequest: data as unknown as OAuthSourceRequest
             });
         }
     };
@@ -139,19 +139,19 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                 ?required=${true}
                 name="userMatchingMode">
                 <select class="pf-c-form-control">
-                    <option value=${OAuthSourceUserMatchingModeEnum.Identifier} ?selected=${this.instance?.userMatchingMode === OAuthSourceUserMatchingModeEnum.Identifier}>
+                    <option value=${UserMatchingModeEnum.Identifier} ?selected=${this.instance?.userMatchingMode === UserMatchingModeEnum.Identifier}>
                         ${t`Link users on unique identifier`}
                     </option>
-                    <option value=${OAuthSourceUserMatchingModeEnum.UsernameLink} ?selected=${this.instance?.userMatchingMode === OAuthSourceUserMatchingModeEnum.UsernameLink}>
+                    <option value=${UserMatchingModeEnum.UsernameLink} ?selected=${this.instance?.userMatchingMode === UserMatchingModeEnum.UsernameLink}>
                         ${t`Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses`}
                     </option>
-                    <option value=${OAuthSourceUserMatchingModeEnum.UsernameDeny} ?selected=${this.instance?.userMatchingMode === OAuthSourceUserMatchingModeEnum.UsernameDeny}>
+                    <option value=${UserMatchingModeEnum.UsernameDeny} ?selected=${this.instance?.userMatchingMode === UserMatchingModeEnum.UsernameDeny}>
                         ${t`Use the user's email address, but deny enrollment when the email address already exists.`}
                     </option>
-                    <option value=${OAuthSourceUserMatchingModeEnum.EmailLink} ?selected=${this.instance?.userMatchingMode === OAuthSourceUserMatchingModeEnum.EmailLink}>
+                    <option value=${UserMatchingModeEnum.EmailLink} ?selected=${this.instance?.userMatchingMode === UserMatchingModeEnum.EmailLink}>
                         ${t`Link to a user with identical username address. Can have security implications when a username is used with another source.`}
                     </option>
-                    <option value=${OAuthSourceUserMatchingModeEnum.EmailDeny} ?selected=${this.instance?.userMatchingMode === OAuthSourceUserMatchingModeEnum.EmailDeny}>
+                    <option value=${UserMatchingModeEnum.EmailDeny} ?selected=${this.instance?.userMatchingMode === UserMatchingModeEnum.EmailDeny}>
                         ${t`Use the user's username, but deny enrollment when the username already exists.`}
                     </option>
                 </select>
@@ -173,7 +173,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         ?required=${true}
                         ?writeOnly=${this.instance !== undefined}
                         name="consumerSecret">
-                        <input type="text" value="${ifDefined(this.instance?.consumerSecret)}" class="pf-c-form-control" required>
+                        <input type="text" value="" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Provider type`}
@@ -196,7 +196,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                             }
                             this.instance.providerType = selected.value;
                         }}>
-                            ${until(new SourcesApi(DEFAULT_CONFIG).sourcesOauthSourceTypes().then(types => {
+                            ${until(new SourcesApi(DEFAULT_CONFIG).sourcesOauthSourceTypesList().then(types => {
                                 return types.map(type => {
                                     let selected = this.instance?.providerType === type.slug;
                                     if (!this.instance?.pk) {
@@ -230,7 +230,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         <select class="pf-c-form-control">
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
-                                designation: FlowDesignationEnum.Authentication,
+                                designation: FlowsInstancesListDesignationEnum.Authentication,
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     let selected = this.instance?.authenticationFlow === flow.pk;
@@ -250,7 +250,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         <select class="pf-c-form-control">
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
-                                designation: FlowDesignationEnum.Enrollment,
+                                designation: FlowsInstancesListDesignationEnum.Enrollment,
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     let selected = this.instance?.enrollmentFlow === flow.pk;

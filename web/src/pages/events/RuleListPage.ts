@@ -74,7 +74,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
                 .obj=${item}
                 objectLabel=${t`Notification rule`}
                 .delete=${() => {
-                    return new EventsApi(DEFAULT_CONFIG).eventsRulesDelete({
+                    return new EventsApi(DEFAULT_CONFIG).eventsRulesDestroy({
                         pbmUuid: item.pk || ""
                     });
                 }}>

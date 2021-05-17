@@ -1,7 +1,7 @@
 """Flow Stage API Views"""
 from typing import Iterable
 
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField
@@ -68,7 +68,7 @@ class StageViewSet(
     def get_queryset(self):
         return Stage.objects.select_subclasses()
 
-    @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
+    @extend_schema(responses={200: TypeCreateSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])
     def types(self, request: Request) -> Response:
         """Get all creatable stage types"""
@@ -86,7 +86,7 @@ class StageViewSet(
         data = sorted(data, key=lambda x: x["name"])
         return Response(TypeCreateSerializer(data, many=True).data)
 
-    @swagger_auto_schema(responses={200: StageUserSettingSerializer(many=True)})
+    @extend_schema(responses={200: StageUserSettingSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])
     def user_settings(self, request: Request) -> Response:
         """Get all stages the user can configure"""

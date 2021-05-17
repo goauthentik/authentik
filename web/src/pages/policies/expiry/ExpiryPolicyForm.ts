@@ -13,7 +13,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class PasswordExpiryPolicyForm extends ModelForm<PasswordExpiryPolicy, string> {
 
     loadInstance(pk: string): Promise<PasswordExpiryPolicy> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordExpiryRead({
+        return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordExpiryRetrieve({
             policyUuid: pk,
         });
     }
@@ -30,11 +30,11 @@ export class PasswordExpiryPolicyForm extends ModelForm<PasswordExpiryPolicy, st
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordExpiryUpdate({
                 policyUuid: this.instance.pk || "",
-                data: data
+                passwordExpiryPolicyRequest: data
             });
         } else {
             return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordExpiryCreate({
-                data: data
+                passwordExpiryPolicyRequest: data
             });
         }
     };

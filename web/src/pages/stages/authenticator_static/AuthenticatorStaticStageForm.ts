@@ -1,4 +1,4 @@
-import { FlowDesignationEnum, FlowsApi, AuthenticatorStaticStage, StagesApi } from "authentik-api";
+import { FlowsApi, AuthenticatorStaticStage, StagesApi, FlowsInstancesListDesignationEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -14,7 +14,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class AuthenticatorStaticStageForm extends ModelForm<AuthenticatorStaticStage, string> {
 
     loadInstance(pk: string): Promise<AuthenticatorStaticStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticRetrieve({
             stageUuid: pk,
         });
     }
@@ -31,11 +31,11 @@ export class AuthenticatorStaticStageForm extends ModelForm<AuthenticatorStaticS
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                authenticatorStaticStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesUserWriteCreate({
-                data: data
+                userWriteStageRequest: data
             });
         }
     };
@@ -69,7 +69,7 @@ export class AuthenticatorStaticStageForm extends ModelForm<AuthenticatorStaticS
                             <option value="" ?selected=${this.instance?.configureFlow === undefined}>---------</option>
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
-                                designation: FlowDesignationEnum.StageConfiguration,
+                                designation: FlowsInstancesListDesignationEnum.StageConfiguration,
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     let selected = this.instance?.configureFlow === flow.pk;

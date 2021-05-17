@@ -12,7 +12,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class ConsentStageForm extends ModelForm<ConsentStage, string> {
 
     loadInstance(pk: string): Promise<ConsentStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesConsentRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesConsentRetrieve({
             stageUuid: pk,
         }).then(stage => {
             this.showExpiresIn = stage.name === ConsentStageModeEnum.Expiring;
@@ -35,11 +35,11 @@ export class ConsentStageForm extends ModelForm<ConsentStage, string> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesConsentUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                consentStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesConsentCreate({
-                data: data
+                consentStageRequest: data
             });
         }
     };

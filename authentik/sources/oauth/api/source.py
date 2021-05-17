@@ -1,6 +1,6 @@
 """OAuth Source Serializer"""
 from django.urls.base import reverse_lazy
-from drf_yasg.utils import swagger_auto_schema, swagger_serializer_method
+from drf_spectacular.utils import extend_schema, extend_schema_field
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, SerializerMethodField
 from rest_framework.request import Request
@@ -43,7 +43,7 @@ class OAuthSourceSerializer(SourceSerializer):
 
     type = SerializerMethodField()
 
-    @swagger_serializer_method(serializer_or_field=SourceTypeSerializer)
+    @extend_schema_field(SourceTypeSerializer)
     def get_type(self, instace: OAuthSource) -> SourceTypeSerializer:
         """Get source's type configuration"""
         return SourceTypeSerializer(instace.type).data
@@ -85,7 +85,7 @@ class OAuthSourceViewSet(ModelViewSet):
     serializer_class = OAuthSourceSerializer
     lookup_field = "slug"
 
-    @swagger_auto_schema(responses={200: SourceTypeSerializer(many=True)})
+    @extend_schema(responses={200: SourceTypeSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])
     def source_types(self, request: Request) -> Response:
         """Get all creatable source types"""

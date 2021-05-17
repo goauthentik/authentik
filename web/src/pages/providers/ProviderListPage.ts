@@ -91,7 +91,7 @@ export class ProviderListPage extends TablePage<Provider> {
                 .obj=${item}
                 objectLabel=${t`Provider`}
                 .delete=${() => {
-                    return new ProvidersApi(DEFAULT_CONFIG).providersAllDelete({
+                    return new ProvidersApi(DEFAULT_CONFIG).providersAllDestroy({
                         id: item.pk || 0
                     });
                 }}>
@@ -110,7 +110,7 @@ export class ProviderListPage extends TablePage<Provider> {
                 <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </button>
             <ul class="pf-c-dropdown__menu" hidden>
-                ${until(new ProvidersApi(DEFAULT_CONFIG).providersAllTypes().then((types) => {
+                ${until(new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((types) => {
                     return types.map((type) => {
                         return html`<li>
                             <ak-forms-modal>

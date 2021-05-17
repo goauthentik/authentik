@@ -1,4 +1,4 @@
-import { Flow, FlowDesignationEnum, FlowPolicyEngineModeEnum, FlowsApi } from "authentik-api";
+import { Flow, FlowDesignationEnum, PolicyEngineMode, FlowsApi } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -11,7 +11,7 @@ import { ModelForm } from "../../elements/forms/ModelForm";
 export class FlowForm extends ModelForm<Flow, string> {
 
     loadInstance(pk: string): Promise<Flow> {
-        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesRead({
+        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({
             slug: pk,
         });
     }
@@ -29,17 +29,17 @@ export class FlowForm extends ModelForm<Flow, string> {
         if (this.instance) {
             writeOp = new FlowsApi(DEFAULT_CONFIG).flowsInstancesUpdate({
                 slug: this.instance.slug,
-                data: data
+                flowRequest: data
             });
         } else {
             writeOp = new FlowsApi(DEFAULT_CONFIG).flowsInstancesCreate({
-                data: data
+                flowRequest: data
             });
         }
         const background = this.getFormFile();
         if (background) {
             return writeOp.then(flow => {
-                return new FlowsApi(DEFAULT_CONFIG).flowsInstancesSetBackground({
+                return new FlowsApi(DEFAULT_CONFIG).flowsInstancesSetBackgroundCreate({
                     slug: flow.slug,
                     file: background
                 });
@@ -101,10 +101,10 @@ export class FlowForm extends ModelForm<Flow, string> {
                 ?required=${true}
                 name="policyEngineMode">
                 <select class="pf-c-form-control">
-                    <option value=${FlowPolicyEngineModeEnum.Any} ?selected=${this.instance?.policyEngineMode === FlowPolicyEngineModeEnum.Any}>
+                    <option value=${PolicyEngineMode.Any} ?selected=${this.instance?.policyEngineMode === PolicyEngineMode.Any}>
                         ${t`ANY, any policy must match to grant access.`}
                     </option>
-                    <option value=${FlowPolicyEngineModeEnum.All} ?selected=${this.instance?.policyEngineMode === FlowPolicyEngineModeEnum.All}>
+                    <option value=${PolicyEngineMode.All} ?selected=${this.instance?.policyEngineMode === PolicyEngineMode.All}>
                         ${t`ALL, all policies must match to grant access.`}
                     </option>
                 </select>

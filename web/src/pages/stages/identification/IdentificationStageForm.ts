@@ -1,4 +1,4 @@
-import { FlowDesignationEnum, FlowsApi, IdentificationStage, IdentificationStageUserFieldsEnum, StagesApi } from "authentik-api";
+import { FlowsApi, IdentificationStage, UserFieldsEnum, StagesApi, FlowsInstancesListDesignationEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -14,7 +14,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class IdentificationStageForm extends ModelForm<IdentificationStage, string> {
 
     loadInstance(pk: string): Promise<IdentificationStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesIdentificationRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesIdentificationRetrieve({
             stageUuid: pk,
         });
     }
@@ -31,16 +31,16 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesIdentificationUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                identificationStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesIdentificationCreate({
-                data: data
+                identificationStageRequest: data
             });
         }
     };
 
-    isUserFieldSelected(field: IdentificationStageUserFieldsEnum): boolean {
+    isUserFieldSelected(field: UserFieldsEnum): boolean {
         return (this.instance?.userFields || []).filter(isField => {
             return field === isField;
         }).length > 0;
@@ -66,10 +66,10 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                         label=${t`User fields`}
                         name="userFields">
                         <select name="users" class="pf-c-form-control" multiple>
-                            <option value=${IdentificationStageUserFieldsEnum.Username} ?selected=${this.isUserFieldSelected(IdentificationStageUserFieldsEnum.Username)}>
+                            <option value=${UserFieldsEnum.Username} ?selected=${this.isUserFieldSelected(UserFieldsEnum.Username)}>
                                 ${t`Username`}
                             </option>
-                            <option value=${IdentificationStageUserFieldsEnum.Email} ?selected=${this.isUserFieldSelected(IdentificationStageUserFieldsEnum.Email)}>
+                            <option value=${UserFieldsEnum.Email} ?selected=${this.isUserFieldSelected(UserFieldsEnum.Email)}>
                                 ${t`Email`}
                             </option>
                         </select>
@@ -101,7 +101,7 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                             <option value="" ?selected=${this.instance?.enrollmentFlow === undefined}>---------</option>
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
-                                designation: FlowDesignationEnum.Enrollment,
+                                designation: FlowsInstancesListDesignationEnum.Enrollment,
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     const selected = this.instance?.enrollmentFlow === flow.pk;
@@ -118,7 +118,7 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                             <option value="" ?selected=${this.instance?.recoveryFlow === undefined}>---------</option>
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
-                                designation: FlowDesignationEnum.Recovery,
+                                designation: FlowsInstancesListDesignationEnum.Recovery,
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     const selected = this.instance?.recoveryFlow === flow.pk;

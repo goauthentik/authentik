@@ -1,4 +1,4 @@
-import { CaptchaStage, StagesApi } from "authentik-api";
+import { CaptchaStage, CaptchaStageRequest, StagesApi } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -12,7 +12,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class CaptchaStageForm extends ModelForm<CaptchaStage, string> {
 
     loadInstance(pk: string): Promise<CaptchaStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesCaptchaRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesCaptchaRetrieve({
             stageUuid: pk,
         });
     }
@@ -29,11 +29,11 @@ export class CaptchaStageForm extends ModelForm<CaptchaStage, string> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesCaptchaPartialUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                patchedCaptchaStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesCaptchaCreate({
-                data: data
+                captchaStageRequest: data as unknown as CaptchaStageRequest
             });
         }
     };
@@ -66,7 +66,7 @@ export class CaptchaStageForm extends ModelForm<CaptchaStage, string> {
                         ?required=${true}
                         ?writeOnly=${this.instance !== undefined}
                         name="privateKey">
-                        <input type="text" value="${ifDefined(this.instance?.privateKey || "")}" class="pf-c-form-control" required>
+                        <input type="text" value="" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`Private key, acquired from https://www.google.com/recaptcha/intro/v3.html.`}</p>
                     </ak-form-element-horizontal>
                 </div>

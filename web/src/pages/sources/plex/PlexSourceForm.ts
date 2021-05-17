@@ -1,4 +1,4 @@
-import { PlexSource, SourcesApi, FlowsApi, FlowDesignationEnum, PlexSourceUserMatchingModeEnum } from "authentik-api";
+import { PlexSource, SourcesApi, FlowsApi, UserMatchingModeEnum, FlowsInstancesListDesignationEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -16,7 +16,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class PlexSourceForm extends ModelForm<PlexSource, string> {
 
     loadInstance(pk: string): Promise<PlexSource> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesPlexRead({
+        return new SourcesApi(DEFAULT_CONFIG).sourcesPlexRetrieve({
             slug: pk,
         }).then(source => {
             this.plexToken = source.plexToken;
@@ -50,11 +50,11 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
         if (this.instance?.slug) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesPlexUpdate({
                 slug: this.instance.slug,
-                data: data
+                plexSourceRequest: data
             });
         } else {
             return new SourcesApi(DEFAULT_CONFIG).sourcesPlexCreate({
-                data: data
+                plexSourceRequest: data
             });
         }
     };
@@ -137,19 +137,19 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                 ?required=${true}
                 name="userMatchingMode">
                 <select class="pf-c-form-control">
-                    <option value=${PlexSourceUserMatchingModeEnum.Identifier} ?selected=${this.instance?.userMatchingMode === PlexSourceUserMatchingModeEnum.Identifier}>
+                    <option value=${UserMatchingModeEnum.Identifier} ?selected=${this.instance?.userMatchingMode === UserMatchingModeEnum.Identifier}>
                         ${t`Link users on unique identifier`}
                     </option>
-                    <option value=${PlexSourceUserMatchingModeEnum.UsernameLink} ?selected=${this.instance?.userMatchingMode === PlexSourceUserMatchingModeEnum.UsernameLink}>
+                    <option value=${UserMatchingModeEnum.UsernameLink} ?selected=${this.instance?.userMatchingMode === UserMatchingModeEnum.UsernameLink}>
                         ${t`Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses`}
                     </option>
-                    <option value=${PlexSourceUserMatchingModeEnum.UsernameDeny} ?selected=${this.instance?.userMatchingMode === PlexSourceUserMatchingModeEnum.UsernameDeny}>
+                    <option value=${UserMatchingModeEnum.UsernameDeny} ?selected=${this.instance?.userMatchingMode === UserMatchingModeEnum.UsernameDeny}>
                         ${t`Use the user's email address, but deny enrollment when the email address already exists.`}
                     </option>
-                    <option value=${PlexSourceUserMatchingModeEnum.EmailLink} ?selected=${this.instance?.userMatchingMode === PlexSourceUserMatchingModeEnum.EmailLink}>
+                    <option value=${UserMatchingModeEnum.EmailLink} ?selected=${this.instance?.userMatchingMode === UserMatchingModeEnum.EmailLink}>
                         ${t`Link to a user with identical username address. Can have security implications when a username is used with another source.`}
                     </option>
-                    <option value=${PlexSourceUserMatchingModeEnum.EmailDeny} ?selected=${this.instance?.userMatchingMode === PlexSourceUserMatchingModeEnum.EmailDeny}>
+                    <option value=${UserMatchingModeEnum.EmailDeny} ?selected=${this.instance?.userMatchingMode === UserMatchingModeEnum.EmailDeny}>
                         ${t`Use the user's username, but deny enrollment when the username already exists.`}
                     </option>
                 </select>
@@ -181,7 +181,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                         <select class="pf-c-form-control">
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
-                                designation: FlowDesignationEnum.Authentication,
+                                designation: FlowsInstancesListDesignationEnum.Authentication,
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     let selected = this.instance?.authenticationFlow === flow.pk;
@@ -201,7 +201,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                         <select class="pf-c-form-control">
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
-                                designation: FlowDesignationEnum.Enrollment,
+                                designation: FlowsInstancesListDesignationEnum.Enrollment,
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     let selected = this.instance?.enrollmentFlow === flow.pk;

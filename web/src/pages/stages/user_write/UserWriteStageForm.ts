@@ -11,7 +11,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
 
     loadInstance(pk: string): Promise<UserWriteStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesUserWriteRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesUserWriteRetrieve({
             stageUuid: pk,
         });
     }
@@ -28,11 +28,11 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesUserWriteUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                userWriteStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesUserWriteCreate({
-                data: data
+                userWriteStageRequest: data
             });
         }
     };

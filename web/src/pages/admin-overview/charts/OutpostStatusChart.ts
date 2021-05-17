@@ -37,7 +37,7 @@ export class OutpostStatusChart extends AKChart<OutpostStats> {
         let outdated = 0;
         let unhealthy = 0;
         await Promise.all(outposts.results.map(async (element) => {
-            const health = await api.outpostsOutpostsHealth({
+            const health = await api.outpostsInstancesHealthList({
                 uuid: element.pk || "",
             });
             if (health.length === 0) {

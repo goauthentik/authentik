@@ -9,7 +9,7 @@ trigger:
 stages:
   - stage: generate
     jobs:
-      - job: swagger_generate
+      - job: generate_api
         pool:
           vmImage: 'ubuntu-latest'
         steps:
@@ -19,12 +19,11 @@ stages:
             displayName: 'Install Node.js'
           - task: CmdLine@2
             inputs:
-              script: |
-                docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate -i /local/swagger.yaml -g typescript-fetch -o /local/web/api --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
+              script: make gen-web
           - task: PublishPipelineArtifact@1
             inputs:
               targetPath: 'web/api/'
-              artifact: 'ts_swagger_client'
+              artifact: 'ts_api_client'
               publishLocation: 'pipeline'
   - stage: lint
     jobs:
@@ -39,7 +38,7 @@ stages:
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
-              artifactName: 'ts_swagger_client'
+              artifactName: 'ts_api_client'
               path: "web/api/"
           - task: Npm@1
             inputs:
@@ -61,7 +60,7 @@ stages:
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
-              artifactName: 'ts_swagger_client'
+              artifactName: 'ts_api_client'
               path: "web/api/"
           - task: Npm@1
             inputs:
@@ -85,7 +84,7 @@ stages:
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
-              artifactName: 'ts_swagger_client'
+              artifactName: 'ts_api_client'
               path: "web/api/"
           - task: Npm@1
             inputs:

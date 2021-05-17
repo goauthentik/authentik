@@ -18,7 +18,7 @@ export class FlowDiagram extends LitElement {
     @property()
     set flowSlug(value: string) {
         this._flowSlug = value;
-        new FlowsApi(DEFAULT_CONFIG).flowsInstancesDiagram({
+        new FlowsApi(DEFAULT_CONFIG).flowsInstancesDiagramRetrieve({
             slug: value,
         }).then((data) => {
             this.diagram = FlowChart.parse(data.diagram || "");

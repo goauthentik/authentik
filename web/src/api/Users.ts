@@ -4,9 +4,14 @@ import { DEFAULT_CONFIG } from "./Config";
 let globalMePromise: Promise<SessionUser>;
 export function me(): Promise<SessionUser> {
     if (!globalMePromise) {
-        globalMePromise = new CoreApi(DEFAULT_CONFIG).coreUsersMe().catch((ex) => {
+        globalMePromise = new CoreApi(DEFAULT_CONFIG).coreUsersMeRetrieve().catch((ex) => {
             const defaultUser: SessionUser = {
                 user: {
+                    pk: -1,
+                    isSuperuser: false,
+                    groups: [],
+                    avatar: "",
+                    uid: "",
                     username: "",
                     name: ""
                 }

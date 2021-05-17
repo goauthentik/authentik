@@ -4,7 +4,7 @@ title: API
 
 Starting with 2021.3.5, every authentik instance has a built-in API browser, which can be accessed at https://authentik.company/api/v2beta/.
 
-To generate an API client, you can use the Swagger schema at https://authentik.company/api/v2beta/swagger.json.
+To generate an API client, you can use the OpenAPI v3 schema at https://authentik.company/api/v2beta/schema/.
 
 While testing, the API requests are authenticated by your browser session.
 

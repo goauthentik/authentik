@@ -28,6 +28,9 @@ class PassiveSerializer(Serializer):
     ) -> Model:  # pragma: no cover
         return Model()
 
+    class Meta:
+        model = Model
+
 
 class MetaNameSerializer(PassiveSerializer):
     """Add verbose names to response"""

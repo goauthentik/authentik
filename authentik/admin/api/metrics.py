@@ -7,12 +7,12 @@ from django.db.models import Count, ExpressionWrapper, F
 from django.db.models.fields import DurationField
 from django.db.models.functions import ExtractHour
 from django.utils.timezone import now
-from drf_yasg.utils import swagger_auto_schema, swagger_serializer_method
+from drf_spectacular.utils import extend_schema, extend_schema_field
 from rest_framework.fields import IntegerField, SerializerMethodField
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.viewsets import ViewSet
+from rest_framework.views import APIView
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.events.models import Event, EventAction
@@ -58,24 +58,24 @@ class LoginMetricsSerializer(PassiveSerializer):
     logins_per_1h = SerializerMethodField()
     logins_failed_per_1h = SerializerMethodField()
 
-    @swagger_serializer_method(serializer_or_field=CoordinateSerializer(many=True))
+    @extend_schema_field(CoordinateSerializer(many=True))
     def get_logins_per_1h(self, _):
         """Get successful logins per hour for the last 24 hours"""
         return get_events_per_1h(action=EventAction.LOGIN)
 
-    @swagger_serializer_method(serializer_or_field=CoordinateSerializer(many=True))
+    @extend_schema_field(CoordinateSerializer(many=True))
     def get_logins_failed_per_1h(self, _):
         """Get failed logins per hour for the last 24 hours"""
         return get_events_per_1h(action=EventAction.LOGIN_FAILED)
 
 
-class AdministrationMetricsViewSet(ViewSet):
+class AdministrationMetricsViewSet(APIView):
     """Login Metrics per 1h"""
 
     permission_classes = [IsAdminUser]
 
-    @swagger_auto_schema(responses={200: LoginMetricsSerializer(many=False)})
-    def list(self, request: Request) -> Response:
+    @extend_schema(responses={200: LoginMetricsSerializer(many=False)})
+    def get(self, request: Request) -> Response:
         """Login Metrics per 1h"""
         serializer = LoginMetricsSerializer(True)
         return Response(serializer.data)

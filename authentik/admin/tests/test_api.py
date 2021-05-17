@@ -74,21 +74,21 @@ class TestAdminAPI(TestCase):
 
     def test_version(self):
         """Test Version API"""
-        response = self.client.get(reverse("authentik_api:admin_version-list"))
+        response = self.client.get(reverse("authentik_api:admin_version"))
         self.assertEqual(response.status_code, 200)
         body = loads(response.content)
         self.assertEqual(body["version_current"], __version__)
 
     def test_workers(self):
         """Test Workers API"""
-        response = self.client.get(reverse("authentik_api:admin_workers-list"))
+        response = self.client.get(reverse("authentik_api:admin_workers"))
         self.assertEqual(response.status_code, 200)
         body = loads(response.content)
-        self.assertEqual(body["pagination"]["count"], 0)
+        self.assertEqual(body["count"], 0)
 
     def test_metrics(self):
         """Test metrics API"""
-        response = self.client.get(reverse("authentik_api:admin_metrics-list"))
+        response = self.client.get(reverse("authentik_api:admin_metrics"))
         self.assertEqual(response.status_code, 200)
 
     def test_apps(self):

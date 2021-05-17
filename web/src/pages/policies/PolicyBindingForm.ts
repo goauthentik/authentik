@@ -19,7 +19,7 @@ enum target {
 export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
 
     loadInstance(pk: string): Promise<PolicyBinding> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsRead({
+        return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsRetrieve({
             policyBindingUuid: pk
         }).then(binding => {
             if (binding?.policyObj) {
@@ -64,11 +64,11 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsUpdate({
                 policyBindingUuid: this.instance.pk || "",
-                data: data
+                policyBindingRequest: data
             });
         } else {
             return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsCreate({
-                data: data
+                policyBindingRequest: data
             });
         }
     };

@@ -11,7 +11,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class UserLogoutStageForm extends ModelForm<UserLogoutStage, string> {
 
     loadInstance(pk: string): Promise<UserLogoutStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesUserLogoutRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesUserLogoutRetrieve({
             stageUuid: pk,
         });
     }
@@ -28,11 +28,11 @@ export class UserLogoutStageForm extends ModelForm<UserLogoutStage, string> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesUserLogoutUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                userLogoutStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesUserLogoutCreate({
-                data: data
+                userLogoutStageRequest: data
             });
         }
     };

@@ -1,4 +1,4 @@
-import { CoreApi, EventsApi, NotificationRule, NotificationRuleSeverityEnum } from "authentik-api";
+import { CoreApi, EventsApi, NotificationRule, SeverityEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -12,7 +12,7 @@ import { ModelForm } from "../../elements/forms/ModelForm";
 export class RuleForm extends ModelForm<NotificationRule, string> {
 
     loadInstance(pk: string): Promise<NotificationRule> {
-        return new EventsApi(DEFAULT_CONFIG).eventsRulesRead({
+        return new EventsApi(DEFAULT_CONFIG).eventsRulesRetrieve({
             pbmUuid: pk,
         });
     }
@@ -29,24 +29,24 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
         if (this.instance) {
             return new EventsApi(DEFAULT_CONFIG).eventsRulesUpdate({
                 pbmUuid: this.instance.pk || "",
-                data: data
+                notificationRuleRequest: data
             });
         } else {
             return new EventsApi(DEFAULT_CONFIG).eventsRulesCreate({
-                data: data
+                notificationRuleRequest: data
             });
         }
     };
 
     renderSeverity(): TemplateResult {
         return html`
-            <option value=${NotificationRuleSeverityEnum.Alert} ?selected=${this.instance?.severity === NotificationRuleSeverityEnum.Alert}>
+            <option value=${SeverityEnum.Alert} ?selected=${this.instance?.severity === SeverityEnum.Alert}>
                 ${t`Alert`}
             </option>
-            <option value=${NotificationRuleSeverityEnum.Warning} ?selected=${this.instance?.severity === NotificationRuleSeverityEnum.Warning}>
+            <option value=${SeverityEnum.Warning} ?selected=${this.instance?.severity === SeverityEnum.Warning}>
                 ${t`Warning`}
             </option>
-            <option value=${NotificationRuleSeverityEnum.Notice} ?selected=${this.instance?.severity === NotificationRuleSeverityEnum.Notice}>
+            <option value=${SeverityEnum.Notice} ?selected=${this.instance?.severity === SeverityEnum.Notice}>
                 ${t`Notice`}
             </option>
         `;

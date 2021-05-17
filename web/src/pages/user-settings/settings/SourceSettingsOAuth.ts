@@ -31,7 +31,7 @@ export class SourceSettingsOAuth extends BaseUserSettings {
                 return html`<p>${t`Connected.`}</p>
                 <button class="pf-c-button pf-m-danger"
                     @click=${() => {
-                        return new SourcesApi(DEFAULT_CONFIG).sourcesOauthUserConnectionsDelete({
+                        return new SourcesApi(DEFAULT_CONFIG).sourcesOauthUserConnectionsDestroy({
                             id: connection.results[0].pk || 0
                         });
                     }}>

@@ -46,7 +46,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
             page: page,
             pageSize: PAGE_SIZE,
             search: this.search || "",
-            managedIsnull: this.hideManaged ? "true" : undefined,
+            managedIsnull: this.hideManaged ? true : undefined,
         });
     }
 
@@ -98,7 +98,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                 .obj=${item}
                 objectLabel=${t`Property Mapping`}
                 .delete=${() => {
-                    return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllDelete({
+                    return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllDestroy({
                         pmUuid: item.pk || ""
                     });
                 }}>
@@ -117,7 +117,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                 <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </button>
             <ul class="pf-c-dropdown__menu" hidden>
-                ${until(new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllTypes().then((types) => {
+                ${until(new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllTypesList().then((types) => {
                     return types.map((type) => {
                         return html`<li>
                             <ak-forms-modal>

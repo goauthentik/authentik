@@ -1,4 +1,4 @@
-import { FlowDesignationEnum, FlowsApi, PasswordStage, PasswordStageBackendsEnum, StagesApi } from "authentik-api";
+import { FlowsApi, PasswordStage, BackendsEnum, StagesApi, FlowsInstancesListDesignationEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -14,7 +14,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class PasswordStageForm extends ModelForm<PasswordStage, string> {
 
     loadInstance(pk: string): Promise<PasswordStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesPasswordRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesPasswordRetrieve({
             stageUuid: pk,
         });
     }
@@ -31,16 +31,16 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesPasswordUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                passwordStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesPasswordCreate({
-                data: data
+                passwordStageRequest: data
             });
         }
     };
 
-    isBackendSelected(field: PasswordStageBackendsEnum): boolean {
+    isBackendSelected(field: BackendsEnum): boolean {
         return (this.instance?.backends || []).filter(isField => {
             return field === isField;
         }).length > 0;
@@ -67,10 +67,10 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
                         ?required=${true}
                         name="backends">
                         <select name="users" class="pf-c-form-control" multiple>
-                            <option value=${PasswordStageBackendsEnum.DjangoContribAuthBackendsModelBackend} ?selected=${this.isBackendSelected(PasswordStageBackendsEnum.DjangoContribAuthBackendsModelBackend)}>
+                            <option value=${BackendsEnum.DjangoContribAuthBackendsModelBackend} ?selected=${this.isBackendSelected(BackendsEnum.DjangoContribAuthBackendsModelBackend)}>
                                 ${t`authentik Builtin Database`}
                                 </option>
-                            <option value=${PasswordStageBackendsEnum.AuthentikSourcesLdapAuthLdapBackend} ?selected=${this.isBackendSelected(PasswordStageBackendsEnum.AuthentikSourcesLdapAuthLdapBackend)}>
+                            <option value=${BackendsEnum.AuthentikSourcesLdapAuthLdapBackend} ?selected=${this.isBackendSelected(BackendsEnum.AuthentikSourcesLdapAuthLdapBackend)}>
                                 ${t`authentik LDAP Backend`}
                             </option>
                         </select>
@@ -85,7 +85,7 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
                             <option value="" ?selected=${this.instance?.configureFlow === undefined}>---------</option>
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
-                                designation: FlowDesignationEnum.StageConfiguration,
+                                designation: FlowsInstancesListDesignationEnum.StageConfiguration,
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     let selected = this.instance?.configureFlow === flow.pk;

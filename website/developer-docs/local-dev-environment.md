@@ -31,24 +31,18 @@ Most functions and classes have type-hints and docstrings, so it is recommended 
 
 Before committing code, run `make lint` to ensure your code is formatted well. This also requires `pyright`, which can be installed with npm.
 
-Run `make gen` to run all unittests and generated an updated swagger document for any changes you made.
+Run `make gen` to generate an updated OpenAPI document for any changes you made.
 
 ## Frontend
 
 By default, no transpiled bundle of the frontend is included. To build the UI, you need Node 12 or newer.
 
-The Frontend also uses a generated API client to talk with the backend. To generate this client, you can use the [openapitools/openapi-generator-cli](https://github.com/OpenAPITools/openapi-generator) CLI tool.
+The Frontend also uses a generated API client to talk with the backend. To generate this client, [openapitools/openapi-generator-cli](https://github.com/OpenAPITools/openapi-generator) is used.
 
 If you want to generate the client without installing anything, run this command:
 
 ```shell
-docker run \
-  --rm -v $(pwd):/local \
-  openapitools/openapi-generator-cli generate \
-  -i /local/swagger.yaml \
-  -g typescript-fetch \
-  -o /local/web/api \
-  --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
+make gen-web
 ```
 
 To build the UI, run these commands:

@@ -1,4 +1,4 @@
-import { SAMLSource, SourcesApi, SAMLSourceBindingTypeEnum, SAMLSourceNameIdPolicyEnum, CryptoApi, SAMLSourceDigestAlgorithmEnum, SAMLSourceSignatureAlgorithmEnum, FlowsApi, FlowDesignationEnum } from "authentik-api";
+import { SAMLSource, SourcesApi, BindingTypeEnum, NameIdPolicyEnum, CryptoApi, DigestAlgorithmEnum, SignatureAlgorithmEnum, FlowsApi, FlowsInstancesListDesignationEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -14,7 +14,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
 
     loadInstance(pk: string): Promise<SAMLSource> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesSamlRead({
+        return new SourcesApi(DEFAULT_CONFIG).sourcesSamlRetrieve({
             slug: pk,
         });
     }
@@ -31,11 +31,11 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
         if (this.instance) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesSamlUpdate({
                 slug: this.instance.slug,
-                data: data
+                sAMLSourceRequest: data
             });
         } else {
             return new SourcesApi(DEFAULT_CONFIG).sourcesSamlCreate({
-                data: data
+                sAMLSourceRequest: data
             });
         }
     };
@@ -92,13 +92,13 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         ?required=${true}
                         name="bindingType">
                         <select class="pf-c-form-control">
-                            <option value=${SAMLSourceBindingTypeEnum.Redirect} ?selected=${this.instance?.bindingType === SAMLSourceBindingTypeEnum.Redirect}>
+                            <option value=${BindingTypeEnum.Redirect} ?selected=${this.instance?.bindingType === BindingTypeEnum.Redirect}>
                                 ${t`Redirect binding`}
                             </option>
-                            <option value=${SAMLSourceBindingTypeEnum.PostAuto} ?selected=${this.instance?.bindingType === SAMLSourceBindingTypeEnum.PostAuto}>
+                            <option value=${BindingTypeEnum.PostAuto} ?selected=${this.instance?.bindingType === BindingTypeEnum.PostAuto}>
                                 ${t`Post binding (auto-submit)`}
                             </option>
-                            <option value=${SAMLSourceBindingTypeEnum.Post} ?selected=${this.instance?.bindingType === SAMLSourceBindingTypeEnum.Post}>
+                            <option value=${BindingTypeEnum.Post} ?selected=${this.instance?.bindingType === BindingTypeEnum.Post}>
                                 ${t`Post binding`}
                             </option>
                         </select>
@@ -139,19 +139,19 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         ?required=${true}
                         name="nameIdPolicy">
                         <select class="pf-c-form-control">
-                            <option value=${SAMLSourceNameIdPolicyEnum._20nameidFormatpersistent} ?selected=${this.instance?.nameIdPolicy === SAMLSourceNameIdPolicyEnum._20nameidFormatpersistent}>
+                            <option value=${NameIdPolicyEnum._20nameidFormatpersistent} ?selected=${this.instance?.nameIdPolicy === NameIdPolicyEnum._20nameidFormatpersistent}>
                                 ${t`Persistent`}
                             </option>
-                            <option value=${SAMLSourceNameIdPolicyEnum._11nameidFormatemailAddress} ?selected=${this.instance?.nameIdPolicy === SAMLSourceNameIdPolicyEnum._11nameidFormatemailAddress}>
+                            <option value=${NameIdPolicyEnum._11nameidFormatemailAddress} ?selected=${this.instance?.nameIdPolicy === NameIdPolicyEnum._11nameidFormatemailAddress}>
                                 ${t`Email address`}
                             </option>
-                            <option value=${SAMLSourceNameIdPolicyEnum._20nameidFormatWindowsDomainQualifiedName} ?selected=${this.instance?.nameIdPolicy === SAMLSourceNameIdPolicyEnum._20nameidFormatWindowsDomainQualifiedName}>
+                            <option value=${NameIdPolicyEnum._20nameidFormatWindowsDomainQualifiedName} ?selected=${this.instance?.nameIdPolicy === NameIdPolicyEnum._20nameidFormatWindowsDomainQualifiedName}>
                                 ${t`Windows`}
                             </option>
-                            <option value=${SAMLSourceNameIdPolicyEnum._20nameidFormatX509SubjectName} ?selected=${this.instance?.nameIdPolicy === SAMLSourceNameIdPolicyEnum._20nameidFormatX509SubjectName}>
+                            <option value=${NameIdPolicyEnum._20nameidFormatX509SubjectName} ?selected=${this.instance?.nameIdPolicy === NameIdPolicyEnum._20nameidFormatX509SubjectName}>
                                 ${t`X509 Subject`}
                             </option>
-                            <option value=${SAMLSourceNameIdPolicyEnum._20nameidFormattransient} ?selected=${this.instance?.nameIdPolicy === SAMLSourceNameIdPolicyEnum._20nameidFormattransient}>
+                            <option value=${NameIdPolicyEnum._20nameidFormattransient} ?selected=${this.instance?.nameIdPolicy === NameIdPolicyEnum._20nameidFormattransient}>
                                 ${t`Transient`}
                             </option>
                         </select>
@@ -168,16 +168,16 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         ?required=${true}
                         name="digestAlgorithm">
                         <select class="pf-c-form-control">
-                            <option value=${SAMLSourceDigestAlgorithmEnum._200009Xmldsigsha1} ?selected=${this.instance?.digestAlgorithm === SAMLSourceDigestAlgorithmEnum._200009Xmldsigsha1}>
+                            <option value=${DigestAlgorithmEnum._200009Xmldsigsha1} ?selected=${this.instance?.digestAlgorithm === DigestAlgorithmEnum._200009Xmldsigsha1}>
                                 ${t`SHA1`}
                             </option>
-                            <option value=${SAMLSourceDigestAlgorithmEnum._200104Xmlencsha256} ?selected=${this.instance?.digestAlgorithm === SAMLSourceDigestAlgorithmEnum._200104Xmlencsha256 || this.instance?.digestAlgorithm === undefined}>
+                            <option value=${DigestAlgorithmEnum._200104Xmlencsha256} ?selected=${this.instance?.digestAlgorithm === DigestAlgorithmEnum._200104Xmlencsha256 || this.instance?.digestAlgorithm === undefined}>
                                 ${t`SHA256`}
                             </option>
-                            <option value=${SAMLSourceDigestAlgorithmEnum._200104XmldsigMoresha384} ?selected=${this.instance?.digestAlgorithm === SAMLSourceDigestAlgorithmEnum._200104XmldsigMoresha384}>
+                            <option value=${DigestAlgorithmEnum._200104XmldsigMoresha384} ?selected=${this.instance?.digestAlgorithm === DigestAlgorithmEnum._200104XmldsigMoresha384}>
                                 ${t`SHA384`}
                             </option>
-                            <option value=${SAMLSourceDigestAlgorithmEnum._200104Xmlencsha512} ?selected=${this.instance?.digestAlgorithm === SAMLSourceDigestAlgorithmEnum._200104Xmlencsha512}>
+                            <option value=${DigestAlgorithmEnum._200104Xmlencsha512} ?selected=${this.instance?.digestAlgorithm === DigestAlgorithmEnum._200104Xmlencsha512}>
                                 ${t`SHA512`}
                             </option>
                         </select>
@@ -187,19 +187,19 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         ?required=${true}
                         name="signatureAlgorithm">
                         <select class="pf-c-form-control">
-                            <option value=${SAMLSourceSignatureAlgorithmEnum._200009XmldsigrsaSha1} ?selected=${this.instance?.signatureAlgorithm === SAMLSourceSignatureAlgorithmEnum._200009XmldsigrsaSha1}>
+                            <option value=${SignatureAlgorithmEnum._200009XmldsigrsaSha1} ?selected=${this.instance?.signatureAlgorithm === SignatureAlgorithmEnum._200009XmldsigrsaSha1}>
                                 ${t`RSA-SHA1`}
                             </option>
-                            <option value=${SAMLSourceSignatureAlgorithmEnum._200104XmldsigMorersaSha256} ?selected=${this.instance?.signatureAlgorithm === SAMLSourceSignatureAlgorithmEnum._200104XmldsigMorersaSha256 || this.instance?.signatureAlgorithm === undefined}>
+                            <option value=${SignatureAlgorithmEnum._200104XmldsigMorersaSha256} ?selected=${this.instance?.signatureAlgorithm === SignatureAlgorithmEnum._200104XmldsigMorersaSha256 || this.instance?.signatureAlgorithm === undefined}>
                                 ${t`RSA-SHA256`}
                             </option>
-                            <option value=${SAMLSourceSignatureAlgorithmEnum._200104XmldsigMorersaSha384} ?selected=${this.instance?.signatureAlgorithm === SAMLSourceSignatureAlgorithmEnum._200104XmldsigMorersaSha384}>
+                            <option value=${SignatureAlgorithmEnum._200104XmldsigMorersaSha384} ?selected=${this.instance?.signatureAlgorithm === SignatureAlgorithmEnum._200104XmldsigMorersaSha384}>
                                 ${t`RSA-SHA384`}
                             </option>
-                            <option value=${SAMLSourceSignatureAlgorithmEnum._200104XmldsigMorersaSha512} ?selected=${this.instance?.signatureAlgorithm === SAMLSourceSignatureAlgorithmEnum._200104XmldsigMorersaSha512}>
+                            <option value=${SignatureAlgorithmEnum._200104XmldsigMorersaSha512} ?selected=${this.instance?.signatureAlgorithm === SignatureAlgorithmEnum._200104XmldsigMorersaSha512}>
                                 ${t`RSA-SHA512`}
                             </option>
-                            <option value=${SAMLSourceSignatureAlgorithmEnum._200009XmldsigdsaSha1} ?selected=${this.instance?.signatureAlgorithm === SAMLSourceSignatureAlgorithmEnum._200009XmldsigdsaSha1}>
+                            <option value=${SignatureAlgorithmEnum._200009XmldsigdsaSha1} ?selected=${this.instance?.signatureAlgorithm === SignatureAlgorithmEnum._200009XmldsigdsaSha1}>
                                 ${t`DSA-SHA1`}
                             </option>
                         </select>
@@ -218,7 +218,7 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         <select class="pf-c-form-control">
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
-                                designation: FlowDesignationEnum.StageConfiguration,
+                                designation: FlowsInstancesListDesignationEnum.StageConfiguration,
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     let selected = this.instance?.preAuthenticationFlow === flow.pk;
@@ -238,7 +238,7 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         <select class="pf-c-form-control">
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
-                                designation: FlowDesignationEnum.Authentication,
+                                designation: FlowsInstancesListDesignationEnum.Authentication,
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     let selected = this.instance?.authenticationFlow === flow.pk;
@@ -258,7 +258,7 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         <select class="pf-c-form-control">
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
-                                designation: FlowDesignationEnum.Enrollment,
+                                designation: FlowsInstancesListDesignationEnum.Enrollment,
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     let selected = this.instance?.enrollmentFlow === flow.pk;

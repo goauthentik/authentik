@@ -7,7 +7,7 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/ActionButton";
 import { TableColumn } from "../../elements/table/Table";
-import { AdminApi, Task, TaskStatusEnum } from "authentik-api";
+import { AdminApi, Task, StatusEnum } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { PFColor } from "../../elements/Label";
 
@@ -62,11 +62,11 @@ export class SystemTaskListPage extends TablePage<Task> {
 
     taskStatus(task: Task): TemplateResult {
         switch (task.status) {
-            case TaskStatusEnum.Successful:
+            case StatusEnum.Successful:
                 return html`<ak-label color=${PFColor.Green} text=${t`Successful`}></ak-label>`;
-            case TaskStatusEnum.Warning:
+            case StatusEnum.Warning:
                 return html`<ak-label color=${PFColor.Orange} text=${t`Warning`}></ak-label>`;
-            case TaskStatusEnum.Error:
+            case StatusEnum.Error:
                 return html`<ak-label color=${PFColor.Red} text=${t`Error`}></ak-label>`;
             default:
                 return html`<ak-label color=${PFColor.Grey} text=${t`Unknown`}></ak-label>`;
@@ -105,8 +105,8 @@ export class SystemTaskListPage extends TablePage<Task> {
             this.taskStatus(item),
             html`<ak-action-button
                 .apiRequest=${() => {
-                    return new AdminApi(DEFAULT_CONFIG).adminSystemTasksRetry({
-                        id: item.taskName
+                    return new AdminApi(DEFAULT_CONFIG).adminSystemTasksRetryCreate({
+                        id: item.taskName,
                     });
                 }}>
                 ${t`Retry Task`}

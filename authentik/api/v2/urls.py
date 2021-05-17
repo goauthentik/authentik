@@ -1,17 +1,15 @@
 """api v2 urls"""
-from django.urls import path, re_path
-from drf_yasg import openapi
-from drf_yasg.views import get_schema_view
+from django.urls import path
+from drf_spectacular.views import SpectacularAPIView
 from rest_framework import routers
-from rest_framework.permissions import AllowAny
 
 from authentik.admin.api.meta import AppsViewSet
 from authentik.admin.api.metrics import AdministrationMetricsViewSet
 from authentik.admin.api.tasks import TaskViewSet
-from authentik.admin.api.version import VersionViewSet
-from authentik.admin.api.workers import WorkerViewSet
-from authentik.api.v2.config import ConfigsViewSet
-from authentik.api.views import SwaggerView
+from authentik.admin.api.version import VersionView
+from authentik.admin.api.workers import WorkerView
+from authentik.api.v2.config import ConfigView
+from authentik.api.views import APIBrowserView
 from authentik.core.api.applications import ApplicationViewSet
 from authentik.core.api.groups import GroupViewSet
 from authentik.core.api.propertymappings import PropertyMappingViewSet
@@ -100,11 +98,6 @@ from authentik.stages.user_write.api import UserWriteStageViewSet
 
 router = routers.DefaultRouter()
 
-router.register("root/config", ConfigsViewSet, basename="configs")
-
-router.register("admin/version", VersionViewSet, basename="admin_version")
-router.register("admin/workers", WorkerViewSet, basename="admin_workers")
-router.register("admin/metrics", AdministrationMetricsViewSet, basename="admin_metrics")
 router.register("admin/system_tasks", TaskViewSet, basename="admin_system_tasks")
 router.register("admin/apps", AppsViewSet, basename="apps")
 
@@ -114,7 +107,6 @@ router.register("core/users", UserViewSet)
 router.register("core/user_consent", UserConsentViewSet)
 router.register("core/tokens", TokenViewSet)
 
-router.register("outposts/outposts", OutpostViewSet)
 router.register("outposts/instances", OutpostViewSet)
 router.register("outposts/service_connections/all", ServiceConnectionViewSet)
 router.register("outposts/service_connections/docker", DockerServiceConnectionViewSet)
@@ -196,32 +188,25 @@ router.register("stages/user_write", UserWriteStageViewSet)
 router.register("stages/dummy", DummyStageViewSet)
 router.register("policies/dummy", DummyPolicyViewSet)
 
-info = openapi.Info(
-    title="authentik API",
-    default_version="v2beta",
-    contact=openapi.Contact(email="hello@beryju.org"),
-    license=openapi.License(
-        name="GNU GPLv3",
-        url="https://github.com/goauthentik/authentik/blob/master/LICENSE",
-    ),
-)
-SchemaView = get_schema_view(info, public=True, permission_classes=(AllowAny,))
-
 urlpatterns = (
     [
-        path("", SwaggerView.as_view(), name="swagger"),
+        path("", APIBrowserView.as_view(), name="schema-browser"),
     ]
     + router.urls
     + [
+        path(
+            "admin/metrics/",
+            AdministrationMetricsViewSet.as_view(),
+            name="admin_metrics",
+        ),
+        path("admin/version/", VersionView.as_view(), name="admin_version"),
+        path("admin/workers/", WorkerView.as_view(), name="admin_workers"),
+        path("root/config/", ConfigView.as_view(), name="config"),
         path(
             "flows/executor/<slug:flow_slug>/",
             FlowExecutorView.as_view(),
             name="flow-executor",
         ),
-        re_path(
-            r"^swagger(?P<format>\.json|\.yaml)$",
-            SchemaView.without_ui(cache_timeout=0),
-            name="schema-json",
-        ),
+        path("schema/", SpectacularAPIView.as_view(), name="schema"),
     ]
 )

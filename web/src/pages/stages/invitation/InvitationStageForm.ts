@@ -13,7 +13,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class InvitationStageForm extends ModelForm<InvitationStage, string> {
 
     loadInstance(pk: string): Promise<InvitationStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesRetrieve({
             stageUuid: pk,
         });
     }
@@ -30,11 +30,11 @@ export class InvitationStageForm extends ModelForm<InvitationStage, string> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                invitationStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesCreate({
-                data: data
+                invitationStageRequest: data
             });
         }
     };

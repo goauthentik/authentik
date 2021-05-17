@@ -1,4 +1,4 @@
-import { CryptoApi, FlowDesignationEnum, FlowsApi, SAMLProvider, ProvidersApi, PropertymappingsApi,  SAMLProviderSpBindingEnum, SAMLProviderDigestAlgorithmEnum, SAMLProviderSignatureAlgorithmEnum } from "authentik-api";
+import { CryptoApi, FlowsApi, SAMLProvider, ProvidersApi, PropertymappingsApi,  SpBindingEnum, DigestAlgorithmEnum, SignatureAlgorithmEnum, FlowsInstancesListDesignationEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -14,7 +14,7 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
 
     loadInstance(pk: number): Promise<SAMLProvider> {
         console.log("reading saml provider");
-        return new ProvidersApi(DEFAULT_CONFIG).providersSamlRead({
+        return new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({
             id: pk,
         });
     }
@@ -31,11 +31,11 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersSamlUpdate({
                 id: this.instance.pk || 0,
-                data: data
+                sAMLProviderRequest: data
             });
         } else {
             return new ProvidersApi(DEFAULT_CONFIG).providersSamlCreate({
-                data: data
+                sAMLProviderRequest: data
             });
         }
     };
@@ -55,7 +55,7 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                 <select class="pf-c-form-control">
                     ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                         ordering: "pk",
-                        designation: FlowDesignationEnum.Authorization,
+                        designation: FlowsInstancesListDesignationEnum.Authorization,
                     }).then(flows => {
                         return flows.results.map(flow => {
                             return html`<option value=${ifDefined(flow.pk)} ?selected=${this.instance?.authorizationFlow === flow.pk}>${flow.name} (${flow.slug})</option>`;
@@ -87,10 +87,10 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                         ?required=${true}
                         name="spBinding">
                         <select class="pf-c-form-control">
-                            <option value=${SAMLProviderSpBindingEnum.Redirect} ?selected=${this.instance?.spBinding === SAMLProviderSpBindingEnum.Redirect}>
+                            <option value=${SpBindingEnum.Redirect} ?selected=${this.instance?.spBinding === SpBindingEnum.Redirect}>
                                 ${t`Redirect`}
                             </option>
-                            <option value=${SAMLProviderSpBindingEnum.Post} ?selected=${this.instance?.spBinding === SAMLProviderSpBindingEnum.Post}>
+                            <option value=${SpBindingEnum.Post} ?selected=${this.instance?.spBinding === SpBindingEnum.Post}>
                                 ${t`Post`}
                             </option>
                         </select>
@@ -208,16 +208,16 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                         ?required=${true}
                         name="digestAlgorithm">
                         <select class="pf-c-form-control">
-                            <option value=${SAMLProviderDigestAlgorithmEnum._200009Xmldsigsha1} ?selected=${this.instance?.digestAlgorithm === SAMLProviderDigestAlgorithmEnum._200009Xmldsigsha1}>
+                            <option value=${DigestAlgorithmEnum._200009Xmldsigsha1} ?selected=${this.instance?.digestAlgorithm === DigestAlgorithmEnum._200009Xmldsigsha1}>
                                 ${t`SHA1`}
                             </option>
-                            <option value=${SAMLProviderDigestAlgorithmEnum._200104Xmlencsha256} ?selected=${this.instance?.digestAlgorithm === SAMLProviderDigestAlgorithmEnum._200104Xmlencsha256 || this.instance?.digestAlgorithm === undefined}>
+                            <option value=${DigestAlgorithmEnum._200104Xmlencsha256} ?selected=${this.instance?.digestAlgorithm === DigestAlgorithmEnum._200104Xmlencsha256 || this.instance?.digestAlgorithm === undefined}>
                                 ${t`SHA256`}
                             </option>
-                            <option value=${SAMLProviderDigestAlgorithmEnum._200104XmldsigMoresha384} ?selected=${this.instance?.digestAlgorithm === SAMLProviderDigestAlgorithmEnum._200104XmldsigMoresha384}>
+                            <option value=${DigestAlgorithmEnum._200104XmldsigMoresha384} ?selected=${this.instance?.digestAlgorithm === DigestAlgorithmEnum._200104XmldsigMoresha384}>
                                 ${t`SHA384`}
                             </option>
-                            <option value=${SAMLProviderDigestAlgorithmEnum._200104Xmlencsha512} ?selected=${this.instance?.digestAlgorithm === SAMLProviderDigestAlgorithmEnum._200104Xmlencsha512}>
+                            <option value=${DigestAlgorithmEnum._200104Xmlencsha512} ?selected=${this.instance?.digestAlgorithm === DigestAlgorithmEnum._200104Xmlencsha512}>
                                 ${t`SHA512`}
                             </option>
                         </select>
@@ -227,19 +227,19 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                         ?required=${true}
                         name="signatureAlgorithm">
                         <select class="pf-c-form-control">
-                            <option value=${SAMLProviderSignatureAlgorithmEnum._200009XmldsigrsaSha1} ?selected=${this.instance?.signatureAlgorithm === SAMLProviderSignatureAlgorithmEnum._200009XmldsigrsaSha1}>
+                            <option value=${SignatureAlgorithmEnum._200009XmldsigrsaSha1} ?selected=${this.instance?.signatureAlgorithm === SignatureAlgorithmEnum._200009XmldsigrsaSha1}>
                                 ${t`RSA-SHA1`}
                             </option>
-                            <option value=${SAMLProviderSignatureAlgorithmEnum._200104XmldsigMorersaSha256} ?selected=${this.instance?.signatureAlgorithm === SAMLProviderSignatureAlgorithmEnum._200104XmldsigMorersaSha256 || this.instance?.signatureAlgorithm === undefined}>
+                            <option value=${SignatureAlgorithmEnum._200104XmldsigMorersaSha256} ?selected=${this.instance?.signatureAlgorithm === SignatureAlgorithmEnum._200104XmldsigMorersaSha256 || this.instance?.signatureAlgorithm === undefined}>
                                 ${t`RSA-SHA256`}
                             </option>
-                            <option value=${SAMLProviderSignatureAlgorithmEnum._200104XmldsigMorersaSha384} ?selected=${this.instance?.signatureAlgorithm === SAMLProviderSignatureAlgorithmEnum._200104XmldsigMorersaSha384}>
+                            <option value=${SignatureAlgorithmEnum._200104XmldsigMorersaSha384} ?selected=${this.instance?.signatureAlgorithm === SignatureAlgorithmEnum._200104XmldsigMorersaSha384}>
                                 ${t`RSA-SHA384`}
                             </option>
-                            <option value=${SAMLProviderSignatureAlgorithmEnum._200104XmldsigMorersaSha512} ?selected=${this.instance?.signatureAlgorithm === SAMLProviderSignatureAlgorithmEnum._200104XmldsigMorersaSha512}>
+                            <option value=${SignatureAlgorithmEnum._200104XmldsigMorersaSha512} ?selected=${this.instance?.signatureAlgorithm === SignatureAlgorithmEnum._200104XmldsigMorersaSha512}>
                                 ${t`RSA-SHA512`}
                             </option>
-                            <option value=${SAMLProviderSignatureAlgorithmEnum._200009XmldsigdsaSha1} ?selected=${this.instance?.signatureAlgorithm === SAMLProviderSignatureAlgorithmEnum._200009XmldsigdsaSha1}>
+                            <option value=${SignatureAlgorithmEnum._200009XmldsigdsaSha1} ?selected=${this.instance?.signatureAlgorithm === SignatureAlgorithmEnum._200009XmldsigdsaSha1}>
                                 ${t`DSA-SHA1`}
                             </option>
                         </select>

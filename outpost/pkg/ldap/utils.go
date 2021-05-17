@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/nmcclain/ldap"
-	"goauthentik.io/outpost/pkg/models"
+	"goauthentik.io/outpost/api"
 )
 
 func AKAttrsToLDAP(attrs interface{}) []*ldap.EntryAttribute {
@@ -22,7 +22,7 @@ func AKAttrsToLDAP(attrs interface{}) []*ldap.EntryAttribute {
 	return attrList
 }
 
-func (pi *ProviderInstance) GroupsForUser(user *models.User) []string {
+func (pi *ProviderInstance) GroupsForUser(user api.User) []string {
 	groups := make([]string, len(user.Groups))
 	for i, group := range user.Groups {
 		groups[i] = pi.GetGroupDN(group)
@@ -30,6 +30,6 @@ func (pi *ProviderInstance) GroupsForUser(user *models.User) []string {
 	return groups
 }
 
-func (pi *ProviderInstance) GetGroupDN(group *models.Group) string {
-	return fmt.Sprintf("cn=%s,%s", *group.Name, pi.GroupDN)
+func (pi *ProviderInstance) GetGroupDN(group api.Group) string {
+	return fmt.Sprintf("cn=%s,%s", group.Name, pi.GroupDN)
 }

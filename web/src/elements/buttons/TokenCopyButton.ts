@@ -17,7 +17,7 @@ export class TokenCopyButton extends ActionButton {
         if (!this.identifier) {
             return Promise.reject();
         }
-        return new CoreApi(DEFAULT_CONFIG).coreTokensViewKey({
+        return new CoreApi(DEFAULT_CONFIG).coreTokensViewKeyRetrieve({
             identifier: this.identifier
         }).then((token) => {
             if (!token.key) {

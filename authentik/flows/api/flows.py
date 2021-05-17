@@ -6,8 +6,8 @@ from django.db.models import Model
 from django.http.response import HttpResponseBadRequest, JsonResponse
 from django.urls import reverse
 from django.utils.translation import gettext as _
-from drf_yasg import openapi
-from drf_yasg.utils import no_body, swagger_auto_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
@@ -41,7 +41,7 @@ class FlowSerializer(ModelSerializer):
 
     cache_count = SerializerMethodField()
 
-    def get_cache_count(self, flow: Flow):
+    def get_cache_count(self, flow: Flow) -> int:
         """Get count of cached flows"""
         return len(cache.keys(f"{cache_key(flow)}*"))
 
@@ -61,6 +61,9 @@ class FlowSerializer(ModelSerializer):
             "cache_count",
             "policy_engine_mode",
         ]
+        extra_kwargs = {
+            "background": {"read_only": True},
+        }
 
 
 class FlowDiagramSerializer(Serializer):
@@ -97,16 +100,19 @@ class FlowViewSet(ModelViewSet):
     filterset_fields = ["flow_uuid", "name", "slug", "designation"]
 
     @permission_required(None, ["authentik_flows.view_flow_cache"])
-    @swagger_auto_schema(responses={200: CacheSerializer(many=False)})
+    @extend_schema(responses={200: CacheSerializer(many=False)})
     @action(detail=False, pagination_class=None, filter_backends=[])
     def cache_info(self, request: Request) -> Response:
         """Info about cached flows"""
         return Response(data={"count": len(cache.keys("flow_*"))})
 
     @permission_required(None, ["authentik_flows.clear_flow_cache"])
-    @swagger_auto_schema(
-        request_body=no_body,
-        responses={204: "Successfully cleared cache", 400: "Bad request"},
+    @extend_schema(
+        request=OpenApiTypes.NONE,
+        responses={
+            204: OpenApiResponse(description="Successfully cleared cache"),
+            400: OpenApiResponse(description="Bad request"),
+        },
     )
     @action(detail=False, methods=["POST"])
     def cache_clear(self, request: Request) -> Response:
@@ -133,17 +139,20 @@ class FlowViewSet(ModelViewSet):
             "authentik_stages_prompt.change_prompt",
         ],
     )
-    @swagger_auto_schema(
-        request_body=no_body,
-        manual_parameters=[
-            openapi.Parameter(
+    @extend_schema(
+        request=OpenApiTypes.NONE,
+        parameters=[
+            OpenApiParameter(
                 name="file",
-                in_=openapi.IN_FORM,
-                type=openapi.TYPE_FILE,
+                location=OpenApiParameter.QUERY,  # TODO: Form
+                type=OpenApiTypes.BINARY,
                 required=True,
             )
         ],
-        responses={204: "Successfully imported flow", 400: "Bad request"},
+        responses={
+            204: OpenApiResponse(description="Successfully imported flow"),
+            400: OpenApiResponse(description="Bad request"),
+        },
     )
     @action(detail=False, methods=["POST"], parser_classes=(MultiPartParser,))
     def import_flow(self, request: Request) -> Response:
@@ -171,11 +180,9 @@ class FlowViewSet(ModelViewSet):
             "authentik_stages_prompt.view_prompt",
         ],
     )
-    @swagger_auto_schema(
+    @extend_schema(
         responses={
-            "200": openapi.Response(
-                "File Attachment", schema=openapi.Schema(type=openapi.TYPE_FILE)
-            ),
+            "200": OpenApiResponse(response=OpenApiTypes.BINARY),
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
@@ -188,7 +195,7 @@ class FlowViewSet(ModelViewSet):
         response["Content-Disposition"] = f'attachment; filename="{flow.slug}.akflow"'
         return response
 
-    @swagger_auto_schema(responses={200: FlowDiagramSerializer()})
+    @extend_schema(responses={200: FlowDiagramSerializer()})
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["get"])
     # pylint: disable=unused-argument
     def diagram(self, request: Request, slug: str) -> Response:
@@ -259,17 +266,20 @@ class FlowViewSet(ModelViewSet):
         return Response({"diagram": diagram})
 
     @permission_required("authentik_flows.change_flow")
-    @swagger_auto_schema(
-        request_body=no_body,
-        manual_parameters=[
-            openapi.Parameter(
+    @extend_schema(
+        request=OpenApiTypes.NONE,
+        parameters=[
+            OpenApiParameter(
                 name="file",
-                in_=openapi.IN_FORM,
-                type=openapi.TYPE_FILE,
+                location=OpenApiParameter.QUERY,  # TODO: Form
+                type=OpenApiTypes.BINARY,
                 required=True,
             )
         ],
-        responses={200: "Success", 400: "Bad request"},
+        responses={
+            200: OpenApiResponse(description="Success"),
+            400: OpenApiResponse(description="Bad request"),
+        },
     )
     @action(
         detail=True,
@@ -289,8 +299,11 @@ class FlowViewSet(ModelViewSet):
         app.save()
         return Response({})
 
-    @swagger_auto_schema(
-        responses={200: LinkSerializer(many=False), 400: "Flow not applicable"},
+    @extend_schema(
+        responses={
+            200: LinkSerializer(many=False),
+            400: OpenApiResponse(description="Flow not applicable"),
+        },
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=unused-argument

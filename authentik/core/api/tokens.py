@@ -1,6 +1,6 @@
 """Tokens API Viewset"""
 from django.http.response import Http404
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import CharField
 from rest_framework.request import Request
@@ -67,10 +67,10 @@ class TokenViewSet(ModelViewSet):
         serializer.save(user=self.request.user, intent=TokenIntents.INTENT_API)
 
     @permission_required("authentik_core.view_token_key")
-    @swagger_auto_schema(
+    @extend_schema(
         responses={
             200: TokenViewSerializer(many=False),
-            404: "Token not found or expired",
+            404: OpenApiResponse(description="Token not found or expired"),
         }
     )
     @action(detail=True, pagination_class=None, filter_backends=[])

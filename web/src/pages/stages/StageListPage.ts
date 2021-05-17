@@ -102,7 +102,7 @@ export class StageListPage extends TablePage<Stage> {
                 .obj=${item}
                 objectLabel=${item.verboseName || ""}
                 .delete=${() => {
-                    return new StagesApi(DEFAULT_CONFIG).stagesAllDelete({
+                    return new StagesApi(DEFAULT_CONFIG).stagesAllDestroy({
                         stageUuid: item.pk || ""
                     });
                 }}>
@@ -121,7 +121,7 @@ export class StageListPage extends TablePage<Stage> {
                 <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </button>
             <ul class="pf-c-dropdown__menu" hidden>
-                ${until(new StagesApi(DEFAULT_CONFIG).stagesAllTypes().then((types) => {
+                ${until(new StagesApi(DEFAULT_CONFIG).stagesAllTypesList().then((types) => {
                     return types.map((type) => {
                         return html`<li>
                             <ak-forms-modal>

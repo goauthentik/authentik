@@ -1,4 +1,4 @@
-import { AuthenticatorValidateStage, AuthenticatorValidateStageNotConfiguredActionEnum, AuthenticatorValidateStageDeviceClassesEnum, StagesApi } from "authentik-api";
+import { AuthenticatorValidateStage, NotConfiguredActionEnum, DeviceClassesEnum, StagesApi } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -13,10 +13,10 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValidateStage, string> {
 
     loadInstance(pk: string): Promise<AuthenticatorValidateStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateRetrieve({
             stageUuid: pk,
         }).then(stage => {
-            this.showConfigureFlow = stage.notConfiguredAction === AuthenticatorValidateStageNotConfiguredActionEnum.Configure;
+            this.showConfigureFlow = stage.notConfiguredAction === NotConfiguredActionEnum.Configure;
             return stage;
         });
     }
@@ -36,16 +36,16 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                authenticatorValidateStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateCreate({
-                data: data
+                authenticatorValidateStageRequest: data
             });
         }
     };
 
-    isDeviceClassSelected(field: AuthenticatorValidateStageDeviceClassesEnum): boolean {
+    isDeviceClassSelected(field: DeviceClassesEnum): boolean {
         return (this.instance?.deviceClasses || []).filter(isField => {
             return field === isField;
         }).length > 0;
@@ -73,19 +73,19 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                         name="notConfiguredAction">
                         <select class="pf-c-form-control" @change=${(ev: Event) => {
                             const target = ev.target as HTMLSelectElement;
-                            if (target.selectedOptions[0].value === AuthenticatorValidateStageNotConfiguredActionEnum.Configure) {
+                            if (target.selectedOptions[0].value === NotConfiguredActionEnum.Configure) {
                                 this.showConfigureFlow = true;
                             } else {
                                 this.showConfigureFlow = false;
                             }
                         }}>
-                            <option value=${AuthenticatorValidateStageNotConfiguredActionEnum.Configure} ?selected=${this.instance?.notConfiguredAction === AuthenticatorValidateStageNotConfiguredActionEnum.Configure}>
+                            <option value=${NotConfiguredActionEnum.Configure} ?selected=${this.instance?.notConfiguredAction === NotConfiguredActionEnum.Configure}>
                                 ${t`Force the user to configure an authenticator`}
                             </option>
-                            <option value=${AuthenticatorValidateStageNotConfiguredActionEnum.Deny} ?selected=${this.instance?.notConfiguredAction === AuthenticatorValidateStageNotConfiguredActionEnum.Deny}>
+                            <option value=${NotConfiguredActionEnum.Deny} ?selected=${this.instance?.notConfiguredAction === NotConfiguredActionEnum.Deny}>
                                 ${t`Deny the user access`}
                             </option>
-                            <option value=${AuthenticatorValidateStageNotConfiguredActionEnum.Skip} ?selected=${this.instance?.notConfiguredAction === AuthenticatorValidateStageNotConfiguredActionEnum.Skip}>
+                            <option value=${NotConfiguredActionEnum.Skip} ?selected=${this.instance?.notConfiguredAction === NotConfiguredActionEnum.Skip}>
                                 ${t`Continue`}
                             </option>
                         </select>
@@ -95,13 +95,13 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                         ?required=${true}
                         name="transports">
                         <select name="users" class="pf-c-form-control" multiple>
-                            <option value=${AuthenticatorValidateStageDeviceClassesEnum.Static} ?selected=${this.isDeviceClassSelected(AuthenticatorValidateStageDeviceClassesEnum.Static)}>
+                            <option value=${DeviceClassesEnum.Static} ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Static)}>
                                 ${t`Static Tokens`}
                             </option>
-                            <option value=${AuthenticatorValidateStageDeviceClassesEnum.Totp} ?selected=${this.isDeviceClassSelected(AuthenticatorValidateStageDeviceClassesEnum.Totp)}>
+                            <option value=${DeviceClassesEnum.Totp} ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Totp)}>
                                 ${t`TOTP Authenticators`}
                             </option>
-                            <option value=${AuthenticatorValidateStageDeviceClassesEnum.Webauthn} ?selected=${this.isDeviceClassSelected(AuthenticatorValidateStageDeviceClassesEnum.Webauthn)}>
+                            <option value=${DeviceClassesEnum.Webauthn} ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Webauthn)}>
                                 ${t`WebAuthn Authenticators`}
                             </option>
                         </select>

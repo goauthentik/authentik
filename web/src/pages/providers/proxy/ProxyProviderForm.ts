@@ -1,4 +1,4 @@
-import { CryptoApi, FlowDesignationEnum, FlowsApi, ProvidersApi, ProxyProvider } from "authentik-api";
+import { CryptoApi, FlowsApi, FlowsInstancesListDesignationEnum, ProvidersApi, ProxyProvider } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -14,7 +14,7 @@ import { first } from "../../../utils";
 export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
 
     loadInstance(pk: number): Promise<ProxyProvider> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersProxyRead({
+        return new ProvidersApi(DEFAULT_CONFIG).providersProxyRetrieve({
             id: pk,
         }).then(provider => {
             this.showHttpBasic = first(provider.basicAuthEnabled, true);
@@ -41,11 +41,11 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersProxyUpdate({
                 id: this.instance.pk || 0,
-                data: data
+                proxyProviderRequest: data
             });
         } else {
             return new ProvidersApi(DEFAULT_CONFIG).providersProxyCreate({
-                data: data
+                proxyProviderRequest: data
             });
         }
     };
@@ -105,7 +105,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                 <select class="pf-c-form-control">
                     ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                         ordering: "pk",
-                        designation: FlowDesignationEnum.Authorization,
+                        designation: FlowsInstancesListDesignationEnum.Authorization,
                     }).then(flows => {
                         return flows.results.map(flow => {
                             return html`<option value=${ifDefined(flow.pk)} ?selected=${this.instance?.authorizationFlow === flow.pk}>${flow.name} (${flow.slug})</option>`;

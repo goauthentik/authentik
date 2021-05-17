@@ -18,7 +18,7 @@ import { ModelForm } from "../../elements/forms/ModelForm";
 export class GroupForm extends ModelForm<Group, string> {
 
     loadInstance(pk: string): Promise<Group> {
-        return new CoreApi(DEFAULT_CONFIG).coreGroupsRead({
+        return new CoreApi(DEFAULT_CONFIG).coreGroupsRetrieve({
             groupUuid: pk
         });
     }
@@ -35,12 +35,12 @@ export class GroupForm extends ModelForm<Group, string> {
         if (this.instance?.pk) {
             return new CoreApi(DEFAULT_CONFIG).coreGroupsUpdate({
                 groupUuid: this.instance.pk || "",
-                data: data
+                groupRequest: data
             });
         } else {
-            data.users = Array.from(this.instance?.users || []) as unknown as Set<number>;
+            data.users = Array.from(this.instance?.users || []);
             return new CoreApi(DEFAULT_CONFIG).coreGroupsCreate({
-                data: data
+                groupRequest: data
             });
         }
     };
@@ -83,7 +83,7 @@ export class GroupForm extends ModelForm<Group, string> {
                             // Because the model only has the IDs, map the user list to IDs
                             const ids = items.map(u => u.pk || 0);
                             if (!this.instance) this.instance = {} as Group;
-                            this.instance.users = new Set(Array.from(this.instance?.users || []).concat(ids));
+                            this.instance.users = Array.from(this.instance?.users || []).concat(ids);
                             this.requestUpdate();
                             return Promise.resolve();
                         }}>
@@ -109,7 +109,7 @@ export class GroupForm extends ModelForm<Group, string> {
                                             const users = Array.from(this.instance?.users || []);
                                             const idx = users.indexOf(user.pk || 0);
                                             users.splice(idx, 1);
-                                            this.instance.users = new Set(users);
+                                            this.instance.users = users;
                                             this.requestUpdate();
                                         }}>
                                         ${user.username}

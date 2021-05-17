@@ -1,4 +1,4 @@
-import { FlowDesignationEnum, FlowsApi, ProvidersApi, SAMLProvider } from "authentik-api";
+import { FlowsApi, FlowsInstancesListDesignationEnum, ProvidersApi, SAMLProvider } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -21,7 +21,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
         if (!file) {
             throw new Error("No form data");
         }
-        return new ProvidersApi(DEFAULT_CONFIG).providersSamlImportMetadata({
+        return new ProvidersApi(DEFAULT_CONFIG).providersSamlImportMetadataCreate({
             file: file,
             name: data.name,
             authorizationFlow: data.authorizationFlow,
@@ -43,7 +43,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
                 <select class="pf-c-form-control">
                     ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                         ordering: "pk",
-                        designation: FlowDesignationEnum.Authorization,
+                        designation: FlowsInstancesListDesignationEnum.Authorization,
                     }).then(flows => {
                         return flows.results.map(flow => {
                             return html`<option value=${ifDefined(flow.pk)}>${flow.name} (${flow.slug})</option>`;

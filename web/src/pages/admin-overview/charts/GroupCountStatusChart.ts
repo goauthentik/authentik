@@ -34,7 +34,7 @@ export class GroupCountStatusChart extends AKChart<GroupMetrics> {
             pageSize: 1
         })).pagination.count;
         const superusers = (await api.coreGroupsList({
-            isSuperuser: "true"
+            isSuperuser: true
         })).pagination.count;
         this.centerText = count.toString();
         return {

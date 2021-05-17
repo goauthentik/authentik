@@ -14,7 +14,7 @@ import { ModelForm } from "../../elements/forms/ModelForm";
 export class UserForm extends ModelForm<User, number> {
 
     loadInstance(pk: number): Promise<User> {
-        return new CoreApi(DEFAULT_CONFIG).coreUsersRead({
+        return new CoreApi(DEFAULT_CONFIG).coreUsersRetrieve({
             id: pk
         });
     }
@@ -31,11 +31,11 @@ export class UserForm extends ModelForm<User, number> {
         if (this.instance) {
             return new CoreApi(DEFAULT_CONFIG).coreUsersUpdate({
                 id: this.instance.pk || 0,
-                data: data
+                userRequest: data
             });
         } else {
             return new CoreApi(DEFAULT_CONFIG).coreUsersCreate({
-                data: data
+                userRequest: data
             });
         }
     };

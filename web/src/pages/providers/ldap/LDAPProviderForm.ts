@@ -1,4 +1,4 @@
-import { FlowDesignationEnum, FlowsApi, ProvidersApi, LDAPProvider, CoreApi } from "authentik-api";
+import { FlowsApi, ProvidersApi, LDAPProvider, CoreApi, FlowsInstancesListDesignationEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -14,7 +14,7 @@ import { first } from "../../../utils";
 export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
 
     loadInstance(pk: number): Promise<LDAPProvider> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersLdapRead({
+        return new ProvidersApi(DEFAULT_CONFIG).providersLdapRetrieve({
             id: pk,
         });
     }
@@ -31,11 +31,11 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersLdapUpdate({
                 id: this.instance.pk || 0,
-                data: data
+                lDAPProviderRequest: data
             });
         } else {
             return new ProvidersApi(DEFAULT_CONFIG).providersLdapCreate({
-                data: data
+                lDAPProviderRequest: data
             });
         }
     };
@@ -55,7 +55,7 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                 <select class="pf-c-form-control">
                     ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                         ordering: "pk",
-                        designation: FlowDesignationEnum.Authentication,
+                        designation: FlowsInstancesListDesignationEnum.Authentication,
                     }).then(flows => {
                         return flows.results.map(flow => {
                             return html`<option value=${ifDefined(flow.pk)} ?selected=${this.instance?.authorizationFlow === flow.pk}>${flow.name} (${flow.slug})</option>`;

@@ -1,6 +1,7 @@
 """policy API Views"""
 from django.core.cache import cache
-from drf_yasg.utils import no_body, swagger_auto_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins
 from rest_framework.decorators import action
@@ -96,7 +97,7 @@ class PolicyViewSet(
             "bindings", "promptstage_set"
         )
 
-    @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
+    @extend_schema(responses={200: TypeCreateSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])
     def types(self, request: Request) -> Response:
         """Get all creatable policy types"""
@@ -114,16 +115,19 @@ class PolicyViewSet(
         return Response(TypeCreateSerializer(data, many=True).data)
 
     @permission_required(None, ["authentik_policies.view_policy_cache"])
-    @swagger_auto_schema(responses={200: CacheSerializer(many=False)})
+    @extend_schema(responses={200: CacheSerializer(many=False)})
     @action(detail=False, pagination_class=None, filter_backends=[])
     def cache_info(self, request: Request) -> Response:
         """Info about cached policies"""
         return Response(data={"count": len(cache.keys("policy_*"))})
 
     @permission_required(None, ["authentik_policies.clear_policy_cache"])
-    @swagger_auto_schema(
-        request_body=no_body,
-        responses={204: "Successfully cleared cache", 400: "Bad request"},
+    @extend_schema(
+        request=OpenApiTypes.NONE,
+        responses={
+            204: OpenApiResponse(description="Successfully cleared cache"),
+            400: OpenApiResponse(description="Bad request"),
+        },
     )
     @action(detail=False, methods=["POST"])
     def cache_clear(self, request: Request) -> Response:
@@ -137,9 +141,12 @@ class PolicyViewSet(
         return Response(status=204)
 
     @permission_required("authentik_policies.view_policy")
-    @swagger_auto_schema(
-        request_body=PolicyTestSerializer(),
-        responses={200: PolicyTestResultSerializer(), 400: "Invalid parameters"},
+    @extend_schema(
+        request=PolicyTestSerializer(),
+        responses={
+            200: PolicyTestResultSerializer(),
+            400: OpenApiResponse(description="Invalid parameters"),
+        },
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
     # pylint: disable=unused-argument, invalid-name

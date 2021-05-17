@@ -1,7 +1,7 @@
 """Source API Views"""
 from typing import Iterable
 
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.request import Request
@@ -24,7 +24,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
 
     component = SerializerMethodField()
 
-    def get_component(self, obj: Source):
+    def get_component(self, obj: Source) -> str:
         """Get object component so that we know how to edit the object"""
         # pyright: reportGeneralTypeIssues=false
         if obj.__class__ == Source:
@@ -64,7 +64,7 @@ class SourceViewSet(
     def get_queryset(self):
         return Source.objects.select_subclasses()
 
-    @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
+    @extend_schema(responses={200: TypeCreateSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])
     def types(self, request: Request) -> Response:
         """Get all creatable source types"""
@@ -87,7 +87,7 @@ class SourceViewSet(
             )
         return Response(TypeCreateSerializer(data, many=True).data)
 
-    @swagger_auto_schema(responses={200: UserSettingSerializer(many=True)})
+    @extend_schema(responses={200: UserSettingSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])
     def user_settings(self, request: Request) -> Response:
         """Get all sources the user can configure"""

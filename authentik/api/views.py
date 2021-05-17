@@ -5,18 +5,15 @@ from django.urls import reverse
 from django.views.generic import TemplateView
 
 
-class SwaggerView(TemplateView):
-    """Show swagger view based on rapi-doc"""
+class APIBrowserView(TemplateView):
+    """Show browser view based on rapi-doc"""
 
-    template_name = "api/swagger.html"
+    template_name = "api/browser.html"
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         path = self.request.build_absolute_uri(
             reverse(
-                "authentik_api:schema-json",
-                kwargs={
-                    "format": ".json",
-                },
+                "authentik_api:schema",
             )
         )
         return super().get_context_data(path=path, **kwargs)

@@ -13,7 +13,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class DummyPolicyForm extends ModelForm<DummyPolicy, string> {
 
     loadInstance(pk: string): Promise<DummyPolicy> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesDummyRead({
+        return new PoliciesApi(DEFAULT_CONFIG).policiesDummyRetrieve({
             policyUuid: pk,
         });
     }
@@ -30,11 +30,11 @@ export class DummyPolicyForm extends ModelForm<DummyPolicy, string> {
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesDummyUpdate({
                 policyUuid: this.instance.pk || "",
-                data: data
+                dummyPolicyRequest: data
             });
         } else {
             return new PoliciesApi(DEFAULT_CONFIG).policiesDummyCreate({
-                data: data
+                dummyPolicyRequest: data
             });
         }
     };

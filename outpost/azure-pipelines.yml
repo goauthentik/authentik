@@ -15,7 +15,7 @@ variables:
 stages:
   - stage: generate
     jobs:
-      - job: swagger_generate
+      - job: generate_api
         pool:
           vmImage: 'ubuntu-latest'
         steps:
@@ -24,16 +24,11 @@ stages:
               version: '1.16.3'
           - task: CmdLine@2
             inputs:
-              script: |
-                sudo wget -O /usr/local/bin/swagger https://github.com/go-swagger/go-swagger/releases/latest/download/swagger_linux_amd64
-                sudo chmod +x /usr/local/bin/swagger
-                mkdir -p $(go env GOPATH)
-                swagger generate client -f ../swagger.yaml -A authentik -t pkg/
-              workingDirectory: 'outpost/'
+              script: make gen-outpost
           - task: PublishPipelineArtifact@1
             inputs:
-              targetPath: 'outpost/pkg/'
-              artifact: 'go_swagger_client'
+              targetPath: 'outpost/api/'
+              artifact: 'go_api_client'
               publishLocation: 'pipeline'
   - stage: lint
     jobs:
@@ -47,12 +42,17 @@ stages:
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
-              artifactName: 'go_swagger_client'
-              path: "outpost/pkg/"
+              artifactName: 'go_api_client'
+              path: "outpost/api/"
           - task: CmdLine@2
             inputs:
               script: |
-                docker run --rm -v $(pwd):/app -w /app golangci/golangci-lint:v1.39.0 golangci-lint run -v --timeout 200s
+                docker run \
+                  --rm \
+                  -v $(pwd):/app \
+                  -w /app \
+                  golangci/golangci-lint:v1.39.0 \
+                  golangci-lint run -v --timeout 200s
               workingDirectory: 'outpost/'
   - stage: build_go
     jobs:
@@ -66,8 +66,8 @@ stages:
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
-              artifactName: 'go_swagger_client'
-              path: "outpost/pkg/"
+              artifactName: 'go_api_client'
+              path: "outpost/api/"
           - task: Go@0
             inputs:
               command: 'build'
@@ -83,8 +83,8 @@ stages:
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
-              artifactName: 'go_swagger_client'
-              path: "outpost/pkg/"
+              artifactName: 'go_api_client'
+              path: "outpost/api/"
           - task: Go@0
             inputs:
               command: 'build'
@@ -102,8 +102,8 @@ stages:
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
-              artifactName: 'go_swagger_client'
-              path: "outpost/pkg/"
+              artifactName: 'go_api_client'
+              path: "outpost/api/"
           - task: Bash@3
             inputs:
               targetType: 'inline'
@@ -138,8 +138,8 @@ stages:
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
-              artifactName: 'go_swagger_client'
-              path: "outpost/pkg/"
+              artifactName: 'go_api_client'
+              path: "outpost/api/"
           - task: Bash@3
             inputs:
               targetType: 'inline'

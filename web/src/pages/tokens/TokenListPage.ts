@@ -59,7 +59,7 @@ export class TokenListPage extends TablePage<Token> {
                 .obj=${item}
                 objectLabel=${t`Token`}
                 .delete=${() => {
-                    return new CoreApi(DEFAULT_CONFIG).coreTokensDelete({
+                    return new CoreApi(DEFAULT_CONFIG).coreTokensDestroy({
                         identifier: item.identifier
                     });
                 }}>

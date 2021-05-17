@@ -5,8 +5,8 @@ import (
 
 	"github.com/go-openapi/strfmt"
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/outpost/api"
 	"goauthentik.io/outpost/pkg/ak"
-	"goauthentik.io/outpost/pkg/models"
 
 	"github.com/nmcclain/ldap"
 )
@@ -31,7 +31,7 @@ type ProviderInstance struct {
 }
 
 type UserFlags struct {
-	UserInfo  models.User
+	UserInfo  api.User
 	CanSearch bool
 }
 

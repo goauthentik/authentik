@@ -55,7 +55,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
             html`
             <ak-action-button
                 .apiRequest=${() => {
-                    return new EventsApi(DEFAULT_CONFIG).eventsTransportsTest({
+                    return new EventsApi(DEFAULT_CONFIG).eventsTransportsTestCreate({
                         uuid: item.pk || "",
                     });
                 }}>
@@ -78,7 +78,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                 .obj=${item}
                 objectLabel=${t`Notifications Transport`}
                 .delete=${() => {
-                    return new EventsApi(DEFAULT_CONFIG).eventsTransportsDelete({
+                    return new EventsApi(DEFAULT_CONFIG).eventsTransportsDestroy({
                         uuid: item.pk || ""
                     });
                 }}>

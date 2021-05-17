@@ -19,7 +19,7 @@ export class FlowImportForm extends Form<Flow> {
         if (!file) {
             throw new Error("No form data");
         }
-        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesImportFlow({
+        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesImportFlowCreate({
             file: file
         });
     };

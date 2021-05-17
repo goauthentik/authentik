@@ -23,7 +23,7 @@ import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 export class FlowViewPage extends LitElement {
     @property()
     set flowSlug(value: string) {
-        new FlowsApi(DEFAULT_CONFIG).flowsInstancesRead({
+        new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({
             slug: value
         }).then((flow) => {
             this.flow = flow;
@@ -71,7 +71,7 @@ export class FlowViewPage extends LitElement {
                                                 <button
                                                     class="pf-c-button pf-m-secondary"
                                                     @click=${() => {
-                                                    new FlowsApi(DEFAULT_CONFIG).flowsInstancesExecute({
+                                                    new FlowsApi(DEFAULT_CONFIG).flowsInstancesExecuteRetrieve({
                                                         slug: this.flow.slug
                                                     }).then(link => {
                                                         const finalURL = `${link.link}?next=/%23${window.location.href}`;

@@ -1,7 +1,7 @@
 """OAuth2Provider API Views"""
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import ReadOnlyField
 from rest_framework.generics import get_object_or_404
@@ -67,10 +67,10 @@ class OAuth2ProviderViewSet(ModelViewSet):
     queryset = OAuth2Provider.objects.all()
     serializer_class = OAuth2ProviderSerializer
 
-    @swagger_auto_schema(
+    @extend_schema(
         responses={
-            200: OAuth2ProviderSetupURLs(many=False),
-            404: "Provider has no application assigned",
+            200: OAuth2ProviderSetupURLs,
+            404: OpenApiResponse(description="Provider has no application assigned"),
         }
     )
     @action(methods=["GET"], detail=True)

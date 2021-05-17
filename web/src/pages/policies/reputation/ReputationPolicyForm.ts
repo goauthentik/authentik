@@ -13,7 +13,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class ReputationPolicyForm extends ModelForm<ReputationPolicy, string> {
 
     loadInstance(pk: string): Promise<ReputationPolicy> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesReputationRead({
+        return new PoliciesApi(DEFAULT_CONFIG).policiesReputationRetrieve({
             policyUuid: pk,
         });
     }
@@ -30,11 +30,11 @@ export class ReputationPolicyForm extends ModelForm<ReputationPolicy, string> {
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesReputationUpdate({
                 policyUuid: this.instance.pk || "",
-                data: data
+                reputationPolicyRequest: data
             });
         } else {
             return new PoliciesApi(DEFAULT_CONFIG).policiesReputationCreate({
-                data: data
+                reputationPolicyRequest: data
             });
         }
     };

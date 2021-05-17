@@ -1,4 +1,4 @@
-import { CoreApi, Application, ProvidersApi, Provider, ApplicationPolicyEngineModeEnum } from "authentik-api";
+import { CoreApi, Application, ProvidersApi, Provider, PolicyEngineMode } from "authentik-api";
 import { t } from "@lingui/macro";
 import { CSSResult, customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -18,7 +18,7 @@ import { ModelForm } from "../../elements/forms/ModelForm";
 export class ApplicationForm extends ModelForm<Application, string> {
 
     loadInstance(pk: string): Promise<Application> {
-        return new CoreApi(DEFAULT_CONFIG).coreApplicationsRead({
+        return new CoreApi(DEFAULT_CONFIG).coreApplicationsRetrieve({
             slug: pk
         });
     }
@@ -43,17 +43,17 @@ export class ApplicationForm extends ModelForm<Application, string> {
         if (this.instance) {
             writeOp = new CoreApi(DEFAULT_CONFIG).coreApplicationsUpdate({
                 slug: this.instance.slug,
-                data: data
+                applicationRequest: data
             });
         } else {
             writeOp = new CoreApi(DEFAULT_CONFIG).coreApplicationsCreate({
-                data: data
+                applicationRequest: data
             });
         }
         const icon = this.getFormFile();
         if (icon) {
             return writeOp.then(app => {
-                return new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIcon({
+                return new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
                     slug: app.slug,
                     file: icon
                 });
@@ -115,7 +115,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
                         <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                     </button>
                     <ul class="pf-c-dropdown__menu" hidden>
-                        ${until(new ProvidersApi(DEFAULT_CONFIG).providersAllTypes().then((types) => {
+                        ${until(new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((types) => {
                             return types.map((type) => {
                                 return html`<li>
                                     <ak-forms-modal>
@@ -145,10 +145,10 @@ export class ApplicationForm extends ModelForm<Application, string> {
                 ?required=${true}
                 name="policyEngineMode">
                 <select class="pf-c-form-control">
-                    <option value=${ApplicationPolicyEngineModeEnum.Any} ?selected=${this.instance?.policyEngineMode === ApplicationPolicyEngineModeEnum.Any}>
+                    <option value=${PolicyEngineMode.Any} ?selected=${this.instance?.policyEngineMode === PolicyEngineMode.Any}>
                         ${t`ANY, any policy must match to grant access.`}
                     </option>
-                    <option value=${ApplicationPolicyEngineModeEnum.All} ?selected=${this.instance?.policyEngineMode === ApplicationPolicyEngineModeEnum.All}>
+                    <option value=${PolicyEngineMode.All} ?selected=${this.instance?.policyEngineMode === PolicyEngineMode.All}>
                         ${t`ALL, all policies must match to grant access.`}
                     </option>
                 </select>

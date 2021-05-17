@@ -1,4 +1,4 @@
-import { LDAPSource, SourcesApi, PropertymappingsApi } from "authentik-api";
+import { LDAPSource, SourcesApi, PropertymappingsApi, LDAPSourceRequest } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -14,7 +14,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
 
     loadInstance(pk: string): Promise<LDAPSource> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesLdapRead({
+        return new SourcesApi(DEFAULT_CONFIG).sourcesLdapRetrieve({
             slug: pk,
         });
     }
@@ -31,11 +31,11 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
         if (this.instance) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesLdapPartialUpdate({
                 slug: this.instance.slug,
-                data: data
+                patchedLDAPSourceRequest: data
             });
         } else {
             return new SourcesApi(DEFAULT_CONFIG).sourcesLdapCreate({
-                data: data
+                lDAPSourceRequest: data as unknown as LDAPSourceRequest
             });
         }
     };
@@ -117,7 +117,7 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                         ?required=${true}
                         ?writeOnly=${this.instance !== undefined}
                         name="bindPassword">
-                        <input type="text" value="${ifDefined(this.instance?.bindPassword)}" class="pf-c-form-control" required>
+                        <input type="text" value="" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Base DN`}

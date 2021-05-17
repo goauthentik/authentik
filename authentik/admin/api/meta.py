@@ -1,5 +1,5 @@
 """Meta API"""
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework.fields import CharField
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
@@ -22,7 +22,7 @@ class AppsViewSet(ViewSet):
 
     permission_classes = [IsAdminUser]
 
-    @swagger_auto_schema(responses={200: AppSerializer(many=True)})
+    @extend_schema(responses={200: AppSerializer(many=True)})
     def list(self, request: Request) -> Response:
         """List current messages and pass into Serializer"""
         data = []

@@ -12,7 +12,7 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 export class UserLoginStageForm extends ModelForm<UserLoginStage, string> {
 
     loadInstance(pk: string): Promise<UserLoginStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesUserLoginRead({
+        return new StagesApi(DEFAULT_CONFIG).stagesUserLoginRetrieve({
             stageUuid: pk,
         });
     }
@@ -29,11 +29,11 @@ export class UserLoginStageForm extends ModelForm<UserLoginStage, string> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesUserLoginUpdate({
                 stageUuid: this.instance.pk || "",
-                data: data
+                userLoginStageRequest: data
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesUserLoginCreate({
-                data: data
+                userLoginStageRequest: data
             });
         }
     };

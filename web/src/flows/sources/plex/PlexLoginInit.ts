@@ -38,8 +38,8 @@ export class PlexLoginInit extends BaseStage {
         const authWindow = popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
         PlexAPIClient.pinPoll(this.challenge?.client_id || "", authInfo.pin.id).then(token => {
             authWindow?.close();
-            new SourcesApi(DEFAULT_CONFIG).sourcesPlexRedeemToken({
-                data: {
+            new SourcesApi(DEFAULT_CONFIG).sourcesPlexRedeemTokenCreate({
+                plexTokenRedeemRequest: {
                     plexToken: token,
                 },
                 slug: this.challenge?.slug || "",
