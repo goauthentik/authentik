@@ -21,7 +21,7 @@ export function config(): Promise<Config> {
 }
 
 export const DEFAULT_CONFIG = new Configuration({
-    basePath: "/api/v2beta",
+    basePath: "",
     headers: {
         "X-CSRFToken": getCookie("authentik_csrf"),
     },
