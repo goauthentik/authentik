@@ -6,9 +6,14 @@ from django.db.models import QuerySet
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    OpenApiResponse,
+    extend_schema,
+    inline_serializer,
+)
 from rest_framework.decorators import action
-from rest_framework.fields import SerializerMethodField
+from rest_framework.fields import FileField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -155,15 +160,11 @@ class ApplicationViewSet(ModelViewSet):
 
     @permission_required("authentik_core.change_application")
     @extend_schema(
-        request=OpenApiTypes.NONE,
-        parameters=[
-            OpenApiParameter(
-                name="file",
-                location=OpenApiParameter.QUERY,  # TODO: In Form
-                type=OpenApiTypes.BINARY,
-                required=True,
+        request={
+            "multipart/form-data": inline_serializer(
+                "SetIcon", fields={"file": FileField()}
             )
-        ],
+        },
         responses={
             200: OpenApiResponse(description="Success"),
             400: OpenApiResponse(description="Bad request"),

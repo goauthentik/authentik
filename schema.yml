@@ -1268,12 +1268,6 @@ paths:
       operationId: core_applications_set_icon_create
       description: Set application icon
       parameters:
-      - in: query
-        name: file
-        schema:
-          type: string
-          format: binary
-        required: true
       - in: path
         name: slug
         schema:
@@ -1282,6 +1276,12 @@ paths:
         required: true
       tags:
       - core
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SetIconRequest'
+        required: true
       security:
       - authentik: []
       - cookieAuth: []
@@ -3948,12 +3948,6 @@ paths:
       operationId: flows_instances_set_background_create
       description: Set Flow background
       parameters:
-      - in: query
-        name: file
-        schema:
-          type: string
-          format: binary
-        required: true
       - in: path
         name: slug
         schema:
@@ -3962,6 +3956,12 @@ paths:
         required: true
       tags:
       - flows
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SetIconRequest'
+        required: true
       security:
       - authentik: []
       - cookieAuth: []
@@ -4012,15 +4012,14 @@ paths:
     post:
       operationId: flows_instances_import_flow_create
       description: Import flow from .akflow file
-      parameters:
-      - in: query
-        name: file
-        schema:
-          type: string
-          format: binary
-        required: true
       tags:
       - flows
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SetIconRequest'
+        required: true
       security:
       - authentik: []
       - cookieAuth: []
@@ -23126,6 +23125,14 @@ components:
           $ref: '#/components/schemas/User'
       required:
       - user
+    SetIconRequest:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+      required:
+      - file
     SeverityEnum:
       enum:
       - notice

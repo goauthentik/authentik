@@ -119,7 +119,9 @@ class SAMLProviderViewSet(ModelViewSet):
         ],
     )
     @extend_schema(
-        request=SAMLProviderImportSerializer(),
+        request={
+            "multipart/form-data": SAMLProviderImportSerializer,
+        },
         responses={
             204: OpenApiResponse(description="Successfully imported provider"),
             400: OpenApiResponse(description="Bad request"),

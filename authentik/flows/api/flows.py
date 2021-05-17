@@ -7,9 +7,15 @@ from django.http.response import HttpResponseBadRequest, JsonResponse
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    OpenApiResponse,
+    extend_schema,
+    inline_serializer,
+)
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
+from rest_framework.fields import FileField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -140,15 +146,11 @@ class FlowViewSet(ModelViewSet):
         ],
     )
     @extend_schema(
-        request=OpenApiTypes.NONE,
-        parameters=[
-            OpenApiParameter(
-                name="file",
-                location=OpenApiParameter.QUERY,  # TODO: Form
-                type=OpenApiTypes.BINARY,
-                required=True,
+        request={
+            "multipart/form-data": inline_serializer(
+                "SetIcon", fields={"file": FileField()}
             )
-        ],
+        },
         responses={
             204: OpenApiResponse(description="Successfully imported flow"),
             400: OpenApiResponse(description="Bad request"),
@@ -267,15 +269,11 @@ class FlowViewSet(ModelViewSet):
 
     @permission_required("authentik_flows.change_flow")
     @extend_schema(
-        request=OpenApiTypes.NONE,
-        parameters=[
-            OpenApiParameter(
-                name="file",
-                location=OpenApiParameter.QUERY,  # TODO: Form
-                type=OpenApiTypes.BINARY,
-                required=True,
+        request={
+            "multipart/form-data": inline_serializer(
+                "SetIcon", fields={"file": FileField()}
             )
-        ],
+        },
         responses={
             200: OpenApiResponse(description="Success"),
             400: OpenApiResponse(description="Bad request"),
