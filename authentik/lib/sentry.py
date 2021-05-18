@@ -89,6 +89,13 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
         if isinstance(exc_value, ignored_classes):
             return None
     if "logger" in event:
-        if event["logger"] in ["dbbackup", "botocore"]:
+        if event["logger"] in [
+            "dbbackup",
+            "botocore",
+            "kombu",
+            "asyncio",
+            "multiprocessing",
+            "django_redis",
+        ]:
             return None
     return event
