@@ -16,6 +16,9 @@
             "en",
             "pseudo-LOCALE"
         ],
+        "formatOptions": {
+            "lineNumbers": false
+        },
         "pseudoLocale": "pseudo-LOCALE",
         "fallbackLocales": {
             "pseudo-LOCALE": "en"

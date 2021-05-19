@@ -13,4109 +13,4109 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:141
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:149
-#: src/pages/providers/saml/SAMLProviderForm.ts:201
-#: src/pages/stages/user_login/UserLoginStageForm.ts:69
+#: 
+#: 
+#: 
+#: 
 msgid "(Format: hours=-1;minutes=-2;seconds=-3)."
 msgstr ""
 
-#: src/pages/policies/BoundPoliciesList.ts:59
+#: 
 msgid "-"
 msgstr ""
 
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:70
+#: 
 msgid "6 digits, widely compatible"
 msgstr ""
 
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:73
+#: 
 msgid "8 digits, not compatible with apps like Google Authenticator"
 msgstr ""
 
-#: src/interfaces/Interface.ts:54
+#: 
 msgid "A newer version of the frontend is available."
 msgstr ""
 
-#: src/pages/policies/dummy/DummyPolicyForm.ts:51
+#: 
 msgid "A policy used for testing. Always returns the same result as specified below after waiting a random duration."
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:81
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:85
+#: 
+#: 
 msgid "ACS URL"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:154
-#: src/pages/flows/FlowForm.ts:114
+#: 
+#: 
 msgid "ALL, all policies must match to grant access."
 msgstr ""
 
-#: src/pages/flows/StageBindingForm.ts:149
+#: 
 msgid "ALL, all policies must match to include this stage access."
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:151
-#: src/pages/flows/FlowForm.ts:111
+#: 
+#: 
 msgid "ANY, any policy must match to grant access."
 msgstr ""
 
-#: src/pages/flows/StageBindingForm.ts:146
+#: 
 msgid "ANY, any policy must match to include this stage access."
 msgstr ""
 
-#: src/elements/notifications/APIDrawer.ts:61
+#: 
 msgid "API Requests"
 msgstr ""
 
-#: src/elements/messages/Middleware.ts:9
+#: 
 msgid "API request failed"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:88
+#: 
 msgid "Access Key"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:136
+#: 
 msgid "Access code validity"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:74
+#: 
 msgid "Access token URL"
 msgstr ""
 
-#: src/elements/events/ObjectChangelog.ts:38
-#: src/elements/events/UserEvents.ts:35
-#: src/pages/events/EventListPage.ts:43
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:77
+#: 
+#: 
+#: 
+#: 
 msgid "Action"
 msgstr ""
 
-#: src/pages/groups/MemberSelectModal.ts:46
-#: src/pages/users/UserListPage.ts:55
-#: src/pages/users/UserViewPage.ts:116
+#: 
+#: 
+#: 
 msgid "Active"
 msgstr ""
 
-#: src/pages/groups/MemberSelectModal.ts:83
+#: 
 msgid "Add"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:200
+#: 
 msgid "Addition Group DN"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:194
+#: 
 msgid "Addition User DN"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:203
+#: 
 msgid "Additional group DN, prepended to the Base DN."
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:197
+#: 
 msgid "Additional user DN, prepended to the Base DN."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:132
-#: src/pages/providers/proxy/ProxyProviderForm.ts:153
-#: src/pages/providers/saml/SAMLProviderForm.ts:116
-#: src/pages/sources/saml/SAMLSourceForm.ts:132
+#: 
+#: 
+#: 
+#: 
 msgid "Advanced protocol settings"
 msgstr ""
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:117
-#: src/pages/sources/ldap/LDAPSourceForm.ts:138
+#: 
+#: 
 msgid "Advanced settings"
 msgstr ""
 
-#: src/pages/events/EventInfo.ts:98
+#: 
 msgid "Affected model:"
 msgstr ""
 
-#: src/pages/events/RuleForm.ts:50
+#: 
 msgid "Alert"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:163
+#: 
 msgid "Algorithm used to sign the JWT Tokens."
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceForm.ts:139
+#: 
 msgid "Allow IDP-initiated logins"
 msgstr ""
 
-#: src/pages/sources/plex/PlexSourceForm.ts:150
+#: 
 msgid "Allow friends to authenticate via Plex, even if you don't share any servers"
 msgstr ""
 
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:88
+#: 
 msgid "Allow up to N occurrences in the HIBP database."
 msgstr ""
 
-#: src/pages/policies/PolicyListPage.ts:41
+#: 
 msgid "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages."
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:156
+#: 
 msgid "Allowed Redirect URIs"
 msgstr ""
 
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:84
+#: 
 msgid "Allowed count"
 msgstr ""
 
-#: src/pages/sources/plex/PlexSourceForm.ts:155
+#: 
 msgid "Allowed servers"
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceForm.ts:142
+#: 
 msgid "Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done."
 msgstr ""
 
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:51
+#: 
 msgid "Allows/denys requests based on the users and/or the IPs reputation."
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceForm.ts:94
+#: 
 msgid "Also known as Entity ID. Defaults the Metadata URL."
 msgstr ""
 
-#: src/pages/stages/consent/ConsentStageForm.ts:81
+#: 
 msgid "Always require consent"
 msgstr ""
 
-#: src/pages/events/EventInfo.ts:59
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:97
+#: 
+#: 
 msgid "App"
 msgstr ""
 
-#: src/elements/user/UserConsentList.ts:29
-#: src/pages/admin-overview/TopApplicationsTable.ts:43
-#: src/pages/applications/ApplicationListPage.ts:105
-#: src/pages/providers/ProviderListPage.ts:54
+#: 
+#: 
+#: 
+#: 
 msgid "Application"
 msgstr ""
 
-#: src/pages/applications/ApplicationListPage.ts:69
+#: 
 msgid "Application Icon"
 msgstr ""
 
-#: src/flows/stages/consent/ConsentStage.ts:50
+#: 
 msgid "Application requires following permissions"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:95
+#: 
 msgid "Application's display Name."
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:38
-#: src/pages/LibraryPage.ts:130
-#: src/pages/applications/ApplicationListPage.ts:28
+#: 
+#: 
+#: 
 msgid "Applications"
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:111
+#: 
 msgid "Apps with most usage"
 msgstr ""
 
-#: src/elements/forms/DeleteForm.ts:69
+#: 
 msgid "Are you sure you want to delete {0} {objName} ?"
 msgstr ""
 
-#: src/pages/users/UserActiveForm.ts:52
+#: 
 msgid "Are you sure you want to update {0} \"{1}\"?"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:208
+#: 
 msgid "Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:196
+#: 
 msgid "Assertion valid not before"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:204
+#: 
 msgid "Assertion valid not on or after"
 msgstr ""
 
-#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn.ts:53
+#: 
 msgid "Assertions is empty"
 msgstr ""
 
-#: src/pages/providers/ProviderListPage.ts:66
-#: src/pages/providers/ldap/LDAPProviderViewPage.ts:72
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:81
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:70
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:75
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Assigned to application"
 msgstr ""
 
-#: src/pages/policies/PolicyListPage.ts:68
+#: 
 msgid "Assigned to {0} objects."
 msgstr ""
 
-#: src/pages/events/EventInfo.ts:120
+#: 
 msgid "Attempted to log in as {0}"
 msgstr ""
 
-#: src/pages/property-mappings/PropertyMappingSAMLForm.ts:61
+#: 
 msgid "Attribute name used for SAML Assertions. Can be a URN OID, a schema reference, or a any other string. If this property mapping is used for NameID Property, this field is discarded."
 msgstr ""
 
-#: src/pages/groups/GroupForm.ts:139
-#: src/pages/stages/invitation/InvitationForm.ts:57
-#: src/pages/users/UserForm.ts:82
+#: 
+#: 
+#: 
 msgid "Attributes"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:107
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:93
+#: 
+#: 
 msgid "Audience"
 msgstr ""
 
-#: src/flows/sources/plex/PlexLoginInit.ts:68
+#: 
 msgid "Authenticating with Plex..."
 msgstr ""
 
-#: src/pages/flows/FlowForm.ts:60
+#: 
 msgid "Authentication"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:231
-#: src/pages/sources/plex/PlexSourceForm.ts:185
-#: src/pages/sources/saml/SAMLSourceForm.ts:243
+#: 
+#: 
+#: 
 msgid "Authentication flow"
 msgstr ""
 
-#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts:63
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:33
+#: 
+#: 
 msgid "Authenticator"
 msgstr ""
 
-#: src/pages/flows/FlowForm.ts:63
+#: 
 msgid "Authorization"
 msgstr ""
 
-#: src/elements/oauth/UserCodeList.ts:46
+#: 
 msgid "Authorization Code"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:67
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:96
+#: 
+#: 
 msgid "Authorization URL"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:62
-#: src/pages/providers/proxy/ProxyProviderForm.ts:104
-#: src/pages/providers/saml/SAMLProviderForm.ts:58
-#: src/pages/providers/saml/SAMLProviderImportForm.ts:44
+#: 
+#: 
+#: 
+#: 
 msgid "Authorization flow"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:168
+#: 
 msgid "Authorize URL"
 msgstr ""
 
-#: src/pages/events/EventInfo.ts:104
+#: 
 msgid "Authorized application:"
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts:72
+#: 
 msgid "Backends"
 msgstr ""
 
-#: src/pages/flows/FlowForm.ts:129
+#: 
 msgid "Background"
 msgstr ""
 
-#: src/pages/flows/FlowForm.ts:132
-#: src/pages/flows/FlowImportForm.ts:37
+#: 
+#: 
 msgid "Background shown during execution."
 msgstr ""
 
-#: src/pages/admin-overview/cards/BackupStatusCard.ts:37
+#: 
 msgid "Backup finished with errors."
 msgstr ""
 
-#: src/pages/admin-overview/cards/BackupStatusCard.ts:32
+#: 
 msgid "Backup finished with warnings."
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:94
+#: 
 msgid "Backup status"
 msgstr ""
 
-#: src/pages/providers/ldap/LDAPProviderForm.ts:95
-#: src/pages/providers/ldap/LDAPProviderViewPage.ts:82
-#: src/pages/sources/ldap/LDAPSourceForm.ts:129
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:80
+#: 
+#: 
+#: 
+#: 
 msgid "Base DN"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:217
+#: 
 msgid "Based on the Hashed User ID"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:223
+#: 
 msgid "Based on the User's Email. This is recommended over the UPN method."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:226
+#: 
 msgid "Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:220
+#: 
 msgid "Based on the username"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:96
+#: 
 msgid "Basic-Auth"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:116
+#: 
 msgid "Bind CN"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:122
+#: 
 msgid "Bind Password"
 msgstr ""
 
-#: src/pages/providers/ldap/LDAPProviderForm.ts:58
+#: 
 msgid "Bind flow"
 msgstr ""
 
-#: src/pages/flows/BoundStagesList.ts:127
-#: src/pages/flows/BoundStagesList.ts:175
+#: 
+#: 
 msgid "Bind stage"
 msgstr ""
 
-#: src/pages/events/EventInfo.ts:141
-#: src/pages/events/EventInfo.ts:160
+#: 
+#: 
 msgid "Binding"
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceForm.ts:97
+#: 
 msgid "Binding Type"
 msgstr ""
 
-#: src/pages/admin-overview/cards/VersionStatusCard.ts:21
+#: 
 msgid "Build hash: {0}"
 msgstr ""
 
-#: src/pages/sources/SourcesListPage.ts:104
-#: src/pages/sources/SourcesListPage.ts:106
+#: 
+#: 
 msgid "Built-in"
 msgstr ""
 
-#: src/pages/outposts/ServiceConnectionDockerForm.ts:86
+#: 
 msgid "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 msgstr ""
 
-#: src/pages/admin-overview/charts/FlowStatusChart.ts:54
+#: 
 msgid "Cached flows"
 msgstr ""
 
-#: src/pages/admin-overview/charts/PolicyStatusChart.ts:59
+#: 
 msgid "Cached policies"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:80
+#: 
 msgid "Callback URL"
 msgstr ""
 
-#: src/pages/outposts/ServiceConnectionDockerForm.ts:70
+#: 
 msgid "Can be in the format of 'unix://' when connecting to a local docker daemon, or 'https://:2376' when connecting to a remote system."
 msgstr ""
 
-#: src/elements/forms/ConfirmationForm.ts:75
-#: src/elements/forms/DeleteForm.ts:86
-#: src/elements/forms/ModalForm.ts:71
-#: src/pages/groups/MemberSelectModal.ts:90
-#: src/pages/users/UserActiveForm.ts:73
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Cancel"
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:89
+#: 
 msgid "Case insensitive matching"
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairForm.ts:56
-#: src/pages/providers/proxy/ProxyProviderForm.ts:157
+#: 
+#: 
 msgid "Certificate"
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairListPage.ts:98
+#: 
 msgid "Certificate Fingerprint"
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairListPage.ts:106
+#: 
 msgid "Certificate Subjet"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:134
+#: 
 msgid "Certificate used to sign outgoing Responses going to the Service Provider."
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairListPage.ts:79
+#: 
 msgid "Certificate-Key Pair"
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairListPage.ts:30
+#: 
 msgid "Certificate-Key Pairs"
 msgstr ""
 
-#: src/pages/outposts/ServiceConnectionDockerForm.ts:102
+#: 
 msgid "Certificate/Key used for authentication. Can be left empty for no authentication."
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:106
+#: 
 msgid "Certificates"
 msgstr ""
 
-#: src/pages/user-settings/settings/UserSettingsPassword.ts:22
+#: 
 msgid "Change password"
 msgstr ""
 
-#: src/pages/user-settings/settings/UserSettingsPassword.ts:17
+#: 
 msgid "Change your password"
 msgstr ""
 
-#: src/pages/applications/ApplicationViewPage.ts:136
-#: src/pages/flows/FlowViewPage.ts:110
-#: src/pages/providers/ldap/LDAPProviderViewPage.ts:111
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:136
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:170
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:130
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:113
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:133
-#: src/pages/sources/plex/PlexSourceViewPage.ts:92
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:119
-#: src/pages/users/UserViewPage.ts:185
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Changelog"
 msgstr ""
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:125
+#: 
 msgid "Characters which are considered as symbols."
 msgstr ""
 
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:79
+#: 
 msgid "Check IP"
 msgstr ""
 
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:87
+#: 
 msgid "Check Username"
 msgstr ""
 
-#: src/flows/stages/email/EmailStage.ts:38
+#: 
 msgid "Check your Emails for a password reset link."
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:65
+#: 
 msgid "Checkbox"
 msgstr ""
 
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:51
+#: 
 msgid ""
 "Checks a value from the policy request against the Have I been Pwned API, and denys the request based upon that.\n"
 "Note that only a part of the hash of the password is sent, the full comparison is done clientside."
 msgstr ""
 
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:51
+#: 
 msgid "Checks if the request's user's password has been changed in the last x days, and denys based on settings."
 msgstr ""
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:51
+#: 
 msgid "Checks the value from the policy request against several rules, mostly used to ensure password strength."
 msgstr ""
 
-#: src/elements/forms/HorizontalFormElement.ts:82
+#: 
 msgid "Click to change value"
 msgstr ""
 
-#: src/pages/outposts/OutpostDeploymentModal.ts:33
+#: 
 msgid "Click to copy token"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:107
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:99
-#: src/pages/sources/plex/PlexSourceForm.ts:141
+#: 
+#: 
+#: 
 msgid "Client ID"
 msgstr ""
 
-#: src/elements/events/ObjectChangelog.ts:41
-#: src/elements/events/UserEvents.ts:38
-#: src/pages/events/EventListPage.ts:46
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:91
+#: 
+#: 
+#: 
+#: 
 msgid "Client IP"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:114
+#: 
 msgid "Client Secret"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:85
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:91
+#: 
+#: 
 msgid "Client type"
 msgstr ""
 
-#: src/pages/outposts/OutpostDeploymentModal.ts:48
+#: 
 msgid "Close"
 msgstr ""
 
-#: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts:72
-#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts:49
+#: 
+#: 
 msgid "Code"
 msgstr ""
 
-#: src/pages/crypto/CertificateGenerateForm.ts:29
+#: 
 msgid "Common Name"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:98
+#: 
 msgid "Confidential"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:104
+#: 
 msgid "Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable."
 msgstr ""
 
-#: src/pages/outposts/OutpostForm.ts:118
+#: 
 msgid "Configuration"
 msgstr ""
 
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:72
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:78
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:118
-#: src/pages/stages/password/PasswordStageForm.ts:87
+#: 
+#: 
+#: 
+#: 
 msgid "Configuration flow"
 msgstr ""
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:106
+#: 
 msgid "Configure WebAuthn"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:140
+#: 
 msgid "Configure how long access codes are valid for."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:148
+#: 
 msgid "Configure how long refresh tokens and their id_tokens are valid for."
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:192
+#: 
 msgid "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:255
+#: 
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr ""
 
-#: src/pages/user-settings/UserSettingsPage.ts:71
+#: 
 msgid "Configure settings relevant to your user profile."
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:200
+#: 
 msgid "Configure the maximum allowed time drift for an asseration."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:230
+#: 
 msgid "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
 msgstr ""
 
-#: src/pages/user-settings/settings/SourceSettingsOAuth.ts:43
+#: 
 msgid "Connect"
 msgstr ""
 
-#: src/pages/user-settings/settings/SourceSettingsOAuth.ts:30
+#: 
 msgid "Connected."
 msgstr ""
 
-#: src/elements/messages/MessageContainer.ts:62
+#: 
 msgid "Connection error, reconnecting..."
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:98
-#: src/pages/stages/email/EmailStageForm.ts:59
+#: 
+#: 
 msgid "Connection settings"
 msgstr ""
 
-#: src/elements/user/UserConsentList.ts:42
+#: 
 msgid "Consent"
 msgstr ""
 
-#: src/pages/stages/consent/ConsentStageForm.ts:93
+#: 
 msgid "Consent expires in"
 msgstr ""
 
-#: src/pages/stages/consent/ConsentStageForm.ts:87
+#: 
 msgid "Consent expires."
 msgstr ""
 
-#: src/pages/stages/consent/ConsentStageForm.ts:84
+#: 
 msgid "Consent given last indefinitely"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:217
+#: 
 msgid "Consider Objects matching this filter to be Groups."
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:210
+#: 
 msgid "Consider Objects matching this filter to be Users."
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:167
+#: 
 msgid "Consumer key"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:173
+#: 
 msgid "Consumer secret"
 msgstr ""
 
-#: src/pages/events/EventInfo.ts:79
-#: src/pages/events/EventInfo.ts:148
-#: src/pages/events/EventInfo.ts:167
-#: src/pages/policies/PolicyTestForm.ts:75
-#: src/pages/property-mappings/PropertyMappingTestForm.ts:65
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Context"
 msgstr ""
 
-#: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts:74
-#: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts:90
-#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts:68
-#: src/flows/stages/autosubmit/AutosubmitStage.ts:48
-#: src/flows/stages/consent/ConsentStage.ts:60
-#: src/flows/stages/dummy/DummyStage.ts:39
-#: src/flows/stages/password/PasswordStage.ts:71
-#: src/flows/stages/prompt/PromptStage.ts:155
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:94
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Continue"
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationStageForm.ts:68
+#: 
 msgid "Continue flow without invitation"
 msgstr ""
 
-#: src/pages/property-mappings/PropertyMappingListPage.ts:38
+#: 
 msgid "Control how authentik exposes and interprets information."
 msgstr ""
 
-#: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts:68
+#: 
 msgid "Copy"
 msgstr ""
 
-#: src/pages/tokens/TokenListPage.ts:72
-#: src/pages/user-settings/tokens/UserTokenList.ts:129
+#: 
+#: 
 msgid "Copy Key"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:166
+#: 
 msgid "Copy download URL"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:125
-#: src/pages/applications/ApplicationListPage.ts:121
-#: src/pages/applications/ApplicationListPage.ts:129
-#: src/pages/crypto/CertificateKeyPairListPage.ts:139
-#: src/pages/crypto/CertificateKeyPairListPage.ts:147
-#: src/pages/events/RuleListPage.ts:91
-#: src/pages/events/RuleListPage.ts:99
-#: src/pages/events/TransportListPage.ts:95
-#: src/pages/events/TransportListPage.ts:103
-#: src/pages/flows/BoundStagesList.ts:119
-#: src/pages/flows/BoundStagesList.ts:146
-#: src/pages/flows/BoundStagesList.ts:167
-#: src/pages/flows/FlowListPage.ts:109
-#: src/pages/flows/FlowListPage.ts:117
-#: src/pages/groups/GroupListPage.ts:90
-#: src/pages/groups/GroupListPage.ts:98
-#: src/pages/outposts/OutpostListPage.ts:101
-#: src/pages/outposts/OutpostListPage.ts:109
-#: src/pages/outposts/ServiceConnectionListPage.ts:110
-#: src/pages/outposts/ServiceConnectionListPage.ts:119
-#: src/pages/policies/BoundPoliciesList.ts:162
-#: src/pages/policies/BoundPoliciesList.ts:189
-#: src/pages/policies/BoundPoliciesList.ts:210
-#: src/pages/policies/PolicyListPage.ts:124
-#: src/pages/policies/PolicyListPage.ts:133
-#: src/pages/property-mappings/PropertyMappingListPage.ts:113
-#: src/pages/property-mappings/PropertyMappingListPage.ts:122
-#: src/pages/providers/ProviderListPage.ts:108
-#: src/pages/providers/ProviderListPage.ts:117
-#: src/pages/providers/RelatedApplicationButton.ts:27
-#: src/pages/providers/RelatedApplicationButton.ts:35
-#: src/pages/sources/SourcesListPage.ts:114
-#: src/pages/sources/SourcesListPage.ts:123
-#: src/pages/stages/StageListPage.ts:119
-#: src/pages/stages/StageListPage.ts:128
-#: src/pages/stages/invitation/InvitationListPage.ts:77
-#: src/pages/stages/invitation/InvitationListPage.ts:85
-#: src/pages/stages/prompt/PromptListPage.ts:96
-#: src/pages/stages/prompt/PromptListPage.ts:104
-#: src/pages/stages/prompt/PromptStageForm.ts:88
-#: src/pages/stages/prompt/PromptStageForm.ts:96
-#: src/pages/user-settings/tokens/UserTokenList.ts:50
-#: src/pages/user-settings/tokens/UserTokenList.ts:58
-#: src/pages/users/UserListPage.ts:155
-#: src/pages/users/UserListPage.ts:163
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Create"
 msgstr ""
 
-#: src/pages/applications/ApplicationListPage.ts:124
-#: src/pages/providers/RelatedApplicationButton.ts:30
+#: 
+#: 
 msgid "Create Application"
 msgstr ""
 
-#: src/pages/policies/BoundPoliciesList.ts:165
-#: src/pages/policies/BoundPoliciesList.ts:170
-#: src/pages/policies/BoundPoliciesList.ts:213
-#: src/pages/policies/BoundPoliciesList.ts:218
+#: 
+#: 
+#: 
+#: 
 msgid "Create Binding"
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairListPage.ts:142
+#: 
 msgid "Create Certificate-Key Pair"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts:112
+#: 
 msgid "Create Flow"
 msgstr ""
 
-#: src/pages/groups/GroupListPage.ts:93
+#: 
 msgid "Create Group"
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationListPage.ts:80
+#: 
 msgid "Create Invitation"
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationListPage.ts:31
+#: 
 msgid "Create Invitation Links to enroll Users, and optionally force specific attributes of their account."
 msgstr ""
 
-#: src/pages/events/RuleListPage.ts:94
+#: 
 msgid "Create Notification Rule"
 msgstr ""
 
-#: src/pages/events/TransportListPage.ts:98
+#: 
 msgid "Create Notification Transport"
 msgstr ""
 
-#: src/pages/outposts/OutpostListPage.ts:104
+#: 
 msgid "Create Outpost"
 msgstr ""
 
-#: src/pages/policies/BoundPoliciesList.ts:180
+#: 
 msgid "Create Policy"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptListPage.ts:99
-#: src/pages/stages/prompt/PromptStageForm.ts:91
+#: 
+#: 
 msgid "Create Prompt"
 msgstr ""
 
-#: src/pages/flows/BoundStagesList.ts:137
+#: 
 msgid "Create Stage"
 msgstr ""
 
-#: src/pages/flows/BoundStagesList.ts:122
-#: src/pages/flows/BoundStagesList.ts:170
+#: 
+#: 
 msgid "Create Stage binding"
 msgstr ""
 
-#: src/pages/user-settings/tokens/UserTokenList.ts:53
+#: 
 msgid "Create Token"
 msgstr ""
 
-#: src/pages/users/UserListPage.ts:158
+#: 
 msgid "Create User"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:116
+#: 
 msgid "Create provider"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:128
-#: src/pages/flows/BoundStagesList.ts:149
-#: src/pages/outposts/ServiceConnectionListPage.ts:122
-#: src/pages/policies/BoundPoliciesList.ts:192
-#: src/pages/policies/PolicyListPage.ts:136
-#: src/pages/property-mappings/PropertyMappingListPage.ts:125
-#: src/pages/providers/ProviderListPage.ts:120
-#: src/pages/sources/SourcesListPage.ts:126
-#: src/pages/stages/StageListPage.ts:131
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Create {0}"
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationListPage.ts:47
+#: 
 msgid "Created by"
 msgstr ""
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:90
+#: 
 msgid "Created {0}"
 msgstr ""
 
-#: src/elements/events/ObjectChangelog.ts:40
-#: src/elements/events/UserEvents.ts:37
-#: src/pages/events/EventListPage.ts:45
+#: 
+#: 
+#: 
 msgid "Creation Date"
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:72
+#: 
 msgid "Customisation"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:255
-#: src/pages/sources/saml/SAMLSourceForm.ts:210
+#: 
+#: 
 msgid "DSA-SHA1"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:68
+#: 
 msgid "Date"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:71
+#: 
 msgid "Date Time"
 msgstr ""
 
-#: src/pages/flows/FlowForm.ts:126
+#: 
 msgid "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
 msgstr ""
 
-#: src/pages/events/TransportListPage.ts:31
+#: 
 msgid "Define how notifications are sent to users, like Email or Webhook."
 msgstr ""
 
-#: src/elements/forms/DeleteForm.ts:79
-#: src/pages/applications/ApplicationListPage.ts:112
-#: src/pages/crypto/CertificateKeyPairListPage.ts:86
-#: src/pages/events/RuleListPage.ts:82
-#: src/pages/events/TransportListPage.ts:86
-#: src/pages/flows/FlowListPage.ts:86
-#: src/pages/groups/GroupListPage.ts:81
-#: src/pages/outposts/OutpostListPage.ts:87
-#: src/pages/outposts/ServiceConnectionListPage.ts:101
-#: src/pages/policies/PolicyListPage.ts:115
-#: src/pages/property-mappings/PropertyMappingListPage.ts:104
-#: src/pages/providers/ProviderListPage.ts:99
-#: src/pages/sources/SourcesListPage.ts:95
-#: src/pages/stages/StageListPage.ts:110
-#: src/pages/stages/invitation/InvitationListPage.ts:68
-#: src/pages/stages/prompt/PromptListPage.ts:87
-#: src/pages/tokens/TokenListPage.ts:68
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:40
-#: src/pages/user-settings/tokens/UserTokenList.ts:125
-#: src/pages/users/UserListPage.ts:119
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Delete"
 msgstr ""
 
-#: src/elements/oauth/UserCodeList.ts:53
+#: 
 msgid "Delete Authorization Code"
 msgstr ""
 
-#: src/pages/flows/BoundStagesList.ts:91
-#: src/pages/policies/BoundPoliciesList.ts:149
+#: 
+#: 
 msgid "Delete Binding"
 msgstr ""
 
-#: src/elements/user/UserConsentList.ts:49
+#: 
 msgid "Delete Consent"
 msgstr ""
 
-#: src/elements/oauth/UserRefreshList.ts:53
+#: 
 msgid "Delete Refresh Code"
 msgstr ""
 
-#: src/pages/user-settings/UserDetailsPage.ts:85
+#: 
 msgid "Delete account"
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceForm.ts:167
+#: 
 msgid "Delete temporary users after"
 msgstr ""
 
-#: src/pages/stages/user_delete/UserDeleteStageForm.ts:49
+#: 
 msgid ""
 "Delete the currently pending user. CAUTION, this stage does not ask for\n"
 "confirmation. Use a consent stage to ensure the user is aware of their actions."
 msgstr ""
 
-#: src/elements/forms/DeleteForm.ts:62
+#: 
 msgid "Delete {0}"
 msgstr ""
 
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:91
+#: 
 msgid "Deny the user access"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:175
-#: src/pages/property-mappings/PropertyMappingScopeForm.ts:63
-#: src/pages/system-tasks/SystemTaskListPage.ts:55
-#: src/pages/user-settings/tokens/UserTokenForm.ts:55
+#: 
+#: 
+#: 
+#: 
 msgid "Description"
 msgstr ""
 
-#: src/pages/property-mappings/PropertyMappingScopeForm.ts:67
+#: 
 msgid "Description shown to the user when consenting. If left empty, the user won't be informed."
 msgstr ""
 
-#: src/pages/users/UserForm.ts:79
+#: 
 msgid "Designates whether this user should be treated as active. Unselect this instead of deleting accounts."
 msgstr ""
 
-#: src/pages/flows/FlowForm.ts:119
-#: src/pages/flows/FlowListPage.ts:48
+#: 
+#: 
 msgid "Designation"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:104
+#: 
 msgid "Determines how authentik sends the response back to the Service Provider."
 msgstr ""
 
-#: src/pages/stages/user_login/UserLoginStageForm.ts:68
+#: 
 msgid "Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed."
 msgstr ""
 
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:113
+#: 
 msgid "Device classes which can be used to authenticate."
 msgstr ""
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:63
+#: 
 msgid "Device name"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:219
-#: src/pages/sources/saml/SAMLSourceForm.ts:174
+#: 
+#: 
 msgid "Digest algorithm"
 msgstr ""
 
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:65
+#: 
 msgid "Digits"
 msgstr ""
 
-#: src/pages/users/UserListPage.ts:85
-#: src/pages/users/UserListPage.ts:104
+#: 
+#: 
 msgid "Disable"
 msgstr ""
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts:55
+#: 
 msgid "Disable Static Tokens"
 msgstr ""
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts:40
+#: 
 msgid "Disable Time-based OTP"
 msgstr ""
 
-#: src/pages/sources/SourcesListPage.ts:64
+#: 
 msgid "Disabled"
 msgstr ""
 
-#: src/pages/user-settings/settings/SourceSettingsOAuth.ts:37
+#: 
 msgid "Disconnect"
 msgstr ""
 
-#: src/pages/outposts/ServiceConnectionDockerForm.ts:66
+#: 
 msgid "Docker URL"
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairListPage.ts:114
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:156
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:143
+#: 
+#: 
+#: 
 msgid "Download"
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairListPage.ts:120
+#: 
 msgid "Download Certificate"
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairListPage.ts:124
+#: 
 msgid "Download Private key"
 msgstr ""
 
-#: src/pages/stages/dummy/DummyStageForm.ts:49
+#: 
 msgid "Dummy stage used for testing. Shows a simple continue button and always passes."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:248
+#: 
 msgid "Each provider has a different issuer, based on the application slug."
 msgstr ""
 
-#: src/pages/applications/ApplicationListPage.ts:95
-#: src/pages/applications/ApplicationViewPage.ts:91
-#: src/pages/applications/ApplicationViewPage.ts:105
-#: src/pages/crypto/CertificateKeyPairListPage.ts:74
-#: src/pages/events/RuleListPage.ts:70
-#: src/pages/events/TransportListPage.ts:74
-#: src/pages/flows/FlowListPage.ts:74
-#: src/pages/groups/GroupListPage.ts:69
-#: src/pages/outposts/OutpostListPage.ts:75
-#: src/pages/outposts/ServiceConnectionListPage.ts:89
-#: src/pages/policies/PolicyListPage.ts:90
-#: src/pages/property-mappings/PropertyMappingListPage.ts:79
-#: src/pages/providers/ProviderListPage.ts:87
-#: src/pages/providers/ldap/LDAPProviderViewPage.ts:103
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:128
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:141
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:122
-#: src/pages/sources/SourcesListPage.ts:83
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:105
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:125
-#: src/pages/sources/plex/PlexSourceViewPage.ts:84
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:111
-#: src/pages/stages/StageListPage.ts:98
-#: src/pages/stages/prompt/PromptListPage.ts:75
-#: src/pages/user-settings/tokens/UserTokenList.ts:113
-#: src/pages/users/UserListPage.ts:80
-#: src/pages/users/UserViewPage.ts:147
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Edit"
 msgstr ""
 
-#: src/pages/flows/BoundStagesList.ts:79
-#: src/pages/policies/BoundPoliciesList.ts:137
+#: 
+#: 
 msgid "Edit Binding"
 msgstr ""
 
-#: src/pages/policies/BoundPoliciesList.ts:96
+#: 
 msgid "Edit Group"
 msgstr ""
 
-#: src/pages/policies/BoundPoliciesList.ts:81
+#: 
 msgid "Edit Policy"
 msgstr ""
 
-#: src/pages/flows/BoundStagesList.ts:66
+#: 
 msgid "Edit Stage"
 msgstr ""
 
-#: src/pages/policies/BoundPoliciesList.ts:111
+#: 
 msgid "Edit User"
 msgstr ""
 
-#: src/pages/LibraryPage.ts:114
+#: 
 msgid "Either no applications are defined, or you don't have access to any."
 msgstr ""
 
-#: src/flows/stages/identification/IdentificationStage.ts:146
-#: src/pages/events/TransportForm.ts:51
-#: src/pages/stages/identification/IdentificationStageForm.ts:79
-#: src/pages/user-settings/UserDetailsPage.ts:71
-#: src/pages/users/UserForm.ts:66
-#: src/pages/users/UserViewPage.ts:100
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Email"
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceForm.ts:153
+#: 
 msgid "Email address"
 msgstr ""
 
-#: src/flows/stages/identification/IdentificationStage.ts:153
+#: 
 msgid "Email or username"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:56
+#: 
 msgid "Email: Text field with Email type."
 msgstr ""
 
-#: src/pages/users/UserListPage.ts:85
-#: src/pages/users/UserListPage.ts:104
+#: 
+#: 
 msgid "Enable"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:111
+#: 
 msgid "Enable StartTLS"
 msgstr ""
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts:55
+#: 
 msgid "Enable Static Tokens"
 msgstr ""
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts:70
+#: 
 msgid "Enable TOTP"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:140
+#: 
 msgid "Enable forward-auth mode"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:144
+#: 
 msgid "Enable this if you don't want to use this provider as a proxy, and want to use it with Traefik's forwardAuth or nginx's auth_request."
 msgstr ""
 
-#: src/pages/policies/BoundPoliciesList.ts:41
-#: src/pages/policies/PolicyBindingForm.ts:199
-#: src/pages/sources/ldap/LDAPSourceForm.ts:67
-#: src/pages/sources/oauth/OAuthSourceForm.ts:134
-#: src/pages/sources/plex/PlexSourceForm.ts:108
-#: src/pages/sources/saml/SAMLSourceForm.ts:67
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Enabled"
 msgstr ""
 
-#: src/pages/flows/FlowForm.ts:66
+#: 
 msgid "Enrollment"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:252
-#: src/pages/sources/plex/PlexSourceForm.ts:206
-#: src/pages/sources/saml/SAMLSourceForm.ts:264
-#: src/pages/stages/identification/IdentificationStageForm.ts:104
+#: 
+#: 
+#: 
+#: 
 msgid "Enrollment flow"
 msgstr ""
 
-#: src/pages/system-tasks/SystemTaskListPage.ts:68
+#: 
 msgid "Error"
 msgstr ""
 
-#: src/flows/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage.ts:57
+#: 
 msgid "Error creating credential: {err}"
 msgstr ""
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:108
+#: 
 msgid "Error message"
 msgstr ""
 
-#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn.ts:57
+#: 
 msgid "Error when creating credential: {err}"
 msgstr ""
 
-#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn.ts:69
+#: 
 msgid "Error when validating assertion on server: {err}"
 msgstr ""
 
-#: src/pages/user-settings/UserSettingsPage.ts:62
+#: 
 msgid "Error: unsupported source settings: {0}"
 msgstr ""
 
-#: src/pages/user-settings/UserSettingsPage.ts:53
+#: 
 msgid "Error: unsupported stage settings: {0}"
 msgstr ""
 
-#: src/pages/flows/StageBindingForm.ts:124
+#: 
 msgid "Evaluate on plan"
 msgstr ""
 
-#: src/pages/flows/StageBindingForm.ts:138
+#: 
 msgid "Evaluate policies before the Stage is present to the user."
 msgstr ""
 
-#: src/pages/flows/StageBindingForm.ts:128
+#: 
 msgid "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with this option disabled, policies are **not** evaluated."
 msgstr ""
 
-#: src/pages/events/EventListPage.ts:22
+#: 
 msgid "Event Log"
 msgstr ""
 
-#: src/pages/events/EventInfoPage.ts:42
+#: 
 msgid "Event info"
 msgstr ""
 
-#: src/pages/events/EventInfoPage.ts:37
+#: 
 msgid "Event {0}"
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:59
+#: 
 msgid "Events"
 msgstr ""
 
-#: src/pages/events/EventInfo.ts:129
-#: src/pages/events/EventInfo.ts:152
+#: 
+#: 
 msgid "Exception"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts:98
-#: src/pages/flows/FlowViewPage.ts:83
+#: 
+#: 
 msgid "Execute"
 msgstr ""
 
-#: src/pages/flows/FlowViewPage.ts:69
+#: 
 msgid "Execute flow"
 msgstr ""
 
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:52
+#: 
 msgid "Executes the python snippet to determine whether to allow or deny a request."
 msgstr ""
 
-#: src/pages/policies/dummy/DummyPolicyForm.ts:63
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:64
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:63
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:64
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:64
-#: src/pages/policies/password/PasswordPolicyForm.ts:63
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:63
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Execution logging"
 msgstr ""
 
-#: src/elements/oauth/UserCodeList.ts:30
-#: src/elements/oauth/UserRefreshList.ts:30
-#: src/elements/user/UserConsentList.ts:30
-#: src/pages/stages/invitation/InvitationForm.ts:51
+#: 
+#: 
+#: 
+#: 
 msgid "Expires"
 msgstr ""
 
-#: src/pages/tokens/TokenListPage.ts:46
+#: 
 msgid "Expires?"
 msgstr ""
 
-#: src/pages/user-settings/tokens/UserTokenList.ts:80
-#: src/pages/user-settings/tokens/UserTokenList.ts:88
+#: 
+#: 
 msgid "Expiring"
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationListPage.ts:48
+#: 
 msgid "Expiry"
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairListPage.ts:53
-#: src/pages/tokens/TokenListPage.ts:47
+#: 
+#: 
 msgid "Expiry date"
 msgstr ""
 
-#: src/pages/users/UserViewPage.ts:196
+#: 
 msgid "Explicit Consent"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts:101
+#: 
 msgid "Export"
 msgstr ""
 
-#: src/pages/events/EventInfo.ts:133
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:77
-#: src/pages/property-mappings/PropertyMappingLDAPForm.ts:63
-#: src/pages/property-mappings/PropertyMappingSAMLForm.ts:73
-#: src/pages/property-mappings/PropertyMappingScopeForm.ts:70
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Expression"
 msgstr ""
 
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:83
-#: src/pages/property-mappings/PropertyMappingLDAPForm.ts:69
-#: src/pages/property-mappings/PropertyMappingSAMLForm.ts:79
-#: src/pages/property-mappings/PropertyMappingScopeForm.ts:76
+#: 
+#: 
+#: 
+#: 
 msgid "Expression using Python."
 msgstr ""
 
-#: src/pages/applications/ApplicationListPage.ts:31
+#: 
 msgid "External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access."
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:88
+#: 
 msgid "External Host"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:127
+#: 
 msgid "External host"
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts:109
+#: 
 msgid "Failed attempts before cancel"
 msgstr ""
 
-#: src/pages/admin-overview/charts/LDAPSyncStatusChart.ts:76
+#: 
 msgid "Failed sources"
 msgstr ""
 
-#: src/elements/forms/DeleteForm.ts:46
+#: 
 msgid "Failed to delete {0}: {1}"
 msgstr ""
 
-#: src/pages/users/UserActiveForm.ts:32
+#: 
 msgid "Failed to update {0}: {1}"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptListPage.ts:46
+#: 
 msgid "Field"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:88
+#: 
 msgid "Field Key"
 msgstr ""
 
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:81
-#: src/pages/policies/password/PasswordPolicyForm.ts:80
+#: 
+#: 
 msgid "Field key to check, field keys defined in Prompt stages are available."
 msgstr ""
 
-#: src/pages/property-mappings/PropertyMappingLDAPForm.ts:60
+#: 
 msgid "Field of the user object this value is written to."
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:231
+#: 
 msgid "Field which contains a unique Identifier."
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:224
+#: 
 msgid "Field which contains members of a group."
 msgstr ""
 
-#: src/pages/stages/prompt/PromptStageForm.ts:67
+#: 
 msgid "Fields"
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:82
+#: 
 msgid "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources."
 msgstr ""
 
-#: src/pages/flows/FlowImportForm.ts:34
-#: src/pages/flows/FlowListPage.ts:79
+#: 
+#: 
 msgid "Flow"
 msgstr ""
 
-#: src/pages/flows/FlowViewPage.ts:53
+#: 
 msgid "Flow Overview"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:227
-#: src/pages/sources/plex/PlexSourceForm.ts:181
-#: src/pages/sources/saml/SAMLSourceForm.ts:218
+#: 
+#: 
+#: 
 msgid "Flow settings"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:249
-#: src/pages/sources/plex/PlexSourceForm.ts:203
-#: src/pages/sources/saml/SAMLSourceForm.ts:261
+#: 
+#: 
+#: 
 msgid "Flow to use when authenticating existing users."
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:270
-#: src/pages/sources/plex/PlexSourceForm.ts:224
-#: src/pages/sources/saml/SAMLSourceForm.ts:282
+#: 
+#: 
+#: 
 msgid "Flow to use when enrolling new users."
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceForm.ts:240
+#: 
 msgid "Flow used before authentication."
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts:106
+#: 
 msgid "Flow used by an authenticated user to configure their password. If empty, user will not be able to configure change their password."
 msgstr ""
 
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:91
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:96
+#: 
+#: 
 msgid "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
 msgstr ""
 
-#: src/pages/providers/ldap/LDAPProviderForm.ts:72
+#: 
 msgid "Flow used for users to authenticate. Currently only identification and password stages are supported."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:76
-#: src/pages/providers/proxy/ProxyProviderForm.ts:118
-#: src/pages/providers/saml/SAMLProviderForm.ts:72
-#: src/pages/providers/saml/SAMLProviderImportForm.ts:57
+#: 
+#: 
+#: 
+#: 
 msgid "Flow used when authorizing this provider."
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:82
-#: src/interfaces/AdminInterface.ts:84
-#: src/pages/admin-overview/AdminOverviewPage.ts:61
-#: src/pages/flows/FlowListPage.ts:28
-#: src/pages/stages/StageListPage.ts:66
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Flows"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts:31
+#: 
 msgid "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them."
 msgstr ""
 
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:88
+#: 
 msgid "Force the user to configure an authenticator"
 msgstr ""
 
-#: src/flows/stages/password/PasswordStage.ts:67
+#: 
 msgid "Forgot password?"
 msgstr ""
 
-#: src/flows/stages/identification/IdentificationStage.ts:132
+#: 
 msgid "Forgot username or password?"
 msgstr ""
 
-#: src/elements/forms/ModalForm.ts:33
+#: 
 msgid "Form didn't return a promise for submitting"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:112
+#: 
 msgid "Forward auth"
 msgstr ""
 
-#: src/pages/property-mappings/PropertyMappingSAMLForm.ts:65
+#: 
 msgid "Friendly Name"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:108
+#: 
 msgid "From address"
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:50
+#: 
 msgid "General system status"
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairListPage.ts:152
-#: src/pages/crypto/CertificateKeyPairListPage.ts:160
+#: 
+#: 
 msgid "Generate"
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairListPage.ts:155
+#: 
 msgid "Generate Certificate-Key Pair"
 msgstr ""
 
-#: src/elements/table/TablePagination.ts:49
+#: 
 msgid "Go to next page"
 msgstr ""
 
-#: src/elements/table/TablePagination.ts:39
+#: 
 msgid "Go to previous page"
 msgstr ""
 
-#: src/pages/events/RuleForm.ts:70
-#: src/pages/groups/GroupListPage.ts:74
-#: src/pages/policies/PolicyBindingForm.ts:125
-#: src/pages/policies/PolicyBindingForm.ts:161
-#: src/pages/providers/ldap/LDAPProviderForm.ts:75
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Group"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:168
+#: 
 msgid "Group Property Mappings"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:220
+#: 
 msgid "Group membership field"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:213
+#: 
 msgid "Group object filter"
 msgstr ""
 
-#: src/pages/groups/GroupListPage.ts:30
+#: 
 msgid "Group users together and give them permissions based on the membership."
 msgstr ""
 
-#: src/pages/policies/BoundPoliciesList.ts:53
+#: 
 msgid "Group {0}"
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:103
-#: src/pages/admin-overview/AdminOverviewPage.ts:76
-#: src/pages/groups/GroupListPage.ts:27
+#: 
+#: 
+#: 
 msgid "Groups"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:160
+#: 
 msgid "HS256 (Symmetric Encryption)"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:66
+#: 
 msgid "HTTP-Basic Password Key"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:60
+#: 
 msgid "HTTP-Basic Username Key"
 msgstr ""
 
-#: src/pages/outposts/OutpostListPage.ts:52
+#: 
 msgid "Health and Version"
 msgstr ""
 
-#: src/pages/admin-overview/charts/OutpostStatusChart.ts:70
+#: 
 msgid "Healthy outposts"
 msgstr ""
 
-#: src/pages/admin-overview/charts/LDAPSyncStatusChart.ts:75
+#: 
 msgid "Healthy sources"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:77
+#: 
 msgid "Hidden: Hidden field, can be used to insert data into form."
 msgstr ""
 
-#: src/pages/property-mappings/PropertyMappingListPage.ts:154
+#: 
 msgid "Hide managed mappings"
 msgstr ""
 
-#: src/pages/users/UserListPage.ts:186
+#: 
 msgid "Hide service-accounts"
 msgstr ""
 
-#: src/pages/events/RuleForm.ts:98
-#: src/pages/groups/GroupForm.ts:136
-#: src/pages/outposts/OutpostForm.ts:115
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:188
-#: src/pages/providers/saml/SAMLProviderForm.ts:176
-#: src/pages/sources/ldap/LDAPSourceForm.ts:165
-#: src/pages/sources/ldap/LDAPSourceForm.ts:191
-#: src/pages/sources/plex/PlexSourceForm.ts:168
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:114
-#: src/pages/stages/identification/IdentificationStageForm.ts:83
-#: src/pages/stages/password/PasswordStageForm.ts:84
-#: src/pages/stages/prompt/PromptStageForm.ts:85
-#: src/pages/stages/prompt/PromptStageForm.ts:119
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Hold control/command to select multiple items."
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts:113
+#: 
 msgid "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage."
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationListPage.ts:46
+#: 
 msgid "ID"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:170
+#: 
 msgid "Icon"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts:46
-#: src/pages/system-tasks/SystemTaskListPage.ts:54
-#: src/pages/tokens/TokenListPage.ts:44
-#: src/pages/user-settings/tokens/UserTokenForm.ts:49
-#: src/pages/user-settings/tokens/UserTokenList.ts:39
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Identifier"
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:98
+#: 
 msgid "Identity & Cryptography"
 msgstr ""
 
-#: src/pages/outposts/ServiceConnectionDockerForm.ts:63
-#: src/pages/outposts/ServiceConnectionKubernetesForm.ts:64
+#: 
+#: 
 msgid "If enabled, use the local connection. Required Docker socket/Kubernetes Integration."
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:167
+#: 
 msgid "If left empty, authentik will try to extract the launch URL based on the selected provider."
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationStageForm.ts:71
+#: 
 msgid "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given."
 msgstr ""
 
-#: src/pages/outposts/OutpostDeploymentModal.ts:37
+#: 
 msgid "If your authentik Instance is using a self-signed certificate, set this value."
 msgstr ""
 
-#: src/pages/users/UserListPage.ts:147
+#: 
 msgid "Impersonate"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts:122
-#: src/pages/flows/FlowListPage.ts:130
+#: 
+#: 
 msgid "Import"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts:125
+#: 
 msgid "Import Flow"
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairListPage.ts:33
+#: 
 msgid "Import certificates of external providers or create certificates to sign requests with."
 msgstr ""
 
-#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts:87
+#: 
 msgid "In case you can't access any other method."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:240
+#: 
 msgid "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:237
+#: 
 msgid "Include claims in id_token"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:80
+#: 
 msgid "Internal Host"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:102
+#: 
 msgid "Internal application name, used in URLs."
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:78
+#: 
 msgid "Internal host"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:88
+#: 
 msgid "Internal host SSL Validation"
 msgstr ""
 
-#: src/pages/flows/FlowForm.ts:69
+#: 
 msgid "Invalidation"
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:93
-#: src/pages/stages/invitation/InvitationListPage.ts:28
+#: 
+#: 
 msgid "Invitations"
 msgstr ""
 
-#: src/pages/users/UserForm.ts:76
+#: 
 msgid "Is active"
 msgstr ""
 
-#: src/pages/groups/GroupForm.ts:67
+#: 
 msgid "Is superuser"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:87
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:101
-#: src/pages/sources/saml/SAMLSourceForm.ts:91
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:90
+#: 
+#: 
+#: 
+#: 
 msgid "Issuer"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:243
+#: 
 msgid "Issuer mode"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:152
+#: 
 msgid "JWT Algorithm"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:209
+#: 
 msgid "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceForm.ts:126
+#: 
 msgid "Keypair which is used to sign outgoing requests. Leave empty to disable signing."
 msgstr ""
 
-#: src/pages/outposts/ServiceConnectionKubernetesForm.ts:67
+#: 
 msgid "Kubeconfig"
 msgstr ""
 
-#: src/pages/outposts/OutpostForm.ts:63
+#: 
 msgid "LDAP (Technical preview)"
 msgstr ""
 
-#: src/pages/providers/ldap/LDAPProviderForm.ts:99
+#: 
 msgid "LDAP DN under which bind requests and search requests can be made."
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:81
+#: 
 msgid "LDAP Sync status"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:95
-#: src/pages/stages/prompt/PromptListPage.ts:47
+#: 
+#: 
 msgid "Label"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:99
+#: 
 msgid "Label shown next to/above the prompt."
 msgstr ""
 
-#: src/pages/groups/MemberSelectModal.ts:47
-#: src/pages/users/UserListPage.ts:56
-#: src/pages/users/UserViewPage.ts:108
+#: 
+#: 
+#: 
 msgid "Last login"
 msgstr ""
 
-#: src/pages/system-tasks/SystemTaskListPage.ts:56
+#: 
 msgid "Last run"
 msgstr ""
 
-#: src/pages/outposts/OutpostHealth.ts:54
+#: 
 msgid "Last seen: {0}"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:143
+#: 
 msgid "Last sync: {0}"
 msgstr ""
 
-#: src/pages/applications/ApplicationViewPage.ts:114
-#: src/pages/applications/ApplicationViewPage.ts:119
+#: 
+#: 
 msgid "Launch"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:164
+#: 
 msgid "Launch URL"
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:58
+#: 
 msgid "Let the user identify themselves with their username or Email address."
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:22
+#: 
 msgid "Library"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:147
-#: src/pages/sources/plex/PlexSourceForm.ts:121
+#: 
+#: 
 msgid "Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:153
-#: src/pages/sources/plex/PlexSourceForm.ts:127
+#: 
+#: 
 msgid "Link to a user with identical username address. Can have security implications when a username is used with another source."
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:144
-#: src/pages/sources/plex/PlexSourceForm.ts:118
+#: 
+#: 
 msgid "Link users on unique identifier"
 msgstr ""
 
-#: src/pages/sources/plex/PlexSourceForm.ts:173
+#: 
 msgid "Load servers"
 msgstr ""
 
-#: src/elements/table/Table.ts:120
-#: src/flows/FlowExecutor.ts:168
-#: src/flows/FlowExecutor.ts:216
-#: src/flows/access_denied/FlowAccessDenied.ts:27
-#: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts:43
-#: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts:33
-#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts:137
-#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts:35
-#: src/flows/stages/autosubmit/AutosubmitStage.ts:30
-#: src/flows/stages/captcha/CaptchaStage.ts:62
-#: src/flows/stages/consent/ConsentStage.ts:28
-#: src/flows/stages/dummy/DummyStage.ts:27
-#: src/flows/stages/email/EmailStage.ts:26
-#: src/flows/stages/identification/IdentificationStage.ts:179
-#: src/flows/stages/password/PasswordStage.ts:31
-#: src/flows/stages/prompt/PromptStage.ts:126
-#: src/pages/applications/ApplicationViewPage.ts:43
-#: src/pages/applications/ApplicationViewPage.ts:54
-#: src/pages/user-settings/UserDetailsPage.ts:38
-#: src/utils.ts:40
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Loading"
 msgstr ""
 
-#: src/elements/Spinner.ts:29
-#: src/pages/applications/ApplicationForm.ts:111
-#: src/pages/events/RuleForm.ts:79
-#: src/pages/events/RuleForm.ts:95
-#: src/pages/flows/StageBindingForm.ts:94
-#: src/pages/flows/StageBindingForm.ts:111
-#: src/pages/groups/GroupForm.ts:82
-#: src/pages/groups/GroupForm.ts:132
-#: src/pages/outposts/OutpostForm.ts:80
-#: src/pages/outposts/OutpostForm.ts:102
-#: src/pages/outposts/OutpostForm.ts:113
-#: src/pages/outposts/ServiceConnectionDockerForm.ts:84
-#: src/pages/outposts/ServiceConnectionDockerForm.ts:100
-#: src/pages/policies/PolicyBindingForm.ts:157
-#: src/pages/policies/PolicyBindingForm.ts:173
-#: src/pages/policies/PolicyBindingForm.ts:189
-#: src/pages/policies/PolicyTestForm.ts:71
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:86
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:106
-#: src/pages/property-mappings/PropertyMappingTestForm.ts:61
-#: src/pages/providers/ldap/LDAPProviderForm.ts:70
-#: src/pages/providers/ldap/LDAPProviderForm.ts:84
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:74
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:185
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:207
-#: src/pages/providers/proxy/ProxyProviderForm.ts:116
-#: src/pages/providers/proxy/ProxyProviderForm.ts:168
-#: src/pages/providers/saml/SAMLProviderForm.ts:70
-#: src/pages/providers/saml/SAMLProviderForm.ts:132
-#: src/pages/providers/saml/SAMLProviderForm.ts:148
-#: src/pages/providers/saml/SAMLProviderForm.ts:174
-#: src/pages/providers/saml/SAMLProviderForm.ts:190
-#: src/pages/providers/saml/SAMLProviderImportForm.ts:55
-#: src/pages/sources/ldap/LDAPSourceForm.ts:162
-#: src/pages/sources/ldap/LDAPSourceForm.ts:188
-#: src/pages/sources/oauth/OAuthSourceForm.ts:219
-#: src/pages/sources/oauth/OAuthSourceForm.ts:247
-#: src/pages/sources/oauth/OAuthSourceForm.ts:268
-#: src/pages/sources/plex/PlexSourceForm.ts:201
-#: src/pages/sources/plex/PlexSourceForm.ts:222
-#: src/pages/sources/saml/SAMLSourceForm.ts:124
-#: src/pages/sources/saml/SAMLSourceForm.ts:238
-#: src/pages/sources/saml/SAMLSourceForm.ts:259
-#: src/pages/sources/saml/SAMLSourceForm.ts:280
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:88
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:94
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:131
-#: src/pages/stages/email/EmailStageForm.ts:171
-#: src/pages/stages/identification/IdentificationStageForm.ts:117
-#: src/pages/stages/identification/IdentificationStageForm.ts:135
-#: src/pages/stages/password/PasswordStageForm.ts:104
-#: src/pages/stages/prompt/PromptStageForm.ts:83
-#: src/pages/stages/prompt/PromptStageForm.ts:116
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Loading..."
 msgstr ""
 
-#: src/pages/outposts/ServiceConnectionDockerForm.ts:60
-#: src/pages/outposts/ServiceConnectionKubernetesForm.ts:61
-#: src/pages/outposts/ServiceConnectionListPage.ts:55
+#: 
+#: 
+#: 
 msgid "Local"
 msgstr ""
 
-#: src/pages/stages/user_login/UserLoginStageForm.ts:50
+#: 
 msgid "Log the currently pending user in."
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:86
+#: 
 msgid "Login password is synced from LDAP into authentik automatically. Enable this option only to write password changes in authentik back to LDAP."
 msgstr ""
 
-#: src/flows/stages/identification/IdentificationStage.ts:191
+#: 
 msgid "Login to continue to {0}."
 msgstr ""
 
-#: src/pages/admin-overview/TopApplicationsTable.ts:44
+#: 
 msgid "Logins"
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:106
-#: src/pages/applications/ApplicationViewPage.ts:128
+#: 
+#: 
 msgid "Logins over the last 24 hours"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:186
+#: 
 msgid "Logout URL"
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:61
+#: 
 msgid "Logs"
 msgstr ""
 
-#: src/pages/system-tasks/SystemTaskListPage.ts:30
+#: 
 msgid "Long-running operations which authentik executes in the background."
 msgstr ""
 
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:88
+#: 
 msgid "Match created events with this action type. When left empty, all action types will be matched."
 msgstr ""
 
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:108
+#: 
 msgid "Match events created by selected application. When left empty, all applications are matched."
 msgstr ""
 
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:94
+#: 
 msgid "Matches Event's Client IP (strict matching, for network matching use an Expression Policy."
 msgstr ""
 
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:52
+#: 
 msgid "Matches an event against a set of criteria. If any of the configured values match, the policy passes."
 msgstr ""
 
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:76
+#: 
 msgid "Maximum age (in days)"
 msgstr ""
 
-#: src/pages/groups/GroupForm.ts:86
-#: src/pages/groups/GroupListPage.ts:47
+#: 
+#: 
 msgid "Members"
 msgstr ""
 
-#: src/pages/events/EventInfo.ts:174
-#: src/pages/policies/PolicyTestForm.ts:44
-#: src/pages/system-tasks/SystemTaskListPage.ts:80
+#: 
+#: 
+#: 
 msgid "Messages"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:147
-#: src/pages/providers/saml/SAMLProviderImportForm.ts:61
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:142
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:130
+#: 
+#: 
+#: 
+#: 
 msgid "Metadata"
 msgstr ""
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:96
+#: 
 msgid "Minimum amount of Lowercase Characters"
 msgstr ""
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:102
+#: 
 msgid "Minimum amount of Symbols Characters"
 msgstr ""
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:90
+#: 
 msgid "Minimum amount of Uppercase Characters"
 msgstr ""
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:84
+#: 
 msgid "Minimum length"
 msgstr ""
 
-#: src/pages/events/TransportForm.ts:84
-#: src/pages/events/TransportListPage.ts:47
-#: src/pages/stages/consent/ConsentStageForm.ts:68
+#: 
+#: 
+#: 
 msgid "Mode"
 msgstr ""
 
-#: src/pages/events/EventInfo.ts:67
+#: 
 msgid "Model Name"
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:26
+#: 
 msgid "Monitor"
 msgstr ""
 
-#: src/pages/LibraryPage.ts:93
+#: 
 msgid "My Applications"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:91
-#: src/pages/applications/ApplicationListPage.ts:58
-#: src/pages/crypto/CertificateKeyPairForm.ts:50
-#: src/pages/crypto/CertificateKeyPairListPage.ts:51
-#: src/pages/events/EventInfo.ts:51
-#: src/pages/events/RuleForm.ts:64
-#: src/pages/events/RuleListPage.ts:47
-#: src/pages/events/TransportForm.ts:78
-#: src/pages/events/TransportListPage.ts:46
-#: src/pages/flows/BoundStagesList.ts:39
-#: src/pages/flows/FlowForm.ts:86
-#: src/pages/flows/FlowListPage.ts:47
-#: src/pages/groups/GroupForm.ts:58
-#: src/pages/groups/GroupListPage.ts:45
-#: src/pages/groups/MemberSelectModal.ts:45
-#: src/pages/outposts/OutpostForm.ts:52
-#: src/pages/outposts/OutpostListPage.ts:50
-#: src/pages/outposts/ServiceConnectionDockerForm.ts:51
-#: src/pages/outposts/ServiceConnectionKubernetesForm.ts:52
-#: src/pages/outposts/ServiceConnectionListPage.ts:53
-#: src/pages/policies/PolicyListPage.ts:56
-#: src/pages/policies/dummy/DummyPolicyForm.ts:54
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:55
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:54
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:55
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:55
-#: src/pages/policies/password/PasswordPolicyForm.ts:54
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:54
-#: src/pages/property-mappings/PropertyMappingLDAPForm.ts:50
-#: src/pages/property-mappings/PropertyMappingListPage.ts:54
-#: src/pages/property-mappings/PropertyMappingSAMLForm.ts:50
-#: src/pages/property-mappings/PropertyMappingScopeForm.ts:50
-#: src/pages/providers/ProviderListPage.ts:53
-#: src/pages/providers/ldap/LDAPProviderForm.ts:52
-#: src/pages/providers/ldap/LDAPProviderViewPage.ts:64
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:56
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:73
-#: src/pages/providers/proxy/ProxyProviderForm.ts:98
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:62
-#: src/pages/providers/saml/SAMLProviderForm.ts:52
-#: src/pages/providers/saml/SAMLProviderImportForm.ts:38
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:67
-#: src/pages/sources/SourcesListPage.ts:52
-#: src/pages/sources/ldap/LDAPSourceForm.ts:52
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:64
-#: src/pages/sources/oauth/OAuthSourceForm.ts:108
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:64
-#: src/pages/sources/plex/PlexSourceForm.ts:93
-#: src/pages/sources/plex/PlexSourceViewPage.ts:63
-#: src/pages/sources/saml/SAMLSourceForm.ts:52
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:66
-#: src/pages/stages/StageListPage.ts:65
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:55
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:54
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:64
-#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts:52
-#: src/pages/stages/captcha/CaptchaStageForm.ts:53
-#: src/pages/stages/consent/ConsentStageForm.ts:57
-#: src/pages/stages/deny/DenyStageForm.ts:52
-#: src/pages/stages/dummy/DummyStageForm.ts:52
-#: src/pages/stages/email/EmailStageForm.ts:123
-#: src/pages/stages/identification/IdentificationStageForm.ts:61
-#: src/pages/stages/invitation/InvitationStageForm.ts:54
-#: src/pages/stages/password/PasswordStageForm.ts:61
-#: src/pages/stages/prompt/PromptStageForm.ts:56
-#: src/pages/stages/user_delete/UserDeleteStageForm.ts:53
-#: src/pages/stages/user_login/UserLoginStageForm.ts:53
-#: src/pages/stages/user_logout/UserLogoutStageForm.ts:52
-#: src/pages/stages/user_write/UserWriteStageForm.ts:53
-#: src/pages/user-settings/UserDetailsPage.ts:64
-#: src/pages/users/UserForm.ts:59
-#: src/pages/users/UserListPage.ts:54
-#: src/pages/users/UserViewPage.ts:92
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Name"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:92
+#: 
 msgid "Name of the form field, also used to store the value."
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceForm.ts:145
+#: 
 msgid "NameID Policy"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:179
+#: 
 msgid "NameID Property Mapping"
 msgstr ""
 
-#: src/flows/stages/identification/IdentificationStage.ts:127
+#: 
 msgid "Need an account?"
 msgstr ""
 
-#: src/pages/events/EventInfo.ts:189
+#: 
 msgid "New version available!"
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairListPage.ts:61
-#: src/pages/groups/GroupListPage.ts:57
-#: src/pages/groups/MemberSelectModal.ts:57
-#: src/pages/outposts/ServiceConnectionListPage.ts:64
-#: src/pages/policies/BoundPoliciesList.ts:122
-#: src/pages/policies/PolicyTestForm.ts:39
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:106
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:122
-#: src/pages/tokens/TokenListPage.ts:56
-#: src/pages/user-settings/tokens/UserTokenList.ts:83
-#: src/pages/users/UserListPage.ts:67
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "No"
 msgstr ""
 
-#: src/pages/LibraryPage.ts:112
+#: 
 msgid "No Applications available."
 msgstr ""
 
-#: src/elements/events/ObjectChangelog.ts:68
-#: src/elements/events/UserEvents.ts:65
+#: 
+#: 
 msgid "No Events found."
 msgstr ""
 
-#: src/pages/policies/BoundPoliciesList.ts:155
+#: 
 msgid "No Policies bound."
 msgstr ""
 
-#: src/pages/flows/BoundStagesList.ts:112
+#: 
 msgid "No Stages bound"
 msgstr ""
 
-#: src/pages/events/EventInfo.ts:206
+#: 
 msgid "No additional data available."
 msgstr ""
 
-#: src/elements/table/Table.ts:131
+#: 
 msgid "No elements found."
 msgstr ""
 
-#: src/elements/forms/ModalForm.ts:29
+#: 
 msgid "No form found"
 msgstr ""
 
-#: src/elements/events/ObjectChangelog.ts:70
-#: src/elements/events/UserEvents.ts:67
+#: 
+#: 
 msgid "No matching events could be found."
 msgstr ""
 
-#: src/pages/policies/BoundPoliciesList.ts:157
+#: 
 msgid "No policies are currently bound to this object."
 msgstr ""
 
-#: src/pages/users/UserListPage.ts:139
+#: 
 msgid "No recovery flow is configured."
 msgstr ""
 
-#: src/pages/flows/BoundStagesList.ts:114
+#: 
 msgid "No stages are currently bound to this flow."
 msgstr ""
 
-#: src/pages/admin-overview/cards/WorkerStatusCard.ts:22
+#: 
 msgid "No workers connected. Background tasks will not run."
 msgstr ""
 
-#: src/pages/events/RuleListPage.ts:58
+#: 
 msgid "None (rule disabled)"
 msgstr ""
 
-#: src/pages/outposts/OutpostHealth.ts:44
+#: 
 msgid "Not available"
 msgstr ""
 
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:75
+#: 
 msgid "Not configured action"
 msgstr ""
 
-#: src/pages/user-settings/settings/SourceSettingsOAuth.ts:40
+#: 
 msgid "Not connected."
 msgstr ""
 
-#: src/elements/router/Router404.ts:24
+#: 
 msgid "Not found"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:154
+#: 
 msgid "Not synced yet."
 msgstr ""
 
-#: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts:58
-#: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts:48
-#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts:45
-#: src/flows/stages/captcha/CaptchaStage.ts:77
-#: src/flows/stages/consent/ConsentStage.ts:43
-#: src/flows/stages/password/PasswordStage.ts:46
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Not you?"
 msgstr ""
 
-#: src/pages/events/RuleForm.ts:56
+#: 
 msgid "Notice"
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:64
-#: src/pages/events/RuleListPage.ts:29
+#: 
+#: 
 msgid "Notification Rules"
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:67
-#: src/pages/events/TransportListPage.ts:28
+#: 
+#: 
 msgid "Notification Transports"
 msgstr ""
 
-#: src/pages/events/RuleListPage.ts:75
+#: 
 msgid "Notification rule"
 msgstr ""
 
-#: src/elements/notifications/NotificationDrawer.ts:95
+#: 
 msgid "Notifications"
 msgstr ""
 
-#: src/pages/events/TransportListPage.ts:79
+#: 
 msgid "Notifications Transport"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:62
+#: 
 msgid "Number"
 msgstr ""
 
-#: src/pages/users/UserViewPage.ts:204
+#: 
 msgid "OAuth Authorization Codes"
 msgstr ""
 
-#: src/pages/users/UserViewPage.ts:212
+#: 
 msgid "OAuth Refresh Codes"
 msgstr ""
 
-#: src/pages/events/EventInfo.ts:147
-#: src/pages/events/EventInfo.ts:166
+#: 
+#: 
 msgid "Object"
 msgstr ""
 
-#: src/pages/property-mappings/PropertyMappingLDAPForm.ts:56
+#: 
 msgid "Object field"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:227
+#: 
 msgid "Object uniqueness field"
 msgstr ""
 
-#: src/pages/stages/consent/ConsentStageForm.ts:97
+#: 
 msgid "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
 
-#: src/elements/events/ObjectChangelog.ts:50
-#: src/elements/events/UserEvents.ts:47
-#: src/pages/events/EventListPage.ts:60
+#: 
+#: 
+#: 
 msgid "On behalf of {0}"
 msgstr ""
 
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:85
+#: 
 msgid "Only fail the policy, don't invalidate user's password."
 msgstr ""
 
-#: src/pages/events/TransportForm.ts:107
+#: 
 msgid "Only send notification once, for example when sending a webhook into a chat channel."
 msgstr ""
 
-#: src/pages/applications/ApplicationListPage.ts:100
+#: 
 msgid "Open application"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:161
+#: 
 msgid "OpenID Configuration Issuer"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:155
+#: 
 msgid "OpenID Configuration URL"
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairForm.ts:68
+#: 
 msgid "Optional Private Key. If this is set, you can use this keypair for encryption."
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceForm.ts:88
+#: 
 msgid "Optional URL if the IDP supports Single-Logout."
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationForm.ts:61
+#: 
 msgid "Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON."
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:119
+#: 
 msgid "Optional enrollment flow, which is linked at the bottom of the page."
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:137
+#: 
 msgid "Optional recovery flow, which is linked at the bottom of the page."
 msgstr ""
 
-#: src/pages/crypto/CertificateGenerateForm.ts:38
+#: 
 msgid "Optional, comma-separated SubjectAlt Names."
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:121
+#: 
 msgid "Optionally pre-fill the input value"
 msgstr ""
 
-#: src/pages/property-mappings/PropertyMappingSAMLForm.ts:69
+#: 
 msgid "Optionally set the 'FriendlyName' value of the Assertion attribute."
 msgstr ""
 
-#: src/pages/flows/BoundStagesList.ts:38
-#: src/pages/flows/StageBindingForm.ts:115
-#: src/pages/policies/BoundPoliciesList.ts:42
-#: src/pages/policies/PolicyBindingForm.ts:204
-#: src/pages/stages/prompt/PromptForm.ts:124
-#: src/pages/stages/prompt/PromptListPage.ts:49
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Order"
 msgstr ""
 
-#: src/pages/admin-overview/charts/OutpostStatusChart.ts:71
+#: 
 msgid "Outdated outposts"
 msgstr ""
 
-#: src/pages/outposts/OutpostListPage.ts:80
+#: 
 msgid "Outpost"
 msgstr ""
 
-#: src/pages/outposts/OutpostDeploymentModal.ts:16
+#: 
 msgid "Outpost Deployment Info"
 msgstr ""
 
-#: src/pages/outposts/ServiceConnectionListPage.ts:94
+#: 
 msgid "Outpost Service-connection"
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:66
+#: 
 msgid "Outpost status"
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:49
-#: src/interfaces/AdminInterface.ts:51
-#: src/pages/outposts/OutpostListPage.ts:29
+#: 
+#: 
+#: 
 msgid "Outposts"
 msgstr ""
 
-#: src/pages/outposts/OutpostListPage.ts:32
+#: 
 msgid "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies."
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:28
-#: src/pages/applications/ApplicationViewPage.ts:59
-#: src/pages/providers/ldap/LDAPProviderViewPage.ts:56
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:65
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:54
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:59
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:56
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:56
-#: src/pages/sources/plex/PlexSourceViewPage.ts:55
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:58
-#: src/pages/users/UserViewPage.ts:74
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Overview"
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairForm.ts:61
+#: 
 msgid "PEM-encoded Certificate data."
 msgstr ""
 
-#: src/pages/groups/GroupForm.ts:73
-#: src/pages/groups/GroupListPage.ts:46
+#: 
+#: 
 msgid "Parent"
 msgstr ""
 
-#: src/pages/policies/dummy/DummyPolicyForm.ts:79
+#: 
 msgid "Pass policy?"
 msgstr ""
 
-#: src/pages/events/EventInfo.ts:173
-#: src/pages/policies/PolicyTestForm.ts:36
+#: 
+#: 
 msgid "Passing"
 msgstr ""
 
-#: src/flows/stages/password/PasswordStage.ts:51
+#: 
 msgid "Password"
 msgstr ""
 
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:77
-#: src/pages/policies/password/PasswordPolicyForm.ts:76
+#: 
+#: 
 msgid "Password field"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:59
+#: 
 msgid "Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical."
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceForm.ts:150
+#: 
 msgid "Persistent"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:118
+#: 
 msgid "Placeholder"
 msgstr ""
 
-#: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts:81
-#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts:58
+#: 
+#: 
 msgid "Please enter your TOTP Code"
 msgstr ""
 
-#: src/flows/stages/password/PasswordStage.ts:57
+#: 
 msgid "Please enter your password"
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:74
-#: src/pages/admin-overview/AdminOverviewPage.ts:56
-#: src/pages/flows/FlowListPage.ts:50
-#: src/pages/policies/PolicyListPage.ts:38
+#: 
+#: 
+#: 
+#: 
 msgid "Policies"
 msgstr ""
 
-#: src/pages/policies/PolicyBindingForm.ts:108
-#: src/pages/policies/PolicyBindingForm.ts:117
-#: src/pages/policies/PolicyBindingForm.ts:148
-#: src/pages/policies/PolicyListPage.ts:108
+#: 
+#: 
+#: 
+#: 
 msgid "Policy"
 msgstr ""
 
-#: src/pages/applications/ApplicationViewPage.ts:147
-#: src/pages/flows/FlowViewPage.ts:101
+#: 
+#: 
 msgid "Policy / Group / User Bindings"
 msgstr ""
 
-#: src/pages/policies/BoundPoliciesList.ts:40
+#: 
 msgid "Policy / User / Group"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:144
-#: src/pages/sources/plex/PlexSourceViewPage.ts:103
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:150
+#: 
+#: 
+#: 
 msgid "Policy Bindings"
 msgstr ""
 
-#: src/pages/policies/BoundPoliciesList.ts:142
+#: 
 msgid "Policy binding"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:146
-#: src/pages/applications/ApplicationViewPage.ts:81
-#: src/pages/flows/FlowForm.ts:106
-#: src/pages/flows/StageBindingForm.ts:141
+#: 
+#: 
+#: 
+#: 
 msgid "Policy engine mode"
 msgstr ""
 
-#: src/pages/policies/BoundPoliciesList.ts:50
+#: 
 msgid "Policy {0}"
 msgstr ""
 
-#: src/pages/policies/dummy/DummyPolicyForm.ts:72
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:73
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:72
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:73
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:73
-#: src/pages/policies/password/PasswordPolicyForm.ts:72
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:72
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Policy-specific settings"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:101
+#: 
 msgid "Post"
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceForm.ts:108
+#: 
 msgid "Post binding"
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceForm.ts:105
+#: 
 msgid "Post binding (auto-submit)"
 msgstr ""
 
-#: src/flows/FlowExecutor.ts:258
+#: 
 msgid "Powered by authentik"
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceForm.ts:222
+#: 
 msgid "Pre-authentication flow"
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairForm.ts:66
-#: src/pages/stages/captcha/CaptchaStageForm.ts:71
+#: 
+#: 
 msgid "Private Key"
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairListPage.ts:52
+#: 
 msgid "Private key available?"
 msgstr ""
 
-#: src/pages/stages/captcha/CaptchaStageForm.ts:76
+#: 
 msgid "Private key, acquired from https://www.google.com/recaptcha/intro/v3.html."
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:81
+#: 
 msgid "Profile URL"
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationListPage.ts:61
-#: src/pages/stages/prompt/PromptListPage.ts:80
+#: 
+#: 
 msgid "Prompt"
 msgstr ""
 
-#: src/pages/stages/consent/ConsentStageForm.ts:54
+#: 
 msgid "Prompt for the user's consent. The consent can either be permanent or expire in a defined amount of time."
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:90
-#: src/pages/stages/prompt/PromptListPage.ts:28
+#: 
+#: 
 msgid "Prompts"
 msgstr ""
 
-#: src/pages/property-mappings/PropertyMappingListPage.ts:97
+#: 
 msgid "Property Mapping"
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:77
-#: src/pages/property-mappings/PropertyMappingListPage.ts:35
+#: 
+#: 
 msgid "Property Mappings"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:154
+#: 
 msgid "Property mappings"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:190
+#: 
 msgid "Property mappings used to group creation."
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:164
+#: 
 msgid "Property mappings used to user creation."
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:150
+#: 
 msgid "Protocol Settings"
 msgstr ""
 
-#: src/pages/providers/ldap/LDAPProviderForm.ts:91
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:81
-#: src/pages/providers/proxy/ProxyProviderForm.ts:123
-#: src/pages/providers/saml/SAMLProviderForm.ts:77
-#: src/pages/sources/oauth/OAuthSourceForm.ts:163
-#: src/pages/sources/plex/PlexSourceForm.ts:137
-#: src/pages/sources/saml/SAMLSourceForm.ts:74
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Protocol settings"
 msgstr ""
 
-#: src/pages/providers/ProviderListPage.ts:38
+#: 
 msgid "Provide support for protocols like SAML and OAuth to assigned applications."
 msgstr ""
 
-#: src/elements/oauth/UserCodeList.ts:29
-#: src/elements/oauth/UserRefreshList.ts:29
-#: src/pages/applications/ApplicationForm.ts:105
-#: src/pages/applications/ApplicationListPage.ts:60
-#: src/pages/applications/ApplicationViewPage.ts:68
-#: src/pages/providers/ProviderListPage.ts:92
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Provider"
 msgstr ""
 
-#: src/pages/applications/ApplicationListPage.ts:61
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:72
+#: 
+#: 
 msgid "Provider Type"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:180
+#: 
 msgid "Provider type"
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:44
-#: src/pages/outposts/OutpostForm.ts:88
-#: src/pages/outposts/OutpostListPage.ts:51
-#: src/pages/providers/ProviderListPage.ts:35
+#: 
+#: 
+#: 
+#: 
 msgid "Providers"
 msgstr ""
 
-#: src/pages/outposts/OutpostForm.ts:62
+#: 
 msgid "Proxy"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:101
+#: 
 msgid "Public"
 msgstr ""
 
-#: src/pages/stages/captcha/CaptchaStageForm.ts:64
+#: 
 msgid "Public Key"
 msgstr ""
 
-#: src/pages/stages/captcha/CaptchaStageForm.ts:68
+#: 
 msgid "Public key, acquired from https://www.google.com/recaptcha/intro/v3.html."
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:180
+#: 
 msgid "Publisher"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:157
+#: 
 msgid "RS256 (Asymmetric Encryption)"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:191
+#: 
 msgid "RSA Key"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:243
-#: src/pages/sources/saml/SAMLSourceForm.ts:198
+#: 
+#: 
 msgid "RSA-SHA1"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:246
-#: src/pages/sources/saml/SAMLSourceForm.ts:201
+#: 
+#: 
 msgid "RSA-SHA256"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:249
-#: src/pages/sources/saml/SAMLSourceForm.ts:204
+#: 
+#: 
 msgid "RSA-SHA384"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:252
-#: src/pages/sources/saml/SAMLSourceForm.ts:207
+#: 
+#: 
 msgid "RSA-SHA512"
 msgstr ""
 
-#: src/pages/flows/StageBindingForm.ts:135
+#: 
 msgid "Re-evaluate policies"
 msgstr ""
 
-#: src/pages/flows/FlowForm.ts:72
+#: 
 msgid "Recovery"
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:122
+#: 
 msgid "Recovery flow"
 msgstr ""
 
-#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts:86
+#: 
 msgid "Recovery keys"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:98
+#: 
 msgid "Redirect"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:107
+#: 
 msgid "Redirect URIs"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:119
+#: 
 msgid "Redirect URIs/Origins"
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceForm.ts:102
+#: 
 msgid "Redirect binding"
 msgstr ""
 
-#: src/elements/table/Table.ts:191
+#: 
 msgid "Refresh"
 msgstr ""
 
-#: src/elements/oauth/UserRefreshList.ts:46
+#: 
 msgid "Refresh Code"
 msgstr ""
 
-#: src/flows/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage.ts:116
+#: 
 msgid "Register device"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:176
+#: 
 msgid "Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression."
 msgstr ""
 
-#: src/pages/applications/ApplicationViewPage.ts:62
-#: src/pages/flows/FlowViewPage.ts:64
+#: 
+#: 
 msgid "Related"
 msgstr ""
 
-#: src/interfaces/Interface.ts:56
+#: 
 msgid "Reload"
 msgstr ""
 
-#: src/pages/stages/user_logout/UserLogoutStageForm.ts:49
+#: 
 msgid "Remove the user from the current session."
 msgstr ""
 
-#: src/pages/events/EventInfo.ts:145
-#: src/pages/events/EventInfo.ts:164
+#: 
+#: 
 msgid "Request"
 msgstr ""
 
-#: src/flows/access_denied/FlowAccessDenied.ts:40
+#: 
 msgid "Request has been denied."
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:88
+#: 
 msgid "Request token URL"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:113
+#: 
 msgid "Required"
 msgstr ""
 
-#: src/pages/user-settings/UserDetailsPage.ts:61
-#: src/pages/users/UserForm.ts:56
+#: 
+#: 
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr ""
 
-#: src/pages/users/UserListPage.ts:144
-#: src/pages/users/UserViewPage.ts:165
+#: 
+#: 
 msgid "Reset Password"
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:36
+#: 
 msgid "Resources"
 msgstr ""
 
-#: src/pages/events/EventInfo.ts:171
-#: src/pages/property-mappings/PropertyMappingTestForm.ts:36
+#: 
+#: 
 msgid "Result"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:166
-#: src/pages/system-tasks/SystemTaskListPage.ts:108
+#: 
+#: 
 msgid "Retry Task"
 msgstr ""
 
-#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn.ts:106
+#: 
 msgid "Retry authentication"
 msgstr ""
 
-#: src/flows/FlowExecutor.ts:146
+#: 
 msgid "Return"
 msgstr ""
 
-#: src/elements/router/Router404.ts:28
+#: 
 msgid "Return home"
 msgstr ""
 
-#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts:82
-#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn.ts:119
+#: 
+#: 
 msgid "Return to device picker"
 msgstr ""
 
-#: src/pages/property-mappings/PropertyMappingSAMLForm.ts:56
+#: 
 msgid "SAML Attribute Name"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:224
-#: src/pages/sources/saml/SAMLSourceForm.ts:179
+#: 
+#: 
 msgid "SHA1"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:227
-#: src/pages/sources/saml/SAMLSourceForm.ts:182
+#: 
+#: 
 msgid "SHA256"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:230
-#: src/pages/sources/saml/SAMLSourceForm.ts:185
+#: 
+#: 
 msgid "SHA384"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:233
-#: src/pages/sources/saml/SAMLSourceForm.ts:188
+#: 
+#: 
 msgid "SHA512"
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceForm.ts:85
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:82
+#: 
+#: 
 msgid "SLO URL"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:63
+#: 
 msgid "SMTP Host"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:80
+#: 
 msgid "SMTP Password"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:69
+#: 
 msgid "SMTP Port"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:75
+#: 
 msgid "SMTP Username"
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceForm.ts:78
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:74
+#: 
+#: 
 msgid "SSO URL"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:251
+#: 
 msgid "Same identifier is used for all providers"
 msgstr ""
 
-#: src/pages/property-mappings/PropertyMappingScopeForm.ts:56
+#: 
 msgid "Scope name"
 msgstr ""
 
-#: src/pages/property-mappings/PropertyMappingScopeForm.ts:60
+#: 
 msgid "Scope which the client can specify to access these properties."
 msgstr ""
 
-#: src/elements/oauth/UserCodeList.ts:31
-#: src/elements/oauth/UserRefreshList.ts:31
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:166
+#: 
+#: 
+#: 
 msgid "Scopes"
 msgstr ""
 
-#: src/elements/table/TableSearch.ts:35
+#: 
 msgid "Search..."
 msgstr ""
 
-#: src/pages/events/EventInfo.ts:124
+#: 
 msgid "Secret:"
 msgstr ""
 
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:85
-#: src/pages/property-mappings/PropertyMappingLDAPForm.ts:71
-#: src/pages/property-mappings/PropertyMappingSAMLForm.ts:81
-#: src/pages/property-mappings/PropertyMappingScopeForm.ts:78
+#: 
+#: 
+#: 
+#: 
 msgid "See documentation for a list of all variables."
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:113
+#: 
 msgid "Select a provider that this application should use. Alternatively, create a new provider."
 msgstr ""
 
-#: src/elements/table/Table.ts:242
+#: 
 msgid "Select all rows"
 msgstr ""
 
-#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts:149
+#: 
 msgid "Select an identification method."
 msgstr ""
 
-#: src/flows/stages/identification/IdentificationStage.ts:142
+#: 
 msgid "Select one of the sources below to login."
 msgstr ""
 
-#: src/pages/groups/MemberSelectModal.ts:68
+#: 
 msgid "Select users to add"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:187
+#: 
 msgid "Select which scopes can be used by the client. The client stil has to specify the scope to access the data."
 msgstr ""
 
-#: src/pages/sources/plex/PlexSourceForm.ts:167
+#: 
 msgid "Select which server a user has to be a member of to be allowed to authenticate."
 msgstr ""
 
-#: src/pages/events/RuleForm.ts:97
+#: 
 msgid "Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI."
 msgstr ""
 
-#: src/pages/stages/prompt/PromptStageForm.ts:118
+#: 
 msgid "Selected policies are executed when the stage is submitted to validate the data."
 msgstr ""
 
-#: src/pages/outposts/OutpostForm.ts:82
+#: 
 msgid "Selecting a service-connection enables the management of the outpost by authentik."
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts:83
+#: 
 msgid "Selection of backends to test the password against."
 msgstr ""
 
-#: src/flows/stages/email/EmailStage.ts:44
+#: 
 msgid "Send Email again."
 msgstr ""
 
-#: src/pages/events/RuleListPage.ts:32
+#: 
 msgid "Send notifications whenever a specific Event is created and matched by policies."
 msgstr ""
 
-#: src/pages/events/TransportForm.ts:104
+#: 
 msgid "Send once"
 msgstr ""
 
-#: src/pages/events/RuleListPage.ts:49
+#: 
 msgid "Sent to group"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:74
+#: 
 msgid "Separator: Static Separator Line"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:102
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:72
+#: 
+#: 
 msgid "Server URI"
 msgstr ""
 
-#: src/flows/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage.ts:70
+#: 
 msgid "Server validation of credential failed: {err}"
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:54
+#: 
 msgid "Service Connections"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:93
+#: 
 msgid "Service Provider Binding"
 msgstr ""
 
-#: src/pages/outposts/OutpostForm.ts:67
+#: 
 msgid "Service connection"
 msgstr ""
 
-#: src/pages/stages/user_login/UserLoginStageForm.ts:64
+#: 
 msgid "Session duration"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:215
+#: 
 msgid "Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:211
+#: 
 msgid "Session valid not on or after"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:186
+#: 
 msgid "Set HTTP-Basic Authentication"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:189
+#: 
 msgid "Set a custom HTTP-Basic Authentication header based on values from authentik."
 msgstr ""
 
-#: src/pages/groups/GroupForm.ts:144
-#: src/pages/outposts/OutpostForm.ts:127
-#: src/pages/outposts/ServiceConnectionKubernetesForm.ts:71
-#: src/pages/policies/PolicyTestForm.ts:79
-#: src/pages/users/UserForm.ts:87
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Set custom attributes using YAML or JSON."
 msgstr ""
 
-#: src/pages/events/RuleForm.ts:101
-#: src/pages/events/RuleListPage.ts:48
+#: 
+#: 
 msgid "Severity"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptStageForm.ts:53
+#: 
 msgid "Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable."
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:98
+#: 
 msgid "Show matched user"
 msgstr ""
 
-#: src/pages/flows/FlowForm.ts:96
+#: 
 msgid "Shown as the Title in Flow pages."
 msgstr ""
 
-#: src/flows/stages/identification/IdentificationStage.ts:128
+#: 
 msgid "Sign up."
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:238
-#: src/pages/sources/saml/SAMLSourceForm.ts:193
+#: 
+#: 
 msgid "Signature algorithm"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:120
+#: 
 msgid "Signing Certificate"
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceForm.ts:113
+#: 
 msgid "Signing keypair"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptListPage.ts:31
+#: 
 msgid "Single Prompts that can be used for Prompt Stages."
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationForm.ts:67
+#: 
 msgid "Single use"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:173
+#: 
 msgid "Skip path regex"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:98
-#: src/pages/applications/ApplicationListPage.ts:59
-#: src/pages/flows/FlowForm.ts:99
-#: src/pages/sources/ldap/LDAPSourceForm.ts:58
-#: src/pages/sources/oauth/OAuthSourceForm.ts:114
-#: src/pages/sources/plex/PlexSourceForm.ts:99
-#: src/pages/sources/saml/SAMLSourceForm.ts:58
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Slug"
 msgstr ""
 
-#: src/flows/FlowExecutor.ts:139
+#: 
 msgid "Something went wrong! Please try again later."
 msgstr ""
 
-#: src/pages/sources/SourcesListPage.ts:88
+#: 
 msgid "Source"
 msgstr ""
 
-#: src/pages/user-settings/settings/SourceSettingsOAuth.ts:18
+#: 
 msgid "Source {0}"
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:41
-#: src/pages/sources/SourcesListPage.ts:31
+#: 
+#: 
 msgid "Sources"
 msgstr ""
 
-#: src/pages/sources/SourcesListPage.ts:34
+#: 
 msgid "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
 msgstr ""
 
-#: src/pages/flows/StageBindingForm.ts:103
+#: 
 msgid "Stage"
 msgstr ""
 
-#: src/pages/flows/FlowViewPage.ts:93
+#: 
 msgid "Stage Bindings"
 msgstr ""
 
-#: src/pages/flows/FlowForm.ts:75
+#: 
 msgid "Stage Configuration"
 msgstr ""
 
-#: src/pages/flows/BoundStagesList.ts:84
+#: 
 msgid "Stage binding"
 msgstr ""
 
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:133
+#: 
 msgid "Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
 msgstr ""
 
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:51
+#: 
 msgid "Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator)."
 msgstr ""
 
-#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts:49
+#: 
 msgid "Stage used to configure a WebAutnn authenticator (i.e. Yubikey, FaceID/Windows Hello)."
 msgstr ""
 
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:52
+#: 
 msgid "Stage used to configure a static authenticator (i.e. static tokens). This stage should be used for configuration flows."
 msgstr ""
 
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:61
+#: 
 msgid "Stage used to validate any authenticator. This stage should be used during authentication or authorization flows."
 msgstr ""
 
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:62
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:61
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:71
-#: src/pages/stages/captcha/CaptchaStageForm.ts:60
-#: src/pages/stages/consent/ConsentStageForm.ts:64
-#: src/pages/stages/email/EmailStageForm.ts:130
-#: src/pages/stages/identification/IdentificationStageForm.ts:68
-#: src/pages/stages/invitation/InvitationStageForm.ts:61
-#: src/pages/stages/password/PasswordStageForm.ts:68
-#: src/pages/stages/prompt/PromptStageForm.ts:63
-#: src/pages/stages/user_login/UserLoginStageForm.ts:60
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Stage-specific settings"
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:87
-#: src/pages/flows/FlowListPage.ts:49
-#: src/pages/stages/StageListPage.ts:44
-#: src/pages/stages/prompt/PromptListPage.ts:50
+#: 
+#: 
+#: 
+#: 
 msgid "Stages"
 msgstr ""
 
-#: src/pages/stages/StageListPage.ts:47
+#: 
 msgid "Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow."
 msgstr ""
 
-#: src/pages/outposts/ServiceConnectionListPage.ts:56
+#: 
 msgid "State"
 msgstr ""
 
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:104
+#: 
 msgid "Static Tokens"
 msgstr ""
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts:62
+#: 
 msgid "Static tokens"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:80
+#: 
 msgid "Static: Static value, displayed as-is."
 msgstr ""
 
-#: src/pages/stages/deny/DenyStageForm.ts:49
+#: 
 msgid "Statically deny the flow. To use this stage effectively, disable *Evaluate on plan* on the respective binding."
 msgstr ""
 
-#: src/pages/system-tasks/SystemTaskListPage.ts:57
+#: 
 msgid "Status"
 msgstr ""
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts:48
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts:63
+#: 
+#: 
 msgid "Status: Disabled"
 msgstr ""
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts:22
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts:26
+#: 
+#: 
 msgid "Status: Enabled"
 msgstr ""
 
-#: src/interfaces/Interface.ts:67
+#: 
 msgid "Stop impersonation"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:153
+#: 
 msgid "Subject"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:212
+#: 
 msgid "Subject mode"
 msgstr ""
 
-#: src/pages/crypto/CertificateGenerateForm.ts:35
+#: 
 msgid "Subject-alt name"
 msgstr ""
 
-#: src/pages/system-tasks/SystemTaskListPage.ts:64
+#: 
 msgid "Successful"
 msgstr ""
 
-#: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts:63
+#: 
 msgid "Successfully copied TOTP Config."
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:60
+#: 
 msgid "Successfully created application."
 msgstr ""
 
-#: src/pages/flows/StageBindingForm.ts:44
-#: src/pages/policies/PolicyBindingForm.ts:65
+#: 
+#: 
 msgid "Successfully created binding."
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairForm.ts:43
+#: 
 msgid "Successfully created certificate-key pair."
 msgstr ""
 
-#: src/pages/flows/FlowForm.ts:53
+#: 
 msgid "Successfully created flow."
 msgstr ""
 
-#: src/pages/groups/GroupForm.ts:51
+#: 
 msgid "Successfully created group."
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationForm.ts:44
+#: 
 msgid "Successfully created invitation."
 msgstr ""
 
-#: src/pages/property-mappings/PropertyMappingLDAPForm.ts:43
-#: src/pages/property-mappings/PropertyMappingSAMLForm.ts:43
-#: src/pages/property-mappings/PropertyMappingScopeForm.ts:43
+#: 
+#: 
+#: 
 msgid "Successfully created mapping."
 msgstr ""
 
-#: src/pages/outposts/OutpostForm.ts:45
+#: 
 msgid "Successfully created outpost."
 msgstr ""
 
-#: src/pages/policies/dummy/DummyPolicyForm.ts:44
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:45
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:44
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:45
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:44
-#: src/pages/policies/password/PasswordPolicyForm.ts:44
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:44
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Successfully created policy."
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:43
+#: 
 msgid "Successfully created prompt."
 msgstr ""
 
-#: src/pages/providers/ldap/LDAPProviderForm.ts:45
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:49
-#: src/pages/providers/proxy/ProxyProviderForm.ts:51
-#: src/pages/providers/saml/SAMLProviderForm.ts:45
+#: 
+#: 
+#: 
+#: 
 msgid "Successfully created provider."
 msgstr ""
 
-#: src/pages/events/RuleForm.ts:43
+#: 
 msgid "Successfully created rule."
 msgstr ""
 
-#: src/pages/outposts/ServiceConnectionDockerForm.ts:44
-#: src/pages/outposts/ServiceConnectionKubernetesForm.ts:45
+#: 
+#: 
 msgid "Successfully created service-connection."
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:45
-#: src/pages/sources/oauth/OAuthSourceForm.ts:52
-#: src/pages/sources/plex/PlexSourceForm.ts:66
-#: src/pages/sources/saml/SAMLSourceForm.ts:45
+#: 
+#: 
+#: 
+#: 
 msgid "Successfully created source."
 msgstr ""
 
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:45
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:44
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:48
-#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts:42
-#: src/pages/stages/captcha/CaptchaStageForm.ts:43
-#: src/pages/stages/consent/ConsentStageForm.ts:47
-#: src/pages/stages/deny/DenyStageForm.ts:42
-#: src/pages/stages/dummy/DummyStageForm.ts:42
-#: src/pages/stages/email/EmailStageForm.ts:49
-#: src/pages/stages/identification/IdentificationStageForm.ts:45
-#: src/pages/stages/invitation/InvitationStageForm.ts:44
-#: src/pages/stages/password/PasswordStageForm.ts:45
-#: src/pages/stages/prompt/PromptStageForm.ts:46
-#: src/pages/stages/user_delete/UserDeleteStageForm.ts:42
-#: src/pages/stages/user_login/UserLoginStageForm.ts:43
-#: src/pages/stages/user_logout/UserLogoutStageForm.ts:42
-#: src/pages/stages/user_write/UserWriteStageForm.ts:42
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Successfully created stage."
 msgstr ""
 
-#: src/pages/user-settings/tokens/UserTokenForm.ts:42
+#: 
 msgid "Successfully created token."
 msgstr ""
 
-#: src/pages/events/TransportForm.ts:44
+#: 
 msgid "Successfully created transport."
 msgstr ""
 
-#: src/pages/users/UserForm.ts:45
+#: 
 msgid "Successfully created user."
 msgstr ""
 
-#: src/elements/forms/DeleteForm.ts:40
+#: 
 msgid "Successfully deleted {0} {1}"
 msgstr ""
 
-#: src/pages/crypto/CertificateGenerateForm.ts:24
+#: 
 msgid "Successfully generated certificate-key pair."
 msgstr ""
 
-#: src/pages/users/UserListPage.ts:132
-#: src/pages/users/UserViewPage.ts:160
+#: 
+#: 
 msgid "Successfully generated recovery link"
 msgstr ""
 
-#: src/pages/flows/FlowImportForm.ts:29
+#: 
 msgid "Successfully imported flow."
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderImportForm.ts:33
+#: 
 msgid "Successfully imported provider."
 msgstr ""
 
-#: src/pages/policies/PolicyTestForm.ts:30
-#: src/pages/property-mappings/PropertyMappingTestForm.ts:31
+#: 
+#: 
 msgid "Successfully sent test-request."
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:57
+#: 
 msgid "Successfully updated application."
 msgstr ""
 
-#: src/pages/flows/StageBindingForm.ts:41
-#: src/pages/policies/PolicyBindingForm.ts:62
+#: 
+#: 
 msgid "Successfully updated binding."
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairForm.ts:40
+#: 
 msgid "Successfully updated certificate-key pair."
 msgstr ""
 
-#: src/pages/user-settings/UserDetailsPage.ts:47
+#: 
 msgid "Successfully updated details."
 msgstr ""
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:54
+#: 
 msgid "Successfully updated device."
 msgstr ""
 
-#: src/pages/flows/FlowForm.ts:50
+#: 
 msgid "Successfully updated flow."
 msgstr ""
 
-#: src/pages/groups/GroupForm.ts:48
+#: 
 msgid "Successfully updated group."
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationForm.ts:41
+#: 
 msgid "Successfully updated invitation."
 msgstr ""
 
-#: src/pages/property-mappings/PropertyMappingLDAPForm.ts:40
-#: src/pages/property-mappings/PropertyMappingSAMLForm.ts:40
-#: src/pages/property-mappings/PropertyMappingScopeForm.ts:40
+#: 
+#: 
+#: 
 msgid "Successfully updated mapping."
 msgstr ""
 
-#: src/pages/outposts/OutpostForm.ts:42
+#: 
 msgid "Successfully updated outpost."
 msgstr ""
 
-#: src/pages/policies/dummy/DummyPolicyForm.ts:41
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:42
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:41
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:42
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:41
-#: src/pages/policies/password/PasswordPolicyForm.ts:41
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:41
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Successfully updated policy."
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:40
+#: 
 msgid "Successfully updated prompt."
 msgstr ""
 
-#: src/pages/providers/ldap/LDAPProviderForm.ts:42
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:46
-#: src/pages/providers/proxy/ProxyProviderForm.ts:48
-#: src/pages/providers/saml/SAMLProviderForm.ts:42
+#: 
+#: 
+#: 
+#: 
 msgid "Successfully updated provider."
 msgstr ""
 
-#: src/pages/events/RuleForm.ts:40
+#: 
 msgid "Successfully updated rule."
 msgstr ""
 
-#: src/pages/outposts/ServiceConnectionDockerForm.ts:41
-#: src/pages/outposts/ServiceConnectionKubernetesForm.ts:42
+#: 
+#: 
 msgid "Successfully updated service-connection."
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:42
-#: src/pages/sources/oauth/OAuthSourceForm.ts:49
-#: src/pages/sources/plex/PlexSourceForm.ts:63
-#: src/pages/sources/saml/SAMLSourceForm.ts:42
+#: 
+#: 
+#: 
+#: 
 msgid "Successfully updated source."
 msgstr ""
 
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:42
-#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts:41
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:45
-#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts:39
-#: src/pages/stages/captcha/CaptchaStageForm.ts:40
-#: src/pages/stages/consent/ConsentStageForm.ts:44
-#: src/pages/stages/deny/DenyStageForm.ts:39
-#: src/pages/stages/dummy/DummyStageForm.ts:39
-#: src/pages/stages/email/EmailStageForm.ts:46
-#: src/pages/stages/identification/IdentificationStageForm.ts:42
-#: src/pages/stages/invitation/InvitationStageForm.ts:41
-#: src/pages/stages/password/PasswordStageForm.ts:42
-#: src/pages/stages/prompt/PromptStageForm.ts:43
-#: src/pages/stages/user_delete/UserDeleteStageForm.ts:39
-#: src/pages/stages/user_login/UserLoginStageForm.ts:40
-#: src/pages/stages/user_logout/UserLogoutStageForm.ts:39
-#: src/pages/stages/user_write/UserWriteStageForm.ts:39
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Successfully updated stage."
 msgstr ""
 
-#: src/pages/user-settings/tokens/UserTokenForm.ts:39
+#: 
 msgid "Successfully updated token."
 msgstr ""
 
-#: src/pages/events/TransportForm.ts:41
+#: 
 msgid "Successfully updated transport."
 msgstr ""
 
-#: src/pages/users/UserForm.ts:42
+#: 
 msgid "Successfully updated user."
 msgstr ""
 
-#: src/pages/users/UserActiveForm.ts:26
+#: 
 msgid "Successfully updated {0} {1}"
 msgstr ""
 
-#: src/pages/users/UserViewPage.ts:126
+#: 
 msgid "Superuser"
 msgstr ""
 
-#: src/pages/groups/GroupListPage.ts:48
+#: 
 msgid "Superuser privileges?"
 msgstr ""
 
-#: src/pages/admin-overview/charts/GroupCountStatusChart.ts:55
+#: 
 msgid "Superuser-groups"
 msgstr ""
 
-#: src/pages/admin-overview/charts/UserCountStatusChart.ts:55
+#: 
 msgid "Superusers"
 msgstr ""
 
-#: src/pages/policies/password/PasswordPolicyForm.ts:121
+#: 
 msgid "Symbol charset"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:124
+#: 
 msgid "Sync"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:92
+#: 
 msgid "Sync groups"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:129
+#: 
 msgid "Sync status"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:75
+#: 
 msgid "Sync users"
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:49
+#: 
 msgid "System Overview"
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:31
-#: src/pages/system-tasks/SystemTaskListPage.ts:27
+#: 
+#: 
 msgid "System Tasks"
 msgstr ""
 
-#: src/pages/outposts/ServiceConnectionDockerForm.ts:89
+#: 
 msgid "TLS Authentication Certificate"
 msgstr ""
 
-#: src/pages/outposts/ServiceConnectionDockerForm.ts:73
+#: 
 msgid "TLS Verification Certificate"
 msgstr ""
 
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:107
+#: 
 msgid "TOTP Authenticators"
 msgstr ""
 
-#: src/pages/flows/StageBindingForm.ts:83
+#: 
 msgid "Target"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:140
+#: 
 msgid "Task finished with errors"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:137
+#: 
 msgid "Task finished with warnings"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:159
+#: 
 msgid "Template"
 msgstr ""
 
-#: src/pages/events/TransportListPage.ts:62
-#: src/pages/policies/PolicyListPage.ts:95
-#: src/pages/policies/PolicyListPage.ts:103
-#: src/pages/property-mappings/PropertyMappingListPage.ts:84
-#: src/pages/property-mappings/PropertyMappingListPage.ts:92
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Test"
 msgstr ""
 
-#: src/pages/policies/PolicyListPage.ts:98
+#: 
 msgid "Test Policy"
 msgstr ""
 
-#: src/pages/property-mappings/PropertyMappingListPage.ts:87
+#: 
 msgid "Test Property Mapping"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:50
+#: 
 msgid "Text: Simple Text input"
 msgstr ""
 
-#: src/elements/router/Router404.ts:26
+#: 
 msgid "The URL \"{0}\" was not found."
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:131
+#: 
 msgid "The external URL you'll access the application at"
 msgstr ""
 
-#: src/pages/policies/dummy/DummyPolicyForm.ts:88
+#: 
 msgid "The policy takes a random time to execute. This controls the minimum time it will take."
 msgstr ""
 
-#: src/pages/flows/BoundStagesList.ts:102
+#: 
 msgid "These bindings control if this stage will be applied to the flow."
 msgstr ""
 
-#: src/pages/events/RuleListPage.ts:109
+#: 
 msgid ""
 "These bindings control upon which events this rule triggers. Bindings to\n"
 "groups/users are checked against the user of the event."
 msgstr ""
 
-#: src/pages/flows/FlowViewPage.ts:103
+#: 
 msgid "These bindings control which users can access this flow."
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:146
-#: src/pages/sources/plex/PlexSourceViewPage.ts:105
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:152
+#: 
+#: 
+#: 
 msgid ""
 "These bindings control which users can access this source.\n"
 "You can only use policies here as access is checked before the user is authenticated."
 msgstr ""
 
-#: src/pages/applications/ApplicationViewPage.ts:149
+#: 
 msgid "These policies control which users can access this application."
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationStageForm.ts:51
+#: 
 msgid "This stage can be included in enrollment flows to accept invitations."
 msgstr ""
 
-#: src/pages/stages/captcha/CaptchaStageForm.ts:50
+#: 
 msgid "This stage checks the user's current session against the Google reCaptcha service."
 msgstr ""
 
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:92
+#: 
 msgid "Threshold"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:150
+#: 
 msgid "Time in minutes the token sent is valid."
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceForm.ts:171
+#: 
 msgid "Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts:77
+#: 
 msgid "Time-based One-Time Passwords"
 msgstr ""
 
-#: src/pages/policies/BoundPoliciesList.ts:43
-#: src/pages/policies/PolicyBindingForm.ts:210
-#: src/pages/stages/email/EmailStageForm.ts:102
+#: 
+#: 
+#: 
 msgid "Timeout"
 msgstr ""
 
-#: src/pages/flows/FlowForm.ts:92
+#: 
 msgid "Title"
 msgstr ""
 
-#: src/pages/tokens/TokenListPage.ts:61
-#: src/pages/user-settings/tokens/UserTokenList.ts:118
+#: 
+#: 
 msgid "Token"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:174
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:104
+#: 
+#: 
 msgid "Token URL"
 msgstr ""
 
-#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts:66
+#: 
 msgid "Token count"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:146
+#: 
 msgid "Token expiry"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:144
+#: 
 msgid "Token validity"
 msgstr ""
 
-#: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts:62
-#: src/interfaces/AdminInterface.ts:109
-#: src/pages/tokens/TokenListPage.ts:26
-#: src/pages/user-settings/UserSettingsPage.ts:77
+#: 
+#: 
+#: 
+#: 
 msgid "Tokens"
 msgstr ""
 
-#: src/pages/tokens/TokenListPage.ts:29
+#: 
 msgid "Tokens are used throughout authentik for Email validation stages, Recovery keys and API access."
 msgstr ""
 
-#: src/pages/admin-overview/charts/FlowStatusChart.ts:53
+#: 
 msgid "Total flows"
 msgstr ""
 
-#: src/pages/admin-overview/charts/GroupCountStatusChart.ts:54
+#: 
 msgid "Total groups"
 msgstr ""
 
-#: src/pages/admin-overview/charts/PolicyStatusChart.ts:58
+#: 
 msgid "Total policies"
 msgstr ""
 
-#: src/pages/admin-overview/charts/UserCountStatusChart.ts:54
+#: 
 msgid "Total users"
 msgstr ""
 
-#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts:80
+#: 
 msgid "Traditional authenticator"
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceForm.ts:162
+#: 
 msgid "Transient"
 msgstr ""
 
-#: src/pages/events/RuleForm.ts:83
+#: 
 msgid "Transports"
 msgstr ""
 
-#: src/pages/flows/BoundStagesList.ts:40
-#: src/pages/outposts/OutpostForm.ts:58
-#: src/pages/outposts/ServiceConnectionListPage.ts:54
-#: src/pages/policies/PolicyListPage.ts:57
-#: src/pages/property-mappings/PropertyMappingListPage.ts:55
-#: src/pages/providers/ProviderListPage.ts:55
-#: src/pages/sources/SourcesListPage.ts:53
-#: src/pages/stages/prompt/PromptForm.ts:102
-#: src/pages/stages/prompt/PromptListPage.ts:48
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Type"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts:160
+#: 
 msgid "UI settings"
 msgstr ""
 
-#: src/pages/events/EventInfo.ts:43
+#: 
 msgid "UID"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:63
+#: 
 msgid "URL settings"
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceForm.ts:82
+#: 
 msgid "URL that the initial Login request is sent to."
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:71
+#: 
 msgid "URL the user is redirect to to consent the authorization."
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:85
+#: 
 msgid "URL used by authentik to get user information."
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:78
+#: 
 msgid "URL used by authentik to retrieve tokens."
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:91
+#: 
 msgid "URL used to request the initial token. This URL is only required for OAuth 1."
 msgstr ""
 
-#: src/pages/admin-overview/charts/PolicyStatusChart.ts:60
+#: 
 msgid "Unbound policies"
 msgstr ""
 
-#: src/pages/flows/FlowForm.ts:78
+#: 
 msgid "Unenrollment"
 msgstr ""
 
-#: src/pages/outposts/ServiceConnectionListPage.ts:71
+#: 
 msgid "Unhealthy"
 msgstr ""
 
-#: src/pages/admin-overview/charts/OutpostStatusChart.ts:72
+#: 
 msgid "Unhealthy outposts"
 msgstr ""
 
-#: src/pages/system-tasks/SystemTaskListPage.ts:70
+#: 
 msgid "Unknown"
 msgstr ""
 
-#: src/pages/admin-overview/charts/LDAPSyncStatusChart.ts:77
+#: 
 msgid "Unsynced sources"
 msgstr ""
 
-#: src/pages/admin-overview/cards/VersionStatusCard.ts:32
+#: 
 msgid "Up-to-date!"
 msgstr ""
 
-#: src/pages/applications/ApplicationListPage.ts:87
-#: src/pages/applications/ApplicationViewPage.ts:97
-#: src/pages/crypto/CertificateKeyPairListPage.ts:66
-#: src/pages/events/RuleListPage.ts:62
-#: src/pages/events/TransportListPage.ts:66
-#: src/pages/flows/BoundStagesList.ts:53
-#: src/pages/flows/BoundStagesList.ts:71
-#: src/pages/flows/FlowListPage.ts:66
-#: src/pages/groups/GroupListPage.ts:61
-#: src/pages/outposts/OutpostListPage.ts:67
-#: src/pages/outposts/ServiceConnectionListPage.ts:76
-#: src/pages/policies/BoundPoliciesList.ts:68
-#: src/pages/policies/BoundPoliciesList.ts:88
-#: src/pages/policies/BoundPoliciesList.ts:103
-#: src/pages/policies/BoundPoliciesList.ts:129
-#: src/pages/policies/PolicyListPage.ts:77
-#: src/pages/property-mappings/PropertyMappingListPage.ts:66
-#: src/pages/providers/ProviderListPage.ts:74
-#: src/pages/providers/ldap/LDAPProviderViewPage.ts:93
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:118
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:131
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:112
-#: src/pages/sources/SourcesListPage.ts:70
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:95
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:115
-#: src/pages/sources/plex/PlexSourceViewPage.ts:74
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:101
-#: src/pages/stages/StageListPage.ts:85
-#: src/pages/stages/prompt/PromptListPage.ts:67
-#: src/pages/user-settings/UserDetailsPage.ts:81
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:47
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:50
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:71
-#: src/pages/user-settings/tokens/UserTokenList.ts:105
-#: src/pages/users/UserActiveForm.ts:66
-#: src/pages/users/UserListPage.ts:72
-#: src/pages/users/UserViewPage.ts:139
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Update"
 msgstr ""
 
-#: src/pages/applications/ApplicationListPage.ts:90
-#: src/pages/applications/ApplicationViewPage.ts:100
+#: 
+#: 
 msgid "Update Application"
 msgstr ""
 
-#: src/pages/policies/BoundPoliciesList.ts:132
+#: 
 msgid "Update Binding"
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairListPage.ts:69
+#: 
 msgid "Update Certificate-Key Pair"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts:69
+#: 
 msgid "Update Flow"
 msgstr ""
 
-#: src/pages/groups/GroupListPage.ts:64
-#: src/pages/policies/BoundPoliciesList.ts:91
+#: 
+#: 
 msgid "Update Group"
 msgstr ""
 
-#: src/pages/providers/ldap/LDAPProviderViewPage.ts:96
+#: 
 msgid "Update LDAP Provider"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts:98
+#: 
 msgid "Update LDAP Source"
 msgstr ""
 
-#: src/pages/events/RuleListPage.ts:65
+#: 
 msgid "Update Notification Rule"
 msgstr ""
 
-#: src/pages/events/TransportListPage.ts:69
+#: 
 msgid "Update Notification Transport"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceViewPage.ts:118
+#: 
 msgid "Update OAuth Source"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:121
+#: 
 msgid "Update OAuth2 Provider"
 msgstr ""
 
-#: src/pages/outposts/OutpostListPage.ts:70
+#: 
 msgid "Update Outpost"
 msgstr ""
 
-#: src/pages/sources/plex/PlexSourceViewPage.ts:77
+#: 
 msgid "Update Plex Source"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptListPage.ts:70
+#: 
 msgid "Update Prompt"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:134
+#: 
 msgid "Update Proxy Provider"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderViewPage.ts:115
+#: 
 msgid "Update SAML Provider"
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceViewPage.ts:104
+#: 
 msgid "Update SAML Source"
 msgstr ""
 
-#: src/pages/flows/BoundStagesList.ts:74
+#: 
 msgid "Update Stage binding"
 msgstr ""
 
-#: src/pages/user-settings/tokens/UserTokenList.ts:108
+#: 
 msgid "Update Token"
 msgstr ""
 
-#: src/pages/policies/BoundPoliciesList.ts:106
-#: src/pages/users/UserListPage.ts:75
-#: src/pages/users/UserViewPage.ts:142
+#: 
+#: 
+#: 
 msgid "Update User"
 msgstr ""
 
-#: src/pages/user-settings/UserDetailsPage.ts:43
+#: 
 msgid "Update details"
 msgstr ""
 
-#: src/pages/flows/BoundStagesList.ts:56
-#: src/pages/outposts/ServiceConnectionListPage.ts:79
-#: src/pages/policies/BoundPoliciesList.ts:71
-#: src/pages/policies/PolicyListPage.ts:80
-#: src/pages/property-mappings/PropertyMappingListPage.ts:69
-#: src/pages/providers/ProviderListPage.ts:77
-#: src/pages/sources/SourcesListPage.ts:73
-#: src/pages/stages/StageListPage.ts:88
-#: src/pages/users/UserActiveForm.ts:41
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Update {0}"
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:82
+#: 
 msgid "Upstream host that the requests are forwarded to."
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:97
+#: 
 msgid "Use SSL"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:89
+#: 
 msgid "Use TLS"
 msgstr ""
 
-#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts:81
+#: 
 msgid "Use a code-based authenticator."
 msgstr ""
 
-#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts:64
+#: 
 msgid "Use a security key to prove your identity."
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:140
+#: 
 msgid "Use global settings"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:150
-#: src/pages/sources/plex/PlexSourceForm.ts:124
+#: 
+#: 
 msgid "Use the user's email address, but deny enrollment when the email address already exists."
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:156
-#: src/pages/sources/plex/PlexSourceForm.ts:130
+#: 
+#: 
 msgid "Use the user's username, but deny enrollment when the username already exists."
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:126
+#: 
 msgid "Use this redirect URL:"
 msgstr ""
 
-#: src/elements/events/ObjectChangelog.ts:39
-#: src/elements/events/UserEvents.ts:36
-#: src/pages/events/EventInfo.ts:83
-#: src/pages/events/EventListPage.ts:44
-#: src/pages/policies/PolicyBindingForm.ts:133
-#: src/pages/policies/PolicyBindingForm.ts:177
-#: src/pages/policies/PolicyTestForm.ts:61
-#: src/pages/property-mappings/PropertyMappingTestForm.ts:51
-#: src/pages/tokens/TokenListPage.ts:45
-#: src/pages/user-settings/tokens/UserTokenList.ts:72
-#: src/pages/users/UserListPage.ts:92
-#: src/pages/users/UserListPage.ts:112
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "User"
 msgstr ""
 
-#: src/pages/users/UserViewPage.ts:78
+#: 
 msgid "User Info"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:142
+#: 
 msgid "User Property Mappings"
 msgstr ""
 
-#: src/pages/user-settings/UserSettingsPage.ts:70
+#: 
 msgid "User Settings"
 msgstr ""
 
-#: src/pages/user-settings/UserSettingsPage.ts:74
+#: 
 msgid "User details"
 msgstr ""
 
-#: src/pages/users/UserViewPage.ts:177
+#: 
 msgid "User events"
 msgstr ""
 
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:99
-#: src/pages/stages/identification/IdentificationStageForm.ts:72
+#: 
+#: 
 msgid "User fields"
 msgstr ""
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts:139
-#: src/pages/sources/plex/PlexSourceForm.ts:113
+#: 
+#: 
 msgid "User matching mode"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:206
+#: 
 msgid "User object filter"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceForm.ts:83
+#: 
 msgid "User password writeback"
 msgstr ""
 
-#: src/pages/policies/BoundPoliciesList.ts:56
-#: src/pages/users/UserViewPage.ts:63
+#: 
+#: 
 msgid "User {0}"
 msgstr ""
 
-#: src/flows/FormStatic.ts:43
+#: 
 msgid "User's avatar"
 msgstr ""
 
-#: src/pages/user-settings/UserDetailsPage.ts:68
-#: src/pages/users/UserForm.ts:63
+#: 
+#: 
 msgid "User's display name."
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:69
+#: 
 msgid "User/Group Attribute used for the password part of the HTTP-Basic Header."
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:63
+#: 
 msgid "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used."
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts:180
+#: 
 msgid "Userinfo URL"
 msgstr ""
 
-#: src/flows/stages/identification/IdentificationStage.ts:150
-#: src/pages/stages/identification/IdentificationStageForm.ts:76
-#: src/pages/user-settings/UserDetailsPage.ts:57
-#: src/pages/users/UserForm.ts:52
-#: src/pages/users/UserViewPage.ts:84
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Username"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptForm.ts:53
+#: 
 msgid "Username: Same as Text input, but checks for and prevents duplicate usernames."
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts:100
-#: src/pages/admin-overview/AdminOverviewPage.ts:71
-#: src/pages/users/UserListPage.ts:33
+#: 
+#: 
+#: 
 msgid "Users"
 msgstr ""
 
-#: src/pages/groups/GroupForm.ts:70
+#: 
 msgid "Users added to this group will be superusers."
 msgstr ""
 
-#: src/pages/providers/ldap/LDAPProviderForm.ts:86
-msgid "Users in the selected group can do search queries."
+#: 
+msgid "Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed."
 msgstr ""
 
-#: src/pages/events/EventInfo.ts:108
+#: 
 msgid "Using flow"
 msgstr ""
 
-#: src/pages/events/EventInfo.ts:198
+#: 
 msgid "Using source"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts:124
+#: 
 msgid "Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows."
 msgstr ""
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts:91
+#: 
 msgid "Validate SSL Certificates of upstream servers."
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts:58
+#: 
 msgid "Validate the user's password against the selected backend(s)."
 msgstr ""
 
-#: src/pages/stages/prompt/PromptStageForm.ts:101
+#: 
 msgid "Validation Policies"
 msgstr ""
 
-#: src/pages/crypto/CertificateGenerateForm.ts:41
+#: 
 msgid "Validity days"
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:137
+#: 
 msgid "Verification Certificate"
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:120
+#: 
 msgid "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity."
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:90
+#: 
 msgid "Version"
 msgstr ""
 
-#: src/pages/outposts/OutpostHealth.ts:60
+#: 
 msgid "Version: {0}"
 msgstr ""
 
-#: src/pages/outposts/OutpostListPage.ts:92
+#: 
 msgid "View Deployment Info"
 msgstr ""
 
-#: src/pages/outposts/OutpostDeploymentModal.ts:19
+#: 
 msgid "View deployment documentation"
 msgstr ""
 
-#: src/pages/flows/FlowForm.ts:103
+#: 
 msgid "Visible in the URL."
 msgstr ""
 
-#: src/pages/policies/dummy/DummyPolicyForm.ts:91
+#: 
 msgid "Wait (max)"
 msgstr ""
 
-#: src/pages/policies/dummy/DummyPolicyForm.ts:84
+#: 
 msgid "Wait (min)"
 msgstr ""
 
-#: src/pages/events/RuleForm.ts:53
-#: src/pages/system-tasks/SystemTaskListPage.ts:66
+#: 
+#: 
 msgid "Warning"
 msgstr ""
 
-#: src/pages/policies/PolicyListPage.ts:71
+#: 
 msgid "Warning: Policy is not assigned."
 msgstr ""
 
-#: src/pages/providers/ProviderListPage.ts:69
+#: 
 msgid "Warning: Provider not assigned to any application."
 msgstr ""
 
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts:110
+#: 
 msgid "WebAuthn Authenticators"
 msgstr ""
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts:78
+#: 
 msgid "WebAuthn Devices"
 msgstr ""
 
-#: src/pages/events/TransportForm.ts:57
+#: 
 msgid "Webhook (Slack/Discord)"
 msgstr ""
 
-#: src/pages/events/TransportForm.ts:54
+#: 
 msgid "Webhook (generic)"
 msgstr ""
 
-#: src/pages/events/TransportForm.ts:96
+#: 
 msgid "Webhook URL"
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:101
+#: 
 msgid "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown."
 msgstr ""
 
-#: src/pages/stages/email/EmailStageForm.ts:143
+#: 
 msgid "When enabled, global Email connection settings will be used and connection settings below will be ignored."
 msgstr ""
 
-#: src/pages/stages/invitation/InvitationForm.ts:71
+#: 
 msgid "When enabled, the invitation will be deleted after usage."
 msgstr ""
 
-#: src/pages/stages/identification/IdentificationStageForm.ts:92
+#: 
 msgid "When enabled, user fields are matched regardless of their casing."
 msgstr ""
 
-#: src/pages/providers/saml/SAMLProviderForm.ts:150
+#: 
 msgid "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."
 msgstr ""
 
-#: src/pages/policies/dummy/DummyPolicyForm.ts:67
-#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:68
-#: src/pages/policies/expiry/ExpiryPolicyForm.ts:67
-#: src/pages/policies/expression/ExpressionPolicyForm.ts:68
-#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts:68
-#: src/pages/policies/password/PasswordPolicyForm.ts:67
-#: src/pages/policies/reputation/ReputationPolicyForm.ts:67
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
 msgstr ""
 
-#: src/flows/FlowExecutor.ts:135
+#: 
 msgid "Whoops!"
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceForm.ts:156
+#: 
 msgid "Windows"
 msgstr ""
 
-#: src/pages/admin-overview/AdminOverviewPage.ts:98
+#: 
 msgid "Workers"
 msgstr ""
 
-#: src/pages/stages/user_write/UserWriteStageForm.ts:49
+#: 
 msgid ""
 "Write any data from the flow's context's 'prompt_data' to the currently pending user. If no user\n"
 "is pending, a new user is created, and data is written to them."
 msgstr ""
 
-#: src/pages/sources/saml/SAMLSourceForm.ts:159
+#: 
 msgid "X509 Subject"
 msgstr ""
 
-#: src/pages/crypto/CertificateKeyPairListPage.ts:61
-#: src/pages/groups/GroupListPage.ts:57
-#: src/pages/groups/MemberSelectModal.ts:57
-#: src/pages/outposts/ServiceConnectionListPage.ts:64
-#: src/pages/policies/BoundPoliciesList.ts:122
-#: src/pages/policies/PolicyTestForm.ts:39
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:103
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts:119
-#: src/pages/tokens/TokenListPage.ts:56
-#: src/pages/user-settings/tokens/UserTokenList.ts:83
-#: src/pages/users/UserListPage.ts:67
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
+#: 
 msgid "Yes"
 msgstr ""
 
-#: src/interfaces/Interface.ts:65
+#: 
 msgid "You're currently impersonating {0}."
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts:77
+#: 
 msgid "authentik Builtin Database"
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts:80
+#: 
 msgid "authentik LDAP Backend"
 msgstr ""
 
-#: src/elements/Tabs.ts:68
+#: 
 msgid "no tabs defined"
 msgstr ""
 
-#: src/elements/Expand.ts:28
-#: src/elements/Expand.ts:28
+#: 
+#: 
 msgid "{0}"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptStageForm.ts:80
+#: 
 msgid "{0} (\"{1}\", of type {2})"
 msgstr ""
 
-#: src/pages/stages/prompt/PromptStageForm.ts:113
+#: 
 msgid "{0} ({1})"
 msgstr ""
 
-#: src/elements/table/TablePagination.ts:29
+#: 
 msgid "{0} - {1} of {2}"
 msgstr ""
 
-#: src/pages/admin-overview/cards/VersionStatusCard.ts:27
+#: 
 msgid "{0} is available!"
 msgstr ""
 
-#: src/elements/notifications/NotificationDrawer.ts:98
+#: 
 msgid "{0} unread"
 msgstr ""
 
-#: src/pages/outposts/OutpostHealth.ts:59
+#: 
 msgid "{0}, should be {1}"
 msgstr ""
 
-#: src/elements/forms/ConfirmationForm.ts:45
+#: 
 msgid "{0}: {1}"
 msgstr ""
