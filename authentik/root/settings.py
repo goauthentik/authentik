@@ -353,7 +353,7 @@ if _ERROR_REPORTING:
         environment=CONFIG.y("error_reporting.environment", "customer"),
         send_default_pii=CONFIG.y_bool("error_reporting.send_pii", False),
     )
-    set_tag("authentik:build_hash", os.environ.get(ENV_GIT_HASH_KEY, ""))
+    set_tag("authentik:build_hash", os.environ.get(ENV_GIT_HASH_KEY, "tagged"))
     set_tag(
         "authentik:env", "kubernetes" if "KUBERNETES_PORT" in os.environ else "compose"
     )
