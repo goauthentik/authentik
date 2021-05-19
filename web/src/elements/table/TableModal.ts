@@ -34,7 +34,7 @@ export abstract class TableModal<T> extends Table<T> {
 
     resetForms(): void {
         this.querySelectorAll<HTMLFormElement>("[slot=form]").forEach(form => {
-            form.reset();
+            form?.reset();
         });
     }
 

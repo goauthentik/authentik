@@ -55,7 +55,7 @@ export class ModalButton extends LitElement {
 
     resetForms(): void {
         this.querySelectorAll<HTMLFormElement>("[slot=form]").forEach(form => {
-            form.reset();
+            form?.reset();
         });
     }
 
