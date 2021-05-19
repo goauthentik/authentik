@@ -12,6 +12,7 @@ from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 
 LOGGER = get_logger()
 DEFAULT_BACKEND = "django.contrib.auth.backends.ModelBackend"
+USER_LOGIN_AUTHENTICATED = "user_login_authenticated"
 
 
 class UserLoginStageView(StageView):
@@ -43,5 +44,6 @@ class UserLoginStageView(StageView):
             flow_slug=self.executor.flow.slug,
             session_duration=self.executor.current_stage.session_duration,
         )
+        self.request.session[USER_LOGIN_AUTHENTICATED] = True
         messages.success(self.request, _("Successfully logged in!"))
         return self.executor.stage_ok()

@@ -28,6 +28,7 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.models import Application
 from authentik.events.models import EventAction
 from authentik.policies.engine import PolicyEngine
+from authentik.stages.user_login.stage import USER_LOGIN_AUTHENTICATED
 
 LOGGER = get_logger()
 
@@ -130,6 +131,7 @@ class ApplicationViewSet(ModelViewSet):
     )
     def list(self, request: Request) -> Response:
         """Custom list method that checks Policy based access instead of guardian"""
+        self.request.session.pop(USER_LOGIN_AUTHENTICATED, None)
         queryset = self._filter_queryset_for_list(self.get_queryset())
         self.paginate_queryset(queryset)
 
