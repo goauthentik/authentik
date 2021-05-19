@@ -127,7 +127,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         """Ensure all OAuth2-related settings are correct"""
         self.client_type = ClientTypes.CONFIDENTIAL
         self.jwt_alg = JWTAlgorithms.RS256
-        self.rsa_key = CertificateKeyPair.objects.first()
+        self.rsa_key = CertificateKeyPair.objects.exclude(key_data__iexact="").first()
         scopes = ScopeMapping.objects.filter(
             scope_name__in=[
                 SCOPE_OPENID,

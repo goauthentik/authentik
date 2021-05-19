@@ -53,8 +53,10 @@ class ProxyProviderSerializer(ProviderSerializer):
         return instance
 
     def update(self, instance: ProxyProvider, validated_data):
+        instance = super().update(instance, validated_data)
         instance.set_oauth_defaults()
-        return super().update(instance, validated_data)
+        instance.save()
+        return instance
 
     class Meta:
 
