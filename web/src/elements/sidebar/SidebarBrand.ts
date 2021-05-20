@@ -22,6 +22,7 @@ export const DefaultConfig: Config = {
     errorReportingEnvironment: "",
     errorReportingSendPii: false,
     uiFooterLinks: [],
+    capabilities: [],
 };
 
 @customElement("ak-sidebar-brand")

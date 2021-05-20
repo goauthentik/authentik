@@ -15179,6 +15179,10 @@ components:
           readOnly: true
       required:
       - count
+    CapabilitiesEnum:
+      enum:
+      - can_save_media
+      type: string
     CaptchaStage:
       type: object
       description: CaptchaStage Serializer
@@ -15362,9 +15366,14 @@ components:
         error_reporting_send_pii:
           type: boolean
           readOnly: true
+        capabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CapabilitiesEnum'
       required:
       - branding_logo
       - branding_title
+      - capabilities
       - error_reporting_enabled
       - error_reporting_environment
       - error_reporting_send_pii
