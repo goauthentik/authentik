@@ -202,8 +202,11 @@ def _outpost_single_update(outpost: Outpost, layer=None):
     if not layer:  # pragma: no cover
         layer = get_channel_layer()
     for state in OutpostState.for_outpost(outpost):
-        LOGGER.debug("sending update", channel=state.channel_id, outpost=outpost)
-        async_to_sync(layer.send)(state.channel_id, {"type": "event.update"})
+        for channel in state.channel_ids:
+            LOGGER.debug(
+                "sending update", channel=channel, instance=state.uid, outpost=outpost
+            )
+            async_to_sync(layer.send)(channel, {"type": "event.update"})
 
 
 @CELERY_APP.task()

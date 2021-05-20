@@ -40,7 +40,7 @@ class WebsocketMessage:
 class OutpostConsumer(AuthJsonConsumer):
     """Handler for Outposts that connect over websockets for health checks and live updates"""
 
-    outpost: Optional[Outpost] = None
+    outpost: Outpost
 
     last_uid: Optional[str] = None
 
@@ -64,7 +64,9 @@ class OutpostConsumer(AuthJsonConsumer):
     # pylint: disable=unused-argument
     def disconnect(self, close_code):
         if self.outpost and self.last_uid:
-            OutpostState.for_channel(self.outpost, self.last_uid).delete()
+            state = OutpostState.for_instance_uid(self.outpost, self.last_uid)
+            state.channel_ids.remove(self.channel_name)
+            state.save()
         LOGGER.debug(
             "removed outpost instance from cache",
             outpost=self.outpost,
@@ -75,12 +77,10 @@ class OutpostConsumer(AuthJsonConsumer):
         msg = from_dict(WebsocketMessage, content)
         uid = msg.args.get("uuid", self.channel_name)
         self.last_uid = uid
-        state = OutpostState(
-            uid=uid,
-            channel_id=self.channel_name,
-            last_seen=datetime.now(),
-            _outpost=self.outpost,
-        )
+        state = OutpostState.for_instance_uid(self.outpost, uid)
+        if self.channel_name not in state.channel_ids:
+            state.channel_ids.append(self.channel_name)
+        state.last_seen = datetime.now()
         if msg.instruction == WebsocketMessageInstruction.HELLO:
             state.version = msg.args.get("version", None)
             state.build_hash = msg.args.get("buildHash", "")
