@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-const VERSION = "2021.5.2"
+const VERSION = "2021.5.3"
 
 func BUILD() string {
 	return os.Getenv("GIT_BUILD_HASH")
