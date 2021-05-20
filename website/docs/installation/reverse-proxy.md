@@ -31,10 +31,9 @@ server {
 
     # Proxy site
     location / {
-        proxy_pass https://<hostname of your authentik server>;
+        proxy_pass https://<hostname of your authentik server>:9443;
         proxy_http_version 1.1;
         proxy_set_header X-Forwarded-Proto https;
-        proxy_set_header X-Forwarded-Port 443;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         # This needs to be set inside the location block, very important.
         proxy_set_header Host $host;

@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2021.5.2
+  version: 2021.5.3
   description: Making authentication simple.
   contact:
     email: hello@beryju.org
@@ -14933,7 +14933,7 @@ components:
           maxLength: 200
         meta_icon:
           type: string
-          format: uri
+          nullable: true
           readOnly: true
         meta_description:
           type: string
@@ -16143,9 +16143,8 @@ components:
             flow is redirect to when an un-authenticated user visits authentik.
         background:
           type: string
-          format: uri
+          nullable: true
           readOnly: true
-          description: Background shown during execution
         stages:
           type: array
           items:
@@ -21867,6 +21866,7 @@ components:
       - component
       - name
       - pk
+      - plex_token
       - slug
       - verbose_name
       - verbose_name_plural
@@ -21918,6 +21918,7 @@ components:
           description: Plex token used to check firends
       required:
       - name
+      - plex_token
       - slug
     PlexTokenRedeemRequest:
       type: object

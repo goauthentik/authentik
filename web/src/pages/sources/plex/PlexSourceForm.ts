@@ -46,7 +46,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
     }
 
     send = (data: PlexSource): Promise<PlexSource> => {
-        data.plexToken = this.plexToken;
+        data.plexToken = this.plexToken || "";
         if (this.instance?.slug) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesPlexUpdate({
                 slug: this.instance.slug,

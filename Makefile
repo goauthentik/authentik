@@ -30,6 +30,10 @@ lint:
 gen-build:
 	./manage.py spectacular --file schema.yml
 
+gen-clean:
+	rm -rf web/api/src/
+	rm -rf outpost/api/
+
 gen-web:
 	docker run \
 		--rm -v ${PWD}:/local \
@@ -55,7 +59,7 @@ gen-outpost:
 		--additional-properties=packageName=api,enumClassPrefix=true
 	rm -f outpost/api/go.mod outpost/api/go.sum
 
-gen: gen-build gen-web gen-outpost
+gen: gen-build gen-clean gen-web gen-outpost
 
 run:
 	go run -v cmd/server/main.go
