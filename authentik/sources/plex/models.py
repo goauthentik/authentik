@@ -41,9 +41,7 @@ class PlexSource(Source):
         default=True,
         help_text=_("Allow friends to authenticate, even if you don't share a server."),
     )
-    plex_token = models.TextField(
-        default="", help_text=_("Plex token used to check firends")
-    )
+    plex_token = models.TextField(help_text=_("Plex token used to check firends"))
 
     @property
     def component(self) -> str:
