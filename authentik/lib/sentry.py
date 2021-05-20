@@ -8,7 +8,11 @@ from botocore.exceptions import BotoCoreError
 from celery.exceptions import CeleryError
 from channels.middleware import BaseMiddleware
 from channels_redis.core import ChannelFull
-from django.core.exceptions import SuspiciousOperation, ValidationError
+from django.core.exceptions import (
+    ImproperlyConfigured,
+    SuspiciousOperation,
+    ValidationError,
+)
 from django.db import InternalError, OperationalError, ProgrammingError
 from django.http.response import Http404
 from django_redis.exceptions import ConnectionInterrupted
@@ -51,7 +55,8 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
         ConnectionResetError,
         OSError,
         PermissionError,
-        # Django DB Errors
+        # Django Errors
+        ImproperlyConfigured,
         OperationalError,
         InternalError,
         ProgrammingError,
