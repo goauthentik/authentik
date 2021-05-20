@@ -409,7 +409,7 @@ class OutpostState:
     """Outpost instance state, last_seen and version"""
 
     uid: str
-    channel_id: str
+    channel_ids: list[str] = field(default_factory=list)
     last_seen: Optional[datetime] = field(default=None)
     version: Optional[str] = field(default=None)
     version_should: Union[Version, LegacyVersion] = field(default=OUR_VERSION)
@@ -432,21 +432,20 @@ class OutpostState:
         keys = cache.keys(f"{outpost.state_cache_prefix}_*")
         states = []
         for key in keys:
-            channel = key.replace(f"{outpost.state_cache_prefix}_", "")
-            states.append(OutpostState.for_channel(outpost, channel))
+            instance_uid = key.replace(f"{outpost.state_cache_prefix}_", "")
+            states.append(OutpostState.for_instance_uid(outpost, instance_uid))
         return states
 
     @staticmethod
-    def for_channel(outpost: Outpost, channel: str) -> "OutpostState":
-        """Get state for a single channel"""
-        key = f"{outpost.state_cache_prefix}_{channel}"
-        default_data = {"uid": channel, "channel_id": channel}
+    def for_instance_uid(outpost: Outpost, uid: str) -> "OutpostState":
+        """Get state for a single instance"""
+        key = f"{outpost.state_cache_prefix}_{uid}"
+        default_data = {"uid": uid, "channel_ids": []}
         data = cache.get(key, default_data)
         if isinstance(data, str):
             cache.delete(key)
             data = default_data
         state = from_dict(OutpostState, data)
-        state.uid = channel
         # pylint: disable=protected-access
         state._outpost = outpost
         return state
