@@ -9,7 +9,20 @@ import (
 func (ws *WebServer) configureProxy() {
 	// Reverse proxy to the application server
 	u, _ := url.Parse("http://localhost:8000")
-	rp := httputil.NewSingleHostReverseProxy(u)
+	director := func(req *http.Request) {
+		req.URL.Scheme = u.Scheme
+		req.URL.Host = u.Host
+		if _, ok := req.Header["User-Agent"]; !ok {
+			// explicitly disable User-Agent so it's not set to default value
+			req.Header.Set("User-Agent", "")
+		}
+		if req.TLS != nil {
+			req.Header.Set("X-Forwarded-Proto", "https")
+		} else {
+			req.Header.Set("X-Forwarded-Proto", "http")
+		}
+	}
+	rp := &httputil.ReverseProxy{Director: director}
 	rp.ErrorHandler = ws.proxyErrorHandler
 	rp.ModifyResponse = ws.proxyModifyResponse
 	ws.m.PathPrefix("/").Handler(rp)
