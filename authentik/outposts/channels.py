@@ -65,8 +65,9 @@ class OutpostConsumer(AuthJsonConsumer):
     def disconnect(self, close_code):
         if self.outpost and self.last_uid:
             state = OutpostState.for_instance_uid(self.outpost, self.last_uid)
-            state.channel_ids.remove(self.channel_name)
-            state.save()
+            if self.channel_name in state.channel_ids:
+                state.channel_ids.remove(self.channel_name)
+                state.save()
         LOGGER.debug(
             "removed outpost instance from cache",
             outpost=self.outpost,
