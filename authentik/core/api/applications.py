@@ -13,7 +13,7 @@ from drf_spectacular.utils import (
     inline_serializer,
 )
 from rest_framework.decorators import action
-from rest_framework.fields import FileField, SerializerMethodField
+from rest_framework.fields import CharField, FileField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -43,6 +43,16 @@ class ApplicationSerializer(ModelSerializer):
 
     launch_url = SerializerMethodField()
     provider_obj = ProviderSerializer(source="get_provider", required=False)
+
+    meta_icon = SerializerMethodField()
+
+    def get_meta_icon(self, instance: Application) -> Optional[str]:
+        """When meta_icon was set to a URL, return the name as-is"""
+        if not instance.meta_icon:
+            return None
+        if instance.meta_icon.name.startswith("http"):
+            return instance.meta_icon.name
+        return instance.meta_icon.url
 
     def get_launch_url(self, instance: Application) -> Optional[str]:
         """Get generated launch URL"""
@@ -187,6 +197,31 @@ class ApplicationViewSet(ModelViewSet):
         if not icon:
             return HttpResponseBadRequest()
         app.meta_icon = icon
+        app.save()
+        return Response({})
+
+    @permission_required("authentik_core.change_application")
+    @extend_schema(
+        request=inline_serializer("SetIconURL", fields={"url": CharField()}),
+        responses={
+            200: OpenApiResponse(description="Success"),
+            400: OpenApiResponse(description="Bad request"),
+        },
+    )
+    @action(
+        detail=True,
+        pagination_class=None,
+        filter_backends=[],
+        methods=["POST"],
+    )
+    # pylint: disable=unused-argument
+    def set_icon_url(self, request: Request, slug: str):
+        """Set application icon (as URL)"""
+        app: Application = self.get_object()
+        url = request.data.get("url", None)
+        if not url:
+            return HttpResponseBadRequest()
+        app.meta_icon = url
         app.save()
         return Response({})
 

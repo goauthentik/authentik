@@ -1292,6 +1292,41 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/core/applications/{slug}/set_icon_url/:
+    post:
+      operationId: core_applications_set_icon_url_create
+      description: Set application icon (as URL)
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal application name, used in URLs.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetIconURLRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SetIconURLRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SetIconURLRequest'
+        required: true
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad request
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/groups/:
     get:
       operationId: core_groups_list
@@ -3961,6 +3996,41 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/SetIconRequest'
+        required: true
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad request
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/flows/instances/{slug}/set_background_url/:
+    post:
+      operationId: flows_instances_set_background_url_create
+      description: Set Flow background (as URL)
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Visible in the URL.
+        required: true
+      tags:
+      - flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetIconURLRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SetIconURLRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SetIconURLRequest'
         required: true
       security:
       - authentik: []
@@ -23142,6 +23212,13 @@ components:
           format: binary
       required:
       - file
+    SetIconURLRequest:
+      type: object
+      properties:
+        url:
+          type: string
+      required:
+      - url
     SeverityEnum:
       enum:
       - notice

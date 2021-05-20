@@ -1,11 +1,13 @@
-import { Flow, FlowDesignationEnum, PolicyEngineMode, FlowsApi } from "authentik-api";
+import { Flow, FlowDesignationEnum, PolicyEngineMode, FlowsApi, CapabilitiesEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
-import { DEFAULT_CONFIG } from "../../api/Config";
+import { config, DEFAULT_CONFIG } from "../../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../elements/forms/ModelForm";
+import { until } from "lit-html/directives/until";
+import { first } from "../../utils";
 
 @customElement("ak-flow-form")
 export class FlowForm extends ModelForm<Flow, string> {
@@ -36,16 +38,28 @@ export class FlowForm extends ModelForm<Flow, string> {
                 flowRequest: data
             });
         }
-        const background = this.getFormFile();
-        if (background) {
-            return writeOp.then(flow => {
-                return new FlowsApi(DEFAULT_CONFIG).flowsInstancesSetBackgroundCreate({
-                    slug: flow.slug,
-                    file: background
+        return config().then((c) => {
+            if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
+                const icon = this.getFormFile();
+                if (icon) {
+                    return writeOp.then(app => {
+                        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesSetBackgroundCreate({
+                            slug: app.slug,
+                            file: icon
+                        });
+                    });
+                }
+            } else {
+                return writeOp.then(app => {
+                    return new FlowsApi(DEFAULT_CONFIG).flowsInstancesSetBackgroundUrlCreate({
+                        slug: app.slug,
+                        setIconURLRequest: {
+                            url: data.background || "",
+                        }
+                    });
                 });
-            });
-        }
-        return writeOp;
+            }
+        });
     };
 
     renderDesignations(): TemplateResult {
@@ -119,12 +133,19 @@ export class FlowForm extends ModelForm<Flow, string> {
                 </select>
                 <p class="pf-c-form__helper-text">${t`Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.`}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${t`Background`}
-                name="background">
-                <input type="file" value="${ifDefined(this.instance?.background)}" class="pf-c-form-control">
-                <p class="pf-c-form__helper-text">${t`Background shown during execution.`}</p>
-            </ak-form-element-horizontal>
+            ${until(config().then((c) => {
+                let type = "text";
+                if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
+                    type = "file";
+                }
+                return html`<ak-form-element-horizontal
+                    label=${t`Background`}
+                    name="background">
+                    <!-- @ts-ignore -->
+                    <input type=${type} value="${first(this.instance?.background, "/static/dist/assets/images/flow_background.jpg")}" class="pf-c-form-control">
+                    <p class="pf-c-form__helper-text">${t`Background shown during execution.`}</p>
+                </ak-form-element-horizontal>`;
+            }))}
         </form>`;
     }
 

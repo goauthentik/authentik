@@ -1,8 +1,8 @@
-import { CoreApi, Application, ProvidersApi, Provider, PolicyEngineMode } from "authentik-api";
+import { CoreApi, Application, ProvidersApi, Provider, PolicyEngineMode, CapabilitiesEnum } from "authentik-api";
 import { t } from "@lingui/macro";
 import { CSSResult, customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
-import { DEFAULT_CONFIG } from "../../api/Config";
+import { config, DEFAULT_CONFIG } from "../../api/Config";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/buttons/Dropdown";
@@ -13,6 +13,7 @@ import "../../elements/forms/HorizontalFormElement";
 import "../../elements/forms/FormGroup";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import { ModelForm } from "../../elements/forms/ModelForm";
+import { first } from "../../utils";
 
 @customElement("ak-application-form")
 export class ApplicationForm extends ModelForm<Application, string> {
@@ -50,16 +51,28 @@ export class ApplicationForm extends ModelForm<Application, string> {
                 applicationRequest: data
             });
         }
-        const icon = this.getFormFile();
-        if (icon) {
-            return writeOp.then(app => {
-                return new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
-                    slug: app.slug,
-                    file: icon
+        return config().then((c) => {
+            if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
+                const icon = this.getFormFile();
+                if (icon) {
+                    return writeOp.then(app => {
+                        return new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
+                            slug: app.slug,
+                            file: icon
+                        });
+                    });
+                }
+            } else {
+                return writeOp.then(app => {
+                    return new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconUrlCreate({
+                        slug: app.slug,
+                        setIconURLRequest: {
+                            url: data.metaIcon || "",
+                        }
+                    });
                 });
-            });
-        }
-        return writeOp;
+            }
+        });
     };
 
     groupProviders(providers: Provider[]): TemplateResult {
@@ -164,11 +177,18 @@ export class ApplicationForm extends ModelForm<Application, string> {
                         <input type="text" value="${ifDefined(this.instance?.metaLaunchUrl)}" class="pf-c-form-control">
                         <p class="pf-c-form__helper-text">${t`If left empty, authentik will try to extract the launch URL based on the selected provider.`}</p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`Icon`}
-                        name="metaIcon">
-                        <input type="file" value="${ifDefined(this.instance?.metaIcon)}" class="pf-c-form-control">
-                    </ak-form-element-horizontal>
+                    ${until(config().then((c) => {
+                        let type = "text";
+                        if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
+                            type = "file";
+                        }
+                        return html`<ak-form-element-horizontal
+                            label=${t`Icon`}
+                            name="metaIcon">
+                            <!-- @ts-ignore -->
+                            <input type=${type} value="${first(this.instance?.metaIcon, "")}" class="pf-c-form-control">
+                        </ak-form-element-horizontal>`;
+                    }))}
                     <ak-form-element-horizontal
                         label=${t`Description`}
                         name="metaDescription">

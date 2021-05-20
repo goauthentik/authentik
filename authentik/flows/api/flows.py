@@ -1,5 +1,6 @@
 """Flow API Views"""
 from dataclasses import dataclass
+from typing import Optional
 
 from django.core.cache import cache
 from django.db.models import Model
@@ -41,6 +42,16 @@ class FlowSerializer(ModelSerializer):
     """Flow Serializer"""
 
     cache_count = SerializerMethodField()
+
+    background = SerializerMethodField()
+
+    def get_background(self, instance: Flow) -> Optional[str]:
+        """When background was set to a URL, return the name as-is"""
+        if not instance.background:
+            return None
+        if instance.background.name.startswith("http"):
+            return instance.background.name
+        return instance.background.url
 
     def get_cache_count(self, flow: Flow) -> int:
         """Get count of cached flows"""
@@ -284,12 +295,37 @@ class FlowViewSet(ModelViewSet):
     # pylint: disable=unused-argument
     def set_background(self, request: Request, slug: str):
         """Set Flow background"""
-        app: Flow = self.get_object()
+        flow: Flow = self.get_object()
         icon = request.FILES.get("file", None)
         if not icon:
             return HttpResponseBadRequest()
-        app.background = icon
-        app.save()
+        flow.background = icon
+        flow.save()
+        return Response({})
+
+    @permission_required("authentik_core.change_application")
+    @extend_schema(
+        request=inline_serializer("SetIconURL", fields={"url": CharField()}),
+        responses={
+            200: OpenApiResponse(description="Success"),
+            400: OpenApiResponse(description="Bad request"),
+        },
+    )
+    @action(
+        detail=True,
+        pagination_class=None,
+        filter_backends=[],
+        methods=["POST"],
+    )
+    # pylint: disable=unused-argument
+    def set_background_url(self, request: Request, slug: str):
+        """Set Flow background (as URL)"""
+        flow: Flow = self.get_object()
+        url = request.data.get("url", None)
+        if not url:
+            return HttpResponseBadRequest()
+        flow.background = url
+        flow.save()
         return Response({})
 
     @extend_schema(
