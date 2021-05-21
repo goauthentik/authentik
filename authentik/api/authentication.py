@@ -42,7 +42,7 @@ def token_from_header(raw_header: bytes) -> Optional[Token]:
     return tokens.first()
 
 
-class AuthentikTokenAuthentication(BaseAuthentication):
+class TokenAuthentication(BaseAuthentication):
     """Token-based authentication using HTTP Bearer authentication"""
 
     def authenticate(self, request: Request) -> Union[tuple[User, Any], None]:
