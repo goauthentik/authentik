@@ -595,30 +595,6 @@ paths:
             $ref: '#/definitions/GenericError'
       tags:
         - authenticators
-    post:
-      operationId: authenticators_static_create
-      description: Viewset for static authenticator devices
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/StaticDevice'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/StaticDevice'
-        '400':
-          description: Invalid input.
-          schema:
-            $ref: '#/definitions/ValidationError'
-        '403':
-          description: Authentication credentials were invalid, absent or insufficient.
-          schema:
-            $ref: '#/definitions/GenericError'
-      tags:
-        - authenticators
     parameters: []
   /authenticators/static/{id}/:
     get:
@@ -797,30 +773,6 @@ paths:
             $ref: '#/definitions/GenericError'
       tags:
         - authenticators
-    post:
-      operationId: authenticators_totp_create
-      description: Viewset for totp authenticator devices
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/TOTPDevice'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/TOTPDevice'
-        '400':
-          description: Invalid input.
-          schema:
-            $ref: '#/definitions/ValidationError'
-        '403':
-          description: Authentication credentials were invalid, absent or insufficient.
-          schema:
-            $ref: '#/definitions/GenericError'
-      tags:
-        - authenticators
     parameters: []
   /authenticators/totp/{id}/:
     get:
@@ -993,30 +945,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/definitions/WebAuthnDevice'
-        '403':
-          description: Authentication credentials were invalid, absent or insufficient.
-          schema:
-            $ref: '#/definitions/GenericError'
-      tags:
-        - authenticators
-    post:
-      operationId: authenticators_webauthn_create
-      description: Viewset for WebAuthn authenticator devices
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/WebAuthnDevice'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/WebAuthnDevice'
-        '400':
-          description: Invalid input.
-          schema:
-            $ref: '#/definitions/ValidationError'
         '403':
           description: Authentication credentials were invalid, absent or insufficient.
           schema:
@@ -10419,30 +10347,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/definitions/UserOAuthSourceConnection'
-        '403':
-          description: Authentication credentials were invalid, absent or insufficient.
-          schema:
-            $ref: '#/definitions/GenericError'
-      tags:
-        - sources
-    post:
-      operationId: sources_oauth_user_connections_create
-      description: Source Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/UserOAuthSourceConnection'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/UserOAuthSourceConnection'
-        '400':
-          description: Invalid input.
-          schema:
-            $ref: '#/definitions/ValidationError'
         '403':
           description: Authentication credentials were invalid, absent or insufficient.
           schema:

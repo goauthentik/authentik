@@ -1,12 +1,13 @@
 """AuthenticatorStaticStage API Views"""
 from django_filters.rest_framework import DjangoFilterBackend
 from django_otp.plugins.otp_static.models import StaticDevice
-from guardian.utils import get_anonymous_user
+from rest_framework import mixins
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAdminUser
 from rest_framework.serializers import ModelSerializer
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelViewSet
 
+from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.authenticator_static.models import AuthenticatorStaticStage
 
@@ -37,23 +38,22 @@ class StaticDeviceSerializer(ModelSerializer):
         depth = 2
 
 
-class StaticDeviceViewSet(ModelViewSet):
+class StaticDeviceViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     """Viewset for static authenticator devices"""
 
-    queryset = StaticDevice.objects.none()
+    queryset = StaticDevice.objects.all()
     serializer_class = StaticDeviceSerializer
+    permission_classes = [OwnerPermissions]
+    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
     search_fields = ["name"]
     filterset_fields = ["name"]
     ordering = ["name"]
-    filter_backends = [
-        DjangoFilterBackend,
-        OrderingFilter,
-        SearchFilter,
-    ]
-
-    def get_queryset(self):
-        user = self.request.user if self.request else get_anonymous_user()
-        return StaticDevice.objects.filter(user=user.pk)
 
 
 class StaticAdminDeviceViewSet(ReadOnlyModelViewSet):

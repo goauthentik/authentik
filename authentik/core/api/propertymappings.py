@@ -78,7 +78,7 @@ class PropertyMappingViewSet(
     filterset_fields = {"managed": ["isnull"]}
     ordering = ["name"]
 
-    def get_queryset(self):
+    def get_queryset(self):  # pragma: no cover
         return PropertyMapping.objects.select_subclasses()
 
     @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})

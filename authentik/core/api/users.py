@@ -139,7 +139,7 @@ class UserViewSet(ModelViewSet):
     search_fields = ["username", "name", "is_active"]
     filterset_class = UsersFilter
 
-    def get_queryset(self):
+    def get_queryset(self):  # pragma: no cover
         return User.objects.all().exclude(pk=get_anonymous_user().pk)
 
     @swagger_auto_schema(responses={200: SessionUserSerializer(many=False)})
