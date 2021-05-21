@@ -1,7 +1,18 @@
 """API Authorization"""
 from django.db.models import Model
+from django.db.models.query import QuerySet
+from rest_framework.filters import BaseFilterBackend
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
+
+
+class OwnerFilter(BaseFilterBackend):
+    """Filter objects by their owner"""
+
+    owner_key = "user"
+
+    def filter_queryset(self, request: Request, queryset: QuerySet, view) -> QuerySet:
+        return queryset.filter(**{self.owner_key: request.user})
 
 
 class OwnerPermissions(BasePermission):

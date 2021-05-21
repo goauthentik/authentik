@@ -18045,6 +18045,7 @@ definitions:
     required:
       - name
       - slug
+      - plex_token
     type: object
     properties:
       pk:
