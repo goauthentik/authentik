@@ -51,7 +51,12 @@ class PolicyRequest:
             LOGGER.warning("failed to get geoip data", exc=exc)
 
     def __str__(self):
-        return f"<PolicyRequest user={self.user}>"
+        text = f"<PolicyRequest user={self.user}"
+        if self.obj:
+            text += f" obj={self.obj}"
+        if self.http_request:
+            text += f" http_request={self.http_request}"
+        return text + ">"
 
 
 @dataclass

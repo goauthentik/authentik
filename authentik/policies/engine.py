@@ -105,16 +105,21 @@ class PolicyEngine:
                 if cached_policy and self.use_cache:
                     self.logger.debug(
                         "P_ENG: Taking result from cache",
-                        policy=binding.policy,
+                        binding=binding,
                         cache_key=key,
+                        request=self.request,
                     )
                     self.__cached_policies.append(cached_policy)
                     continue
-                self.logger.debug("P_ENG: Evaluating policy", policy=binding.policy)
+                self.logger.debug(
+                    "P_ENG: Evaluating policy", binding=binding, request=self.request
+                )
                 our_end, task_end = Pipe(False)
                 task = PolicyProcess(binding, self.request, task_end)
                 task.daemon = False
-                self.logger.debug("P_ENG: Starting Process", policy=binding.policy)
+                self.logger.debug(
+                    "P_ENG: Starting Process", binding=binding, request=self.request
+                )
                 if not CURRENT_PROCESS._config.get("daemon"):
                     task.run()
                 else:
