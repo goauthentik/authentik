@@ -9,12 +9,29 @@ To install authentik using the helm chart, generate a password for the database 
 Create a values.yaml file with a minimum of these settings:
 
 ```yaml
+authentik:
+  secret_key: "PleaseGenerateA50CharKey"
+  # This sends anonymous usage-data, stack traces on errors and
+  # performance data to sentry.beryju.org, and is fully opt-in
+  error_reporting:
+    enabled: true
+  postgresql:
+    password: "ThisIsNotASecurePassword"
+
+ingress:
+  enabled: true
+  hosts:
+  - host: authentik.domain.tld
+    paths:
+    - path: "/"
+      pathType: Prefix
+
 postgresql:
-  postgresqlPassword: "<password you generated>"
+  enabled: true
+  postgresqlPassword: "ThisIsNotASecurePassword"
 redis:
-  password: "<another password you generated>"
-config:
-  secretKey: "<another password you generated>"
+  enabled: true
+
 ```
 
 See all configurable values on [artifacthub](https://artifacthub.io/packages/helm/goauthentik/authentik).
