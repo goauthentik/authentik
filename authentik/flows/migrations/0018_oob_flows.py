@@ -21,7 +21,7 @@ context["user_backend"] = "django.contrib.auth.backends.ModelBackend"
 return True"""
 
 
-def create_default_oob_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
+def create_default_oobe_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     from authentik.stages.prompt.models import FieldTypes
 
     User = apps.get_model("authentik_core", "User")
@@ -52,20 +52,20 @@ def create_default_oob_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEditor)
 
     # Create a policy that sets the flow's user
     prefill_policy, _ = ExpressionPolicy.objects.using(db_alias).update_or_create(
-        name="default-oob-prefill-user",
+        name="default-oobe-prefill-user",
         defaults={"expression": PREFILL_POLICY_EXPRESSION},
     )
     password_usable_policy, _ = ExpressionPolicy.objects.using(
         db_alias
     ).update_or_create(
-        name="default-oob-password-usable",
+        name="default-oobe-password-usable",
         defaults={"expression": PW_USABLE_POLICY_EXPRESSION},
     )
 
     prompt_header, _ = Prompt.objects.using(db_alias).update_or_create(
-        field_key="oob-header-text",
+        field_key="oobe-header-text",
         defaults={
-            "label": "oob-header-text",
+            "label": "oobe-header-text",
             "type": FieldTypes.STATIC,
             "placeholder": "Welcome to authentik! Please set a password for the default admin user, akadmin.",
             "order": 100,
@@ -84,7 +84,7 @@ def create_default_oob_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEditor)
     password_second = Prompt.objects.using(db_alias).get(field_key="password_repeat")
 
     prompt_stage, _ = PromptStage.objects.using(db_alias).update_or_create(
-        name="default-oob-password",
+        name="default-oobe-password",
     )
     prompt_stage.fields.set(
         [prompt_header, prompt_email, password_first, password_second]
@@ -102,7 +102,7 @@ def create_default_oob_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEditor)
         slug="initial-setup",
         designation=FlowDesignation.STAGE_CONFIGURATION,
         defaults={
-            "name": "default-oob-setup",
+            "name": "default-oobe-setup",
             "title": "Welcome to authentik!",
         },
     )
@@ -146,5 +146,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(create_default_oob_flow),
+        migrations.RunPython(create_default_oobe_flow),
     ]
