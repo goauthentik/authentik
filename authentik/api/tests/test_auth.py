@@ -5,7 +5,7 @@ from django.test import TestCase
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.exceptions import AuthenticationFailed
 
-from authentik.api.auth import token_from_header
+from authentik.api.authentication import token_from_header
 from authentik.core.models import Token, TokenIntents
 
 

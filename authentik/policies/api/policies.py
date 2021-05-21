@@ -92,7 +92,7 @@ class PolicyViewSet(
     }
     search_fields = ["name"]
 
-    def get_queryset(self):
+    def get_queryset(self):  # pragma: no cover
         return Policy.objects.select_subclasses().prefetch_related(
             "bindings", "promptstage_set"
         )

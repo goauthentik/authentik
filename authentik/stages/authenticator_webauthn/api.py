@@ -1,11 +1,12 @@
 """AuthenticateWebAuthnStage API Views"""
-from django_filters.rest_framework import DjangoFilterBackend
-from guardian.utils import get_anonymous_user
+from django_filters.rest_framework.backends import DjangoFilterBackend
+from rest_framework import mixins
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAdminUser
 from rest_framework.serializers import ModelSerializer
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelViewSet
 
+from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.authenticator_webauthn.models import (
     AuthenticateWebAuthnStage,
@@ -39,23 +40,22 @@ class WebAuthnDeviceSerializer(ModelSerializer):
         depth = 2
 
 
-class WebAuthnDeviceViewSet(ModelViewSet):
+class WebAuthnDeviceViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     """Viewset for WebAuthn authenticator devices"""
 
-    queryset = WebAuthnDevice.objects.none()
+    queryset = WebAuthnDevice.objects.all()
     serializer_class = WebAuthnDeviceSerializer
     search_fields = ["name"]
     filterset_fields = ["name"]
     ordering = ["name"]
-    filter_backends = [
-        DjangoFilterBackend,
-        OrderingFilter,
-        SearchFilter,
-    ]
-
-    def get_queryset(self):
-        user = self.request.user if self.request else get_anonymous_user()
-        return WebAuthnDevice.objects.filter(user=user.pk)
+    permission_classes = [OwnerPermissions]
+    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
 
 
 class WebAuthnAdminDeviceViewSet(ReadOnlyModelViewSet):

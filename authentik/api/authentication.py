@@ -43,7 +43,7 @@ def token_from_header(raw_header: bytes) -> Optional[Token]:
     return tokens.first()
 
 
-class AuthentikTokenAuthentication(BaseAuthentication):
+class TokenAuthentication(BaseAuthentication):
     """Token-based authentication using HTTP Bearer authentication"""
 
     def authenticate(self, request: Request) -> Union[tuple[User, Any], None]:
@@ -61,7 +61,7 @@ class AuthentikTokenAuthentication(BaseAuthentication):
 class TokenSchema(OpenApiAuthenticationExtension):
     """Auth schema"""
 
-    target_class = AuthentikTokenAuthentication
+    target_class = TokenAuthentication
     name = "authentik"
 
     def get_security_definition(self, auto_schema):

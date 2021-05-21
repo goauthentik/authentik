@@ -63,7 +63,7 @@ class ProviderViewSet(
         "application__name",
     ]
 
-    def get_queryset(self):
+    def get_queryset(self):  # pragma: no cover
         return Provider.objects.select_subclasses()
 
     @extend_schema(responses={200: TypeCreateSerializer(many=True)})

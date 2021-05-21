@@ -65,7 +65,7 @@ class StageViewSet(
     search_fields = ["name"]
     filterset_fields = ["name"]
 
-    def get_queryset(self):
+    def get_queryset(self):  # pragma: no cover
         return Stage.objects.select_subclasses()
 
     @extend_schema(responses={200: TypeCreateSerializer(many=True)})

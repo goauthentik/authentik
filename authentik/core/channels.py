@@ -4,7 +4,7 @@ from channels.generic.websocket import JsonWebsocketConsumer
 from rest_framework.exceptions import AuthenticationFailed
 from structlog.stdlib import get_logger
 
-from authentik.api.auth import token_from_header
+from authentik.api.authentication import token_from_header
 from authentik.core.models import User
 
 LOGGER = get_logger()

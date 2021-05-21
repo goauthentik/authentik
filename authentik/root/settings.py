@@ -174,7 +174,7 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.DjangoObjectPermissions",
     ),
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "authentik.api.auth.AuthentikTokenAuthentication",
+        "authentik.api.authentication.TokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_RENDERER_CLASSES": [

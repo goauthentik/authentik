@@ -61,7 +61,7 @@ class SourceViewSet(
     serializer_class = SourceSerializer
     lookup_field = "slug"
 
-    def get_queryset(self):
+    def get_queryset(self):  # pragma: no cover
         return Source.objects.select_subclasses()
 
     @extend_schema(responses={200: TypeCreateSerializer(many=True)})

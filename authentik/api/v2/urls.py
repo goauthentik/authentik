@@ -161,9 +161,19 @@ router.register("propertymappings/scope", ScopeMappingViewSet)
 router.register("authenticators/static", StaticDeviceViewSet)
 router.register("authenticators/totp", TOTPDeviceViewSet)
 router.register("authenticators/webauthn", WebAuthnDeviceViewSet)
-router.register("authenticators/admin/static", StaticAdminDeviceViewSet)
-router.register("authenticators/admin/totp", TOTPAdminDeviceViewSet)
-router.register("authenticators/admin/webauthn", WebAuthnAdminDeviceViewSet)
+router.register(
+    "authenticators/admin/static",
+    StaticAdminDeviceViewSet,
+    basename="admin-staticdevice",
+)
+router.register(
+    "authenticators/admin/totp", TOTPAdminDeviceViewSet, basename="admin-totpdevice"
+)
+router.register(
+    "authenticators/admin/webauthn",
+    WebAuthnAdminDeviceViewSet,
+    basename="admin-webauthndevice",
+)
 
 router.register("stages/all", StageViewSet)
 router.register("stages/authenticator/static", AuthenticatorStaticStageViewSet)

@@ -1,12 +1,12 @@
 """Notification API Views"""
 from django_filters.rest_framework import DjangoFilterBackend
-from guardian.utils import get_anonymous_user
 from rest_framework import mixins
 from rest_framework.fields import ReadOnlyField
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 
+from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.events.api.event import EventSerializer
 from authentik.events.models import Notification
 
@@ -49,12 +49,5 @@ class NotificationViewSet(
         "event",
         "seen",
     ]
-    filter_backends = [
-        DjangoFilterBackend,
-        OrderingFilter,
-        SearchFilter,
-    ]
-
-    def get_queryset(self):
-        user = self.request.user if self.request else get_anonymous_user()
-        return Notification.objects.filter(user=user.pk)
+    permission_classes = [OwnerPermissions]
+    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]

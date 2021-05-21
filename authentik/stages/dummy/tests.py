@@ -1,5 +1,5 @@
 """dummy tests"""
-from django.test import Client, TestCase
+from django.test import TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
 
@@ -14,7 +14,6 @@ class TestDummyStage(TestCase):
     def setUp(self):
         super().setUp()
         self.user = User.objects.create(username="unittest", email="test@beryju.org")
-        self.client = Client()
 
         self.flow = Flow.objects.create(
             name="test-dummy",

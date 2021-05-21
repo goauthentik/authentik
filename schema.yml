@@ -444,37 +444,6 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-    post:
-      operationId: authenticators_static_create
-      description: Viewset for static authenticator devices
-      tags:
-      - authenticators
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/StaticDeviceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/StaticDeviceRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/StaticDeviceRequest'
-        required: true
-      security:
-      - authentik: []
-      - cookieAuth: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/StaticDevice'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
   /api/v2beta/authenticators/static/{id}/:
     get:
       operationId: authenticators_static_retrieve
@@ -648,37 +617,6 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-    post:
-      operationId: authenticators_totp_create
-      description: Viewset for totp authenticator devices
-      tags:
-      - authenticators
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TOTPDeviceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/TOTPDeviceRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/TOTPDeviceRequest'
-        required: true
-      security:
-      - authentik: []
-      - cookieAuth: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TOTPDevice'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
   /api/v2beta/authenticators/totp/{id}/:
     get:
       operationId: authenticators_totp_retrieve
@@ -847,37 +785,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaginatedWebAuthnDeviceList'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-    post:
-      operationId: authenticators_webauthn_create
-      description: Viewset for WebAuthn authenticator devices
-      tags:
-      - authenticators
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/WebAuthnDeviceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/WebAuthnDeviceRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/WebAuthnDeviceRequest'
-        required: true
-      security:
-      - authentik: []
-      - cookieAuth: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/WebAuthnDevice'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
@@ -10112,37 +10019,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaginatedUserOAuthSourceConnectionList'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-    post:
-      operationId: sources_oauth_user_connections_create
-      description: Source Viewset
-      tags:
-      - sources
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserOAuthSourceConnectionRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserOAuthSourceConnectionRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserOAuthSourceConnectionRequest'
-        required: true
-      security:
-      - authentik: []
-      - cookieAuth: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserOAuthSourceConnection'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
