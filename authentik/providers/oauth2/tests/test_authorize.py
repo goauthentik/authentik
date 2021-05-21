@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.utils.encoding import force_str
 
 from authentik.core.models import Application, User
+from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import Flow
 from authentik.providers.oauth2.errors import (
@@ -207,6 +208,7 @@ class TestAuthorize(OAuthTestCase):
             client_secret=generate_client_secret(),
             authorization_flow=flow,
             redirect_uris="http://localhost",
+            rsa_key=CertificateKeyPair.objects.first(),
         )
         Application.objects.create(name="app", slug="app", provider=provider)
         state = generate_client_id()
