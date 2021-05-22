@@ -27,7 +27,7 @@ GAUGE_POLICIES_CACHED = UpdatingGauge(
     "Cached Policies",
     update_func=lambda: len(cache.keys("policy_*")),
 )
-HG_POLICIES_BUILD_TIME = Histogram(
+HIST_POLICIES_BUILD_TIME = Histogram(
     "authentik_policies_build_time",
     "Execution times complete policy result to an object",
     ["object_name", "object_type", "user"],
@@ -106,7 +106,7 @@ class PolicyEngine:
         """Build wrapper which monitors performance"""
         with Hub.current.start_span(
             op="policy.engine.build"
-        ) as span, HG_POLICIES_BUILD_TIME.labels(
+        ) as span, HIST_POLICIES_BUILD_TIME.labels(
             object_name=self.__pbm,
             object_type=f"{self.__pbm._meta.app_label}.{self.__pbm._meta.model_name}",
             user=self.request.user,

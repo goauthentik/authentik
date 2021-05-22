@@ -7,14 +7,16 @@ from typing import Any, Optional
 
 from celery import Task
 from django.core.cache import cache
-from prometheus_client import Gauge
+from prometheus_client import Histogram
+from prometheus_client.utils import INF
 
 from authentik.events.models import Event, EventAction
 
-GAUGE_TASKS = Gauge(
+HIST_TASKS = Histogram(
     "authentik_system_tasks",
     "System tasks and their status",
     ["task_name", "task_uid", "status"],
+    buckets=(1.0, 2.5, 5.0, 7.5, 10.0, 30.0, 60.0, 120.0, INF)
 )
 
 
@@ -56,6 +58,7 @@ class TaskInfo:
 
     task_call_module: str
     task_call_func: str
+    start_timestamp: datetime = field(default_factory=datetime.now)
     task_call_args: list[Any] = field(default_factory=list)
     task_call_kwargs: dict[str, Any] = field(default_factory=dict)
 
@@ -82,19 +85,22 @@ class TaskInfo:
 
     def set_prom_metrics(self):
         """Update prometheus metrics"""
-        GAUGE_TASKS.labels(
+        start = datetime.now()
+        if hasattr(self, "start_timestamp"):
+            start = self.start_timestamp
+        HIST_TASKS.labels(
             task_name=self.task_name,
             task_uid=self.result.uid or "",
             status=self.result.status,
-        ).set_to_current_time()
+        ).observe((self.finish_timestamp - start).total_seconds())
 
     def save(self, timeout_hours=6):
         """Save task into cache"""
         key = f"task_{self.task_name}"
-        self.set_prom_metrics()
         if self.result.uid:
             key += f"_{self.result.uid}"
             self.task_name += f"_{self.result.uid}"
+        self.set_prom_metrics()
         cache.set(key, self, timeout=timeout_hours * 60 * 60)
 
 
@@ -114,6 +120,7 @@ class MonitoredTask(Task):
         self._uid = None
         self._result = TaskResult(status=TaskResultStatus.ERROR, messages=[])
         self.result_timeout_hours = 6
+        self.start = datetime.now()
 
     def set_uid(self, uid: str):
         """Set UID, so in the case of an unexpected error its saved correctly"""
@@ -133,6 +140,7 @@ class MonitoredTask(Task):
             TaskInfo(
                 task_name=self.__name__,
                 task_description=self.__doc__,
+                start_timestamp=self.start,
                 finish_timestamp=datetime.now(),
                 result=self._result,
                 task_call_module=self.__module__,
@@ -149,6 +157,7 @@ class MonitoredTask(Task):
         TaskInfo(
             task_name=self.__name__,
             task_description=self.__doc__,
+            start_timestamp=self.start,
             finish_timestamp=datetime.now(),
             result=self._result,
             task_call_module=self.__module__,

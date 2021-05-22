@@ -28,7 +28,7 @@ GAUGE_FLOWS_CACHED = UpdatingGauge(
     "Cached flows",
     update_func=lambda: len(cache.keys("flow_*")),
 )
-HG_FLOWS_PLAN_TIME = Histogram(
+HIST_FLOWS_PLAN_TIME = Histogram(
     "authentik_flows_plan_time",
     "Duration to build a plan for a flow",
     ["flow_slug"],
@@ -173,7 +173,7 @@ class FlowPlanner:
         order and checking the applied policies"""
         with Hub.current.start_span(
             op="flow.planner.build_plan"
-        ) as span, HG_FLOWS_PLAN_TIME.labels(flow_slug=self.flow.slug).time():
+        ) as span, HIST_FLOWS_PLAN_TIME.labels(flow_slug=self.flow.slug).time():
             span: Span
             span.set_data("flow", self.flow)
             span.set_data("user", user)
@@ -217,7 +217,7 @@ class FlowPlanner:
                     marker = ReevaluateMarker(binding=binding, user=user)
                 if stage:
                     plan.append(stage, marker)
-            HG_FLOWS_PLAN_TIME.labels(flow_slug=self.flow.slug)
+            HIST_FLOWS_PLAN_TIME.labels(flow_slug=self.flow.slug)
         self._logger.debug(
             "f(plan): finished building",
         )

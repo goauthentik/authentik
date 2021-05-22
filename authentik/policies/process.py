@@ -20,7 +20,7 @@ TRACEBACK_HEADER = "Traceback (most recent call last):\n"
 
 FORK_CTX = get_context("fork")
 PROCESS_CLASS = FORK_CTX.Process
-HG_POLICIES_EXECUTION_TIME = Histogram(
+HIST_POLICIES_EXECUTION_TIME = Histogram(
     "authentik_policies_execution_time",
     "Execution times for single policies",
     [
@@ -134,7 +134,7 @@ class PolicyProcess(PROCESS_CLASS):
         """Task wrapper to run policy checking"""
         with Hub.current.start_span(
             op="policy.process.execute",
-        ) as span, HG_POLICIES_EXECUTION_TIME.labels(
+        ) as span, HIST_POLICIES_EXECUTION_TIME.labels(
             binding_order=self.binding.order,
             binding_target_type=self.binding.target_type,
             binding_target_name=self.binding.target_name,
