@@ -3476,8 +3476,8 @@ msgid "The URL \"{0}\" was not found."
 msgstr "The URL \"{0}\" was not found."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "The external URL you'll access the application at"
-msgstr "The external URL you'll access the application at"
+msgid "The external URL you'll access the application at. Include any non-standard port."
+msgstr "The external URL you'll access the application at. Include any non-standard port."
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts
 msgid "The policy takes a random time to execute. This controls the minimum time it will take."
