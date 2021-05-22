@@ -152,7 +152,7 @@ msgstr ""
 msgid "Allow up to N occurrences in the HIBP database."
 msgstr ""
 
-#: src/pages/policies/PolicyListPage.ts:41
+#: src/pages/policies/PolicyListPage.ts:42
 msgid "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages."
 msgstr ""
 
@@ -218,13 +218,13 @@ msgstr ""
 msgid "Apps with most usage"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts:145
+#: src/pages/flows/FlowListPage.ts:146
 msgid ""
 "Are you sure you want to clear the flow cache?\n"
 "This will cause all flows to be re-evaluated on their next usage."
 msgstr ""
 
-#: src/pages/policies/PolicyListPage.ts:164
+#: src/pages/policies/PolicyListPage.ts:165
 msgid ""
 "Are you sure you want to clear the policy cache?\n"
 "This will cause all policies to be re-evaluated on their next usage."
@@ -262,7 +262,7 @@ msgstr ""
 msgid "Assigned to application"
 msgstr ""
 
-#: src/pages/policies/PolicyListPage.ts:68
+#: src/pages/policies/PolicyListPage.ts:69
 msgid "Assigned to {0} objects."
 msgstr ""
 
@@ -540,18 +540,18 @@ msgstr ""
 msgid "Checks the value from the policy request against several rules, mostly used to ensure password strength."
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts:142
+#: src/pages/flows/FlowListPage.ts:143
 msgid "Clear Flow cache"
 msgstr ""
 
-#: src/pages/policies/PolicyListPage.ts:161
+#: src/pages/policies/PolicyListPage.ts:162
 msgid "Clear Policy cache"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts:137
-#: src/pages/flows/FlowListPage.ts:149
-#: src/pages/policies/PolicyListPage.ts:156
-#: src/pages/policies/PolicyListPage.ts:168
+#: src/pages/flows/FlowListPage.ts:138
+#: src/pages/flows/FlowListPage.ts:150
+#: src/pages/policies/PolicyListPage.ts:157
+#: src/pages/policies/PolicyListPage.ts:169
 msgid "Clear cache"
 msgstr ""
 
@@ -751,8 +751,8 @@ msgstr ""
 #: src/pages/flows/BoundStagesList.ts:119
 #: src/pages/flows/BoundStagesList.ts:146
 #: src/pages/flows/BoundStagesList.ts:167
-#: src/pages/flows/FlowListPage.ts:109
-#: src/pages/flows/FlowListPage.ts:117
+#: src/pages/flows/FlowListPage.ts:110
+#: src/pages/flows/FlowListPage.ts:118
 #: src/pages/groups/GroupListPage.ts:90
 #: src/pages/groups/GroupListPage.ts:98
 #: src/pages/outposts/OutpostListPage.ts:101
@@ -762,8 +762,8 @@ msgstr ""
 #: src/pages/policies/BoundPoliciesList.ts:162
 #: src/pages/policies/BoundPoliciesList.ts:189
 #: src/pages/policies/BoundPoliciesList.ts:210
-#: src/pages/policies/PolicyListPage.ts:124
-#: src/pages/policies/PolicyListPage.ts:133
+#: src/pages/policies/PolicyListPage.ts:125
+#: src/pages/policies/PolicyListPage.ts:134
 #: src/pages/property-mappings/PropertyMappingListPage.ts:113
 #: src/pages/property-mappings/PropertyMappingListPage.ts:122
 #: src/pages/providers/ProviderListPage.ts:108
@@ -803,7 +803,7 @@ msgstr ""
 msgid "Create Certificate-Key Pair"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts:112
+#: src/pages/flows/FlowListPage.ts:113
 msgid "Create Flow"
 msgstr ""
 
@@ -865,7 +865,7 @@ msgstr ""
 #: src/pages/flows/BoundStagesList.ts:149
 #: src/pages/outposts/ServiceConnectionListPage.ts:122
 #: src/pages/policies/BoundPoliciesList.ts:192
-#: src/pages/policies/PolicyListPage.ts:136
+#: src/pages/policies/PolicyListPage.ts:137
 #: src/pages/property-mappings/PropertyMappingListPage.ts:125
 #: src/pages/providers/ProviderListPage.ts:120
 #: src/pages/sources/SourcesListPage.ts:126
@@ -917,11 +917,11 @@ msgstr ""
 #: src/pages/crypto/CertificateKeyPairListPage.ts:86
 #: src/pages/events/RuleListPage.ts:82
 #: src/pages/events/TransportListPage.ts:86
-#: src/pages/flows/FlowListPage.ts:86
+#: src/pages/flows/FlowListPage.ts:87
 #: src/pages/groups/GroupListPage.ts:81
 #: src/pages/outposts/OutpostListPage.ts:87
 #: src/pages/outposts/ServiceConnectionListPage.ts:101
-#: src/pages/policies/PolicyListPage.ts:115
+#: src/pages/policies/PolicyListPage.ts:116
 #: src/pages/property-mappings/PropertyMappingListPage.ts:104
 #: src/pages/providers/ProviderListPage.ts:99
 #: src/pages/sources/SourcesListPage.ts:95
@@ -990,7 +990,7 @@ msgid "Designates whether this user should be treated as active. Unselect this i
 msgstr ""
 
 #: src/pages/flows/FlowForm.ts:119
-#: src/pages/flows/FlowListPage.ts:48
+#: src/pages/flows/FlowListPage.ts:49
 msgid "Designation"
 msgstr ""
 
@@ -1072,11 +1072,11 @@ msgstr ""
 #: src/pages/crypto/CertificateKeyPairListPage.ts:74
 #: src/pages/events/RuleListPage.ts:70
 #: src/pages/events/TransportListPage.ts:74
-#: src/pages/flows/FlowListPage.ts:74
+#: src/pages/flows/FlowListPage.ts:75
 #: src/pages/groups/GroupListPage.ts:69
 #: src/pages/outposts/OutpostListPage.ts:75
 #: src/pages/outposts/ServiceConnectionListPage.ts:89
-#: src/pages/policies/PolicyListPage.ts:90
+#: src/pages/policies/PolicyListPage.ts:91
 #: src/pages/property-mappings/PropertyMappingListPage.ts:79
 #: src/pages/providers/ProviderListPage.ts:87
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts:103
@@ -1248,7 +1248,7 @@ msgstr ""
 msgid "Exception"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts:98
+#: src/pages/flows/FlowListPage.ts:99
 #: src/pages/flows/FlowViewPage.ts:75
 msgid "Execute"
 msgstr ""
@@ -1300,7 +1300,7 @@ msgstr ""
 msgid "Explicit Consent"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts:101
+#: src/pages/flows/FlowListPage.ts:102
 msgid "Export"
 msgstr ""
 
@@ -1339,11 +1339,11 @@ msgstr ""
 msgid "Failed sources"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts:136
+#: src/pages/flows/FlowListPage.ts:137
 msgid "Failed to delete flow cache"
 msgstr ""
 
-#: src/pages/policies/PolicyListPage.ts:155
+#: src/pages/policies/PolicyListPage.ts:156
 msgid "Failed to delete policy cache"
 msgstr ""
 
@@ -1389,7 +1389,7 @@ msgid "Fields a user can identify themselves with. If no fields are selected, th
 msgstr ""
 
 #: src/pages/flows/FlowImportForm.ts:34
-#: src/pages/flows/FlowListPage.ts:79
+#: src/pages/flows/FlowListPage.ts:80
 msgid "Flow"
 msgstr ""
 
@@ -1442,12 +1442,12 @@ msgstr ""
 #: src/interfaces/AdminInterface.ts:82
 #: src/interfaces/AdminInterface.ts:84
 #: src/pages/admin-overview/AdminOverviewPage.ts:61
-#: src/pages/flows/FlowListPage.ts:28
+#: src/pages/flows/FlowListPage.ts:29
 #: src/pages/stages/StageListPage.ts:66
 msgid "Flows"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts:31
+#: src/pages/flows/FlowListPage.ts:32
 msgid "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them."
 msgstr ""
 
@@ -1598,7 +1598,7 @@ msgstr ""
 msgid "Icon"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts:46
+#: src/pages/flows/FlowListPage.ts:47
 #: src/pages/system-tasks/SystemTaskListPage.ts:54
 #: src/pages/tokens/TokenListPage.ts:44
 #: src/pages/user-settings/tokens/UserTokenForm.ts:49
@@ -1631,12 +1631,12 @@ msgstr ""
 msgid "Impersonate"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts:122
-#: src/pages/flows/FlowListPage.ts:130
+#: src/pages/flows/FlowListPage.ts:123
+#: src/pages/flows/FlowListPage.ts:131
 msgid "Import"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts:125
+#: src/pages/flows/FlowListPage.ts:126
 msgid "Import Flow"
 msgstr ""
 
@@ -1992,7 +1992,7 @@ msgstr ""
 #: src/pages/events/TransportListPage.ts:46
 #: src/pages/flows/BoundStagesList.ts:39
 #: src/pages/flows/FlowForm.ts:86
-#: src/pages/flows/FlowListPage.ts:47
+#: src/pages/flows/FlowListPage.ts:48
 #: src/pages/groups/GroupForm.ts:58
 #: src/pages/groups/GroupListPage.ts:45
 #: src/pages/groups/MemberSelectModal.ts:45
@@ -2001,7 +2001,7 @@ msgstr ""
 #: src/pages/outposts/ServiceConnectionDockerForm.ts:51
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts:52
 #: src/pages/outposts/ServiceConnectionListPage.ts:53
-#: src/pages/policies/PolicyListPage.ts:56
+#: src/pages/policies/PolicyListPage.ts:57
 #: src/pages/policies/dummy/DummyPolicyForm.ts:54
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts:55
 #: src/pages/policies/expiry/ExpiryPolicyForm.ts:54
@@ -2390,15 +2390,15 @@ msgstr ""
 
 #: src/interfaces/AdminInterface.ts:74
 #: src/pages/admin-overview/AdminOverviewPage.ts:56
-#: src/pages/flows/FlowListPage.ts:50
-#: src/pages/policies/PolicyListPage.ts:38
+#: src/pages/flows/FlowListPage.ts:51
+#: src/pages/policies/PolicyListPage.ts:39
 msgid "Policies"
 msgstr ""
 
 #: src/pages/policies/PolicyBindingForm.ts:108
 #: src/pages/policies/PolicyBindingForm.ts:117
 #: src/pages/policies/PolicyBindingForm.ts:148
-#: src/pages/policies/PolicyListPage.ts:108
+#: src/pages/policies/PolicyListPage.ts:109
 msgid "Policy"
 msgstr ""
 
@@ -3048,7 +3048,7 @@ msgid "Stage-specific settings"
 msgstr ""
 
 #: src/interfaces/AdminInterface.ts:87
-#: src/pages/flows/FlowListPage.ts:49
+#: src/pages/flows/FlowListPage.ts:50
 #: src/pages/stages/StageListPage.ts:44
 #: src/pages/stages/prompt/PromptListPage.ts:50
 msgid "Stages"
@@ -3112,11 +3112,11 @@ msgstr ""
 msgid "Successful"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts:135
+#: src/pages/flows/FlowListPage.ts:136
 msgid "Successfully cleared flow cache"
 msgstr ""
 
-#: src/pages/policies/PolicyListPage.ts:154
+#: src/pages/policies/PolicyListPage.ts:155
 msgid "Successfully cleared policy cache"
 msgstr ""
 
@@ -3444,14 +3444,14 @@ msgid "Template"
 msgstr ""
 
 #: src/pages/events/TransportListPage.ts:62
-#: src/pages/policies/PolicyListPage.ts:95
-#: src/pages/policies/PolicyListPage.ts:103
+#: src/pages/policies/PolicyListPage.ts:96
+#: src/pages/policies/PolicyListPage.ts:104
 #: src/pages/property-mappings/PropertyMappingListPage.ts:84
 #: src/pages/property-mappings/PropertyMappingListPage.ts:92
 msgid "Test"
 msgstr ""
 
-#: src/pages/policies/PolicyListPage.ts:98
+#: src/pages/policies/PolicyListPage.ts:99
 msgid "Test Policy"
 msgstr ""
 
@@ -3468,7 +3468,7 @@ msgid "The URL \"{0}\" was not found."
 msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts:131
-msgid "The external URL you'll access the application at"
+msgid "The external URL you'll access the application at. Include any non-standard port."
 msgstr ""
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts:88
@@ -3599,7 +3599,7 @@ msgstr ""
 #: src/pages/flows/BoundStagesList.ts:40
 #: src/pages/outposts/OutpostForm.ts:58
 #: src/pages/outposts/ServiceConnectionListPage.ts:54
-#: src/pages/policies/PolicyListPage.ts:57
+#: src/pages/policies/PolicyListPage.ts:58
 #: src/pages/property-mappings/PropertyMappingListPage.ts:55
 #: src/pages/providers/ProviderListPage.ts:55
 #: src/pages/sources/SourcesListPage.ts:53
@@ -3675,7 +3675,7 @@ msgstr ""
 #: src/pages/events/TransportListPage.ts:66
 #: src/pages/flows/BoundStagesList.ts:53
 #: src/pages/flows/BoundStagesList.ts:71
-#: src/pages/flows/FlowListPage.ts:66
+#: src/pages/flows/FlowListPage.ts:67
 #: src/pages/groups/GroupListPage.ts:61
 #: src/pages/outposts/OutpostListPage.ts:67
 #: src/pages/outposts/ServiceConnectionListPage.ts:76
@@ -3683,7 +3683,7 @@ msgstr ""
 #: src/pages/policies/BoundPoliciesList.ts:88
 #: src/pages/policies/BoundPoliciesList.ts:103
 #: src/pages/policies/BoundPoliciesList.ts:129
-#: src/pages/policies/PolicyListPage.ts:77
+#: src/pages/policies/PolicyListPage.ts:78
 #: src/pages/property-mappings/PropertyMappingListPage.ts:66
 #: src/pages/providers/ProviderListPage.ts:74
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts:93
@@ -3721,7 +3721,7 @@ msgstr ""
 msgid "Update Certificate-Key Pair"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts:69
+#: src/pages/flows/FlowListPage.ts:70
 msgid "Update Flow"
 msgstr ""
 
@@ -3799,7 +3799,7 @@ msgstr ""
 #: src/pages/flows/BoundStagesList.ts:56
 #: src/pages/outposts/ServiceConnectionListPage.ts:79
 #: src/pages/policies/BoundPoliciesList.ts:71
-#: src/pages/policies/PolicyListPage.ts:80
+#: src/pages/policies/PolicyListPage.ts:81
 #: src/pages/property-mappings/PropertyMappingListPage.ts:69
 #: src/pages/providers/ProviderListPage.ts:77
 #: src/pages/sources/SourcesListPage.ts:73
@@ -4020,7 +4020,7 @@ msgstr ""
 msgid "Warning"
 msgstr ""
 
-#: src/pages/policies/PolicyListPage.ts:71
+#: src/pages/policies/PolicyListPage.ts:72
 msgid "Warning: Policy is not assigned."
 msgstr ""
 
