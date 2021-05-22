@@ -6,6 +6,7 @@ import { TablePage } from "../../elements/table/TablePage";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteForm";
 import "../../elements/forms/ModalForm";
+import "../../elements/forms/ConfirmationForm";
 import "./FlowForm";
 import "./FlowImportForm";
 import { TableColumn } from "../../elements/table/Table";
@@ -132,6 +133,24 @@ export class FlowListPage extends TablePage<Flow> {
             </button>
         </ak-forms-modal>
         ${super.renderToolbar()}
-        `;
+        <ak-forms-confirm
+            successMessage=${t`Successfully cleared flow cache`}
+            errorMessage=${t`Failed to delete flow cache`}
+            action=${t`Clear cache`}
+            .onConfirm=${() => {
+                return new FlowsApi(DEFAULT_CONFIG).flowsInstancesCacheClear();
+            }}>
+            <span slot="header">
+                ${t`Clear Flow cache`}
+            </span>
+            <p slot="body">
+                ${t`Are you sure you want to clear the flow cache?
+                    This will cause all flows to be re-evaluated on their next usage.`}
+            </p>
+            <button slot="trigger" class="pf-c-button pf-m-secondary" type="button">
+                ${t`Clear cache`}
+            </button>
+            <div slot="modal"></div>
+        </ak-forms-confirm>`;
     }
 }

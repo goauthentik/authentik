@@ -8,6 +8,7 @@ import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteForm";
 import "../../elements/forms/ModalForm";
 import "../../elements/forms/ProxyForm";
+import "../../elements/forms/ConfirmationForm";
 import "./PolicyTestForm";
 import { TableColumn } from "../../elements/table/Table";
 import { until } from "lit-html/directives/until";
@@ -150,7 +151,26 @@ export class PolicyListPage extends TablePage<Policy> {
                     }), html`<ak-spinner></ak-spinner>`)}
             </ul>
         </ak-dropdown>
-        ${super.renderToolbar()}`;
+        ${super.renderToolbar()}
+        <ak-forms-confirm
+            successMessage=${t`Successfully cleared policy cache`}
+            errorMessage=${t`Failed to delete policy cache`}
+            action=${t`Clear cache`}
+            .onConfirm=${() => {
+                return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheClear();
+            }}>
+            <span slot="header">
+                ${t`Clear Policy cache`}
+            </span>
+            <p slot="body">
+                ${t`Are you sure you want to clear the policy cache?
+                This will cause all policies to be re-evaluated on their next usage.`}
+            </p>
+            <button slot="trigger" class="pf-c-button pf-m-secondary" type="button">
+                ${t`Clear cache`}
+            </button>
+            <div slot="modal"></div>
+        </ak-forms-confirm>`;
     }
 
 }
