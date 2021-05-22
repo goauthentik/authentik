@@ -18,8 +18,6 @@ func (ws *WebServer) configureProxy() {
 		}
 		if req.TLS != nil {
 			req.Header.Set("X-Forwarded-Proto", "https")
-		} else {
-			req.Header.Set("X-Forwarded-Proto", "http")
 		}
 	}
 	rp := &httputil.ReverseProxy{Director: director}
