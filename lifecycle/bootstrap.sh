@@ -18,7 +18,7 @@ function check_if_root {
     fi
     # Fix permissions of backups and media
     chown -R authentik:authentik /media /backups
-    chpst -u authentik env HOME=/authentik $1
+    chpst -u authentik:authentik:docker env HOME=/authentik $1
 }
 
 if [[ "$1" == "server" ]]; then
