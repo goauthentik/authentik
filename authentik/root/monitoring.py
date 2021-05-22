@@ -1,5 +1,6 @@
 """Metrics view"""
 from base64 import b64encode
+from typing import Callable
 
 from django.conf import settings
 from django.db import connections
@@ -8,7 +9,25 @@ from django.http import HttpRequest, HttpResponse
 from django.views import View
 from django_prometheus.exports import ExportToDjangoView
 from django_redis import get_redis_connection
+from prometheus_client import Gauge
 from redis.exceptions import RedisError
+
+
+class UpdatingGauge(Gauge):
+    """Gauge which fetches its own value from an update function.
+
+    Update function is called on instantiate"""
+
+    def __init__(self, *args, update_func: Callable, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._update_func = update_func
+        self.update()
+
+    def update(self):
+        """Set value from update function"""
+        val = self._update_func()
+        if val:
+            self.set(val)
 
 
 class MetricsView(View):
