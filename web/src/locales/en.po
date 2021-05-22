@@ -218,6 +218,22 @@ msgstr "Applications"
 msgid "Apps with most usage"
 msgstr "Apps with most usage"
 
+#: src/pages/flows/FlowListPage.ts
+msgid ""
+"Are you sure you want to clear the flow cache?\n"
+"This will cause all flows to be re-evaluated on their next usage."
+msgstr ""
+"Are you sure you want to clear the flow cache?\n"
+"This will cause all flows to be re-evaluated on their next usage."
+
+#: src/pages/policies/PolicyListPage.ts
+msgid ""
+"Are you sure you want to clear the policy cache?\n"
+"This will cause all policies to be re-evaluated on their next usage."
+msgstr ""
+"Are you sure you want to clear the policy cache?\n"
+"This will cause all policies to be re-evaluated on their next usage."
+
 #: src/elements/forms/DeleteForm.ts
 msgid "Are you sure you want to delete {0} {objName} ?"
 msgstr "Are you sure you want to delete {0} {objName} ?"
@@ -529,6 +545,21 @@ msgstr "Checks if the request's user's password has been changed in the last x d
 #: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Checks the value from the policy request against several rules, mostly used to ensure password strength."
 msgstr "Checks the value from the policy request against several rules, mostly used to ensure password strength."
+
+#: src/pages/flows/FlowListPage.ts
+msgid "Clear Flow cache"
+msgstr "Clear Flow cache"
+
+#: src/pages/policies/PolicyListPage.ts
+msgid "Clear Policy cache"
+msgstr "Clear Policy cache"
+
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/policies/PolicyListPage.ts
+#: src/pages/policies/PolicyListPage.ts
+msgid "Clear cache"
+msgstr "Clear cache"
 
 #: src/elements/forms/HorizontalFormElement.ts
 msgid "Click to change value"
@@ -1315,6 +1346,14 @@ msgstr "Failed attempts before cancel"
 #: src/pages/admin-overview/charts/LDAPSyncStatusChart.ts
 msgid "Failed sources"
 msgstr "Failed sources"
+
+#: src/pages/flows/FlowListPage.ts
+msgid "Failed to delete flow cache"
+msgstr "Failed to delete flow cache"
+
+#: src/pages/policies/PolicyListPage.ts
+msgid "Failed to delete policy cache"
+msgstr "Failed to delete policy cache"
 
 #: src/elements/forms/DeleteForm.ts
 msgid "Failed to delete {0}: {1}"
@@ -3080,6 +3119,14 @@ msgstr "Subject-alt name"
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Successful"
 msgstr "Successful"
+
+#: src/pages/flows/FlowListPage.ts
+msgid "Successfully cleared flow cache"
+msgstr "Successfully cleared flow cache"
+
+#: src/pages/policies/PolicyListPage.ts
+msgid "Successfully cleared policy cache"
+msgstr "Successfully cleared policy cache"
 
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 msgid "Successfully copied TOTP Config."

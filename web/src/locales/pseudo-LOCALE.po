@@ -219,6 +219,18 @@ msgid "Apps with most usage"
 msgstr ""
 
 #: 
+msgid ""
+"Are you sure you want to clear the flow cache?\n"
+"This will cause all flows to be re-evaluated on their next usage."
+msgstr ""
+
+#: 
+msgid ""
+"Are you sure you want to clear the policy cache?\n"
+"This will cause all policies to be re-evaluated on their next usage."
+msgstr ""
+
+#: 
 msgid "Are you sure you want to delete {0} {objName} ?"
 msgstr ""
 
@@ -526,6 +538,21 @@ msgstr ""
 
 #: 
 msgid "Checks the value from the policy request against several rules, mostly used to ensure password strength."
+msgstr ""
+
+#: 
+msgid "Clear Flow cache"
+msgstr ""
+
+#: 
+msgid "Clear Policy cache"
+msgstr ""
+
+#: 
+#: 
+#: 
+#: 
+msgid "Clear cache"
 msgstr ""
 
 #: 
@@ -1310,6 +1337,14 @@ msgstr ""
 
 #: 
 msgid "Failed sources"
+msgstr ""
+
+#: 
+msgid "Failed to delete flow cache"
+msgstr ""
+
+#: 
+msgid "Failed to delete policy cache"
 msgstr ""
 
 #: 
@@ -3075,6 +3110,14 @@ msgstr ""
 
 #: 
 msgid "Successful"
+msgstr ""
+
+#: 
+msgid "Successfully cleared flow cache"
+msgstr ""
+
+#: 
+msgid "Successfully cleared policy cache"
 msgstr ""
 
 #: 
