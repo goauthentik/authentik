@@ -11,7 +11,7 @@ version: "3.5"
 
 services:
   authentik_proxy:
-    image: ghcr.io/goauthentik/proxy:2021.5.3
+    image: ghcr.io/goauthentik/proxy:2021.5.4
     ports:
       - 4180:4180
       - 4443:4443
@@ -21,7 +21,7 @@ services:
       AUTHENTIK_TOKEN: token-generated-by-authentik
   # Or, for the LDAP Outpost
   authentik_proxy:
-    image: ghcr.io/goauthentik/ldap:2021.5.3
+    image: ghcr.io/goauthentik/ldap:2021.5.4
     ports:
       - 389:3389
     environment:
