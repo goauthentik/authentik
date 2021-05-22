@@ -1,13 +1,15 @@
 """authentik admin tasks"""
 import re
+from os import environ
 
 from django.core.cache import cache
 from django.core.validators import URLValidator
 from packaging.version import parse
+from prometheus_client import Info
 from requests import RequestException, get
 from structlog.stdlib import get_logger
 
-from authentik import __version__
+from authentik import ENV_GIT_HASH_KEY, __version__
 from authentik.events.models import Event, EventAction
 from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.root.celery import CELERY_APP
@@ -17,6 +19,18 @@ VERSION_CACHE_KEY = "authentik_latest_version"
 VERSION_CACHE_TIMEOUT = 8 * 60 * 60  # 8 hours
 # Chop of the first ^ because we want to search the entire string
 URL_FINDER = URLValidator.regex.pattern[1:]
+PROM_INFO = Info("authentik_version", "Currently running authentik version")
+
+
+def _set_prom_info():
+    """Set prometheus info for version"""
+    PROM_INFO.info(
+        {
+            "version": __version__,
+            "latest": cache.get(VERSION_CACHE_KEY, ""),
+            "build_hash": environ.get(ENV_GIT_HASH_KEY, ""),
+        }
+    )
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
@@ -36,6 +50,7 @@ def update_latest_version(self: MonitoredTask):
                 TaskResultStatus.SUCCESSFUL, ["Successfully updated latest Version"]
             )
         )
+        _set_prom_info()
         # Check if upstream version is newer than what we're running,
         # and if no event exists yet, create one.
         local_version = parse(__version__)
@@ -53,3 +68,6 @@ def update_latest_version(self: MonitoredTask):
     except (RequestException, IndexError) as exc:
         cache.set(VERSION_CACHE_KEY, "0.0.0", VERSION_CACHE_TIMEOUT)
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
+
+
+_set_prom_info()
