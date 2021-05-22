@@ -7,9 +7,15 @@ from typing import Any, Optional
 
 from celery import Task
 from django.core.cache import cache
+from prometheus_client import Gauge
 
 from authentik.events.models import Event, EventAction
-from authentik.root.monitoring import UpdatingGauge
+
+GAUGE_TASKS = Gauge(
+    "authentik_system_tasks",
+    "System tasks and their status",
+    ["task_name", "task_uid", "status"],
+)
 
 
 class TaskResultStatus(Enum):
@@ -92,14 +98,6 @@ class TaskInfo:
         cache.set(key, self, timeout=timeout_hours * 60 * 60)
 
 
-GAUGE_TASKS = UpdatingGauge(
-    "authentik_system_tasks",
-    "System tasks and their status",
-    ["task_name", "task_uid", "status"],
-    update_func=lambda: [task.set_prom_metrics() for task in TaskInfo.all().values()],
-)
-
-
 class MonitoredTask(Task):
     """Task which can save its state to the cache"""
 
@@ -169,3 +167,7 @@ class MonitoredTask(Task):
 
     def run(self, *args, **kwargs):
         raise NotImplementedError
+
+
+for task in TaskInfo.all().values():
+    task.set_prom_metrics()
