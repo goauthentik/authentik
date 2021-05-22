@@ -5,6 +5,7 @@ from traceback import format_tb
 from typing import Optional
 
 from django.core.cache import cache
+from prometheus_client import Histogram
 from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
@@ -19,6 +20,18 @@ TRACEBACK_HEADER = "Traceback (most recent call last):\n"
 
 FORK_CTX = get_context("fork")
 PROCESS_CLASS = FORK_CTX.Process
+HG_POLICIES_EXECUTION_TIME = Histogram(
+    "authentik_policies_execution_time",
+    "Execution times for single policies",
+    [
+        "binding_order",
+        "binding_target_type",
+        "binding_target_name",
+        "object_name",
+        "object_type",
+        "user",
+    ],
+)
 
 
 def cache_key(binding: PolicyBinding, request: PolicyRequest) -> str:
@@ -121,7 +134,14 @@ class PolicyProcess(PROCESS_CLASS):
         """Task wrapper to run policy checking"""
         with Hub.current.start_span(
             op="policy.process.execute",
-        ) as span:
+        ) as span, HG_POLICIES_EXECUTION_TIME.labels(
+            binding_order=self.binding.order,
+            binding_target_type=self.binding.target_type,
+            binding_target_name=self.binding.target_name,
+            object_name=self.request.obj,
+            object_type=f"{self.request.obj._meta.app_label}.{self.request.obj._meta.model_name}",
+            user=str(self.request.user),
+        ).time():
             span: Span
             span.set_data("policy", self.binding.policy)
             span.set_data("request", self.request)
