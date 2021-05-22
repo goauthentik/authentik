@@ -20,8 +20,8 @@ class MetricsView(View):
         auth_type, _, given_credentials = auth_header.partition(" ")
         credentials = f"monitor:{settings.SECRET_KEY}"
         expected = b64encode(str.encode(credentials)).decode()
-
-        if auth_type != "Basic" or given_credentials != expected:
+        authed = auth_type == "Basic" and given_credentials == expected
+        if not authed and not settings.DEBUG:
             response = HttpResponse(status=401)
             response["WWW-Authenticate"] = 'Basic realm="authentik-monitoring"'
             return response
