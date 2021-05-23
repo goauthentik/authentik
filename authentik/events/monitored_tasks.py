@@ -2,21 +2,20 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from timeit import default_timer
 from traceback import format_tb
 from typing import Any, Optional
 
 from celery import Task
 from django.core.cache import cache
-from prometheus_client import Histogram
-from prometheus_client.utils import INF
+from prometheus_client import Gauge
 
 from authentik.events.models import Event, EventAction
 
-HIST_TASKS = Histogram(
+GAUGE_TASKS = Gauge(
     "authentik_system_tasks",
     "System tasks and their status",
-    ["task_name", "task_uid", "status"],
-    buckets=(1.0, 2.5, 5.0, 7.5, 10.0, 30.0, 60.0, 120.0, INF)
+    ["task_name", "task_uid", "status", "duration"],
 )
 
 
@@ -52,13 +51,14 @@ class TaskInfo:
     """Info about a task run"""
 
     task_name: str
-    finish_timestamp: datetime
+    start_timestamp: float
+    finish_timestamp: float
+    finish_time: datetime
 
     result: TaskResult
 
     task_call_module: str
     task_call_func: str
-    start_timestamp: datetime = field(default_factory=datetime.now)
     task_call_args: list[Any] = field(default_factory=list)
     task_call_kwargs: dict[str, Any] = field(default_factory=dict)
 
@@ -85,14 +85,16 @@ class TaskInfo:
 
     def set_prom_metrics(self):
         """Update prometheus metrics"""
-        start = datetime.now()
+        start = default_timer()
         if hasattr(self, "start_timestamp"):
             start = self.start_timestamp
-        HIST_TASKS.labels(
+        duration = max(self.finish_timestamp - start, 0)
+        GAUGE_TASKS.labels(
             task_name=self.task_name,
             task_uid=self.result.uid or "",
             status=self.result.status,
-        ).observe((self.finish_timestamp - start).total_seconds())
+            duration=duration,
+        ).set(self.finish_time.timestamp())
 
     def save(self, timeout_hours=6):
         """Save task into cache"""
@@ -120,7 +122,7 @@ class MonitoredTask(Task):
         self._uid = None
         self._result = TaskResult(status=TaskResultStatus.ERROR, messages=[])
         self.result_timeout_hours = 6
-        self.start = datetime.now()
+        self.start = default_timer()
 
     def set_uid(self, uid: str):
         """Set UID, so in the case of an unexpected error its saved correctly"""
@@ -141,7 +143,8 @@ class MonitoredTask(Task):
                 task_name=self.__name__,
                 task_description=self.__doc__,
                 start_timestamp=self.start,
-                finish_timestamp=datetime.now(),
+                finish_timestamp=default_timer(),
+                finish_time=datetime.now(),
                 result=self._result,
                 task_call_module=self.__module__,
                 task_call_func=self.__name__,
@@ -158,7 +161,8 @@ class MonitoredTask(Task):
             task_name=self.__name__,
             task_description=self.__doc__,
             start_timestamp=self.start,
-            finish_timestamp=datetime.now(),
+            finish_timestamp=default_timer(),
+            finish_time=datetime.now(),
             result=self._result,
             task_call_module=self.__module__,
             task_call_func=self.__name__,

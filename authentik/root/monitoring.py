@@ -12,6 +12,8 @@ from django_redis import get_redis_connection
 from prometheus_client import Gauge
 from redis.exceptions import RedisError
 
+from authentik.events.monitored_tasks import TaskInfo
+
 
 class UpdatingGauge(Gauge):
     """Gauge which fetches its own value from an update function.
@@ -44,6 +46,9 @@ class MetricsView(View):
             response = HttpResponse(status=401)
             response["WWW-Authenticate"] = 'Basic realm="authentik-monitoring"'
             return response
+
+        for task in TaskInfo.all().values():
+            task.set_prom_metrics()
 
         return ExportToDjangoView(request)
 
