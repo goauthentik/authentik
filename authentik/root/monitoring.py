@@ -12,7 +12,9 @@ from django_redis import get_redis_connection
 from prometheus_client import Gauge
 from redis.exceptions import RedisError
 
+from authentik.admin.api.workers import GAUGE_WORKERS
 from authentik.events.monitored_tasks import TaskInfo
+from authentik.root.celery import CELERY_APP
 
 
 class UpdatingGauge(Gauge):
@@ -46,6 +48,9 @@ class MetricsView(View):
             response = HttpResponse(status=401)
             response["WWW-Authenticate"] = 'Basic realm="authentik-monitoring"'
             return response
+
+        count = len(CELERY_APP.control.ping(timeout=0.5))
+        GAUGE_WORKERS.set(count)
 
         for task in TaskInfo.all().values():
             task.set_prom_metrics()

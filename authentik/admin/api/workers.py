@@ -23,5 +23,4 @@ class WorkerView(APIView):
     def get(self, request: Request) -> Response:
         """Get currently connected worker count."""
         count = len(CELERY_APP.control.ping(timeout=0.5))
-        GAUGE_WORKERS.set(count)
         return Response({"count": count})

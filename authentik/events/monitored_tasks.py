@@ -15,7 +15,7 @@ from authentik.events.models import Event, EventAction
 GAUGE_TASKS = Gauge(
     "authentik_system_tasks",
     "System tasks and their status",
-    ["task_name", "task_uid", "status", "duration"],
+    ["task_name", "task_uid", "status"],
 )
 
 
@@ -93,8 +93,7 @@ class TaskInfo:
             task_name=self.task_name,
             task_uid=self.result.uid or "",
             status=self.result.status,
-            duration=duration,
-        ).set(self.finish_time.timestamp())
+        ).set(duration)
 
     def save(self, timeout_hours=6):
         """Save task into cache"""
