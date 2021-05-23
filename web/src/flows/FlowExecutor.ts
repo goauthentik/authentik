@@ -13,6 +13,7 @@ import { unsafeHTML } from "lit-html/directives/unsafe-html";
 import "./access_denied/FlowAccessDenied";
 import "./stages/authenticator_static/AuthenticatorStaticStage";
 import "./stages/authenticator_totp/AuthenticatorTOTPStage";
+import "./stages/authenticator_duo/AuthenticatorDuoStage";
 import "./stages/authenticator_validate/AuthenticatorValidateStage";
 import "./stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
 import "./stages/autosubmit/AutosubmitStage";
@@ -46,6 +47,7 @@ import { PFSize } from "../elements/Spinner";
 import { TITLE_DEFAULT } from "../constants";
 import { configureSentry } from "../api/Sentry";
 import { PlexAuthenticationChallenge } from "./sources/plex/PlexLoginInit";
+import { AuthenticatorDuoChallenge } from "./stages/authenticator_duo/AuthenticatorDuoStage";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement implements StageHost {
@@ -219,6 +221,8 @@ export class FlowExecutor extends LitElement implements StageHost {
                         return html`<ak-stage-prompt .host=${this} .challenge=${this.challenge as PromptChallenge}></ak-stage-prompt>`;
                     case "ak-stage-authenticator-totp":
                         return html`<ak-stage-authenticator-totp .host=${this} .challenge=${this.challenge as AuthenticatorTOTPChallenge}></ak-stage-authenticator-totp>`;
+                    case "ak-stage-authenticator-duo":
+                        return html`<ak-stage-authenticator-duo .host=${this} .challenge=${this.challenge as AuthenticatorDuoChallenge}></ak-stage-authenticator-duo>`;
                     case "ak-stage-authenticator-static":
                         return html`<ak-stage-authenticator-static .host=${this} .challenge=${this.challenge as AuthenticatorStaticChallenge}></ak-stage-authenticator-static>`;
                     case "ak-stage-authenticator-webauthn":

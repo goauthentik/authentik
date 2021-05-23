@@ -64,6 +64,7 @@ from authentik.sources.oauth.api.source_connection import (
 )
 from authentik.sources.plex.api import PlexSourceViewSet
 from authentik.sources.saml.api import SAMLSourceViewSet
+from authentik.stages.authenticator_duo.api import AuthenticatorDuoStageViewSet
 from authentik.stages.authenticator_static.api import (
     AuthenticatorStaticStageViewSet,
     StaticAdminDeviceViewSet,
@@ -176,6 +177,7 @@ router.register(
 )
 
 router.register("stages/all", StageViewSet)
+router.register("stages/authenticator/duo", AuthenticatorDuoStageViewSet)
 router.register("stages/authenticator/static", AuthenticatorStaticStageViewSet)
 router.register("stages/authenticator/totp", AuthenticatorTOTPStageViewSet)
 router.register("stages/authenticator/validate", AuthenticatorValidateStageViewSet)

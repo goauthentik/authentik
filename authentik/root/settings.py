@@ -109,6 +109,7 @@ INSTALLED_APPS = [
     "authentik.sources.oauth",
     "authentik.sources.plex",
     "authentik.sources.saml",
+    "authentik.stages.authenticator_duo",
     "authentik.stages.authenticator_static",
     "authentik.stages.authenticator_totp",
     "authentik.stages.authenticator_validate",

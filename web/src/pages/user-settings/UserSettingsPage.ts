@@ -21,6 +21,7 @@ import "../../elements/Tabs";
 import "../../elements/PageHeader";
 import "./tokens/UserTokenList";
 import "./UserDetailsPage";
+import "./settings/UserSettingsAuthenticatorDuo";
 import "./settings/UserSettingsAuthenticatorStatic";
 import "./settings/UserSettingsAuthenticatorTOTP";
 import "./settings/UserSettingsAuthenticatorWebAuthn";
@@ -48,6 +49,9 @@ export class UserSettingsPage extends LitElement {
             case "ak-user-settings-authenticator-static":
                 return html`<ak-user-settings-authenticator-static objectId=${stage.objectUid}>
                 </ak-user-settings-authenticator-static>`;
+            case "ak-user-settings-authenticator-duo":
+                return html`<ak-user-settings-authenticator-duo objectId=${stage.objectUid}>
+                </ak-user-settings-authenticator-duo>`;
             default:
                 return html`<p>${t`Error: unsupported stage settings: ${stage.component}`}</p>`;
         }

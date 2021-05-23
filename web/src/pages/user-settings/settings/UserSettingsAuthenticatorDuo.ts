@@ -1,21 +1,16 @@
 import { AuthenticatorsApi } from "authentik-api";
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { customElement, html, property, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { FlowURLManager } from "../../../api/legacy";
-import { STATIC_TOKEN_STYLE } from "../../../flows/stages/authenticator_static/AuthenticatorStaticStage";
 import { BaseUserSettings } from "./BaseUserSettings";
 
-@customElement("ak-user-settings-authenticator-static")
-export class UserSettingsAuthenticatorStatic extends BaseUserSettings {
+@customElement("ak-user-settings-authenticator-duo")
+export class UserSettingsAuthenticatorDuo extends BaseUserSettings {
 
     @property({ type: Boolean })
     configureFlow = false;
-
-    static get styles(): CSSResult[] {
-        return super.styles.concat(STATIC_TOKEN_STYLE);
-    }
 
     renderEnabled(): TemplateResult {
         return html`<div class="pf-c-card__body">
@@ -72,8 +67,9 @@ export class UserSettingsAuthenticatorStatic extends BaseUserSettings {
     render(): TemplateResult {
         return html`<div class="pf-c-card">
             <div class="pf-c-card__title">
-                ${t`Static tokens`}
+                ${t`Duo`}
             </div>
+            ${this.renderDisabled()}
             ${until(new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsStaticList({}).then((devices) => {
                 return devices.results.length > 0 ? this.renderEnabled() : this.renderDisabled();
             }))}

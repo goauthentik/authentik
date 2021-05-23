@@ -1,4 +1,4 @@
-import { FlowsApi, AuthenticatorStaticStage, StagesApi, FlowsInstancesListDesignationEnum } from "authentik-api";
+import { FlowsApi, AuthenticatorDuoStage, StagesApi, FlowsInstancesListDesignationEnum, AuthenticatorDuoStageRequest } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -10,11 +10,11 @@ import { until } from "lit-html/directives/until";
 import { first } from "../../../utils";
 import { ModelForm } from "../../../elements/forms/ModelForm";
 
-@customElement("ak-stage-authenticator-static-form")
-export class AuthenticatorStaticStageForm extends ModelForm<AuthenticatorStaticStage, string> {
+@customElement("ak-stage-authenticator-duo-form")
+export class AuthenticatorDuoStageForm extends ModelForm<AuthenticatorDuoStage, string> {
 
-    loadInstance(pk: string): Promise<AuthenticatorStaticStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticRetrieve({
+    loadInstance(pk: string): Promise<AuthenticatorDuoStage> {
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoRetrieve({
             stageUuid: pk,
         });
     }
@@ -27,15 +27,15 @@ export class AuthenticatorStaticStageForm extends ModelForm<AuthenticatorStaticS
         }
     }
 
-    send = (data: AuthenticatorStaticStage): Promise<AuthenticatorStaticStage> => {
+    send = (data: AuthenticatorDuoStage): Promise<AuthenticatorDuoStage> => {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticUpdate({
+            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoPartialUpdate({
                 stageUuid: this.instance.pk || "",
-                authenticatorStaticStageRequest: data
+                patchedAuthenticatorDuoStageRequest: data
             });
         } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticCreate({
-                authenticatorStaticStageRequest: data
+            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoCreate({
+                authenticatorDuoStageRequest: data as unknown as AuthenticatorDuoStageRequest
             });
         }
     };
@@ -43,7 +43,7 @@ export class AuthenticatorStaticStageForm extends ModelForm<AuthenticatorStaticS
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <div class="form-help-text">
-                ${t`Stage used to configure a static authenticator (i.e. static tokens). This stage should be used for configuration flows.`}
+                ${t`Stage used to configure a duo-based authenticator. This stage should be used for configuration flows.`}
             </div>
             <ak-form-element-horizontal
                 label=${t`Name`}
@@ -57,10 +57,23 @@ export class AuthenticatorStaticStageForm extends ModelForm<AuthenticatorStaticS
                 </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Token count`}
+                        label=${t`Client ID`}
                         ?required=${true}
-                        name="tokenCount">
-                        <input type="text" value="${first(this.instance?.tokenCount, 6)}" class="pf-c-form-control" required>
+                        name="clientId">
+                        <input type="text" value="${first(this.instance?.clientId, "")}" class="pf-c-form-control" required>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Client Secret`}
+                        ?required=${true}
+                        ?writeOnly=${this.instance !== undefined}
+                        name="clientSecret">
+                        <input type="text" value="" class="pf-c-form-control" required>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`API Hostname`}
+                        ?required=${true}
+                        name="apiHostname">
+                        <input type="text" value="${first(this.instance?.apiHostname, "")}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Configuration flow`}

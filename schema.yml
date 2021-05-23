@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2021.5.3
+  version: 2021.5.4
   description: Making authentication simple.
   contact:
     email: hello@beryju.org
@@ -10759,6 +10759,234 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/authenticator/duo/:
+    get:
+      operationId: stages_authenticator_duo_list
+      description: AuthenticatorDuoStage Viewset
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAuthenticatorDuoStageList'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    post:
+      operationId: stages_authenticator_duo_create
+      description: AuthenticatorDuoStage Viewset
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticatorDuoStageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AuthenticatorDuoStageRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AuthenticatorDuoStageRequest'
+        required: true
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatorDuoStage'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/authenticator/duo/{stage_uuid}/:
+    get:
+      operationId: stages_authenticator_duo_retrieve
+      description: AuthenticatorDuoStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Duo Authenticator Setup Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatorDuoStage'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    put:
+      operationId: stages_authenticator_duo_update
+      description: AuthenticatorDuoStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Duo Authenticator Setup Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticatorDuoStageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AuthenticatorDuoStageRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AuthenticatorDuoStageRequest'
+        required: true
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatorDuoStage'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    patch:
+      operationId: stages_authenticator_duo_partial_update
+      description: AuthenticatorDuoStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Duo Authenticator Setup Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAuthenticatorDuoStageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAuthenticatorDuoStageRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAuthenticatorDuoStageRequest'
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatorDuoStage'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    delete:
+      operationId: stages_authenticator_duo_destroy
+      description: AuthenticatorDuoStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Duo Authenticator Setup Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/authenticator/duo/{stage_uuid}/enrollment_status/:
+    post:
+      operationId: stages_authenticator_duo_enrollment_status_create
+      description: AuthenticatorDuoStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Duo Authenticator Setup Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: Enrollment successful
+        '400':
+          description: Enrollment pending/failed
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/authenticator/static/:
     get:
       operationId: stages_authenticator_static_list
@@ -14757,6 +14985,7 @@ components:
       - authentik.sources.oauth
       - authentik.sources.plex
       - authentik.sources.saml
+      - authentik.stages.authenticator_duo
       - authentik.stages.authenticator_static
       - authentik.stages.authenticator_totp
       - authentik.stages.authenticator_validate
@@ -14906,6 +15135,76 @@ components:
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
       required:
+      - name
+    AuthenticatorDuoStage:
+      type: object
+      description: AuthenticatorDuoStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          readOnly: true
+        verbose_name:
+          type: string
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/Flow'
+        configure_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used by an authenticated user to configure this Stage.
+            If empty, user will not be able to configure this stage.
+        client_id:
+          type: string
+        api_hostname:
+          type: string
+      required:
+      - api_hostname
+      - client_id
+      - component
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    AuthenticatorDuoStageRequest:
+      type: object
+      description: AuthenticatorDuoStage Serializer
+      properties:
+        name:
+          type: string
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowRequest'
+        configure_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used by an authenticated user to configure this Stage.
+            If empty, user will not be able to configure this stage.
+        client_id:
+          type: string
+        client_secret:
+          type: string
+          writeOnly: true
+        api_hostname:
+          type: string
+      required:
+      - api_hostname
+      - client_id
+      - client_secret
       - name
     AuthenticatorStaticStage:
       type: object
@@ -17728,6 +18027,41 @@ components:
       required:
       - pagination
       - results
+    PaginatedAuthenticatorDuoStageList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticatorDuoStage'
+      required:
+      - pagination
+      - results
     PaginatedAuthenticatorStaticStageList:
       type: object
       properties:
@@ -20315,6 +20649,29 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+    PatchedAuthenticatorDuoStageRequest:
+      type: object
+      description: AuthenticatorDuoStage Serializer
+      properties:
+        name:
+          type: string
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowRequest'
+        configure_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used by an authenticated user to configure this Stage.
+            If empty, user will not be able to configure this stage.
+        client_id:
+          type: string
+        client_secret:
+          type: string
+          writeOnly: true
+        api_hostname:
+          type: string
     PatchedAuthenticatorStaticStageRequest:
       type: object
       description: AuthenticatorStaticStage Serializer
