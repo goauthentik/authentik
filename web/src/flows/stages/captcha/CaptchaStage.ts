@@ -29,12 +29,6 @@ export class CaptchaStage extends BaseStage {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
     }
 
-    submitFormAlt(token: string): void {
-        const form = new FormData();
-        form.set("token", token);
-        this.host?.submit(form);
-    }
-
     firstUpdated(): void {
         const script = document.createElement("script");
         script.src = "https://www.google.com/recaptcha/api.js";
@@ -50,7 +44,9 @@ export class CaptchaStage extends BaseStage {
                 const captchaId = grecaptcha.render(captchaContainer, {
                     sitekey: this.challenge.site_key,
                     callback: (token) => {
-                        this.submitFormAlt(token);
+                        this.host?.submit({
+                            "token": token,
+                        });
                     },
                     size: "invisible",
                 });

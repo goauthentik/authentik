@@ -1,13 +1,9 @@
 """Duo stage"""
 from django.http import HttpRequest, HttpResponse
-from django.http.request import QueryDict
-from duo_client.auth import Auth
-from rest_framework.fields import CharField, JSONField
-from rest_framework.serializers import ValidationError
+from rest_framework.fields import CharField
 from structlog.stdlib import get_logger
 
-from authentik.core.models import User
-from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
+from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
@@ -18,7 +14,7 @@ SESSION_KEY_DUO_USER_ID = "authentik_stages_authenticator_duo_user_id"
 SESSION_KEY_DUO_ACTIVATION_CODE = "authentik_stages_authenticator_duo_activation_code"
 
 
-class AuthenticatorDuoChallenge(Challenge):
+class AuthenticatorDuoChallenge(WithUserInfoChallenge):
     """Duo Challenge"""
 
     activation_barcode = CharField()
@@ -60,13 +56,12 @@ class AuthenticatorDuoStageView(ChallengeStageView):
         stage: AuthenticatorDuoStage = self.executor.current_stage
         user_id = self.request.session.get(SESSION_KEY_DUO_USER_ID)
         activation_code = self.request.session.get(SESSION_KEY_DUO_ACTIVATION_CODE)
-        enroll_status = stage.client.enroll_status(user_id, activation_code).get(
-            "response"
-        )
+        enroll_status = stage.client.enroll_status(user_id, activation_code)
         if enroll_status != "success":
-            # TODO: Find a better response
-            return HttpResponse(status=503)
+            return HttpResponse(status=420)
         existing_device = DuoDevice.objects.filter(duo_user_id=user_id).first()
+        self.request.session.pop(SESSION_KEY_DUO_USER_ID)
+        self.request.session.pop(SESSION_KEY_DUO_ACTIVATION_CODE)
         if not existing_device:
             DuoDevice.objects.create(
                 user=self.get_pending_user(),

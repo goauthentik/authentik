@@ -36,24 +36,15 @@ class AuthenticatorDuoStage(ConfigurableStage, Stage):
 
         return AuthenticatorDuoStageView
 
-    _client: Optional[Auth] = None
-
     @property
     def client(self) -> Auth:
-        if not self._client:
-            self._client = Auth(
-                self.client_id,
-                self.client_secret,
-                self.api_hostname,
-                user_agent=f"authentik {__version__}",
-            )
-            try:
-                self._client.ping()
-            except RuntimeError:
-                # Either allow login without 2FA, or abort the login process
-                # TODO: Define action when duo unavailable
-                raise
-        return self._client
+        client = Auth(
+            self.client_id,
+            self.client_secret,
+            self.api_hostname,
+            user_agent=f"authentik {__version__}",
+        )
+        return client
 
     @property
     def component(self) -> str:

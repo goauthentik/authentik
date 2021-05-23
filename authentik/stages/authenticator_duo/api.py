@@ -47,7 +47,7 @@ class AuthenticatorDuoStageViewSet(ModelViewSet):
         request=OpenApiTypes.NONE,
         responses={
             204: OpenApiResponse(description="Enrollment successful"),
-            400: OpenApiResponse(description="Enrollment pending/failed"),
+            420: OpenApiResponse(description="Enrollment pending/failed"),
         },
     )
     @action(methods=["POST"], detail=True, permission_classes=[])
@@ -57,10 +57,9 @@ class AuthenticatorDuoStageViewSet(ModelViewSet):
         user_id = self.request.session.get(SESSION_KEY_DUO_USER_ID)
         activation_code = self.request.session.get(SESSION_KEY_DUO_ACTIVATION_CODE)
         status = client.enroll_status(user_id, activation_code)
-        print(status)
-        if status["response"] == "success":
+        if status == "success":
             return Response(status=204)
-        return Response(status=400)
+        return Response(status=420)
 
 
 class DuoDeviceSerializer(ModelSerializer):

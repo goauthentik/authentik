@@ -34,16 +34,19 @@ export class AuthenticatorDuoStage extends BaseStage {
 
     firstUpdated(): void {
         const i = setInterval(() => {
-            new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoEnrollmentStatusCreate({
-                stageUuid: this.challenge?.stage_uuid || "",
-            }).then(r => {
-                console.log("success");
+            this.checkEnrollStatus().then(() => {
                 clearInterval(i);
-                this.host?.submit(new FormData());
-            }).catch(e => {
-                console.log("error");
             });
-        }, 500);
+        }, 3000);
+    }
+
+    checkEnrollStatus(): Promise<void> {
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoEnrollmentStatusCreate({
+            stageUuid: this.challenge?.stage_uuid || "",
+        }).then(r => {
+            this.host?.submit({});
+        }).catch(e => {
+        });
     }
 
     render(): TemplateResult {
@@ -75,8 +78,10 @@ export class AuthenticatorDuoStage extends BaseStage {
                     <a href=${this.challenge.activation_code}>${t`Duo activation`}</a>
 
                     <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${t`Continue`}
+                        <button type="button" class="pf-c-button pf-m-primary pf-m-block" @click=${() => {
+                            this.checkEnrollStatus();
+                        }}>
+                            ${t`Check status`}
                         </button>
                     </div>
                 </form>
