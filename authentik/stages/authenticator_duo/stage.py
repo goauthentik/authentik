@@ -3,7 +3,12 @@ from django.http import HttpRequest, HttpResponse
 from rest_framework.fields import CharField
 from structlog.stdlib import get_logger
 
-from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
+from authentik.flows.challenge import (
+    Challenge,
+    ChallengeResponse,
+    ChallengeTypes,
+    WithUserInfoChallenge,
+)
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
@@ -64,8 +69,7 @@ class AuthenticatorDuoStageView(ChallengeStageView):
         self.request.session.pop(SESSION_KEY_DUO_ACTIVATION_CODE)
         if not existing_device:
             DuoDevice.objects.create(
-                user=self.get_pending_user(),
-                duo_user_id=user_id,
+                user=self.get_pending_user(), duo_user_id=user_id, stage=stage
             )
         else:
             return self.executor.stage_invalid(

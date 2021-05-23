@@ -11,12 +11,14 @@ import AKGlobal from "../../../authentik.css";
 import { BaseStage, StageHost } from "../base";
 import "./AuthenticatorValidateStageWebAuthn";
 import "./AuthenticatorValidateStageCode";
+import "./AuthenticatorValidateStageDuo";
 import { PasswordManagerPrefill } from "../identification/IdentificationStage";
 
 export enum DeviceClasses {
     STATIC = "static",
     TOTP = "totp",
     WEBAUTHN = "webauthn",
+    DUO = "duo",
 }
 
 export interface DeviceChallenge {
@@ -30,8 +32,9 @@ export interface AuthenticatorValidateStageChallenge extends WithUserInfoChallen
 }
 
 export interface AuthenticatorValidateStageChallengeResponse {
-    code: string;
-    webauthn: string;
+    code?: string;
+    webauthn?: string;
+    duo?: number;
 }
 
 @customElement("ak-stage-authenticator-validate")
@@ -77,6 +80,12 @@ export class AuthenticatorValidateStage extends BaseStage implements StageHost {
 
     renderDevicePickerSingle(deviceChallenge: DeviceChallenge): TemplateResult {
         switch (deviceChallenge.device_class) {
+            case DeviceClasses.DUO:
+                return html`<i class="fas fa-mobile-alt"></i>
+                    <div class="right">
+                        <p>${t`Duo push-notifications`}</p>
+                        <small>${t`Receive a push notification on your phone to prove your identity.`}</small>
+                    </div>`;
             case DeviceClasses.WEBAUTHN:
                 return html`<i class="fas fa-mobile-alt"></i>
                     <div class="right">
@@ -147,6 +156,13 @@ export class AuthenticatorValidateStage extends BaseStage implements StageHost {
                 .deviceChallenge=${this.selectedDeviceChallenge}
                 .showBackButton=${(this.challenge?.device_challenges.length || []) > 1}>
             </ak-stage-authenticator-validate-webauthn>`;
+        case DeviceClasses.DUO:
+            return html`<ak-stage-authenticator-validate-duo
+                .host=${this}
+                .challenge=${this.challenge}
+                .deviceChallenge=${this.selectedDeviceChallenge}
+                .showBackButton=${(this.challenge?.device_challenges.length || []) > 1}>
+            </ak-stage-authenticator-validate-duo>`;
         }
     }
 

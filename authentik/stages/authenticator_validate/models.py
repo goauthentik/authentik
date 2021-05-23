@@ -17,6 +17,7 @@ class DeviceClasses(models.TextChoices):
     STATIC = "static"
     TOTP = "totp", _("TOTP")
     WEBAUTHN = "webauthn", _("WebAuthn")
+    DUO = "duo", _("Duo")
 
 
 def default_device_classes() -> list:

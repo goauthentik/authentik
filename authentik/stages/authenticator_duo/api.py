@@ -51,7 +51,9 @@ class AuthenticatorDuoStageViewSet(ModelViewSet):
         },
     )
     @action(methods=["POST"], detail=True, permission_classes=[])
+    # pylint: disable=invalid-name,unused-argument
     def enrollment_status(self, request: Request, pk: str) -> Response:
+        """Check enrollment status of user details in current session"""
         stage: AuthenticatorDuoStage = self.get_object()
         client = stage.client
         user_id = self.request.session.get(SESSION_KEY_DUO_USER_ID)

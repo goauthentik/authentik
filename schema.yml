@@ -10966,7 +10966,7 @@ paths:
   /api/v2beta/stages/authenticator/duo/{stage_uuid}/enrollment_status/:
     post:
       operationId: stages_authenticator_duo_enrollment_status_create
-      description: AuthenticatorDuoStage Viewset
+      description: Check enrollment status of user details in current session
       parameters:
       - in: path
         name: stage_uuid
@@ -10983,8 +10983,10 @@ paths:
       responses:
         '204':
           description: Enrollment successful
-        '400':
+        '420':
           description: Enrollment pending/failed
+        '400':
+          $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/authenticator/static/:
@@ -15743,6 +15745,7 @@ components:
       - static
       - totp
       - webauthn
+      - duo
       type: string
     DigestAlgorithmEnum:
       enum:

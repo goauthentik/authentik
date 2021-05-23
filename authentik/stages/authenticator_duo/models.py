@@ -3,7 +3,6 @@ from typing import Optional, Type
 
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django_otp.models import Device
@@ -38,6 +37,7 @@ class AuthenticatorDuoStage(ConfigurableStage, Stage):
 
     @property
     def client(self) -> Auth:
+        """Get an API Client to talk to duo"""
         client = Auth(
             self.client_id,
             self.client_secret,
@@ -73,6 +73,8 @@ class DuoDevice(Device):
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
+    # Connect to the stage to when validating access we know the API Credentials
+    stage = models.ForeignKey(AuthenticatorDuoStage, on_delete=models.CASCADE)
     duo_user_id = models.TextField()
 
     def __str__(self):
