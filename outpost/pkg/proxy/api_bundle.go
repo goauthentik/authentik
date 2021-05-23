@@ -141,7 +141,7 @@ func (pb *providerBundle) Build(provider api.ProxyOutpostConfig) {
 		log.Printf("%s", err)
 		os.Exit(1)
 	}
-	oauthproxy, err := NewOAuthProxy(opts, provider)
+	oauthproxy, err := NewOAuthProxy(opts, provider, pb.s.ak.Client.GetConfig().HTTPClient)
 	if err != nil {
 		log.Errorf("ERROR: Failed to initialise OAuth2 Proxy: %v", err)
 		os.Exit(1)

@@ -44,6 +44,8 @@ var (
 
 // OAuthProxy is the main authentication proxy
 type OAuthProxy struct {
+	client *http.Client
+
 	CookieSeed     string
 	CookieName     string
 	CSRFCookieName string
@@ -94,7 +96,7 @@ type OAuthProxy struct {
 }
 
 // NewOAuthProxy creates a new instance of OAuthProxy from the options provided
-func NewOAuthProxy(opts *options.Options, provider api.ProxyOutpostConfig) (*OAuthProxy, error) {
+func NewOAuthProxy(opts *options.Options, provider api.ProxyOutpostConfig, c *http.Client) (*OAuthProxy, error) {
 	logger := log.WithField("logger", "authentik.outpost.proxy").WithField("provider", provider.Name)
 	sessionStore, err := sessions.NewSessionStore(&opts.Session, &opts.Cookie)
 	if err != nil {
@@ -122,6 +124,7 @@ func NewOAuthProxy(opts *options.Options, provider api.ProxyOutpostConfig) (*OAu
 	sessionChain := buildSessionChain(opts, sessionStore)
 
 	return &OAuthProxy{
+		client:         c,
 		CookieName:     opts.Cookie.Name,
 		CSRFCookieName: fmt.Sprintf("%v_%v", opts.Cookie.Name, "csrf"),
 		CookieSeed:     opts.Cookie.Secret,

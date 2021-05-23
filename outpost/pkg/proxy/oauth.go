@@ -32,12 +32,22 @@ func (p *OAuthProxy) GetRedirectURI(host string) string {
 	return u.String()
 }
 
+// HTTPClient is the context key to use with golang.org/x/net/context's
+// WithValue function to associate an *http.Client value with a context.
+var HTTPClient ContextKey
+
+// ContextKey is just an empty struct. It exists so HTTPClient can be
+// an immutable public variable with a unique type. It's immutable
+// because nobody else can create a ContextKey, being unexported.
+type ContextKey struct{}
+
 func (p *OAuthProxy) redeemCode(ctx context.Context, host, code string) (s *sessionsapi.SessionState, err error) {
 	if code == "" {
 		return nil, errors.New("missing code")
 	}
 	redirectURI := p.GetRedirectURI(host)
-	s, err = p.provider.Redeem(ctx, redirectURI, code)
+	redeemCtx := context.WithValue(ctx, HTTPClient, p.client)
+	s, err = p.provider.Redeem(redeemCtx, redirectURI, code)
 	if err != nil {
 		return
 	}
