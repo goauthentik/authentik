@@ -127,7 +127,7 @@ class DockerController(BaseController):
                 return None
             return None
         except DockerException as exc:
-            raise ControllerException from exc
+            raise ControllerException(str(exc)) from exc
 
     def down(self):
         try:
@@ -136,7 +136,7 @@ class DockerController(BaseController):
                 container.kill()
             container.remove()
         except DockerException as exc:
-            raise ControllerException from exc
+            raise ControllerException(str(exc)) from exc
 
     def get_static_deployment(self) -> str:
         """Generate docker-compose yaml for proxy, version 3.5"""
