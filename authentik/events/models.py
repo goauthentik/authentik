@@ -11,6 +11,7 @@ from django.http import HttpRequest
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from geoip2.errors import GeoIP2Error
+from prometheus_client import Gauge
 from requests import RequestException, post
 from structlog.stdlib import get_logger
 
@@ -28,6 +29,11 @@ from authentik.policies.models import PolicyBindingModel
 from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger("authentik.events")
+GAUGE_EVENTS = Gauge(
+    "authentik_events",
+    "Events in authentik",
+    ["action", "user_username", "app", "client_ip"],
+)
 
 
 def default_event_duration():
@@ -169,6 +175,14 @@ class Event(ExpiringModel):
         except GeoIP2Error as exc:
             LOGGER.warning("Failed to add geoIP Data to event", exc=exc)
 
+    def _set_prom_metrics(self):
+        GAUGE_EVENTS.labels(
+            action=self.action,
+            user_username=self.user.get("username"),
+            app=self.app,
+            client_ip=self.client_ip,
+        ).set(self.created.timestamp())
+
     def save(self, *args, **kwargs):
         if self._state.adding:
             LOGGER.debug(
@@ -178,7 +192,8 @@ class Event(ExpiringModel):
                 client_ip=self.client_ip,
                 user=self.user,
             )
-        return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
+        self._set_prom_metrics()
 
     @property
     def summary(self) -> str:

@@ -22,7 +22,7 @@ class TaskSerializer(PassiveSerializer):
 
     task_name = CharField()
     task_description = CharField()
-    task_finish_timestamp = DateTimeField(source="finish_timestamp")
+    task_finish_timestamp = DateTimeField(source="finish_time")
 
     status = ChoiceField(
         source="result.status.name",

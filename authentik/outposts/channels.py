@@ -8,10 +8,20 @@ from channels.exceptions import DenyConnection
 from dacite import from_dict
 from dacite.data import Data
 from guardian.shortcuts import get_objects_for_user
+from prometheus_client import Gauge
 from structlog.stdlib import get_logger
 
 from authentik.core.channels import AuthJsonConsumer
 from authentik.outposts.models import OUTPOST_HELLO_INTERVAL, Outpost, OutpostState
+
+GAUGE_OUTPOSTS_CONNECTED = Gauge(
+    "authentik_outposts_connected", "Currently connected outposts", ["outpost", "uid"]
+)
+GAUGE_OUTPOSTS_LAST_UPDATE = Gauge(
+    "authentik_outposts_last_update",
+    "Last update from any outpost",
+    ["outpost", "uid", "version"],
+)
 
 LOGGER = get_logger()
 
@@ -44,6 +54,8 @@ class OutpostConsumer(AuthJsonConsumer):
 
     last_uid: Optional[str] = None
 
+    first_msg = False
+
     def connect(self):
         super().connect()
         uuid = self.scope["url_route"]["kwargs"]["pk"]
@@ -68,6 +80,10 @@ class OutpostConsumer(AuthJsonConsumer):
             if self.channel_name in state.channel_ids:
                 state.channel_ids.remove(self.channel_name)
                 state.save()
+        GAUGE_OUTPOSTS_CONNECTED.labels(
+            outpost=self.outpost.name,
+            uid=self.last_uid,
+        ).dec()
         LOGGER.debug(
             "removed outpost instance from cache",
             outpost=self.outpost,
@@ -78,15 +94,29 @@ class OutpostConsumer(AuthJsonConsumer):
         msg = from_dict(WebsocketMessage, content)
         uid = msg.args.get("uuid", self.channel_name)
         self.last_uid = uid
+
         state = OutpostState.for_instance_uid(self.outpost, uid)
         if self.channel_name not in state.channel_ids:
             state.channel_ids.append(self.channel_name)
         state.last_seen = datetime.now()
+
+        if not self.first_msg:
+            GAUGE_OUTPOSTS_CONNECTED.labels(
+                outpost=self.outpost.name,
+                uid=self.last_uid,
+            ).inc()
+            self.first_msg = True
+
         if msg.instruction == WebsocketMessageInstruction.HELLO:
             state.version = msg.args.get("version", None)
             state.build_hash = msg.args.get("buildHash", "")
         elif msg.instruction == WebsocketMessageInstruction.ACK:
             return
+        GAUGE_OUTPOSTS_LAST_UPDATE.labels(
+            outpost=self.outpost.name,
+            uid=self.last_uid or "",
+            version=state.version or "",
+        ).set_to_current_time()
         state.save(timeout=OUTPOST_HELLO_INTERVAL * 1.5)
 
         response = WebsocketMessage(instruction=WebsocketMessageInstruction.ACK)

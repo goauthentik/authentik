@@ -111,14 +111,30 @@ class PolicyBinding(SerializerModel):
 
         return PolicyBindingSerializer
 
-    def __str__(self) -> str:
-        suffix = ""
+    @property
+    def target_type(self) -> str:
+        """Get the target type this binding is applied to"""
         if self.policy:
-            suffix = f"Policy {self.policy.name}"
+            return "policy"
         if self.group:
-            suffix = f"Group {self.group.name}"
+            return "group"
         if self.user:
-            suffix = f"User {self.user.name}"
+            return "user"
+        return "invalid"
+
+    @property
+    def target_name(self) -> str:
+        """Get the target name this binding is applied to"""
+        if self.policy:
+            return self.policy.name
+        if self.group:
+            return self.group.name
+        if self.user:
+            return self.user.name
+        return "invalid"
+
+    def __str__(self) -> str:
+        suffix = f"{self.target_type.title()} {self.target_name}"
         try:
             return f"Binding from {self.target} #{self.order} to {suffix}"
         except PolicyBinding.target.RelatedObjectDoesNotExist:  # pylint: disable=no-member
