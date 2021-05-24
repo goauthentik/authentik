@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { css, CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { css, CSSResult, customElement, html, TemplateResult } from "lit-element";
 import { BaseStage } from "../base";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -10,7 +10,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import AKGlobal from "../../../authentik.css";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
-import { IdentificationChallenge, UILoginButton } from "authentik-api";
+import { Challenge, IdentificationChallenge, IdentificationChallengeResponseRequest, UILoginButton } from "authentik-api";
 
 export const PasswordManagerPrefill: {
     password: string | undefined;
@@ -22,10 +22,7 @@ export const PasswordManagerPrefill: {
 
 
 @customElement("ak-stage-identification")
-export class IdentificationStage extends BaseStage {
-
-    @property({attribute: false})
-    challenge?: IdentificationChallenge;
+export class IdentificationStage extends BaseStage<IdentificationChallenge, IdentificationChallengeResponseRequest> {
 
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal].concat(
@@ -119,7 +116,7 @@ export class IdentificationStage extends BaseStage {
         return html`<li class="pf-c-login__main-footer-links-item">
                 <button type="button" @click=${() => {
                     if (!this.host) return;
-                    this.host.challenge = source.challenge;
+                    this.host.challenge = source.challenge as Challenge;
                 }}>
                     ${icon}
                 </button>

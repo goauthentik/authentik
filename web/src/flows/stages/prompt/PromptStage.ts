@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, TemplateResult } from "lit-element";
 import { unsafeHTML } from "lit-html/directives/unsafe-html";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -14,14 +14,12 @@ import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import "../../../elements/Divider";
 import { Error } from "../../../api/Flows";
-import { Prompt, PromptChallenge, StagePrompt } from "authentik-api";
+import { PromptChallenge, StagePrompt } from "authentik-api";
+import { PromptChallengeResponseRequest } from "authentik-api/src/models/PromptChallengeResponseRequest";
 
 
 @customElement("ak-stage-prompt")
-export class PromptStage extends BaseStage {
-
-    @property({attribute: false})
-    challenge?: PromptChallenge;
+export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeResponseRequest> {
 
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFAlert, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];

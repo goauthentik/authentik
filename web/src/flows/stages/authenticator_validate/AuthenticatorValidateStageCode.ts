@@ -15,13 +15,10 @@ import { PasswordManagerPrefill } from "../identification/IdentificationStage";
 import "../../FormStatic";
 import { FlowURLManager } from "../../../api/legacy";
 import { AuthenticatorValidationChallenge } from "authentik-api/dist/models/AuthenticatorValidationChallenge";
-import { DeviceChallenge } from "authentik-api";
+import { AuthenticatorValidationChallengeResponseRequest, DeviceChallenge } from "authentik-api";
 
 @customElement("ak-stage-authenticator-validate-code")
-export class AuthenticatorValidateStageWebCode extends BaseStage {
-
-    @property({ attribute: false })
-    challenge?: AuthenticatorValidationChallenge;
+export class AuthenticatorValidateStageWebCode extends BaseStage<AuthenticatorValidationChallenge, AuthenticatorValidationChallengeResponseRequest> {
 
     @property({ attribute: false })
     deviceChallenge?: DeviceChallenge;

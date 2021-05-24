@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, TemplateResult } from "lit-element";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -13,13 +13,10 @@ import "../../../elements/EmptyState";
 import { PasswordManagerPrefill } from "../identification/IdentificationStage";
 import "../../FormStatic";
 import { FlowURLManager } from "../../../api/legacy";
-import { PasswordChallenge } from "authentik-api";
+import { PasswordChallenge, PasswordChallengeResponseRequest } from "authentik-api";
 
 @customElement("ak-stage-password")
-export class PasswordStage extends BaseStage {
-
-    @property({attribute: false})
-    challenge?: PasswordChallenge;
+export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChallengeResponseRequest> {
 
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle, AKGlobal];

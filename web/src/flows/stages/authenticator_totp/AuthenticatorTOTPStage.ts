@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, TemplateResult } from "lit-element";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -15,14 +15,11 @@ import "../../../elements/EmptyState";
 import "../../FormStatic";
 import { MessageLevel } from "../../../elements/messages/Message";
 import { FlowURLManager } from "../../../api/legacy";
-import { AuthenticatorTOTPChallenge } from "authentik-api";
+import { AuthenticatorTOTPChallenge, AuthenticatorTOTPChallengeResponseRequest } from "authentik-api";
 
 
 @customElement("ak-stage-authenticator-totp")
-export class AuthenticatorTOTPStage extends BaseStage {
-
-    @property({ attribute: false })
-    challenge?: AuthenticatorTOTPChallenge;
+export class AuthenticatorTOTPStage extends BaseStage<AuthenticatorTOTPChallenge, AuthenticatorTOTPChallengeResponseRequest> {
 
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];

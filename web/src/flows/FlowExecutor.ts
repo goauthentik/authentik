@@ -34,6 +34,7 @@ import { PFSize } from "../elements/Spinner";
 import { TITLE_DEFAULT } from "../constants";
 import { configureSentry } from "../api/Sentry";
 import { ChallengeResponseRequest } from "authentik-api/dist/models/ChallengeResponseRequest";
+import { FlowChallengeResponseRequest } from "authentik-api/src";
 
 
 @customElement("ak-flow-executor")
@@ -77,9 +78,6 @@ export class FlowExecutor extends LitElement implements StageHost {
 
     constructor() {
         super();
-        this.addEventListener("ak-flow-submit", () => {
-            this.submit();
-        });
         this.flowSlug = window.location.pathname.split("/")[3];
     }
 
@@ -100,12 +98,14 @@ export class FlowExecutor extends LitElement implements StageHost {
     }
 
     submit(payload: ChallengeResponseRequest): Promise<void> {
-        payload.component = this.challenge.component;
+        // @ts-ignore
+        payload.component = this.challenge?.component;
+        console.log(payload);
         this.loading = true;
         return new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
             flowSlug: this.flowSlug,
             query: window.location.search.substring(1),
-            challengeResponseRequest: payload,
+            flowChallengeResponseRequest: payload as FlowChallengeResponseRequest,
         }).then((data) => {
             this.challenge = data;
             this.postUpdate();
@@ -142,7 +142,7 @@ export class FlowExecutor extends LitElement implements StageHost {
     }
 
     errorMessage(error: string): void {
-        this.challenge = <ShellChallenge>{
+        this.challenge = {
             type: ChallengeChoices.Shell,
             body: `<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">
@@ -162,7 +162,7 @@ export class FlowExecutor extends LitElement implements StageHost {
                     </li>
                 </ul>
             </footer>`
-        };
+        } as Challenge;
     }
 
     renderLoading(): TemplateResult {

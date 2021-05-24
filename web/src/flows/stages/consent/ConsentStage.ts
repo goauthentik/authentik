@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, TemplateResult } from "lit-element";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -11,14 +11,11 @@ import { BaseStage } from "../base";
 import "../../../elements/EmptyState";
 import "../../FormStatic";
 import { FlowURLManager } from "../../../api/legacy";
-import { ConsentChallenge } from "authentik-api";
+import { ConsentChallenge, ConsentChallengeResponseRequest } from "authentik-api";
 
 
 @customElement("ak-stage-consent")
-export class ConsentStage extends BaseStage {
-
-    @property({ attribute: false })
-    challenge?: ConsentChallenge;
+export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeResponseRequest> {
 
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];

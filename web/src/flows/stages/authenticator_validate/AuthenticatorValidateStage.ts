@@ -12,9 +12,8 @@ import "./AuthenticatorValidateStageWebAuthn";
 import "./AuthenticatorValidateStageCode";
 import "./AuthenticatorValidateStageDuo";
 import { PasswordManagerPrefill } from "../identification/IdentificationStage";
-import { DeviceChallenge } from "authentik-api";
+import { AuthenticatorValidationChallengeResponseRequest, DeviceChallenge } from "authentik-api";
 import { AuthenticatorValidationChallenge } from "authentik-api/dist/models/AuthenticatorValidationChallenge";
-import { ChallengeResponseRequest } from "authentik-api/dist/models/ChallengeResponseRequest";
 
 export enum DeviceClasses {
     STATIC = "static",
@@ -24,15 +23,12 @@ export enum DeviceClasses {
 }
 
 @customElement("ak-stage-authenticator-validate")
-export class AuthenticatorValidateStage extends BaseStage implements StageHost {
-
-    @property({ attribute: false })
-    challenge?: AuthenticatorValidationChallenge;
+export class AuthenticatorValidateStage extends BaseStage<AuthenticatorValidationChallenge, AuthenticatorValidationChallengeResponseRequest> implements StageHost {
 
     @property({attribute: false})
     selectedDeviceChallenge?: DeviceChallenge;
 
-    submit(payload: ChallengeResponseRequest): Promise<void> {
+    submit(payload: AuthenticatorValidationChallengeResponseRequest): Promise<void> {
         return this.host?.submit(payload) || Promise.resolve();
     }
 
@@ -130,21 +126,21 @@ export class AuthenticatorValidateStage extends BaseStage implements StageHost {
         case DeviceClasses.STATIC:
         case DeviceClasses.TOTP:
             return html`<ak-stage-authenticator-validate-code
-                .host=${this as StageHost}
+                .host=${this}
                 .challenge=${this.challenge}
                 .deviceChallenge=${this.selectedDeviceChallenge}
                 .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}>
             </ak-stage-authenticator-validate-code>`;
         case DeviceClasses.WEBAUTHN:
             return html`<ak-stage-authenticator-validate-webauthn
-                .host=${this as StageHost}
+                .host=${this}
                 .challenge=${this.challenge}
                 .deviceChallenge=${this.selectedDeviceChallenge}
                 .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}>
             </ak-stage-authenticator-validate-webauthn>`;
         case DeviceClasses.DUO:
             return html`<ak-stage-authenticator-validate-duo
-                .host=${this as StageHost}
+                .host=${this}
                 .challenge=${this.challenge}
                 .deviceChallenge=${this.selectedDeviceChallenge}
                 .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}>

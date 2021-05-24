@@ -44,7 +44,7 @@ class PromptChallenge(Challenge):
     component = CharField(default="ak-stage-prompt")
 
 
-class PromptResponseChallenge(ChallengeResponse):
+class PromptChallengeResponse(ChallengeResponse):
     """Validate response, fields are dynamically created based
     on the stage"""
 
@@ -159,7 +159,7 @@ class ListPolicyEngine(PolicyEngine):
 class PromptStageView(ChallengeStageView):
     """Prompt Stage, save form data in plan context."""
 
-    response_class = PromptResponseChallenge
+    response_class = PromptChallengeResponse
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         fields = list(self.executor.current_stage.fields.all().order_by("order"))
@@ -174,7 +174,7 @@ class PromptStageView(ChallengeStageView):
     def get_response_instance(self, data: QueryDict) -> ChallengeResponse:
         if not self.executor.plan:
             raise ValueError
-        return PromptResponseChallenge(
+        return PromptChallengeResponse(
             instance=None,
             data=data,
             stage=self.executor.current_stage,

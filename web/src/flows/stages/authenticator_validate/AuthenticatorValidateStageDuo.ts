@@ -14,13 +14,10 @@ import "../../../elements/EmptyState";
 import "../../FormStatic";
 import { FlowURLManager } from "../../../api/legacy";
 import { AuthenticatorValidationChallenge } from "authentik-api/dist/models/AuthenticatorValidationChallenge";
-import { DeviceChallenge } from "authentik-api";
+import { AuthenticatorValidationChallengeResponseRequest, DeviceChallenge } from "authentik-api";
 
 @customElement("ak-stage-authenticator-validate-duo")
-export class AuthenticatorValidateStageWebDuo extends BaseStage {
-
-    @property({ attribute: false })
-    challenge?: AuthenticatorValidationChallenge;
+export class AuthenticatorValidateStageWebDuo extends BaseStage<AuthenticatorValidationChallenge, AuthenticatorValidationChallengeResponseRequest> {
 
     @property({ attribute: false })
     deviceChallenge?: DeviceChallenge;

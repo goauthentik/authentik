@@ -7,7 +7,7 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import AKGlobal from "../../../authentik.css";
-import { CSSResult, customElement, property } from "lit-element";
+import { CSSResult, customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { BaseStage } from "../../stages/base";
 import { PlexAPIClient, popupCenterScreen } from "./API";
@@ -15,13 +15,11 @@ import { DEFAULT_CONFIG } from "../../../api/Config";
 import { SourcesApi } from "authentik-api";
 import { showMessage } from "../../../elements/messages/MessageContainer";
 import { MessageLevel } from "../../../elements/messages/Message";
+import { PlexAuthenticationChallengeResponseRequest } from "authentik-api/dist/models/PlexAuthenticationChallengeResponseRequest";
 
 
 @customElement("ak-flow-sources-plex")
-export class PlexLoginInit extends BaseStage {
-
-    @property({ attribute: false })
-    challenge?: PlexAuthenticationChallenge;
+export class PlexLoginInit extends BaseStage<PlexAuthenticationChallenge, PlexAuthenticationChallengeResponseRequest> {
 
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle, AKGlobal];

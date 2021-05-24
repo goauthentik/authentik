@@ -16807,7 +16807,7 @@ components:
       - $ref: '#/components/schemas/IdentificationChallengeResponseRequest'
       - $ref: '#/components/schemas/PasswordChallengeResponseRequest'
       - $ref: '#/components/schemas/PlexAuthenticationChallengeResponseRequest'
-      - $ref: '#/components/schemas/PromptResponseChallengeRequest'
+      - $ref: '#/components/schemas/PromptChallengeResponseRequest'
       discriminator:
         propertyName: component
         mapping:
@@ -16824,7 +16824,7 @@ components:
           ak-stage-identification: '#/components/schemas/IdentificationChallengeResponseRequest'
           ak-stage-password: '#/components/schemas/PasswordChallengeResponseRequest'
           ak-flow-sources-plex: '#/components/schemas/PlexAuthenticationChallengeResponseRequest'
-          ak-stage-prompt: '#/components/schemas/PromptResponseChallengeRequest'
+          ak-stage-prompt: '#/components/schemas/PromptChallengeResponseRequest'
     FlowDesignationEnum:
       enum:
       - authentication
@@ -22995,6 +22995,15 @@ components:
       required:
       - fields
       - type
+    PromptChallengeResponseRequest:
+      type: object
+      description: |-
+        Validate response, fields are dynamically created based
+        on the stage
+      properties:
+        component:
+          type: string
+          default: ak-stage-prompt
     PromptRequest:
       type: object
       description: Prompt Serializer
@@ -23024,15 +23033,6 @@ components:
       - field_key
       - label
       - type
-    PromptResponseChallengeRequest:
-      type: object
-      description: |-
-        Validate response, fields are dynamically created based
-        on the stage
-      properties:
-        component:
-          type: string
-          default: ak-stage-prompt
     PromptStage:
       type: object
       description: PromptStage Serializer

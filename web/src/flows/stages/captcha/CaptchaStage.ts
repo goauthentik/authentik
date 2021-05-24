@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, TemplateResult } from "lit-element";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -13,13 +13,10 @@ import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import "../../FormStatic";
 import { FlowURLManager } from "../../../api/legacy";
-import { CaptchaChallenge } from "authentik-api";
+import { CaptchaChallenge, CaptchaChallengeResponseRequest } from "authentik-api";
 
 @customElement("ak-stage-captcha")
-export class CaptchaStage extends BaseStage {
-
-    @property({ attribute: false })
-    challenge?: CaptchaChallenge;
+export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeResponseRequest> {
 
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];

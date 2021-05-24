@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { css, CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { css, CSSResult, customElement, html, TemplateResult } from "lit-element";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -13,6 +13,7 @@ import "../../../elements/EmptyState";
 import "../../FormStatic";
 import { FlowURLManager } from "../../../api/legacy";
 import { AuthenticatorStaticChallenge } from "authentik-api";
+import { AuthenticatorStaticChallengeResponseRequest } from "authentik-api/dist/models/AuthenticatorStaticChallengeResponseRequest";
 
 export const STATIC_TOKEN_STYLE = css`
 /* Static OTP Tokens */
@@ -31,10 +32,7 @@ export const STATIC_TOKEN_STYLE = css`
 
 
 @customElement("ak-stage-authenticator-static")
-export class AuthenticatorStaticStage extends BaseStage {
-
-    @property({ attribute: false })
-    challenge?: AuthenticatorStaticChallenge;
+export class AuthenticatorStaticStage extends BaseStage<AuthenticatorStaticChallenge, AuthenticatorStaticChallengeResponseRequest> {
 
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal, STATIC_TOKEN_STYLE];

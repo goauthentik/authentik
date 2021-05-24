@@ -10,17 +10,14 @@ import AKGlobal from "../../../authentik.css";
 import { PFSize } from "../../../elements/Spinner";
 import { BaseStage } from "../base";
 import { Assertion, transformCredentialCreateOptions, transformNewAssertionForServer } from "./utils";
-import { AuthenticatorWebAuthnChallenge } from "authentik-api";
+import { AuthenticatorWebAuthnChallenge, AuthenticatorWebAuthnChallengeResponseRequest } from "authentik-api";
 
 export interface WebAuthnAuthenticatorRegisterChallengeResponse {
     response: Assertion;
 }
 
 @customElement("ak-stage-authenticator-webauthn")
-export class WebAuthnAuthenticatorRegisterStage extends BaseStage {
-
-    @property({ attribute: false })
-    challenge?: AuthenticatorWebAuthnChallenge;
+export class WebAuthnAuthenticatorRegisterStage extends BaseStage<AuthenticatorWebAuthnChallenge, AuthenticatorWebAuthnChallengeResponseRequest> {
 
     @property({type: Boolean})
     registerRunning = false;

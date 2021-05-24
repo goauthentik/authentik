@@ -1,16 +1,16 @@
-import { Challenge } from "authentik-api";
-import { ChallengeResponseRequest } from "authentik-api/dist/models/ChallengeResponseRequest";
-import { LitElement } from "lit-element";
+import { LitElement, property } from "lit-element";
 
 export interface StageHost {
-    challenge?: Challenge;
-    submit(payload: ChallengeResponseRequest): Promise<void>;
+    challenge?: unknown;
+    submit(payload: unknown): Promise<void>;
 }
 
-export class BaseStage extends LitElement {
+export class BaseStage<Tin, Tout> extends LitElement {
 
-    host?: StageHost;
-    challenge!: Challenge;
+    host!: StageHost;
+
+    @property({ attribute: false })
+    challenge!: Tin;
 
     submitForm(e: Event): void {
         e.preventDefault();
@@ -19,7 +19,7 @@ export class BaseStage extends LitElement {
         } = {};
         const form = new FormData(this.shadowRoot?.querySelector("form") || undefined);
         form.forEach((value, key) => object[key] = value);
-        this.host?.submit(object as unknown as ChallengeResponseRequest);
+        this.host?.submit(object as unknown as Tout);
     }
 
 }

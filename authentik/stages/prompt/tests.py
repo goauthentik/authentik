@@ -13,7 +13,7 @@ from authentik.flows.planner import FlowPlan
 from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
-from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT, PromptResponseChallenge
+from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT, PromptChallengeResponse
 
 
 class TestPromptStage(TestCase):
@@ -112,7 +112,7 @@ class TestPromptStage(TestCase):
             self.assertIn(prompt.label, force_str(response.content))
             self.assertIn(prompt.placeholder, force_str(response.content))
 
-    def test_valid_challenge_with_policy(self) -> PromptResponseChallenge:
+    def test_valid_challenge_with_policy(self) -> PromptChallengeResponse:
         """Test challenge_response validation"""
         plan = FlowPlan(
             flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
@@ -123,13 +123,13 @@ class TestPromptStage(TestCase):
         )
         self.stage.validation_policies.set([expr_policy])
         self.stage.save()
-        challenge_response = PromptResponseChallenge(
+        challenge_response = PromptChallengeResponse(
             None, stage=self.stage, plan=plan, data=self.prompt_data
         )
         self.assertEqual(challenge_response.is_valid(), True)
         return challenge_response
 
-    def test_invalid_challenge(self) -> PromptResponseChallenge:
+    def test_invalid_challenge(self) -> PromptChallengeResponse:
         """Test challenge_response validation"""
         plan = FlowPlan(
             flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
@@ -140,7 +140,7 @@ class TestPromptStage(TestCase):
         )
         self.stage.validation_policies.set([expr_policy])
         self.stage.save()
-        challenge_response = PromptResponseChallenge(
+        challenge_response = PromptChallengeResponse(
             None, stage=self.stage, plan=plan, data=self.prompt_data
         )
         self.assertEqual(challenge_response.is_valid(), False)
