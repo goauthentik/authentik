@@ -100,7 +100,6 @@ export class FlowExecutor extends LitElement implements StageHost {
     submit(payload: FlowChallengeResponseRequest): Promise<void> {
         // @ts-ignore
         payload.component = this.challenge?.component;
-        console.log(payload);
         this.loading = true;
         return new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
             flowSlug: this.flowSlug,

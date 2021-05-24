@@ -15,7 +15,7 @@ from authentik.flows.models import ConfigurableStage, Stage
 
 
 class AuthenticatorDuoStage(ConfigurableStage, Stage):
-    """Duo stage"""
+    """Setup Duo authenticator devices"""
 
     client_id = models.TextField()
     client_secret = models.TextField()

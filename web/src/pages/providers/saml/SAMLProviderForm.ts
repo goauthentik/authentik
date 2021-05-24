@@ -13,7 +13,6 @@ import "../../../elements/forms/FormGroup";
 export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
 
     loadInstance(pk: number): Promise<SAMLProvider> {
-        console.log("reading saml provider");
         return new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({
             id: pk,
         });
