@@ -277,7 +277,7 @@ class FlowExecutorView(APIView):
         if self.plan.stages:
             self._logger.debug(
                 "f(exec): Continuing with next stage",
-                reamining=len(self.plan.stages),
+                remaining=len(self.plan.stages),
             )
             kwargs = self.kwargs
             kwargs.update({"flow_slug": self.flow.slug})

@@ -56,7 +56,7 @@ gen-outpost:
 		-i /local/schema.yml \
 		-g go \
 		-o /local/outpost/api \
-		--additional-properties=packageName=api,enumClassPrefix=true
+		--additional-properties=packageName=api,enumClassPrefix=true,useOneOfDiscriminatorLookup=true
 	rm -f outpost/api/go.mod outpost/api/go.sum
 
 gen: gen-build gen-clean gen-web gen-outpost

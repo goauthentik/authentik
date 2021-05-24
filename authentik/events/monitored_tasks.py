@@ -88,7 +88,10 @@ class TaskInfo:
         start = default_timer()
         if hasattr(self, "start_timestamp"):
             start = self.start_timestamp
-        duration = max(self.finish_timestamp - start, 0)
+        try:
+            duration = max(self.finish_timestamp - start, 0)
+        except TypeError:
+            duration = 0
         GAUGE_TASKS.labels(
             task_name=self.task_name,
             task_uid=self.result.uid or "",

@@ -152,17 +152,9 @@ func (pi *ProviderInstance) solveFlowChallenge(bindDN string, password string, c
 	responseReq := client.FlowsApi.FlowsExecutorSolve(context.Background(), pi.flowSlug).Query(urlParams)
 	switch ch.GetComponent() {
 	case "ak-stage-identification":
-		responseReq.ChallengeResponseRequest(api.ChallengeResponseRequest{
-			IdentificationChallengeResponseRequest: &api.IdentificationChallengeResponseRequest{
-				UidField: bindDN,
-			},
-		})
+		responseReq = responseReq.ChallengeResponseRequest(api.IdentificationChallengeResponseRequestAsChallengeResponseRequest(api.NewIdentificationChallengeResponseRequest(bindDN)))
 	case "ak-stage-password":
-		responseReq.ChallengeResponseRequest(api.ChallengeResponseRequest{
-			PasswordChallengeResponseRequest: &api.PasswordChallengeResponseRequest{
-				Password: password,
-			},
-		})
+		responseReq = responseReq.ChallengeResponseRequest(api.PasswordChallengeResponseRequestAsChallengeResponseRequest(api.NewPasswordChallengeResponseRequest(password)))
 	case "ak-stage-authenticator-validate":
 		// We only support duo as authenticator, check if that's allowed
 		var deviceChallenge *api.DeviceChallenge
@@ -179,11 +171,9 @@ func (pi *ProviderInstance) solveFlowChallenge(bindDN string, password string, c
 			return false, errors.New("failed to convert duo device id to int")
 		}
 		devId32 := int32(devId)
-		responseReq.ChallengeResponseRequest(api.ChallengeResponseRequest{
-			AuthenticatorValidationChallengeResponseRequest: &api.AuthenticatorValidationChallengeResponseRequest{
-				Duo: &devId32,
-			},
-		})
+		inner := api.NewAuthenticatorValidationChallengeResponseRequest()
+		inner.Duo = &devId32
+		responseReq = responseReq.ChallengeResponseRequest(api.AuthenticatorValidationChallengeResponseRequestAsChallengeResponseRequest(inner))
 	case "ak-stage-access-denied":
 		return false, errors.New("got ak-stage-access-denied")
 	default:
@@ -206,7 +196,7 @@ func (pi *ProviderInstance) solveFlowChallenge(bindDN string, password string, c
 	if len(ch.GetResponseErrors()) > 0 {
 		for key, errs := range ch.GetResponseErrors() {
 			for _, err := range errs {
-				pi.log.WithField("key", key).WithField("code", err.Code).Debug(err.String)
+				pi.log.WithField("key", key).WithField("code", err.Code).WithField("msg", err.String).Warning("Flow error")
 				return false, nil
 			}
 		}
