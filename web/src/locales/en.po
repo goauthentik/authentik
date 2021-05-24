@@ -584,7 +584,6 @@ msgstr "Click to copy token"
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
-#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "Client ID"
 msgstr "Client ID"
 
@@ -596,7 +595,6 @@ msgid "Client IP"
 msgstr "Client IP"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "Client Secret"
 msgstr "Client Secret"
 
@@ -1702,6 +1700,10 @@ msgstr "Include User claims from scopes in the id_token, for applications that d
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Include claims in id_token"
 msgstr "Include claims in id_token"
+
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid "Integration key"
+msgstr "Integration key"
 
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Internal Host"
@@ -2853,6 +2855,10 @@ msgstr "Scopes"
 #: src/elements/table/TableSearch.ts
 msgid "Search..."
 msgstr "Search..."
+
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid "Secret key"
+msgstr "Secret key"
 
 #: src/pages/events/EventInfo.ts
 msgid "Secret:"

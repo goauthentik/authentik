@@ -26,7 +26,7 @@ import "./stages/password/PasswordStage";
 import "./stages/prompt/PromptStage";
 import "./sources/plex/PlexLoginInit";
 import { StageHost } from "./stages/base";
-import { ChallengeChoices, ChallengeResponseRequest, Config, FlowsApi, RedirectChallenge, ShellChallenge } from "authentik-api";
+import { ChallengeChoices, Config, FlowsApi, RedirectChallenge, ShellChallenge } from "authentik-api";
 import { config, DEFAULT_CONFIG } from "../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
@@ -97,7 +97,7 @@ export class FlowExecutor extends LitElement implements StageHost {
         });
     }
 
-    submit(payload: ChallengeResponseRequest): Promise<void> {
+    submit(payload: FlowChallengeResponseRequest): Promise<void> {
         // @ts-ignore
         payload.component = this.challenge?.component;
         console.log(payload);

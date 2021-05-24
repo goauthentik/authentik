@@ -578,7 +578,6 @@ msgstr ""
 #: 
 #: 
 #: 
-#: 
 msgid "Client ID"
 msgstr ""
 
@@ -589,7 +588,6 @@ msgstr ""
 msgid "Client IP"
 msgstr ""
 
-#: 
 #: 
 msgid "Client Secret"
 msgstr ""
@@ -1693,6 +1691,10 @@ msgstr ""
 
 #: 
 msgid "Include claims in id_token"
+msgstr ""
+
+#: 
+msgid "Integration key"
 msgstr ""
 
 #: 
@@ -2844,6 +2846,10 @@ msgstr ""
 
 #: 
 msgid "Search..."
+msgstr ""
+
+#: 
+msgid "Secret key"
 msgstr ""
 
 #: 

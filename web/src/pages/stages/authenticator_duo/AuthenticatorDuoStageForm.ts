@@ -57,13 +57,13 @@ export class AuthenticatorDuoStageForm extends ModelForm<AuthenticatorDuoStage, 
                 </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Client ID`}
+                        label=${t`Integration key`}
                         ?required=${true}
                         name="clientId">
                         <input type="text" value="${first(this.instance?.clientId, "")}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Client Secret`}
+                        label=${t`Secret key`}
                         ?required=${true}
                         ?writeOnly=${this.instance !== undefined}
                         name="clientSecret">
