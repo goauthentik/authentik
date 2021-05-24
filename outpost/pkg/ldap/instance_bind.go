@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 
@@ -133,46 +134,77 @@ func (pi *ProviderInstance) delayDeleteUserInfo(dn string) {
 	}()
 }
 
+type ChallengeInt interface {
+	GetComponent() string
+	GetType() api.ChallengeChoices
+	GetResponseErrors() map[string][]api.ErrorDetail
+}
+
 func (pi *ProviderInstance) solveFlowChallenge(bindDN string, password string, client *api.APIClient, urlParams string, depth int) (bool, error) {
-	req := client.FlowsApi.FlowsExecutorGet(context.Background(), pi.flowSlug)
-	req.Query(urlParams)
+	req := client.FlowsApi.FlowsExecutorGet(context.Background(), pi.flowSlug).Query(urlParams)
 	challenge, _, err := req.Execute()
 	if err != nil {
 		pi.log.WithError(err).Warning("Failed to get challenge")
 		return false, err
 	}
-	pi.log.WithField("component", challenge.Component).WithField("type", challenge.Type).Debug("Got challenge")
-	responseReq := client.FlowsApi.FlowsExecutorSolve(context.Background(), pi.flowSlug)
-	responseReq.Query(urlParams)
-	switch *challenge.Component {
+	ch := challenge.GetActualInstance().(ChallengeInt)
+	pi.log.WithField("component", ch.GetComponent()).WithField("type", ch.GetType()).Debug("Got challenge")
+	responseReq := client.FlowsApi.FlowsExecutorSolve(context.Background(), pi.flowSlug).Query(urlParams)
+	switch ch.GetComponent() {
 	case "ak-stage-identification":
-		responseReq.RequestBody(map[string]interface{}{
-			"uid_field": bindDN,
+		responseReq.ChallengeResponseRequest(api.ChallengeResponseRequest{
+			IdentificationChallengeResponseRequest: &api.IdentificationChallengeResponseRequest{
+				UidField: bindDN,
+			},
 		})
 	case "ak-stage-password":
-		responseReq.RequestBody(map[string]interface{}{
-			"password": password,
+		responseReq.ChallengeResponseRequest(api.ChallengeResponseRequest{
+			PasswordChallengeResponseRequest: &api.PasswordChallengeResponseRequest{
+				Password: password,
+			},
+		})
+	case "ak-stage-authenticator-validate":
+		// We only support duo as authenticator, check if that's allowed
+		var deviceChallenge *api.DeviceChallenge
+		for _, devCh := range challenge.AuthenticatorValidationChallenge.DeviceChallenges {
+			if devCh.DeviceClass == string(api.DEVICECLASSESENUM_DUO) {
+				deviceChallenge = &devCh
+			}
+		}
+		if deviceChallenge == nil {
+			return false, errors.New("got ak-stage-authenticator-validate without duo")
+		}
+		devId, err := strconv.Atoi(deviceChallenge.DeviceUid)
+		if err != nil {
+			return false, errors.New("failed to convert duo device id to int")
+		}
+		devId32 := int32(devId)
+		responseReq.ChallengeResponseRequest(api.ChallengeResponseRequest{
+			AuthenticatorValidationChallengeResponseRequest: &api.AuthenticatorValidationChallengeResponseRequest{
+				Duo: &devId32,
+			},
 		})
 	case "ak-stage-access-denied":
 		return false, errors.New("got ak-stage-access-denied")
 	default:
-		return false, fmt.Errorf("unsupported challenge type: %s", *challenge.Component)
+		return false, fmt.Errorf("unsupported challenge type: %s", ch.GetComponent())
 	}
 	response, _, err := responseReq.Execute()
-	pi.log.WithField("component", response.Component).WithField("type", response.Type).Debug("Got response")
-	switch *response.Component {
+	ch = response.GetActualInstance().(ChallengeInt)
+	pi.log.WithField("component", ch.GetComponent()).WithField("type", ch.GetType()).Debug("Got response")
+	switch ch.GetComponent() {
 	case "ak-stage-access-denied":
 		return false, errors.New("got ak-stage-access-denied")
 	}
-	if response.Type == "redirect" {
+	if ch.GetType() == "redirect" {
 		return true, nil
 	}
 	if err != nil {
 		pi.log.WithError(err).Warning("Failed to submit challenge")
 		return false, err
 	}
-	if len(*response.ResponseErrors) > 0 {
-		for key, errs := range *response.ResponseErrors {
+	if len(ch.GetResponseErrors()) > 0 {
+		for key, errs := range ch.GetResponseErrors() {
 			for _, err := range errs {
 				pi.log.WithField("key", key).WithField("code", err.Code).Debug(err.String)
 				return false, nil
