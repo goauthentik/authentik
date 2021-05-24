@@ -94,7 +94,8 @@ export class FlowExecutor extends LitElement implements StageHost {
         });
     }
 
-    submit(payload: FlowChallengeResponseRequest): Promise<void> {
+    submit(payload?: FlowChallengeResponseRequest): Promise<void> {
+        if (!payload) return Promise.reject();
         if (!this.challenge) return Promise.reject();
         // @ts-ignore
         payload.component = this.challenge.component;
@@ -106,9 +107,8 @@ export class FlowExecutor extends LitElement implements StageHost {
         }).then((data) => {
             this.challenge = data;
             this.postUpdate();
-        }).catch((e: Response) => {
-            console.debug(e);
-            this.errorMessage(e.statusText);
+        }).catch((e: Error) => {
+            this.errorMessage(e.toString());
         }).finally(() => {
             this.loading = false;
         });
@@ -129,10 +129,9 @@ export class FlowExecutor extends LitElement implements StageHost {
                 this.setBackground(this.challenge.background);
             }
             this.postUpdate();
-        }).catch((e: Response) => {
-            console.debug(e);
+        }).catch((e: Error) => {
             // Catch JSON or Update errors
-            this.errorMessage(e.statusText);
+            this.errorMessage(e.toString());
         }).finally(() => {
             this.loading = false;
         });
