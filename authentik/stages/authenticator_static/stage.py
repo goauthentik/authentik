@@ -25,8 +25,16 @@ class AuthenticatorStaticChallenge(WithUserInfoChallenge):
     component = CharField(default="ak-stage-authenticator-static")
 
 
+class AuthenticatorStaticChallengeResponse(ChallengeResponse):
+    """Pseudo class for static response"""
+
+    component = CharField(default="ak-stage-authenticator-static")
+
+
 class AuthenticatorStaticStageView(ChallengeStageView):
     """Static OTP Setup stage"""
+
+    response_class = AuthenticatorStaticChallengeResponse
 
     def get_challenge(self, *args, **kwargs) -> AuthenticatorStaticChallenge:
         tokens: list[StaticToken] = self.request.session[SESSION_STATIC_TOKENS]

@@ -10,19 +10,16 @@ export interface StageHost {
 export class BaseStage extends LitElement {
 
     host?: StageHost;
-    challenge?: Challenge;
+    challenge!: Challenge;
 
     submitForm(e: Event): void {
         e.preventDefault();
         const object: {
-            component: string;
             [key: string]: unknown;
-        } = {
-            component: this.challenge.component,
-        };
+        } = {};
         const form = new FormData(this.shadowRoot?.querySelector("form") || undefined);
         form.forEach((value, key) => object[key] = value);
-        this.host?.submit(object);
+        this.host?.submit(object as unknown as ChallengeResponseRequest);
     }
 
 }

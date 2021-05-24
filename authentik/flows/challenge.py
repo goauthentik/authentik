@@ -83,7 +83,7 @@ class ChallengeResponse(PassiveSerializer):
     """Base class for all challenge responses"""
 
     stage: Optional["StageView"]
-    component = CharField(default="")
+    component = CharField(default="xak-flow-response-default")
 
     def __init__(self, instance=None, data=None, **kwargs):
         self.stage = kwargs.pop("stage", None)

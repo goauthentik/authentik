@@ -57,7 +57,7 @@ export class IdentificationStage extends BaseStage {
         username.setAttribute("autocomplete", "username");
         username.onkeyup = (ev: Event) => {
             const el = ev.target as HTMLInputElement;
-            (this.shadowRoot || this).querySelectorAll<HTMLInputElement>("input[name=uid_field]").forEach(input => {
+            (this.shadowRoot || this).querySelectorAll<HTMLInputElement>("input[name=uidField]").forEach(input => {
                 input.value = el.value;
                 // Because we assume only one input field exists that matches this
                 // call focus so the user can press enter
@@ -80,7 +80,7 @@ export class IdentificationStage extends BaseStage {
             PasswordManagerPrefill.password = el.value;
             // Because password managers fill username, then password,
             // we need to re-focus the uid_field here too
-            (this.shadowRoot || this).querySelectorAll<HTMLInputElement>("input[name=uid_field]").forEach(input => {
+            (this.shadowRoot || this).querySelectorAll<HTMLInputElement>("input[name=uidField]").forEach(input => {
                 // Because we assume only one input field exists that matches this
                 // call focus so the user can press enter
                 input.focus();
@@ -102,7 +102,7 @@ export class IdentificationStage extends BaseStage {
             PasswordManagerPrefill.totp = el.value;
             // Because totp managers fill username, then password, then optionally,
             // we need to re-focus the uid_field here too
-            (this.shadowRoot || this).querySelectorAll<HTMLInputElement>("input[name=uid_field]").forEach(input => {
+            (this.shadowRoot || this).querySelectorAll<HTMLInputElement>("input[name=uidField]").forEach(input => {
                 // Because we assume only one input field exists that matches this
                 // call focus so the user can press enter
                 input.focus();

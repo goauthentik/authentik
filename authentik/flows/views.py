@@ -215,7 +215,7 @@ class FlowExecutorView(APIView):
             ),
         },
         request=PolymorphicProxySerializer(
-            component_name="ChallengeResponse",
+            component_name="FlowChallengeResponse",
             serializers=challenge_response_types(),
             resource_type_field_name="component",
         ),

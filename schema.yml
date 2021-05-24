@@ -3550,13 +3550,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ChallengeResponseRequest'
+              $ref: '#/components/schemas/FlowChallengeResponseRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/ChallengeResponseRequest'
+              $ref: '#/components/schemas/FlowChallengeResponseRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/ChallengeResponseRequest'
+              $ref: '#/components/schemas/FlowChallengeResponseRequest'
       security:
       - authentik: []
       - cookieAuth: []
@@ -15194,6 +15194,13 @@ components:
       - pending_user_avatar
       - stage_uuid
       - type
+    AuthenticatorDuoChallengeResponseRequest:
+      type: object
+      description: Pseudo class for duo response
+      properties:
+        component:
+          type: string
+          default: ak-stage-authenticator-duo
     AuthenticatorDuoStage:
       type: object
       description: AuthenticatorDuoStage Serializer
@@ -15296,6 +15303,13 @@ components:
       - pending_user
       - pending_user_avatar
       - type
+    AuthenticatorStaticChallengeResponseRequest:
+      type: object
+      description: Pseudo class for static response
+      properties:
+        component:
+          type: string
+          default: ak-stage-authenticator-static
     AuthenticatorStaticStage:
       type: object
       description: AuthenticatorStaticStage Serializer
@@ -15624,6 +15638,13 @@ components:
           additionalProperties: {}
       required:
       - response
+    AutoSubmitChallengeResponseRequest:
+      type: object
+      description: Pseudo class for autosubmit response
+      properties:
+        component:
+          type: string
+          default: ak-stage-autosubmit
     AutosubmitChallenge:
       type: object
       description: Autosubmit challenge used to send and navigate a POST request
@@ -15889,31 +15910,6 @@ components:
       - shell
       - redirect
       type: string
-    ChallengeResponseRequest:
-      oneOf:
-      - $ref: '#/components/schemas/AuthenticatorTOTPChallengeResponseRequest'
-      - $ref: '#/components/schemas/AuthenticatorValidationChallengeResponseRequest'
-      - $ref: '#/components/schemas/AuthenticatorWebAuthnChallengeResponseRequest'
-      - $ref: '#/components/schemas/CaptchaChallengeResponseRequest'
-      - $ref: '#/components/schemas/ConsentChallengeResponseRequest'
-      - $ref: '#/components/schemas/DummyChallengeResponseRequest'
-      - $ref: '#/components/schemas/EmailChallengeResponseRequest'
-      - $ref: '#/components/schemas/IdentificationChallengeResponseRequest'
-      - $ref: '#/components/schemas/PasswordChallengeResponseRequest'
-      - $ref: '#/components/schemas/PromptResponseChallengeRequest'
-      discriminator:
-        propertyName: component
-        mapping:
-          ak-stage-authenticator-totp: '#/components/schemas/AuthenticatorTOTPChallengeResponseRequest'
-          ak-stage-authenticator-validate: '#/components/schemas/AuthenticatorValidationChallengeResponseRequest'
-          ak-stage-authenticator-webauthn: '#/components/schemas/AuthenticatorWebAuthnChallengeResponseRequest'
-          ak-stage-captcha: '#/components/schemas/CaptchaChallengeResponseRequest'
-          ak-stage-consent: '#/components/schemas/ConsentChallengeResponseRequest'
-          ak-stage-dummy: '#/components/schemas/DummyChallengeResponseRequest'
-          ak-stage-email: '#/components/schemas/EmailChallengeResponseRequest'
-          ak-stage-identification: '#/components/schemas/IdentificationChallengeResponseRequest'
-          ak-stage-password: '#/components/schemas/PasswordChallengeResponseRequest'
-          ak-stage-prompt: '#/components/schemas/PromptResponseChallengeRequest'
     ClientTypeEnum:
       enum:
       - confidential
@@ -16796,6 +16792,39 @@ components:
       - slug
       - stages
       - title
+    FlowChallengeResponseRequest:
+      oneOf:
+      - $ref: '#/components/schemas/AuthenticatorDuoChallengeResponseRequest'
+      - $ref: '#/components/schemas/AuthenticatorStaticChallengeResponseRequest'
+      - $ref: '#/components/schemas/AuthenticatorTOTPChallengeResponseRequest'
+      - $ref: '#/components/schemas/AuthenticatorValidationChallengeResponseRequest'
+      - $ref: '#/components/schemas/AuthenticatorWebAuthnChallengeResponseRequest'
+      - $ref: '#/components/schemas/AutoSubmitChallengeResponseRequest'
+      - $ref: '#/components/schemas/CaptchaChallengeResponseRequest'
+      - $ref: '#/components/schemas/ConsentChallengeResponseRequest'
+      - $ref: '#/components/schemas/DummyChallengeResponseRequest'
+      - $ref: '#/components/schemas/EmailChallengeResponseRequest'
+      - $ref: '#/components/schemas/IdentificationChallengeResponseRequest'
+      - $ref: '#/components/schemas/PasswordChallengeResponseRequest'
+      - $ref: '#/components/schemas/PlexAuthenticationChallengeResponseRequest'
+      - $ref: '#/components/schemas/PromptResponseChallengeRequest'
+      discriminator:
+        propertyName: component
+        mapping:
+          ak-stage-authenticator-duo: '#/components/schemas/AuthenticatorDuoChallengeResponseRequest'
+          ak-stage-authenticator-static: '#/components/schemas/AuthenticatorStaticChallengeResponseRequest'
+          ak-stage-authenticator-totp: '#/components/schemas/AuthenticatorTOTPChallengeResponseRequest'
+          ak-stage-authenticator-validate: '#/components/schemas/AuthenticatorValidationChallengeResponseRequest'
+          ak-stage-authenticator-webauthn: '#/components/schemas/AuthenticatorWebAuthnChallengeResponseRequest'
+          ak-stage-autosubmit: '#/components/schemas/AutoSubmitChallengeResponseRequest'
+          ak-stage-captcha: '#/components/schemas/CaptchaChallengeResponseRequest'
+          ak-stage-consent: '#/components/schemas/ConsentChallengeResponseRequest'
+          ak-stage-dummy: '#/components/schemas/DummyChallengeResponseRequest'
+          ak-stage-email: '#/components/schemas/EmailChallengeResponseRequest'
+          ak-stage-identification: '#/components/schemas/IdentificationChallengeResponseRequest'
+          ak-stage-password: '#/components/schemas/PasswordChallengeResponseRequest'
+          ak-flow-sources-plex: '#/components/schemas/PlexAuthenticationChallengeResponseRequest'
+          ak-stage-prompt: '#/components/schemas/PromptResponseChallengeRequest'
     FlowDesignationEnum:
       enum:
       - authentication
@@ -22612,6 +22641,13 @@ components:
       - client_id
       - slug
       - type
+    PlexAuthenticationChallengeResponseRequest:
+      type: object
+      description: Pseudo class for plex response
+      properties:
+        component:
+          type: string
+          default: ak-flow-sources-plex
     PlexSource:
       type: object
       description: Plex Source Serializer

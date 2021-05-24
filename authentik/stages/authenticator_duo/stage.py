@@ -28,8 +28,16 @@ class AuthenticatorDuoChallenge(WithUserInfoChallenge):
     component = CharField(default="ak-stage-authenticator-duo")
 
 
+class AuthenticatorDuoChallengeResponse(ChallengeResponse):
+    """Pseudo class for duo response"""
+
+    component = CharField(default="ak-stage-authenticator-duo")
+
+
 class AuthenticatorDuoStageView(ChallengeStageView):
     """Duo stage"""
+
+    response_class = AuthenticatorDuoChallengeResponse
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         user = self.get_pending_user()

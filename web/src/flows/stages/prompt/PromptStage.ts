@@ -14,7 +14,7 @@ import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import "../../../elements/Divider";
 import { Error } from "../../../api/Flows";
-import { Prompt, PromptChallenge } from "authentik-api";
+import { Prompt, PromptChallenge, StagePrompt } from "authentik-api";
 
 
 @customElement("ak-stage-prompt")
@@ -27,7 +27,7 @@ export class PromptStage extends BaseStage {
         return [PFBase, PFLogin, PFAlert, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
     }
 
-    renderPromptInner(prompt: Prompt): string {
+    renderPromptInner(prompt: StagePrompt): string {
         switch (prompt.type) {
             case "text":
                 return `<input

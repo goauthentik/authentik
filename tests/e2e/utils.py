@@ -136,13 +136,13 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         )
 
         identification_stage.find_element(
-            By.CSS_SELECTOR, "input[name=uid_field]"
+            By.CSS_SELECTOR, "input[name=uidField]"
         ).click()
         identification_stage.find_element(
-            By.CSS_SELECTOR, "input[name=uid_field]"
+            By.CSS_SELECTOR, "input[name=uidField]"
         ).send_keys(USER().username)
         identification_stage.find_element(
-            By.CSS_SELECTOR, "input[name=uid_field]"
+            By.CSS_SELECTOR, "input[name=uidField]"
         ).send_keys(Keys.ENTER)
 
         flow_executor = self.get_shadow_root("ak-flow-executor")

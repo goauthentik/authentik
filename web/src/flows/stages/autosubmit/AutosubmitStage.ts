@@ -40,7 +40,7 @@ export class AutosubmitStage extends BaseStage {
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form" action="${this.challenge.url}" method="POST">
                     ${Object.entries(this.challenge.attrs).map(([ key, value ]) => {
-                        return html`<input type="hidden" .name="${key}" .value="${value}">`;
+                        return html`<input type="hidden" name="${key as string}" value="${value as string}">`;
                     })}
                     <ak-empty-state
                         ?loading="${true}">
