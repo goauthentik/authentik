@@ -3520,7 +3520,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Challenge'
+                $ref: '#/components/schemas/FlowChallengeRequest'
           description: ''
         '404':
           description: No Token found
@@ -3566,7 +3566,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Challenge'
+                $ref: '#/components/schemas/FlowChallengeRequest'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
@@ -15865,45 +15865,6 @@ components:
       required:
       - certificate_data
       - name
-    Challenge:
-      oneOf:
-      - $ref: '#/components/schemas/AccessDeniedChallenge'
-      - $ref: '#/components/schemas/AuthenticatorDuoChallenge'
-      - $ref: '#/components/schemas/AuthenticatorStaticChallenge'
-      - $ref: '#/components/schemas/AuthenticatorTOTPChallenge'
-      - $ref: '#/components/schemas/AuthenticatorValidationChallenge'
-      - $ref: '#/components/schemas/AuthenticatorWebAuthnChallenge'
-      - $ref: '#/components/schemas/AutosubmitChallenge'
-      - $ref: '#/components/schemas/CaptchaChallenge'
-      - $ref: '#/components/schemas/ConsentChallenge'
-      - $ref: '#/components/schemas/DummyChallenge'
-      - $ref: '#/components/schemas/EmailChallenge'
-      - $ref: '#/components/schemas/IdentificationChallenge'
-      - $ref: '#/components/schemas/PasswordChallenge'
-      - $ref: '#/components/schemas/PlexAuthenticationChallenge'
-      - $ref: '#/components/schemas/PromptChallenge'
-      - $ref: '#/components/schemas/RedirectChallenge'
-      - $ref: '#/components/schemas/ShellChallenge'
-      discriminator:
-        propertyName: component
-        mapping:
-          ak-stage-access-denied: '#/components/schemas/AccessDeniedChallenge'
-          ak-stage-authenticator-duo: '#/components/schemas/AuthenticatorDuoChallenge'
-          ak-stage-authenticator-static: '#/components/schemas/AuthenticatorStaticChallenge'
-          ak-stage-authenticator-totp: '#/components/schemas/AuthenticatorTOTPChallenge'
-          ak-stage-authenticator-validate: '#/components/schemas/AuthenticatorValidationChallenge'
-          ak-stage-authenticator-webauthn: '#/components/schemas/AuthenticatorWebAuthnChallenge'
-          ak-stage-autosubmit: '#/components/schemas/AutosubmitChallenge'
-          ak-stage-captcha: '#/components/schemas/CaptchaChallenge'
-          ak-stage-consent: '#/components/schemas/ConsentChallenge'
-          ak-stage-dummy: '#/components/schemas/DummyChallenge'
-          ak-stage-email: '#/components/schemas/EmailChallenge'
-          ak-stage-identification: '#/components/schemas/IdentificationChallenge'
-          ak-stage-password: '#/components/schemas/PasswordChallenge'
-          ak-flow-sources-plex: '#/components/schemas/PlexAuthenticationChallenge'
-          ak-stage-prompt: '#/components/schemas/PromptChallenge'
-          xak-flow-redirect: '#/components/schemas/RedirectChallenge'
-          xak-flow-shell: '#/components/schemas/ShellChallenge'
     ChallengeChoices:
       enum:
       - native
@@ -16792,6 +16753,45 @@ components:
       - slug
       - stages
       - title
+    FlowChallengeRequest:
+      oneOf:
+      - $ref: '#/components/schemas/AccessDeniedChallenge'
+      - $ref: '#/components/schemas/AuthenticatorDuoChallenge'
+      - $ref: '#/components/schemas/AuthenticatorStaticChallenge'
+      - $ref: '#/components/schemas/AuthenticatorTOTPChallenge'
+      - $ref: '#/components/schemas/AuthenticatorValidationChallenge'
+      - $ref: '#/components/schemas/AuthenticatorWebAuthnChallenge'
+      - $ref: '#/components/schemas/AutosubmitChallenge'
+      - $ref: '#/components/schemas/CaptchaChallenge'
+      - $ref: '#/components/schemas/ConsentChallenge'
+      - $ref: '#/components/schemas/DummyChallenge'
+      - $ref: '#/components/schemas/EmailChallenge'
+      - $ref: '#/components/schemas/IdentificationChallenge'
+      - $ref: '#/components/schemas/PasswordChallenge'
+      - $ref: '#/components/schemas/PlexAuthenticationChallenge'
+      - $ref: '#/components/schemas/PromptChallenge'
+      - $ref: '#/components/schemas/RedirectChallenge'
+      - $ref: '#/components/schemas/ShellChallenge'
+      discriminator:
+        propertyName: component
+        mapping:
+          ak-stage-access-denied: '#/components/schemas/AccessDeniedChallenge'
+          ak-stage-authenticator-duo: '#/components/schemas/AuthenticatorDuoChallenge'
+          ak-stage-authenticator-static: '#/components/schemas/AuthenticatorStaticChallenge'
+          ak-stage-authenticator-totp: '#/components/schemas/AuthenticatorTOTPChallenge'
+          ak-stage-authenticator-validate: '#/components/schemas/AuthenticatorValidationChallenge'
+          ak-stage-authenticator-webauthn: '#/components/schemas/AuthenticatorWebAuthnChallenge'
+          ak-stage-autosubmit: '#/components/schemas/AutosubmitChallenge'
+          ak-stage-captcha: '#/components/schemas/CaptchaChallenge'
+          ak-stage-consent: '#/components/schemas/ConsentChallenge'
+          ak-stage-dummy: '#/components/schemas/DummyChallenge'
+          ak-stage-email: '#/components/schemas/EmailChallenge'
+          ak-stage-identification: '#/components/schemas/IdentificationChallenge'
+          ak-stage-password: '#/components/schemas/PasswordChallenge'
+          ak-flow-sources-plex: '#/components/schemas/PlexAuthenticationChallenge'
+          ak-stage-prompt: '#/components/schemas/PromptChallenge'
+          xak-flow-redirect: '#/components/schemas/RedirectChallenge'
+          xak-flow-shell: '#/components/schemas/ShellChallenge'
     FlowChallengeResponseRequest:
       oneOf:
       - $ref: '#/components/schemas/AuthenticatorDuoChallengeResponseRequest'

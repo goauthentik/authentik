@@ -150,9 +150,9 @@ func (pi *ProviderInstance) solveFlowChallenge(bindDN string, password string, c
 	responseReq := client.FlowsApi.FlowsExecutorSolve(context.Background(), pi.flowSlug).Query(urlParams)
 	switch ch.GetComponent() {
 	case "ak-stage-identification":
-		responseReq = responseReq.ChallengeResponseRequest(api.IdentificationChallengeResponseRequestAsChallengeResponseRequest(api.NewIdentificationChallengeResponseRequest(bindDN)))
+		responseReq = responseReq.FlowChallengeResponseRequest(api.IdentificationChallengeResponseRequestAsFlowChallengeResponseRequest(api.NewIdentificationChallengeResponseRequest(bindDN)))
 	case "ak-stage-password":
-		responseReq = responseReq.ChallengeResponseRequest(api.PasswordChallengeResponseRequestAsChallengeResponseRequest(api.NewPasswordChallengeResponseRequest(password)))
+		responseReq = responseReq.FlowChallengeResponseRequest(api.PasswordChallengeResponseRequestAsFlowChallengeResponseRequest(api.NewPasswordChallengeResponseRequest(password)))
 	case "ak-stage-authenticator-validate":
 		// We only support duo as authenticator, check if that's allowed
 		var deviceChallenge *api.DeviceChallenge
@@ -171,7 +171,7 @@ func (pi *ProviderInstance) solveFlowChallenge(bindDN string, password string, c
 		devId32 := int32(devId)
 		inner := api.NewAuthenticatorValidationChallengeResponseRequest()
 		inner.Duo = &devId32
-		responseReq = responseReq.ChallengeResponseRequest(api.AuthenticatorValidationChallengeResponseRequestAsChallengeResponseRequest(inner))
+		responseReq = responseReq.FlowChallengeResponseRequest(api.AuthenticatorValidationChallengeResponseRequestAsFlowChallengeResponseRequest(inner))
 	case "ak-stage-access-denied":
 		return false, errors.New("got ak-stage-access-denied")
 	default:

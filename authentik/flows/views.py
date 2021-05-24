@@ -171,7 +171,7 @@ class FlowExecutorView(APIView):
     @extend_schema(
         responses={
             200: PolymorphicProxySerializer(
-                component_name="Challenge",
+                component_name="FlowChallengeRequest",
                 serializers=challenge_types(),
                 resource_type_field_name="component",
             ),
@@ -209,7 +209,7 @@ class FlowExecutorView(APIView):
     @extend_schema(
         responses={
             200: PolymorphicProxySerializer(
-                component_name="Challenge",
+                component_name="FlowChallengeRequest",
                 serializers=challenge_types(),
                 resource_type_field_name="component",
             ),

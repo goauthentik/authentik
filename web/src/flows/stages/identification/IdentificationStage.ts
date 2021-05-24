@@ -10,7 +10,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import AKGlobal from "../../../authentik.css";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
-import { Challenge, IdentificationChallenge, IdentificationChallengeResponseRequest, UILoginButton } from "authentik-api";
+import { IdentificationChallenge, IdentificationChallengeResponseRequest, UILoginButton } from "authentik-api";
+import { FlowChallengeRequest } from "authentik-api/src/models/FlowChallengeRequest";
 
 export const PasswordManagerPrefill: {
     password: string | undefined;
@@ -116,7 +117,7 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
         return html`<li class="pf-c-login__main-footer-links-item">
                 <button type="button" @click=${() => {
                     if (!this.host) return;
-                    this.host.challenge = source.challenge as Challenge;
+                    this.host.challenge = source.challenge as FlowChallengeRequest;
                 }}>
                     ${icon}
                 </button>
