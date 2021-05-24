@@ -160,7 +160,7 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
                 label=${label}
                 ?required="${true}"
                 class="pf-c-form__group"
-                .errors=${(this.challenge?.responseErrors || {})["uidField"]}>
+                .errors=${(this.challenge?.responseErrors || {})["uid_field"]}>
                 <!-- @ts-ignore -->
                 <input type=${type}
                     name="uidField"

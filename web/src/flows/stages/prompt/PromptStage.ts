@@ -108,16 +108,16 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
             return html``;
         }
         return html`<div class="pf-c-form__alert">
-        ${errors.map(err => {
-            return html`<div class="pf-c-alert pf-m-inline pf-m-danger">
-                <div class="pf-c-alert__icon">
-                    <i class="fas fa-exclamation-circle"></i>
-                </div>
-                <h4 class="pf-c-alert__title">
-                    ${err.string}
-                </h4>
-            </div>`;
-        })}
+            ${errors.map(err => {
+                return html`<div class="pf-c-alert pf-m-inline pf-m-danger">
+                    <div class="pf-c-alert__icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <h4 class="pf-c-alert__title">
+                        ${err.string}
+                    </h4>
+                </div>`;
+            })}
         </div>`;
     }
 

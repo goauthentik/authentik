@@ -23321,6 +23321,7 @@ components:
         component:
           type: string
           default: ak-stage-prompt
+      additionalProperties: {}
     PromptRequest:
       type: object
       description: Prompt Serializer
