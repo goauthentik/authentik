@@ -9,7 +9,8 @@ import (
 
 func AKAttrsToLDAP(attrs interface{}) []*ldap.EntryAttribute {
 	attrList := []*ldap.EntryAttribute{}
-	for attrKey, attrValue := range attrs.(map[string]interface{}) {
+	a := attrs.(*map[string]interface{})
+	for attrKey, attrValue := range *a {
 		entry := &ldap.EntryAttribute{Name: attrKey}
 		switch t := attrValue.(type) {
 		case []string:

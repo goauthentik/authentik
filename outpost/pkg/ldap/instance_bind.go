@@ -53,8 +53,6 @@ func (pi *ProviderInstance) Bind(username string, bindDN, bindPW string, conn ne
 
 	// Create new http client that also sets the correct ip
 	config := api.NewConfiguration()
-	// Carry over the bearer authentication, so that failed login attempts are attributed to the outpost
-	config.DefaultHeader = pi.s.ac.Client.GetConfig().DefaultHeader
 	config.Host = pi.s.ac.Client.GetConfig().Host
 	config.Scheme = pi.s.ac.Client.GetConfig().Scheme
 	config.HTTPClient = &http.Client{
@@ -76,7 +74,7 @@ func (pi *ProviderInstance) Bind(username string, bindDN, bindPW string, conn ne
 	if !passed {
 		return ldap.LDAPResultInvalidCredentials, nil
 	}
-	r, err := pi.s.ac.Client.CoreApi.CoreApplicationsCheckAccessRetrieve(context.Background(), pi.appSlug).Execute()
+	r, err := apiClient.CoreApi.CoreApplicationsCheckAccessRetrieve(context.Background(), pi.appSlug).Execute()
 	if r.StatusCode == 403 {
 		pi.log.WithField("bindDN", bindDN).Info("Access denied for user")
 		return ldap.LDAPResultInsufficientAccessRights, nil
@@ -87,7 +85,7 @@ func (pi *ProviderInstance) Bind(username string, bindDN, bindPW string, conn ne
 	}
 	pi.log.WithField("bindDN", bindDN).Info("User has access")
 	// Get user info to store in context
-	userInfo, _, err := pi.s.ac.Client.CoreApi.CoreUsersMeRetrieve(context.Background()).Execute()
+	userInfo, _, err := apiClient.CoreApi.CoreUsersMeRetrieve(context.Background()).Execute()
 	if err != nil {
 		pi.log.WithField("bindDN", bindDN).WithError(err).Warning("failed to get user info")
 		return ldap.LDAPResultOperationsError, nil
