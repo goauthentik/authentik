@@ -14,8 +14,7 @@ import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import "../../../elements/Divider";
 import { Error } from "../../../api/Flows";
-import { PromptChallenge, StagePrompt } from "authentik-api";
-import { PromptChallengeResponseRequest } from "authentik-api/src/models/PromptChallengeResponseRequest";
+import { PromptChallenge, PromptChallengeResponseRequest, StagePrompt } from "authentik-api";
 
 
 @customElement("ak-stage-prompt")

@@ -10,8 +10,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import AKGlobal from "../../../authentik.css";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
-import { IdentificationChallenge, IdentificationChallengeResponseRequest, UILoginButton } from "authentik-api";
-import { FlowChallengeRequest } from "authentik-api/src/models/FlowChallengeRequest";
+import { FlowChallengeRequest, IdentificationChallenge, IdentificationChallengeResponseRequest, UILoginButton } from "authentik-api";
 
 export const PasswordManagerPrefill: {
     password: string | undefined;

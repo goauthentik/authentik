@@ -26,16 +26,13 @@ import "./stages/password/PasswordStage";
 import "./stages/prompt/PromptStage";
 import "./sources/plex/PlexLoginInit";
 import { StageHost } from "./stages/base";
-import { ChallengeChoices, Config, FlowsApi, RedirectChallenge, ShellChallenge } from "authentik-api";
+import { ChallengeChoices, Config, FlowChallengeRequest, FlowChallengeResponseRequest, FlowsApi, RedirectChallenge, ShellChallenge } from "authentik-api";
 import { config, DEFAULT_CONFIG } from "../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
 import { PFSize } from "../elements/Spinner";
 import { TITLE_DEFAULT } from "../constants";
 import { configureSentry } from "../api/Sentry";
-import { FlowChallengeRequest } from "authentik-api/src/models/FlowChallengeRequest";
-import { FlowChallengeResponseRequest } from "authentik-api/src";
-
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement implements StageHost {
@@ -98,8 +95,9 @@ export class FlowExecutor extends LitElement implements StageHost {
     }
 
     submit(payload: FlowChallengeResponseRequest): Promise<void> {
+        if (!this.challenge) return Promise.reject();
         // @ts-ignore
-        payload.component = this.challenge?.component;
+        payload.component = this.challenge.component;
         this.loading = true;
         return new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
             flowSlug: this.flowSlug,

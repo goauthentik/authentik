@@ -1,4 +1,4 @@
-import { AccessDeniedChallenge } from "authentik-api";
+import { AccessDeniedChallenge, FlowChallengeResponseRequest } from "authentik-api";
 import { CSSResult, customElement, html, TemplateResult } from "lit-element";
 import { BaseStage } from "../stages/base";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -11,7 +11,6 @@ import AKGlobal from "../../authentik.css";
 import { t } from "@lingui/macro";
 
 import "../../elements/EmptyState";
-import { FlowChallengeResponseRequest } from "authentik-api/src";
 
 @customElement("ak-stage-access-denied")
 export class FlowAccessDenied extends BaseStage<AccessDeniedChallenge, FlowChallengeResponseRequest> {
