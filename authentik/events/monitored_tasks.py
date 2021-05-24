@@ -2,13 +2,21 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from timeit import default_timer
 from traceback import format_tb
 from typing import Any, Optional
 
 from celery import Task
 from django.core.cache import cache
+from prometheus_client import Gauge
 
 from authentik.events.models import Event, EventAction
+
+GAUGE_TASKS = Gauge(
+    "authentik_system_tasks",
+    "System tasks and their status",
+    ["task_name", "task_uid", "status"],
+)
 
 
 class TaskResultStatus(Enum):
@@ -43,7 +51,9 @@ class TaskInfo:
     """Info about a task run"""
 
     task_name: str
-    finish_timestamp: datetime
+    start_timestamp: float
+    finish_timestamp: float
+    finish_time: datetime
 
     result: TaskResult
 
@@ -73,12 +83,25 @@ class TaskInfo:
         """Delete task info from cache"""
         return cache.delete(f"task_{self.task_name}")
 
+    def set_prom_metrics(self):
+        """Update prometheus metrics"""
+        start = default_timer()
+        if hasattr(self, "start_timestamp"):
+            start = self.start_timestamp
+        duration = max(self.finish_timestamp - start, 0)
+        GAUGE_TASKS.labels(
+            task_name=self.task_name,
+            task_uid=self.result.uid or "",
+            status=self.result.status,
+        ).set(duration)
+
     def save(self, timeout_hours=6):
         """Save task into cache"""
         key = f"task_{self.task_name}"
         if self.result.uid:
             key += f"_{self.result.uid}"
             self.task_name += f"_{self.result.uid}"
+        self.set_prom_metrics()
         cache.set(key, self, timeout=timeout_hours * 60 * 60)
 
 
@@ -98,6 +121,7 @@ class MonitoredTask(Task):
         self._uid = None
         self._result = TaskResult(status=TaskResultStatus.ERROR, messages=[])
         self.result_timeout_hours = 6
+        self.start = default_timer()
 
     def set_uid(self, uid: str):
         """Set UID, so in the case of an unexpected error its saved correctly"""
@@ -117,7 +141,9 @@ class MonitoredTask(Task):
             TaskInfo(
                 task_name=self.__name__,
                 task_description=self.__doc__,
-                finish_timestamp=datetime.now(),
+                start_timestamp=self.start,
+                finish_timestamp=default_timer(),
+                finish_time=datetime.now(),
                 result=self._result,
                 task_call_module=self.__module__,
                 task_call_func=self.__name__,
@@ -133,7 +159,9 @@ class MonitoredTask(Task):
         TaskInfo(
             task_name=self.__name__,
             task_description=self.__doc__,
-            finish_timestamp=datetime.now(),
+            start_timestamp=self.start,
+            finish_timestamp=default_timer(),
+            finish_time=datetime.now(),
             result=self._result,
             task_call_module=self.__module__,
             task_call_func=self.__name__,
@@ -151,3 +179,7 @@ class MonitoredTask(Task):
 
     def run(self, *args, **kwargs):
         raise NotImplementedError
+
+
+for task in TaskInfo.all().values():
+    task.set_prom_metrics()

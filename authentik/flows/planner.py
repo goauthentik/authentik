@@ -4,6 +4,7 @@ from typing import Any, Optional
 
 from django.core.cache import cache
 from django.http import HttpRequest
+from prometheus_client import Histogram
 from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
@@ -14,6 +15,7 @@ from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableExce
 from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import Flow, FlowStageBinding, Stage
 from authentik.policies.engine import PolicyEngine
+from authentik.root.monitoring import UpdatingGauge
 
 LOGGER = get_logger()
 PLAN_CONTEXT_PENDING_USER = "pending_user"
@@ -21,6 +23,16 @@ PLAN_CONTEXT_SSO = "is_sso"
 PLAN_CONTEXT_REDIRECT = "redirect"
 PLAN_CONTEXT_APPLICATION = "application"
 PLAN_CONTEXT_SOURCE = "source"
+GAUGE_FLOWS_CACHED = UpdatingGauge(
+    "authentik_flows_cached",
+    "Cached flows",
+    update_func=lambda: len(cache.keys("flow_*")),
+)
+HIST_FLOWS_PLAN_TIME = Histogram(
+    "authentik_flows_plan_time",
+    "Duration to build a plan for a flow",
+    ["flow_slug"],
+)
 
 
 def cache_key(flow: Flow, user: Optional[User] = None) -> str:
@@ -146,6 +158,7 @@ class FlowPlanner:
             )
             plan = self._build_plan(user, request, default_context)
             cache.set(cache_key(self.flow, user), plan)
+            GAUGE_FLOWS_CACHED.update()
             if not plan.stages and not self.allow_empty_flows:
                 raise EmptyFlowException()
             return plan
@@ -158,7 +171,9 @@ class FlowPlanner:
     ) -> FlowPlan:
         """Build flow plan by checking each stage in their respective
         order and checking the applied policies"""
-        with Hub.current.start_span(op="flow.planner.build_plan") as span:
+        with Hub.current.start_span(
+            op="flow.planner.build_plan"
+        ) as span, HIST_FLOWS_PLAN_TIME.labels(flow_slug=self.flow.slug).time():
             span: Span
             span.set_data("flow", self.flow)
             span.set_data("user", user)
@@ -202,6 +217,7 @@ class FlowPlanner:
                     marker = ReevaluateMarker(binding=binding, user=user)
                 if stage:
                     plan.append(stage, marker)
+            HIST_FLOWS_PLAN_TIME.labels(flow_slug=self.flow.slug)
         self._logger.debug(
             "f(plan): finished building",
         )

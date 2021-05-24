@@ -5,6 +5,7 @@ from typing import Iterator, Optional
 
 from django.core.cache import cache
 from django.http import HttpRequest
+from prometheus_client import Histogram
 from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
@@ -18,8 +19,19 @@ from authentik.policies.models import (
 )
 from authentik.policies.process import PolicyProcess, cache_key
 from authentik.policies.types import PolicyRequest, PolicyResult
+from authentik.root.monitoring import UpdatingGauge
 
 CURRENT_PROCESS = current_process()
+GAUGE_POLICIES_CACHED = UpdatingGauge(
+    "authentik_policies_cached",
+    "Cached Policies",
+    update_func=lambda: len(cache.keys("policy_*")),
+)
+HIST_POLICIES_BUILD_TIME = Histogram(
+    "authentik_policies_build_time",
+    "Execution times complete policy result to an object",
+    ["object_name", "object_type", "user"],
+)
 
 
 class PolicyProcessInfo:
@@ -92,7 +104,13 @@ class PolicyEngine:
 
     def build(self) -> "PolicyEngine":
         """Build wrapper which monitors performance"""
-        with Hub.current.start_span(op="policy.engine.build") as span:
+        with Hub.current.start_span(
+            op="policy.engine.build"
+        ) as span, HIST_POLICIES_BUILD_TIME.labels(
+            object_name=self.__pbm,
+            object_type=f"{self.__pbm._meta.app_label}.{self.__pbm._meta.model_name}",
+            user=self.request.user,
+        ).time():
             span: Span
             span.set_data("pbm", self.__pbm)
             span.set_data("request", self.request)

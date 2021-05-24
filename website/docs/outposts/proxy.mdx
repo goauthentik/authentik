@@ -90,6 +90,7 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/auth-url: http://*external host that you configured in authentik*:4180/akprox/auth?nginx
     nginx.ingress.kubernetes.io/auth-signin: http://*external host that you configured in authentik*:4180/akprox/start?rd=$escaped_request_uri
+    nginx.ingress.kubernetes.io/auth-response-headers: X-Auth-Username,X-Forwarded-Email,X-Forwarded-Preferred-Username,X-Forwarded-User
     nginx.ingress.kubernetes.io/auth-snippet: |
        proxy_set_header X-Forwarded-Host $http_host;
 ```
