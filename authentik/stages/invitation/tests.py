@@ -89,7 +89,11 @@ class TestUserLoginStage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
+            {
+                "component": "xak-flow-redirect",
+                "to": reverse("authentik_core:root-redirect"),
+                "type": ChallengeTypes.REDIRECT.value,
+            },
         )
 
         self.stage.continue_flow_without_invitation = False
@@ -123,7 +127,11 @@ class TestUserLoginStage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
+            {
+                "component": "xak-flow-redirect",
+                "to": reverse("authentik_core:root-redirect"),
+                "type": ChallengeTypes.REDIRECT.value,
+            },
         )
 
     def test_with_invitation_prompt_data(self):
@@ -154,7 +162,11 @@ class TestUserLoginStage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
+            {
+                "component": "xak-flow-redirect",
+                "to": reverse("authentik_core:root-redirect"),
+                "type": ChallengeTypes.REDIRECT.value,
+            },
         )
         self.assertFalse(Invitation.objects.filter(pk=invite.pk))
 

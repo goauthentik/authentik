@@ -86,6 +86,7 @@ class IdentificationStageView(ChallengeStageView):
             data={
                 "type": ChallengeTypes.NATIVE.value,
                 "primary_action": _("Log in"),
+                "component": "ak-stage-identification",
                 "user_fields": current_stage.user_fields,
             }
         )

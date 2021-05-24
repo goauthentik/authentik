@@ -49,7 +49,11 @@ class TestUserLoginStage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
+            {
+                "component": "xak-flow-redirect",
+                "to": reverse("authentik_core:root-redirect"),
+                "type": ChallengeTypes.REDIRECT.value,
+            },
         )
 
     def test_expiry(self):
@@ -70,7 +74,11 @@ class TestUserLoginStage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
+            {
+                "component": "xak-flow-redirect",
+                "to": reverse("authentik_core:root-redirect"),
+                "type": ChallengeTypes.REDIRECT.value,
+            },
         )
         self.assertNotEqual(list(self.client.session.keys()), [])
         sleep(3)

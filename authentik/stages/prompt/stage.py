@@ -51,9 +51,11 @@ class PromptResponseChallenge(ChallengeResponse):
     component = CharField(default="ak-stage-prompt")
 
     def __init__(self, *args, **kwargs):
+        stage: PromptStage = kwargs.pop("stage", None)
+        plan: FlowPlan = kwargs.pop("plan", None)
         super().__init__(*args, **kwargs)
-        self.stage: PromptStage = kwargs.pop("stage", None)
-        self.plan: FlowPlan = kwargs.pop("plan", None)
+        self.stage = stage
+        self.plan = plan
         if not self.stage:
             return
         # list() is called so we only load the fields once

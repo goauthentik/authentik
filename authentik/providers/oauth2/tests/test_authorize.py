@@ -194,6 +194,7 @@ class TestAuthorize(OAuthTestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
+                "component": "xak-flow-redirect",
                 "type": ChallengeTypes.REDIRECT.value,
                 "to": f"foo://localhost?code={code.code}&state={state}",
             },
@@ -232,6 +233,7 @@ class TestAuthorize(OAuthTestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
+                "component": "xak-flow-redirect",
                 "type": ChallengeTypes.REDIRECT.value,
                 "to": (
                     f"http://localhost#access_token={token.access_token}"
