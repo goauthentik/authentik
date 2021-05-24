@@ -1,4 +1,4 @@
-import { Challenge } from "authentik-api";
+import { AccessDeniedChallenge } from "authentik-api";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { BaseStage } from "../stages/base";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -11,10 +11,6 @@ import AKGlobal from "../../authentik.css";
 import { t } from "@lingui/macro";
 
 import "../../elements/EmptyState";
-
-export interface AccessDeniedChallenge extends Challenge {
-    error_message?: string;
-}
 
 @customElement("ak-stage-access-denied")
 export class FlowAccessDenied extends BaseStage {
@@ -45,9 +41,9 @@ export class FlowAccessDenied extends BaseStage {
                             <i class="pf-icon pf-icon-error-circle-o"></i>
                             ${t`Request has been denied.`}
                         </p>
-                        ${this.challenge?.error_message &&
+                        ${this.challenge?.errorMessage &&
                             html`<hr>
-                            <p>${this.challenge.error_message}</p>`}
+                            <p>${this.challenge.errorMessage}</p>`}
                     </div>
                 </form>
             </div>

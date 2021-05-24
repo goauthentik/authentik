@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
+from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
@@ -28,10 +29,14 @@ PLAN_CONTEXT_EMAIL_SENT = "email_sent"
 class EmailChallenge(Challenge):
     """Email challenge"""
 
+    component = CharField(default="ak-stage-email")
+
 
 class EmailChallengeResponse(ChallengeResponse):
     """Email challenge resposen. No fields. This challenge is
     always declared invalid to give the user a chance to retry"""
+
+    component = CharField(default="ak-stage-email")
 
     def validate(self, data):
         raise ValidationError("")
@@ -97,7 +102,6 @@ class EmailStageView(ChallengeStageView):
         challenge = EmailChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-email",
                 "title": "Email sent.",
             }
         )

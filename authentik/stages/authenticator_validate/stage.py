@@ -30,18 +30,20 @@ LOGGER = get_logger()
 PER_DEVICE_CLASSES = [DeviceClasses.WEBAUTHN]
 
 
-class AuthenticatorChallenge(WithUserInfoChallenge):
+class AuthenticatorValidationChallenge(WithUserInfoChallenge):
     """Authenticator challenge"""
 
     device_challenges = ListField(child=DeviceChallenge())
+    component = CharField(default="ak-stage-authenticator-validate")
 
 
-class AuthenticatorChallengeResponse(ChallengeResponse):
+class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     """Challenge used for Code-based and WebAuthn authenticators"""
 
     code = CharField(required=False)
     webauthn = JSONField(required=False)
     duo = IntegerField(required=False)
+    component = CharField(default="ak-stage-authenticator-validate")
 
     def _challenge_allowed(self, classes: list):
         device_challenges: list[dict] = self.stage.request.session.get(
@@ -83,7 +85,7 @@ class AuthenticatorChallengeResponse(ChallengeResponse):
 class AuthenticatorValidateStageView(ChallengeStageView):
     """Authenticator Validation"""
 
-    response_class = AuthenticatorChallengeResponse
+    response_class = AuthenticatorValidationChallengeResponse
 
     def get_device_challenges(self) -> list[dict]:
         """Get a list of all device challenges applicable for the current stage"""
@@ -144,19 +146,18 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 return self.executor.stage_ok()
         return super().get(request, *args, **kwargs)
 
-    def get_challenge(self) -> AuthenticatorChallenge:
+    def get_challenge(self) -> AuthenticatorValidationChallenge:
         challenges = self.request.session["device_challenges"]
-        return AuthenticatorChallenge(
+        return AuthenticatorValidationChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-authenticator-validate",
                 "device_challenges": challenges,
             }
         )
 
     # pylint: disable=unused-argument
     def challenge_valid(
-        self, challenge: AuthenticatorChallengeResponse
+        self, challenge: AuthenticatorValidationChallengeResponse
     ) -> HttpResponse:
         # All validation is done by the serializer
         return self.executor.stage_ok()

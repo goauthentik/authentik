@@ -21,12 +21,14 @@ class CaptchaChallenge(WithUserInfoChallenge):
     """Site public key"""
 
     site_key = CharField()
+    component = CharField(default="ak-stage-captcha")
 
 
 class CaptchaChallengeResponse(ChallengeResponse):
     """Validate captcha token"""
 
     token = CharField()
+    component = CharField(default="ak-stage-captcha")
 
     def validate_token(self, token: str) -> str:
         """Validate captcha token"""
@@ -64,7 +66,6 @@ class CaptchaStageView(ChallengeStageView):
         return CaptchaChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-captcha",
                 "site_key": self.executor.current_stage.public_key,
             }
         )

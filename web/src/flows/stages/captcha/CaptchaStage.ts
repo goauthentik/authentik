@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import { WithUserInfoChallenge } from "../../../api/Flows";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -14,10 +13,7 @@ import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import "../../FormStatic";
 import { FlowURLManager } from "../../../api/legacy";
-
-export interface CaptchaChallenge extends WithUserInfoChallenge {
-    site_key: string;
-}
+import { CaptchaChallenge } from "authentik-api";
 
 @customElement("ak-stage-captcha")
 export class CaptchaStage extends BaseStage {
@@ -39,10 +35,10 @@ export class CaptchaStage extends BaseStage {
         script.onload = () => {
             console.debug("authentik/stages/captcha: script loaded");
             grecaptcha.ready(() => {
-                if (!this.challenge?.site_key) return;
+                if (!this.challenge?.siteKey) return;
                 console.debug("authentik/stages/captcha: ready");
                 const captchaId = grecaptcha.render(captchaContainer, {
-                    sitekey: this.challenge.site_key,
+                    sitekey: this.challenge.siteKey,
                     callback: (token) => {
                         this.host?.submit({
                             "token": token,
@@ -72,8 +68,8 @@ export class CaptchaStage extends BaseStage {
                 <form class="pf-c-form">
                     <ak-form-static
                         class="pf-c-form__group"
-                        userAvatar="${this.challenge.pending_user_avatar}"
-                        user=${this.challenge.pending_user}>
+                        userAvatar="${this.challenge.pendingUserAvatar}"
+                        user=${this.challenge.pendingUser}>
                         <div slot="link">
                             <a href="${FlowURLManager.cancel()}">${t`Not you?`}</a>
                         </div>

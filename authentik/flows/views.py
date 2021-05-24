@@ -11,7 +11,12 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import View
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    OpenApiResponse,
+    PolymorphicProxySerializer,
+    extend_schema,
+)
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from sentry_sdk import capture_exception
@@ -22,10 +27,12 @@ from authentik.events.models import cleanse_dict
 from authentik.flows.challenge import (
     AccessDeniedChallenge,
     Challenge,
+    ChallengeResponse,
     ChallengeTypes,
     HttpChallengeResponse,
     RedirectChallenge,
     ShellChallenge,
+    WithUserInfoChallenge,
 )
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.models import ConfigurableStage, Flow, FlowDesignation, Stage
@@ -35,7 +42,7 @@ from authentik.flows.planner import (
     FlowPlan,
     FlowPlanner,
 )
-from authentik.lib.utils.reflection import class_to_path
+from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
 
 LOGGER = get_logger()
@@ -44,6 +51,43 @@ NEXT_ARG_NAME = "next"
 SESSION_KEY_PLAN = "authentik_flows_plan"
 SESSION_KEY_APPLICATION_PRE = "authentik_flows_application_pre"
 SESSION_KEY_GET = "authentik_flows_get"
+
+
+def challenge_types():
+    """This is a workaround for PolymorphicProxySerializer not accepting a callable for
+    `serializers`. This function returns a class which is an iterator, which returns the
+    subclasses of Challenge, and Challenge itself."""
+
+    class Inner(dict):
+        """dummy class with custom callback on .items()"""
+
+        def items(self):
+            mapping = {}
+            classes = all_subclasses(Challenge)
+            classes.remove(WithUserInfoChallenge)
+            for cls in classes:
+                mapping[cls().fields["component"].default] = cls
+            return mapping.items()
+
+    return Inner()
+
+
+def challenge_response_types():
+    """This is a workaround for PolymorphicProxySerializer not accepting a callable for
+    `serializers`. This function returns a class which is an iterator, which returns the
+    subclasses of Challenge, and Challenge itself."""
+
+    class Inner(dict):
+        """dummy class with custom callback on .items()"""
+
+        def items(self):
+            mapping = {}
+            classes = all_subclasses(ChallengeResponse)
+            for cls in classes:
+                mapping[cls(stage=None).fields["component"].default] = cls
+            return mapping.items()
+
+    return Inner()
 
 
 @method_decorator(xframe_options_sameorigin, name="dispatch")
@@ -126,7 +170,11 @@ class FlowExecutorView(APIView):
 
     @extend_schema(
         responses={
-            200: Challenge(),
+            200: PolymorphicProxySerializer(
+                component_name="Challenge",
+                serializers=challenge_types(),
+                resource_type_field_name="component",
+            ),
             404: OpenApiResponse(
                 description="No Token found"
             ),  # This error can be raised by the email stage
@@ -159,8 +207,18 @@ class FlowExecutorView(APIView):
             return to_stage_response(request, FlowErrorResponse(request, exc))
 
     @extend_schema(
-        responses={200: Challenge()},
-        request=OpenApiTypes.OBJECT,
+        responses={
+            200: PolymorphicProxySerializer(
+                component_name="Challenge",
+                serializers=challenge_types(),
+                resource_type_field_name="component",
+            ),
+        },
+        request=PolymorphicProxySerializer(
+            component_name="ChallengeResponse",
+            serializers=challenge_response_types(),
+            resource_type_field_name="component",
+        ),
         parameters=[
             OpenApiParameter(
                 name="query",

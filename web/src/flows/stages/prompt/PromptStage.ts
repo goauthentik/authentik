@@ -13,20 +13,9 @@ import { BaseStage } from "../base";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import "../../../elements/Divider";
-import { Challenge, Error } from "../../../api/Flows";
+import { Error } from "../../../api/Flows";
+import { Prompt, PromptChallenge } from "authentik-api";
 
-export interface Prompt {
-    field_key: string;
-    label: string;
-    type: string;
-    required: boolean;
-    placeholder: string;
-    order: number;
-}
-
-export interface PromptChallenge extends Challenge {
-    fields: Prompt[];
-}
 
 @customElement("ak-stage-prompt")
 export class PromptStage extends BaseStage {
@@ -43,7 +32,7 @@ export class PromptStage extends BaseStage {
             case "text":
                 return `<input
                     type="text"
-                    name="${prompt.field_key}"
+                    name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     autocomplete="off"
                     class="pf-c-form-control"
@@ -52,7 +41,7 @@ export class PromptStage extends BaseStage {
             case "username":
                 return `<input
                     type="text"
-                    name="${prompt.field_key}"
+                    name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     autocomplete="username"
                     class="pf-c-form-control"
@@ -61,7 +50,7 @@ export class PromptStage extends BaseStage {
             case "email":
                 return `<input
                     type="email"
-                    name="${prompt.field_key}"
+                    name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}
@@ -69,7 +58,7 @@ export class PromptStage extends BaseStage {
             case "password":
                 return `<input
                     type="password"
-                    name="${prompt.field_key}"
+                    name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     autocomplete="new-password"
                     class="pf-c-form-control"
@@ -77,28 +66,28 @@ export class PromptStage extends BaseStage {
             case "number":
                 return `<input
                     type="number"
-                    name="${prompt.field_key}"
+                    name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
             case "checkbox":
                 return `<input
                     type="checkbox"
-                    name="${prompt.field_key}"
+                    name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
             case "date":
                 return `<input
                     type="date"
-                    name="${prompt.field_key}"
+                    name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
             case "date-time":
                 return `<input
                     type="datetime"
-                    name="${prompt.field_key}"
+                    name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
@@ -107,7 +96,7 @@ export class PromptStage extends BaseStage {
             case "hidden":
                 return `<input
                     type="hidden"
-                    name="${prompt.field_key}"
+                    name="${prompt.fieldKey}"
                     value="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
@@ -158,12 +147,12 @@ export class PromptStage extends BaseStage {
                             label="${prompt.label}"
                             ?required="${prompt.required}"
                             class="pf-c-form__group"
-                            .errors=${(this.challenge?.response_errors || {})[prompt.field_key]}>
+                            .errors=${(this.challenge?.responseErrors || {})[prompt.fieldKey]}>
                             ${unsafeHTML(this.renderPromptInner(prompt))}
                         </ak-form-element>`;
                     })}
-                    ${"non_field_errors" in (this.challenge?.response_errors || {}) ?
-                        this.renderNonFieldErrors(this.challenge?.response_errors?.non_field_errors || []):
+                    ${"non_field_errors" in (this.challenge?.responseErrors || {}) ?
+                        this.renderNonFieldErrors(this.challenge?.responseErrors?.non_field_errors || []):
                         html``}
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">

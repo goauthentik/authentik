@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import { WithUserInfoChallenge } from "../../../api/Flows";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -12,18 +11,8 @@ import { BaseStage } from "../base";
 import "../../../elements/EmptyState";
 import "../../FormStatic";
 import { FlowURLManager } from "../../../api/legacy";
+import { ConsentChallenge } from "authentik-api";
 
-export interface Permission {
-    name: string;
-    id: string;
-}
-
-export interface ConsentChallenge extends WithUserInfoChallenge {
-
-    header_text: string;
-    permissions?: Permission[];
-
-}
 
 @customElement("ak-stage-consent")
 export class ConsentStage extends BaseStage {
@@ -51,15 +40,15 @@ export class ConsentStage extends BaseStage {
                 <form class="pf-c-form" @submit=${(e: Event) => { this.submitForm(e); }}>
                     <ak-form-static
                         class="pf-c-form__group"
-                        userAvatar="${this.challenge.pending_user_avatar}"
-                        user=${this.challenge.pending_user}>
+                        userAvatar="${this.challenge.pendingUserAvatar}"
+                        user=${this.challenge.pendingUser}>
                         <div slot="link">
                             <a href="${FlowURLManager.cancel()}">${t`Not you?`}</a>
                         </div>
                     </ak-form-static>
                     <div class="pf-c-form__group">
                         <p id="header-text">
-                            ${this.challenge.header_text}
+                            ${this.challenge.headerText}
                         </p>
                         <p>${t`Application requires following permissions`}</p>
                         <ul class="pf-c-list" id="permmissions">

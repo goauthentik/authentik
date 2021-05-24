@@ -10,7 +10,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import AKGlobal from "../../../authentik.css";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
-import { Challenge } from "../../../api/Flows";
+import { IdentificationChallenge, UILoginButton } from "authentik-api";
 
 export const PasswordManagerPrefill: {
     password: string | undefined;
@@ -20,24 +20,6 @@ export const PasswordManagerPrefill: {
     totp: undefined,
 };
 
-export interface IdentificationChallenge extends Challenge {
-
-    user_fields?: string[];
-    primary_action: string;
-    sources?: UILoginButton[];
-
-    application_pre?: string;
-
-    enroll_url?: string;
-    recovery_url?: string;
-
-}
-
-export interface UILoginButton {
-    name: string;
-    challenge: Challenge;
-    icon_url?: string;
-}
 
 @customElement("ak-stage-identification")
 export class IdentificationStage extends BaseStage {
@@ -131,8 +113,8 @@ export class IdentificationStage extends BaseStage {
 
     renderSource(source: UILoginButton): TemplateResult {
         let icon = html`<i class="fas fas fa-share-square" title="${source.name}"></i>`;
-        if (source.icon_url) {
-            icon = html`<img src="${source.icon_url}" alt="${source.name}">`;
+        if (source.iconUrl) {
+            icon = html`<img src="${source.iconUrl}" alt="${source.name}">`;
         }
         return html`<li class="pf-c-login__main-footer-links-item">
                 <button type="button" @click=${() => {
@@ -145,18 +127,18 @@ export class IdentificationStage extends BaseStage {
     }
 
     renderFooter(): TemplateResult {
-        if (!this.challenge?.enroll_url && !this.challenge?.recovery_url) {
+        if (!this.challenge?.enrollUrl && !this.challenge?.recoveryUrl) {
             return html``;
         }
         return html`<div class="pf-c-login__main-footer-band">
-                ${this.challenge.enroll_url ? html`
+                ${this.challenge.enrollUrl ? html`
                 <p class="pf-c-login__main-footer-band-item">
                     ${t`Need an account?`}
-                    <a id="enroll" href="${this.challenge.enroll_url}">${t`Sign up.`}</a>
+                    <a id="enroll" href="${this.challenge.enrollUrl}">${t`Sign up.`}</a>
                 </p>` : html``}
-                ${this.challenge.recovery_url ? html`
+                ${this.challenge.recoveryUrl ? html`
                 <p class="pf-c-login__main-footer-band-item">
-                    <a id="recovery" href="${this.challenge.recovery_url}">${t`Forgot username or password?`}</a>
+                    <a id="recovery" href="${this.challenge.recoveryUrl}">${t`Forgot username or password?`}</a>
                 </p>` : html``}
             </div>`;
     }
@@ -164,15 +146,15 @@ export class IdentificationStage extends BaseStage {
     renderInput(): TemplateResult {
         let label = "";
         let type = "text";
-        if (!this.challenge?.user_fields) {
+        if (!this.challenge?.userFields) {
             return html`<p>
                 ${t`Select one of the sources below to login.`}
             </p>`;
         }
-        if (this.challenge?.user_fields === ["email"]) {
+        if (this.challenge?.userFields === ["email"]) {
             label = t`Email`;
             type = "email";
-        } else if (this.challenge?.user_fields === ["username"]) {
+        } else if (this.challenge?.userFields === ["username"]) {
             label = t`Username`;
         } else {
             label = t`Email or username`;
@@ -181,10 +163,10 @@ export class IdentificationStage extends BaseStage {
                 label=${label}
                 ?required="${true}"
                 class="pf-c-form__group"
-                .errors=${(this.challenge?.response_errors || {})["uid_field"]}>
+                .errors=${(this.challenge?.responseErrors || {})["uidField"]}>
                 <!-- @ts-ignore -->
                 <input type=${type}
-                    name="uid_field"
+                    name="uidField"
                     placeholder="Email or Username"
                     autofocus=""
                     autocomplete="username"
@@ -193,7 +175,7 @@ export class IdentificationStage extends BaseStage {
             </ak-form-element>
             <div class="pf-c-form__group pf-m-action">
                 <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                    ${this.challenge.primary_action}
+                    ${this.challenge.primaryAction}
                 </button>
             </div>`;
     }
@@ -212,9 +194,9 @@ export class IdentificationStage extends BaseStage {
             </header>
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form" @submit=${(e: Event) => {this.submitForm(e);}}>
-                    ${this.challenge.application_pre ?
+                    ${this.challenge.applicationPre ?
                         html`<p>
-                            ${t`Login to continue to ${this.challenge.application_pre}.`}
+                            ${t`Login to continue to ${this.challenge.applicationPre}.`}
                         </p>`:
                         html``}
                     ${this.renderInput()}

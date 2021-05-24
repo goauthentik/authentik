@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { Challenge } from "authentik-api";
+import { PlexAuthenticationChallenge } from "authentik-api";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -16,12 +16,6 @@ import { SourcesApi } from "authentik-api";
 import { showMessage } from "../../../elements/messages/MessageContainer";
 import { MessageLevel } from "../../../elements/messages/Message";
 
-export interface PlexAuthenticationChallenge extends Challenge {
-
-    client_id: string;
-    slug: string;
-
-}
 
 @customElement("ak-flow-sources-plex")
 export class PlexLoginInit extends BaseStage {
@@ -34,9 +28,9 @@ export class PlexLoginInit extends BaseStage {
     }
 
     async firstUpdated(): Promise<void> {
-        const authInfo = await PlexAPIClient.getPin(this.challenge?.client_id || "");
+        const authInfo = await PlexAPIClient.getPin(this.challenge?.clientId || "");
         const authWindow = popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
-        PlexAPIClient.pinPoll(this.challenge?.client_id || "", authInfo.pin.id).then(token => {
+        PlexAPIClient.pinPoll(this.challenge?.clientId || "", authInfo.pin.id).then(token => {
             authWindow?.close();
             new SourcesApi(DEFAULT_CONFIG).sourcesPlexRedeemTokenCreate({
                 plexTokenRedeemRequest: {

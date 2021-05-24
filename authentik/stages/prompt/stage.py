@@ -26,7 +26,7 @@ LOGGER = get_logger()
 PLAN_CONTEXT_PROMPT = "prompt_data"
 
 
-class PromptSerializer(PassiveSerializer):
+class StagePromptSerializer(PassiveSerializer):
     """Serializer for a single Prompt field"""
 
     field_key = CharField()
@@ -40,17 +40,22 @@ class PromptSerializer(PassiveSerializer):
 class PromptChallenge(Challenge):
     """Initial challenge being sent, define fields"""
 
-    fields = PromptSerializer(many=True)
+    fields = StagePromptSerializer(many=True)
+    component = CharField(default="ak-stage-prompt")
 
 
 class PromptResponseChallenge(ChallengeResponse):
     """Validate response, fields are dynamically created based
     on the stage"""
 
-    def __init__(self, *args, stage: PromptStage, plan: FlowPlan, **kwargs):
+    component = CharField(default="ak-stage-prompt")
+
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.stage = stage
-        self.plan = plan
+        self.stage: PromptStage = kwargs.pop("stage", None)
+        self.plan: FlowPlan = kwargs.pop("plan", None)
+        if not self.stage:
+            return
         # list() is called so we only load the fields once
         fields = list(self.stage.fields.all())
         for field in fields:
@@ -159,8 +164,7 @@ class PromptStageView(ChallengeStageView):
         challenge = PromptChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-prompt",
-                "fields": [PromptSerializer(field).data for field in fields],
+                "fields": [StagePromptSerializer(field).data for field in fields],
             },
         )
         return challenge

@@ -10,13 +10,15 @@ import AKGlobal from "../../../authentik.css";
 import { PFSize } from "../../../elements/Spinner";
 import { transformAssertionForServer, transformCredentialRequestOptions } from "../authenticator_webauthn/utils";
 import { BaseStage } from "../base";
-import { AuthenticatorValidateStage, AuthenticatorValidateStageChallenge, DeviceChallenge } from "./AuthenticatorValidateStage";
+import { AuthenticatorValidateStage } from "./AuthenticatorValidateStage";
+import { AuthenticatorValidationChallenge } from "authentik-api/dist/models/AuthenticatorValidationChallenge";
+import { DeviceChallenge } from "authentik-api";
 
 @customElement("ak-stage-authenticator-validate-webauthn")
 export class AuthenticatorValidateStageWebAuthn extends BaseStage {
 
     @property({attribute: false})
-    challenge?: AuthenticatorValidateStageChallenge;
+    challenge?: AuthenticatorValidationChallenge;
 
     @property({attribute: false})
     deviceChallenge?: DeviceChallenge;

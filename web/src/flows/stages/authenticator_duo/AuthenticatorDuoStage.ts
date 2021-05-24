@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import { WithUserInfoChallenge } from "../../../api/Flows";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -13,14 +12,8 @@ import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import "../../FormStatic";
 import { FlowURLManager } from "../../../api/legacy";
-import { StagesApi } from "authentik-api";
+import { AuthenticatorDuoChallenge, StagesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-
-export interface AuthenticatorDuoChallenge extends WithUserInfoChallenge {
-    activation_barcode: string;
-    activation_code: string;
-    stage_uuid: string;
-}
 
 @customElement("ak-stage-authenticator-duo")
 export class AuthenticatorDuoStage extends BaseStage {
@@ -42,10 +35,11 @@ export class AuthenticatorDuoStage extends BaseStage {
 
     checkEnrollStatus(): Promise<void> {
         return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoEnrollmentStatusCreate({
-            stageUuid: this.challenge?.stage_uuid || "",
-        }).then(r => {
+            stageUuid: this.challenge?.stageUuid || "",
+        }).then(() => {
             this.host?.submit({});
-        }).catch(e => {
+        }).catch(() => {
+            console.debug("authentik/flows/duo: Waiting for auth status");
         });
     }
 
@@ -65,17 +59,17 @@ export class AuthenticatorDuoStage extends BaseStage {
                 <form class="pf-c-form" @submit=${(e: Event) => { this.submitForm(e); }}>
                     <ak-form-static
                         class="pf-c-form__group"
-                        userAvatar="${this.challenge.pending_user_avatar}"
-                        user=${this.challenge.pending_user}>
+                        userAvatar="${this.challenge.pendingUserAvatar}"
+                        user=${this.challenge.pendingUser}>
                         <div slot="link">
                             <a href="${FlowURLManager.cancel()}">${t`Not you?`}</a>
                         </div>
                     </ak-form-static>
-                    <img src=${this.challenge.activation_barcode} />
+                    <img src=${this.challenge.activationBarcode} />
                     <p>
                         ${t`Alternatively, if your current device has Duo installed, click on this link:`}
                     </p>
-                    <a href=${this.challenge.activation_code}>${t`Duo activation`}</a>
+                    <a href=${this.challenge.activationCode}>${t`Duo activation`}</a>
 
                     <div class="pf-c-form__group pf-m-action">
                         <button type="button" class="pf-c-button pf-m-primary pf-m-block" @click=${() => {

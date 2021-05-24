@@ -2,7 +2,7 @@
 
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
-from rest_framework.fields import JSONField
+from rest_framework.fields import CharField, JSONField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 from webauthn.webauthn import (
@@ -41,12 +41,14 @@ class AuthenticatorWebAuthnChallenge(WithUserInfoChallenge):
     """WebAuthn Challenge"""
 
     registration = JSONField()
+    component = CharField(default="ak-stage-authenticator-webauthn")
 
 
 class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
     """WebAuthn Challenge response"""
 
     response = JSONField()
+    component = CharField(default="ak-stage-authenticator-webauthn")
 
     request: HttpRequest
     user: User
@@ -134,7 +136,6 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         return AuthenticatorWebAuthnChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-authenticator-webauthn",
                 "registration": registration_dict,
             }
         )

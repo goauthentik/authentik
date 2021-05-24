@@ -34,6 +34,7 @@ class AutosubmitChallenge(Challenge):
 
     url = CharField()
     attrs = DictField(child=CharField())
+    component = CharField(default="ak-stage-autosubmit")
 
 
 # This View doesn't have a URL on purpose, as its called by the FlowExecutor

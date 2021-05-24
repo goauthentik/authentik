@@ -35,9 +35,9 @@ class Challenge(PassiveSerializer):
     type = ChoiceField(
         choices=[(x.value, x.name) for x in ChallengeTypes],
     )
-    component = CharField(required=False)
     title = CharField(required=False)
     background = CharField(required=False)
+    component = CharField(default="")
 
     response_errors = DictField(
         child=ErrorDetailSerializer(many=True), allow_empty=True, required=False
@@ -48,12 +48,14 @@ class RedirectChallenge(Challenge):
     """Challenge type to redirect the client"""
 
     to = CharField()
+    component = CharField(default="xak-flow-redirect")
 
 
 class ShellChallenge(Challenge):
-    """Legacy challenge type to render HTML as-is"""
+    """challenge type to render HTML as-is"""
 
     body = CharField()
+    component = CharField(default="xak-flow-shell")
 
 
 class WithUserInfoChallenge(Challenge):
@@ -67,6 +69,7 @@ class AccessDeniedChallenge(Challenge):
     """Challenge when a flow's active stage calls `stage_invalid()`."""
 
     error_message = CharField(required=False)
+    component = CharField(default="ak-stage-access-denied")
 
 
 class PermissionSerializer(PassiveSerializer):
@@ -80,6 +83,7 @@ class ChallengeResponse(PassiveSerializer):
     """Base class for all challenge responses"""
 
     stage: Optional["StageView"]
+    component = CharField(default="")
 
     def __init__(self, instance=None, data=None, **kwargs):
         self.stage = kwargs.pop("stage", None)

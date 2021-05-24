@@ -22,6 +22,7 @@ class AuthenticatorStaticChallenge(WithUserInfoChallenge):
     """Static authenticator challenge"""
 
     codes = ListField(child=CharField())
+    component = CharField(default="ak-stage-authenticator-static")
 
 
 class AuthenticatorStaticStageView(ChallengeStageView):
@@ -32,7 +33,6 @@ class AuthenticatorStaticStageView(ChallengeStageView):
         return AuthenticatorStaticChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-authenticator-static",
                 "codes": [token.token for token in tokens],
             }
         )

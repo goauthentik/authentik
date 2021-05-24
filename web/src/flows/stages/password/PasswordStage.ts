@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import { WithUserInfoChallenge } from "../../../api/Flows";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -14,10 +13,7 @@ import "../../../elements/EmptyState";
 import { PasswordManagerPrefill } from "../identification/IdentificationStage";
 import "../../FormStatic";
 import { FlowURLManager } from "../../../api/legacy";
-
-export interface PasswordChallenge extends WithUserInfoChallenge {
-    recovery_url?: string;
-}
+import { PasswordChallenge } from "authentik-api";
 
 @customElement("ak-stage-password")
 export class PasswordStage extends BaseStage {
@@ -45,18 +41,18 @@ export class PasswordStage extends BaseStage {
                 <form class="pf-c-form" @submit=${(e: Event) => {this.submitForm(e);}}>
                     <ak-form-static
                         class="pf-c-form__group"
-                        userAvatar="${this.challenge.pending_user_avatar}"
-                        user=${this.challenge.pending_user}>
+                        userAvatar="${this.challenge.pendingUserAvatar}"
+                        user=${this.challenge.pendingUser}>
                         <div slot="link">
                             <a href="${FlowURLManager.cancel()}">${t`Not you?`}</a>
                         </div>
                     </ak-form-static>
-                    <input name="username" autocomplete="username" type="hidden" value="${this.challenge.pending_user}">
+                    <input name="username" autocomplete="username" type="hidden" value="${this.challenge.pendingUser}">
                     <ak-form-element
                         label="${t`Password`}"
                         ?required="${true}"
                         class="pf-c-form__group"
-                        .errors=${(this.challenge?.response_errors || {})["password"]}>
+                        .errors=${(this.challenge?.responseErrors || {})["password"]}>
                         <input type="password"
                             name="password"
                             placeholder="${t`Please enter your password`}"
@@ -67,8 +63,8 @@ export class PasswordStage extends BaseStage {
                             value=${PasswordManagerPrefill.password || ""}>
                     </ak-form-element>
 
-                    ${this.challenge.recovery_url ?
-                        html`<a href="${this.challenge.recovery_url}">
+                    ${this.challenge.recoveryUrl ?
+                        html`<a href="${this.challenge.recoveryUrl}">
                         ${t`Forgot password?`}</a>` : ""}
 
                     <div class="pf-c-form__group pf-m-action">

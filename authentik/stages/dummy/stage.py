@@ -1,5 +1,6 @@
 """authentik multi-stage authentication engine"""
 from django.http.response import HttpResponse
+from rest_framework.fields import CharField
 
 from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.flows.stage import ChallengeStageView
@@ -8,9 +9,13 @@ from authentik.flows.stage import ChallengeStageView
 class DummyChallenge(Challenge):
     """Dummy challenge"""
 
+    component = CharField(default="ak-stage-dummy")
+
 
 class DummyChallengeResponse(ChallengeResponse):
     """Dummy challenge response"""
+
+    component = CharField(default="ak-stage-dummy")
 
 
 class DummyStageView(ChallengeStageView):
@@ -25,7 +30,6 @@ class DummyStageView(ChallengeStageView):
         return DummyChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-dummy",
                 "title": self.executor.current_stage.name,
             }
         )

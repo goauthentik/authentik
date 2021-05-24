@@ -64,6 +64,10 @@ msgid "ANY, any policy must match to include this stage access."
 msgstr ""
 
 #: 
+msgid "API Hostname"
+msgstr ""
+
+#: 
 msgid "API Requests"
 msgstr ""
 
@@ -178,6 +182,10 @@ msgstr ""
 
 #: 
 msgid "Also known as Entity ID. Defaults the Metadata URL."
+msgstr ""
+
+#: 
+msgid "Alternatively, if your current device has Duo installed, click on this link:"
 msgstr ""
 
 #: 
@@ -519,6 +527,10 @@ msgid "Check Username"
 msgstr ""
 
 #: 
+msgid "Check status"
+msgstr ""
+
+#: 
 msgid "Check your Emails for a password reset link."
 msgstr ""
 
@@ -566,6 +578,7 @@ msgstr ""
 #: 
 #: 
 #: 
+#: 
 msgid "Client ID"
 msgstr ""
 
@@ -576,6 +589,7 @@ msgstr ""
 msgid "Client IP"
 msgstr ""
 
+#: 
 #: 
 msgid "Client Secret"
 msgstr ""
@@ -610,6 +624,7 @@ msgstr ""
 msgid "Configuration"
 msgstr ""
 
+#: 
 #: 
 #: 
 #: 
@@ -706,6 +721,7 @@ msgstr ""
 msgid "Context"
 msgstr ""
 
+#: 
 #: 
 #: 
 #: 
@@ -1003,6 +1019,10 @@ msgid "Determines how long a session lasts. Default of 0 seconds means that the 
 msgstr ""
 
 #: 
+msgid "Device classes"
+msgstr ""
+
+#: 
 msgid "Device classes which can be used to authenticate."
 msgstr ""
 
@@ -1024,6 +1044,7 @@ msgstr ""
 msgid "Disable"
 msgstr ""
 
+#: 
 #: 
 msgid "Disable Static Tokens"
 msgstr ""
@@ -1060,6 +1081,22 @@ msgstr ""
 
 #: 
 msgid "Dummy stage used for testing. Shows a simple continue button and always passes."
+msgstr ""
+
+#: 
+msgid "Duo"
+msgstr ""
+
+#: 
+msgid "Duo Authenticators"
+msgstr ""
+
+#: 
+msgid "Duo activation"
+msgstr ""
+
+#: 
+msgid "Duo push-notifications"
 msgstr ""
 
 #: 
@@ -1151,6 +1188,7 @@ msgstr ""
 msgid "Enable StartTLS"
 msgstr ""
 
+#: 
 #: 
 msgid "Enable Static Tokens"
 msgstr ""
@@ -1423,6 +1461,7 @@ msgstr ""
 msgid "Flow used by an authenticated user to configure their password. If empty, user will not be able to configure change their password."
 msgstr ""
 
+#: 
 #: 
 #: 
 msgid "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
@@ -1811,9 +1850,12 @@ msgstr ""
 #: 
 #: 
 #: 
+#: 
+#: 
 msgid "Loading"
 msgstr ""
 
+#: 
 #: 
 #: 
 #: 
@@ -2054,6 +2096,7 @@ msgstr ""
 #: 
 #: 
 #: 
+#: 
 msgid "Name"
 msgstr ""
 
@@ -2165,6 +2208,8 @@ msgstr ""
 msgid "Not synced yet."
 msgstr ""
 
+#: 
+#: 
 #: 
 #: 
 #: 
@@ -2610,6 +2655,10 @@ msgid "Re-evaluate policies"
 msgstr ""
 
 #: 
+msgid "Receive a push notification on your phone to prove your identity."
+msgstr ""
+
+#: 
 msgid "Recovery"
 msgstr ""
 
@@ -2719,6 +2768,7 @@ msgstr ""
 msgid "Return home"
 msgstr ""
 
+#: 
 #: 
 #: 
 msgid "Return to device picker"
@@ -3026,6 +3076,10 @@ msgid "Stage used to configure a WebAutnn authenticator (i.e. Yubikey, FaceID/Wi
 msgstr ""
 
 #: 
+msgid "Stage used to configure a duo-based authenticator. This stage should be used for configuration flows."
+msgstr ""
+
+#: 
 msgid "Stage used to configure a static authenticator (i.e. static tokens). This stage should be used for configuration flows."
 msgstr ""
 
@@ -3033,6 +3087,7 @@ msgstr ""
 msgid "Stage used to validate any authenticator. This stage should be used during authentication or authorization flows."
 msgstr ""
 
+#: 
 #: 
 #: 
 #: 
@@ -3084,9 +3139,11 @@ msgstr ""
 
 #: 
 #: 
+#: 
 msgid "Status: Disabled"
 msgstr ""
 
+#: 
 #: 
 #: 
 msgid "Status: Enabled"
@@ -3196,6 +3253,7 @@ msgstr ""
 msgid "Successfully created source."
 msgstr ""
 
+#: 
 #: 
 #: 
 #: 
@@ -3334,6 +3392,7 @@ msgstr ""
 msgid "Successfully updated source."
 msgstr ""
 
+#: 
 #: 
 #: 
 #: 
@@ -3881,7 +3940,6 @@ msgstr ""
 msgid "User events"
 msgstr ""
 
-#: 
 #: 
 msgid "User fields"
 msgstr ""

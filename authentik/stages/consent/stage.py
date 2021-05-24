@@ -25,10 +25,13 @@ class ConsentChallenge(WithUserInfoChallenge):
 
     header_text = CharField()
     permissions = PermissionSerializer(many=True)
+    component = CharField(default="ak-stage-consent")
 
 
 class ConsentChallengeResponse(ChallengeResponse):
     """Consent challenge response, any valid response request is valid"""
+
+    component = CharField(default="ak-stage-consent")
 
 
 class ConsentStageView(ChallengeStageView):
@@ -40,7 +43,6 @@ class ConsentStageView(ChallengeStageView):
         challenge = ConsentChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-consent",
             }
         )
         if PLAN_CONTEXT_CONSENT_TITLE in self.executor.plan.context:

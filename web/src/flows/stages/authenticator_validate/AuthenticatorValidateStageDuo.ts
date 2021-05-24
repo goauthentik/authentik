@@ -8,18 +8,19 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import AKGlobal from "../../../authentik.css";
 import { BaseStage } from "../base";
-import { AuthenticatorValidateStage, AuthenticatorValidateStageChallenge, DeviceChallenge } from "./AuthenticatorValidateStage";
+import { AuthenticatorValidateStage } from "./AuthenticatorValidateStage";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
-import { PasswordManagerPrefill } from "../identification/IdentificationStage";
 import "../../FormStatic";
 import { FlowURLManager } from "../../../api/legacy";
+import { AuthenticatorValidationChallenge } from "authentik-api/dist/models/AuthenticatorValidationChallenge";
+import { DeviceChallenge } from "authentik-api";
 
 @customElement("ak-stage-authenticator-validate-duo")
 export class AuthenticatorValidateStageWebDuo extends BaseStage {
 
     @property({ attribute: false })
-    challenge?: AuthenticatorValidateStageChallenge;
+    challenge?: AuthenticatorValidationChallenge;
 
     @property({ attribute: false })
     deviceChallenge?: DeviceChallenge;
@@ -33,7 +34,7 @@ export class AuthenticatorValidateStageWebDuo extends BaseStage {
 
     firstUpdated(): void {
         this.host?.submit({
-            "duo": this.deviceChallenge?.device_uid
+            "duo": this.deviceChallenge?.deviceUid
         });
     }
 
@@ -48,8 +49,8 @@ export class AuthenticatorValidateStageWebDuo extends BaseStage {
             <form class="pf-c-form" @submit=${(e: Event) => { this.submitForm(e); }}>
                 <ak-form-static
                     class="pf-c-form__group"
-                    userAvatar="${this.challenge.pending_user_avatar}"
-                    user=${this.challenge.pending_user}>
+                    userAvatar="${this.challenge.pendingUserAvatar}"
+                    user=${this.challenge.pendingUser}>
                     <div slot="link">
                         <a href="${FlowURLManager.cancel()}">${t`Not you?`}</a>
                     </div>

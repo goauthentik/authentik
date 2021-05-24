@@ -36,11 +36,15 @@ class IdentificationChallenge(Challenge):
     primary_action = CharField()
     sources = UILoginButtonSerializer(many=True, required=False)
 
+    component = CharField(default="ak-stage-identification")
+
 
 class IdentificationChallengeResponse(ChallengeResponse):
     """Identification challenge"""
 
     uid_field = CharField()
+    component = CharField(default="ak-stage-identification")
+
     pre_user: Optional[User] = None
 
     def validate_uid_field(self, value: str) -> str:
@@ -81,7 +85,6 @@ class IdentificationStageView(ChallengeStageView):
         challenge = IdentificationChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-identification",
                 "primary_action": _("Log in"),
                 "user_fields": current_stage.user_fields,
             }

@@ -17,6 +17,7 @@ class PlexAuthenticationChallenge(Challenge):
 
     client_id = CharField()
     slug = CharField()
+    component = CharField(default="ak-flow-sources-plex")
 
 
 class PlexSource(Source):

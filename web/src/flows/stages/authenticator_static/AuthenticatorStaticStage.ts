@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 import { css, CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import { WithUserInfoChallenge } from "../../../api/Flows";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -13,6 +12,7 @@ import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import "../../FormStatic";
 import { FlowURLManager } from "../../../api/legacy";
+import { AuthenticatorStaticChallenge } from "authentik-api";
 
 export const STATIC_TOKEN_STYLE = css`
 /* Static OTP Tokens */
@@ -29,9 +29,6 @@ export const STATIC_TOKEN_STYLE = css`
 }
 `;
 
-export interface AuthenticatorStaticChallenge extends WithUserInfoChallenge {
-    codes: number[];
-}
 
 @customElement("ak-stage-authenticator-static")
 export class AuthenticatorStaticStage extends BaseStage {
@@ -59,8 +56,8 @@ export class AuthenticatorStaticStage extends BaseStage {
                 <form class="pf-c-form" @submit=${(e: Event) => { this.submitForm(e); }}>
                     <ak-form-static
                         class="pf-c-form__group"
-                        userAvatar="${this.challenge.pending_user_avatar}"
-                        user=${this.challenge.pending_user}>
+                        userAvatar="${this.challenge.pendingUserAvatar}"
+                        user=${this.challenge.pendingUser}>
                         <div slot="link">
                             <a href="${FlowURLManager.cancel()}">${t`Not you?`}</a>
                         </div>

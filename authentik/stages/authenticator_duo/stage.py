@@ -25,6 +25,7 @@ class AuthenticatorDuoChallenge(WithUserInfoChallenge):
     activation_barcode = CharField()
     activation_code = CharField()
     stage_uuid = CharField()
+    component = CharField(default="ak-stage-authenticator-duo")
 
 
 class AuthenticatorDuoStageView(ChallengeStageView):
@@ -42,7 +43,6 @@ class AuthenticatorDuoStageView(ChallengeStageView):
         return AuthenticatorDuoChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-authenticator-duo",
                 "activation_barcode": enroll["activation_barcode"],
                 "activation_code": enroll["activation_code"],
                 "stage_uuid": stage.stage_uuid,

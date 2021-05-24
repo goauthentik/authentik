@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import { WithUserInfoChallenge } from "../../../api/Flows";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -10,11 +9,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import AKGlobal from "../../../authentik.css";
 import { BaseStage } from "../base";
 import "../../../elements/EmptyState";
-
-export interface AutosubmitChallenge extends WithUserInfoChallenge {
-    url: string;
-    attrs: { [key: string]: string };
-}
+import { AutosubmitChallenge } from "authentik-api";
 
 @customElement("ak-stage-autosubmit")
 export class AutosubmitStage extends BaseStage {
