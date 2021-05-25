@@ -174,8 +174,8 @@ class FlowViewSet(ModelViewSet):
             return HttpResponseBadRequest()
         successful = importer.apply()
         if not successful:
-            return Response(status=204)
-        return HttpResponseBadRequest()
+            return HttpResponseBadRequest()
+        return Response(status=204)
 
     @permission_required(
         "authentik_flows.export_flow",
