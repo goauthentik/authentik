@@ -35,7 +35,7 @@ class Challenge(PassiveSerializer):
     type = ChoiceField(
         choices=[(x.value, x.name) for x in ChallengeTypes],
     )
-    title = CharField(required=False)
+    title = CharField(required=False, allow_blank=True)
     background = CharField(required=False)
     component = CharField(default="")
 

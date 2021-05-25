@@ -78,6 +78,7 @@ class TestFlowsEnroll(SeleniumTestCase):
         flow = Flow.objects.create(
             name="default-enrollment-flow",
             slug="default-enrollment-flow",
+            title="default-enrollment-flow",
             designation=FlowDesignation.ENROLLMENT,
         )
 
@@ -154,6 +155,7 @@ class TestFlowsEnroll(SeleniumTestCase):
         flow = Flow.objects.create(
             name="default-enrollment-flow",
             slug="default-enrollment-flow",
+            title="default-enrollment-flow",
             designation=FlowDesignation.ENROLLMENT,
         )
 

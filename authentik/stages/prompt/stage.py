@@ -33,7 +33,7 @@ class StagePromptSerializer(PassiveSerializer):
     label = CharField(allow_blank=True)
     type = CharField()
     required = BooleanField()
-    placeholder = CharField()
+    placeholder = CharField(allow_blank=True)
     order = IntegerField()
 
 

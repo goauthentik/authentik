@@ -4,7 +4,7 @@ from importlib import import_module
 
 from django.apps import AppConfig
 from django.db import ProgrammingError
-from django.utils.timezone import datetime
+from django.utils.timezone import now
 
 
 class AuthentikEventsConfig(AppConfig):
@@ -19,7 +19,7 @@ class AuthentikEventsConfig(AppConfig):
         try:
             from authentik.events.models import Event
 
-            date_from = datetime.now() - timedelta(days=1)
+            date_from = now() - timedelta(days=1)
 
             for event in Event.objects.filter(created__gte=date_from):
                 event._set_prom_metrics()

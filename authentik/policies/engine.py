@@ -25,7 +25,7 @@ CURRENT_PROCESS = current_process()
 GAUGE_POLICIES_CACHED = UpdatingGauge(
     "authentik_policies_cached",
     "Cached Policies",
-    update_func=lambda: len(cache.keys("policy_*")),
+    update_func=lambda: len(cache.keys("policy_*") or []),
 )
 HIST_POLICIES_BUILD_TIME = Histogram(
     "authentik_policies_build_time",
