@@ -25,6 +25,7 @@ from authentik.providers.oauth2.generators import (
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.manager import SourceType
 from authentik.sources.oauth.types.twitter import TwitterOAuthCallback
+from authentik.stages.identification.models import IdentificationStage
 from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
 
 CONFIG_PATH = "/tmp/dex.yml"  # nosec
@@ -115,7 +116,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         authentication_flow = Flow.objects.get(slug="default-source-authentication")
         enrollment_flow = Flow.objects.get(slug="default-source-enrollment")
 
-        OAuthSource.objects.create(  # nosec
+        source = OAuthSource.objects.create(  # nosec
             name="dex",
             slug="dex",
             authentication_flow=authentication_flow,
@@ -127,6 +128,9 @@ class TestSourceOAuth2(SeleniumTestCase):
             consumer_key="example-app",
             consumer_secret=self.client_secret,
         )
+        ident_stage = IdentificationStage.objects.first()
+        ident_stage.sources.set([source])
+        ident_stage.save()
 
     @retry()
     @apply_migration("authentik_core", "0003_default_user")
@@ -308,7 +312,7 @@ class TestSourceOAuth1(SeleniumTestCase):
         authentication_flow = Flow.objects.get(slug="default-source-authentication")
         enrollment_flow = Flow.objects.get(slug="default-source-enrollment")
 
-        OAuthSource.objects.create(  # nosec
+        source = OAuthSource.objects.create(  # nosec
             name="oauth1",
             slug=self.source_slug,
             authentication_flow=authentication_flow,
@@ -317,6 +321,9 @@ class TestSourceOAuth1(SeleniumTestCase):
             consumer_key=self.client_id,
             consumer_secret=self.client_secret,
         )
+        ident_stage = IdentificationStage.objects.first()
+        ident_stage.sources.set([source])
+        ident_stage.save()
 
     @retry()
     @apply_migration("authentik_core", "0003_default_user")

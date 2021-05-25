@@ -16,6 +16,7 @@ from authentik.core.models import User
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
+from authentik.stages.identification.models import IdentificationStage
 from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
 
 LOGGER = get_logger()
@@ -119,7 +120,7 @@ class TestSourceSAML(SeleniumTestCase):
             key_data=IDP_KEY,
         )
 
-        SAMLSource.objects.create(
+        source = SAMLSource.objects.create(
             name="saml-idp-test",
             slug="saml-idp-test",
             authentication_flow=authentication_flow,
@@ -130,6 +131,9 @@ class TestSourceSAML(SeleniumTestCase):
             binding_type=SAMLBindingTypes.REDIRECT,
             signing_kp=keypair,
         )
+        ident_stage = IdentificationStage.objects.first()
+        ident_stage.sources.set([source])
+        ident_stage.save()
 
         self.driver.get(self.live_server_url)
 
@@ -199,6 +203,9 @@ class TestSourceSAML(SeleniumTestCase):
             binding_type=SAMLBindingTypes.POST,
             signing_kp=keypair,
         )
+        ident_stage = IdentificationStage.objects.first()
+        ident_stage.sources.set([source])
+        ident_stage.save()
 
         self.driver.get(self.live_server_url)
 
@@ -270,7 +277,7 @@ class TestSourceSAML(SeleniumTestCase):
             key_data=IDP_KEY,
         )
 
-        SAMLSource.objects.create(
+        source = SAMLSource.objects.create(
             name="saml-idp-test",
             slug="saml-idp-test",
             authentication_flow=authentication_flow,
@@ -281,6 +288,9 @@ class TestSourceSAML(SeleniumTestCase):
             binding_type=SAMLBindingTypes.POST_AUTO,
             signing_kp=keypair,
         )
+        ident_stage = IdentificationStage.objects.first()
+        ident_stage.sources.set([source])
+        ident_stage.save()
 
         self.driver.get(self.live_server_url)
 
