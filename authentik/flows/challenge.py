@@ -61,7 +61,7 @@ class ShellChallenge(Challenge):
 class WithUserInfoChallenge(Challenge):
     """Challenge base which shows some user info"""
 
-    pending_user = CharField()
+    pending_user = CharField(allow_blank=True)
     pending_user_avatar = CharField()
 
 
