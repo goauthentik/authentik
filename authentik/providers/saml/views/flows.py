@@ -34,6 +34,13 @@ class AutosubmitChallenge(Challenge):
 
     url = CharField()
     attrs = DictField(child=CharField())
+    component = CharField(default="ak-stage-autosubmit")
+
+
+class AutoSubmitChallengeResponse(ChallengeResponse):
+    """Pseudo class for autosubmit response"""
+
+    component = CharField(default="ak-stage-autosubmit")
 
 
 # This View doesn't have a URL on purpose, as its called by the FlowExecutor
@@ -41,6 +48,8 @@ class SAMLFlowFinalView(ChallengeStageView):
     """View used by FlowExecutor after all stages have passed. Logs the authorization,
     and redirects to the SP (if REDIRECT is configured) or shows an auto-submit element
     (if POST is configured)."""
+
+    response_class = AutoSubmitChallengeResponse
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         application: Application = self.executor.plan.context[PLAN_CONTEXT_APPLICATION]

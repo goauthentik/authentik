@@ -67,4 +67,11 @@ def postprocess_schema_responses(result, generator, **kwargs):  # noqa: W0613
         spectacular_settings.APPEND_COMPONENTS
     )
 
+    # This is a workaround for authentik/stages/prompt/stage.py
+    # since the serializer PromptChallengeResponse
+    # accepts dynamic keys
+    for component in result["components"]["schemas"]:
+        if component == "PromptChallengeResponseRequest":
+            comp = result["components"]["schemas"][component]
+            comp["additionalProperties"] = {}
     return result

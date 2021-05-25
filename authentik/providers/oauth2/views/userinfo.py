@@ -3,7 +3,6 @@ from typing import Any, Optional
 
 from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseBadRequest
-from django.utils.translation import gettext_lazy as _
 from django.views import View
 from structlog.stdlib import get_logger
 
@@ -38,14 +37,14 @@ class UserInfoView(View):
         # GitHub Compatibility Scopes are handeled differently, since they required custom paths
         # Hence they don't exist as Scope objects
         github_scope_map = {
-            SCOPE_GITHUB_USER: _("GitHub Compatibility: Access your User Information"),
-            SCOPE_GITHUB_USER_READ: _(
+            SCOPE_GITHUB_USER: ("GitHub Compatibility: Access your User Information"),
+            SCOPE_GITHUB_USER_READ: (
                 "GitHub Compatibility: Access your User Information"
             ),
-            SCOPE_GITHUB_USER_EMAIL: _(
+            SCOPE_GITHUB_USER_EMAIL: (
                 "GitHub Compatibility: Access you Email addresses"
             ),
-            SCOPE_GITHUB_ORG_READ: _("GitHub Compatibility: Access your Groups"),
+            SCOPE_GITHUB_ORG_READ: ("GitHub Compatibility: Access your Groups"),
         }
         for scope in scopes:
             if scope in github_scope_map:

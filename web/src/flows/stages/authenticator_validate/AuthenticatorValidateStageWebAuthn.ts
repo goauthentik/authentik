@@ -10,13 +10,12 @@ import AKGlobal from "../../../authentik.css";
 import { PFSize } from "../../../elements/Spinner";
 import { transformAssertionForServer, transformCredentialRequestOptions } from "../authenticator_webauthn/utils";
 import { BaseStage } from "../base";
-import { AuthenticatorValidateStage, AuthenticatorValidateStageChallenge, DeviceChallenge } from "./AuthenticatorValidateStage";
+import { AuthenticatorValidateStage } from "./AuthenticatorValidateStage";
+import { AuthenticatorValidationChallenge } from "authentik-api/dist/models/AuthenticatorValidationChallenge";
+import { AuthenticatorValidationChallengeResponseRequest, DeviceChallenge } from "authentik-api";
 
 @customElement("ak-stage-authenticator-validate-webauthn")
-export class AuthenticatorValidateStageWebAuthn extends BaseStage {
-
-    @property({attribute: false})
-    challenge?: AuthenticatorValidateStageChallenge;
+export class AuthenticatorValidateStageWebAuthn extends BaseStage<AuthenticatorValidationChallenge, AuthenticatorValidationChallengeResponseRequest> {
 
     @property({attribute: false})
     deviceChallenge?: DeviceChallenge;
@@ -60,9 +59,9 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage {
 
         // post the assertion to the server for verification.
         try {
-            const formData = new FormData();
-            formData.set("webauthn", JSON.stringify(transformedAssertionForServer));
-            await this.host?.submit(formData);
+            await this.host?.submit({
+                webauthn: transformedAssertionForServer
+            });
         } catch (err) {
             throw new Error(t`Error when validating assertion on server: ${err}`);
         }

@@ -63,6 +63,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
     @retry()
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0010_provider_flows")
     @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
     def test_authorization_consent_implied(self):
@@ -117,6 +118,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
     @retry()
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0010_provider_flows")
     @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
     def test_authorization_consent_explicit(self):
@@ -194,6 +196,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
     @retry()
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0010_provider_flows")
     @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
     def test_denied(self):

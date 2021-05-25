@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, TemplateResult } from "lit-element";
 import { unsafeHTML } from "lit-html/directives/unsafe-html";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -13,37 +13,23 @@ import { BaseStage } from "../base";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import "../../../elements/Divider";
-import { Challenge, Error } from "../../../api/Flows";
+import { Error } from "../../../api/Flows";
+import { PromptChallenge, PromptChallengeResponseRequest, StagePrompt } from "authentik-api";
 
-export interface Prompt {
-    field_key: string;
-    label: string;
-    type: string;
-    required: boolean;
-    placeholder: string;
-    order: number;
-}
-
-export interface PromptChallenge extends Challenge {
-    fields: Prompt[];
-}
 
 @customElement("ak-stage-prompt")
-export class PromptStage extends BaseStage {
-
-    @property({attribute: false})
-    challenge?: PromptChallenge;
+export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeResponseRequest> {
 
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFAlert, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
     }
 
-    renderPromptInner(prompt: Prompt): string {
+    renderPromptInner(prompt: StagePrompt): string {
         switch (prompt.type) {
             case "text":
                 return `<input
                     type="text"
-                    name="${prompt.field_key}"
+                    name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     autocomplete="off"
                     class="pf-c-form-control"
@@ -52,7 +38,7 @@ export class PromptStage extends BaseStage {
             case "username":
                 return `<input
                     type="text"
-                    name="${prompt.field_key}"
+                    name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     autocomplete="username"
                     class="pf-c-form-control"
@@ -61,7 +47,7 @@ export class PromptStage extends BaseStage {
             case "email":
                 return `<input
                     type="email"
-                    name="${prompt.field_key}"
+                    name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}
@@ -69,7 +55,7 @@ export class PromptStage extends BaseStage {
             case "password":
                 return `<input
                     type="password"
-                    name="${prompt.field_key}"
+                    name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     autocomplete="new-password"
                     class="pf-c-form-control"
@@ -77,28 +63,28 @@ export class PromptStage extends BaseStage {
             case "number":
                 return `<input
                     type="number"
-                    name="${prompt.field_key}"
+                    name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
             case "checkbox":
                 return `<input
                     type="checkbox"
-                    name="${prompt.field_key}"
+                    name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
             case "date":
                 return `<input
                     type="date"
-                    name="${prompt.field_key}"
+                    name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
             case "date-time":
                 return `<input
                     type="datetime"
-                    name="${prompt.field_key}"
+                    name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
@@ -107,7 +93,7 @@ export class PromptStage extends BaseStage {
             case "hidden":
                 return `<input
                     type="hidden"
-                    name="${prompt.field_key}"
+                    name="${prompt.fieldKey}"
                     value="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
@@ -122,16 +108,16 @@ export class PromptStage extends BaseStage {
             return html``;
         }
         return html`<div class="pf-c-form__alert">
-        ${errors.map(err => {
-            return html`<div class="pf-c-alert pf-m-inline pf-m-danger">
-                <div class="pf-c-alert__icon">
-                    <i class="fas fa-exclamation-circle"></i>
-                </div>
-                <h4 class="pf-c-alert__title">
-                    ${err.string}
-                </h4>
-            </div>`;
-        })}
+            ${errors.map(err => {
+                return html`<div class="pf-c-alert pf-m-inline pf-m-danger">
+                    <div class="pf-c-alert__icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <h4 class="pf-c-alert__title">
+                        ${err.string}
+                    </h4>
+                </div>`;
+            })}
         </div>`;
     }
 
@@ -158,12 +144,12 @@ export class PromptStage extends BaseStage {
                             label="${prompt.label}"
                             ?required="${prompt.required}"
                             class="pf-c-form__group"
-                            .errors=${(this.challenge?.response_errors || {})[prompt.field_key]}>
+                            .errors=${(this.challenge?.responseErrors || {})[prompt.fieldKey]}>
                             ${unsafeHTML(this.renderPromptInner(prompt))}
                         </ak-form-element>`;
                     })}
-                    ${"non_field_errors" in (this.challenge?.response_errors || {}) ?
-                        this.renderNonFieldErrors(this.challenge?.response_errors?.non_field_errors || []):
+                    ${"non_field_errors" in (this.challenge?.responseErrors || {}) ?
+                        this.renderNonFieldErrors(this.challenge?.responseErrors?.non_field_errors || []):
                         html``}
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">

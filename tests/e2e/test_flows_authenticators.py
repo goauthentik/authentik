@@ -27,6 +27,7 @@ class TestFlowsAuthenticator(SeleniumTestCase):
     @retry()
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0011_flow_title")
     def test_totp_validate(self):
         """test flow with otp stages"""
         sleep(1)
@@ -65,6 +66,7 @@ class TestFlowsAuthenticator(SeleniumTestCase):
     @retry()
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_stages_authenticator_totp", "0006_default_setup_flow")
     def test_totp_setup(self):
         """test TOTP Setup stage"""
@@ -115,6 +117,7 @@ class TestFlowsAuthenticator(SeleniumTestCase):
     @retry()
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_stages_authenticator_static", "0005_default_setup_flow")
     def test_static_setup(self):
         """test Static OTP Setup stage"""

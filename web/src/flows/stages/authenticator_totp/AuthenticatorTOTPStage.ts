@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import { WithUserInfoChallenge } from "../../../api/Flows";
+import { CSSResult, customElement, html, TemplateResult } from "lit-element";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -16,16 +15,11 @@ import "../../../elements/EmptyState";
 import "../../FormStatic";
 import { MessageLevel } from "../../../elements/messages/Message";
 import { FlowURLManager } from "../../../api/legacy";
+import { AuthenticatorTOTPChallenge, AuthenticatorTOTPChallengeResponseRequest } from "authentik-api";
 
-export interface AuthenticatorTOTPChallenge extends WithUserInfoChallenge {
-    config_url: string;
-}
 
 @customElement("ak-stage-authenticator-totp")
-export class AuthenticatorTOTPStage extends BaseStage {
-
-    @property({ attribute: false })
-    challenge?: AuthenticatorTOTPChallenge;
+export class AuthenticatorTOTPStage extends BaseStage<AuthenticatorTOTPChallenge, AuthenticatorTOTPChallengeResponseRequest> {
 
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
@@ -47,20 +41,20 @@ export class AuthenticatorTOTPStage extends BaseStage {
                 <form class="pf-c-form" @submit=${(e: Event) => { this.submitForm(e); }}>
                     <ak-form-static
                         class="pf-c-form__group"
-                        userAvatar="${this.challenge.pending_user_avatar}"
-                        user=${this.challenge.pending_user}>
+                        userAvatar="${this.challenge.pendingUserAvatar}"
+                        user=${this.challenge.pendingUser}>
                         <div slot="link">
                             <a href="${FlowURLManager.cancel()}">${t`Not you?`}</a>
                         </div>
                     </ak-form-static>
-                    <input type="hidden" name="otp_uri" value=${this.challenge.config_url} />
+                    <input type="hidden" name="otp_uri" value=${this.challenge.configUrl} />
                     <ak-form-element>
                         <!-- @ts-ignore -->
-                        <qr-code data="${this.challenge.config_url}"></qr-code>
+                        <qr-code data="${this.challenge.configUrl}"></qr-code>
                         <button type="button" class="pf-c-button pf-m-secondary pf-m-progress pf-m-in-progress" @click=${(e: Event) => {
                             e.preventDefault();
-                            if (!this.challenge?.config_url) return;
-                            navigator.clipboard.writeText(this.challenge?.config_url).then(() => {
+                            if (!this.challenge?.configUrl) return;
+                            navigator.clipboard.writeText(this.challenge?.configUrl).then(() => {
                                 showMessage({
                                     level: MessageLevel.success,
                                     message: t`Successfully copied TOTP Config.`
@@ -75,7 +69,7 @@ export class AuthenticatorTOTPStage extends BaseStage {
                         label="${t`Code`}"
                         ?required="${true}"
                         class="pf-c-form__group"
-                        .errors=${(this.challenge?.response_errors || {})["code"]}>
+                        .errors=${(this.challenge?.responseErrors || {})["code"]}>
                         <!-- @ts-ignore -->
                         <input type="text"
                             name="code"

@@ -64,6 +64,11 @@ from authentik.sources.oauth.api.source_connection import (
 )
 from authentik.sources.plex.api import PlexSourceViewSet
 from authentik.sources.saml.api import SAMLSourceViewSet
+from authentik.stages.authenticator_duo.api import (
+    AuthenticatorDuoStageViewSet,
+    DuoAdminDeviceViewSet,
+    DuoDeviceViewSet,
+)
 from authentik.stages.authenticator_static.api import (
     AuthenticatorStaticStageViewSet,
     StaticAdminDeviceViewSet,
@@ -158,9 +163,15 @@ router.register("propertymappings/ldap", LDAPPropertyMappingViewSet)
 router.register("propertymappings/saml", SAMLPropertyMappingViewSet)
 router.register("propertymappings/scope", ScopeMappingViewSet)
 
+router.register("authenticators/duo", DuoDeviceViewSet)
 router.register("authenticators/static", StaticDeviceViewSet)
 router.register("authenticators/totp", TOTPDeviceViewSet)
 router.register("authenticators/webauthn", WebAuthnDeviceViewSet)
+router.register(
+    "authenticators/admin/duo",
+    DuoAdminDeviceViewSet,
+    basename="admin-duodevice",
+)
 router.register(
     "authenticators/admin/static",
     StaticAdminDeviceViewSet,
@@ -176,6 +187,7 @@ router.register(
 )
 
 router.register("stages/all", StageViewSet)
+router.register("stages/authenticator/duo", AuthenticatorDuoStageViewSet)
 router.register("stages/authenticator/static", AuthenticatorStaticStageViewSet)
 router.register("stages/authenticator/totp", AuthenticatorTOTPStageViewSet)
 router.register("stages/authenticator/validate", AuthenticatorValidateStageViewSet)

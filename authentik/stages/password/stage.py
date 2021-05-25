@@ -63,11 +63,15 @@ class PasswordChallenge(WithUserInfoChallenge):
 
     recovery_url = CharField(required=False)
 
+    component = CharField(default="ak-stage-password")
+
 
 class PasswordChallengeResponse(ChallengeResponse):
     """Password challenge response"""
 
     password = CharField()
+
+    component = CharField(default="ak-stage-password")
 
 
 class PasswordStageView(ChallengeStageView):
@@ -79,7 +83,6 @@ class PasswordStageView(ChallengeStageView):
         challenge = PasswordChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-password",
             }
         )
         recovery_flow = Flow.objects.filter(designation=FlowDesignation.RECOVERY)

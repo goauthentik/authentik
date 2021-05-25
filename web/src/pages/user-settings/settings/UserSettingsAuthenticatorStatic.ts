@@ -72,7 +72,7 @@ export class UserSettingsAuthenticatorStatic extends BaseUserSettings {
     render(): TemplateResult {
         return html`<div class="pf-c-card">
             <div class="pf-c-card__title">
-                ${t`Time-based One-Time Passwords`}
+                ${t`Static tokens`}
             </div>
             ${until(new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsStaticList({}).then((devices) => {
                 return devices.results.length > 0 ? this.renderEnabled() : this.renderDisabled();

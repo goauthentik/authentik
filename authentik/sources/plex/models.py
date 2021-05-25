@@ -8,7 +8,7 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.core.models import Source, UserSourceConnection
 from authentik.core.types import UILoginButton
-from authentik.flows.challenge import Challenge, ChallengeTypes
+from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.providers.oauth2.generators import generate_client_id
 
 
@@ -17,6 +17,13 @@ class PlexAuthenticationChallenge(Challenge):
 
     client_id = CharField()
     slug = CharField()
+    component = CharField(default="ak-flow-sources-plex")
+
+
+class PlexAuthenticationChallengeResponse(ChallengeResponse):
+    """Pseudo class for plex response"""
+
+    component = CharField(default="ak-flow-sources-plex")
 
 
 class PlexSource(Source):

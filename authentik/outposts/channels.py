@@ -50,7 +50,7 @@ class WebsocketMessage:
 class OutpostConsumer(AuthJsonConsumer):
     """Handler for Outposts that connect over websockets for health checks and live updates"""
 
-    outpost: Outpost
+    outpost: Optional[Outpost] = None
 
     last_uid: Optional[str] = None
 
@@ -94,6 +94,9 @@ class OutpostConsumer(AuthJsonConsumer):
         msg = from_dict(WebsocketMessage, content)
         uid = msg.args.get("uuid", self.channel_name)
         self.last_uid = uid
+
+        if not self.outpost:
+            raise DenyConnection()
 
         state = OutpostState.for_instance_uid(self.outpost, uid)
         if self.channel_name not in state.channel_ids:

@@ -26,7 +26,7 @@ PLAN_CONTEXT_SOURCE = "source"
 GAUGE_FLOWS_CACHED = UpdatingGauge(
     "authentik_flows_cached",
     "Cached flows",
-    update_func=lambda: len(cache.keys("flow_*")),
+    update_func=lambda: len(cache.keys("flow_*") or []),
 )
 HIST_FLOWS_PLAN_TIME = Histogram(
     "authentik_flows_plan_time",

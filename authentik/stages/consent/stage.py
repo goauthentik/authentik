@@ -25,10 +25,13 @@ class ConsentChallenge(WithUserInfoChallenge):
 
     header_text = CharField()
     permissions = PermissionSerializer(many=True)
+    component = CharField(default="ak-stage-consent")
 
 
 class ConsentChallengeResponse(ChallengeResponse):
     """Consent challenge response, any valid response request is valid"""
+
+    component = CharField(default="ak-stage-consent")
 
 
 class ConsentStageView(ChallengeStageView):
@@ -37,24 +40,19 @@ class ConsentStageView(ChallengeStageView):
     response_class = ConsentChallengeResponse
 
     def get_challenge(self) -> Challenge:
-        challenge = ConsentChallenge(
-            data={
-                "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-consent",
-            }
-        )
+        data = {
+            "type": ChallengeTypes.NATIVE.value,
+            "permissions": self.executor.plan.context.get(
+                PLAN_CONTEXT_CONSENT_PERMISSIONS, []
+            ),
+        }
         if PLAN_CONTEXT_CONSENT_TITLE in self.executor.plan.context:
-            challenge.initial_data["title"] = self.executor.plan.context[
-                PLAN_CONTEXT_CONSENT_TITLE
-            ]
+            data["title"] = self.executor.plan.context[PLAN_CONTEXT_CONSENT_TITLE]
         if PLAN_CONTEXT_CONSENT_HEADER in self.executor.plan.context:
-            challenge.initial_data["header_text"] = self.executor.plan.context[
+            data["header_text"] = self.executor.plan.context[
                 PLAN_CONTEXT_CONSENT_HEADER
             ]
-        if PLAN_CONTEXT_CONSENT_PERMISSIONS in self.executor.plan.context:
-            challenge.initial_data["permissions"] = self.executor.plan.context[
-                PLAN_CONTEXT_CONSENT_PERMISSIONS
-            ]
+        challenge = ConsentChallenge(data=data)
         return challenge
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:

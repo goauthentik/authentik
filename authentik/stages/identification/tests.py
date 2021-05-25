@@ -53,7 +53,11 @@ class TestIdentificationStage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
+            {
+                "component": "xak-flow-redirect",
+                "to": reverse("authentik_core:root-redirect"),
+                "type": ChallengeTypes.REDIRECT.value,
+            },
         )
 
     def test_invalid_with_username(self):
@@ -118,8 +122,9 @@ class TestIdentificationStage(TestCase):
                         "icon_url": "/static/authentik/sources/.svg",
                         "name": "test",
                         "challenge": {
+                            "component": "xak-flow-redirect",
                             "to": "/source/oauth/login/test/",
-                            "type": "redirect",
+                            "type": ChallengeTypes.REDIRECT.value,
                         },
                     }
                 ],
@@ -162,8 +167,9 @@ class TestIdentificationStage(TestCase):
                 "sources": [
                     {
                         "challenge": {
+                            "component": "xak-flow-redirect",
                             "to": "/source/oauth/login/test/",
-                            "type": "redirect",
+                            "type": ChallengeTypes.REDIRECT.value,
                         },
                         "icon_url": "/static/authentik/sources/.svg",
                         "name": "test",

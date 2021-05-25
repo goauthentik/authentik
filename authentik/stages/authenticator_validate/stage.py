@@ -1,7 +1,7 @@
 """Authenticator Validation"""
 from django.http import HttpRequest, HttpResponse
 from django_otp import devices_for_user
-from rest_framework.fields import CharField, JSONField, ListField
+from rest_framework.fields import CharField, IntegerField, JSONField, ListField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
@@ -17,6 +17,7 @@ from authentik.stages.authenticator_validate.challenge import (
     DeviceChallenge,
     get_challenge_for_device,
     validate_challenge_code,
+    validate_challenge_duo,
     validate_challenge_webauthn,
 )
 from authentik.stages.authenticator_validate.models import (
@@ -29,28 +30,31 @@ LOGGER = get_logger()
 PER_DEVICE_CLASSES = [DeviceClasses.WEBAUTHN]
 
 
-class AuthenticatorChallenge(WithUserInfoChallenge):
+class AuthenticatorValidationChallenge(WithUserInfoChallenge):
     """Authenticator challenge"""
 
     device_challenges = ListField(child=DeviceChallenge())
+    component = CharField(default="ak-stage-authenticator-validate")
 
 
-class AuthenticatorChallengeResponse(ChallengeResponse):
+class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     """Challenge used for Code-based and WebAuthn authenticators"""
 
     code = CharField(required=False)
     webauthn = JSONField(required=False)
+    duo = IntegerField(required=False)
+    component = CharField(default="ak-stage-authenticator-validate")
 
-    def validate_code(self, code: str) -> str:
-        """Validate code-based response, raise error if code isn't allowed"""
+    def _challenge_allowed(self, classes: list):
         device_challenges: list[dict] = self.stage.request.session.get(
             "device_challenges"
         )
-        if not any(
-            x["device_class"] in (DeviceClasses.TOTP, DeviceClasses.STATIC)
-            for x in device_challenges
-        ):
-            raise ValidationError("Got code but no compatible device class allowed")
+        if not any(x["device_class"] in classes for x in device_challenges):
+            raise ValidationError("No compatible device class allowed")
+
+    def validate_code(self, code: str) -> str:
+        """Validate code-based response, raise error if code isn't allowed"""
+        self._challenge_allowed([DeviceClasses.TOTP, DeviceClasses.STATIC])
         return validate_challenge_code(
             code, self.stage.request, self.stage.get_pending_user()
         )
@@ -58,21 +62,22 @@ class AuthenticatorChallengeResponse(ChallengeResponse):
     def validate_webauthn(self, webauthn: dict) -> dict:
         """Validate webauthn response, raise error if webauthn wasn't allowed
         or response is invalid"""
-        device_challenges: list[dict] = self.stage.request.session.get(
-            "device_challenges"
-        )
-        if not any(
-            x["device_class"] in (DeviceClasses.WEBAUTHN) for x in device_challenges
-        ):
-            raise ValidationError("Got webauthn but no compatible device class allowed")
+        self._challenge_allowed([DeviceClasses.WEBAUTHN])
         return validate_challenge_webauthn(
             webauthn, self.stage.request, self.stage.get_pending_user()
+        )
+
+    def validate_duo(self, duo: int) -> int:
+        """Initiate Duo authentication"""
+        self._challenge_allowed([DeviceClasses.DUO])
+        return validate_challenge_duo(
+            duo, self.stage.request, self.stage.get_pending_user()
         )
 
     def validate(self, data: dict):
         # Checking if the given data is from a valid device class is done above
         # Here we only check if the any data was sent at all
-        if "code" not in data and "webauthn" not in data:
+        if "code" not in data and "webauthn" not in data and "duo" not in data:
             raise ValidationError("Empty response")
         return data
 
@@ -80,7 +85,7 @@ class AuthenticatorChallengeResponse(ChallengeResponse):
 class AuthenticatorValidateStageView(ChallengeStageView):
     """Authenticator Validation"""
 
-    response_class = AuthenticatorChallengeResponse
+    response_class = AuthenticatorValidationChallengeResponse
 
     def get_device_challenges(self) -> list[dict]:
         """Get a list of all device challenges applicable for the current stage"""
@@ -141,19 +146,18 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 return self.executor.stage_ok()
         return super().get(request, *args, **kwargs)
 
-    def get_challenge(self) -> AuthenticatorChallenge:
+    def get_challenge(self) -> AuthenticatorValidationChallenge:
         challenges = self.request.session["device_challenges"]
-        return AuthenticatorChallenge(
+        return AuthenticatorValidationChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-authenticator-validate",
                 "device_challenges": challenges,
             }
         )
 
     # pylint: disable=unused-argument
     def challenge_valid(
-        self, challenge: AuthenticatorChallengeResponse
+        self, challenge: AuthenticatorValidationChallengeResponse
     ) -> HttpResponse:
         # All validation is done by the serializer
         return self.executor.stage_ok()

@@ -167,6 +167,82 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/authenticators/admin/duo/:
+    get:
+      operationId: authenticators_admin_duo_list
+      description: Viewset for Duo authenticator devices (for admins)
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDuoDeviceList'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/authenticators/admin/duo/{id}/:
+    get:
+      operationId: authenticators_admin_duo_retrieve
+      description: Viewset for Duo authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Duo Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DuoDevice'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/authenticators/admin/static/:
     get:
       operationId: authenticators_admin_static_list
@@ -391,6 +467,179 @@ paths:
               schema:
                 $ref: '#/components/schemas/WebAuthnDevice'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/authenticators/duo/:
+    get:
+      operationId: authenticators_duo_list
+      description: Viewset for Duo authenticator devices
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDuoDeviceList'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/authenticators/duo/{id}/:
+    get:
+      operationId: authenticators_duo_retrieve
+      description: Viewset for Duo authenticator devices
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Duo Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DuoDevice'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    put:
+      operationId: authenticators_duo_update
+      description: Viewset for Duo authenticator devices
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Duo Device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DuoDeviceRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DuoDeviceRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DuoDeviceRequest'
+        required: true
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DuoDevice'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    patch:
+      operationId: authenticators_duo_partial_update
+      description: Viewset for Duo authenticator devices
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Duo Device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDuoDeviceRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDuoDeviceRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDuoDeviceRequest'
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DuoDevice'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    delete:
+      operationId: authenticators_duo_destroy
+      description: Viewset for Duo authenticator devices
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Duo Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -3520,7 +3769,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Challenge'
+                $ref: '#/components/schemas/FlowChallengeRequest'
           description: ''
         '404':
           description: No Token found
@@ -3550,16 +3799,13 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              additionalProperties: {}
+              $ref: '#/components/schemas/FlowChallengeResponseRequest'
           application/x-www-form-urlencoded:
             schema:
-              type: object
-              additionalProperties: {}
+              $ref: '#/components/schemas/FlowChallengeResponseRequest'
           multipart/form-data:
             schema:
-              type: object
-              additionalProperties: {}
+              $ref: '#/components/schemas/FlowChallengeResponseRequest'
       security:
       - authentik: []
       - cookieAuth: []
@@ -3569,7 +3815,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Challenge'
+                $ref: '#/components/schemas/FlowChallengeRequest'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
@@ -10759,6 +11005,236 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/authenticator/duo/:
+    get:
+      operationId: stages_authenticator_duo_list
+      description: AuthenticatorDuoStage Viewset
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAuthenticatorDuoStageList'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    post:
+      operationId: stages_authenticator_duo_create
+      description: AuthenticatorDuoStage Viewset
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticatorDuoStageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AuthenticatorDuoStageRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AuthenticatorDuoStageRequest'
+        required: true
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatorDuoStage'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/authenticator/duo/{stage_uuid}/:
+    get:
+      operationId: stages_authenticator_duo_retrieve
+      description: AuthenticatorDuoStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Duo Authenticator Setup Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatorDuoStage'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    put:
+      operationId: stages_authenticator_duo_update
+      description: AuthenticatorDuoStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Duo Authenticator Setup Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticatorDuoStageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AuthenticatorDuoStageRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AuthenticatorDuoStageRequest'
+        required: true
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatorDuoStage'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    patch:
+      operationId: stages_authenticator_duo_partial_update
+      description: AuthenticatorDuoStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Duo Authenticator Setup Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAuthenticatorDuoStageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAuthenticatorDuoStageRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAuthenticatorDuoStageRequest'
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatorDuoStage'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    delete:
+      operationId: stages_authenticator_duo_destroy
+      description: AuthenticatorDuoStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Duo Authenticator Setup Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/authenticator/duo/{stage_uuid}/enrollment_status/:
+    post:
+      operationId: stages_authenticator_duo_enrollment_status_create
+      description: Check enrollment status of user details in current session
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Duo Authenticator Setup Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: Enrollment successful
+        '420':
+          description: Enrollment pending/failed
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/authenticator/static/:
     get:
       operationId: stages_authenticator_static_list
@@ -14694,6 +15170,29 @@ paths:
           $ref: '#/components/schemas/GenericError'
 components:
   schemas:
+    AccessDeniedChallenge:
+      type: object
+      description: Challenge when a flow's active stage calls `stage_invalid()`.
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        title:
+          type: string
+        background:
+          type: string
+        component:
+          type: string
+          default: ak-stage-access-denied
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        error_message:
+          type: string
+      required:
+      - type
     ActionEnum:
       enum:
       - login
@@ -14757,6 +15256,7 @@ components:
       - authentik.sources.oauth
       - authentik.sources.plex
       - authentik.sources.saml
+      - authentik.stages.authenticator_duo
       - authentik.stages.authenticator_static
       - authentik.stages.authenticator_totp
       - authentik.stages.authenticator_validate
@@ -14907,6 +15407,158 @@ components:
             If empty, user will not be able to configure this stage.
       required:
       - name
+    AuthenticatorDuoChallenge:
+      type: object
+      description: Duo Challenge
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        title:
+          type: string
+        background:
+          type: string
+        component:
+          type: string
+          default: ak-stage-authenticator-duo
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
+        activation_barcode:
+          type: string
+        activation_code:
+          type: string
+        stage_uuid:
+          type: string
+      required:
+      - activation_barcode
+      - activation_code
+      - pending_user
+      - pending_user_avatar
+      - stage_uuid
+      - type
+    AuthenticatorDuoChallengeResponseRequest:
+      type: object
+      description: Pseudo class for duo response
+      properties:
+        component:
+          type: string
+          default: ak-stage-authenticator-duo
+    AuthenticatorDuoStage:
+      type: object
+      description: AuthenticatorDuoStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          readOnly: true
+        verbose_name:
+          type: string
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/Flow'
+        configure_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used by an authenticated user to configure this Stage.
+            If empty, user will not be able to configure this stage.
+        client_id:
+          type: string
+        api_hostname:
+          type: string
+      required:
+      - api_hostname
+      - client_id
+      - component
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    AuthenticatorDuoStageRequest:
+      type: object
+      description: AuthenticatorDuoStage Serializer
+      properties:
+        name:
+          type: string
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowRequest'
+        configure_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used by an authenticated user to configure this Stage.
+            If empty, user will not be able to configure this stage.
+        client_id:
+          type: string
+        client_secret:
+          type: string
+          writeOnly: true
+        api_hostname:
+          type: string
+      required:
+      - api_hostname
+      - client_id
+      - client_secret
+      - name
+    AuthenticatorStaticChallenge:
+      type: object
+      description: Static authenticator challenge
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        title:
+          type: string
+        background:
+          type: string
+        component:
+          type: string
+          default: ak-stage-authenticator-static
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
+        codes:
+          type: array
+          items:
+            type: string
+      required:
+      - codes
+      - pending_user
+      - pending_user_avatar
+      - type
+    AuthenticatorStaticChallengeResponseRequest:
+      type: object
+      description: Pseudo class for static response
+      properties:
+        component:
+          type: string
+          default: ak-stage-authenticator-static
     AuthenticatorStaticStage:
       type: object
       description: AuthenticatorStaticStage Serializer
@@ -14969,6 +15621,47 @@ components:
           minimum: -2147483648
       required:
       - name
+    AuthenticatorTOTPChallenge:
+      type: object
+      description: TOTP Setup challenge
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        title:
+          type: string
+        background:
+          type: string
+        component:
+          type: string
+          default: ak-stage-authenticator-totp
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
+        config_url:
+          type: string
+      required:
+      - config_url
+      - pending_user
+      - pending_user_avatar
+      - type
+    AuthenticatorTOTPChallengeResponseRequest:
+      type: object
+      description: TOTP Challenge response, device is set by get_response_instance
+      properties:
+        component:
+          type: string
+          default: ak-stage-authenticator-totp
+        code:
+          type: integer
+      required:
+      - code
     AuthenticatorTOTPStage:
       type: object
       description: AuthenticatorTOTPStage Serializer
@@ -15105,6 +15798,131 @@ components:
             is not prompted again.
       required:
       - name
+    AuthenticatorValidationChallenge:
+      type: object
+      description: Authenticator challenge
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        title:
+          type: string
+        background:
+          type: string
+        component:
+          type: string
+          default: ak-stage-authenticator-validate
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
+        device_challenges:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceChallenge'
+      required:
+      - device_challenges
+      - pending_user
+      - pending_user_avatar
+      - type
+    AuthenticatorValidationChallengeResponseRequest:
+      type: object
+      description: Challenge used for Code-based and WebAuthn authenticators
+      properties:
+        component:
+          type: string
+          default: ak-stage-authenticator-validate
+        code:
+          type: string
+        webauthn:
+          type: object
+          additionalProperties: {}
+        duo:
+          type: integer
+    AuthenticatorWebAuthnChallenge:
+      type: object
+      description: WebAuthn Challenge
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        title:
+          type: string
+        background:
+          type: string
+        component:
+          type: string
+          default: ak-stage-authenticator-webauthn
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
+        registration:
+          type: object
+          additionalProperties: {}
+      required:
+      - pending_user
+      - pending_user_avatar
+      - registration
+      - type
+    AuthenticatorWebAuthnChallengeResponseRequest:
+      type: object
+      description: WebAuthn Challenge response
+      properties:
+        component:
+          type: string
+          default: ak-stage-authenticator-webauthn
+        response:
+          type: object
+          additionalProperties: {}
+      required:
+      - response
+    AutoSubmitChallengeResponseRequest:
+      type: object
+      description: Pseudo class for autosubmit response
+      properties:
+        component:
+          type: string
+          default: ak-stage-autosubmit
+    AutosubmitChallenge:
+      type: object
+      description: Autosubmit challenge used to send and navigate a POST request
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        title:
+          type: string
+        background:
+          type: string
+        component:
+          type: string
+          default: ak-stage-autosubmit
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        url:
+          type: string
+        attrs:
+          type: object
+          additionalProperties:
+            type: string
+      required:
+      - attrs
+      - type
+      - url
     BackendsEnum:
       enum:
       - django.contrib.auth.backends.ModelBackend
@@ -15129,6 +15947,47 @@ components:
       enum:
       - can_save_media
       type: string
+    CaptchaChallenge:
+      type: object
+      description: Site public key
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        title:
+          type: string
+        background:
+          type: string
+        component:
+          type: string
+          default: ak-stage-captcha
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
+        site_key:
+          type: string
+      required:
+      - pending_user
+      - pending_user_avatar
+      - site_key
+      - type
+    CaptchaChallengeResponseRequest:
+      type: object
+      description: Validate captcha token
+      properties:
+        component:
+          type: string
+          default: ak-stage-captcha
+        token:
+          type: string
+      required:
+      - token
     CaptchaStage:
       type: object
       description: CaptchaStage Serializer
@@ -15255,28 +16114,6 @@ components:
       required:
       - certificate_data
       - name
-    Challenge:
-      type: object
-      description: |-
-        Challenge that gets sent to the client based on which stage
-        is currently active
-      properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
-        component:
-          type: string
-        title:
-          type: string
-        background:
-          type: string
-        response_errors:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              $ref: '#/components/schemas/ErrorDetail'
-      required:
-      - type
     ChallengeChoices:
       enum:
       - native
@@ -15324,6 +16161,48 @@ components:
       - error_reporting_environment
       - error_reporting_send_pii
       - ui_footer_links
+    ConsentChallenge:
+      type: object
+      description: Challenge info for consent screens
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        title:
+          type: string
+        background:
+          type: string
+        component:
+          type: string
+          default: ak-stage-consent
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
+        header_text:
+          type: string
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+      required:
+      - header_text
+      - pending_user
+      - pending_user_avatar
+      - permissions
+      - type
+    ConsentChallengeResponseRequest:
+      type: object
+      description: Consent challenge response, any valid response request is valid
+      properties:
+        component:
+          type: string
+          default: ak-stage-consent
     ConsentStage:
       type: object
       description: ConsentStage Serializer
@@ -15439,11 +16318,27 @@ components:
             $ref: '#/components/schemas/FlowRequest'
       required:
       - name
+    DeviceChallenge:
+      type: object
+      description: Single device challenge
+      properties:
+        device_class:
+          type: string
+        device_uid:
+          type: string
+        challenge:
+          type: object
+          additionalProperties: {}
+      required:
+      - challenge
+      - device_class
+      - device_uid
     DeviceClassesEnum:
       enum:
       - static
       - totp
       - webauthn
+      - duo
       type: string
     DigestAlgorithmEnum:
       enum:
@@ -15535,6 +16430,34 @@ components:
       required:
       - name
       - url
+    DummyChallenge:
+      type: object
+      description: Dummy challenge
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        title:
+          type: string
+        background:
+          type: string
+        component:
+          type: string
+          default: ak-stage-dummy
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+      required:
+      - type
+    DummyChallengeResponseRequest:
+      type: object
+      description: Dummy challenge response
+      properties:
+        component:
+          type: string
+          default: ak-stage-dummy
     DummyPolicy:
       type: object
       description: Dummy Policy Serializer
@@ -15642,6 +16565,61 @@ components:
             $ref: '#/components/schemas/FlowRequest'
       required:
       - name
+    DuoDevice:
+      type: object
+      description: Serializer for Duo authenticator devices
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+          description: The human-readable name of this device.
+          maxLength: 64
+      required:
+      - name
+      - pk
+    DuoDeviceRequest:
+      type: object
+      description: Serializer for Duo authenticator devices
+      properties:
+        name:
+          type: string
+          description: The human-readable name of this device.
+          maxLength: 64
+      required:
+      - name
+    EmailChallenge:
+      type: object
+      description: Email challenge
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        title:
+          type: string
+        background:
+          type: string
+        component:
+          type: string
+          default: ak-stage-email
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+      required:
+      - type
+    EmailChallengeResponseRequest:
+      type: object
+      description: |-
+        Email challenge resposen. No fields. This challenge is
+        always declared invalid to give the user a chance to retry
+      properties:
+        component:
+          type: string
+          default: ak-stage-email
     EmailStage:
       type: object
       description: EmailStage Serializer
@@ -16049,6 +17027,78 @@ components:
       - slug
       - stages
       - title
+    FlowChallengeRequest:
+      oneOf:
+      - $ref: '#/components/schemas/AccessDeniedChallenge'
+      - $ref: '#/components/schemas/AuthenticatorDuoChallenge'
+      - $ref: '#/components/schemas/AuthenticatorStaticChallenge'
+      - $ref: '#/components/schemas/AuthenticatorTOTPChallenge'
+      - $ref: '#/components/schemas/AuthenticatorValidationChallenge'
+      - $ref: '#/components/schemas/AuthenticatorWebAuthnChallenge'
+      - $ref: '#/components/schemas/AutosubmitChallenge'
+      - $ref: '#/components/schemas/CaptchaChallenge'
+      - $ref: '#/components/schemas/ConsentChallenge'
+      - $ref: '#/components/schemas/DummyChallenge'
+      - $ref: '#/components/schemas/EmailChallenge'
+      - $ref: '#/components/schemas/IdentificationChallenge'
+      - $ref: '#/components/schemas/PasswordChallenge'
+      - $ref: '#/components/schemas/PlexAuthenticationChallenge'
+      - $ref: '#/components/schemas/PromptChallenge'
+      - $ref: '#/components/schemas/RedirectChallenge'
+      - $ref: '#/components/schemas/ShellChallenge'
+      discriminator:
+        propertyName: component
+        mapping:
+          ak-stage-access-denied: '#/components/schemas/AccessDeniedChallenge'
+          ak-stage-authenticator-duo: '#/components/schemas/AuthenticatorDuoChallenge'
+          ak-stage-authenticator-static: '#/components/schemas/AuthenticatorStaticChallenge'
+          ak-stage-authenticator-totp: '#/components/schemas/AuthenticatorTOTPChallenge'
+          ak-stage-authenticator-validate: '#/components/schemas/AuthenticatorValidationChallenge'
+          ak-stage-authenticator-webauthn: '#/components/schemas/AuthenticatorWebAuthnChallenge'
+          ak-stage-autosubmit: '#/components/schemas/AutosubmitChallenge'
+          ak-stage-captcha: '#/components/schemas/CaptchaChallenge'
+          ak-stage-consent: '#/components/schemas/ConsentChallenge'
+          ak-stage-dummy: '#/components/schemas/DummyChallenge'
+          ak-stage-email: '#/components/schemas/EmailChallenge'
+          ak-stage-identification: '#/components/schemas/IdentificationChallenge'
+          ak-stage-password: '#/components/schemas/PasswordChallenge'
+          ak-flow-sources-plex: '#/components/schemas/PlexAuthenticationChallenge'
+          ak-stage-prompt: '#/components/schemas/PromptChallenge'
+          xak-flow-redirect: '#/components/schemas/RedirectChallenge'
+          xak-flow-shell: '#/components/schemas/ShellChallenge'
+    FlowChallengeResponseRequest:
+      oneOf:
+      - $ref: '#/components/schemas/AuthenticatorDuoChallengeResponseRequest'
+      - $ref: '#/components/schemas/AuthenticatorStaticChallengeResponseRequest'
+      - $ref: '#/components/schemas/AuthenticatorTOTPChallengeResponseRequest'
+      - $ref: '#/components/schemas/AuthenticatorValidationChallengeResponseRequest'
+      - $ref: '#/components/schemas/AuthenticatorWebAuthnChallengeResponseRequest'
+      - $ref: '#/components/schemas/AutoSubmitChallengeResponseRequest'
+      - $ref: '#/components/schemas/CaptchaChallengeResponseRequest'
+      - $ref: '#/components/schemas/ConsentChallengeResponseRequest'
+      - $ref: '#/components/schemas/DummyChallengeResponseRequest'
+      - $ref: '#/components/schemas/EmailChallengeResponseRequest'
+      - $ref: '#/components/schemas/IdentificationChallengeResponseRequest'
+      - $ref: '#/components/schemas/PasswordChallengeResponseRequest'
+      - $ref: '#/components/schemas/PlexAuthenticationChallengeResponseRequest'
+      - $ref: '#/components/schemas/PromptChallengeResponseRequest'
+      discriminator:
+        propertyName: component
+        mapping:
+          ak-stage-authenticator-duo: '#/components/schemas/AuthenticatorDuoChallengeResponseRequest'
+          ak-stage-authenticator-static: '#/components/schemas/AuthenticatorStaticChallengeResponseRequest'
+          ak-stage-authenticator-totp: '#/components/schemas/AuthenticatorTOTPChallengeResponseRequest'
+          ak-stage-authenticator-validate: '#/components/schemas/AuthenticatorValidationChallengeResponseRequest'
+          ak-stage-authenticator-webauthn: '#/components/schemas/AuthenticatorWebAuthnChallengeResponseRequest'
+          ak-stage-autosubmit: '#/components/schemas/AutoSubmitChallengeResponseRequest'
+          ak-stage-captcha: '#/components/schemas/CaptchaChallengeResponseRequest'
+          ak-stage-consent: '#/components/schemas/ConsentChallengeResponseRequest'
+          ak-stage-dummy: '#/components/schemas/DummyChallengeResponseRequest'
+          ak-stage-email: '#/components/schemas/EmailChallengeResponseRequest'
+          ak-stage-identification: '#/components/schemas/IdentificationChallengeResponseRequest'
+          ak-stage-password: '#/components/schemas/PasswordChallengeResponseRequest'
+          ak-flow-sources-plex: '#/components/schemas/PlexAuthenticationChallengeResponseRequest'
+          ak-stage-prompt: '#/components/schemas/PromptChallengeResponseRequest'
     FlowDesignationEnum:
       enum:
       - authentication
@@ -16338,6 +17388,57 @@ components:
           minimum: -2147483648
       required:
       - ip
+    IdentificationChallenge:
+      type: object
+      description: Identification challenges with all UI elements
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        title:
+          type: string
+        background:
+          type: string
+        component:
+          type: string
+          default: ak-stage-identification
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        user_fields:
+          type: array
+          items:
+            type: string
+          nullable: true
+        application_pre:
+          type: string
+        enroll_url:
+          type: string
+        recovery_url:
+          type: string
+        primary_action:
+          type: string
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/UILoginButton'
+      required:
+      - primary_action
+      - type
+      - user_fields
+    IdentificationChallengeResponseRequest:
+      type: object
+      description: Identification challenge
+      properties:
+        component:
+          type: string
+          default: ak-stage-identification
+        uid_field:
+          type: string
+      required:
+      - uid_field
     IdentificationStage:
       type: object
       description: IdentificationStage Serializer
@@ -17728,6 +18829,41 @@ components:
       required:
       - pagination
       - results
+    PaginatedAuthenticatorDuoStageList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticatorDuoStage'
+      required:
+      - pagination
+      - results
     PaginatedAuthenticatorStaticStageList:
       type: object
       properties:
@@ -18075,6 +19211,41 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DummyStage'
+      required:
+      - pagination
+      - results
+    PaginatedDuoDeviceList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DuoDevice'
       required:
       - pagination
       - results
@@ -20038,6 +21209,46 @@ components:
       required:
       - pagination
       - results
+    PasswordChallenge:
+      type: object
+      description: Password challenge UI fields
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        title:
+          type: string
+        background:
+          type: string
+        component:
+          type: string
+          default: ak-stage-password
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
+        recovery_url:
+          type: string
+      required:
+      - pending_user
+      - pending_user_avatar
+      - type
+    PasswordChallengeResponseRequest:
+      type: object
+      description: Password challenge response
+      properties:
+        component:
+          type: string
+          default: ak-stage-password
+        password:
+          type: string
+      required:
+      - password
     PasswordExpiryPolicy:
       type: object
       description: Password Expiry Policy Serializer
@@ -20315,6 +21526,29 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+    PatchedAuthenticatorDuoStageRequest:
+      type: object
+      description: AuthenticatorDuoStage Serializer
+      properties:
+        name:
+          type: string
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowRequest'
+        configure_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used by an authenticated user to configure this Stage.
+            If empty, user will not be able to configure this stage.
+        client_id:
+          type: string
+        client_secret:
+          type: string
+          writeOnly: true
+        api_hostname:
+          type: string
     PatchedAuthenticatorStaticStageRequest:
       type: object
       description: AuthenticatorStaticStage Serializer
@@ -20496,6 +21730,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowRequest'
+    PatchedDuoDeviceRequest:
+      type: object
+      description: Serializer for Duo authenticator devices
+      properties:
+        name:
+          type: string
+          description: The human-readable name of this device.
+          maxLength: 64
     PatchedEmailStageRequest:
       type: object
       description: EmailStage Serializer
@@ -21678,6 +22920,51 @@ components:
         name:
           type: string
           maxLength: 200
+    Permission:
+      type: object
+      description: Permission used for consent
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+      required:
+      - id
+      - name
+    PlexAuthenticationChallenge:
+      type: object
+      description: Challenge shown to the user in identification stage
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        title:
+          type: string
+        background:
+          type: string
+        component:
+          type: string
+          default: ak-flow-sources-plex
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        client_id:
+          type: string
+        slug:
+          type: string
+      required:
+      - client_id
+      - slug
+      - type
+    PlexAuthenticationChallengeResponseRequest:
+      type: object
+      description: Pseudo class for plex response
+      properties:
+        component:
+          type: string
+          default: ak-flow-sources-plex
     PlexSource:
       type: object
       description: Plex Source Serializer
@@ -21999,6 +23286,42 @@ components:
       - label
       - pk
       - type
+    PromptChallenge:
+      type: object
+      description: Initial challenge being sent, define fields
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        title:
+          type: string
+        background:
+          type: string
+        component:
+          type: string
+          default: ak-stage-prompt
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/StagePrompt'
+      required:
+      - fields
+      - type
+    PromptChallengeResponseRequest:
+      type: object
+      description: |-
+        Validate response, fields are dynamically created based
+        on the stage
+      properties:
+        component:
+          type: string
+          default: ak-stage-prompt
+      additionalProperties: {}
     PromptRequest:
       type: object
       description: Prompt Serializer
@@ -22429,12 +23752,13 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/ChallengeChoices'
-        component:
-          type: string
         title:
           type: string
         background:
           type: string
+        component:
+          type: string
+          default: xak-flow-redirect
         response_errors:
           type: object
           additionalProperties:
@@ -23102,6 +24426,30 @@ components:
       - warning
       - alert
       type: string
+    ShellChallenge:
+      type: object
+      description: challenge type to render HTML as-is
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        title:
+          type: string
+        background:
+          type: string
+        component:
+          type: string
+          default: xak-flow-shell
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        body:
+          type: string
+      required:
+      - body
+      - type
     SignatureAlgorithmEnum:
       enum:
       - http://www.w3.org/2000/09/xmldsig#rsa-sha1
@@ -23231,6 +24579,29 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    StagePrompt:
+      type: object
+      description: Serializer for a single Prompt field
+      properties:
+        field_key:
+          type: string
+        label:
+          type: string
+        type:
+          type: string
+        required:
+          type: boolean
+        placeholder:
+          type: string
+        order:
+          type: integer
+      required:
+      - field_key
+      - label
+      - order
+      - placeholder
+      - required
+      - type
     StageRequest:
       type: object
       description: Stage Serializer
@@ -23457,6 +24828,21 @@ components:
       - component
       - description
       - model_name
+      - name
+    UILoginButton:
+      type: object
+      description: Serializer for Login buttons of sources
+      properties:
+        name:
+          type: string
+        challenge:
+          type: object
+          additionalProperties: {}
+        icon_url:
+          type: string
+          nullable: true
+      required:
+      - challenge
       - name
     User:
       type: object

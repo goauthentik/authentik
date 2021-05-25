@@ -60,7 +60,11 @@ class TestUserWriteStage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
+            {
+                "component": "xak-flow-redirect",
+                "to": reverse("authentik_core:root-redirect"),
+                "type": ChallengeTypes.REDIRECT.value,
+            },
         )
         user_qs = User.objects.filter(
             username=plan.context[PLAN_CONTEXT_PROMPT]["username"]
@@ -97,7 +101,11 @@ class TestUserWriteStage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
+            {
+                "component": "xak-flow-redirect",
+                "to": reverse("authentik_core:root-redirect"),
+                "type": ChallengeTypes.REDIRECT.value,
+            },
         )
         user_qs = User.objects.filter(
             username=plan.context[PLAN_CONTEXT_PROMPT]["username"]

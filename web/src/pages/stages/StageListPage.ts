@@ -15,6 +15,7 @@ import { Stage, StagesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 
+import "./authenticator_duo/AuthenticatorDuoStageForm.ts";
 import "./authenticator_static/AuthenticatorStaticStageForm.ts";
 import "./authenticator_totp/AuthenticatorTOTPStageForm.ts";
 import "./authenticator_validate/AuthenticatorValidateStageForm.ts";

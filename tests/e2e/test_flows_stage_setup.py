@@ -19,6 +19,7 @@ class TestFlowsStageSetup(SeleniumTestCase):
     @retry()
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_stages_password", "0002_passwordstage_change_flow")
     def test_password_change(self):
         """test password change flow"""

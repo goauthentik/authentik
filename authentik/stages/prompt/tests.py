@@ -6,13 +6,14 @@ from django.urls import reverse
 from django.utils.encoding import force_str
 
 from authentik.core.models import User
+from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
-from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT, PromptResponseChallenge
+from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT, PromptChallengeResponse
 
 
 class TestPromptStage(TestCase):
@@ -111,7 +112,7 @@ class TestPromptStage(TestCase):
             self.assertIn(prompt.label, force_str(response.content))
             self.assertIn(prompt.placeholder, force_str(response.content))
 
-    def test_valid_challenge_with_policy(self) -> PromptResponseChallenge:
+    def test_valid_challenge_with_policy(self) -> PromptChallengeResponse:
         """Test challenge_response validation"""
         plan = FlowPlan(
             flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
@@ -122,13 +123,13 @@ class TestPromptStage(TestCase):
         )
         self.stage.validation_policies.set([expr_policy])
         self.stage.save()
-        challenge_response = PromptResponseChallenge(
+        challenge_response = PromptChallengeResponse(
             None, stage=self.stage, plan=plan, data=self.prompt_data
         )
         self.assertEqual(challenge_response.is_valid(), True)
         return challenge_response
 
-    def test_invalid_challenge(self) -> PromptResponseChallenge:
+    def test_invalid_challenge(self) -> PromptChallengeResponse:
         """Test challenge_response validation"""
         plan = FlowPlan(
             flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
@@ -139,7 +140,7 @@ class TestPromptStage(TestCase):
         )
         self.stage.validation_policies.set([expr_policy])
         self.stage.save()
-        challenge_response = PromptResponseChallenge(
+        challenge_response = PromptChallengeResponse(
             None, stage=self.stage, plan=plan, data=self.prompt_data
         )
         self.assertEqual(challenge_response.is_valid(), False)
@@ -167,7 +168,11 @@ class TestPromptStage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
+            {
+                "component": "xak-flow-redirect",
+                "to": reverse("authentik_core:root-redirect"),
+                "type": ChallengeTypes.REDIRECT.value,
+            },
         )
 
         # Check that valid data has been saved

@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 import { css, CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import { WithUserInfoChallenge } from "../../../api/Flows";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -11,40 +10,26 @@ import AKGlobal from "../../../authentik.css";
 import { BaseStage, StageHost } from "../base";
 import "./AuthenticatorValidateStageWebAuthn";
 import "./AuthenticatorValidateStageCode";
+import "./AuthenticatorValidateStageDuo";
 import { PasswordManagerPrefill } from "../identification/IdentificationStage";
+import { AuthenticatorValidationChallengeResponseRequest, DeviceChallenge } from "authentik-api";
+import { AuthenticatorValidationChallenge } from "authentik-api/dist/models/AuthenticatorValidationChallenge";
 
 export enum DeviceClasses {
     STATIC = "static",
     TOTP = "totp",
     WEBAUTHN = "webauthn",
-}
-
-export interface DeviceChallenge {
-    device_class: DeviceClasses;
-    device_uid: string;
-    challenge: unknown;
-}
-
-export interface AuthenticatorValidateStageChallenge extends WithUserInfoChallenge {
-    device_challenges: DeviceChallenge[];
-}
-
-export interface AuthenticatorValidateStageChallengeResponse {
-    code: string;
-    webauthn: string;
+    DUO = "duo",
 }
 
 @customElement("ak-stage-authenticator-validate")
-export class AuthenticatorValidateStage extends BaseStage implements StageHost {
-
-    @property({ attribute: false })
-    challenge?: AuthenticatorValidateStageChallenge;
+export class AuthenticatorValidateStage extends BaseStage<AuthenticatorValidationChallenge, AuthenticatorValidationChallengeResponseRequest> implements StageHost {
 
     @property({attribute: false})
     selectedDeviceChallenge?: DeviceChallenge;
 
-    submit<T>(formData?: T): Promise<void> {
-        return this.host?.submit<T>(formData) || Promise.resolve();
+    submit(payload: AuthenticatorValidationChallengeResponseRequest): Promise<void> {
+        return this.host?.submit(payload) || Promise.resolve();
     }
 
     static get styles(): CSSResult[] {
@@ -76,7 +61,13 @@ export class AuthenticatorValidateStage extends BaseStage implements StageHost {
     }
 
     renderDevicePickerSingle(deviceChallenge: DeviceChallenge): TemplateResult {
-        switch (deviceChallenge.device_class) {
+        switch (deviceChallenge.deviceClass) {
+            case DeviceClasses.DUO:
+                return html`<i class="fas fa-mobile-alt"></i>
+                    <div class="right">
+                        <p>${t`Duo push-notifications`}</p>
+                        <small>${t`Receive a push notification on your phone to prove your identity.`}</small>
+                    </div>`;
             case DeviceClasses.WEBAUTHN:
                 return html`<i class="fas fa-mobile-alt"></i>
                     <div class="right">
@@ -115,7 +106,7 @@ export class AuthenticatorValidateStage extends BaseStage implements StageHost {
     renderDevicePicker(): TemplateResult {
         return html`
         <ul>
-            ${this.challenge?.device_challenges.map((challenges) => {
+            ${this.challenge?.deviceChallenges.map((challenges) => {
                 return html`<li>
                     <button class="pf-c-button authenticator-button" type="button" @click=${() => {
                         this.selectedDeviceChallenge = challenges;
@@ -131,23 +122,31 @@ export class AuthenticatorValidateStage extends BaseStage implements StageHost {
         if (!this.selectedDeviceChallenge) {
             return html``;
         }
-        switch (this.selectedDeviceChallenge?.device_class) {
+        switch (this.selectedDeviceChallenge?.deviceClass) {
         case DeviceClasses.STATIC:
         case DeviceClasses.TOTP:
             return html`<ak-stage-authenticator-validate-code
                 .host=${this}
                 .challenge=${this.challenge}
                 .deviceChallenge=${this.selectedDeviceChallenge}
-                .showBackButton=${(this.challenge?.device_challenges.length || []) > 1}>
+                .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}>
             </ak-stage-authenticator-validate-code>`;
         case DeviceClasses.WEBAUTHN:
             return html`<ak-stage-authenticator-validate-webauthn
                 .host=${this}
                 .challenge=${this.challenge}
                 .deviceChallenge=${this.selectedDeviceChallenge}
-                .showBackButton=${(this.challenge?.device_challenges.length || []) > 1}>
+                .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}>
             </ak-stage-authenticator-validate-webauthn>`;
+        case DeviceClasses.DUO:
+            return html`<ak-stage-authenticator-validate-duo
+                .host=${this}
+                .challenge=${this.challenge}
+                .deviceChallenge=${this.selectedDeviceChallenge}
+                .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}>
+            </ak-stage-authenticator-validate-duo>`;
         }
+        return html``;
     }
 
     render(): TemplateResult {
@@ -158,8 +157,8 @@ export class AuthenticatorValidateStage extends BaseStage implements StageHost {
             </ak-empty-state>`;
         }
         // User only has a single device class, so we don't show a picker
-        if (this.challenge?.device_challenges.length === 1) {
-            this.selectedDeviceChallenge = this.challenge.device_challenges[0];
+        if (this.challenge?.deviceChallenges.length === 1) {
+            this.selectedDeviceChallenge = this.challenge.deviceChallenges[0];
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">

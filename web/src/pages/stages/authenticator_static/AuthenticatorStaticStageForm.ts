@@ -34,8 +34,8 @@ export class AuthenticatorStaticStageForm extends ModelForm<AuthenticatorStaticS
                 authenticatorStaticStageRequest: data
             });
         } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesUserWriteCreate({
-                userWriteStageRequest: data
+            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticCreate({
+                authenticatorStaticStageRequest: data
             });
         }
     };

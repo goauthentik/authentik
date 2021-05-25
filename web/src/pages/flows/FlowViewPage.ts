@@ -74,7 +74,7 @@ export class FlowViewPage extends LitElement {
                                                     new FlowsApi(DEFAULT_CONFIG).flowsInstancesExecuteRetrieve({
                                                         slug: this.flow.slug
                                                     }).then(link => {
-                                                        const finalURL = `${link.link}?next=/%23${window.location.href}`;
+                                                        const finalURL = `${link.link}?next=/%23${window.location.hash}`;
                                                         window.open(finalURL, "_blank");
                                                     });
                                                 }}>

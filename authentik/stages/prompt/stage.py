@@ -26,31 +26,38 @@ LOGGER = get_logger()
 PLAN_CONTEXT_PROMPT = "prompt_data"
 
 
-class PromptSerializer(PassiveSerializer):
+class StagePromptSerializer(PassiveSerializer):
     """Serializer for a single Prompt field"""
 
     field_key = CharField()
     label = CharField(allow_blank=True)
     type = CharField()
     required = BooleanField()
-    placeholder = CharField()
+    placeholder = CharField(allow_blank=True)
     order = IntegerField()
 
 
 class PromptChallenge(Challenge):
     """Initial challenge being sent, define fields"""
 
-    fields = PromptSerializer(many=True)
+    fields = StagePromptSerializer(many=True)
+    component = CharField(default="ak-stage-prompt")
 
 
-class PromptResponseChallenge(ChallengeResponse):
+class PromptChallengeResponse(ChallengeResponse):
     """Validate response, fields are dynamically created based
     on the stage"""
 
-    def __init__(self, *args, stage: PromptStage, plan: FlowPlan, **kwargs):
+    component = CharField(default="ak-stage-prompt")
+
+    def __init__(self, *args, **kwargs):
+        stage: PromptStage = kwargs.pop("stage", None)
+        plan: FlowPlan = kwargs.pop("plan", None)
         super().__init__(*args, **kwargs)
         self.stage = stage
         self.plan = plan
+        if not self.stage:
+            return
         # list() is called so we only load the fields once
         fields = list(self.stage.fields.all())
         for field in fields:
@@ -152,15 +159,14 @@ class ListPolicyEngine(PolicyEngine):
 class PromptStageView(ChallengeStageView):
     """Prompt Stage, save form data in plan context."""
 
-    response_class = PromptResponseChallenge
+    response_class = PromptChallengeResponse
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         fields = list(self.executor.current_stage.fields.all().order_by("order"))
         challenge = PromptChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-prompt",
-                "fields": [PromptSerializer(field).data for field in fields],
+                "fields": [StagePromptSerializer(field).data for field in fields],
             },
         )
         return challenge
@@ -168,7 +174,7 @@ class PromptStageView(ChallengeStageView):
     def get_response_instance(self, data: QueryDict) -> ChallengeResponse:
         if not self.executor.plan:
             raise ValueError
-        return PromptResponseChallenge(
+        return PromptChallengeResponse(
             instance=None,
             data=data,
             stage=self.executor.current_stage,

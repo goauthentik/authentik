@@ -91,9 +91,9 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                         </select>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`User fields`}
+                        label=${t`Device classes`}
                         ?required=${true}
-                        name="transports">
+                        name="deviceClasses">
                         <select name="users" class="pf-c-form-control" multiple>
                             <option value=${DeviceClassesEnum.Static} ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Static)}>
                                 ${t`Static Tokens`}
@@ -103,6 +103,9 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                             </option>
                             <option value=${DeviceClassesEnum.Webauthn} ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Webauthn)}>
                                 ${t`WebAuthn Authenticators`}
+                            </option>
+                            <option value=${DeviceClassesEnum.Duo} ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Duo)}>
+                                ${t`Duo Authenticators`}
                             </option>
                         </select>
                         <p class="pf-c-form__helper-text">${t`Device classes which can be used to authenticate.`}</p>

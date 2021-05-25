@@ -25,6 +25,7 @@ class AuthenticatorTOTPChallenge(WithUserInfoChallenge):
     """TOTP Setup challenge"""
 
     config_url = CharField()
+    component = CharField(default="ak-stage-authenticator-totp")
 
 
 class AuthenticatorTOTPChallengeResponse(ChallengeResponse):
@@ -33,6 +34,7 @@ class AuthenticatorTOTPChallengeResponse(ChallengeResponse):
     device: TOTPDevice
 
     code = IntegerField()
+    component = CharField(default="ak-stage-authenticator-totp")
 
     def validate_code(self, code: int) -> int:
         """Validate totp code"""
@@ -52,7 +54,6 @@ class AuthenticatorTOTPStageView(ChallengeStageView):
         return AuthenticatorTOTPChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-authenticator-totp",
                 "config_url": device.config_url,
             }
         )

@@ -131,6 +131,7 @@ class TestSourceOAuth2(SeleniumTestCase):
     @retry()
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0009_source_flows")
     @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
     @object_manager
@@ -188,6 +189,7 @@ class TestSourceOAuth2(SeleniumTestCase):
     @retry()
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0009_source_flows")
     @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
     @object_manager
@@ -228,6 +230,7 @@ class TestSourceOAuth2(SeleniumTestCase):
     @retry()
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0009_source_flows")
     @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
     @object_manager
@@ -318,6 +321,7 @@ class TestSourceOAuth1(SeleniumTestCase):
     @retry()
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0009_source_flows")
     @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
     @patch(

@@ -1,5 +1,4 @@
-import { CertificateGenerationRequest, CryptoApi } from "authentik-api";
-import { CertificateKeyPair } from "authentik-api/src";
+import { CertificateGenerationRequest, CertificateKeyPair, CryptoApi } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";

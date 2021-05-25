@@ -8,7 +8,6 @@ from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.utils.http import urlencode
-from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
@@ -134,10 +133,8 @@ class InitiateView(View):
             return bad_request_message(request, str(exc))
         injected_stages = []
         plan_kwargs = {
-            PLAN_CONTEXT_TITLE: _("Redirecting to %(app)s..." % {"app": source.name}),
-            PLAN_CONTEXT_CONSENT_TITLE: _(
-                "Redirecting to %(app)s..." % {"app": source.name}
-            ),
+            PLAN_CONTEXT_TITLE: f"Redirecting to {source.name}...",
+            PLAN_CONTEXT_CONSENT_TITLE: f"Redirecting to {source.name}...",
             PLAN_CONTEXT_ATTRS: {
                 "SAMLRequest": saml_request,
                 "RelayState": relay_state,

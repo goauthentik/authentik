@@ -18,7 +18,7 @@ LOGGER = get_logger()
 def token_from_header(raw_header: bytes) -> Optional[Token]:
     """raw_header in the Format of `Bearer dGVzdDp0ZXN0`"""
     auth_credentials = raw_header.decode()
-    if auth_credentials == "":
+    if auth_credentials == "" or " " not in auth_credentials:
         return None
     auth_type, auth_credentials = auth_credentials.split()
     if auth_type.lower() not in ["basic", "bearer"]:

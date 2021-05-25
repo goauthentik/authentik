@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import { Challenge } from "authentik-api";
+import { CSSResult, customElement, html, TemplateResult } from "lit-element";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -10,14 +9,10 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import AKGlobal from "../../../authentik.css";
 import { BaseStage } from "../base";
 import "../../../elements/EmptyState";
-
-export type EmailChallenge = Challenge;
+import { EmailChallenge, EmailChallengeResponseRequest } from "authentik-api";
 
 @customElement("ak-stage-email")
-export class EmailStage extends BaseStage {
-
-    @property({ attribute: false })
-    challenge?: EmailChallenge;
+export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponseRequest> {
 
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle, AKGlobal];

@@ -57,7 +57,7 @@ export class UserSettingsAuthenticatorTOTP extends BaseUserSettings {
     render(): TemplateResult {
         return html`<div class="pf-c-card">
             <div class="pf-c-card__title">
-                ${t`Static tokens`}
+                ${t`Time-based One-Time Passwords`}
             </div>
             ${until(new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsTotpList({}).then((devices) => {
                 return devices.results.length > 0 ? this.renderEnabled() : this.renderDisabled();

@@ -63,6 +63,10 @@ msgstr "ANY, any policy must match to grant access."
 msgid "ANY, any policy must match to include this stage access."
 msgstr "ANY, any policy must match to include this stage access."
 
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid "API Hostname"
+msgstr "API Hostname"
+
 #: src/elements/notifications/APIDrawer.ts
 msgid "API Requests"
 msgstr "API Requests"
@@ -179,6 +183,10 @@ msgstr "Allows/denys requests based on the users and/or the IPs reputation."
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Also known as Entity ID. Defaults the Metadata URL."
 msgstr "Also known as Entity ID. Defaults the Metadata URL."
+
+#: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
+msgid "Alternatively, if your current device has Duo installed, click on this link:"
+msgstr "Alternatively, if your current device has Duo installed, click on this link:"
 
 #: src/pages/stages/consent/ConsentStageForm.ts
 msgid "Always require consent"
@@ -522,6 +530,10 @@ msgstr "Check IP"
 msgid "Check Username"
 msgstr "Check Username"
 
+#: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
+msgid "Check status"
+msgstr "Check status"
+
 #: src/flows/stages/email/EmailStage.ts
 msgid "Check your Emails for a password reset link."
 msgstr "Check your Emails for a password reset link."
@@ -616,6 +628,7 @@ msgstr "Confidential clients are capable of maintaining the confidentiality of t
 msgid "Configuration"
 msgstr "Configuration"
 
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
@@ -715,6 +728,7 @@ msgstr "Context"
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageDuo.ts
 #: src/flows/stages/autosubmit/AutosubmitStage.ts
 #: src/flows/stages/consent/ConsentStage.ts
 #: src/flows/stages/dummy/DummyStage.ts
@@ -1011,6 +1025,10 @@ msgid "Determines how long a session lasts. Default of 0 seconds means that the 
 msgstr "Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed."
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "Device classes"
+msgstr "Device classes"
+
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Device classes which can be used to authenticate."
 msgstr "Device classes which can be used to authenticate."
 
@@ -1032,6 +1050,7 @@ msgstr "Digits"
 msgid "Disable"
 msgstr "Disable"
 
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts
 msgid "Disable Static Tokens"
 msgstr "Disable Static Tokens"
@@ -1069,6 +1088,22 @@ msgstr "Download Private key"
 #: src/pages/stages/dummy/DummyStageForm.ts
 msgid "Dummy stage used for testing. Shows a simple continue button and always passes."
 msgstr "Dummy stage used for testing. Shows a simple continue button and always passes."
+
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
+msgid "Duo"
+msgstr "Duo"
+
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "Duo Authenticators"
+msgstr "Duo Authenticators"
+
+#: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
+msgid "Duo activation"
+msgstr "Duo activation"
+
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
+msgid "Duo push-notifications"
+msgstr "Duo push-notifications"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Each provider has a different issuer, based on the application slug."
@@ -1159,6 +1194,7 @@ msgstr "Enable"
 msgid "Enable StartTLS"
 msgstr "Enable StartTLS"
 
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts
 msgid "Enable Static Tokens"
 msgstr "Enable Static Tokens"
@@ -1431,6 +1467,7 @@ msgstr "Flow used before authentication."
 msgid "Flow used by an authenticated user to configure their password. If empty, user will not be able to configure change their password."
 msgstr "Flow used by an authenticated user to configure their password. If empty, user will not be able to configure change their password."
 
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
@@ -1664,6 +1701,10 @@ msgstr "Include User claims from scopes in the id_token, for applications that d
 msgid "Include claims in id_token"
 msgstr "Include claims in id_token"
 
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid "Integration key"
+msgstr "Integration key"
+
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Internal Host"
 msgstr "Internal Host"
@@ -1803,10 +1844,12 @@ msgstr "Load servers"
 #: src/flows/FlowExecutor.ts
 #: src/flows/FlowExecutor.ts
 #: src/flows/access_denied/FlowAccessDenied.ts
+#: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageDuo.ts
 #: src/flows/stages/autosubmit/AutosubmitStage.ts
 #: src/flows/stages/captcha/CaptchaStage.ts
 #: src/flows/stages/consent/ConsentStage.ts
@@ -1866,6 +1909,7 @@ msgstr "Loading"
 #: src/pages/sources/saml/SAMLSourceForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
@@ -2041,6 +2085,7 @@ msgstr "My Applications"
 #: src/pages/sources/saml/SAMLSourceForm.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 #: src/pages/stages/StageListPage.ts
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
@@ -2173,9 +2218,11 @@ msgstr "Not found"
 msgid "Not synced yet."
 msgstr "Not synced yet."
 
+#: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageDuo.ts
 #: src/flows/stages/captcha/CaptchaStage.ts
 #: src/flows/stages/consent/ConsentStage.ts
 #: src/flows/stages/password/PasswordStage.ts
@@ -2617,6 +2664,10 @@ msgstr "RSA-SHA512"
 msgid "Re-evaluate policies"
 msgstr "Re-evaluate policies"
 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
+msgid "Receive a push notification on your phone to prove your identity."
+msgstr "Receive a push notification on your phone to prove your identity."
+
 #: src/pages/flows/FlowForm.ts
 msgid "Recovery"
 msgstr "Recovery"
@@ -2728,6 +2779,7 @@ msgid "Return home"
 msgstr "Return home"
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageDuo.ts
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn.ts
 msgid "Return to device picker"
 msgstr "Return to device picker"
@@ -2803,6 +2855,10 @@ msgstr "Scopes"
 #: src/elements/table/TableSearch.ts
 msgid "Search..."
 msgstr "Search..."
+
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid "Secret key"
+msgstr "Secret key"
 
 #: src/pages/events/EventInfo.ts
 msgid "Secret:"
@@ -3033,6 +3089,10 @@ msgstr "Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenti
 msgid "Stage used to configure a WebAutnn authenticator (i.e. Yubikey, FaceID/Windows Hello)."
 msgstr "Stage used to configure a WebAutnn authenticator (i.e. Yubikey, FaceID/Windows Hello)."
 
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid "Stage used to configure a duo-based authenticator. This stage should be used for configuration flows."
+msgstr "Stage used to configure a duo-based authenticator. This stage should be used for configuration flows."
+
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 msgid "Stage used to configure a static authenticator (i.e. static tokens). This stage should be used for configuration flows."
 msgstr "Stage used to configure a static authenticator (i.e. static tokens). This stage should be used for configuration flows."
@@ -3041,6 +3101,7 @@ msgstr "Stage used to configure a static authenticator (i.e. static tokens). Thi
 msgid "Stage used to validate any authenticator. This stage should be used during authentication or authorization flows."
 msgstr "Stage used to validate any authenticator. This stage should be used during authentication or authorization flows."
 
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
@@ -3074,7 +3135,7 @@ msgstr "State"
 msgid "Static Tokens"
 msgstr "Static Tokens"
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts
 msgid "Static tokens"
 msgstr "Static tokens"
 
@@ -3090,11 +3151,13 @@ msgstr "Statically deny the flow. To use this stage effectively, disable *Evalua
 msgid "Status"
 msgstr "Status"
 
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts
 msgid "Status: Disabled"
 msgstr "Status: Disabled"
 
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts
 msgid "Status: Enabled"
@@ -3204,6 +3267,7 @@ msgstr "Successfully created service-connection."
 msgid "Successfully created source."
 msgstr "Successfully created source."
 
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
@@ -3342,6 +3406,7 @@ msgstr "Successfully updated service-connection."
 msgid "Successfully updated source."
 msgstr "Successfully updated source."
 
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
@@ -3533,7 +3598,7 @@ msgstr "Time in minutes the token sent is valid."
 msgid "Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3)."
 msgstr "Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3)."
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts
 msgid "Time-based One-Time Passwords"
 msgstr "Time-based One-Time Passwords"
 
@@ -3893,7 +3958,6 @@ msgstr "User details"
 msgid "User events"
 msgstr "User events"
 
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "User fields"
 msgstr "User fields"

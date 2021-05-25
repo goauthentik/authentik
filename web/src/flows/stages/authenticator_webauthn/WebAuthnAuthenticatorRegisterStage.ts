@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import { WithUserInfoChallenge } from "../../../api/Flows";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -11,20 +10,14 @@ import AKGlobal from "../../../authentik.css";
 import { PFSize } from "../../../elements/Spinner";
 import { BaseStage } from "../base";
 import { Assertion, transformCredentialCreateOptions, transformNewAssertionForServer } from "./utils";
-
-export interface WebAuthnAuthenticatorRegisterChallenge extends WithUserInfoChallenge {
-    registration: PublicKeyCredentialCreationOptions;
-}
+import { AuthenticatorWebAuthnChallenge, AuthenticatorWebAuthnChallengeResponseRequest } from "authentik-api";
 
 export interface WebAuthnAuthenticatorRegisterChallengeResponse {
     response: Assertion;
 }
 
 @customElement("ak-stage-authenticator-webauthn")
-export class WebAuthnAuthenticatorRegisterStage extends BaseStage {
-
-    @property({ attribute: false })
-    challenge?: WebAuthnAuthenticatorRegisterChallenge;
+export class WebAuthnAuthenticatorRegisterStage extends BaseStage<AuthenticatorWebAuthnChallenge, AuthenticatorWebAuthnChallengeResponseRequest> {
 
     @property({type: Boolean})
     registerRunning = false;
@@ -42,7 +35,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage {
         }
         // convert certain members of the PublicKeyCredentialCreateOptions into
         // byte arrays as expected by the spec.
-        const publicKeyCredentialCreateOptions = transformCredentialCreateOptions(this.challenge?.registration);
+        const publicKeyCredentialCreateOptions = transformCredentialCreateOptions(this.challenge?.registration as PublicKeyCredentialCreationOptions);
 
         // request the authenticator(s) to create a new credential keypair.
         let credential;
@@ -106,8 +99,8 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage {
                         </div>`:
                     html`
                     <div class="pf-c-form__group pf-m-action">
-                        ${this.challenge?.response_errors ?
-                            html`<p class="pf-m-block">${this.challenge.response_errors["response"][0].string}</p>`:
+                        ${this.challenge?.responseErrors ?
+                            html`<p class="pf-m-block">${this.challenge.responseErrors["response"][0].string}</p>`:
                             html``}
                         <p class="pf-m-block">${this.registerMessage}</p>
                         <button class="pf-c-button pf-m-primary pf-m-block" @click=${() => {
