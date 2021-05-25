@@ -40,6 +40,7 @@ class TestFlowsEnroll(SeleniumTestCase):
     @retry()
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0011_flow_title")
     def test_enroll_2_step(self):
         """Test 2-step enroll flow"""
         # First stage fields
@@ -108,6 +109,7 @@ class TestFlowsEnroll(SeleniumTestCase):
     @retry()
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0011_flow_title")
     @override_settings(EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend")
     def test_enroll_email(self):
         """Test enroll with Email verification"""

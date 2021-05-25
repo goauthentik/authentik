@@ -12,6 +12,7 @@ class TestFlowsLogin(SeleniumTestCase):
     @retry()
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0011_flow_title")
     def test_login(self):
         """test default login flow"""
         self.driver.get(

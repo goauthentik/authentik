@@ -41,7 +41,7 @@ export class UserSettingsPage extends LitElement {
                 return html`<ak-user-settings-authenticator-webauthn objectId=${stage.objectUid} ?configureFlow=${stage.configureFlow}>
                 </ak-user-settings-authenticator-webauthn>`;
             case "ak-user-settings-password":
-                return html`<ak-user-settings-password objectId=${stage.objectUid} ?configureFlow=${stage.configureFlow}>
+                return html`<ak-user-settings-password objectId=${stage.objectUid}>
                 </ak-user-settings-password>`;
             case "ak-user-settings-authenticator-totp":
                 return html`<ak-user-settings-authenticator-totp objectId=${stage.objectUid} ?configureFlow=${stage.configureFlow}>
