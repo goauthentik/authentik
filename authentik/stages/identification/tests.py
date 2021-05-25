@@ -18,6 +18,9 @@ class TestIdentificationStage(TestCase):
         self.user = User.objects.create(username="unittest", email="test@beryju.org")
         self.client = Client()
 
+        # OAuthSource for the login view
+        source = OAuthSource.objects.create(name="test", slug="test")
+
         self.flow = Flow.objects.create(
             name="test-identification",
             slug="test-identification",
@@ -27,14 +30,13 @@ class TestIdentificationStage(TestCase):
             name="identification",
             user_fields=[UserFields.E_MAIL],
         )
+        self.stage.sources.set([source])
+        self.stage.save()
         FlowStageBinding.objects.create(
             target=self.flow,
             stage=self.stage,
             order=0,
         )
-
-        # OAuthSource for the login view
-        OAuthSource.objects.create(name="test", slug="test")
 
     def test_valid_render(self):
         """Test that View renders correctly"""

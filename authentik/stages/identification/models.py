@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 
+from authentik.core.models import Source
 from authentik.flows.models import Flow, Stage
 
 
@@ -69,6 +70,10 @@ class IdentificationStage(Stage):
         help_text=_(
             "Optional recovery flow, which is linked at the bottom of the page."
         ),
+    )
+
+    sources = models.ManyToManyField(
+        Source, default=list, help_text=_("Specify which sources should be shown.")
     )
 
     @property

@@ -17,6 +17,7 @@ class IdentificationStageSerializer(StageSerializer):
             "show_matched_user",
             "enrollment_flow",
             "recovery_flow",
+            "sources",
         ]
 
 

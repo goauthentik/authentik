@@ -17489,6 +17489,12 @@ components:
           nullable: true
           description: Optional recovery flow, which is linked at the bottom of the
             page.
+        sources:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Specify which sources should be shown.
       required:
       - component
       - name
@@ -17531,6 +17537,12 @@ components:
           nullable: true
           description: Optional recovery flow, which is linked at the bottom of the
             page.
+        sources:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Specify which sources should be shown.
       required:
       - name
     IntentEnum:
@@ -21952,6 +21964,12 @@ components:
           nullable: true
           description: Optional recovery flow, which is linked at the bottom of the
             page.
+        sources:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Specify which sources should be shown.
     PatchedInvitationRequest:
       type: object
       description: Invitation Serializer

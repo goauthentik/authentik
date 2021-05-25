@@ -111,7 +111,9 @@ class IdentificationStageView(ChallengeStageView):
         # Check all enabled source, add them if they have a UI Login button.
         ui_sources = []
         sources: list[Source] = (
-            Source.objects.filter(enabled=True).order_by("name").select_subclasses()
+            current_stage.sources.filter(enabled=True)
+            .order_by("name")
+            .select_subclasses()
         )
         for source in sources:
             ui_login_button = source.ui_login_button

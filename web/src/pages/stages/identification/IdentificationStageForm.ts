@@ -1,4 +1,4 @@
-import { FlowsApi, IdentificationStage, UserFieldsEnum, StagesApi, FlowsInstancesListDesignationEnum } from "authentik-api";
+import { FlowsApi, IdentificationStage, UserFieldsEnum, StagesApi, FlowsInstancesListDesignationEnum, SourcesApi } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -84,6 +84,23 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                             </label>
                         </div>
                         <p class="pf-c-form__helper-text">${t`When enabled, user fields are matched regardless of their casing.`}</p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Sources`}
+                        ?required=${true}
+                        name="sources">
+                        <select name="users" class="pf-c-form-control" multiple>
+                            ${until(new SourcesApi(DEFAULT_CONFIG).sourcesAllList({}).then(sources => {
+                                return sources.results.map(source => {
+                                    const selected = Array.from(this.instance?.sources || []).some(su => {
+                                        return su == source.pk;
+                                    });
+                                    return html`<option value=${ifDefined(source.pk)} ?selected=${selected}>${source.name}</option>`;
+                                });
+                            }), html`<option>${t`Loading...`}</option>`)}
+                        </select>
+                        <p class="pf-c-form__helper-text">${t`Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP.`}</p>
+                        <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="showMatchedUser">
                         <div class="pf-c-check">
