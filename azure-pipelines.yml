@@ -417,11 +417,15 @@ stages:
             repository: 'authentik/server'
             command: 'build'
             Dockerfile: 'Dockerfile'
-            tags: 'gh-$(branchName)'
+            tags: |
+              gh-$(branchName)
+              gh-$(branchName)-$(timestamp)
             arguments: '--build-arg GIT_BUILD_HASH=$(Build.SourceVersion)'
         - task: Docker@2
           inputs:
             containerRegistry: 'beryjuorg-harbor'
             repository: 'authentik/server'
             command: 'push'
-            tags: 'gh-$(branchName)'
+            tags: |
+              gh-$(branchName)
+              gh-$(branchName)-$(timestamp)
