@@ -8,6 +8,7 @@ import "../../elements/EmptyState";
 import "../../elements/events/ObjectChangelog";
 import "../policies/BoundPoliciesList";
 import "./ApplicationForm";
+import "./ApplicationCheckAccessForm";
 import "../../elements/PageHeader";
 import { Application, CoreApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -106,6 +107,28 @@ export class ApplicationViewPage extends LitElement {
                                                     </ak-application-form>
                                                     <button slot="trigger" class="pf-c-button pf-m-secondary">
                                                         ${t`Edit`}
+                                                    </button>
+                                                </ak-forms-modal>
+                                            </div>
+                                        </dd>
+                                    </div>
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text">${t`Check access`}</span>
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
+                                                    <span slot="submit">
+                                                        ${t`Check`}
+                                                    </span>
+                                                    <span slot="header">
+                                                        ${t`Check Application access`}
+                                                    </span>
+                                                    <ak-application-check-access-form slot="form" .application=${this.application}>
+                                                    </ak-application-check-access-form>
+                                                    <button slot="trigger" class="pf-c-button pf-m-secondary">
+                                                        ${t`Test`}
                                                     </button>
                                                 </ak-forms-modal>
                                             </div>
