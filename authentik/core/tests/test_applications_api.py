@@ -26,20 +26,26 @@ class TestApplicationsAPI(APITestCase):
     def test_check_access(self):
         """Test check_access operation"""
         self.client.force_login(self.user)
-        response = self.client.get(
+        response = self.client.post(
             reverse(
                 "authentik_api:application-check-access",
                 kwargs={"slug": self.allowed.slug},
             )
         )
-        self.assertEqual(response.status_code, 204)
-        response = self.client.get(
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_str(response.content), {"messages": [], "passing": True}
+        )
+        response = self.client.post(
             reverse(
                 "authentik_api:application-check-access",
                 kwargs={"slug": self.denied.slug},
             )
         )
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_str(response.content), {"messages": ["dummy"], "passing": False}
+        )
 
     def test_list(self):
         """Test list operation without superuser_full_list"""

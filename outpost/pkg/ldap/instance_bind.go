@@ -74,8 +74,8 @@ func (pi *ProviderInstance) Bind(username string, bindDN, bindPW string, conn ne
 	if !passed {
 		return ldap.LDAPResultInvalidCredentials, nil
 	}
-	r, err := apiClient.CoreApi.CoreApplicationsCheckAccessRetrieve(context.Background(), pi.appSlug).Execute()
-	if r.StatusCode == 403 {
+	p, _, err := apiClient.CoreApi.CoreApplicationsCheckAccessCreate(context.Background(), pi.appSlug).Execute()
+	if !p.Passing {
 		pi.log.WithField("bindDN", bindDN).Info("Access denied for user")
 		return ldap.LDAPResultInsufficientAccessRights, nil
 	}

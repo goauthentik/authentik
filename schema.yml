@@ -1368,8 +1368,8 @@ paths:
         '403':
           $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/applications/{slug}/check_access/:
-    get:
-      operationId: core_applications_check_access_retrieve
+    post:
+      operationId: core_applications_check_access_create
       description: Check access to a single application by slug
       parameters:
       - in: path
@@ -1380,16 +1380,33 @@ paths:
         required: true
       tags:
       - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckAccessRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CheckAccessRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CheckAccessRequestRequest'
       security:
       - authentik: []
       - cookieAuth: []
       responses:
-        '204':
-          description: Access granted
-        '403':
-          description: Access denied
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyTestResult'
+          description: ''
+        '404':
+          description: for_user user not found
         '400':
           $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/applications/{slug}/metrics/:
     get:
       operationId: core_applications_metrics_list
@@ -16120,6 +16137,11 @@ components:
       - shell
       - redirect
       type: string
+    CheckAccessRequestRequest:
+      type: object
+      properties:
+        for_user:
+          type: integer
     ClientTypeEnum:
       enum:
       - confidential
