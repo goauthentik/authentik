@@ -5,10 +5,10 @@ import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { Form } from "../../elements/forms/Form";
 import { until } from "lit-html/directives/until";
-import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
 import "../../elements/CodeMirror";
 import YAML from "yaml";
+import { first } from "../../utils";
 
 @customElement("ak-policy-test-form")
 export class PolicyTestForm extends Form<PolicyTestRequest> {
@@ -19,11 +19,15 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
     @property({ attribute: false})
     result?: PolicyTestResult;
 
+    @property({ attribute: false})
+    request?: PolicyTestRequest;
+
     getSuccessMessage(): string {
         return t`Successfully sent test-request.`;
     }
 
     send = (data: PolicyTestRequest): Promise<PolicyTestResult> => {
+        this.request = data;
         return new PoliciesApi(DEFAULT_CONFIG).policiesAllTestCreate({
             policyUuid: this.policy?.pk || "",
             policyTestRequest: data
@@ -67,7 +71,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                         ordering: "username",
                     }).then(users => {
                         return users.results.map(user => {
-                            return html`<option value=${ifDefined(user.pk)}>${user.username}</option>`;
+                            return html`<option ?selected=${this.request?.user.toString() === user.pk.toString()} value=${user.pk}>${user.username}</option>`;
                         });
                     }), html`<option>${t`Loading...`}</option>`)}
                 </select>
@@ -75,7 +79,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
             <ak-form-element-horizontal
                 label=${t`Context`}
                 name="context">
-                <ak-codemirror mode="yaml" value=${YAML.stringify({})}>>
+                <ak-codemirror mode="yaml" value=${YAML.stringify(first(this.request?.context, {}))}>>
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">${t`Set custom attributes using YAML or JSON.`}</p>
             </ak-form-element-horizontal>

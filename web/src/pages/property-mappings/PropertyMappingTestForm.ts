@@ -9,6 +9,7 @@ import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
 import "../../elements/CodeMirror";
 import YAML from "yaml";
+import { first } from "../../utils";
 
 @customElement("ak-property-mapping-test-form")
 export class PolicyTestForm extends Form<PolicyTestRequest> {
@@ -19,11 +20,15 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
     @property({ attribute: false})
     result?: PropertyMappingTestResult;
 
+    @property({ attribute: false })
+    request?: PolicyTestRequest;
+
     getSuccessMessage(): string {
         return t`Successfully sent test-request.`;
     }
 
     send = (data: PolicyTestRequest): Promise<PropertyMappingTestResult> => {
+        this.request = data;
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllTestCreate({
             pmUuid: this.mapping?.pk || "",
             policyTestRequest: data,
@@ -57,7 +62,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                         ordering: "username",
                     }).then(users => {
                         return users.results.map(user => {
-                            return html`<option value=${ifDefined(user.pk)}>${user.username}</option>`;
+                            return html`<option ?selected=${this.request?.user.toString() === user.pk.toString()} value=${user.pk}>${user.username}</option>`;
                         });
                     }), html`<option>${t`Loading...`}</option>`)}
                 </select>
@@ -65,7 +70,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
             <ak-form-element-horizontal
                 label=${t`Context`}
                 name="context">
-                <ak-codemirror mode="yaml" value=${YAML.stringify({})}>
+                <ak-codemirror mode="yaml" value=${YAML.stringify(first(this.request?.context, {}))}>>
                 </ak-codemirror>
             </ak-form-element-horizontal>
             ${this.result ? this.renderResult(): html``}
