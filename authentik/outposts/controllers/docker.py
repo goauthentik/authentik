@@ -71,6 +71,7 @@ class DockerController(BaseController):
                 },
                 "environment": self._get_env(),
                 "labels": self._get_labels(),
+                "restart_policy": {"Name": "unless-stopped"},
             }
             if settings.TEST:
                 del container_args["ports"]
@@ -93,14 +94,24 @@ class DockerController(BaseController):
                         has=version,
                         should=__version__,
                     )
-                    container.kill()
-                    container.remove(force=True)
+                    self.down()
                     return self.up()
             # Check that container values match our values
             if self._comp_env(container):
                 self.logger.info("Container has outdated config, re-creating...")
-                container.kill()
-                container.remove(force=True)
+                self.down()
+                return self.up()
+            if (
+                container.attrs.get("HostConfig", {})
+                .get("RestartPolicy", {})
+                .get("Name", "")
+                .lower()
+                != "unless-stopped"
+            ):
+                self.logger.info(
+                    "Container has mis-matched restart policy, re-creating..."
+                )
+                self.down()
                 return self.up()
             # Check that container is healthy
             if (
