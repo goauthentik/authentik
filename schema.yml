@@ -16528,6 +16528,8 @@ components:
             name: Documentation
           - href: https://goauthentik.io/
             name: authentik Website
+        flow_unenrollment:
+          type: string
       required:
       - branding_logo
       - branding_title

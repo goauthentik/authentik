@@ -50,6 +50,8 @@ class CurrentTenantSerializer(PassiveSerializer):
         default=CONFIG.y("authentik.footer_links"),
     )
 
+    flow_unenrollment = CharField(source="flow_unenrollment.slug", required=False)
+
 
 class TenantViewSet(ModelViewSet):
     """Tenant Viewset"""

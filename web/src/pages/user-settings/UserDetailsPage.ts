@@ -15,6 +15,8 @@ import "../../elements/forms/FormElement";
 import "../../elements/EmptyState";
 import "../../elements/forms/Form";
 import "../../elements/forms/HorizontalFormElement";
+import { until } from "lit-html/directives/until";
+import { tenant } from "authentik-api/dist/src/api/Config";
 
 @customElement("ak-user-details")
 export class UserDetailsPage extends LitElement {
@@ -80,10 +82,15 @@ export class UserDetailsPage extends LitElement {
                                     <button class="pf-c-button pf-m-primary">
                                         ${t`Update`}
                                     </button>
-                                    <a class="pf-c-button pf-m-danger"
-                                        href="${FlowURLManager.defaultUnenrollment()}">
-                                        ${t`Delete account`}
-                                    </a>
+                                    ${until(tenant().then(tenant => {
+                                        if (tenant.flowUnenrollment) {
+                                            return html`<a class="pf-c-button pf-m-danger"
+                                                href="/if/flow/${tenant.flowUnenrollment}">
+                                                ${t`Delete account`}
+                                            </a>`;
+                                        }
+                                        return html``;
+                                    }))}
                                 </div>
                             </div>
                         </div>
