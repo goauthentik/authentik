@@ -25,6 +25,7 @@ title: Next
 ## Minor changes
 
 - You can now specify which sources should be shown on an Identification stage.
+- Add UI for the reputation of IPs and usernames for reputation policies.
 
 ## Upgrading
 

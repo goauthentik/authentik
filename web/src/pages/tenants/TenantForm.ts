@@ -4,6 +4,7 @@ import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/forms/HorizontalFormElement";
+import "../../elements/forms/FormGroup";
 import { first } from "../../utils";
 import { ModelForm } from "../../elements/forms/ModelForm";
 import { until } from "lit-html/directives/until";

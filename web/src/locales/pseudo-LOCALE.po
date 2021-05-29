@@ -990,6 +990,8 @@ msgstr ""
 #: 
 #: 
 #: 
+#: 
+#: 
 msgid "Delete"
 msgstr ""
 
@@ -1691,6 +1693,15 @@ msgid "ID"
 msgstr ""
 
 #: 
+msgid "IP"
+msgstr ""
+
+#: 
+#: 
+msgid "IP Reputation"
+msgstr ""
+
+#: 
 msgid "Icon"
 msgstr ""
 
@@ -1786,6 +1797,10 @@ msgstr ""
 
 #: 
 msgid "Invalidation flow"
+msgstr ""
+
+#: 
+msgid "Invitation"
 msgstr ""
 
 #: 
@@ -2612,7 +2627,6 @@ msgid "Profile URL"
 msgstr ""
 
 #: 
-#: 
 msgid "Prompt"
 msgstr ""
 
@@ -2808,6 +2822,22 @@ msgid "Remove the user from the current session."
 msgstr ""
 
 #: 
+msgid "Reputation for IPs. Scores are decreased for each failed login and increased for each successful login."
+msgstr ""
+
+#: 
+msgid "Reputation for usernames. Scores are decreased for each failed login and increased for each successful login."
+msgstr ""
+
+#: 
+msgid "Reputation policy - IPs"
+msgstr ""
+
+#: 
+msgid "Reputation policy - Users"
+msgstr ""
+
+#: 
 #: 
 msgid "Request"
 msgstr ""
@@ -2932,6 +2962,11 @@ msgstr ""
 #: 
 #: 
 msgid "Scopes"
+msgstr ""
+
+#: 
+#: 
+msgid "Score"
 msgstr ""
 
 #: 
@@ -4064,6 +4099,11 @@ msgid "User Property Mappings"
 msgstr ""
 
 #: 
+#: 
+msgid "User Reputation"
+msgstr ""
+
+#: 
 msgid "User Settings"
 msgstr ""
 
@@ -4118,6 +4158,7 @@ msgstr ""
 msgid "Userinfo URL"
 msgstr ""
 
+#: 
 #: 
 #: 
 #: 

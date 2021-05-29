@@ -73,6 +73,12 @@ export class AdminInterface extends Interface {
                 <ak-sidebar-item path="/policy/policies">
                     <span slot="label">${t`Policies`}</span>
                 </ak-sidebar-item>
+                <ak-sidebar-item path="/policy/reputation/ip">
+                    <span slot="label">${t`Reputation policy - IPs`}</span>
+                </ak-sidebar-item>
+                <ak-sidebar-item path="/policy/reputation/user">
+                    <span slot="label">${t`Reputation policy - Users`}</span>
+                </ak-sidebar-item>
                 <ak-sidebar-item path="/core/property-mappings">
                     <span slot="label">${t`Property Mappings`}</span>
                 </ak-sidebar-item>

@@ -57,7 +57,7 @@ export class InvitationListPage extends TablePage<Invitation> {
             html`
             <ak-forms-delete
                 .obj=${item}
-                objectLabel=${t`Prompt`}
+                objectLabel=${t`Invitation`}
                 .delete=${() => {
                     return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsDestroy({
                         inviteUuid: item.pk || ""

@@ -985,6 +985,8 @@ msgstr "Define how notifications are sent to users, like Email or Webhook."
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/PolicyListPage.ts
+#: src/pages/policies/reputation/IPReputationListPage.ts
+#: src/pages/policies/reputation/UserReputationListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
 #: src/pages/sources/SourcesListPage.ts
@@ -1698,6 +1700,15 @@ msgstr "How many attempts a user has before the flow is canceled. To lock the us
 msgid "ID"
 msgstr "ID"
 
+#: src/pages/policies/reputation/IPReputationListPage.ts
+msgid "IP"
+msgstr "IP"
+
+#: src/pages/policies/reputation/IPReputationListPage.ts
+#: src/pages/policies/reputation/IPReputationListPage.ts
+msgid "IP Reputation"
+msgstr "IP Reputation"
+
 #: src/pages/applications/ApplicationForm.ts
 msgid "Icon"
 msgstr "Icon"
@@ -1795,6 +1806,10 @@ msgstr "Invalidation"
 #: src/pages/tenants/TenantForm.ts
 msgid "Invalidation flow"
 msgstr "Invalidation flow"
+
+#: src/pages/stages/invitation/InvitationListPage.ts
+msgid "Invitation"
+msgstr "Invitation"
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
@@ -2619,7 +2634,6 @@ msgstr "Private key, acquired from https://www.google.com/recaptcha/intro/v3.htm
 msgid "Profile URL"
 msgstr "Profile URL"
 
-#: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 msgid "Prompt"
 msgstr "Prompt"
@@ -2815,6 +2829,22 @@ msgstr "Reload"
 msgid "Remove the user from the current session."
 msgstr "Remove the user from the current session."
 
+#: src/pages/policies/reputation/IPReputationListPage.ts
+msgid "Reputation for IPs. Scores are decreased for each failed login and increased for each successful login."
+msgstr "Reputation for IPs. Scores are decreased for each failed login and increased for each successful login."
+
+#: src/pages/policies/reputation/UserReputationListPage.ts
+msgid "Reputation for usernames. Scores are decreased for each failed login and increased for each successful login."
+msgstr "Reputation for usernames. Scores are decreased for each failed login and increased for each successful login."
+
+#: src/interfaces/AdminInterface.ts
+msgid "Reputation policy - IPs"
+msgstr "Reputation policy - IPs"
+
+#: src/interfaces/AdminInterface.ts
+msgid "Reputation policy - Users"
+msgstr "Reputation policy - Users"
+
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
 msgid "Request"
@@ -2941,6 +2971,11 @@ msgstr "Scope which the client can specify to access these properties."
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Scopes"
 msgstr "Scopes"
+
+#: src/pages/policies/reputation/IPReputationListPage.ts
+#: src/pages/policies/reputation/UserReputationListPage.ts
+msgid "Score"
+msgstr "Score"
 
 #: src/elements/table/TableSearch.ts
 msgid "Search..."
@@ -4075,6 +4110,11 @@ msgstr "User Info"
 msgid "User Property Mappings"
 msgstr "User Property Mappings"
 
+#: src/pages/policies/reputation/UserReputationListPage.ts
+#: src/pages/policies/reputation/UserReputationListPage.ts
+msgid "User Reputation"
+msgstr "User Reputation"
+
 #: src/pages/user-settings/UserSettingsPage.ts
 msgid "User Settings"
 msgstr "User Settings"
@@ -4131,6 +4171,7 @@ msgid "Userinfo URL"
 msgstr "Userinfo URL"
 
 #: src/flows/stages/identification/IdentificationStage.ts
+#: src/pages/policies/reputation/UserReputationListPage.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/user-settings/UserDetailsPage.ts
 #: src/pages/users/UserForm.ts
