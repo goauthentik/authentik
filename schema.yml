@@ -15569,6 +15569,9 @@ components:
         uuid:
           type: string
           format: uuid
+        current:
+          type: boolean
+          readOnly: true
         user:
           type: integer
         last_ip:
@@ -15583,6 +15586,7 @@ components:
           type: string
           format: date-time
       required:
+      - current
       - last_ip
       - last_used
       - user

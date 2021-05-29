@@ -1,6 +1,8 @@
 """AuthenticatedSessions API Viewset"""
 from guardian.utils import get_anonymous_user
 from rest_framework import mixins
+from rest_framework.fields import SerializerMethodField
+from rest_framework.request import Request
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 
@@ -10,11 +12,19 @@ from authentik.core.models import AuthenticatedSession
 class AuthenticatedSessionSerializer(ModelSerializer):
     """AuthenticatedSession Serializer"""
 
+    current = SerializerMethodField()
+
+    def get_current(self, instance: AuthenticatedSession) -> bool:
+        """Check if session is currently active session"""
+        request: Request = self.context["request"]
+        return request._request.session.session_key == instance.session_key
+
     class Meta:
 
         model = AuthenticatedSession
         fields = [
             "uuid",
+            "current",
             "user",
             "last_ip",
             "last_user_agent",
