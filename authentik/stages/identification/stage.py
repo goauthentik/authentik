@@ -21,6 +21,7 @@ from authentik.flows.stage import (
 )
 from authentik.flows.views import SESSION_KEY_APPLICATION_PRE
 from authentik.stages.identification.models import IdentificationStage
+from authentik.stages.identification.signals import identification_failed
 
 LOGGER = get_logger()
 
@@ -53,6 +54,9 @@ class IdentificationChallengeResponse(ChallengeResponse):
         if not pre_user:
             sleep(0.150)
             LOGGER.debug("invalid_login", identifier=value)
+            identification_failed.send(
+                sender=self, request=self.stage.request, uid_field=value
+            )
             raise ValidationError("Failed to authenticate.")
         self.pre_user = pre_user
         return value

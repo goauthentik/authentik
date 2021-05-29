@@ -10,6 +10,7 @@ from authentik.policies.reputation.models import (
     CACHE_KEY_IP_PREFIX,
     CACHE_KEY_USER_PREFIX,
 )
+from authentik.stages.identification.signals import identification_failed
 
 LOGGER = get_logger()
 
@@ -34,6 +35,13 @@ def handle_failed_login(sender, request, credentials, **_):
     """Lower Score for failed loging attempts"""
     if "username" in credentials:
         update_score(request, credentials.get("username"), -1)
+
+
+@receiver(identification_failed)
+# pylint: disable=unused-argument
+def handle_identification_failed(sender, request, uid_field: str, **_):
+    """Lower Score for failed identification attempts"""
+    update_score(request, uid_field, -1)
 
 
 @receiver(user_logged_in)
