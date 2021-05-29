@@ -145,7 +145,7 @@ class DockerController(BaseController):
             container, _ = self._get_container()
             if container.status == "running":
                 container.kill()
-            container.remove()
+            container.remove(force=True)
         except DockerException as exc:
             raise ControllerException(str(exc)) from exc
 
