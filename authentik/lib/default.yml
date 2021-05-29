@@ -47,7 +47,7 @@ outposts:
 
 authentik:
   avatars: gravatar  # gravatar or none
-  geoip: ""
+  geoip: "./GeoLite2-City.mmdb"
   # Optionally add links to the footer on the login page
   footer_links:
     - name: Documentation

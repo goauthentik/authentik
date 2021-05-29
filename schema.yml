@@ -15572,6 +15572,60 @@ components:
         current:
           type: boolean
           readOnly: true
+        user_agent:
+          type: object
+          properties:
+            device:
+              type: object
+              properties:
+                brand:
+                  type: string
+                family:
+                  type: string
+                model:
+                  type: string
+            os:
+              type: object
+              properties:
+                family:
+                  type: string
+                major:
+                  type: string
+                minor:
+                  type: string
+                patch:
+                  type: string
+                patch_minor:
+                  type: string
+            user_agent:
+              type: object
+              properties:
+                family:
+                  type: string
+                major:
+                  type: string
+                minor:
+                  type: string
+                patch:
+                  type: string
+            string:
+              type: string
+          readOnly: true
+        geo_ip:
+          type: object
+          properties:
+            continent:
+              type: string
+            country:
+              type: string
+            lat:
+              type: number
+              format: float
+            long:
+              type: number
+              format: float
+          nullable: true
+          readOnly: true
         user:
           type: integer
         last_ip:
@@ -15587,9 +15641,11 @@ components:
           format: date-time
       required:
       - current
+      - geo_ip
       - last_ip
       - last_used
       - user
+      - user_agent
     AuthenticatorDuoChallenge:
       type: object
       description: Duo Challenge
