@@ -17,11 +17,6 @@ urlpatterns = [
         name="default-invalidation",
     ),
     path(
-        "-/default/recovery/",
-        ToDefaultFlow.as_view(designation=FlowDesignation.RECOVERY),
-        name="default-recovery",
-    ),
-    path(
         "-/default/unenrollment/",
         ToDefaultFlow.as_view(designation=FlowDesignation.UNRENOLLMENT),
         name="default-unenrollment",

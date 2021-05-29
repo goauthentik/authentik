@@ -142,11 +142,6 @@ class Flow(SerializerModel, PolicyBindingModel):
         LOGGER.debug("with_policy: no flow found", filters=flow_filter)
         return None
 
-    def related_flow(self, designation: str, request: HttpRequest) -> Optional["Flow"]:
-        """Get a related flow with `designation`. Currently this only queries
-        Flows by `designation`, but will eventually use `self` for related lookups."""
-        return Flow.with_policy(request, designation=designation)
-
     def __str__(self) -> str:
         return f"Flow {self.name} ({self.slug})"
 
