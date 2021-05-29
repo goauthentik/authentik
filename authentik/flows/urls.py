@@ -16,21 +16,6 @@ urlpatterns = [
         ToDefaultFlow.as_view(designation=FlowDesignation.INVALIDATION),
         name="default-invalidation",
     ),
-    path(
-        "-/default/recovery/",
-        ToDefaultFlow.as_view(designation=FlowDesignation.RECOVERY),
-        name="default-recovery",
-    ),
-    path(
-        "-/default/enrollment/",
-        ToDefaultFlow.as_view(designation=FlowDesignation.ENROLLMENT),
-        name="default-enrollment",
-    ),
-    path(
-        "-/default/unenrollment/",
-        ToDefaultFlow.as_view(designation=FlowDesignation.UNRENOLLMENT),
-        name="default-unenrollment",
-    ),
     path("-/cancel/", CancelView.as_view(), name="cancel"),
     path(
         "-/configure/<uuid:stage_uuid>/",

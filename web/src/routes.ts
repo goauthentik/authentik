@@ -25,10 +25,11 @@ import "./pages/stages/invitation/InvitationListPage";
 import "./pages/stages/prompt/PromptListPage";
 import "./pages/stages/StageListPage";
 import "./pages/system-tasks/SystemTaskListPage";
+import "./pages/tenants/TenantListPage";
 import "./pages/tokens/TokenListPage";
+import "./pages/user-settings/UserSettingsPage";
 import "./pages/users/UserListPage";
 import "./pages/users/UserViewPage";
-import "./pages/user-settings/UserSettingsPage";
 
 export const ROUTES: Route[] = [
     // Prevent infinite Shell loops
@@ -51,6 +52,7 @@ export const ROUTES: Route[] = [
     }),
     new Route(new RegExp("^/core/property-mappings$"), html`<ak-property-mapping-list></ak-property-mapping-list>`),
     new Route(new RegExp("^/core/tokens$"), html`<ak-token-list></ak-token-list>`),
+    new Route(new RegExp("^/core/tenants$"), html`<ak-tenant-list></ak-tenant-list>`),
     new Route(new RegExp("^/policy/policies$"), html`<ak-policy-list></ak-policy-list>`),
     new Route(new RegExp("^/identity/groups$"), html`<ak-group-list></ak-group-list>`),
     new Route(new RegExp("^/identity/users$"), html`<ak-user-list></ak-user-list>`),

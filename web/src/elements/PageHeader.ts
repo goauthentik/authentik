@@ -5,7 +5,7 @@ import AKGlobal from "../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import { EVENT_SIDEBAR_TOGGLE, TITLE_DEFAULT } from "../constants";
-import { config } from "../api/Config";
+import { tenant } from "../api/Config";
 
 @customElement("ak-page-header")
 export class PageHeader extends LitElement {
@@ -18,11 +18,11 @@ export class PageHeader extends LitElement {
 
     @property()
     set header(value: string) {
-        config().then(config => {
+        tenant().then(tenant => {
             if (value !== "") {
-                document.title = `${value} - ${config.brandingTitle}`;
+                document.title = `${value} - ${tenant.brandingTitle}`;
             } else {
-                document.title = config.brandingTitle || TITLE_DEFAULT;
+                document.title = tenant.brandingTitle || TITLE_DEFAULT;
             }
         });
         this._header = value;

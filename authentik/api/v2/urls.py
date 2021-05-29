@@ -100,6 +100,7 @@ from authentik.stages.user_delete.api import UserDeleteStageViewSet
 from authentik.stages.user_login.api import UserLoginStageViewSet
 from authentik.stages.user_logout.api import UserLogoutStageViewSet
 from authentik.stages.user_write.api import UserWriteStageViewSet
+from authentik.tenants.api import TenantViewSet
 
 router = routers.DefaultRouter()
 
@@ -111,6 +112,7 @@ router.register("core/groups", GroupViewSet)
 router.register("core/users", UserViewSet)
 router.register("core/user_consent", UserConsentViewSet)
 router.register("core/tokens", TokenViewSet)
+router.register("core/tenants", TenantViewSet)
 
 router.register("outposts/instances", OutpostViewSet)
 router.register("outposts/service_connections/all", ServiceConnectionViewSet)

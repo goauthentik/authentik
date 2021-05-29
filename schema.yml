@@ -1712,6 +1712,231 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/core/tenants/:
+    get:
+      operationId: core_tenants_list
+      description: Tenant Viewset
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - core
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTenantList'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    post:
+      operationId: core_tenants_create
+      description: Tenant Viewset
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TenantRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TenantRequest'
+        required: true
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/core/tenants/{tenant_uuid}/:
+    get:
+      operationId: core_tenants_retrieve
+      description: Tenant Viewset
+      parameters:
+      - in: path
+        name: tenant_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Tenant.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    put:
+      operationId: core_tenants_update
+      description: Tenant Viewset
+      parameters:
+      - in: path
+        name: tenant_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Tenant.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TenantRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TenantRequest'
+        required: true
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    patch:
+      operationId: core_tenants_partial_update
+      description: Tenant Viewset
+      parameters:
+      - in: path
+        name: tenant_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Tenant.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTenantRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTenantRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTenantRequest'
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    delete:
+      operationId: core_tenants_destroy
+      description: Tenant Viewset
+      parameters:
+      - in: path
+        name: tenant_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Tenant.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/core/tenants/current/:
+    get:
+      operationId: core_tenants_current_retrieve
+      description: Get current tenant
+      tags:
+      - core
+      security:
+      - authentik: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentTenant'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/tokens/:
     get:
       operationId: core_tokens_list
@@ -15291,6 +15516,7 @@ components:
       - authentik.stages.user_login
       - authentik.stages.user_logout
       - authentik.stages.user_write
+      - authentik.tenants
       - authentik.core
       - authentik.managed
       type: string
@@ -16151,17 +16377,6 @@ components:
       type: object
       description: Serialize authentik Config into DRF Object
       properties:
-        branding_logo:
-          type: string
-          readOnly: true
-        branding_title:
-          type: string
-          readOnly: true
-        ui_footer_links:
-          type: array
-          items:
-            $ref: '#/components/schemas/FooterLink'
-          readOnly: true
         error_reporting_enabled:
           type: boolean
           readOnly: true
@@ -16176,13 +16391,10 @@ components:
           items:
             $ref: '#/components/schemas/CapabilitiesEnum'
       required:
-      - branding_logo
-      - branding_title
       - capabilities
       - error_reporting_enabled
       - error_reporting_environment
       - error_reporting_send_pii
-      - ui_footer_links
     ConsentChallenge:
       type: object
       description: Challenge info for consent screens
@@ -16298,6 +16510,33 @@ components:
       required:
       - x_cord
       - y_cord
+    CurrentTenant:
+      type: object
+      description: Partial tenant information for styling
+      properties:
+        matched_domain:
+          type: string
+        branding_title:
+          type: string
+        branding_logo:
+          type: string
+        ui_footer_links:
+          type: array
+          items:
+            $ref: '#/components/schemas/FooterLink'
+          readOnly: true
+          default:
+          - href: https://goauthentik.io/docs/
+            name: Documentation
+          - href: https://goauthentik.io/
+            name: authentik Website
+        flow_unenrollment:
+          type: string
+      required:
+      - branding_logo
+      - branding_title
+      - matched_domain
+      - ui_footer_links
     DenyStage:
       type: object
       description: DenyStage Serializer
@@ -20893,6 +21132,41 @@ components:
       required:
       - pagination
       - results
+    PaginatedTenantList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tenant'
+      required:
+      - pagination
+      - results
     PaginatedTokenList:
       type: object
       properties:
@@ -22830,6 +23104,36 @@ components:
           type: string
           description: The human-readable name of this device.
           maxLength: 64
+    PatchedTenantRequest:
+      type: object
+      description: Tenant Serializer
+      properties:
+        domain:
+          type: string
+          description: Domain that activates this tenant. Can be a superset, i.e.
+            `a.b` for `aa.b` and `ba.b`
+        default:
+          type: boolean
+        branding_title:
+          type: string
+        branding_logo:
+          type: string
+        flow_authentication:
+          type: string
+          format: uuid
+          nullable: true
+        flow_invalidation:
+          type: string
+          format: uuid
+          nullable: true
+        flow_recovery:
+          type: string
+          format: uuid
+          nullable: true
+        flow_unenrollment:
+          type: string
+          format: uuid
+          nullable: true
     PatchedTokenRequest:
       type: object
       description: Token Serializer
@@ -24779,6 +25083,75 @@ components:
       - task_description
       - task_finish_timestamp
       - task_name
+    Tenant:
+      type: object
+      description: Tenant Serializer
+      properties:
+        tenant_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        domain:
+          type: string
+          description: Domain that activates this tenant. Can be a superset, i.e.
+            `a.b` for `aa.b` and `ba.b`
+        default:
+          type: boolean
+        branding_title:
+          type: string
+        branding_logo:
+          type: string
+        flow_authentication:
+          type: string
+          format: uuid
+          nullable: true
+        flow_invalidation:
+          type: string
+          format: uuid
+          nullable: true
+        flow_recovery:
+          type: string
+          format: uuid
+          nullable: true
+        flow_unenrollment:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - domain
+      - tenant_uuid
+    TenantRequest:
+      type: object
+      description: Tenant Serializer
+      properties:
+        domain:
+          type: string
+          description: Domain that activates this tenant. Can be a superset, i.e.
+            `a.b` for `aa.b` and `ba.b`
+        default:
+          type: boolean
+        branding_title:
+          type: string
+        branding_logo:
+          type: string
+        flow_authentication:
+          type: string
+          format: uuid
+          nullable: true
+        flow_invalidation:
+          type: string
+          format: uuid
+          nullable: true
+        flow_recovery:
+          type: string
+          format: uuid
+          nullable: true
+        flow_unenrollment:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - domain
     Token:
       type: object
       description: Token Serializer

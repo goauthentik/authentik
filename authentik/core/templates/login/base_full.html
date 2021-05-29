@@ -26,10 +26,7 @@
     <div class="ak-login-container">
         <header class="pf-c-login__header">
             <div class="pf-c-brand ak-brand">
-                <img src="{{ config.authentik.branding.logo }}" alt="authentik icon" />
-                {% if config.authentik.branding.title_show %}
-                <p>{{ config.authentik.branding.title }}</p>
-                {% endif %}
+                <img src="{{ tenant.branding_logo }}" alt="authentik icon" />
             </div>
         </header>
         {% block main_container %}
@@ -49,12 +46,12 @@
         <footer class="pf-c-login__footer">
             <p></p>
             <ul class="pf-c-list pf-m-inline">
-                {% for link in config.authentik.footer_links %}
+                {% for link in footer_links %}
                 <li>
                     <a href="{{ link.href }}">{{ link.name }}</a>
                 </li>
                 {% endfor %}
-                {% if config.authentik.branding.title != "authentik" %}
+                {% if tenant.branding_title != "authentik" %}
                 <li>
                     <a href="https://goauthentik.io">
                         {% trans 'Powered by authentik' %}

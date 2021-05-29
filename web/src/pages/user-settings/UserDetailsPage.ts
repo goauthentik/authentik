@@ -8,13 +8,13 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import { CoreApi, User } from "authentik-api";
 import { me } from "../../api/Users";
-import { FlowURLManager } from "../../api/legacy";
 import { ifDefined } from "lit-html/directives/if-defined";
-import { DEFAULT_CONFIG } from "../../api/Config";
+import { DEFAULT_CONFIG, tenant } from "../../api/Config";
 import "../../elements/forms/FormElement";
 import "../../elements/EmptyState";
 import "../../elements/forms/Form";
 import "../../elements/forms/HorizontalFormElement";
+import { until } from "lit-html/directives/until";
 
 @customElement("ak-user-details")
 export class UserDetailsPage extends LitElement {
@@ -80,10 +80,15 @@ export class UserDetailsPage extends LitElement {
                                     <button class="pf-c-button pf-m-primary">
                                         ${t`Update`}
                                     </button>
-                                    <a class="pf-c-button pf-m-danger"
-                                        href="${FlowURLManager.defaultUnenrollment()}">
-                                        ${t`Delete account`}
-                                    </a>
+                                    ${until(tenant().then(tenant => {
+                                        if (tenant.flowUnenrollment) {
+                                            return html`<a class="pf-c-button pf-m-danger"
+                                                href="/if/flow/${tenant.flowUnenrollment}">
+                                                ${t`Delete account`}
+                                            </a>`;
+                                        }
+                                        return html``;
+                                    }))}
                                 </div>
                             </div>
                         </div>

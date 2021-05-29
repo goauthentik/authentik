@@ -6,7 +6,7 @@ class AuthentikManagedConfig(AppConfig):
     """authentik Managed app"""
 
     name = "authentik.managed"
-    label = "authentik_Managed"
+    label = "authentik_managed"
     verbose_name = "authentik Managed"
 
     def ready(self) -> None:

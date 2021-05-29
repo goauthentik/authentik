@@ -32,7 +32,7 @@ from authentik.core.middleware import (
 )
 from authentik.core.models import Token, TokenIntents, User
 from authentik.events.models import EventAction
-from authentik.flows.models import Flow, FlowDesignation
+from authentik.tenants.models import Tenant
 
 
 class UserSerializer(ModelSerializer):
@@ -179,8 +179,9 @@ class UserViewSet(ModelViewSet):
     # pylint: disable=invalid-name, unused-argument
     def recovery(self, request: Request, pk: int) -> Response:
         """Create a temporary link that a user can use to recover their accounts"""
+        tenant: Tenant = request._request.tenant
         # Check that there is a recovery flow, if not return an error
-        flow = Flow.with_policy(request, designation=FlowDesignation.RECOVERY)
+        flow = tenant.flow_recovery
         if not flow:
             raise Http404
         user: User = self.get_object()
@@ -191,7 +192,8 @@ class UserViewSet(ModelViewSet):
         )
         querystring = urlencode({"token": token.key})
         link = request.build_absolute_uri(
-            reverse_lazy("authentik_flows:default-recovery") + f"?{querystring}"
+            reverse_lazy("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
+            + f"?{querystring}"
         )
         return Response({"link": link})
 

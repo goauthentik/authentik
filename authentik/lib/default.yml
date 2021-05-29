@@ -48,9 +48,6 @@ outposts:
 authentik:
   avatars: gravatar  # gravatar or none
   geoip: ""
-  branding:
-    title: authentik
-    logo: /static/dist/assets/icons/icon_left_brand.svg
   # Optionally add links to the footer on the login page
   footer_links:
     - name: Documentation

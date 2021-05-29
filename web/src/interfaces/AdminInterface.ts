@@ -40,6 +40,9 @@ export class AdminInterface extends Interface {
                 <ak-sidebar-item path="/core/providers" .activeWhen=${[`^/core/providers/(?<id>${ID_REGEX})$`]}>
                     <span slot="label">${t`Providers`}</span>
                 </ak-sidebar-item>
+                <ak-sidebar-item path="/core/tenants">
+                    <span slot="label">${t`Tenants`}</span>
+                </ak-sidebar-item>
             </ak-sidebar-item>
             <ak-sidebar-item
                 .condition=${superUserCondition}>
