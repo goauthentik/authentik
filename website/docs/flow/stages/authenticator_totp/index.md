@@ -1,5 +1,5 @@
 ---
-title: TOTP Authentication Setup stage
+title: TOTP authenticator setup stage
 ---
 
 This stage configures a time-based OTP Device, such as Google Authenticator or Authy.

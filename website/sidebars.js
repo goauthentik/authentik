@@ -96,7 +96,6 @@ module.exports = {
                 "flow/stages/invitation/index",
                 "flow/stages/password/index",
                 "flow/stages/prompt/index",
-                "flow/stages/prompt/validation",
                 "flow/stages/user_delete",
                 "flow/stages/user_login",
                 "flow/stages/user_logout",
@@ -132,6 +131,10 @@ module.exports = {
                 "events/notifications",
                 "events/transports"
             ],
+        },
+        {
+            type: "doc",
+            id: "tenants",
         },
         {
             type: "category",
