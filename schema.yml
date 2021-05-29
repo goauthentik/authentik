@@ -16185,6 +16185,7 @@ components:
     CapabilitiesEnum:
       enum:
       - can_save_media
+      - can_geo_ip
       type: string
     CaptchaChallenge:
       type: object

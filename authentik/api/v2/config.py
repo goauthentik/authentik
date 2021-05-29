@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentik.core.api.utils import PassiveSerializer
+from authentik.events.geo import GEOIP_READER
 from authentik.lib.config import CONFIG
 
 
@@ -18,6 +19,7 @@ class Capabilities(models.TextChoices):
     """Define capabilities which influence which APIs can/should be used"""
 
     CAN_SAVE_MEDIA = "can_save_media"
+    CAN_GEO_IP = "can_geo_ip"
 
 
 class ConfigSerializer(PassiveSerializer):
@@ -41,6 +43,8 @@ class ConfigView(APIView):
         deb_test = settings.DEBUG or settings.TEST
         if path.ismount(settings.MEDIA_ROOT) or deb_test:
             caps.append(Capabilities.CAN_SAVE_MEDIA)
+        if GEOIP_READER:
+            caps.append(Capabilities.CAN_GEO_IP)
         return caps
 
     @extend_schema(responses={200: ConfigSerializer(many=False)})
