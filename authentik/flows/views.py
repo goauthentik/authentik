@@ -44,6 +44,7 @@ from authentik.flows.planner import (
 )
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
+from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
 # Argument used to redirect user after login
@@ -366,7 +367,17 @@ class ToDefaultFlow(View):
     designation: Optional[FlowDesignation] = None
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
-        flow = Flow.with_policy(request, designation=self.designation)
+        tenant: Tenant = request.tenant
+        flow = None
+        # First, attempt to get default flow from tenant
+        if self.designation == FlowDesignation.AUTHENTICATION:
+            flow = tenant.flow_authentication
+        if self.designation == FlowDesignation.INVALIDATION:
+            flow = tenant.flow_invalidation
+        # If no flow was set, get the first based on slug and policy
+        if not flow:
+            flow = Flow.with_policy(request, designation=self.designation)
+        # If we still don't have a flow, 404
         if not flow:
             raise Http404
         # If user already has a pending plan, clear it so we don't have to later.
