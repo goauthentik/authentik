@@ -4,7 +4,6 @@ from django.db import models
 from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
 
-from authentik.core.models import User
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult

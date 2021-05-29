@@ -2,7 +2,6 @@
 from django.core.cache import cache
 from structlog.stdlib import get_logger
 
-from authentik.core.models import User
 from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.policies.reputation.models import IPReputation, UserReputation
 from authentik.policies.reputation.signals import (

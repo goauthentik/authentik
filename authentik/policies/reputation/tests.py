@@ -44,7 +44,9 @@ class TestReputationPolicy(TestCase):
         self.assertEqual(cache.get(CACHE_KEY_USER_PREFIX + self.test_username), -1)
         # Save cache and check db values
         save_user_reputation.delay().get()
-        self.assertEqual(UserReputation.objects.get(user=self.user).score, -1)
+        self.assertEqual(
+            UserReputation.objects.get(username=self.test_username).score, -1
+        )
 
     def test_policy(self):
         """Test Policy"""
