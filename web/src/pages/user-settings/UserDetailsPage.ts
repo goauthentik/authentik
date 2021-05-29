@@ -10,13 +10,12 @@ import { CoreApi, User } from "authentik-api";
 import { me } from "../../api/Users";
 import { FlowURLManager } from "../../api/legacy";
 import { ifDefined } from "lit-html/directives/if-defined";
-import { DEFAULT_CONFIG } from "../../api/Config";
+import { DEFAULT_CONFIG, tenant } from "../../api/Config";
 import "../../elements/forms/FormElement";
 import "../../elements/EmptyState";
 import "../../elements/forms/Form";
 import "../../elements/forms/HorizontalFormElement";
 import { until } from "lit-html/directives/until";
-import { tenant } from "authentik-api/dist/src/api/Config";
 
 @customElement("ak-user-details")
 export class UserDetailsPage extends LitElement {
