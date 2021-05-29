@@ -154,6 +154,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                         label=${t`Certificate`}
                         name="certificate">
                         <select class="pf-c-form-control">
+                            <option value="" ?selected=${this.instance?.certificate === undefined}>---------</option>
                             ${until(new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
                                 ordering: "pk",
                                 hasKey: "true",
