@@ -92,7 +92,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                                 designation: FlowsInstancesListDesignationEnum.Authentication,
                             }).then(flows => {
                                 return flows.results.map(flow => {
-                                    let selected = this.instance?.flowAuthentication === flow.pk;
+                                    const selected = this.instance?.flowAuthentication === flow.pk;
                                     return html`<option value=${flow.pk} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
                                 });
                             }), html`<option>${t`Loading...`}</option>`)}
@@ -109,7 +109,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                                 designation: FlowsInstancesListDesignationEnum.Invalidation,
                             }).then(flows => {
                                 return flows.results.map(flow => {
-                                    let selected = this.instance?.flowInvalidation === flow.pk;
+                                    const selected = this.instance?.flowInvalidation === flow.pk;
                                     return html`<option value=${flow.pk} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
                                 });
                             }), html`<option>${t`Loading...`}</option>`)}
@@ -126,7 +126,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                                 designation: FlowsInstancesListDesignationEnum.Recovery,
                             }).then(flows => {
                                 return flows.results.map(flow => {
-                                    let selected = this.instance?.flowRecovery === flow.pk;
+                                    const selected = this.instance?.flowRecovery === flow.pk;
                                     return html`<option value=${flow.pk} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
                                 });
                             }), html`<option>${t`Loading...`}</option>`)}
@@ -143,7 +143,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                                 designation: FlowsInstancesListDesignationEnum.Recovery,
                             }).then(flows => {
                                 return flows.results.map(flow => {
-                                    let selected = this.instance?.flowUnenrollment === flow.pk;
+                                    const selected = this.instance?.flowUnenrollment === flow.pk;
                                     return html`<option value=${flow.pk} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
                                 });
                             }), html`<option>${t`Loading...`}</option>`)}

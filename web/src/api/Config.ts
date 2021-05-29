@@ -6,7 +6,9 @@ import { MessageMiddleware } from "../elements/messages/Middleware";
 export class LoggingMiddleware implements Middleware {
 
     post(context: ResponseContext): Promise<Response | void> {
-        console.debug(`authentik/api: ${context.response.status} ${context.init.method} ${context.url}`);
+        tenant().then(tenant => {
+            console.debug(`authentik/api[${tenant.matchedDomain}]: ${context.response.status} ${context.init.method} ${context.url}`);
+        });
         return Promise.resolve(context.response);
     }
 

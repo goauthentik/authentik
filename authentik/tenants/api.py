@@ -42,6 +42,7 @@ class TenantSerializer(ModelSerializer):
 class CurrentTenantSerializer(PassiveSerializer):
     """Partial tenant information for styling"""
 
+    matched_domain = CharField(source="domain")
     branding_title = CharField()
     branding_logo = CharField()
     ui_footer_links = ListField(

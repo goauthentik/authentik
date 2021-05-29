@@ -17,7 +17,7 @@ def get_tenant_for_request(request: HttpRequest) -> Tenant:
         Q(domain__iendswith=request.get_host()) | _q_default
     )
     if not db_tenants.exists():
-        return Tenant()
+        return Tenant(domain="fallback")
     return db_tenants.first()
 
 

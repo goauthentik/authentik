@@ -8,7 +8,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import { CoreApi, User } from "authentik-api";
 import { me } from "../../api/Users";
-import { FlowURLManager } from "../../api/legacy";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { DEFAULT_CONFIG, tenant } from "../../api/Config";
 import "../../elements/forms/FormElement";

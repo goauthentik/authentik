@@ -16514,6 +16514,8 @@ components:
       type: object
       description: Partial tenant information for styling
       properties:
+        matched_domain:
+          type: string
         branding_title:
           type: string
         branding_logo:
@@ -16533,6 +16535,7 @@ components:
       required:
       - branding_logo
       - branding_title
+      - matched_domain
       - ui_footer_links
     DenyStage:
       type: object

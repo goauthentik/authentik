@@ -19,6 +19,7 @@ export const DefaultTenant: CurrentTenant = {
     brandingLogo: " /static/dist/assets/icons/icon_left_brand.svg",
     brandingTitle: "authentik",
     uiFooterLinks: [],
+    matchedDomain: "",
 };
 
 @customElement("ak-sidebar-brand")
