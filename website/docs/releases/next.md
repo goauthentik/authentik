@@ -10,6 +10,18 @@ title: Next
 
     Currently, only Duo push notifications are supported. Because no additional input is required, Duo also works with the LDAP Outpost.
 
+- Multi-tenancy
+
+    This version adds soft multi-tenancy. This means you can configure different branding settings and different default flows per domain.
+
+    This also changes how a default flow is determined. Previously, for defaults flow, authentik would pick the first flow that
+
+        - matches the required designation
+        - comes first sorted by slug
+        - is allowed by policies
+
+    Now, authentik first checks if the current tenant has a default flow configured for the selected designation. If not, it behaves the same as before, meaning that if you want to select a default flow based on policy, you can just leave the tenant default empty.
+
 ## Minor changes
 
 - You can now specify which sources should be shown on an Identification stage.

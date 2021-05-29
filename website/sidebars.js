@@ -43,6 +43,40 @@ module.exports = {
         },
         {
             type: "category",
+            label: "Integrations",
+            items: [
+                {
+                    type: "category",
+                    label: "as Source",
+                    items: ["integrations/sources/active-directory/index"],
+                },
+                {
+                    type: "category",
+                    label: "as Provider",
+                    items: [
+                        "integrations/services/apache-guacamole/index",
+                        "integrations/services/aws/index",
+                        "integrations/services/awx-tower/index",
+                        "integrations/services/gitlab/index",
+                        "integrations/services/grafana/index",
+                        "integrations/services/harbor/index",
+                        "integrations/services/home-assistant/index",
+                        "integrations/services/minio/index",
+                        "integrations/services/nextcloud/index",
+                        "integrations/services/rancher/index",
+                        "integrations/services/sentry/index",
+                        "integrations/services/sonarr/index",
+                        "integrations/services/tautulli/index",
+                        "integrations/services/ubuntu-landscape/index",
+                        "integrations/services/veeam-enterprise-manager/index",
+                        "integrations/services/vmware-vcenter/index",
+                        "integrations/services/wiki-js/index",
+                    ],
+                },
+            ],
+        },
+        {
+            type: "category",
             label: "Flows",
             items: ["flow/flows", "flow/examples"],
         },
@@ -83,7 +117,6 @@ module.exports = {
             type: "category",
             label: "Expressions",
             items: [
-                "expressions/index",
                 {
                     type: "category",
                     label: "Reference",
@@ -98,40 +131,6 @@ module.exports = {
                 "events/index",
                 "events/notifications",
                 "events/transports"
-            ],
-        },
-        {
-            type: "category",
-            label: "Integrations",
-            items: [
-                {
-                    type: "category",
-                    label: "as Source",
-                    items: ["integrations/sources/active-directory/index"],
-                },
-                {
-                    type: "category",
-                    label: "as Provider",
-                    items: [
-                        "integrations/services/apache-guacamole/index",
-                        "integrations/services/aws/index",
-                        "integrations/services/awx-tower/index",
-                        "integrations/services/gitlab/index",
-                        "integrations/services/grafana/index",
-                        "integrations/services/harbor/index",
-                        "integrations/services/home-assistant/index",
-                        "integrations/services/minio/index",
-                        "integrations/services/nextcloud/index",
-                        "integrations/services/rancher/index",
-                        "integrations/services/sentry/index",
-                        "integrations/services/sonarr/index",
-                        "integrations/services/tautulli/index",
-                        "integrations/services/ubuntu-landscape/index",
-                        "integrations/services/veeam-enterprise-manager/index",
-                        "integrations/services/vmware-vcenter/index",
-                        "integrations/services/wiki-js/index",
-                    ],
-                },
             ],
         },
         {

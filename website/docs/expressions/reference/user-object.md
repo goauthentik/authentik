@@ -15,9 +15,16 @@ The User object has the following attributes:
 - `group_attributes` Merged attributes of all groups the user is member of and the user's own attributes.
 - `ak_groups` This is a queryset of all the user's groups.
 
-    You can do additional filtering like `user.ak_groups.filter(name__startswith='test')`, see [here](https://docs.djangoproject.com/en/3.1/ref/models/querysets/#id4)
+    You can do additional filtering like
+    ```python
+    user.ak_groups.filter(name__startswith='test')
+    ```
+    see [here](https://docs.djangoproject.com/en/3.1/ref/models/querysets/#id4)
 
-    To get the name of all groups, you can do `[group.name for group in user.ak_groups.all()]`
+    To get the name of all groups, you can do
+    ```python
+    [group.name for group in user.ak_groups.all()]
+    ```
 
 ## Examples
 

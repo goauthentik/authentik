@@ -38,7 +38,8 @@ class PolicyEvaluator(BaseEvaluator):
 
     def set_policy_request(self, request: PolicyRequest):
         """Update context based on policy request (if http request is given, update that too)"""
-        # update website/docs/policies/expression.md
+        # update website/docs/expressions/_objects.md
+        # update website/docs/expressions/_functions.md
         self._context["ak_is_sso_flow"] = request.context.get(PLAN_CONTEXT_SSO, False)
         if request.http_request:
             self.set_http_request(request.http_request)
@@ -47,7 +48,8 @@ class PolicyEvaluator(BaseEvaluator):
 
     def set_http_request(self, request: HttpRequest):
         """Update context based on http request"""
-        # update website/docs/policies/expression.md
+        # update website/docs/expressions/_objects.md
+        # update website/docs/expressions/_functions.md
         self._context["ak_client_ip"] = ip_address(
             get_client_ip(request) or "255.255.255.255"
         )

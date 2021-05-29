@@ -26,8 +26,8 @@ class BaseEvaluator:
     _filename: str
 
     def __init__(self):
-        # update authentik/policies/expression/templates/policy/expression/form.html
-        # update website/docs/policies/expression.md
+        # update website/docs/expressions/_objects.md
+        # update website/docs/expressions/_functions.md
         self._globals = {
             "regex_match": BaseEvaluator.expr_filter_regex_match,
             "regex_replace": BaseEvaluator.expr_filter_regex_replace,
