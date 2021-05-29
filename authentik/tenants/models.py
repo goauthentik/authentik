@@ -35,9 +35,6 @@ class Tenant(models.Model):
     flow_recovery = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_recovery"
     )
-    flow_enrollment = models.ForeignKey(
-        Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_enrollment"
-    )
     flow_unenrollment = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_unenrollment"
     )

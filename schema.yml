@@ -23125,10 +23125,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        flow_enrollment:
-          type: string
-          format: uuid
-          nullable: true
         flow_unenrollment:
           type: string
           format: uuid
@@ -25112,10 +25108,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        flow_enrollment:
-          type: string
-          format: uuid
-          nullable: true
         flow_unenrollment:
           type: string
           format: uuid
@@ -25146,10 +25138,6 @@ components:
           format: uuid
           nullable: true
         flow_recovery:
-          type: string
-          format: uuid
-          nullable: true
-        flow_enrollment:
           type: string
           format: uuid
           nullable: true
