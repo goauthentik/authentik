@@ -42,10 +42,14 @@ class RequestIDMiddleware:
         if not hasattr(request, "request_id"):
             request_id = uuid4().hex
             setattr(request, "request_id", request_id)
-            LOCAL.authentik = {"request_id": request_id}
+            LOCAL.authentik = {
+                "request_id": request_id,
+                "host": request.get_host(),
+            }
         response = self.get_response(request)
         response[RESPONSE_HEADER_ID] = request.request_id
         del LOCAL.authentik["request_id"]
+        del LOCAL.authentik["host"]
         return response
 
 
@@ -54,4 +58,5 @@ def structlog_add_request_id(logger: Logger, method_name: str, event_dict):
     """If threadlocal has authentik defined, add request_id to log"""
     if hasattr(LOCAL, "authentik"):
         event_dict["request_id"] = LOCAL.authentik.get("request_id", "")
+        event_dict["host"] = LOCAL.authentik.get("host", "")
     return event_dict

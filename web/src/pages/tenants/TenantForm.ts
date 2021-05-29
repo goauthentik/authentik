@@ -43,10 +43,10 @@ export class TenantForm extends ModelForm<Tenant, string> {
             <ak-form-element-horizontal
                 label=${t`Domain`}
                 ?required=${true}
-                name="name">
+                name="domain">
                 <input type="text" value="${first(this.instance?.domain, window.location.host)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="isSuperuser">
+            <ak-form-element-horizontal name="default">
                 <div class="pf-c-check">
                     <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?._default, false)}>
                     <label class="pf-c-check__label">
