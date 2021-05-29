@@ -519,11 +519,23 @@ msgid "Characters which are considered as symbols."
 msgstr ""
 
 #: 
+msgid "Check"
+msgstr ""
+
+#: 
+msgid "Check Application access"
+msgstr ""
+
+#: 
 msgid "Check IP"
 msgstr ""
 
 #: 
 msgid "Check Username"
+msgstr ""
+
+#: 
+msgid "Check access"
 msgstr ""
 
 #: 
@@ -1620,6 +1632,7 @@ msgstr ""
 #: 
 #: 
 #: 
+#: 
 msgid "Hold control/command to select multiple items."
 msgstr ""
 
@@ -1911,6 +1924,8 @@ msgstr ""
 #: 
 #: 
 #: 
+#: 
+#: 
 msgid "Loading..."
 msgstr ""
 
@@ -1978,6 +1993,7 @@ msgstr ""
 msgid "Members"
 msgstr ""
 
+#: 
 #: 
 #: 
 #: 
@@ -2122,6 +2138,7 @@ msgstr ""
 msgid "New version available!"
 msgstr ""
 
+#: 
 #: 
 #: 
 #: 
@@ -2400,6 +2417,7 @@ msgstr ""
 msgid "Pass policy?"
 msgstr ""
 
+#: 
 #: 
 #: 
 msgid "Passing"
@@ -2880,6 +2898,10 @@ msgid "Select one of the sources below to login."
 msgstr ""
 
 #: 
+msgid "Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP."
+msgstr ""
+
+#: 
 msgid "Select users to add"
 msgstr ""
 
@@ -3044,6 +3066,7 @@ msgstr ""
 msgid "Source {0}"
 msgstr ""
 
+#: 
 #: 
 #: 
 msgid "Sources"
@@ -3315,6 +3338,7 @@ msgstr ""
 
 #: 
 #: 
+#: 
 msgid "Successfully sent test-request."
 msgstr ""
 
@@ -3508,6 +3532,7 @@ msgstr ""
 msgid "Template"
 msgstr ""
 
+#: 
 #: 
 #: 
 #: 
@@ -3923,6 +3948,7 @@ msgstr ""
 #: 
 #: 
 #: 
+#: 
 msgid "User"
 msgstr ""
 
@@ -4164,6 +4190,7 @@ msgstr ""
 msgid "X509 Subject"
 msgstr ""
 
+#: 
 #: 
 #: 
 #: 

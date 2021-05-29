@@ -26,8 +26,8 @@ import "./stages/password/PasswordStage";
 import "./stages/prompt/PromptStage";
 import "./sources/plex/PlexLoginInit";
 import { StageHost } from "./stages/base";
-import { ChallengeChoices, Config, FlowChallengeRequest, FlowChallengeResponseRequest, FlowsApi, RedirectChallenge, ShellChallenge } from "authentik-api";
-import { config, DEFAULT_CONFIG } from "../api/Config";
+import { ChallengeChoices, CurrentTenant, FlowChallengeRequest, FlowChallengeResponseRequest, FlowsApi, RedirectChallenge, ShellChallenge } from "authentik-api";
+import { DEFAULT_CONFIG, tenant } from "../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
 import { PFSize } from "../elements/Spinner";
@@ -46,7 +46,7 @@ export class FlowExecutor extends LitElement implements StageHost {
     loading = false;
 
     @property({ attribute: false })
-    config?: Config;
+    tenant?: CurrentTenant;
 
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFButton, PFTitle, PFList, PFBackgroundImage, AKGlobal].concat(css`
@@ -85,11 +85,11 @@ export class FlowExecutor extends LitElement implements StageHost {
     }
 
     private postUpdate(): void {
-        config().then(config => {
+        tenant().then(tenant => {
             if (this.challenge?.title) {
-                document.title = `${this.challenge.title} - ${config.brandingTitle}`;
+                document.title = `${this.challenge.title} - ${tenant.brandingTitle}`;
             } else {
-                document.title = config.brandingTitle || TITLE_DEFAULT;
+                document.title = tenant.brandingTitle || TITLE_DEFAULT;
             }
         });
     }
@@ -115,9 +115,8 @@ export class FlowExecutor extends LitElement implements StageHost {
     }
 
     firstUpdated(): void {
-        configureSentry().then((config) => {
-            this.config = config;
-        });
+        configureSentry();
+        tenant().then(tenant => this.tenant = tenant);
         this.loading = true;
         new FlowsApi(DEFAULT_CONFIG).flowsExecutorGet({
             flowSlug: this.flowSlug,
@@ -255,7 +254,7 @@ export class FlowExecutor extends LitElement implements StageHost {
             <div class="ak-login-container">
                 <header class="pf-c-login__header">
                     <div class="pf-c-brand ak-brand">
-                        <img src="${ifDefined(this.config?.brandingLogo)}" alt="authentik icon" />
+                        <img src="${ifDefined(this.tenant?.brandingLogo)}" alt="authentik icon" />
                     </div>
                 </header>
                 <div class="pf-c-login__main">
@@ -264,12 +263,12 @@ export class FlowExecutor extends LitElement implements StageHost {
                 <footer class="pf-c-login__footer">
                     <p></p>
                     <ul class="pf-c-list pf-m-inline">
-                        ${until(this.config?.uiFooterLinks?.map((link) => {
+                        ${until(this.tenant?.uiFooterLinks?.map((link) => {
                             return html`<li>
                                 <a href="${link.href || ""}">${link.name}</a>
                             </li>`;
                         }))}
-                        ${this.config?.brandingTitle != "authentik" ? html`
+                        ${this.tenant?.brandingTitle != "authentik" ? html`
                         <li><a href="https://goauthentik.io">${t`Powered by authentik`}</a></li>` : html``}
                     </ul>
                 </footer>

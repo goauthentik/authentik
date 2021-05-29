@@ -14,13 +14,6 @@ from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.config import CONFIG
 
 
-class FooterLinkSerializer(PassiveSerializer):
-    """Links returned in Config API"""
-
-    href = CharField(read_only=True)
-    name = CharField(read_only=True)
-
-
 class Capabilities(models.TextChoices):
     """Define capabilities which influence which APIs can/should be used"""
 
@@ -29,10 +22,6 @@ class Capabilities(models.TextChoices):
 
 class ConfigSerializer(PassiveSerializer):
     """Serialize authentik Config into DRF Object"""
-
-    branding_logo = CharField(read_only=True)
-    branding_title = CharField(read_only=True)
-    ui_footer_links = ListField(child=FooterLinkSerializer(), read_only=True)
 
     error_reporting_enabled = BooleanField(read_only=True)
     error_reporting_environment = CharField(read_only=True)
@@ -59,12 +48,9 @@ class ConfigView(APIView):
         """Retrive public configuration options"""
         config = ConfigSerializer(
             {
-                "branding_logo": CONFIG.y("authentik.branding.logo"),
-                "branding_title": CONFIG.y("authentik.branding.title"),
                 "error_reporting_enabled": CONFIG.y("error_reporting.enabled"),
                 "error_reporting_environment": CONFIG.y("error_reporting.environment"),
                 "error_reporting_send_pii": CONFIG.y("error_reporting.send_pii"),
-                "ui_footer_links": CONFIG.y("authentik.footer_links"),
                 "capabilities": self.get_capabilities(),
             }
         )

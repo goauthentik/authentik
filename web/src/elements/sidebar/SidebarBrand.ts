@@ -6,29 +6,25 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import AKGlobal from "../../authentik.css";
 
 import { configureSentry } from "../../api/Sentry";
-import { Config } from "authentik-api";
+import { CurrentTenant } from "authentik-api";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { EVENT_SIDEBAR_TOGGLE } from "../../constants";
+import { tenant } from "../../api/Config";
 
 // If the viewport is wider than MIN_WIDTH, the sidebar
 // is shown besides the content, and not overlayed.
 export const MIN_WIDTH = 1200;
 
-export const DefaultConfig: Config = {
+export const DefaultTenant: CurrentTenant = {
     brandingLogo: " /static/dist/assets/icons/icon_left_brand.svg",
     brandingTitle: "authentik",
-
-    errorReportingEnabled: false,
-    errorReportingEnvironment: "",
-    errorReportingSendPii: false,
     uiFooterLinks: [],
-    capabilities: [],
 };
 
 @customElement("ak-sidebar-brand")
 export class SidebarBrand extends LitElement {
     @property({attribute: false})
-    config: Config = DefaultConfig;
+    tenant: CurrentTenant = DefaultTenant;
 
     static get styles(): CSSResult[] {
         return [
@@ -68,7 +64,8 @@ export class SidebarBrand extends LitElement {
     }
 
     firstUpdated(): void {
-        configureSentry(true).then((c) => {this.config = c;});
+        configureSentry(true);
+        tenant().then(tenant => this.tenant = tenant);
     }
 
     render(): TemplateResult {
@@ -89,7 +86,7 @@ export class SidebarBrand extends LitElement {
             ` : html``}
             <a href="#/" class="pf-c-page__header-brand-link">
                 <div class="pf-c-brand ak-brand">
-                    <img src="${ifDefined(this.config.brandingLogo)}" alt="authentik icon" loading="lazy" />
+                    <img src="${ifDefined(this.tenant.brandingLogo)}" alt="authentik icon" loading="lazy" />
                 </div>
             </a>`;
     }

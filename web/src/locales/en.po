@@ -522,6 +522,14 @@ msgstr "Changelog"
 msgid "Characters which are considered as symbols."
 msgstr "Characters which are considered as symbols."
 
+#: src/pages/applications/ApplicationViewPage.ts
+msgid "Check"
+msgstr "Check"
+
+#: src/pages/applications/ApplicationViewPage.ts
+msgid "Check Application access"
+msgstr "Check Application access"
+
 #: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid "Check IP"
 msgstr "Check IP"
@@ -529,6 +537,10 @@ msgstr "Check IP"
 #: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid "Check Username"
 msgstr "Check Username"
+
+#: src/pages/applications/ApplicationViewPage.ts
+msgid "Check access"
+msgstr "Check access"
 
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 msgid "Check status"
@@ -1625,6 +1637,7 @@ msgstr "Hide service-accounts"
 #: src/pages/sources/plex/PlexSourceForm.ts
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/stages/password/PasswordStageForm.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
@@ -1866,6 +1879,7 @@ msgid "Loading"
 msgstr "Loading"
 
 #: src/elements/Spinner.ts
+#: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/events/RuleForm.ts
 #: src/pages/events/RuleForm.ts
@@ -1914,6 +1928,7 @@ msgstr "Loading"
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 #: src/pages/stages/email/EmailStageForm.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/stages/password/PasswordStageForm.ts
@@ -1986,6 +2001,7 @@ msgstr "Maximum age (in days)"
 msgid "Members"
 msgstr "Members"
 
+#: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/events/EventInfo.ts
 #: src/pages/policies/PolicyTestForm.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
@@ -2130,6 +2146,7 @@ msgstr "Need an account?"
 msgid "New version available!"
 msgstr "New version available!"
 
+#: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/groups/MemberSelectModal.ts
@@ -2408,6 +2425,7 @@ msgstr "Parent"
 msgid "Pass policy?"
 msgstr "Pass policy?"
 
+#: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/events/EventInfo.ts
 #: src/pages/policies/PolicyTestForm.ts
 msgid "Passing"
@@ -2887,6 +2905,10 @@ msgstr "Select an identification method."
 msgid "Select one of the sources below to login."
 msgstr "Select one of the sources below to login."
 
+#: src/pages/stages/identification/IdentificationStageForm.ts
+msgid "Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP."
+msgstr "Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP."
+
 #: src/pages/groups/MemberSelectModal.ts
 msgid "Select users to add"
 msgstr "Select users to add"
@@ -3054,6 +3076,7 @@ msgstr "Source {0}"
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/sources/SourcesListPage.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Sources"
 msgstr "Sources"
 
@@ -3321,6 +3344,7 @@ msgstr "Successfully imported flow."
 msgid "Successfully imported provider."
 msgstr "Successfully imported provider."
 
+#: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/policies/PolicyTestForm.ts
 #: src/pages/property-mappings/PropertyMappingTestForm.ts
 msgid "Successfully sent test-request."
@@ -3516,6 +3540,7 @@ msgstr "Task finished with warnings"
 msgid "Template"
 msgstr "Template"
 
+#: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/events/TransportListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/policies/PolicyListPage.ts
@@ -3925,6 +3950,7 @@ msgstr "Use this redirect URL:"
 
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
+#: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventListPage.ts
 #: src/pages/policies/PolicyBindingForm.ts
@@ -4178,6 +4204,7 @@ msgstr ""
 msgid "X509 Subject"
 msgstr "X509 Subject"
 
+#: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/groups/MemberSelectModal.ts
