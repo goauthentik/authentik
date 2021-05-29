@@ -35,11 +35,7 @@ def save_user_reputation(self: MonitoredTask):
     objects_to_update = []
     for key, score in cache.get_many(cache.keys(CACHE_KEY_USER_PREFIX + "*")).items():
         username = key.replace(CACHE_KEY_USER_PREFIX, "")
-        users = User.objects.filter(username=username)
-        if not users.exists():
-            LOGGER.info("User in cache does not exist, ignoring", username=username)
-            continue
-        rep, _ = UserReputation.objects.get_or_create(user=users.first())
+        rep, _ = UserReputation.objects.get_or_create(username=username)
         rep.score = score
         objects_to_update.append(rep)
     UserReputation.objects.bulk_update(objects_to_update, ["score"])

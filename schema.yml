@@ -7528,6 +7528,10 @@ paths:
       operationId: policies_reputation_ips_list
       description: IPReputation Viewset
       parameters:
+      - in: query
+        name: ip
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -7544,6 +7548,10 @@ paths:
         required: false
         in: query
         description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: score
         schema:
           type: integer
       - name: search
@@ -7568,37 +7576,6 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-    post:
-      operationId: policies_reputation_ips_create
-      description: IPReputation Viewset
-      tags:
-      - policies
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/IPReputationRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/IPReputationRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/IPReputationRequest'
-        required: true
-      security:
-      - authentik: []
-      - cookieAuth: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/IPReputation'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/reputation/ips/{id}/:
     get:
       operationId: policies_reputation_ips_retrieve
@@ -7612,81 +7589,6 @@ paths:
         required: true
       tags:
       - policies
-      security:
-      - authentik: []
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/IPReputation'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-    put:
-      operationId: policies_reputation_ips_update
-      description: IPReputation Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this ip reputation.
-        required: true
-      tags:
-      - policies
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/IPReputationRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/IPReputationRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/IPReputationRequest'
-        required: true
-      security:
-      - authentik: []
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/IPReputation'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-    patch:
-      operationId: policies_reputation_ips_partial_update
-      description: IPReputation Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this ip reputation.
-        required: true
-      tags:
-      - policies
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedIPReputationRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedIPReputationRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedIPReputationRequest'
       security:
       - authentik: []
       - cookieAuth: []
@@ -7746,10 +7648,18 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: score
+        schema:
+          type: integer
       - name: search
         required: false
         in: query
         description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: username
         schema:
           type: string
       tags:
@@ -7768,37 +7678,6 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-    post:
-      operationId: policies_reputation_users_create
-      description: UserReputation Viewset
-      tags:
-      - policies
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserReputationRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserReputationRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserReputationRequest'
-        required: true
-      security:
-      - authentik: []
-      - cookieAuth: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserReputation'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/reputation/users/{id}/:
     get:
       operationId: policies_reputation_users_retrieve
@@ -7812,81 +7691,6 @@ paths:
         required: true
       tags:
       - policies
-      security:
-      - authentik: []
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserReputation'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-    put:
-      operationId: policies_reputation_users_update
-      description: UserReputation Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user reputation.
-        required: true
-      tags:
-      - policies
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserReputationRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserReputationRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserReputationRequest'
-        required: true
-      security:
-      - authentik: []
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserReputation'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-    patch:
-      operationId: policies_reputation_users_partial_update
-      description: UserReputation Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user reputation.
-        required: true
-      tags:
-      - policies
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedUserReputationRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedUserReputationRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedUserReputationRequest'
       security:
       - authentik: []
       - cookieAuth: []
@@ -17637,18 +17441,6 @@ components:
       - ip
       - pk
       - updated
-    IPReputationRequest:
-      type: object
-      description: IPReputation Serializer
-      properties:
-        ip:
-          type: string
-        score:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-      required:
-      - ip
     IdentificationChallenge:
       type: object
       description: Identification challenges with all UI elements
@@ -22214,16 +22006,6 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-    PatchedIPReputationRequest:
-      type: object
-      description: IPReputation Serializer
-      properties:
-        ip:
-          type: string
-        score:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
     PatchedIdentificationStageRequest:
       type: object
       description: IdentificationStage Serializer
@@ -23207,16 +22989,6 @@ components:
         identifier:
           type: string
           maxLength: 255
-    PatchedUserReputationRequest:
-      type: object
-      description: UserReputation Serializer
-      properties:
-        user:
-          type: integer
-        score:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
     PatchedUserRequest:
       type: object
       description: User Serializer
@@ -25547,8 +25319,8 @@ components:
           type: integer
           readOnly: true
           title: ID
-        user:
-          type: integer
+        username:
+          type: string
         score:
           type: integer
           maximum: 2147483647
@@ -25560,19 +25332,7 @@ components:
       required:
       - pk
       - updated
-      - user
-    UserReputationRequest:
-      type: object
-      description: UserReputation Serializer
-      properties:
-        user:
-          type: integer
-        score:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-      required:
-      - user
+      - username
     UserRequest:
       type: object
       description: User Serializer

@@ -61,9 +61,9 @@ class IPReputation(models.Model):
 class UserReputation(models.Model):
     """Store score attempting to log in as the same username"""
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    username = models.TextField()
     score = models.IntegerField(default=0)
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"UserReputation for {self.user} @ {self.score}"
+        return f"UserReputation for {self.username} @ {self.score}"

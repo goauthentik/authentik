@@ -1,5 +1,7 @@
 """Source API Views"""
-from rest_framework.viewsets import ModelViewSet
+from rest_framework import mixins
+from rest_framework.serializers import ModelSerializer
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.policies.api.policies import PolicySerializer
 from authentik.policies.reputation.models import (
@@ -28,7 +30,7 @@ class ReputationPolicyViewSet(ModelViewSet):
     serializer_class = ReputationPolicySerializer
 
 
-class IPReputationSerializer(PolicySerializer):
+class IPReputationSerializer(ModelSerializer):
     """IPReputation Serializer"""
 
     class Meta:
@@ -41,28 +43,44 @@ class IPReputationSerializer(PolicySerializer):
         ]
 
 
-class IPReputationViewSet(ModelViewSet):
+class IPReputationViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     """IPReputation Viewset"""
 
     queryset = IPReputation.objects.all()
     serializer_class = IPReputationSerializer
+    search_fields = ["ip", "score"]
+    filterset_fields = ["ip", "score"]
+    ordering = ["ip"]
 
 
-class UserReputationSerializer(PolicySerializer):
+class UserReputationSerializer(ModelSerializer):
     """UserReputation Serializer"""
 
     class Meta:
         model = UserReputation
         fields = [
             "pk",
-            "user",
+            "username",
             "score",
             "updated",
         ]
 
 
-class UserReputationViewSet(ModelViewSet):
+class UserReputationViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     """UserReputation Viewset"""
 
     queryset = UserReputation.objects.all()
     serializer_class = UserReputationSerializer
+    search_fields = ["username", "score"]
+    filterset_fields = ["username", "score"]
+    ordering = ["username"]
