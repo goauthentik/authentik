@@ -11,6 +11,7 @@ from authentik.admin.api.workers import WorkerView
 from authentik.api.v2.config import ConfigView
 from authentik.api.views import APIBrowserView
 from authentik.core.api.applications import ApplicationViewSet
+from authentik.core.api.authenticated_sessions import AuthenticatedSessionViewSet
 from authentik.core.api.groups import GroupViewSet
 from authentik.core.api.propertymappings import PropertyMappingViewSet
 from authentik.core.api.providers import ProviderViewSet
@@ -107,6 +108,7 @@ router = routers.DefaultRouter()
 router.register("admin/system_tasks", TaskViewSet, basename="admin_system_tasks")
 router.register("admin/apps", AppsViewSet, basename="apps")
 
+router.register("core/authenticated_sessions", AuthenticatedSessionViewSet)
 router.register("core/applications", ApplicationViewSet)
 router.register("core/groups", GroupViewSet)
 router.register("core/users", UserViewSet)

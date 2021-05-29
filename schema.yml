@@ -1500,6 +1500,114 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/core/authenticated_sessions/:
+    get:
+      operationId: core_authenticated_sessions_list
+      description: AuthenticatedSession Viewset
+      parameters:
+      - in: query
+        name: last_ip
+        schema:
+          type: string
+      - in: query
+        name: last_user_agent
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: user__username
+        schema:
+          type: string
+      tags:
+      - core
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAuthenticatedSessionList'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/core/authenticated_sessions/{uuid}/:
+    get:
+      operationId: core_authenticated_sessions_retrieve
+      description: AuthenticatedSession Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this authenticated session.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatedSession'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    delete:
+      operationId: core_authenticated_sessions_destroy
+      description: AuthenticatedSession Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this authenticated session.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/groups/:
     get:
       operationId: core_groups_list
@@ -15454,6 +15562,30 @@ components:
             If empty, user will not be able to configure this stage.
       required:
       - name
+    AuthenticatedSession:
+      type: object
+      description: AuthenticatedSession Serializer
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        user:
+          type: integer
+        last_ip:
+          type: string
+        last_user_agent:
+          type: string
+        last_used:
+          type: string
+          format: date-time
+          readOnly: true
+        expires:
+          type: string
+          format: date-time
+      required:
+      - last_ip
+      - last_used
+      - user
     AuthenticatorDuoChallenge:
       type: object
       description: Duo Challenge
@@ -18891,6 +19023,41 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AuthenticateWebAuthnStage'
+      required:
+      - pagination
+      - results
+    PaginatedAuthenticatedSessionList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticatedSession'
       required:
       - pagination
       - results
