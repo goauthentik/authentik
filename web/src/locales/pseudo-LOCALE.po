@@ -304,6 +304,7 @@ msgstr ""
 #: 
 #: 
 #: 
+#: 
 msgid "Authentication flow"
 msgstr ""
 
@@ -416,6 +417,14 @@ msgstr ""
 
 #: 
 msgid "Binding Type"
+msgstr ""
+
+#: 
+msgid "Branding settings"
+msgstr ""
+
+#: 
+msgid "Branding shown in page title and several other places."
 msgstr ""
 
 #: 
@@ -671,6 +680,10 @@ msgid "Configure the maximum allowed time drift for an asseration."
 msgstr ""
 
 #: 
+msgid "Configure visual settings and defaults for different domains."
+msgstr ""
+
+#: 
 msgid "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
 msgstr ""
 
@@ -810,6 +823,8 @@ msgstr ""
 #: 
 #: 
 #: 
+#: 
+#: 
 msgid "Create"
 msgstr ""
 
@@ -876,6 +891,10 @@ msgid "Create Stage binding"
 msgstr ""
 
 #: 
+msgid "Create Tenant"
+msgstr ""
+
+#: 
 msgid "Create Token"
 msgstr ""
 
@@ -935,9 +954,22 @@ msgid "Decides what this Flow is used for. For example, the Authentication flow 
 msgstr ""
 
 #: 
+msgid "Default"
+msgstr ""
+
+#: 
+msgid "Default flows"
+msgstr ""
+
+#: 
+msgid "Default?"
+msgstr ""
+
+#: 
 msgid "Define how notifications are sent to users, like Email or Webhook."
 msgstr ""
 
+#: 
 #: 
 #: 
 #: 
@@ -1077,6 +1109,11 @@ msgstr ""
 
 #: 
 #: 
+msgid "Domain"
+msgstr ""
+
+#: 
+#: 
 #: 
 msgid "Download"
 msgstr ""
@@ -1113,6 +1150,7 @@ msgstr ""
 msgid "Each provider has a different issuer, based on the application slug."
 msgstr ""
 
+#: 
 #: 
 #: 
 #: 
@@ -1482,6 +1520,14 @@ msgid "Flow used for users to authenticate. Currently only identification and pa
 msgstr ""
 
 #: 
+msgid "Flow used to authenticate users. If left empty, the first applicable flow sorted by the slug is used."
+msgstr ""
+
+#: 
+msgid "Flow used to logout. If left empty, the first applicable flow sorted by the slug is used."
+msgstr ""
+
+#: 
 #: 
 #: 
 #: 
@@ -1649,6 +1695,10 @@ msgid "Icon"
 msgstr ""
 
 #: 
+msgid "Icon shown in sidebar/header and flow executor."
+msgstr ""
+
+#: 
 #: 
 #: 
 #: 
@@ -1667,6 +1717,10 @@ msgstr ""
 
 #: 
 msgid "If left empty, authentik will try to extract the launch URL based on the selected provider."
+msgstr ""
+
+#: 
+msgid "If set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown."
 msgstr ""
 
 #: 
@@ -1728,6 +1782,10 @@ msgstr ""
 
 #: 
 msgid "Invalidation"
+msgstr ""
+
+#: 
+msgid "Invalidation flow"
 msgstr ""
 
 #: 
@@ -1926,6 +1984,10 @@ msgstr ""
 #: 
 #: 
 #: 
+#: 
+#: 
+#: 
+#: 
 msgid "Loading..."
 msgstr ""
 
@@ -1954,6 +2016,10 @@ msgstr ""
 #: 
 #: 
 msgid "Logins over the last 24 hours"
+msgstr ""
+
+#: 
+msgid "Logo"
 msgstr ""
 
 #: 
@@ -2150,6 +2216,7 @@ msgstr ""
 #: 
 #: 
 #: 
+#: 
 msgid "No"
 msgstr ""
 
@@ -2175,16 +2242,16 @@ msgid "No additional data available."
 msgstr ""
 
 #: 
-msgid "No elements found."
-msgstr ""
-
-#: 
 msgid "No form found"
 msgstr ""
 
 #: 
 #: 
 msgid "No matching events could be found."
+msgstr ""
+
+#: 
+msgid "No objects found."
 msgstr ""
 
 #: 
@@ -2683,7 +2750,12 @@ msgid "Recovery"
 msgstr ""
 
 #: 
+#: 
 msgid "Recovery flow"
+msgstr ""
+
+#: 
+msgid "Recovery flow. If left empty, the first applicable flow sorted by the slug is used."
 msgstr ""
 
 #: 
@@ -3304,6 +3376,10 @@ msgid "Successfully created stage."
 msgstr ""
 
 #: 
+msgid "Successfully created tenant."
+msgstr ""
+
+#: 
 msgid "Successfully created token."
 msgstr ""
 
@@ -3444,6 +3520,10 @@ msgid "Successfully updated stage."
 msgstr ""
 
 #: 
+msgid "Successfully updated tenant."
+msgstr ""
+
+#: 
 msgid "Successfully updated token."
 msgstr ""
 
@@ -3530,6 +3610,15 @@ msgstr ""
 
 #: 
 msgid "Template"
+msgstr ""
+
+#: 
+msgid "Tenant"
+msgstr ""
+
+#: 
+#: 
+msgid "Tenants"
 msgstr ""
 
 #: 
@@ -3621,6 +3710,7 @@ msgstr ""
 msgid "Timeout"
 msgstr ""
 
+#: 
 #: 
 msgid "Title"
 msgstr ""
@@ -3739,6 +3829,10 @@ msgid "Unenrollment"
 msgstr ""
 
 #: 
+msgid "Unenrollment flow"
+msgstr ""
+
+#: 
 msgid "Unhealthy"
 msgstr ""
 
@@ -3758,6 +3852,7 @@ msgstr ""
 msgid "Up-to-date!"
 msgstr ""
 
+#: 
 #: 
 #: 
 #: 
@@ -3873,6 +3968,10 @@ msgid "Update Stage binding"
 msgstr ""
 
 #: 
+msgid "Update Tenant"
+msgstr ""
+
+#: 
 msgid "Update Token"
 msgstr ""
 
@@ -3934,6 +4033,10 @@ msgstr ""
 
 #: 
 msgid "Use this redirect URL:"
+msgstr ""
+
+#: 
+msgid "Use this tenant for each domain that doesn't have a dedicated tenant."
 msgstr ""
 
 #: 
@@ -4190,6 +4293,7 @@ msgstr ""
 msgid "X509 Subject"
 msgstr ""
 
+#: 
 #: 
 #: 
 #: 
