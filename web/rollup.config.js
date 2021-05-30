@@ -15,6 +15,8 @@ const extensions = [
 const resources = [
     { src: "node_modules/rapidoc/dist/rapidoc-min.js", dest: "dist/" },
 
+    { src: "node_modules/carbon-components/css/carbon-components.min.css", dest: "dist/" },
+
     { src: "node_modules/@patternfly/patternfly/patternfly.min.css", dest: "dist/" },
     { src: "node_modules/@patternfly/patternfly/patternfly-base.css", dest: "dist/" },
     { src: "node_modules/@patternfly/patternfly/components/Page/page.css", dest: "dist/" },
@@ -25,6 +27,7 @@ const resources = [
     { src: "node_modules/@patternfly/patternfly/assets/*", dest: "dist/assets/" },
     { src: "src/interfaces/admin/index.html", dest: "dist/if/admin/" },
     { src: "src/interfaces/flow/index.html", dest: "dist/if/flow/" },
+    { src: "src/interfaces/user/index.html", dest: "dist/if/user/" },
     { src: "src/assets/*", dest: "dist/assets" },
     { src: "./icons/*", dest: "dist/assets/icons" },
 ];
@@ -137,6 +140,38 @@ export default [
                 sourcemap: true,
                 manualChunks: manualChunks,
                 chunkFileNames: "flow-[name].js"
+            },
+        ],
+        plugins: [
+            cssimport(),
+            resolve({ extensions, browser: true }),
+            commonjs(),
+            babel({
+                extensions,
+                babelHelpers: "runtime",
+                include: ["src/**/*"],
+            }),
+            replace({
+                "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
+                preventAssignment: true
+            }),
+            sourcemaps(),
+            isProdBuild && terser(),
+        ].filter(p => p),
+        watch: {
+            clearScreen: false,
+        },
+    },
+    // User interface
+    {
+        input: "./src/interfaces/UserInterface.ts",
+        output: [
+            {
+                format: "es",
+                dir: "dist",
+                sourcemap: true,
+                manualChunks: manualChunks,
+                chunkFileNames: "user-[name].js"
             },
         ],
         plugins: [

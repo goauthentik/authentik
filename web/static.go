@@ -14,6 +14,9 @@ var InterfaceFlow []byte
 //go:embed dist/if/admin/index.html
 var InterfaceAdmin []byte
 
+//go:embed dist/if/user/index.html
+var InterfaceUser []byte
+
 //go:embed robots.txt
 var RobotsTxt []byte
 
