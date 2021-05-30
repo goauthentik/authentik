@@ -30,6 +30,16 @@ class TaskSerializer(PassiveSerializer):
     )
     messages = ListField(source="result.messages")
 
+    def to_representation(self, instance):
+        """When a new version of authentik adds fields to TaskInfo,
+        the API will fail with an AttributeError, as the classes
+        are pickled in cache. In that case, just delete the info"""
+        try:
+            return super().to_representation(instance)
+        except AttributeError:
+            self.instance.delete()
+            return {}
+
 
 class TaskViewSet(ViewSet):
     """Read-only view set that returns all background tasks"""
