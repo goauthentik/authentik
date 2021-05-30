@@ -81,9 +81,12 @@ class DockerController(BaseController):
                 True,
             )
 
+    # pylint: disable=too-many-return-statements
     def up(self):
         try:
             container, has_been_created = self._get_container()
+            if has_been_created:
+                return None
             # Check if the container is out of date, delete it and retry
             if len(container.image.tags) > 0:
                 tag: str = container.image.tags[0]
