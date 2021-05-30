@@ -25,7 +25,7 @@ RUN	docker-entrypoint.sh generate \
 FROM node as npm-builder
 
 COPY ./web /static/
-COPY --from=api-builder /local/web/api /static/web/api
+COPY --from=api-builder /local/web/api /static/api
 
 ENV NODE_ENV=production
 RUN cd /static && npm i --production=false && npm run build
