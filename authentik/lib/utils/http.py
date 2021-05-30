@@ -5,9 +5,10 @@ from django.http import HttpRequest
 
 OUTPOST_REMOTE_IP_HEADER = "HTTP_X_AUTHENTIK_REMOTE_IP"
 USER_ATTRIBUTE_CAN_OVERRIDE_IP = "goauthentik.io/user/override-ips"
+DEFAULT_IP = "255.255.255.255"
 
 
-def _get_client_ip_from_meta(meta: dict[str, Any]) -> Optional[str]:
+def _get_client_ip_from_meta(meta: dict[str, Any]) -> str:
     """Attempt to get the client's IP by checking common HTTP Headers.
     Returns none if no IP Could be found"""
     headers = (
@@ -19,7 +20,7 @@ def _get_client_ip_from_meta(meta: dict[str, Any]) -> Optional[str]:
         if _header in meta:
             ips: list[str] = meta.get(_header).split(",")
             return ips[0].strip()
-    return None
+    return DEFAULT_IP
 
 
 def _get_outpost_override_ip(request: HttpRequest) -> Optional[str]:
@@ -37,7 +38,7 @@ def _get_outpost_override_ip(request: HttpRequest) -> Optional[str]:
     return request.META[OUTPOST_REMOTE_IP_HEADER]
 
 
-def get_client_ip(request: Optional[HttpRequest]) -> Optional[str]:
+def get_client_ip(request: Optional[HttpRequest]) -> str:
     """Attempt to get the client's IP by checking common HTTP Headers.
     Returns none if no IP Could be found"""
     if request:
@@ -45,4 +46,4 @@ def get_client_ip(request: Optional[HttpRequest]) -> Optional[str]:
         if override:
             return override
         return _get_client_ip_from_meta(request.META)
-    return None
+    return DEFAULT_IP

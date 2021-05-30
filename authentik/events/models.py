@@ -149,7 +149,7 @@ class Event(ExpiringModel):
                     request.session[SESSION_IMPERSONATE_USER]
                 )
         # User 255.255.255.255 as fallback if IP cannot be determined
-        self.client_ip = get_client_ip(request) or "255.255.255.255"
+        self.client_ip = get_client_ip(request)
         # Apply GeoIP Data, when enabled
         self.with_geoip()
         # If there's no app set, we get it from the requests too

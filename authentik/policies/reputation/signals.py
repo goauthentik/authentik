@@ -17,7 +17,7 @@ LOGGER = get_logger()
 
 def update_score(request: HttpRequest, username: str, amount: int):
     """Update score for IP and User"""
-    remote_ip = get_client_ip(request) or "255.255.255.255"
+    remote_ip = get_client_ip(request)
 
     # We only update the cache here, as its faster than writing to the DB
     cache.get_or_set(CACHE_KEY_IP_PREFIX + remote_ip, 0)

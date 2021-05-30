@@ -50,9 +50,7 @@ class PolicyEvaluator(BaseEvaluator):
         """Update context based on http request"""
         # update website/docs/expressions/_objects.md
         # update website/docs/expressions/_functions.md
-        self._context["ak_client_ip"] = ip_address(
-            get_client_ip(request) or "255.255.255.255"
-        )
+        self._context["ak_client_ip"] = ip_address(get_client_ip(request))
         self._context["http_request"] = request
 
     def handle_error(self, exc: Exception, expression_source: str):
