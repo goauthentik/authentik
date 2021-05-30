@@ -110,6 +110,7 @@ stages:
               repository: 'authentik/outpost-proxy'
               command: 'build'
               Dockerfile: 'outpost/proxy.Dockerfile'
+              buildContext: '$(Build.SourcesDirectory)'
               tags: |
                 gh-$(branchName)
                 gh-$(Build.SourceVersion)
@@ -140,6 +141,7 @@ stages:
               repository: 'authentik/outpost-ldap'
               command: 'build'
               Dockerfile: 'outpost/ldap.Dockerfile'
+              buildContext: '$(Build.SourcesDirectory)'
               tags: |
                 gh-$(branchName)
                 gh-$(Build.SourceVersion)
