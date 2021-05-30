@@ -51,6 +51,26 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/admin/system/:
+    get:
+      operationId: admin_system_retrieve
+      description: Get system information.
+      tags:
+      - admin
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/System'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/admin/system_tasks/:
     get:
       operationId: admin_system_tasks_list
@@ -24808,6 +24828,51 @@ components:
       - user_email
       - user_upn
       type: string
+    System:
+      type: object
+      description: Get system information.
+      properties:
+        http_headers:
+          type: object
+          additionalProperties:
+            type: string
+          readOnly: true
+        http_host:
+          type: string
+          readOnly: true
+        http_is_secure:
+          type: boolean
+          readOnly: true
+        runtime:
+          type: object
+          properties:
+            python_version:
+              type: string
+            gunicorn_version:
+              type: string
+            environment:
+              type: string
+            architecture:
+              type: string
+            platform:
+              type: string
+            uname:
+              type: string
+          readOnly: true
+        tenant:
+          type: string
+          readOnly: true
+        server_time:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - http_headers
+      - http_host
+      - http_is_secure
+      - runtime
+      - server_time
+      - tenant
     TOTPDevice:
       type: object
       description: Serializer for totp authenticator devices

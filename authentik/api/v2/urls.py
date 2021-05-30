@@ -5,6 +5,7 @@ from rest_framework import routers
 
 from authentik.admin.api.meta import AppsViewSet
 from authentik.admin.api.metrics import AdministrationMetricsViewSet
+from authentik.admin.api.system import SystemView
 from authentik.admin.api.tasks import TaskViewSet
 from authentik.admin.api.version import VersionView
 from authentik.admin.api.workers import WorkerView
@@ -225,6 +226,7 @@ urlpatterns = (
         ),
         path("admin/version/", VersionView.as_view(), name="admin_version"),
         path("admin/workers/", WorkerView.as_view(), name="admin_workers"),
+        path("admin/system/", SystemView.as_view(), name="admin_system"),
         path("root/config/", ConfigView.as_view(), name="config"),
         path(
             "flows/executor/<slug:flow_slug>/",
