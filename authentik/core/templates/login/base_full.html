@@ -4,6 +4,7 @@
 {% load i18n %}
 
 {% block head_before %}
+{{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static 'dist/patternfly.min.css' %}?v={{ ak_version }}">
 {% endblock %}
 
