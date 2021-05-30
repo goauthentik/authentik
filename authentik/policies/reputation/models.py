@@ -30,7 +30,7 @@ class ReputationPolicy(Policy):
         return "ak-policy-reputation-form"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
-        remote_ip = get_client_ip(request.http_request) or "255.255.255.255"
+        remote_ip = get_client_ip(request.http_request)
         passing = True
         if self.check_ip:
             score = cache.get_or_set(CACHE_KEY_IP_PREFIX + remote_ip, 0)

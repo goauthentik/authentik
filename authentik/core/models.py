@@ -28,6 +28,7 @@ from authentik.flows.challenge import Challenge
 from authentik.flows.models import Flow
 from authentik.lib.config import CONFIG
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
+from authentik.lib.utils.http import get_client_ip
 from authentik.managed.models import ManagedModel
 from authentik.policies.models import PolicyBindingModel
 
@@ -452,3 +453,33 @@ class PropertyMapping(SerializerModel, ManagedModel):
 
         verbose_name = _("Property Mapping")
         verbose_name_plural = _("Property Mappings")
+
+
+class AuthenticatedSession(ExpiringModel):
+    """Additional session class for authenticated users. Augments the standard django session
+    to achieve the following:
+        - Make it queryable by user
+        - Have a direct connection to user objects
+        - Allow users to view their own sessions and terminate them
+        - Save structured and well-defined information.
+    """
+
+    uuid = models.UUIDField(default=uuid4, primary_key=True)
+
+    session_key = models.CharField(max_length=40)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    last_ip = models.TextField()
+    last_user_agent = models.TextField(blank=True)
+    last_used = models.DateTimeField(auto_now=True)
+
+    @staticmethod
+    def from_request(request: HttpRequest, user: User) -> "AuthenticatedSession":
+        """Create a new session from a http request"""
+        return AuthenticatedSession(
+            session_key=request.session.session_key,
+            user=user,
+            last_ip=get_client_ip(request),
+            last_user_agent=request.META.get("HTTP_USER_AGENT", ""),
+            expires=request.session.get_expiry_date(),
+        )

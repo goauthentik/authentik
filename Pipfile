@@ -45,6 +45,7 @@ uvicorn = {extras = ["standard"],version = "*"}
 webauthn = "*"
 xmlsec = "*"
 duo-client = "*"
+ua-parser = "*"
 
 [requires]
 python_version = "3.9"

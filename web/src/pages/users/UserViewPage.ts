@@ -13,18 +13,19 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import AKGlobal from "../../authentik.css";
 
-import "../../elements/forms/ModalForm";
 import "../../elements/buttons/ActionButton";
 import "../../elements/buttons/SpinnerButton";
+import "../../elements/charts/UserChart";
 import "../../elements/CodeMirror";
-import "../../elements/Tabs";
 import "../../elements/events/ObjectChangelog";
-import "../../elements/user/UserConsentList";
+import "../../elements/events/UserEvents";
+import "../../elements/forms/ModalForm";
 import "../../elements/oauth/UserCodeList";
 import "../../elements/oauth/UserRefreshList";
-import "../../elements/charts/UserChart";
 import "../../elements/PageHeader";
-import "../../elements/events/UserEvents";
+import "../../elements/Tabs";
+import "../../elements/user/SessionList";
+import "../../elements/user/UserConsentList";
 import "./UserForm";
 import { CoreApi, User } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -173,6 +174,14 @@ export class UserViewPage extends LitElement {
                                 <ak-charts-user userId=${this.user.pk || 0}>
                                 </ak-charts-user>
                             </div>
+                        </div>
+                    </div>
+                </section>
+                <section slot="page-sessions" data-tab-title="${t`Sessions`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-user-session-list targetUser=${this.user.username}>
+                            </ak-user-session-list>
                         </div>
                     </div>
                 </section>

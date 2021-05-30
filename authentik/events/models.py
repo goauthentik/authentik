@@ -149,7 +149,7 @@ class Event(ExpiringModel):
                     request.session[SESSION_IMPERSONATE_USER]
                 )
         # User 255.255.255.255 as fallback if IP cannot be determined
-        self.client_ip = get_client_ip(request) or "255.255.255.255"
+        self.client_ip = get_client_ip(request)
         # Apply GeoIP Data, when enabled
         self.with_geoip()
         # If there's no app set, we get it from the requests too
@@ -158,7 +158,7 @@ class Event(ExpiringModel):
         self.save()
         return self
 
-    def with_geoip(self):
+    def with_geoip(self):  # pragma: no cover
         """Apply GeoIP Data, when enabled"""
         if not GEOIP_READER:
             return
@@ -172,7 +172,7 @@ class Event(ExpiringModel):
             }
             if response.city.name:
                 self.context["geo"]["city"] = response.city.name
-        except GeoIP2Error as exc:
+        except (GeoIP2Error, ValueError) as exc:
             LOGGER.warning("Failed to add geoIP Data to event", exc=exc)
 
     def _set_prom_metrics(self):
