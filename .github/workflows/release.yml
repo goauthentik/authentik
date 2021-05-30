@@ -28,9 +28,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: prepare ts api client
-        run: |
-          make gen-web
       - name: Building Docker Image
         uses: docker/build-push-action@v2
         with:
@@ -49,11 +46,6 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: "^1.15"
-      - name: prepare go api client
-        run: |
-          make gen-outpost
-          cd outpost
-          go build -v ./cmd/proxy/server.go
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0
       - name: Set up Docker Buildx
@@ -78,7 +70,6 @@ jobs:
             beryju/authentik-proxy:latest,
             ghcr.io/goauthentik/proxy:2021.5.4,
             ghcr.io/goauthentik/proxy:latest
-          context: outpost/
           file: outpost/proxy.Dockerfile
           platforms: linux/amd64,linux/arm64
   build-ldap:
@@ -88,11 +79,6 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: "^1.15"
-      - name: prepare go api client
-        run: |
-          make gen-outpost
-          cd outpost
-          go build -v ./cmd/ldap/server.go
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0
       - name: Set up Docker Buildx
@@ -117,7 +103,6 @@ jobs:
             beryju/authentik-ldap:latest,
             ghcr.io/goauthentik/ldap:2021.5.4,
             ghcr.io/goauthentik/ldap:latest
-          context: outpost/
           file: outpost/ldap.Dockerfile
           platforms: linux/amd64,linux/arm64
   test-release:
