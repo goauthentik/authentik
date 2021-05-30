@@ -1,10 +1,12 @@
 """AuthenticatedSessions API Viewset"""
 from typing import Optional, TypedDict
 
+from django_filters.rest_framework import DjangoFilterBackend
 from geoip2.errors import GeoIP2Error
 from guardian.utils import get_anonymous_user
 from rest_framework import mixins
 from rest_framework.fields import SerializerMethodField
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.request import Request
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
@@ -75,7 +77,9 @@ class AuthenticatedSessionSerializer(ModelSerializer):
         """Get parsed user agent"""
         return user_agent_parser.Parse(instance.last_user_agent)
 
-    def get_geo_ip(self, instance: AuthenticatedSession) -> Optional[GeoIPDict]:
+    def get_geo_ip(
+        self, instance: AuthenticatedSession
+    ) -> Optional[GeoIPDict]:  # pragma: no cover
         """Get parsed user agent"""
         if not GEOIP_READER:
             return None
@@ -87,7 +91,7 @@ class AuthenticatedSessionSerializer(ModelSerializer):
                 "lat": city.location.latitude,
                 "long": city.location.longitude,
             }
-        except GeoIP2Error:
+        except (GeoIP2Error, ValueError):
             return None
 
     class Meta:
@@ -119,6 +123,11 @@ class AuthenticatedSessionViewSet(
     search_fields = ["user__username", "last_ip", "last_user_agent"]
     filterset_fields = ["user__username", "last_ip", "last_user_agent"]
     ordering = ["user__username"]
+    filter_backends = [
+        DjangoFilterBackend,
+        OrderingFilter,
+        SearchFilter,
+    ]
 
     def get_queryset(self):
         user = self.request.user if self.request else get_anonymous_user()

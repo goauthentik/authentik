@@ -36,7 +36,7 @@ class PolicyRequest:
         self.obj = None
         self.context = {}
 
-    def set_http_request(self, request: HttpRequest):
+    def set_http_request(self, request: HttpRequest):  # pragma: no cover
         """Load data from HTTP request, including geoip when enabled"""
         self.http_request = request
         if not GEOIP_READER:
@@ -47,7 +47,7 @@ class PolicyRequest:
                 return
             response = GEOIP_READER.city(client_ip)
             self.context["geoip"] = response
-        except GeoIP2Error as exc:
+        except (GeoIP2Error, ValueError) as exc:
             LOGGER.warning("failed to get geoip data", exc=exc)
 
     def __str__(self):

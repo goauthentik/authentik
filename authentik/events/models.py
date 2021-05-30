@@ -158,7 +158,7 @@ class Event(ExpiringModel):
         self.save()
         return self
 
-    def with_geoip(self):
+    def with_geoip(self):  # pragma: no cover
         """Apply GeoIP Data, when enabled"""
         if not GEOIP_READER:
             return
@@ -172,7 +172,7 @@ class Event(ExpiringModel):
             }
             if response.city.name:
                 self.context["geo"]["city"] = response.city.name
-        except GeoIP2Error as exc:
+        except (GeoIP2Error, ValueError) as exc:
             LOGGER.warning("Failed to add geoIP Data to event", exc=exc)
 
     def _set_prom_metrics(self):
