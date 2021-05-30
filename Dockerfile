@@ -10,15 +10,27 @@ RUN pip install pipenv && \
     pipenv lock -r > requirements.txt && \
     pipenv lock -rd > requirements-dev.txt
 
-# Stage 2: Build webui
+# Stage 2: Build web API
+FROM openapitools/openapi-generator-cli as api-builder
+
+COPY ./schema.yml /local/schema.yml
+
+RUN	docker-entrypoint.sh generate \
+    -i /local/schema.yml \
+    -g typescript-fetch \
+    -o /local/web/api \
+    --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
+
+# Stage 3: Build webui
 FROM node as npm-builder
 
 COPY ./web /static/
+COPY --from=api-builder /local/web/api /static/web/api
 
 ENV NODE_ENV=production
 RUN cd /static && npm i --production=false && npm run build
 
-# Stage 3: Build go proxy
+# Stage 4: Build go proxy
 FROM golang:1.16.4 AS builder
 
 WORKDIR /work
@@ -28,7 +40,6 @@ COPY --from=npm-builder /static/security.txt /work/web/security.txt
 COPY --from=npm-builder /static/dist/ /work/web/dist/
 COPY --from=npm-builder /static/authentik/ /work/web/authentik/
 
-# RUN ls /work/web/static/authentik/ && exit 1
 COPY ./cmd /work/cmd
 COPY ./web/static.go /work/web/static.go
 COPY ./internal /work/internal
@@ -37,7 +48,7 @@ COPY ./go.sum /work/go.sum
 
 RUN go build -o /work/authentik ./cmd/server/main.go
 
-# Stage 4: Run
+# Stage 5: Run
 FROM python:3.9-slim-buster
 
 WORKDIR /

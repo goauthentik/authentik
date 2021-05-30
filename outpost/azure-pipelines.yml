@@ -99,11 +99,6 @@ stages:
           - task: GoTool@0
             inputs:
               version: '1.16.3'
-          - task: DownloadPipelineArtifact@2
-            inputs:
-              buildType: 'current'
-              artifactName: 'go_api_client'
-              path: "outpost/api/"
           - task: Bash@3
             inputs:
               targetType: 'inline'
@@ -115,7 +110,6 @@ stages:
               repository: 'authentik/outpost-proxy'
               command: 'build'
               Dockerfile: 'outpost/proxy.Dockerfile'
-              buildContext: 'outpost/'
               tags: |
                 gh-$(branchName)
                 gh-$(Build.SourceVersion)
@@ -135,11 +129,6 @@ stages:
           - task: GoTool@0
             inputs:
               version: '1.16.3'
-          - task: DownloadPipelineArtifact@2
-            inputs:
-              buildType: 'current'
-              artifactName: 'go_api_client'
-              path: "outpost/api/"
           - task: Bash@3
             inputs:
               targetType: 'inline'
@@ -151,7 +140,6 @@ stages:
               repository: 'authentik/outpost-ldap'
               command: 'build'
               Dockerfile: 'outpost/ldap.Dockerfile'
-              buildContext: 'outpost/'
               tags: |
                 gh-$(branchName)
                 gh-$(Build.SourceVersion)

@@ -11,9 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: prepare ts api client
-        run: |
-          make gen-web
       - name: Pre-release test
         run: |
           sudo apt-get install -y pwgen
