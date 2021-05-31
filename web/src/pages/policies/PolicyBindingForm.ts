@@ -200,6 +200,17 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                     </label>
                 </div>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="negate">
+                <div class="pf-c-check">
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.negate, true)}>
+                    <label class="pf-c-check__label">
+                        ${t`Negate result`}
+                    </label>
+                </div>
+                <p class="pf-c-form__helper-text">
+                    ${t`Negates the outcome of the binding. Messages are unaffected.`}
+                </p>
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Order`}
                 ?required=${true}

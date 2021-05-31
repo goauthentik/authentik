@@ -2243,6 +2243,14 @@ msgid "Need an account?"
 msgstr ""
 
 #: 
+msgid "Negate result"
+msgstr ""
+
+#: 
+msgid "Negates the outcome of the binding. Messages are unaffected."
+msgstr ""
+
+#: 
 msgid "New version available!"
 msgstr ""
 

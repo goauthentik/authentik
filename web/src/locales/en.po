@@ -2250,6 +2250,14 @@ msgstr "NameID Property Mapping"
 msgid "Need an account?"
 msgstr "Need an account?"
 
+#: src/pages/policies/PolicyBindingForm.ts
+msgid "Negate result"
+msgstr "Negate result"
+
+#: src/pages/policies/PolicyBindingForm.ts
+msgid "Negates the outcome of the binding. Messages are unaffected."
+msgstr "Negates the outcome of the binding. Messages are unaffected."
+
 #: src/pages/events/EventInfo.ts
 msgid "New version available!"
 msgstr "New version available!"

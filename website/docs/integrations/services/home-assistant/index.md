@@ -10,6 +10,10 @@ From https://www.home-assistant.io/
 Open source home automation that puts local control and privacy first. Powered by a worldwide community of tinkerers and DIY enthusiasts. Perfect to run on a Raspberry Pi or a local server.
 :::
 
+:::warning
+You might run into CSRF errors, this is caused by Home-assistant and not authentik, see [this GitHub issue](https://github.com/goauthentik/authentik/issues/884#issuecomment-851542477).
+:::
+
 ## Preparation
 
 The following placeholders will be used:

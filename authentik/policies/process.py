@@ -93,6 +93,9 @@ class PolicyProcess(PROCESS_CLASS):
         )
         try:
             policy_result = self.binding.passes(self.request)
+            # Invert result if policy.negate is set
+            if self.binding.negate:
+                policy_result.passing = not policy_result.passing
             if self.binding.policy and not self.request.debug:
                 if self.binding.policy.execution_logging:
                     self.create_event(
@@ -114,9 +117,6 @@ class PolicyProcess(PROCESS_CLASS):
             LOGGER.debug("P_ENG(proc): error", exc=src_exc)
             policy_result = PolicyResult(False, str(src_exc))
         policy_result.source_binding = self.binding
-        # Invert result if policy.negate is set
-        if self.binding.negate:
-            policy_result.passing = not policy_result.passing
         if not self.request.debug:
             key = cache_key(self.binding, self.request)
             cache.set(key, policy_result)

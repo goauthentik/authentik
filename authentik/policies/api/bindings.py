@@ -75,6 +75,7 @@ class PolicyBindingSerializer(ModelSerializer):
             "group_obj",
             "user_obj",
             "target",
+            "negate",
             "enabled",
             "order",
             "timeout",
