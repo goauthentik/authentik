@@ -5,21 +5,25 @@ title: Terminology
 
 ![](/img/authentik_objects.svg)
 
-### Policy
+### System tasks
 
-At a base level a policy is a yes/no gate. It will either evaluate to True or False depending on the Policy Kind and settings. For example, a "Group Membership Policy" evaluates to True if the user is member of the specified Group and False if not. This can be used to conditionally apply Stages, grant/deny access to various objects, and for other custom logic.
+These are longer-running tasks which authentik runs in the background. This is used to sync LDAP sources, backup the database, and other various tasks.
 
-### Provider
+### Application
 
-A Provider is a way for other applications to authenticate against authentik. Common Providers are OpenID Connect (OIDC) and SAML.
+An application links together Policies with a Provider, allowing you to control access. It also holds Information like UI Name, Icon and more.
 
 ### Source
 
 Sources are locations from which users can be added to authentik. For example, an LDAP Connection to import Users from Active Directory, or an OAuth2 Connection to allow Social Logins.
 
-### Application
+### Provider
 
-An application links together Policies with a Provider, allowing you to control access. It also holds Information like UI Name, Icon and more.
+A Provider is a way for other applications to authenticate against authentik. Common Providers are OpenID Connect (OIDC) and SAML.
+
+### Policy
+
+At a base level a policy is a yes/no gate. It will either evaluate to True or False depending on the Policy Kind and settings. For example, a "Group Membership Policy" evaluates to True if the user is member of the specified Group and False if not. This can be used to conditionally apply Stages, grant/deny access to various objects, and for other custom logic.
 
 ### Stages
 
