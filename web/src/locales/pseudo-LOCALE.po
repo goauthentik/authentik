@@ -428,6 +428,10 @@ msgid "Branding shown in page title and several other places."
 msgstr ""
 
 #: 
+msgid "Browser"
+msgstr ""
+
+#: 
 msgid "Build hash: {0}"
 msgstr ""
 
@@ -1013,6 +1017,10 @@ msgid "Delete Refresh Code"
 msgstr ""
 
 #: 
+msgid "Delete Session"
+msgstr ""
+
+#: 
 msgid "Delete account"
 msgstr ""
 
@@ -1060,6 +1068,10 @@ msgstr ""
 
 #: 
 msgid "Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed."
+msgstr ""
+
+#: 
+msgid "Device"
 msgstr ""
 
 #: 
@@ -1359,6 +1371,7 @@ msgstr ""
 msgid "Execution logging"
 msgstr ""
 
+#: 
 #: 
 #: 
 #: 
@@ -1865,6 +1878,10 @@ msgid "Label shown next to/above the prompt."
 msgstr ""
 
 #: 
+msgid "Last IP"
+msgstr ""
+
+#: 
 #: 
 #: 
 msgid "Last login"
@@ -2213,6 +2230,14 @@ msgstr ""
 
 #: 
 msgid "Need an account?"
+msgstr ""
+
+#: 
+msgid "Negate result"
+msgstr ""
+
+#: 
+msgid "Negates the outcome of the binding. Messages are unaffected."
 msgstr ""
 
 #: 
@@ -3078,6 +3103,10 @@ msgid "Service connection"
 msgstr ""
 
 #: 
+msgid "Session"
+msgstr ""
+
+#: 
 msgid "Session duration"
 msgstr ""
 
@@ -3087,6 +3116,10 @@ msgstr ""
 
 #: 
 msgid "Session valid not on or after"
+msgstr ""
+
+#: 
+msgid "Sessions"
 msgstr ""
 
 #: 

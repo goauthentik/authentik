@@ -22802,6 +22802,9 @@ components:
         target:
           type: string
           format: uuid
+        negate:
+          type: boolean
+          description: Negates the outcome of the policy. Messages are unaffected.
         enabled:
           type: boolean
         order:
@@ -23524,6 +23527,9 @@ components:
         target:
           type: string
           format: uuid
+        negate:
+          type: boolean
+          description: Negates the outcome of the policy. Messages are unaffected.
         enabled:
           type: boolean
         order:
@@ -23560,6 +23566,9 @@ components:
         target:
           type: string
           format: uuid
+        negate:
+          type: boolean
+          description: Negates the outcome of the policy. Messages are unaffected.
         enabled:
           type: boolean
         order:
