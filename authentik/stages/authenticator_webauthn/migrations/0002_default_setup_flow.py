@@ -18,16 +18,16 @@ def create_default_setup_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEdito
     db_alias = schema_editor.connection.alias
 
     flow, _ = Flow.objects.using(db_alias).update_or_create(
-        slug="default-authenticator-webuahtn-setup",
+        slug="default-authenticator-webauthn-setup",
         designation=FlowDesignation.STAGE_CONFIGURATION,
         defaults={
-            "name": "default-authenticator-webuahtn-setup",
+            "name": "default-authenticator-webauthn-setup",
             "title": "Setup WebAuthn",
         },
     )
 
     stage, _ = AuthenticateWebAuthnStage.objects.using(db_alias).update_or_create(
-        name="default-authenticator-webuahtn-setup"
+        name="default-authenticator-webauthn-setup"
     )
 
     FlowStageBinding.objects.using(db_alias).update_or_create(
