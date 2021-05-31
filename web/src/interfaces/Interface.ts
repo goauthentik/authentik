@@ -15,6 +15,7 @@ import { t } from "@lingui/macro";
 import { EVENT_NOTIFICATION_TOGGLE, EVENT_SIDEBAR_TOGGLE, VERSION } from "../constants";
 import { AdminApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../api/Config";
+import { ROUTES } from "../routes_admin";
 
 export abstract class Interface extends LitElement {
     @property({type: Boolean})
@@ -83,7 +84,7 @@ export abstract class Interface extends LitElement {
                             <div class="pf-c-drawer__content">
                                 <div class="pf-c-drawer__body">
                                     <main class="pf-c-page__main">
-                                        <ak-router-outlet role="main" class="pf-c-page__main" tabindex="-1" id="main-content" defaultUrl="/library">
+                                        <ak-router-outlet .routes=${ROUTES} role="main" class="pf-c-page__main" tabindex="-1" id="main-content" defaultUrl="/overview">
                                         </ak-router-outlet>
                                     </main>
                                 </div>

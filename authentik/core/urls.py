@@ -33,7 +33,7 @@ urlpatterns = [
     path(
         "if/user/",
         ensure_csrf_cookie(TemplateView.as_view(template_name="if/user.html")),
-        name="if-admin",
+        name="if-user",
     ),
     path(
         "if/flow/<slug:flow_slug>/",

@@ -120,6 +120,10 @@ msgstr "Additional group DN, prepended to the Base DN."
 msgid "Additional user DN, prepended to the Base DN."
 msgstr "Additional user DN, prepended to the Base DN."
 
+#: src/interfaces/UserInterface.ts
+msgid "Admin"
+msgstr "Admin"
+
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -430,6 +434,10 @@ msgstr "Branding settings"
 #: src/pages/tenants/TenantForm.ts
 msgid "Branding shown in page title and several other places."
 msgstr "Branding shown in page title and several other places."
+
+#: src/elements/user/SessionList.ts
+msgid "Browser"
+msgstr "Browser"
 
 #: src/pages/admin-overview/cards/VersionStatusCard.ts
 msgid "Build hash: {0}"
@@ -1018,6 +1026,10 @@ msgstr "Delete Consent"
 msgid "Delete Refresh Code"
 msgstr "Delete Refresh Code"
 
+#: src/elements/user/SessionList.ts
+msgid "Delete Session"
+msgstr "Delete Session"
+
 #: src/pages/user-settings/UserDetailsPage.ts
 msgid "Delete account"
 msgstr "Delete account"
@@ -1069,6 +1081,10 @@ msgstr "Determines how authentik sends the response back to the Service Provider
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed."
 msgstr "Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed."
+
+#: src/elements/user/SessionList.ts
+msgid "Device"
+msgstr "Device"
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Device classes"
@@ -1213,6 +1229,7 @@ msgid "Edit User"
 msgstr "Edit User"
 
 #: src/pages/LibraryPage.ts
+#: src/user/LibraryPage.ts
 msgid "Either no applications are defined, or you don't have access to any."
 msgstr "Either no applications are defined, or you don't have access to any."
 
@@ -1369,6 +1386,7 @@ msgstr "Execution logging"
 
 #: src/elements/oauth/UserCodeList.ts
 #: src/elements/oauth/UserRefreshList.ts
+#: src/elements/user/SessionList.ts
 #: src/elements/user/UserConsentList.ts
 #: src/pages/stages/invitation/InvitationForm.ts
 msgid "Expires"
@@ -1872,6 +1890,10 @@ msgstr "Label"
 msgid "Label shown next to/above the prompt."
 msgstr "Label shown next to/above the prompt."
 
+#: src/elements/user/SessionList.ts
+msgid "Last IP"
+msgstr "Last IP"
+
 #: src/pages/groups/MemberSelectModal.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
@@ -2045,6 +2067,10 @@ msgstr "Logins over the last 24 hours"
 msgid "Logo"
 msgstr "Logo"
 
+#: src/interfaces/UserInterface.ts
+msgid "Logout"
+msgstr "Logout"
+
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 msgid "Logout URL"
 msgstr "Logout URL"
@@ -2127,6 +2153,7 @@ msgid "Monitor"
 msgstr "Monitor"
 
 #: src/pages/LibraryPage.ts
+#: src/user/LibraryPage.ts
 msgid "My Applications"
 msgstr "My Applications"
 
@@ -2244,6 +2271,7 @@ msgid "No"
 msgstr "No"
 
 #: src/pages/LibraryPage.ts
+#: src/user/LibraryPage.ts
 msgid "No Applications available."
 msgstr "No Applications available."
 
@@ -3085,6 +3113,10 @@ msgstr "Service Provider Binding"
 msgid "Service connection"
 msgstr "Service connection"
 
+#: src/elements/user/SessionList.ts
+msgid "Session"
+msgstr "Session"
+
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "Session duration"
 msgstr "Session duration"
@@ -3096,6 +3128,10 @@ msgstr "Session not valid on or after current time + this value (Format: hours=1
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Session valid not on or after"
 msgstr "Session valid not on or after"
+
+#: src/pages/users/UserViewPage.ts
+msgid "Sessions"
+msgstr "Sessions"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Set HTTP-Basic Authentication"
