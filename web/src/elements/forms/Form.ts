@@ -145,7 +145,10 @@ export class Form<T> extends LitElement {
                 })
             );
             return r;
-        }).catch((ex: Response) => {
+        }).catch((ex: Response | Error) => {
+            if (ex instanceof Error) {
+                throw ex;
+            }
             if (ex.status > 399 && ex.status < 500) {
                 return ex.json().then((errorMessage: ValidationError) => {
                     if (!errorMessage) return errorMessage;
@@ -168,6 +171,14 @@ export class Form<T> extends LitElement {
                     throw new APIError(errorMessage);
                 });
             }
+            throw ex;
+        }).catch((ex: Error) => {
+            // error is local or not from rest_framework
+            showMessage({
+                message: ex.toString(),
+                level: MessageLevel.error,
+            });
+            // rethrow the error so the form doesn't close
             throw ex;
         });
     }
