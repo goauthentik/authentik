@@ -39,7 +39,7 @@ export class FlowForm extends ModelForm<Flow, string> {
             });
         }
         return config().then((c) => {
-            if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
+            if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
                 const icon = this.getFormFile();
                 if (icon) {
                     return writeOp.then(app => {
@@ -135,7 +135,7 @@ export class FlowForm extends ModelForm<Flow, string> {
             </ak-form-element-horizontal>
             ${until(config().then((c) => {
                 let type = "text";
-                if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
+                if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
                     type = "file";
                 }
                 return html`<ak-form-element-horizontal
