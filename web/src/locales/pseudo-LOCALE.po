@@ -2019,7 +2019,6 @@ msgstr ""
 #: 
 #: 
 #: 
-#: 
 msgid "Loading..."
 msgstr ""
 
@@ -4381,6 +4380,10 @@ msgstr ""
 #: 
 #: 
 msgid "Yes"
+msgstr ""
+
+#: 
+msgid "You can only select providers that match the type of the outpost."
 msgstr ""
 
 #: 

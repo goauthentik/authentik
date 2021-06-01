@@ -1979,7 +1979,6 @@ msgstr "Loading"
 #: src/pages/groups/GroupForm.ts
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostForm.ts
-#: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
@@ -4396,6 +4395,10 @@ msgstr "X509 Subject"
 #: src/pages/users/UserListPage.ts
 msgid "Yes"
 msgstr "Yes"
+
+#: src/pages/outposts/OutpostForm.ts
+msgid "You can only select providers that match the type of the outpost."
+msgstr "You can only select providers that match the type of the outpost."
 
 #: src/interfaces/Interface.ts
 msgid "You're currently impersonating {0}."
