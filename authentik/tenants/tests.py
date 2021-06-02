@@ -16,6 +16,7 @@ class TestTenants(TestCase):
             force_str(self.client.get(reverse("authentik_api:tenant-current")).content),
             {
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
+                "branding_favicon": "/static/dist/assets/icons/icon.png",
                 "branding_title": "authentik",
                 "matched_domain": "authentik-default",
                 "ui_footer_links": CONFIG.y("authentik.footer_links"),
@@ -29,6 +30,7 @@ class TestTenants(TestCase):
             force_str(self.client.get(reverse("authentik_api:tenant-current")).content),
             {
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
+                "branding_favicon": "/static/dist/assets/icons/icon.png",
                 "branding_title": "authentik",
                 "matched_domain": "fallback",
                 "ui_footer_links": CONFIG.y("authentik.footer_links"),
