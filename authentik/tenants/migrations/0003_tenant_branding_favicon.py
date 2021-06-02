@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('authentik_tenants', '0002_default'),
+        ("authentik_tenants", "0002_default"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='tenant',
-            name='branding_favicon',
-            field=models.TextField(default='/static/dist/assets/icons/icon.png'),
+            model_name="tenant",
+            name="branding_favicon",
+            field=models.TextField(default="/static/dist/assets/icons/icon.png"),
         ),
     ]

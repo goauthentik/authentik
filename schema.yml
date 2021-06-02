@@ -4772,7 +4772,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedExpiringBaseGrantModelList'
+                $ref: '#/components/schemas/PaginatedRefreshTokenModelList'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
@@ -4799,7 +4799,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ExpiringBaseGrantModel'
+                $ref: '#/components/schemas/RefreshTokenModel'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
@@ -20827,6 +20827,41 @@ components:
       required:
       - pagination
       - results
+    PaginatedRefreshTokenModelList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RefreshTokenModel'
+      required:
+      - pagination
+      - results
     PaginatedReputationPolicyList:
       type: object
       properties:
@@ -24150,6 +24185,38 @@ components:
       required:
       - to
       - type
+    RefreshTokenModel:
+      type: object
+      description: Serializer for BaseGrantModel and RefreshToken
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        provider:
+          $ref: '#/components/schemas/OAuth2Provider'
+        user:
+          $ref: '#/components/schemas/User'
+        is_expired:
+          type: boolean
+          readOnly: true
+        expires:
+          type: string
+          format: date-time
+        scope:
+          type: array
+          items:
+            type: string
+        id_token:
+          type: string
+          readOnly: true
+      required:
+      - id_token
+      - is_expired
+      - pk
+      - provider
+      - scope
+      - user
     ReputationPolicy:
       type: object
       description: Reputation Policy Serializer

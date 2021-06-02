@@ -1717,6 +1717,10 @@ msgstr "How many attempts a user has before the flow is canceled. To lock the us
 msgid "ID"
 msgstr "ID"
 
+#: src/elements/oauth/UserRefreshList.ts
+msgid "ID Token"
+msgstr "ID Token"
+
 #: src/pages/policies/reputation/IPReputationListPage.ts
 msgid "IP"
 msgstr "IP"
