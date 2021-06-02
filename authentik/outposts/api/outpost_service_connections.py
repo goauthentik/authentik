@@ -8,7 +8,7 @@ from kubernetes.config.config_exception import ConfigException
 from kubernetes.config.kube_config import load_kube_config_from_dict
 from rest_framework import mixins, serializers
 from rest_framework.decorators import action
-from rest_framework.fields import BooleanField, CharField, SerializerMethodField
+from rest_framework.fields import BooleanField, CharField, ReadOnlyField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
@@ -30,11 +30,7 @@ from authentik.outposts.models import (
 class ServiceConnectionSerializer(ModelSerializer, MetaNameSerializer):
     """ServiceConnection Serializer"""
 
-    component = SerializerMethodField()
-
-    def get_component(self, obj: OutpostServiceConnection) -> str:
-        """Get object component so that we know how to edit the object"""
-        return obj.component
+    component = ReadOnlyField()
 
     class Meta:
 
@@ -122,7 +118,7 @@ class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
     def validate_kubeconfig(self, kubeconfig):
         """Validate kubeconfig by attempting to load it"""
         if kubeconfig == {}:
-            if not self.validated_data["local"]:
+            if not self.initial_data["local"]:
                 raise serializers.ValidationError(
                     _(
                         "You can only use an empty kubeconfig when connecting to a local cluster."
