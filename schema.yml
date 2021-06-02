@@ -15481,7 +15481,6 @@ components:
         meta_launch_url:
           type: string
           format: uri
-          maxLength: 200
         meta_icon:
           type: string
           nullable: true
@@ -15518,7 +15517,6 @@ components:
         meta_launch_url:
           type: string
           format: uri
-          maxLength: 200
         meta_description:
           type: string
         meta_publisher:
@@ -21891,7 +21889,6 @@ components:
         meta_launch_url:
           type: string
           format: uri
-          maxLength: 200
         meta_description:
           type: string
         meta_publisher:

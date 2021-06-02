@@ -224,6 +224,18 @@ class Application(PolicyBindingModel):
     meta_description = models.TextField(default="", blank=True)
     meta_publisher = models.TextField(default="", blank=True)
 
+    @property
+    def get_meta_icon(self) -> Optional[str]:
+        """Get the URL to the App Icon image. If the name is /static or starts with http
+        it is returned as-is"""
+        if not self.meta_icon:
+            return None
+        if self.meta_icon.name.startswith("http") or self.meta_icon.name.startswith(
+            "/static"
+        ):
+            return self.meta_icon.name
+        return self.meta_icon.url
+
     def get_launch_url(self) -> Optional[str]:
         """Get launch URL if set, otherwise attempt to get launch URL based on provider."""
         if self.meta_launch_url:

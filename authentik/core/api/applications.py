@@ -1,6 +1,4 @@
 """Application API Views"""
-from typing import Optional
-
 from django.core.cache import cache
 from django.db.models import QuerySet
 from django.http.response import HttpResponseBadRequest
@@ -13,12 +11,7 @@ from drf_spectacular.utils import (
     inline_serializer,
 )
 from rest_framework.decorators import action
-from rest_framework.fields import (
-    CharField,
-    FileField,
-    IntegerField,
-    SerializerMethodField,
-)
+from rest_framework.fields import CharField, FileField, IntegerField, ReadOnlyField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -48,22 +41,10 @@ def user_app_cache_key(user_pk: str) -> str:
 class ApplicationSerializer(ModelSerializer):
     """Application Serializer"""
 
-    launch_url = SerializerMethodField()
+    launch_url = ReadOnlyField(source="get_launch_url")
     provider_obj = ProviderSerializer(source="get_provider", required=False)
 
-    meta_icon = SerializerMethodField()
-
-    def get_meta_icon(self, instance: Application) -> Optional[str]:
-        """When meta_icon was set to a URL, return the name as-is"""
-        if not instance.meta_icon:
-            return None
-        if instance.meta_icon.name.startswith("http"):
-            return instance.meta_icon.name
-        return instance.meta_icon.url
-
-    def get_launch_url(self, instance: Application) -> Optional[str]:
-        """Get generated launch URL"""
-        return instance.get_launch_url()
+    meta_icon = ReadOnlyField(source="get_meta_icon")
 
     class Meta:
 
@@ -237,9 +218,9 @@ class ApplicationViewSet(ModelViewSet):
         """Set application icon (as URL)"""
         app: Application = self.get_object()
         url = request.data.get("url", None)
-        if not url:
+        if url is None:
             return HttpResponseBadRequest()
-        app.meta_icon = url
+        app.meta_icon.name = url
         app.save()
         return Response({})
 
