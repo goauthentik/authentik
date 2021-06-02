@@ -72,7 +72,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 <ak-proxy-form
                     slot="form"
                     .args=${{
-                        "policyUUID": item.policy
+                        "instancePk": item.policy
                     }}
                     type=${ifDefined(item.policyObj?.component)}>
                 </ak-proxy-form>
@@ -174,8 +174,21 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
 
     renderToolbar(): TemplateResult {
         return html`
+        <ak-forms-modal size=${PFSize.Medium}>
+            <span slot="submit">
+                ${t`Create`}
+            </span>
+            <span slot="header">
+                ${t`Create Binding`}
+            </span>
+            <ak-policy-binding-form slot="form" targetPk=${ifDefined(this.target)} ?policyOnly=${this.policyOnly}>
+            </ak-policy-binding-form>
+            <button slot="trigger" class="pf-c-button pf-m-primary">
+                ${t`Create Binding`}
+            </button>
+        </ak-forms-modal>
         <ak-dropdown class="pf-c-dropdown">
-            <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
+            <button class="pf-m-secondary pf-c-dropdown__toggle" type="button">
                 <span class="pf-c-dropdown__toggle-text">${t`Create Policy`}</span>
                 <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </button>
@@ -204,20 +217,6 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 }), html`<ak-spinner></ak-spinner>`)}
             </ul>
         </ak-dropdown>
-        <ak-forms-modal size=${PFSize.Medium}>
-            <span slot="submit">
-                ${t`Create`}
-            </span>
-            <span slot="header">
-                ${t`Create Binding`}
-            </span>
-            <ak-policy-binding-form slot="form" targetPk=${ifDefined(this.target)} ?policyOnly=${this.policyOnly}>
-            </ak-policy-binding-form>
-            <button slot="trigger" class="pf-c-button pf-m-secondary">
-                ${t`Create Binding`}
-            </button>
-        </ak-forms-modal>
-        ${super.renderToolbar()}
-        `;
+        ${super.renderToolbar()}`;
     }
 }
