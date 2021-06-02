@@ -18975,6 +18975,7 @@ components:
       - providers
       - providers_obj
       - token_identifier
+      - type
     OutpostDefaultConfig:
       type: object
       description: Global default outpost config
@@ -19032,6 +19033,7 @@ components:
       - config
       - name
       - providers
+      - type
     OutpostTypeEnum:
       enum:
       - proxy

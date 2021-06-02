@@ -4,6 +4,7 @@ from dacite.exceptions import DaciteError
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, DateTimeField
+from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import JSONField, ModelSerializer, ValidationError
@@ -11,14 +12,44 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.utils import PassiveSerializer, is_dict
-from authentik.outposts.models import Outpost, OutpostConfig, default_outpost_config
+from authentik.core.models import Provider
+from authentik.outposts.models import (
+    Outpost,
+    OutpostConfig,
+    OutpostType,
+    default_outpost_config,
+)
+from authentik.providers.ldap.models import LDAPProvider
+from authentik.providers.proxy.models import ProxyProvider
 
 
 class OutpostSerializer(ModelSerializer):
     """Outpost Serializer"""
 
     config = JSONField(validators=[is_dict], source="_config")
+    providers = PrimaryKeyRelatedField(
+        allow_empty=False,
+        many=True,
+        queryset=Provider.objects.select_subclasses().all(),
+    )
     providers_obj = ProviderSerializer(source="providers", many=True, read_only=True)
+
+    def validate_providers(self, providers: list[Provider]) -> list[Provider]:
+        """Check that all providers match the type of the outpost"""
+        type_map = {
+            OutpostType.LDAP: LDAPProvider,
+            OutpostType.PROXY: ProxyProvider,
+            None: Provider,
+        }
+        for provider in providers:
+            if not isinstance(provider, type_map[self.initial_data.get("type")]):
+                raise ValidationError(
+                    (
+                        f"Outpost type {self.initial_data['type']} can't be used with "
+                        f"{type(provider)} providers."
+                    )
+                )
+        return providers
 
     def validate_config(self, config) -> dict:
         """Check that the config has all required fields"""
@@ -41,6 +72,7 @@ class OutpostSerializer(ModelSerializer):
             "token_identifier",
             "config",
         ]
+        extra_kwargs = {"type": {"required": True}}
 
 
 class OutpostDefaultConfigSerializer(PassiveSerializer):

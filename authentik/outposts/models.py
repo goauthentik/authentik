@@ -376,7 +376,11 @@ class Outpost(models.Model):
     @property
     def token(self) -> Token:
         """Get/create token for auto-generated user"""
-        token = Token.filter_not_expired(user=self.user, intent=TokenIntents.INTENT_API)
+        token = Token.filter_not_expired(
+            user=self.user,
+            intent=TokenIntents.INTENT_API,
+            managed=f"goauthentik.io/outpost/{self.token_identifier}",
+        )
         if token.exists():
             return token.first()
         return Token.objects.create(
