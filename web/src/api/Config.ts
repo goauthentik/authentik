@@ -25,7 +25,13 @@ export function config(): Promise<Config> {
 let globalTenantPromise: Promise<CurrentTenant>;
 export function tenant(): Promise<CurrentTenant> {
     if (!globalTenantPromise) {
-        globalTenantPromise = new CoreApi(DEFAULT_CONFIG).coreTenantsCurrentRetrieve();
+        globalTenantPromise = new CoreApi(DEFAULT_CONFIG).coreTenantsCurrentRetrieve().then(tenant => {
+            const relIcon = document.head.querySelector<HTMLLinkElement>("link[rel=icon]");
+            if (relIcon) {
+                relIcon.href = tenant.brandingLogo;
+            }
+            return tenant;
+        });
     }
     return globalTenantPromise;
 }
