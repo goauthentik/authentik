@@ -115,6 +115,18 @@ class Flow(SerializerModel, PolicyBindingModel):
         help_text=_("Background shown during execution"),
     )
 
+    @property
+    def background_url(self) -> Optional[str]:
+        """Get the URL to the background image. If the name is /static or starts with http
+        it is returned as-is"""
+        if not self.background:
+            return None
+        if self.background.name.startswith("http") or self.background.name.startswith(
+            "/static"
+        ):
+            return self.background.name
+        return self.background.url
+
     stages = models.ManyToManyField(Stage, through="FlowStageBinding", blank=True)
 
     @property

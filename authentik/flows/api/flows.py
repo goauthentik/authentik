@@ -1,6 +1,5 @@
 """Flow API Views"""
 from dataclasses import dataclass
-from typing import Optional
 
 from django.core.cache import cache
 from django.db.models import Model
@@ -11,7 +10,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import FileField
+from rest_framework.fields import FileField, ReadOnlyField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -43,15 +42,7 @@ class FlowSerializer(ModelSerializer):
 
     cache_count = SerializerMethodField()
 
-    background = SerializerMethodField()
-
-    def get_background(self, instance: Flow) -> Optional[str]:
-        """When background was set to a URL, return the name as-is"""
-        if not instance.background:
-            return None
-        if instance.background.name.startswith("http"):
-            return instance.background.name
-        return instance.background.url
+    background = ReadOnlyField(source="background_url")
 
     def get_cache_count(self, flow: Flow) -> int:
         """Get count of cached flows"""
@@ -324,7 +315,7 @@ class FlowViewSet(ModelViewSet):
         url = request.data.get("url", None)
         if not url:
             return HttpResponseBadRequest()
-        flow.background = url
+        flow.background.name = url
         flow.save()
         return Response({})
 
