@@ -8,6 +8,7 @@ from uuid import uuid4
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
+from django.core import validators
 from django.db import models
 from django.db.models import Q, QuerySet
 from django.http import HttpRequest
@@ -215,7 +216,9 @@ class Application(PolicyBindingModel):
         "Provider", null=True, blank=True, default=None, on_delete=models.SET_DEFAULT
     )
 
-    meta_launch_url = models.URLField(default="", blank=True)
+    meta_launch_url = models.TextField(
+        default="", blank=True, validators=[validators.URLValidator()]
+    )
     # For template applications, this can be set to /static/authentik/applications/*
     meta_icon = models.FileField(upload_to="application-icons/", default="", blank=True)
     meta_description = models.TextField(default="", blank=True)
