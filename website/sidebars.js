@@ -71,6 +71,7 @@ module.exports = {
                         "integrations/services/veeam-enterprise-manager/index",
                         "integrations/services/vmware-vcenter/index",
                         "integrations/services/wiki-js/index",
+                        "integrations/services/zabbix/index",
                     ],
                 },
             ],
