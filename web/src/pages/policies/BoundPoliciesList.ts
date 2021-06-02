@@ -72,7 +72,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 <ak-proxy-form
                     slot="form"
                     .args=${{
-                        "instancePk": item.policy
+                        "instancePk": item.policyObj?.pk
                     }}
                     type=${ifDefined(item.policyObj?.component)}>
                 </ak-proxy-form>
