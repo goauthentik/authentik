@@ -16537,6 +16537,8 @@ components:
           type: string
         branding_logo:
           type: string
+        branding_favicon:
+          type: string
         ui_footer_links:
           type: array
           items:
@@ -16550,6 +16552,7 @@ components:
         flow_unenrollment:
           type: string
       required:
+      - branding_favicon
       - branding_logo
       - branding_title
       - matched_domain
@@ -23153,6 +23156,8 @@ components:
           type: string
         branding_logo:
           type: string
+        branding_favicon:
+          type: string
         flow_authentication:
           type: string
           format: uuid
@@ -25177,6 +25182,8 @@ components:
           type: string
         branding_logo:
           type: string
+        branding_favicon:
+          type: string
         flow_authentication:
           type: string
           format: uuid
@@ -25209,6 +25216,8 @@ components:
         branding_title:
           type: string
         branding_logo:
+          type: string
+        branding_favicon:
           type: string
         flow_authentication:
           type: string

@@ -1464,6 +1464,10 @@ msgstr "Failed to delete {0}: {1}"
 msgid "Failed to update {0}: {1}"
 msgstr "Failed to update {0}: {1}"
 
+#: src/pages/tenants/TenantForm.ts
+msgid "Favicon"
+msgstr "Favicon"
+
 #: src/pages/stages/prompt/PromptListPage.ts
 msgid "Field"
 msgstr "Field"
@@ -1729,6 +1733,10 @@ msgstr "Icon"
 #: src/pages/tenants/TenantForm.ts
 msgid "Icon shown in sidebar/header and flow executor."
 msgstr "Icon shown in sidebar/header and flow executor."
+
+#: src/pages/tenants/TenantForm.ts
+msgid "Icon shown in the browser tab."
+msgstr "Icon shown in the browser tab."
 
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts

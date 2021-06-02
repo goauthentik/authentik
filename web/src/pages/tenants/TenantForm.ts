@@ -76,6 +76,13 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         <input type="text" value="${first(this.instance?.brandingLogo, "/static/dist/assets/icons/icon_left_brand.svg")}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`Icon shown in sidebar/header and flow executor.`}</p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Favicon`}
+                        ?required=${true}
+                        name="brandingFavicon">
+                        <input type="text" value="${first(this.instance?.brandingFavicon, "/static/dist/assets/icons/icon.png")}" class="pf-c-form-control" required>
+                        <p class="pf-c-form__helper-text">${t`Icon shown in the browser tab.`}</p>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             <ak-form-group>

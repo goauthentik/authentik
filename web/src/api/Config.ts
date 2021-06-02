@@ -38,7 +38,7 @@ export function tenant(): Promise<CurrentTenant> {
                     relIcon.rel = rel;
                     document.getElementsByTagName('head')[0].appendChild(relIcon);
                 }
-                relIcon.href = tenant.brandingLogo;
+                relIcon.href = tenant.brandingFavicon;
             })
             return tenant;
         });

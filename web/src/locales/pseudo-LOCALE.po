@@ -1457,6 +1457,10 @@ msgid "Failed to update {0}: {1}"
 msgstr ""
 
 #: 
+msgid "Favicon"
+msgstr ""
+
+#: 
 msgid "Field"
 msgstr ""
 
@@ -1720,6 +1724,10 @@ msgstr ""
 
 #: 
 msgid "Icon shown in sidebar/header and flow executor."
+msgstr ""
+
+#: 
+msgid "Icon shown in the browser tab."
 msgstr ""
 
 #: 
