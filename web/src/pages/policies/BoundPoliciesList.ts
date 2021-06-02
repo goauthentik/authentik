@@ -188,7 +188,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             </button>
         </ak-forms-modal>
         <ak-dropdown class="pf-c-dropdown">
-            <button class="pf-m-secondary pf-c-dropdown__toggle" type="button">
+            <button class="pf-m-secondary pf-c-button pf-c-dropdown__toggle" type="button">
                 <span class="pf-c-dropdown__toggle-text">${t`Create Policy`}</span>
                 <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </button>

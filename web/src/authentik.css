@@ -251,6 +251,9 @@ body {
     .form-help-text {
         color: var(--ak-dark-foreground);
     }
+    .pf-c-dropdown__toggle::before {
+        border-color: transparent;
+    }
     /* inputs help text */
     .pf-c-form__helper-text:not(.pf-m-error) {
         color: var(--ak-dark-foreground);
