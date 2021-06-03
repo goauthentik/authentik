@@ -56,15 +56,28 @@ class EmailStageView(ChallengeStageView):
         relative_url = f"{base_url}?{urlencode(kwargs)}"
         return self.request.build_absolute_uri(relative_url)
 
-    def send_email(self):
-        """Helper function that sends the actual email. Implies that you've
-        already checked that there is a pending user."""
+    def get_token(self) -> Token:
+        """Get token"""
         pending_user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         current_stage: EmailStage = self.executor.current_stage
         valid_delta = timedelta(
             minutes=current_stage.token_expiry + 1
         )  # + 1 because django timesince always rounds down
-        token = Token.objects.create(user=pending_user, expires=now() + valid_delta)
+        token_filters = {
+            "user": pending_user,
+            "identifier": f"ak-email-stage-{current_stage.name}-{pending_user}",
+        }
+        tokens = Token.filter_not_expired(**token_filters)
+        if not tokens.exists():
+            return Token.objects.create(expires=now() + valid_delta, **token_filters)
+        return tokens.first()
+
+    def send_email(self):
+        """Helper function that sends the actual email. Implies that you've
+        already checked that there is a pending user."""
+        pending_user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
+        current_stage: EmailStage = self.executor.current_stage
+        token = self.get_token()
         # Send mail to user
         message = TemplateEmailMessage(
             subject=_(current_stage.subject),
