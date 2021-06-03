@@ -404,7 +404,7 @@ class Token(ManagedModel, ExpiringModel):
     """Token used to authenticate the User for API Access or confirm another Stage like Email."""
 
     token_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    identifier = models.SlugField(max_length=255)
+    identifier = models.SlugField(max_length=255, unique=True)
     key = models.TextField(default=default_token_key)
     intent = models.TextField(
         choices=TokenIntents.choices, default=TokenIntents.INTENT_VERIFICATION
