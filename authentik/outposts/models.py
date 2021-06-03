@@ -380,7 +380,6 @@ class Outpost(models.Model):
         tokens = Token.filter_not_expired(
             identifier=self.token_identifier,
             intent=TokenIntents.INTENT_API,
-            managed=managed,
         )
         if tokens.exists():
             token = tokens.first()

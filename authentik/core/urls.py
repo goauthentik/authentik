@@ -35,4 +35,10 @@ urlpatterns = [
         ensure_csrf_cookie(TemplateView.as_view(template_name="if/flow.html")),
         name="if-flow",
     ),
+    # Fallback for WS
+    path("ws/outpost/<uuid:pk>/", TemplateView.as_view(template_name="if/admin.html")),
+    path(
+        "ws/client/",
+        TemplateView.as_view(template_name="if/admin.html"),
+    ),
 ]
