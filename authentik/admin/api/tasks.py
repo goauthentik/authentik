@@ -37,7 +37,11 @@ class TaskSerializer(PassiveSerializer):
         try:
             return super().to_representation(instance)
         except AttributeError:
-            self.instance.delete()
+            if isinstance(self.instance, list):
+                for inst in self.instance:
+                    inst.delete()
+            else:
+                self.instance.delete()
             return {}
 
 
