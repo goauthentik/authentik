@@ -4,43 +4,19 @@ import uuid
 
 import django.db.models.deletion
 from django.apps.registry import Apps
-from django.conf import settings
 from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
-from django.utils.timezone import now
 
 import authentik.core.models
 
 
 def migrate_sessions(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     db_alias = schema_editor.connection.alias
-    from django.contrib.sessions.backends.cache import KEY_PREFIX, SessionStore
+    from django.contrib.sessions.backends.cache import KEY_PREFIX
     from django.core.cache import cache
 
-    AuthenticatedSession = apps.get_model("authentik_core", "AuthenticatedSession")
-    User = apps.get_model("authentik_core", "user")
-
     session_keys = cache.keys(KEY_PREFIX + "*")
-    for key in session_keys:
-        key = key.replace(KEY_PREFIX, "")
-        store = SessionStore(key)
-        data = store.load()
-        if data == {} or "_auth_user_id" not in data:
-            continue
-        if (
-            AuthenticatedSession.objects.using(db_alias)
-            .filter(session_key=key)
-            .exists()
-        ):
-            continue
-        users = User.objects.using(db_alias).filter(pk=data.get("_auth_user_id"))
-        if not users.exists():
-            continue
-        AuthenticatedSession.objects.using(db_alias).create(
-            session_key=key,
-            user=users.first(),
-            expires=data.get("_session_expiry", now()),
-        )
+    cache.delete_many(session_keys)
 
 
 class Migration(migrations.Migration):
