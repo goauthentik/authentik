@@ -71,6 +71,14 @@ class SeleniumTestCase(StaticLiveServerTestCase):
             self.logger.info("Container failed healthcheck")
             sleep(1)
 
+    def output_container_logs(self, container: Optional[Container] = None):
+        """Output the container logs to our STDOUT"""
+        ct = container or self.container
+        self.logger.debug("--------container logs", container=ct.image.tags[0])
+        for log in ct.logs().decode().split("\n"):
+            self.logger.debug(log, container=ct.image.tags[0])
+        self.logger.debug("--------end container logs", container=ct.image.tags[0])
+
     def get_container_specs(self) -> Optional[dict[str, Any]]:
         """Optionally get container specs which will launched on setup, wait for the container to
         be healthy, and deleted again on tearDown"""
@@ -97,6 +105,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
             )
         self.logger.debug("--------end browser logs")
         if self.container:
+            self.output_container_logs()
             self.container.kill()
         self.driver.quit()
         super().tearDown()

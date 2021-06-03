@@ -32,6 +32,7 @@ class TestProviderProxy(SeleniumTestCase):
 
     def tearDown(self) -> None:
         super().tearDown()
+        self.output_container_logs(self.proxy_container)
         self.proxy_container.kill()
 
     def get_container_specs(self) -> Optional[dict[str, Any]]:
@@ -87,6 +88,16 @@ class TestProviderProxy(SeleniumTestCase):
         outpost.save()
 
         self.proxy_container = self.start_proxy(outpost)
+
+        # Wait until outpost healthcheck succeeds
+        healthcheck_retries = 0
+        while healthcheck_retries < 50:
+            if len(outpost.state) > 0:
+                state = outpost.state[0]
+                if state.last_seen:
+                    break
+            healthcheck_retries += 1
+            sleep(0.5)
 
         self.driver.get("http://localhost:4180")
         self.login()

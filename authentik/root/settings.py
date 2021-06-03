@@ -265,6 +265,8 @@ DATABASES = {
         "USER": CONFIG.y("postgresql.user"),
         "PASSWORD": CONFIG.y("postgresql.password"),
         "PORT": int(CONFIG.y("postgresql.port")),
+        "CONN_MAX_AGE": 300,
+        "ATOMIC_REQUESTS": True,
     }
 }
 
