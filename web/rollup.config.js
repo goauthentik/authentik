@@ -23,8 +23,6 @@ const resources = [
     { src: "src/authentik.css", dest: "dist/" },
 
     { src: "node_modules/@patternfly/patternfly/assets/*", dest: "dist/assets/" },
-    { src: "src/interfaces/admin/index.html", dest: "dist/if/admin/" },
-    { src: "src/interfaces/flow/index.html", dest: "dist/if/flow/" },
     { src: "src/assets/*", dest: "dist/assets" },
     { src: "./icons/*", dest: "dist/assets/icons" },
 ];
