@@ -107,6 +107,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     )
 
     cookie_secret = models.TextField(default=get_cookie_secret)
+    cookie_domain = models.TextField(default="", blank=True)
 
     @property
     def component(self) -> str:

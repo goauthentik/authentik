@@ -111,6 +111,10 @@ func (pb *providerBundle) prepareOpts(provider api.ProxyOutpostConfig) *options.
 func (pb *providerBundle) Build(provider api.ProxyOutpostConfig) {
 	opts := pb.prepareOpts(provider)
 
+	if *provider.ForwardAuthMode {
+		opts.Cookie.Domains = []string{*provider.CookieDomain}
+	}
+
 	chain := alice.New()
 
 	if opts.ForceHTTPS {

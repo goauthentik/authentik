@@ -22973,6 +22973,8 @@ components:
           type: boolean
           description: Enable support for forwardAuth in traefik and nginx auth_request.
             Exclusive with internal_host.
+        cookie_domain:
+          type: string
     PatchedReputationPolicyRequest:
       type: object
       description: Reputation Policy Serializer
@@ -23980,7 +23982,7 @@ components:
       - name
     ProxyOutpostConfig:
       type: object
-      description: ProxyProvider Serializer
+      description: Proxy provider serializer for outposts
       properties:
         pk:
           type: integer
@@ -24036,6 +24038,8 @@ components:
           type: boolean
           description: Enable support for forwardAuth in traefik and nginx auth_request.
             Exclusive with internal_host.
+        cookie_domain:
+          type: string
       required:
       - external_host
       - name
@@ -24116,6 +24120,8 @@ components:
         redirect_uris:
           type: string
           readOnly: true
+        cookie_domain:
+          type: string
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -24178,6 +24184,8 @@ components:
           type: boolean
           description: Enable support for forwardAuth in traefik and nginx auth_request.
             Exclusive with internal_host.
+        cookie_domain:
+          type: string
       required:
       - authorization_flow
       - external_host

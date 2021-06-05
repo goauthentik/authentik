@@ -72,6 +72,7 @@ class ProxyProviderSerializer(ProviderSerializer):
             "basic_auth_user_attribute",
             "forward_auth_mode",
             "redirect_uris",
+            "cookie_domain",
         ]
 
 
@@ -84,7 +85,7 @@ class ProxyProviderViewSet(ModelViewSet):
 
 
 class ProxyOutpostConfigSerializer(ModelSerializer):
-    """ProxyProvider Serializer"""
+    """Proxy provider serializer for outposts"""
 
     oidc_configuration = SerializerMethodField()
 
@@ -107,6 +108,7 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
             "basic_auth_password_attribute",
             "basic_auth_user_attribute",
             "forward_auth_mode",
+            "cookie_domain",
         ]
 
     @extend_schema_field(OpenIDConnectConfigurationSerializer)
