@@ -115,6 +115,14 @@ class Flow(SerializerModel, PolicyBindingModel):
         help_text=_("Background shown during execution"),
     )
 
+    compatibility_mode = models.BooleanField(
+        default=True,
+        help_text=_(
+            "Enable compatibility mode, increases compatibility with "
+            "password managers on mobile devices."
+        ),
+    )
+
     @property
     def background_url(self) -> str:
         """Get the URL to the background image. If the name is /static or starts with http

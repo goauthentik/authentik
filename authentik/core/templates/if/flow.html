@@ -4,7 +4,9 @@
 {% load i18n %}
 
 {% block head_before %}
+{% if flow.compatibility_mode %}
 <script>ShadyDOM = { force: !navigator.webdriver };</script>
+{% endif %}
 {% endblock %}
 
 {% block head %}

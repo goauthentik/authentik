@@ -636,6 +636,10 @@ msgid "Common Name"
 msgstr ""
 
 #: 
+msgid "Compatibility mode"
+msgstr ""
+
+#: 
 msgid "Confidential"
 msgstr ""
 
@@ -1257,6 +1261,10 @@ msgstr ""
 
 #: 
 msgid "Enable TOTP"
+msgstr ""
+
+#: 
+msgid "Enable compatibility mode, increases compatibility with password managers on mobile devices."
 msgstr ""
 
 #: 

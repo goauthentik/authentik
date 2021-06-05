@@ -641,6 +641,10 @@ msgstr "Code"
 msgid "Common Name"
 msgstr "Common Name"
 
+#: src/pages/flows/FlowForm.ts
+msgid "Compatibility mode"
+msgstr "Compatibility mode"
+
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Confidential"
 msgstr "Confidential"
@@ -1266,6 +1270,10 @@ msgstr "Enable Static Tokens"
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts
 msgid "Enable TOTP"
 msgstr "Enable TOTP"
+
+#: src/pages/flows/FlowForm.ts
+msgid "Enable compatibility mode, increases compatibility with password managers on mobile devices."
+msgstr "Enable compatibility mode, increases compatibility with password managers on mobile devices."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Enable forward-auth mode"
