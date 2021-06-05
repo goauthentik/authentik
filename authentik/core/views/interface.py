@@ -13,5 +13,5 @@ class FlowInterfaceView(TemplateView):
     template_name = "if/flow.html"
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        kwargs["flow"] = get_object_or_404(Flow, slug=self.kwargs.get("slug"))
+        kwargs["flow"] = get_object_or_404(Flow, slug=self.kwargs.get("flow_slug"))
         return super().get_context_data(**kwargs)
