@@ -14,6 +14,7 @@ class PytestTestRunner:  # pragma: no cover
         settings.TEST = True
         settings.CELERY_TASK_ALWAYS_EAGER = True
         CONFIG.y_set("authentik.avatars", "none")
+        CONFIG.y_set("authentik.geoip", "tests/GeoLite2-City-Test.mmdb")
 
     def run_tests(self, test_labels):
         """Run pytest and return the exitcode.

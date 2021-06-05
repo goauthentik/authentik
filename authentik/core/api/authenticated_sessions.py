@@ -2,7 +2,6 @@
 from typing import Optional, TypedDict
 
 from django_filters.rest_framework import DjangoFilterBackend
-from geoip2.errors import GeoIP2Error
 from guardian.utils import get_anonymous_user
 from rest_framework import mixins
 from rest_framework.fields import SerializerMethodField
@@ -13,7 +12,7 @@ from rest_framework.viewsets import GenericViewSet
 from ua_parser import user_agent_parser
 
 from authentik.core.models import AuthenticatedSession
-from authentik.events.geo import GEOIP_READER
+from authentik.events.geo import GEOIP_READER, GeoIPDict
 
 
 class UserAgentDeviceDict(TypedDict):
@@ -52,15 +51,6 @@ class UserAgentDict(TypedDict):
     string: str
 
 
-class GeoIPDict(TypedDict):
-    """GeoIP Details"""
-
-    continent: str
-    country: str
-    lat: float
-    long: float
-
-
 class AuthenticatedSessionSerializer(ModelSerializer):
     """AuthenticatedSession Serializer"""
 
@@ -81,18 +71,7 @@ class AuthenticatedSessionSerializer(ModelSerializer):
         self, instance: AuthenticatedSession
     ) -> Optional[GeoIPDict]:  # pragma: no cover
         """Get parsed user agent"""
-        if not GEOIP_READER:
-            return None
-        try:
-            city = GEOIP_READER.city(instance.last_ip)
-            return {
-                "continent": city.continent.code,
-                "country": city.country.iso_code,
-                "lat": city.location.latitude,
-                "long": city.location.longitude,
-            }
-        except (GeoIP2Error, ValueError):
-            return None
+        return GEOIP_READER.city_dict(instance.last_ip)
 
     class Meta:
 

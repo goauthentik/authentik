@@ -43,7 +43,7 @@ class ConfigView(APIView):
         deb_test = settings.DEBUG or settings.TEST
         if path.ismount(settings.MEDIA_ROOT) or deb_test:
             caps.append(Capabilities.CAN_SAVE_MEDIA)
-        if GEOIP_READER:
+        if GEOIP_READER.enabled:
             caps.append(Capabilities.CAN_GEO_IP)
         return caps
 
