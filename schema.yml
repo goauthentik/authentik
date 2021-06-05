@@ -17276,7 +17276,6 @@ components:
             flow is redirect to when an un-authenticated user visits authentik.
         background:
           type: string
-          nullable: true
           readOnly: true
         stages:
           type: array
