@@ -70,7 +70,12 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
 
     renderInternalServer(): TemplateResult {
         if (!this.showInternalServer) {
-            return html``;
+            return html`<ak-form-element-horizontal
+                    label=${t`Cookie domain`}
+                    name="cookieDomain">
+                    <input type="text" value="${ifDefined(this.instance?.cookieDomain)}" class="pf-c-form-control" required>
+                    <p class="pf-c-form__helper-text">${t`Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.`}</p>
+                </ak-form-element-horizontal>`;
         }
         return html`<ak-form-element-horizontal
                     label=${t`Internal host`}

@@ -770,6 +770,10 @@ msgid "Control how authentik exposes and interprets information."
 msgstr ""
 
 #: 
+msgid "Cookie domain"
+msgstr ""
+
+#: 
 msgid "Copy"
 msgstr ""
 
@@ -2468,6 +2472,10 @@ msgstr ""
 
 #: 
 msgid "Optionally set the 'FriendlyName' value of the Assertion attribute."
+msgstr ""
+
+#: 
+msgid "Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
 msgstr ""
 
 #: 

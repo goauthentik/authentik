@@ -775,6 +775,10 @@ msgstr "Continue flow without invitation"
 msgid "Control how authentik exposes and interprets information."
 msgstr "Control how authentik exposes and interprets information."
 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Cookie domain"
+msgstr "Cookie domain"
+
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 msgid "Copy"
 msgstr "Copy"
@@ -2477,6 +2481,10 @@ msgstr "Optionally pre-fill the input value"
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 msgid "Optionally set the 'FriendlyName' value of the Assertion attribute."
 msgstr "Optionally set the 'FriendlyName' value of the Assertion attribute."
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
+msgstr "Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
 
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts
