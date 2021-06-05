@@ -350,9 +350,11 @@ msgid "Backends"
 msgstr "Backends"
 
 #: src/pages/flows/FlowForm.ts
+#: src/pages/flows/FlowForm.ts
 msgid "Background"
 msgstr "Background"
 
+#: src/pages/flows/FlowForm.ts
 #: src/pages/flows/FlowForm.ts
 #: src/pages/flows/FlowImportForm.ts
 msgid "Background shown during execution."
@@ -591,12 +593,20 @@ msgstr "Clear Flow cache"
 msgid "Clear Policy cache"
 msgstr "Clear Policy cache"
 
+#: src/pages/flows/FlowForm.ts
+msgid "Clear background image"
+msgstr "Clear background image"
+
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 msgid "Clear cache"
 msgstr "Clear cache"
+
+#: src/pages/applications/ApplicationForm.ts
+msgid "Clear icon"
+msgstr "Clear icon"
 
 #: src/elements/forms/HorizontalFormElement.ts
 msgid "Click to change value"
@@ -640,6 +650,10 @@ msgstr "Code"
 #: src/pages/crypto/CertificateGenerateForm.ts
 msgid "Common Name"
 msgstr "Common Name"
+
+#: src/pages/flows/FlowForm.ts
+msgid "Compatibility mode"
+msgstr "Compatibility mode"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Confidential"
@@ -946,6 +960,11 @@ msgstr "Created {0}"
 msgid "Creation Date"
 msgstr "Creation Date"
 
+#: src/pages/applications/ApplicationForm.ts
+#: src/pages/flows/FlowForm.ts
+msgid "Currently set to:"
+msgstr "Currently set to:"
+
 #: src/interfaces/AdminInterface.ts
 msgid "Customisation"
 msgstr "Customisation"
@@ -1033,6 +1052,14 @@ msgstr "Delete Session"
 #: src/pages/user-settings/UserDetailsPage.ts
 msgid "Delete account"
 msgstr "Delete account"
+
+#: src/pages/flows/FlowForm.ts
+msgid "Delete currently set background image."
+msgstr "Delete currently set background image."
+
+#: src/pages/applications/ApplicationForm.ts
+msgid "Delete currently set icon."
+msgstr "Delete currently set icon."
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Delete temporary users after"
@@ -1270,6 +1297,10 @@ msgstr "Enable Static Tokens"
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts
 msgid "Enable TOTP"
 msgstr "Enable TOTP"
+
+#: src/pages/flows/FlowForm.ts
+msgid "Enable compatibility mode, increases compatibility with password managers on mobile devices."
+msgstr "Enable compatibility mode, increases compatibility with password managers on mobile devices."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Enable forward-auth mode"
@@ -1734,6 +1765,7 @@ msgstr "IP"
 msgid "IP Reputation"
 msgstr "IP Reputation"
 
+#: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationForm.ts
 msgid "Icon"
 msgstr "Icon"

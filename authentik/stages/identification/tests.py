@@ -108,7 +108,7 @@ class TestIdentificationStage(TestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
-                "background": self.flow.background.url,
+                "background": self.flow.background_url,
                 "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-identification",
                 "password_fields": True,
@@ -181,7 +181,7 @@ class TestIdentificationStage(TestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
-                "background": flow.background.url,
+                "background": flow.background_url,
                 "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-identification",
                 "user_fields": ["email"],
@@ -229,7 +229,7 @@ class TestIdentificationStage(TestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
-                "background": flow.background.url,
+                "background": flow.background_url,
                 "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-identification",
                 "user_fields": ["email"],

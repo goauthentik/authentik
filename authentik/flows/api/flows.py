@@ -10,7 +10,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import FileField, ReadOnlyField
+from rest_framework.fields import BooleanField, FileField, ReadOnlyField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -63,6 +63,7 @@ class FlowSerializer(ModelSerializer):
             "policies",
             "cache_count",
             "policy_engine_mode",
+            "compatibility_mode",
         ]
         extra_kwargs = {
             "background": {"read_only": True},
@@ -268,7 +269,11 @@ class FlowViewSet(ModelViewSet):
     @extend_schema(
         request={
             "multipart/form-data": inline_serializer(
-                "SetIcon", fields={"file": FileField()}
+                "SetIcon",
+                fields={
+                    "file": FileField(required=False),
+                    "clear": BooleanField(default=False),
+                },
             )
         },
         responses={
@@ -287,12 +292,17 @@ class FlowViewSet(ModelViewSet):
     def set_background(self, request: Request, slug: str):
         """Set Flow background"""
         flow: Flow = self.get_object()
-        icon = request.FILES.get("file", None)
-        if not icon:
-            return HttpResponseBadRequest()
-        flow.background = icon
-        flow.save()
-        return Response({})
+        background = request.FILES.get("file", None)
+        clear = request.data.get("clear", False)
+        if clear:
+            # .delete() saves the model by default
+            flow.background.delete()
+            return Response({})
+        if background:
+            flow.background = background
+            flow.save()
+            return Response({})
+        return HttpResponseBadRequest()
 
     @permission_required("authentik_core.change_application")
     @extend_schema(

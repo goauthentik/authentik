@@ -6,6 +6,7 @@ from django.views.generic import RedirectView
 from django.views.generic.base import TemplateView
 
 from authentik.core.views import impersonate
+from authentik.core.views.interface import FlowInterfaceView
 
 urlpatterns = [
     path(
@@ -32,7 +33,7 @@ urlpatterns = [
     ),
     path(
         "if/flow/<slug:flow_slug>/",
-        ensure_csrf_cookie(TemplateView.as_view(template_name="if/flow.html")),
+        ensure_csrf_cookie(FlowInterfaceView.as_view()),
         name="if-flow",
     ),
     # Fallback for WS

@@ -1474,7 +1474,6 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/SetIconRequest'
-        required: true
       security:
       - authentik: []
       - cookieAuth: []
@@ -4519,7 +4518,6 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/SetIconRequest'
-        required: true
       security:
       - authentik: []
       - cookieAuth: []
@@ -4612,7 +4610,6 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/SetIconRequest'
-        required: true
       security:
       - authentik: []
       - cookieAuth: []
@@ -17276,7 +17273,6 @@ components:
             flow is redirect to when an un-authenticated user visits authentik.
         background:
           type: string
-          nullable: true
           readOnly: true
         stages:
           type: array
@@ -17295,6 +17291,10 @@ components:
           readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
+        compatibility_mode:
+          type: boolean
+          description: Enable compatibility mode, increases compatibility with password
+            managers on mobile devices.
       required:
       - background
       - cache_count
@@ -17418,6 +17418,10 @@ components:
             flow is redirect to when an un-authenticated user visits authentik.
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
+        compatibility_mode:
+          type: boolean
+          description: Enable compatibility mode, increases compatibility with password
+            managers on mobile devices.
       required:
       - designation
       - name
@@ -22246,6 +22250,10 @@ components:
             flow is redirect to when an un-authenticated user visits authentik.
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
+        compatibility_mode:
+          type: boolean
+          description: Enable compatibility mode, increases compatibility with password
+            managers on mobile devices.
     PatchedFlowStageBindingRequest:
       type: object
       description: FlowStageBinding Serializer
@@ -24887,8 +24895,9 @@ components:
         file:
           type: string
           format: binary
-      required:
-      - file
+        clear:
+          type: boolean
+          default: false
     SetIconURLRequest:
       type: object
       properties:

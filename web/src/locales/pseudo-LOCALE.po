@@ -346,9 +346,11 @@ msgid "Backends"
 msgstr ""
 
 #: 
+#: 
 msgid "Background"
 msgstr ""
 
+#: 
 #: 
 #: 
 msgid "Background shown during execution."
@@ -586,10 +588,18 @@ msgid "Clear Policy cache"
 msgstr ""
 
 #: 
+msgid "Clear background image"
+msgstr ""
+
+#: 
 #: 
 #: 
 #: 
 msgid "Clear cache"
+msgstr ""
+
+#: 
+msgid "Clear icon"
 msgstr ""
 
 #: 
@@ -633,6 +643,10 @@ msgstr ""
 
 #: 
 msgid "Common Name"
+msgstr ""
+
+#: 
+msgid "Compatibility mode"
 msgstr ""
 
 #: 
@@ -941,6 +955,11 @@ msgid "Creation Date"
 msgstr ""
 
 #: 
+#: 
+msgid "Currently set to:"
+msgstr ""
+
+#: 
 msgid "Customisation"
 msgstr ""
 
@@ -1026,6 +1045,14 @@ msgstr ""
 
 #: 
 msgid "Delete account"
+msgstr ""
+
+#: 
+msgid "Delete currently set background image."
+msgstr ""
+
+#: 
+msgid "Delete currently set icon."
 msgstr ""
 
 #: 
@@ -1261,6 +1288,10 @@ msgstr ""
 
 #: 
 msgid "Enable TOTP"
+msgstr ""
+
+#: 
+msgid "Enable compatibility mode, increases compatibility with password managers on mobile devices."
 msgstr ""
 
 #: 
@@ -1726,6 +1757,7 @@ msgstr ""
 msgid "IP Reputation"
 msgstr ""
 
+#: 
 #: 
 msgid "Icon"
 msgstr ""

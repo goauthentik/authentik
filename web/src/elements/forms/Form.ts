@@ -45,6 +45,11 @@ export class Form<T> extends LitElement {
         `];
     }
 
+    get isInViewport(): boolean {
+        const rect = this.getBoundingClientRect();
+        return !(rect.x + rect.y + rect.width + rect.height === 0);
+    }
+
     getSuccessMessage(): string {
         return this.successMessage;
     }
@@ -214,8 +219,7 @@ export class Form<T> extends LitElement {
     }
 
     render(): TemplateResult {
-        const rect = this.getBoundingClientRect();
-        if (rect.x + rect.y + rect.width + rect.height === 0) {
+        if (!this.isInViewport) {
             return html``;
         }
         return this.renderVisible();
