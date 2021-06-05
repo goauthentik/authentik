@@ -11,7 +11,13 @@ from drf_spectacular.utils import (
     inline_serializer,
 )
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, FileField, IntegerField, ReadOnlyField
+from rest_framework.fields import (
+    BooleanField,
+    CharField,
+    FileField,
+    IntegerField,
+    ReadOnlyField,
+)
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -173,7 +179,11 @@ class ApplicationViewSet(ModelViewSet):
     @extend_schema(
         request={
             "multipart/form-data": inline_serializer(
-                "SetIcon", fields={"file": FileField()}
+                "SetIcon",
+                fields={
+                    "file": FileField(required=False),
+                    "clear": BooleanField(default=False),
+                },
             )
         },
         responses={
@@ -193,11 +203,16 @@ class ApplicationViewSet(ModelViewSet):
         """Set application icon"""
         app: Application = self.get_object()
         icon = request.FILES.get("file", None)
-        if not icon:
-            return HttpResponseBadRequest()
-        app.meta_icon = icon
-        app.save()
-        return Response({})
+        clear = request.data.get("clear", False)
+        if clear:
+            # .delete() saves the model by default
+            app.meta_icon.delete()
+            return Response({})
+        if icon:
+            app.meta_icon = icon
+            app.save()
+            return Response({})
+        return HttpResponseBadRequest()
 
     @permission_required("authentik_core.change_application")
     @extend_schema(

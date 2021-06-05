@@ -1,6 +1,6 @@
 import { Flow, FlowDesignationEnum, PolicyEngineMode, FlowsApi, CapabilitiesEnum } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement } from "lit-element";
+import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { config, DEFAULT_CONFIG } from "../../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
@@ -26,6 +26,9 @@ export class FlowForm extends ModelForm<Flow, string> {
         }
     }
 
+    @property({ type: Boolean })
+    clearBackground = false;
+
     send = (data: Flow): Promise<void | Flow> => {
         let writeOp: Promise<Flow>;
         if (this.instance) {
@@ -41,11 +44,12 @@ export class FlowForm extends ModelForm<Flow, string> {
         return config().then((c) => {
             if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
                 const icon = this.getFormFile();
-                if (icon) {
+                if (icon || this.clearBackground) {
                     return writeOp.then(app => {
                         return new FlowsApi(DEFAULT_CONFIG).flowsInstancesSetBackgroundCreate({
                             slug: app.slug,
-                            file: icon
+                            file: icon,
+                            clear: this.clearBackground,
                         });
                     });
                 }
@@ -143,7 +147,21 @@ export class FlowForm extends ModelForm<Flow, string> {
                             <p class="pf-c-form__helper-text">${t`Currently set to:`} ${this.instance?.background}</p>
                         `: html``}
                         <p class="pf-c-form__helper-text">${t`Background shown during execution.`}</p>
-                    </ak-form-element-horizontal>`;
+                    </ak-form-element-horizontal>
+                    ${this.instance?.background ? html`
+                        <ak-form-element-horizontal>
+                            <div class="pf-c-check">
+                                <input type="checkbox" class="pf-c-check__input" @change=${(ev: Event) => {
+                                    const target = ev.target as HTMLInputElement;
+                                    this.clearBackground = target.checked;
+                                }}>
+                                <label class="pf-c-check__label">
+                                    ${t`Clear background image`}
+                                </label>
+                            </div>
+                            <p class="pf-c-form__helper-text">${t`Delete currently set background image.`}</p>
+                        </ak-form-element-horizontal>
+                    `: html``}`;
                 }
                 return html`<ak-form-element-horizontal
                     label=${t`Background`}

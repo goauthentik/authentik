@@ -593,12 +593,20 @@ msgstr "Clear Flow cache"
 msgid "Clear Policy cache"
 msgstr "Clear Policy cache"
 
+#: src/pages/flows/FlowForm.ts
+msgid "Clear background image"
+msgstr "Clear background image"
+
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 msgid "Clear cache"
 msgstr "Clear cache"
+
+#: src/pages/applications/ApplicationForm.ts
+msgid "Clear icon"
+msgstr "Clear icon"
 
 #: src/elements/forms/HorizontalFormElement.ts
 msgid "Click to change value"
@@ -948,6 +956,7 @@ msgstr "Created {0}"
 msgid "Creation Date"
 msgstr "Creation Date"
 
+#: src/pages/applications/ApplicationForm.ts
 #: src/pages/flows/FlowForm.ts
 msgid "Currently set to:"
 msgstr "Currently set to:"
@@ -1039,6 +1048,14 @@ msgstr "Delete Session"
 #: src/pages/user-settings/UserDetailsPage.ts
 msgid "Delete account"
 msgstr "Delete account"
+
+#: src/pages/flows/FlowForm.ts
+msgid "Delete currently set background image."
+msgstr "Delete currently set background image."
+
+#: src/pages/applications/ApplicationForm.ts
+msgid "Delete currently set icon."
+msgstr "Delete currently set icon."
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Delete temporary users after"
@@ -1744,6 +1761,7 @@ msgstr "IP"
 msgid "IP Reputation"
 msgstr "IP Reputation"
 
+#: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationForm.ts
 msgid "Icon"
 msgstr "Icon"

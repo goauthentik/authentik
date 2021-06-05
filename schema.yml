@@ -1474,7 +1474,6 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/SetIconRequest'
-        required: true
       security:
       - authentik: []
       - cookieAuth: []
@@ -4519,7 +4518,6 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/SetIconRequest'
-        required: true
       security:
       - authentik: []
       - cookieAuth: []
@@ -4612,7 +4610,6 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/SetIconRequest'
-        required: true
       security:
       - authentik: []
       - cookieAuth: []
@@ -24890,8 +24887,9 @@ components:
         file:
           type: string
           format: binary
-      required:
-      - file
+        clear:
+          type: boolean
+          default: false
     SetIconURLRequest:
       type: object
       properties:
