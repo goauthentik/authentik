@@ -15639,6 +15639,8 @@ components:
             long:
               type: number
               format: float
+            city:
+              type: string
           nullable: true
           readOnly: true
         user:
