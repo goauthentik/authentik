@@ -2031,6 +2031,7 @@ msgstr ""
 #: 
 #: 
 #: 
+#: 
 msgid "Loading..."
 msgstr ""
 
@@ -2542,12 +2543,18 @@ msgid "Passing"
 msgstr ""
 
 #: 
+#: 
+#: 
 msgid "Password"
 msgstr ""
 
 #: 
 #: 
 msgid "Password field"
+msgstr ""
+
+#: 
+msgid "Password stage"
 msgstr ""
 
 #: 
@@ -4340,6 +4347,10 @@ msgstr ""
 
 #: 
 msgid "When enabled, user fields are matched regardless of their casing."
+msgstr ""
+
+#: 
+msgid "When selected, a password field is shown on the same page instead of a separate page. This prevents username enumeration attacks."
 msgstr ""
 
 #: 

@@ -9,6 +9,7 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.core.models import Source
 from authentik.flows.models import Flow, Stage
+from authentik.stages.password.models import PasswordStage
 
 
 class UserFields(models.TextChoices):
@@ -32,6 +33,16 @@ class IdentificationStage(Stage):
         ),
     )
 
+    password_stage = models.ForeignKey(
+        PasswordStage,
+        null=True,
+        default=None,
+        on_delete=models.SET_NULL,
+        help_text=_(
+            "When set, shows a password field, instead of showing the "
+            "password field as seaprate step.",
+        ),
+    )
     case_insensitive_matching = models.BooleanField(
         default=True,
         help_text=_(

@@ -13,7 +13,6 @@ import { BaseStage } from "../base";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import "../../../elements/Divider";
-import { Error } from "../../../api/Flows";
 import { PromptChallenge, PromptChallengeResponseRequest, StagePrompt } from "authentik-api";
 
 
@@ -101,24 +100,6 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                 return `<p>${prompt.placeholder}</p>`;
         }
         return "";
-    }
-
-    renderNonFieldErrors(errors: Error[]): TemplateResult {
-        if (!errors) {
-            return html``;
-        }
-        return html`<div class="pf-c-form__alert">
-            ${errors.map(err => {
-                return html`<div class="pf-c-alert pf-m-inline pf-m-danger">
-                    <div class="pf-c-alert__icon">
-                        <i class="fas fa-exclamation-circle"></i>
-                    </div>
-                    <h4 class="pf-c-alert__title">
-                        ${err.string}
-                    </h4>
-                </div>`;
-            })}
-        </div>`;
     }
 
     render(): TemplateResult {

@@ -2032,6 +2032,7 @@ msgstr "Loading"
 #: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/stages/password/PasswordStageForm.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
@@ -2549,6 +2550,8 @@ msgstr "Pass policy?"
 msgid "Passing"
 msgstr "Passing"
 
+#: src/flows/stages/identification/IdentificationStage.ts
+#: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/password/PasswordStage.ts
 msgid "Password"
 msgstr "Password"
@@ -2557,6 +2560,10 @@ msgstr "Password"
 #: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Password field"
 msgstr "Password field"
+
+#: src/pages/stages/identification/IdentificationStageForm.ts
+msgid "Password stage"
+msgstr "Password stage"
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical."
@@ -4353,6 +4360,10 @@ msgstr "When enabled, the invitation will be deleted after usage."
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "When enabled, user fields are matched regardless of their casing."
 msgstr "When enabled, user fields are matched regardless of their casing."
+
+#: src/pages/stages/identification/IdentificationStageForm.ts
+msgid "When selected, a password field is shown on the same page instead of a separate page. This prevents username enumeration attacks."
+msgstr "When selected, a password field is shown on the same page instead of a separate page. This prevents username enumeration attacks."
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."

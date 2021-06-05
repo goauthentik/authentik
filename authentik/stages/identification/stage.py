@@ -1,13 +1,14 @@
 """Identification stage logic"""
 from dataclasses import asdict
 from time import sleep
-from typing import Optional
+from typing import Any, Optional
 
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import HttpResponse
 from django.urls import reverse
 from django.utils.translation import gettext as _
-from rest_framework.fields import CharField, ListField
+from rest_framework.fields import BooleanField, CharField, ListField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
@@ -22,6 +23,7 @@ from authentik.flows.stage import (
 from authentik.flows.views import SESSION_KEY_APPLICATION_PRE
 from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.identification.signals import identification_failed
+from authentik.stages.password.stage import authenticate
 
 LOGGER = get_logger()
 
@@ -30,6 +32,7 @@ class IdentificationChallenge(Challenge):
     """Identification challenges with all UI elements"""
 
     user_fields = ListField(child=CharField(), allow_empty=True, allow_null=True)
+    password_fields = BooleanField()
     application_pre = CharField(required=False)
 
     enroll_url = CharField(required=False)
@@ -44,22 +47,43 @@ class IdentificationChallengeResponse(ChallengeResponse):
     """Identification challenge"""
 
     uid_field = CharField()
+    password = CharField(required=False, allow_blank=True, allow_null=True)
     component = CharField(default="ak-stage-identification")
 
     pre_user: Optional[User] = None
 
-    def validate_uid_field(self, value: str) -> str:
-        """Validate that user exists"""
-        pre_user = self.stage.get_user(value)
+    def validate(self, data: dict[str, Any]) -> dict[str, Any]:
+        """Validate that user exists, and optionally their password"""
+        uid_field = data["uid_field"]
+        current_stage: IdentificationStage = self.stage.executor.current_stage
+
+        pre_user = self.stage.get_user(uid_field)
         if not pre_user:
             sleep(0.150)
-            LOGGER.debug("invalid_login", identifier=value)
+            LOGGER.debug("invalid_login", identifier=uid_field)
             identification_failed.send(
-                sender=self, request=self.stage.request, uid_field=value
+                sender=self, request=self.stage.request, uid_field=uid_field
             )
             raise ValidationError("Failed to authenticate.")
         self.pre_user = pre_user
-        return value
+        if not current_stage.password_stage:
+            # No password stage select, don't validate the password
+            return data
+
+        password = data["password"]
+        try:
+            user = authenticate(
+                self.stage.request,
+                current_stage.password_stage.backends,
+                username=self.pre_user.username,
+                password=password,
+            )
+            if not user:
+                raise ValidationError("Failed to authenticate.")
+            self.pre_user = user
+        except PermissionDenied as exc:
+            raise ValidationError(str(exc)) from exc
+        return data
 
 
 class IdentificationStageView(ChallengeStageView):
@@ -92,6 +116,7 @@ class IdentificationStageView(ChallengeStageView):
                 "primary_action": _("Log in"),
                 "component": "ak-stage-identification",
                 "user_fields": current_stage.user_fields,
+                "password_fields": bool(current_stage.password_stage),
             }
         )
         # If the user has been redirected to us whilst trying to access an

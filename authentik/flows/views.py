@@ -2,6 +2,7 @@
 from traceback import format_tb
 from typing import Any, Optional
 
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
 from django.http.request import QueryDict
@@ -203,6 +204,8 @@ class FlowExecutorView(APIView):
             stage_response = self.current_stage_view.get(request, *args, **kwargs)
             return to_stage_response(request, stage_response)
         except Exception as exc:  # pylint: disable=broad-except
+            if settings.DEBUG or settings.TEST:
+                raise exc
             capture_exception(exc)
             self._logger.warning(exc)
             return to_stage_response(request, FlowErrorResponse(request, exc))
@@ -242,6 +245,8 @@ class FlowExecutorView(APIView):
             stage_response = self.current_stage_view.post(request, *args, **kwargs)
             return to_stage_response(request, stage_response)
         except Exception as exc:  # pylint: disable=broad-except
+            if settings.DEBUG or settings.TEST:
+                raise exc
             capture_exception(exc)
             self._logger.warning(exc)
             return to_stage_response(request, FlowErrorResponse(request, exc))
