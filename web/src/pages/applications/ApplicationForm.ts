@@ -178,15 +178,20 @@ export class ApplicationForm extends ModelForm<Application, string> {
                         <p class="pf-c-form__helper-text">${t`If left empty, authentik will try to extract the launch URL based on the selected provider.`}</p>
                     </ak-form-element-horizontal>
                     ${until(config().then((c) => {
-                        let type = "text";
                         if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
-                            type = "file";
+                            return html`<ak-form-element-horizontal
+                                label=${t`Icon`}
+                                name="metaIcon">
+                                <input type="file" value="" class="pf-c-form-control">
+                                ${this.instance?.metaIcon ? html`
+                                    <p class="pf-c-form__helper-text">${t`Currently set to:`} ${this.instance?.metaIcon}</p>
+                                `: html``}
+                            </ak-form-element-horizontal>`;
                         }
                         return html`<ak-form-element-horizontal
                             label=${t`Icon`}
                             name="metaIcon">
-                            <!-- @ts-ignore -->
-                            <input type=${type} value="${first(this.instance?.metaIcon, "")}" class="pf-c-form-control">
+                            <input type="text" value="${first(this.instance?.metaIcon, "")}" class="pf-c-form-control">
                         </ak-form-element-horizontal>`;
                     }))}
                     <ak-form-element-horizontal

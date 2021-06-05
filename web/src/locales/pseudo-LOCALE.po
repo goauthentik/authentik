@@ -346,9 +346,11 @@ msgid "Backends"
 msgstr ""
 
 #: 
+#: 
 msgid "Background"
 msgstr ""
 
+#: 
 #: 
 #: 
 msgid "Background shown during execution."
@@ -938,6 +940,10 @@ msgstr ""
 #: 
 #: 
 msgid "Creation Date"
+msgstr ""
+
+#: 
+msgid "Currently set to:"
 msgstr ""
 
 #: 

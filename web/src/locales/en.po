@@ -350,9 +350,11 @@ msgid "Backends"
 msgstr "Backends"
 
 #: src/pages/flows/FlowForm.ts
+#: src/pages/flows/FlowForm.ts
 msgid "Background"
 msgstr "Background"
 
+#: src/pages/flows/FlowForm.ts
 #: src/pages/flows/FlowForm.ts
 #: src/pages/flows/FlowImportForm.ts
 msgid "Background shown during execution."
@@ -945,6 +947,10 @@ msgstr "Created {0}"
 #: src/pages/events/EventListPage.ts
 msgid "Creation Date"
 msgstr "Creation Date"
+
+#: src/pages/flows/FlowForm.ts
+msgid "Currently set to:"
+msgstr "Currently set to:"
 
 #: src/interfaces/AdminInterface.ts
 msgid "Customisation"

@@ -134,15 +134,21 @@ export class FlowForm extends ModelForm<Flow, string> {
                 <p class="pf-c-form__helper-text">${t`Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.`}</p>
             </ak-form-element-horizontal>
             ${until(config().then((c) => {
-                let type = "text";
                 if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
-                    type = "file";
+                    return html`<ak-form-element-horizontal
+                        label=${t`Background`}
+                        name="background">
+                        <input type="file" value="" class="pf-c-form-control">
+                        ${this.instance?.background ? html`
+                            <p class="pf-c-form__helper-text">${t`Currently set to:`} ${this.instance?.background}</p>
+                        `: html``}
+                        <p class="pf-c-form__helper-text">${t`Background shown during execution.`}</p>
+                    </ak-form-element-horizontal>`;
                 }
                 return html`<ak-form-element-horizontal
                     label=${t`Background`}
                     name="background">
-                    <!-- @ts-ignore -->
-                    <input type=${type} value="${first(this.instance?.background, "/static/dist/assets/images/flow_background.jpg")}" class="pf-c-form-control">
+                    <input type="text" value="${first(this.instance?.background, "")}" class="pf-c-form-control">
                     <p class="pf-c-form__helper-text">${t`Background shown during execution.`}</p>
                 </ak-form-element-horizontal>`;
             }))}
