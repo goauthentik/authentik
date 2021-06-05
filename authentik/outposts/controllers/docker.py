@@ -90,12 +90,11 @@ class DockerController(BaseController):
             # Check if the container is out of date, delete it and retry
             if len(container.image.tags) > 0:
                 tag: str = container.image.tags[0]
-                _, _, version = tag.partition(":")
-                if version != __version__:
+                if tag != self.get_container_image():
                     self.logger.info(
-                        "Container has mismatched version, re-creating...",
-                        has=version,
-                        should=__version__,
+                        "Container has mismatched image, re-creating...",
+                        has=tag,
+                        should=self.get_container_image(),
                     )
                     self.down()
                     return self.up()
