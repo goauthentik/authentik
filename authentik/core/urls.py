@@ -1,4 +1,5 @@
 """authentik URL Configuration"""
+from authentik.core.views.session import EndSessionView
 from django.contrib.auth.decorators import login_required
 from django.urls import path
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -35,6 +36,11 @@ urlpatterns = [
         "if/flow/<slug:flow_slug>/",
         ensure_csrf_cookie(FlowInterfaceView.as_view()),
         name="if-flow",
+    ),
+    path(
+        "if/session-end/<slug:application_slug>/",
+        ensure_csrf_cookie(EndSessionView.as_view()),
+        name="if-session-end",
     ),
     # Fallback for WS
     path("ws/outpost/<uuid:pk>/", TemplateView.as_view(template_name="if/admin.html")),
