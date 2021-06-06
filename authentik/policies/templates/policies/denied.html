@@ -26,15 +26,17 @@
         </p>
         {% endif %}
         {% if policy_result %}
-        <hr>
-        <em>{% trans 'Messages:' %}</em>
-        <ul class="pf-c-list">
-            {% for message in policy_result.messages %}
-            <li>
-                {{ message }}
-            </li>
-            {% endfor %}
-        </ul>
+            <hr>
+            {% if policy_result.messages %}
+            <em>{% trans 'Messages:' %}</em>
+            <ul class="pf-c-list">
+                {% for message in policy_result.messages %}
+                <li>
+                    {{ message }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
             {% if policy_result.source_results %}
             <em>{% trans 'Explanation:' %}</em>
             <ul class="pf-c-list">

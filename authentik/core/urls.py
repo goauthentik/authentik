@@ -1,5 +1,4 @@
 """authentik URL Configuration"""
-from authentik.core.views.session import EndSessionView
 from django.contrib.auth.decorators import login_required
 from django.urls import path
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -8,6 +7,7 @@ from django.views.generic.base import TemplateView
 
 from authentik.core.views import impersonate
 from authentik.core.views.interface import FlowInterfaceView
+from authentik.core.views.session import EndSessionView
 
 urlpatterns = [
     path(
