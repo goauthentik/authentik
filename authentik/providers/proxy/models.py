@@ -37,6 +37,14 @@ def _get_callback_url(uri: str) -> str:
     return urljoin(uri, "/akprox/callback")
 
 
+class ProxyMode(models.TextChoices):
+    """All modes a Proxy provider can operate in"""
+
+    PROXY = "proxy"
+    FORWARD_SINGLE = "forward_single"
+    FORWARD_DOMAIN = "forward_domain"
+
+
 class ProxyProvider(OutpostModel, OAuth2Provider):
     """Protect applications that don't support any of the other
     Protocols by using a Reverse-Proxy."""
@@ -53,8 +61,9 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         help_text=_("Validate SSL Certificates of upstream servers"),
         verbose_name=_("Internal host SSL Validation"),
     )
-    forward_auth_mode = models.BooleanField(
-        default=False,
+    mode = models.TextField(
+        default=ProxyMode.PROXY,
+        choices=ProxyMode.choices,
         help_text=_(
             "Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with "
             "internal_host."

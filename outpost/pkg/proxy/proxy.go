@@ -65,7 +65,7 @@ type OAuthProxy struct {
 	AuthOnlyPath      string
 	UserInfoPath      string
 
-	forwardAuthMode            bool
+	mode                       api.ProxyMode
 	redirectURL                *url.URL // the url to receive requests at
 	whitelistDomains           []string
 	provider                   providers.Provider
@@ -136,7 +136,7 @@ func NewOAuthProxy(opts *options.Options, provider api.ProxyOutpostConfig, c *ht
 		CookieRefresh:  opts.Cookie.Refresh,
 		CookieSameSite: opts.Cookie.SameSite,
 
-		forwardAuthMode:   *provider.ForwardAuthMode,
+		mode:              *provider.Mode,
 		RobotsPath:        "/robots.txt",
 		SignInPath:        fmt.Sprintf("%s/sign_in", opts.ProxyPrefix),
 		SignOutPath:       fmt.Sprintf("%s/sign_out", opts.ProxyPrefix),
@@ -340,7 +340,7 @@ func (p *OAuthProxy) SignOut(rw http.ResponseWriter, req *http.Request) {
 func (p *OAuthProxy) AuthenticateOnly(rw http.ResponseWriter, req *http.Request) {
 	session, err := p.getAuthenticatedSession(rw, req)
 	if err != nil {
-		if p.forwardAuthMode {
+		if p.mode == api.PROXYMODE_FORWARD_SINGLE || p.mode == api.PROXYMODE_FORWARD_DOMAIN {
 			if _, ok := req.URL.Query()["nginx"]; ok {
 				rw.WriteHeader(401)
 				return
@@ -360,7 +360,7 @@ func (p *OAuthProxy) AuthenticateOnly(rw http.ResponseWriter, req *http.Request)
 	}
 	// we are authenticated
 	p.addHeadersForProxying(rw, req, session)
-	if p.forwardAuthMode {
+	if p.mode == api.PROXYMODE_FORWARD_SINGLE || p.mode == api.PROXYMODE_FORWARD_DOMAIN {
 		for headerKey, headers := range req.Header {
 			for _, value := range headers {
 				rw.Header().Set(headerKey, value)

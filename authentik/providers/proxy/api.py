@@ -70,7 +70,7 @@ class ProxyProviderSerializer(ProviderSerializer):
             "basic_auth_enabled",
             "basic_auth_password_attribute",
             "basic_auth_user_attribute",
-            "forward_auth_mode",
+            "mode",
             "redirect_uris",
             "cookie_domain",
         ]
@@ -107,7 +107,7 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
             "basic_auth_enabled",
             "basic_auth_password_attribute",
             "basic_auth_user_attribute",
-            "forward_auth_mode",
+            "mode",
             "cookie_domain",
         ]
 

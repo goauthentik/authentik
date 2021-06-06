@@ -155,6 +155,7 @@ SPECTACULAR_SETTINGS = {
         "ChallengeChoices": "authentik.flows.challenge.ChallengeTypes",
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
+        "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "POSTPROCESSING_HOOKS": [

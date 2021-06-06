@@ -64,7 +64,7 @@ func (pb *providerBundle) prepareOpts(provider api.ProxyOutpostConfig) *options.
 		providerOpts.SkipAuthRegex = skipRegexes
 	}
 
-	if *provider.ForwardAuthMode {
+	if *provider.Mode == api.PROXYMODE_FORWARD_SINGLE || *provider.Mode == api.PROXYMODE_FORWARD_DOMAIN {
 		providerOpts.UpstreamServers = []options.Upstream{
 			{
 				ID:         "static",
@@ -111,7 +111,7 @@ func (pb *providerBundle) prepareOpts(provider api.ProxyOutpostConfig) *options.
 func (pb *providerBundle) Build(provider api.ProxyOutpostConfig) {
 	opts := pb.prepareOpts(provider)
 
-	if *provider.ForwardAuthMode {
+	if *provider.Mode == api.PROXYMODE_FORWARD_DOMAIN {
 		opts.Cookie.Domains = []string{*provider.CookieDomain}
 	}
 
@@ -127,10 +127,6 @@ func (pb *providerBundle) Build(provider api.ProxyOutpostConfig) {
 
 	healthCheckPaths := []string{opts.PingPath}
 	healthCheckUserAgents := []string{opts.PingUserAgent}
-	if opts.GCPHealthChecks {
-		healthCheckPaths = append(healthCheckPaths, "/liveness_check", "/readiness_check")
-		healthCheckUserAgents = append(healthCheckUserAgents, "GoogleHC/1.0")
-	}
 
 	// To silence logging of health checks, register the health check handler before
 	// the logging handler
