@@ -80,10 +80,10 @@ class OutpostConsumer(AuthJsonConsumer):
             if self.channel_name in state.channel_ids:
                 state.channel_ids.remove(self.channel_name)
                 state.save()
-        GAUGE_OUTPOSTS_CONNECTED.labels(
-            outpost=self.outpost.name,
-            uid=self.last_uid,
-        ).dec()
+            GAUGE_OUTPOSTS_CONNECTED.labels(
+                outpost=self.outpost.name,
+                uid=self.last_uid,
+            ).dec()
         LOGGER.debug(
             "removed outpost instance from cache",
             outpost=self.outpost,
