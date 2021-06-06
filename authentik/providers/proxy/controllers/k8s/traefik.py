@@ -10,7 +10,7 @@ from authentik.outposts.controllers.k8s.base import (
     KubernetesObjectReconciler,
     NeedsUpdate,
 )
-from authentik.providers.proxy.models import ProxyProvider
+from authentik.providers.proxy.models import ProxyMode, ProxyProvider
 
 if TYPE_CHECKING:
     from authentik.outposts.controllers.kubernetes import KubernetesController
@@ -73,7 +73,7 @@ class TraefikMiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware])
     def noop(self) -> bool:
         if not ProxyProvider.objects.filter(
             outpost__in=[self.controller.outpost],
-            forward_auth_mode=True,
+            mode__in=[ProxyMode.FORWARD_SINGLE, ProxyMode.FORWARD_DOMAIN],
         ).exists():
             self.logger.debug("No providers with forward auth enabled.")
             return True

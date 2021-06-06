@@ -20,7 +20,7 @@ from authentik.outposts.controllers.k8s.base import (
     KubernetesObjectReconciler,
     NeedsUpdate,
 )
-from authentik.providers.proxy.models import ProxyProvider
+from authentik.providers.proxy.models import ProxyMode, ProxyProvider
 
 if TYPE_CHECKING:
     from authentik.outposts.controllers.kubernetes import KubernetesController
@@ -51,7 +51,6 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
         expected_hosts_tls = []
         for proxy_provider in ProxyProvider.objects.filter(
             outpost__in=[self.controller.outpost],
-            forward_auth_mode=False,
         ):
             proxy_provider: ProxyProvider
             external_host_name = urlparse(proxy_provider.external_host)
@@ -105,7 +104,7 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
             external_host_name = urlparse(proxy_provider.external_host)
             if external_host_name.scheme == "https":
                 tls_hosts.append(external_host_name.hostname)
-            if proxy_provider.forward_auth_mode:
+            if proxy_provider.mode == ProxyMode.FORWARD_SINGLE:
                 rule = NetworkingV1beta1IngressRule(
                     host=external_host_name.hostname,
                     http=NetworkingV1beta1HTTPIngressRuleValue(

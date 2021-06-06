@@ -36,9 +36,9 @@ class ProxyProviderSerializer(ProviderSerializer):
     redirect_uris = CharField(read_only=True)
 
     def validate(self, attrs) -> dict[Any, str]:
-        """Check that internal_host is set when forward_auth_mode is disabled"""
+        """Check that internal_host is set when mode is Proxy"""
         if (
-            not attrs.get("forward_auth_mode", False)
+            attrs.get("mode", ProxyMode.PROXY) == ProxyMode.PROXY
             and attrs.get("internal_host", "") == ""
         ):
             raise ValidationError(
