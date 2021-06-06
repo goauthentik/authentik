@@ -104,7 +104,10 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
             external_host_name = urlparse(proxy_provider.external_host)
             if external_host_name.scheme == "https":
                 tls_hosts.append(external_host_name.hostname)
-            if proxy_provider.mode in [ProxyMode.FORWARD_SINGLE, ProxyMode.FORWARD_DOMAIN]:
+            if proxy_provider.mode in [
+                ProxyMode.FORWARD_SINGLE,
+                ProxyMode.FORWARD_DOMAIN,
+            ]:
                 rule = NetworkingV1beta1IngressRule(
                     host=external_host_name.hostname,
                     http=NetworkingV1beta1HTTPIngressRuleValue(
