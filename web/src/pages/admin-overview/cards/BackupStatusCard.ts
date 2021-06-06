@@ -1,10 +1,9 @@
 import { t } from "@lingui/macro";
 import { customElement, html, TemplateResult } from "lit-element";
 import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
-import { AdminApi, StatusEnum } from "authentik-api";
+import { AdminApi, StatusEnum, CapabilitiesEnum } from "authentik-api";
 import { config, DEFAULT_CONFIG } from "../../../api/Config";
 import { convertToTitle } from "../../../utils";
-import { CapabilitiesEnum } from "authentik-api/src";
 
 @customElement("ak-admin-status-card-backup")
 export class BackupStatusCard extends AdminStatusCard<StatusEnum> {
