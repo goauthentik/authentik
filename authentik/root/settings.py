@@ -392,7 +392,10 @@ if _ERROR_REPORTING:
 STATIC_URL = "/static/"
 MEDIA_URL = "/media/"
 
-LOG_LEVEL = CONFIG.y("log_level").upper()
+TEST = False
+TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
+
+LOG_LEVEL = CONFIG.y("log_level").upper() if not TEST else "DEBUG"
 
 
 structlog.configure_once(
@@ -449,9 +452,6 @@ LOGGING = {
     },
     "loggers": {},
 }
-
-TEST = False
-TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
 
 _LOGGING_HANDLER_MAP = {
     "": LOG_LEVEL,
