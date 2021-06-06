@@ -1,9 +1,11 @@
-import { CryptoApi, FlowsApi, FlowsInstancesListDesignationEnum, ProvidersApi, ProxyProvider } from "authentik-api";
+import { CryptoApi, FlowsApi, FlowsInstancesListDesignationEnum, ProvidersApi, ProxyMode, ProxyProvider } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { css, CSSResult, customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { ModelForm } from "../../../elements/forms/ModelForm";
+import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
@@ -13,12 +15,20 @@ import { first } from "../../../utils";
 @customElement("ak-provider-proxy-form")
 export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
 
+    static get styles(): CSSResult[] {
+        return super.styles.concat(PFToggleGroup, PFContent, css`
+            .pf-c-toggle-group {
+                justify-content: center;
+            }
+        `);
+    }
+
     loadInstance(pk: number): Promise<ProxyProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersProxyRetrieve({
             id: pk,
         }).then(provider => {
             this.showHttpBasic = first(provider.basicAuthEnabled, true);
-            this.showInternalServer = first(!provider.forwardAuthMode, true);
+            this.mode = first(provider.mode, ProxyMode.Proxy);
             return provider;
         });
     }
@@ -26,8 +36,8 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
     @property({type: Boolean})
     showHttpBasic = true;
 
-    @property({type: Boolean})
-    showInternalServer = true;
+    @property({attribute: false})
+    mode: ProxyMode = ProxyMode.Proxy;
 
     getSuccessMessage(): string {
         if (this.instance) {
@@ -68,31 +78,31 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
             </ak-form-element-horizontal>`;
     }
 
-    renderInternalServer(): TemplateResult {
-        if (!this.showInternalServer) {
-            return html`<ak-form-element-horizontal
-                    label=${t`Cookie domain`}
-                    name="cookieDomain">
-                    <input type="text" value="${ifDefined(this.instance?.cookieDomain)}" class="pf-c-form-control" required>
-                    <p class="pf-c-form__helper-text">${t`Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.`}</p>
-                </ak-form-element-horizontal>`;
-        }
-        return html`<ak-form-element-horizontal
-                    label=${t`Internal host`}
-                    ?required=${true}
-                    name="internalHost">
-                    <input type="text" value="${ifDefined(this.instance?.internalHost)}" class="pf-c-form-control" required>
-                    <p class="pf-c-form__helper-text">${t`Upstream host that the requests are forwarded to.`}</p>
-                </ak-form-element-horizontal>
-                <ak-form-element-horizontal name="internalHostSslValidation">
-                    <div class="pf-c-check">
-                        <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.internalHostSslValidation, true)}>
-                        <label class="pf-c-check__label">
-                            ${t`Internal host SSL Validation`}
-                        </label>
-                    </div>
-                    <p class="pf-c-form__helper-text">${t`Validate SSL Certificates of upstream servers.`}</p>
-                </ak-form-element-horizontal>`;
+    renderModeSelector(): TemplateResult {
+        return html`
+            <div class="pf-c-toggle-group__item">
+                <button class="pf-c-toggle-group__button ${this.mode === ProxyMode.Proxy ? "pf-m-selected" : ""}" type="button" @click=${() => {
+                    this.mode = ProxyMode.Proxy;
+                }}>
+                    <span class="pf-c-toggle-group__text">${t`Proxy`}</span>
+                </button>
+            </div>
+            <div class="pf-c-divider pf-m-vertical" role="separator"></div>
+            <div class="pf-c-toggle-group__item">
+                <button class="pf-c-toggle-group__button ${this.mode === ProxyMode.ForwardSingle ? "pf-m-selected" : ""}" type="button" @click=${() => {
+                    this.mode = ProxyMode.ForwardSingle;
+                }}>
+                    <span class="pf-c-toggle-group__text">${t`Forward auth (single application)`}</span>
+                </button>
+            </div>
+            <div class="pf-c-divider pf-m-vertical" role="separator"></div>
+            <div class="pf-c-toggle-group__item">
+                <button class="pf-c-toggle-group__button ${this.mode === ProxyMode.ForwardDomain ? "pf-m-selected" : ""}" type="button" @click=${() => {
+                    this.mode = ProxyMode.ForwardDomain;
+                }}>
+                    <span class="pf-c-toggle-group__text">${t`Forward auth (domain level)`}</span>
+                </button>
+            </div>`;
     }
 
     renderForm(): TemplateResult {
@@ -120,35 +130,65 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                 <p class="pf-c-form__helper-text">${t`Flow used when authorizing this provider.`}</p>
             </ak-form-element-horizontal>
 
-            <ak-form-group .expanded=${true}>
-                <span slot="header">
-                    ${t`Protocol settings`}
-                </span>
-                <div slot="body" class="pf-c-form">
+            <div class="pf-c-card pf-m-selectable pf-m-selected">
+                <div class="pf-c-card__body">
+                    <div class="pf-c-toggle-group">
+                        ${this.renderModeSelector()}
+                    </div>
+                </div>
+                <div class="pf-c-card__footer">
                     <ak-form-element-horizontal
                         label=${t`External host`}
                         ?required=${true}
-                        name="externalHost">
+                        name="externalHost"
+                        ?hidden=${this.mode !== ProxyMode.Proxy}>
                         <input type="text" value="${ifDefined(this.instance?.externalHost)}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`The external URL you'll access the application at. Include any non-standard port.`}</p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="forwardAuthMode">
+                    <ak-form-element-horizontal
+                        label=${t`Internal host`}
+                        ?required=${true}
+                        name="internalHost"
+                        ?hidden=${this.mode !== ProxyMode.Proxy}>
+                        <input type="text" value="${ifDefined(this.instance?.internalHost)}" class="pf-c-form-control" required>
+                        <p class="pf-c-form__helper-text">${t`Upstream host that the requests are forwarded to.`}</p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal name="internalHostSslValidation" ?hidden=${this.mode !== ProxyMode.Proxy}>
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.forwardAuthMode, false)} @change=${(ev: Event) => {
-                                const el = ev.target as HTMLInputElement;
-                                this.showInternalServer = !el.checked;
-                            }}>
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.internalHostSslValidation, true)}>
                             <label class="pf-c-check__label">
-                                ${t`Enable forward-auth mode`}
+                                ${t`Internal host SSL Validation`}
                             </label>
                         </div>
-                        <p class="pf-c-form__helper-text">
-                            ${t`Enable this if you don't want to use this provider as a proxy, and want to use it with Traefik's forwardAuth or nginx's auth_request.`}
-                        </p>
+                        <p class="pf-c-form__helper-text">${t`Validate SSL Certificates of upstream servers.`}</p>
                     </ak-form-element-horizontal>
-                    ${this.renderInternalServer()}
+
+                    <ak-form-element-horizontal
+                        label=${t`External host`}
+                        ?required=${true}
+                        name="externalHost"
+                        ?hidden=${this.mode !== ProxyMode.ForwardSingle}>
+                        <input type="text" value="${ifDefined(this.instance?.externalHost)}" class="pf-c-form-control" required>
+                        <p class="pf-c-form__helper-text">${t`The external URL you'll access the application at. Include any non-standard port.`}</p>
+                    </ak-form-element-horizontal>
+
+                    <ak-form-element-horizontal
+                        label=${t`External host`}
+                        ?required=${true}
+                        name="externalHost"
+                        ?hidden=${this.mode !== ProxyMode.ForwardDomain}>
+                        <input type="text" value="${first(this.instance?.externalHost, window.location.host)}" class="pf-c-form-control" required>
+                        <p class="pf-c-form__helper-text">${t`The external URL you'll authenticate at. Can be the same domain as authentik.`}</p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Cookie domain`}
+                        name="cookieDomain"
+                        ?hidden=${this.mode !== ProxyMode.ForwardDomain}>
+                        <input type="text" value="${ifDefined(this.instance?.cookieDomain)}" class="pf-c-form-control" required>
+                        <p class="pf-c-form__helper-text">${t`Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.`}</p>
+                    </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
+            </div>
 
             <ak-form-group>
                 <span slot="header">

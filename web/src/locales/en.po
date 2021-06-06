@@ -1302,14 +1302,6 @@ msgstr "Enable TOTP"
 msgid "Enable compatibility mode, increases compatibility with password managers on mobile devices."
 msgstr "Enable compatibility mode, increases compatibility with password managers on mobile devices."
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "Enable forward-auth mode"
-msgstr "Enable forward-auth mode"
-
-#: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "Enable this if you don't want to use this provider as a proxy, and want to use it with Traefik's forwardAuth or nginx's auth_request."
-msgstr "Enable this if you don't want to use this provider as a proxy, and want to use it with Traefik's forwardAuth or nginx's auth_request."
-
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
@@ -1472,6 +1464,8 @@ msgid "External Host"
 msgstr "External Host"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "External host"
 msgstr "External host"
 
@@ -1627,6 +1621,14 @@ msgstr "Form didn't return a promise for submitting"
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Forward auth"
 msgstr "Forward auth"
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Forward auth (domain level)"
+msgstr "Forward auth (domain level)"
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Forward auth (single application)"
+msgstr "Forward auth (single application)"
 
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 msgid "Friendly Name"
@@ -2757,7 +2759,6 @@ msgstr "Protocol Settings"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-#: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
@@ -2795,6 +2796,7 @@ msgid "Providers"
 msgstr "Providers"
 
 #: src/pages/outposts/OutpostForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Proxy"
 msgstr "Proxy"
 
@@ -3781,8 +3783,13 @@ msgid "The URL \"{0}\" was not found."
 msgstr "The URL \"{0}\" was not found."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "The external URL you'll access the application at. Include any non-standard port."
 msgstr "The external URL you'll access the application at. Include any non-standard port."
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "The external URL you'll authenticate at. Can be the same domain as authentik."
+msgstr "The external URL you'll authenticate at. Can be the same domain as authentik."
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts
 msgid "The policy takes a random time to execute. This controls the minimum time it will take."

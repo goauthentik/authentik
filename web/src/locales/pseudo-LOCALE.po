@@ -1295,14 +1295,6 @@ msgid "Enable compatibility mode, increases compatibility with password managers
 msgstr ""
 
 #: 
-msgid "Enable forward-auth mode"
-msgstr ""
-
-#: 
-msgid "Enable this if you don't want to use this provider as a proxy, and want to use it with Traefik's forwardAuth or nginx's auth_request."
-msgstr ""
-
-#: 
 #: 
 #: 
 #: 
@@ -1464,6 +1456,8 @@ msgid "External Host"
 msgstr ""
 
 #: 
+#: 
+#: 
 msgid "External host"
 msgstr ""
 
@@ -1618,6 +1612,14 @@ msgstr ""
 
 #: 
 msgid "Forward auth"
+msgstr ""
+
+#: 
+msgid "Forward auth (domain level)"
+msgstr ""
+
+#: 
+msgid "Forward auth (single application)"
 msgstr ""
 
 #: 
@@ -2753,7 +2755,6 @@ msgstr ""
 #: 
 #: 
 #: 
-#: 
 msgid "Protocol settings"
 msgstr ""
 
@@ -2786,6 +2787,7 @@ msgstr ""
 msgid "Providers"
 msgstr ""
 
+#: 
 #: 
 msgid "Proxy"
 msgstr ""
@@ -3773,7 +3775,12 @@ msgid "The URL \"{0}\" was not found."
 msgstr ""
 
 #: 
+#: 
 msgid "The external URL you'll access the application at. Include any non-standard port."
+msgstr ""
+
+#: 
+msgid "The external URL you'll authenticate at. Can be the same domain as authentik."
 msgstr ""
 
 #: 
