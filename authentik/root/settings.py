@@ -374,11 +374,11 @@ if _ERROR_REPORTING:
         environment=CONFIG.y("error_reporting.environment", "customer"),
         send_default_pii=CONFIG.y_bool("error_reporting.send_pii", False),
     )
-    set_tag("authentik:build_hash", os.environ.get(ENV_GIT_HASH_KEY, "tagged"))
+    set_tag("authentik.build_hash", os.environ.get(ENV_GIT_HASH_KEY, "tagged"))
     set_tag(
-        "authentik:env", "kubernetes" if "KUBERNETES_PORT" in os.environ else "compose"
+        "authentik.env", "kubernetes" if "KUBERNETES_PORT" in os.environ else "compose"
     )
-    set_tag("authentik:component", "backend")
+    set_tag("authentik.component", "backend")
     j_print(
         "Error reporting is enabled",
         env=CONFIG.y("error_reporting.environment", "customer"),
