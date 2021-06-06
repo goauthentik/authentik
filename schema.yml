@@ -15639,6 +15639,8 @@ components:
             long:
               type: number
               format: float
+            city:
+              type: string
           nullable: true
           readOnly: true
         user:
@@ -16201,6 +16203,7 @@ components:
       enum:
       - can_save_media
       - can_geo_ip
+      - can_backup
       type: string
     CaptchaChallenge:
       type: object

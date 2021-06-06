@@ -10,7 +10,6 @@ from django.db import models
 from django.http import HttpRequest
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
-from geoip2.errors import GeoIP2Error
 from prometheus_client import Gauge
 from requests import RequestException, post
 from structlog.stdlib import get_logger
@@ -160,20 +159,10 @@ class Event(ExpiringModel):
 
     def with_geoip(self):  # pragma: no cover
         """Apply GeoIP Data, when enabled"""
-        if not GEOIP_READER:
+        city = GEOIP_READER.city_dict(self.client_ip)
+        if not city:
             return
-        try:
-            response = GEOIP_READER.city(self.client_ip)
-            self.context["geo"] = {
-                "continent": response.continent.code,
-                "country": response.country.iso_code,
-                "lat": response.location.latitude,
-                "long": response.location.longitude,
-            }
-            if response.city.name:
-                self.context["geo"]["city"] = response.city.name
-        except (GeoIP2Error, ValueError) as exc:
-            LOGGER.warning("Failed to add geoIP Data to event", exc=exc)
+        self.context["geo"] = city
 
     def _set_prom_metrics(self):
         GAUGE_EVENTS.labels(

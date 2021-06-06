@@ -54,7 +54,7 @@ class ProviderInfoView(View):
             ),
             "end_session_endpoint": self.request.build_absolute_uri(
                 reverse(
-                    "authentik_providers_oauth2:end-session",
+                    "authentik_core:if-session-end",
                     kwargs={"application_slug": provider.application.slug},
                 )
             ),

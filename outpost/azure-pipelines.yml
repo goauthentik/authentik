@@ -54,42 +54,6 @@ stages:
                   golangci/golangci-lint:v1.39.0 \
                   golangci-lint run -v --timeout 200s
               workingDirectory: 'outpost/'
-  - stage: build_go
-    jobs:
-      - job: proxy_build_go
-        pool:
-          vmImage: 'ubuntu-latest'
-        steps:
-          - task: GoTool@0
-            inputs:
-              version: '1.16.3'
-          - task: DownloadPipelineArtifact@2
-            inputs:
-              buildType: 'current'
-              artifactName: 'go_api_client'
-              path: "outpost/api/"
-          - task: Go@0
-            inputs:
-              command: 'build'
-              arguments: './cmd/proxy'
-              workingDirectory: 'outpost/'
-      - job: ldap_build_go
-        pool:
-          vmImage: 'ubuntu-latest'
-        steps:
-          - task: GoTool@0
-            inputs:
-              version: '1.16.3'
-          - task: DownloadPipelineArtifact@2
-            inputs:
-              buildType: 'current'
-              artifactName: 'go_api_client'
-              path: "outpost/api/"
-          - task: Go@0
-            inputs:
-              command: 'build'
-              arguments: './cmd/ldap'
-              workingDirectory: 'outpost/'
   - stage: build_docker
     jobs:
       - job: proxy_build_docker
