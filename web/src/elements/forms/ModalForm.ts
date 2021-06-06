@@ -23,7 +23,7 @@ export class ModalForm extends ModalButton {
         return formPromise.then(() => {
             if (this.closeAfterSuccessfulSubmit) {
                 this.open = false;
-                form?.reset();
+                form?.resetForm();
             }
             this.dispatchEvent(
                 new CustomEvent(EVENT_REFRESH, {

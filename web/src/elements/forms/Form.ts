@@ -79,7 +79,7 @@ export class Form<T> extends LitElement {
     /**
      * Reset the inner iron-form
      */
-    reset(): void {
+    resetForm(): void {
         const ironForm = this.shadowRoot?.querySelector("iron-form");
         ironForm?.reset();
     }
