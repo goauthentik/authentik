@@ -361,7 +361,7 @@ msgid "Backup finished with errors."
 msgstr ""
 
 #: 
-msgid "Backup finished with warnings."
+msgid "Backup finished with warnings/backup not supported."
 msgstr ""
 
 #: 

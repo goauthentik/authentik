@@ -365,8 +365,8 @@ msgid "Backup finished with errors."
 msgstr "Backup finished with errors."
 
 #: src/pages/admin-overview/cards/BackupStatusCard.ts
-msgid "Backup finished with warnings."
-msgstr "Backup finished with warnings."
+msgid "Backup finished with warnings/backup not supported."
+msgstr "Backup finished with warnings/backup not supported."
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "Backup status"

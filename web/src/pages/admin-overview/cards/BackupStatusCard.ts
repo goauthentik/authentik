@@ -2,8 +2,9 @@ import { t } from "@lingui/macro";
 import { customElement, html, TemplateResult } from "lit-element";
 import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
 import { AdminApi, StatusEnum } from "authentik-api";
-import { DEFAULT_CONFIG } from "../../../api/Config";
+import { config, DEFAULT_CONFIG } from "../../../api/Config";
 import { convertToTitle } from "../../../utils";
+import { CapabilitiesEnum } from "authentik-api/src";
 
 @customElement("ak-admin-status-card-backup")
 export class BackupStatusCard extends AdminStatusCard<StatusEnum> {
@@ -14,7 +15,14 @@ export class BackupStatusCard extends AdminStatusCard<StatusEnum> {
         }).then((value) => {
             return value.status;
         }).catch(() => {
-            return StatusEnum.Error;
+            // On error (probably 404), check the config and see if the server
+            // can even backup
+            return config().then(c => {
+                if (c.capabilities.includes(CapabilitiesEnum.Backup)) {
+                    return StatusEnum.Error;
+                }
+                return StatusEnum.Warning;
+            });
         });
     }
 
@@ -27,7 +35,7 @@ export class BackupStatusCard extends AdminStatusCard<StatusEnum> {
             case StatusEnum.Warning:
                 return Promise.resolve<AdminStatus>({
                     icon: "fa fa-exclamation-triangle pf-m-warning",
-                    message: t`Backup finished with warnings.`,
+                    message: t`Backup finished with warnings/backup not supported.`,
                 });
             case StatusEnum.Error:
                 return Promise.resolve<AdminStatus>({
