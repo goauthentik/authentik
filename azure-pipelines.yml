@@ -5,6 +5,10 @@ trigger:
       - master
       - next
       - version-*
+  paths:
+    exclude:
+      - website
+      - outpost
 
 resources:
   - repo: self
