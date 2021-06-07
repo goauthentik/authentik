@@ -14,7 +14,7 @@ import { ModelForm } from "../../elements/forms/ModelForm";
 export class OutpostForm extends ModelForm<Outpost, string> {
 
     @property()
-    type!: OutpostTypeEnum;
+    type: OutpostTypeEnum = OutpostTypeEnum.Proxy;
 
     loadInstance(pk: string): Promise<Outpost> {
         return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesRetrieve({
