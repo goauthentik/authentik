@@ -6,6 +6,7 @@ import { DEFAULT_CONFIG } from "../../../api/Config";
 import { ModelForm } from "../../../elements/forms/ModelForm";
 import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
@@ -16,7 +17,7 @@ import { first } from "../../../utils";
 export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(PFToggleGroup, PFContent, css`
+        return super.styles.concat(PFToggleGroup, PFContent, PFSpacing, css`
             .pf-c-toggle-group {
                 justify-content: center;
             }
@@ -109,7 +110,11 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
     renderSettings(): TemplateResult {
         switch (this.mode) {
             case ProxyMode.Proxy:
-                return html`<ak-form-element-horizontal
+                return html`
+                    <p class="pf-u-mb-xl">
+                        ${t`This provider will behave like a transparent reverse-proxy, except requests must be authenticated. If your upstream application uses HTTPS, make sure to connect to the outpost using HTTPS as well.`}
+                    </p>
+                    <ak-form-element-horizontal
                         label=${t`External host`}
                         ?required=${true}
                         name="externalHost">
@@ -133,7 +138,11 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                         <p class="pf-c-form__helper-text">${t`Validate SSL Certificates of upstream servers.`}</p>
                     </ak-form-element-horizontal>`;
             case ProxyMode.ForwardSingle:
-                return html`<ak-form-element-horizontal
+                return html`
+                    <p class="pf-u-mb-xl">
+                        ${t`Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /akprox must be routed to the outpost (when using a manged outpost, this is done for you).`}
+                    </p>
+                    <ak-form-element-horizontal
                         label=${t`External host`}
                         ?required=${true}
                         name="externalHost">
@@ -141,7 +150,11 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                         <p class="pf-c-form__helper-text">${t`The external URL you'll access the application at. Include any non-standard port.`}</p>
                     </ak-form-element-horizontal>`;
             case ProxyMode.ForwardDomain:
-                return html`<ak-form-element-horizontal
+                return html`
+                    <p class="pf-u-mb-xl">
+                        ${t`Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application.`}
+                    </p>
+                    <ak-form-element-horizontal
                         label=${t`External host`}
                         ?required=${true}
                         name="externalHost">

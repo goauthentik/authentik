@@ -354,6 +354,10 @@ msgstr "Backends"
 msgid "Background"
 msgstr "Background"
 
+#: src/flows/FlowExecutor.ts
+msgid "Background image"
+msgstr "Background image"
+
 #: src/pages/flows/FlowForm.ts
 #: src/pages/flows/FlowForm.ts
 #: src/pages/flows/FlowImportForm.ts
@@ -1618,10 +1622,6 @@ msgstr "Forgot username or password?"
 msgid "Form didn't return a promise for submitting"
 msgstr "Form didn't return a promise for submitting"
 
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts
-msgid "Forward auth"
-msgstr "Forward auth"
-
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Forward auth (domain level)"
 msgstr "Forward auth (domain level)"
@@ -2181,6 +2181,7 @@ msgstr "Minimum length"
 
 #: src/pages/events/TransportForm.ts
 #: src/pages/events/TransportListPage.ts
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
 #: src/pages/stages/consent/ConsentStageForm.ts
 msgid "Mode"
 msgstr "Mode"
@@ -2309,7 +2310,6 @@ msgstr "New version available!"
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyTestForm.ts
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
@@ -3825,6 +3825,10 @@ msgstr ""
 msgid "These policies control which users can access this application."
 msgstr "These policies control which users can access this application."
 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "This provider will behave like a transparent reverse-proxy, except requests must be authenticated. If your upstream application uses HTTPS, make sure to connect to the outpost using HTTPS as well."
+msgstr "This provider will behave like a transparent reverse-proxy, except requests must be authenticated. If your upstream application uses HTTPS, make sure to connect to the outpost using HTTPS as well."
+
 #: src/pages/stages/invitation/InvitationStageForm.ts
 msgid "This stage can be included in enrollment flows to accept invitations."
 msgstr "This stage can be included in enrollment flows to accept invitations."
@@ -4176,6 +4180,14 @@ msgstr "Use the user's email address, but deny enrollment when the email address
 msgid "Use the user's username, but deny enrollment when the username already exists."
 msgstr "Use the user's username, but deny enrollment when the username already exists."
 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /akprox must be routed to the outpost (when using a manged outpost, this is done for you)."
+msgstr "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /akprox must be routed to the outpost (when using a manged outpost, this is done for you)."
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application."
+msgstr "Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application."
+
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 msgid "Use this redirect URL:"
 msgstr "Use this redirect URL:"
@@ -4457,7 +4469,6 @@ msgstr "X509 Subject"
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyTestForm.ts
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
