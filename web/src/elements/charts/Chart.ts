@@ -95,7 +95,7 @@ export abstract class AKChart<T> extends LitElement {
                     const height = chart.height || 0;
 
                     const fontSize = (height / 114).toFixed(2);
-                    chart.ctx.font = fontSize + "em Overpass, overpass, helvetica, arial, sans-serif";
+                    chart.ctx.font = `${fontSize}em Overpass`;
                     chart.ctx.textBaseline = "middle";
                     chart.ctx.fillStyle = this.fontColour;
 

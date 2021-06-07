@@ -110,10 +110,30 @@ class Flow(SerializerModel, PolicyBindingModel):
 
     background = models.FileField(
         upload_to="flow-backgrounds/",
-        default="../static/dist/assets/images/flow_background.jpg",
-        blank=True,
+        default=None,
+        null=True,
         help_text=_("Background shown during execution"),
     )
+
+    compatibility_mode = models.BooleanField(
+        default=True,
+        help_text=_(
+            "Enable compatibility mode, increases compatibility with "
+            "password managers on mobile devices."
+        ),
+    )
+
+    @property
+    def background_url(self) -> str:
+        """Get the URL to the background image. If the name is /static or starts with http
+        it is returned as-is"""
+        if not self.background:
+            return "/static/dist/assets/images/flow_background.jpg"
+        if self.background.name.startswith("http") or self.background.name.startswith(
+            "/static"
+        ):
+            return self.background.name
+        return self.background.url
 
     stages = models.ManyToManyField(Stage, through="FlowStageBinding", blank=True)
 

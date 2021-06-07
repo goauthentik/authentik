@@ -8,6 +8,7 @@ from typing import TypedDict
 from django.utils.timezone import now
 from drf_spectacular.utils import extend_schema
 from gunicorn import version_info as gunicorn_version
+from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
 from rest_framework.fields import SerializerMethodField
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
@@ -61,7 +62,7 @@ class SystemSerializer(PassiveSerializer):
             "python_version": python_version,
             "gunicorn_version": ".".join(str(x) for x in gunicorn_version),
             "environment": "kubernetes"
-            if "KUBERNETES_PORT" in os.environ
+            if SERVICE_HOST_ENV_NAME in os.environ
             else "compose",
             "architecture": platform.machine(),
             "platform": platform.platform(),

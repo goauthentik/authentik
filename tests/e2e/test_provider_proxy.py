@@ -32,6 +32,7 @@ class TestProviderProxy(SeleniumTestCase):
 
     def tearDown(self) -> None:
         super().tearDown()
+        self.output_container_logs(self.proxy_container)
         self.proxy_container.kill()
 
     def get_container_specs(self) -> Optional[dict[str, Any]]:
@@ -85,6 +86,7 @@ class TestProviderProxy(SeleniumTestCase):
         )
         outpost.providers.add(proxy)
         outpost.save()
+        _ = outpost.user
 
         self.proxy_container = self.start_proxy(outpost)
 
@@ -144,6 +146,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
         )
         outpost.providers.add(proxy)
         outpost.save()
+        _ = outpost.user
 
         # Wait until outpost healthcheck succeeds
         healthcheck_retries = 0

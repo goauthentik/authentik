@@ -350,9 +350,11 @@ msgid "Backends"
 msgstr ""
 
 #: 
+#: 
 msgid "Background"
 msgstr ""
 
+#: 
 #: 
 #: 
 msgid "Background shown during execution."
@@ -363,7 +365,7 @@ msgid "Backup finished with errors."
 msgstr ""
 
 #: 
-msgid "Backup finished with warnings."
+msgid "Backup finished with warnings/backup not supported."
 msgstr ""
 
 #: 
@@ -590,10 +592,18 @@ msgid "Clear Policy cache"
 msgstr ""
 
 #: 
+msgid "Clear background image"
+msgstr ""
+
+#: 
 #: 
 #: 
 #: 
 msgid "Clear cache"
+msgstr ""
+
+#: 
+msgid "Clear icon"
 msgstr ""
 
 #: 
@@ -637,6 +647,10 @@ msgstr ""
 
 #: 
 msgid "Common Name"
+msgstr ""
+
+#: 
+msgid "Compatibility mode"
 msgstr ""
 
 #: 
@@ -941,6 +955,11 @@ msgid "Creation Date"
 msgstr ""
 
 #: 
+#: 
+msgid "Currently set to:"
+msgstr ""
+
+#: 
 msgid "Customisation"
 msgstr ""
 
@@ -1026,6 +1045,14 @@ msgstr ""
 
 #: 
 msgid "Delete account"
+msgstr ""
+
+#: 
+msgid "Delete currently set background image."
+msgstr ""
+
+#: 
+msgid "Delete currently set icon."
 msgstr ""
 
 #: 
@@ -1265,6 +1292,10 @@ msgid "Enable TOTP"
 msgstr ""
 
 #: 
+msgid "Enable compatibility mode, increases compatibility with password managers on mobile devices."
+msgstr ""
+
+#: 
 msgid "Enable forward-auth mode"
 msgstr ""
 
@@ -1459,6 +1490,10 @@ msgstr ""
 
 #: 
 msgid "Failed to update {0}: {1}"
+msgstr ""
+
+#: 
+msgid "Favicon"
 msgstr ""
 
 #: 
@@ -1711,6 +1746,10 @@ msgid "ID"
 msgstr ""
 
 #: 
+msgid "ID Token"
+msgstr ""
+
+#: 
 msgid "IP"
 msgstr ""
 
@@ -1720,11 +1759,16 @@ msgid "IP Reputation"
 msgstr ""
 
 #: 
+#: 
 msgid "Icon"
 msgstr ""
 
 #: 
 msgid "Icon shown in sidebar/header and flow executor."
+msgstr ""
+
+#: 
+msgid "Icon shown in the browser tab."
 msgstr ""
 
 #: 
@@ -2542,12 +2586,18 @@ msgid "Passing"
 msgstr ""
 
 #: 
+#: 
+#: 
 msgid "Password"
 msgstr ""
 
 #: 
 #: 
 msgid "Password field"
+msgstr ""
+
+#: 
+msgid "Password stage"
 msgstr ""
 
 #: 
@@ -4343,6 +4393,10 @@ msgid "When enabled, user fields are matched regardless of their casing."
 msgstr ""
 
 #: 
+msgid "When selected, a password field is shown on the same page instead of a separate page. This prevents username enumeration attacks."
+msgstr ""
+
+#: 
 msgid "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."
 msgstr ""
 
@@ -4392,6 +4446,10 @@ msgstr ""
 #: 
 #: 
 msgid "Yes"
+msgstr ""
+
+#: 
+msgid "You can only select providers that match the type of the outpost."
 msgstr ""
 
 #: 

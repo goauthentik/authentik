@@ -65,6 +65,8 @@ def outpost_service_connection_state(connection_pk: Any):
         .select_subclasses()
         .first()
     )
+    if not connection:
+        return
     state = connection.fetch_state()
     cache.set(connection.state_key, state, timeout=None)
 

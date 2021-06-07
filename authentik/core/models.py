@@ -8,6 +8,7 @@ from uuid import uuid4
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
+from django.core import validators
 from django.db import models
 from django.db.models import Q, QuerySet
 from django.http import HttpRequest
@@ -215,11 +216,27 @@ class Application(PolicyBindingModel):
         "Provider", null=True, blank=True, default=None, on_delete=models.SET_DEFAULT
     )
 
-    meta_launch_url = models.URLField(default="", blank=True)
+    meta_launch_url = models.TextField(
+        default="", blank=True, validators=[validators.URLValidator()]
+    )
     # For template applications, this can be set to /static/authentik/applications/*
-    meta_icon = models.FileField(upload_to="application-icons/", default="", blank=True)
+    meta_icon = models.FileField(
+        upload_to="application-icons/", default=None, null=True
+    )
     meta_description = models.TextField(default="", blank=True)
     meta_publisher = models.TextField(default="", blank=True)
+
+    @property
+    def get_meta_icon(self) -> Optional[str]:
+        """Get the URL to the App Icon image. If the name is /static or starts with http
+        it is returned as-is"""
+        if not self.meta_icon:
+            return None
+        if self.meta_icon.name.startswith("http") or self.meta_icon.name.startswith(
+            "/static"
+        ):
+            return self.meta_icon.name
+        return self.meta_icon.url
 
     def get_launch_url(self) -> Optional[str]:
         """Get launch URL if set, otherwise attempt to get launch URL based on provider."""
@@ -389,7 +406,7 @@ class Token(ManagedModel, ExpiringModel):
     """Token used to authenticate the User for API Access or confirm another Stage like Email."""
 
     token_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    identifier = models.SlugField(max_length=255)
+    identifier = models.SlugField(max_length=255, unique=True)
     key = models.TextField(default=default_token_key)
     intent = models.TextField(
         choices=TokenIntents.choices, default=TokenIntents.INTENT_VERIFICATION

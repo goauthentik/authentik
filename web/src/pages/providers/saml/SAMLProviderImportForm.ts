@@ -2,7 +2,6 @@ import { FlowsApi, FlowsInstancesListDesignationEnum, ProvidersApi, SAMLProvider
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
-import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { Form } from "../../../elements/forms/Form";
@@ -46,7 +45,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
                         designation: FlowsInstancesListDesignationEnum.Authorization,
                     }).then(flows => {
                         return flows.results.map(flow => {
-                            return html`<option value=${ifDefined(flow.pk)}>${flow.name} (${flow.slug})</option>`;
+                            return html`<option value=${flow.slug}>${flow.name} (${flow.slug})</option>`;
                         });
                     }), html`<option>${t`Loading...`}</option>`)}
                 </select>

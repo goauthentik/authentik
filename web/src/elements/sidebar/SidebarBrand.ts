@@ -16,7 +16,8 @@ import { tenant } from "../../api/Config";
 export const MIN_WIDTH = 1200;
 
 export const DefaultTenant: CurrentTenant = {
-    brandingLogo: " /static/dist/assets/icons/icon_left_brand.svg",
+    brandingLogo: "/static/dist/assets/icons/icon_left_brand.svg",
+    brandingFavicon: "/static/dist/assets/icons/icon.png",
     brandingTitle: "authentik",
     uiFooterLinks: [],
     matchedDomain: "",

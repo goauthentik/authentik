@@ -1474,7 +1474,6 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/SetIconRequest'
-        required: true
       security:
       - authentik: []
       - cookieAuth: []
@@ -4519,7 +4518,6 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/SetIconRequest'
-        required: true
       security:
       - authentik: []
       - cookieAuth: []
@@ -4612,7 +4610,6 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/SetIconRequest'
-        required: true
       security:
       - authentik: []
       - cookieAuth: []
@@ -4772,7 +4769,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedExpiringBaseGrantModelList'
+                $ref: '#/components/schemas/PaginatedRefreshTokenModelList'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
@@ -4799,7 +4796,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ExpiringBaseGrantModel'
+                $ref: '#/components/schemas/RefreshTokenModel'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
@@ -15481,7 +15478,6 @@ components:
         meta_launch_url:
           type: string
           format: uri
-          maxLength: 200
         meta_icon:
           type: string
           nullable: true
@@ -15518,7 +15514,6 @@ components:
         meta_launch_url:
           type: string
           format: uri
-          maxLength: 200
         meta_description:
           type: string
         meta_publisher:
@@ -15644,6 +15639,8 @@ components:
             long:
               type: number
               format: float
+            city:
+              type: string
           nullable: true
           readOnly: true
         user:
@@ -16206,6 +16203,7 @@ components:
       enum:
       - can_save_media
       - can_geo_ip
+      - can_backup
       type: string
     CaptchaChallenge:
       type: object
@@ -16537,6 +16535,8 @@ components:
           type: string
         branding_logo:
           type: string
+        branding_favicon:
+          type: string
         ui_footer_links:
           type: array
           items:
@@ -16550,6 +16550,7 @@ components:
         flow_unenrollment:
           type: string
       required:
+      - branding_favicon
       - branding_logo
       - branding_title
       - matched_domain
@@ -17275,7 +17276,6 @@ components:
             flow is redirect to when an un-authenticated user visits authentik.
         background:
           type: string
-          nullable: true
           readOnly: true
         stages:
           type: array
@@ -17294,6 +17294,10 @@ components:
           readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
+        compatibility_mode:
+          type: boolean
+          description: Enable compatibility mode, increases compatibility with password
+            managers on mobile devices.
       required:
       - background
       - cache_count
@@ -17417,6 +17421,10 @@ components:
             flow is redirect to when an un-authenticated user visits authentik.
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
+        compatibility_mode:
+          type: boolean
+          description: Enable compatibility mode, increases compatibility with password
+            managers on mobile devices.
       required:
       - designation
       - name
@@ -17678,6 +17686,8 @@ components:
           items:
             type: string
           nullable: true
+        password_fields:
+          type: boolean
         application_pre:
           type: string
         enroll_url:
@@ -17691,6 +17701,7 @@ components:
           items:
             $ref: '#/components/schemas/UILoginButton'
       required:
+      - password_fields
       - primary_action
       - type
       - user_fields
@@ -17703,6 +17714,9 @@ components:
           default: ak-stage-identification
         uid_field:
           type: string
+        password:
+          type: string
+          nullable: true
       required:
       - uid_field
     IdentificationStage:
@@ -17735,6 +17749,12 @@ components:
             $ref: '#/components/schemas/UserFieldsEnum'
           description: Fields of the user object to match against. (Hold shift to
             select multiple options)
+        password_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, shows a password field, instead of showing the password
+            field as seaprate step.
         case_insensitive_matching:
           type: boolean
           description: When enabled, user fields are matched regardless of their casing.
@@ -17783,6 +17803,12 @@ components:
             $ref: '#/components/schemas/UserFieldsEnum'
           description: Fields of the user object to match against. (Hold shift to
             select multiple options)
+        password_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, shows a password field, instead of showing the password
+            field as seaprate step.
         case_insensitive_matching:
           type: boolean
           description: When enabled, user fields are matched regardless of their casing.
@@ -18975,6 +19001,7 @@ components:
       - providers
       - providers_obj
       - token_identifier
+      - type
     OutpostDefaultConfig:
       type: object
       description: Global default outpost config
@@ -19032,6 +19059,7 @@ components:
       - config
       - name
       - providers
+      - type
     OutpostTypeEnum:
       enum:
       - proxy
@@ -20822,6 +20850,41 @@ components:
       required:
       - pagination
       - results
+    PaginatedRefreshTokenModelList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RefreshTokenModel'
+      required:
+      - pagination
+      - results
     PaginatedReputationPolicyList:
       type: object
       properties:
@@ -21851,7 +21914,6 @@ components:
         meta_launch_url:
           type: string
           format: uri
-          maxLength: 200
         meta_description:
           type: string
         meta_publisher:
@@ -22191,6 +22253,10 @@ components:
             flow is redirect to when an un-authenticated user visits authentik.
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
+        compatibility_mode:
+          type: boolean
+          description: Enable compatibility mode, increases compatibility with password
+            managers on mobile devices.
     PatchedFlowStageBindingRequest:
       type: object
       description: FlowStageBinding Serializer
@@ -22270,6 +22336,12 @@ components:
             $ref: '#/components/schemas/UserFieldsEnum'
           description: Fields of the user object to match against. (Hold shift to
             select multiple options)
+        password_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, shows a password field, instead of showing the password
+            field as seaprate step.
         case_insensitive_matching:
           type: boolean
           description: When enabled, user fields are matched regardless of their casing.
@@ -23150,6 +23222,8 @@ components:
         branding_title:
           type: string
         branding_logo:
+          type: string
+        branding_favicon:
           type: string
         flow_authentication:
           type: string
@@ -24143,6 +24217,38 @@ components:
       required:
       - to
       - type
+    RefreshTokenModel:
+      type: object
+      description: Serializer for BaseGrantModel and RefreshToken
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        provider:
+          $ref: '#/components/schemas/OAuth2Provider'
+        user:
+          $ref: '#/components/schemas/User'
+        is_expired:
+          type: boolean
+          readOnly: true
+        expires:
+          type: string
+          format: date-time
+        scope:
+          type: array
+          items:
+            type: string
+        id_token:
+          type: string
+          readOnly: true
+      required:
+      - id_token
+      - is_expired
+      - pk
+      - provider
+      - scope
+      - user
     ReputationPolicy:
       type: object
       description: Reputation Policy Serializer
@@ -24784,8 +24890,9 @@ components:
         file:
           type: string
           format: binary
-      required:
-      - file
+        clear:
+          type: boolean
+          default: false
     SetIconURLRequest:
       type: object
       properties:
@@ -25175,6 +25282,8 @@ components:
           type: string
         branding_logo:
           type: string
+        branding_favicon:
+          type: string
         flow_authentication:
           type: string
           format: uuid
@@ -25207,6 +25316,8 @@ components:
         branding_title:
           type: string
         branding_logo:
+          type: string
+        branding_favicon:
           type: string
         flow_authentication:
           type: string

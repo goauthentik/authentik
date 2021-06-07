@@ -71,6 +71,7 @@ module.exports = {
                         "integrations/services/veeam-enterprise-manager/index",
                         "integrations/services/vmware-vcenter/index",
                         "integrations/services/wiki-js/index",
+                        "integrations/services/zabbix/index",
                     ],
                 },
             ],
@@ -145,6 +146,7 @@ module.exports = {
             type: "category",
             label: "Release Notes",
             items: [
+                "releases/v2021.6",
                 "releases/v2021.5",
                 "releases/v2021.4",
                 "releases/v2021.3",

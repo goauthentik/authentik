@@ -5,7 +5,9 @@
 
 {% block head_before %}
 {{ block.super }}
+{% if flow.compatibility_mode %}
 <script>ShadyDOM = { force: !navigator.webdriver };</script>
+{% endif %}
 {% endblock %}
 
 {% block head %}

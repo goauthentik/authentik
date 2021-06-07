@@ -32,6 +32,6 @@ func (ws *WebServer) proxyErrorHandler(rw http.ResponseWriter, req *http.Request
 }
 
 func (ws *WebServer) proxyModifyResponse(r *http.Response) error {
-	r.Header.Set("X-authentik-from", "authentik")
+	r.Header.Set("server", "authentik")
 	return nil
 }

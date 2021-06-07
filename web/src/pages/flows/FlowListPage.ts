@@ -98,7 +98,7 @@ export class FlowListPage extends TablePage<Flow> {
                 }}>
                 ${t`Execute`}
             </button>
-            <a class="pf-c-button pf-m-secondary" href="${`${DEFAULT_CONFIG.basePath}/flows/instances/${item.slug}/export/`}">
+            <a class="pf-c-button pf-m-secondary" href="/api/v2beta/flows/instances/${item.slug}/export/">
                 ${t`Export`}
             </a>`,
         ];

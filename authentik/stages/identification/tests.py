@@ -6,8 +6,10 @@ from django.utils.encoding import force_str
 from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.providers.oauth2.generators import generate_client_secret
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.identification.models import IdentificationStage, UserFields
+from authentik.stages.password.models import PasswordStage
 
 
 class TestIdentificationStage(TestCase):
@@ -15,7 +17,10 @@ class TestIdentificationStage(TestCase):
 
     def setUp(self):
         super().setUp()
-        self.user = User.objects.create(username="unittest", email="test@beryju.org")
+        self.password = generate_client_secret()
+        self.user = User.objects.create_user(
+            username="unittest", email="test@beryju.org", password=self.password
+        )
         self.client = Client()
 
         # OAuthSource for the login view
@@ -59,6 +64,73 @@ class TestIdentificationStage(TestCase):
                 "component": "xak-flow-redirect",
                 "to": reverse("authentik_core:root-redirect"),
                 "type": ChallengeTypes.REDIRECT.value,
+            },
+        )
+
+    def test_valid_with_password(self):
+        """Test with valid email and password in single step"""
+        pw_stage = PasswordStage.objects.create(
+            name="password", backends=["django.contrib.auth.backends.ModelBackend"]
+        )
+        self.stage.password_stage = pw_stage
+        self.stage.save()
+        form_data = {"uid_field": self.user.email, "password": self.password}
+        url = reverse(
+            "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
+        )
+        response = self.client.post(url, form_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_str(response.content),
+            {
+                "component": "xak-flow-redirect",
+                "to": reverse("authentik_core:root-redirect"),
+                "type": ChallengeTypes.REDIRECT.value,
+            },
+        )
+
+    def test_invalid_with_password(self):
+        """Test with valid email and invalid password in single step"""
+        pw_stage = PasswordStage.objects.create(
+            name="password", backends=["django.contrib.auth.backends.ModelBackend"]
+        )
+        self.stage.password_stage = pw_stage
+        self.stage.save()
+        form_data = {
+            "uid_field": self.user.email,
+            "password": self.password + "test",
+        }
+        url = reverse(
+            "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
+        )
+        response = self.client.post(url, form_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_str(response.content),
+            {
+                "background": self.flow.background_url,
+                "type": ChallengeTypes.NATIVE.value,
+                "component": "ak-stage-identification",
+                "password_fields": True,
+                "primary_action": "Log in",
+                "response_errors": {
+                    "non_field_errors": [
+                        {"code": "invalid", "string": "Failed to " "authenticate."}
+                    ]
+                },
+                "sources": [
+                    {
+                        "challenge": {
+                            "component": "xak-flow-redirect",
+                            "to": "/source/oauth/login/test/",
+                            "type": ChallengeTypes.REDIRECT.value,
+                        },
+                        "icon_url": "/static/authentik/sources/.svg",
+                        "name": "test",
+                    }
+                ],
+                "title": "",
+                "user_fields": ["email"],
             },
         )
 
@@ -109,10 +181,11 @@ class TestIdentificationStage(TestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
-                "background": flow.background.url,
+                "background": flow.background_url,
                 "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-identification",
                 "user_fields": ["email"],
+                "password_fields": False,
                 "enroll_url": reverse(
                     "authentik_core:if-flow",
                     kwargs={"flow_slug": "unique-enrollment-string"},
@@ -156,10 +229,11 @@ class TestIdentificationStage(TestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
-                "background": flow.background.url,
+                "background": flow.background_url,
                 "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-identification",
                 "user_fields": ["email"],
+                "password_fields": False,
                 "recovery_url": reverse(
                     "authentik_core:if-flow",
                     kwargs={"flow_slug": "unique-recovery-string"},

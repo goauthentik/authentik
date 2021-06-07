@@ -76,6 +76,22 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                         <p class="pf-c-form__helper-text">${t`Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources.`}</p>
                         <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Password stage`}
+                        name="passwordStage">
+                        <select class="pf-c-form-control">
+                            <option value="" ?selected=${this.instance?.passwordStage === undefined}>---------</option>
+                            ${until(new StagesApi(DEFAULT_CONFIG).stagesPasswordList({
+                                ordering: "pk",
+                            }).then(stages => {
+                                return stages.results.map(stage => {
+                                    const selected = this.instance?.passwordStage === stage.pk;
+                                    return html`<option value=${ifDefined(stage.pk)} ?selected=${selected}>${stage.name}</option>`;
+                                });
+                            }), html`<option>${t`Loading...`}</option>`)}
+                        </select>
+                        <p class="pf-c-form__helper-text">${t`When selected, a password field is shown on the same page instead of a separate page. This prevents username enumeration attacks.`}</p>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="caseInsensitiveMatching">
                         <div class="pf-c-check">
                             <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.caseInsensitiveMatching, true)}>

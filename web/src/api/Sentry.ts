@@ -6,7 +6,7 @@ import { me } from "./Users";
 import { config } from "./Config";
 import { Config } from "authentik-api";
 
-export const TAG_SENTRY_COMPONENT = "authentik:component";
+export const TAG_SENTRY_COMPONENT = "authentik.component";
 
 export function configureSentry(canDoPpi: boolean = false, tags: { [key: string]: string; } = {}): Promise<Config> {
     return config().then((config) => {

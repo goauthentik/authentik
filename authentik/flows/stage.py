@@ -96,7 +96,7 @@ class ChallengeStageView(StageView):
         if "title" not in challenge.initial_data:
             challenge.initial_data["title"] = self.executor.flow.title
         if "background" not in challenge.initial_data:
-            challenge.initial_data["background"] = self.executor.flow.background.url
+            challenge.initial_data["background"] = self.executor.flow.background_url
         if isinstance(challenge, WithUserInfoChallenge):
             # If there's a pending user, update the `username` field
             # this field is only used by password managers.

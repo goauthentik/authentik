@@ -31,6 +31,8 @@ export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
             .delete=${() => {
                 return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsWebauthnDestroy({
                     id: device.pk || 0
+                }).then(() => {
+                    this.requestUpdate();
                 });
             }}>
             <button slot="trigger" class="pf-c-button pf-m-danger">

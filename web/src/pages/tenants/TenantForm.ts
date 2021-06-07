@@ -8,6 +8,7 @@ import "../../elements/forms/FormGroup";
 import { first } from "../../utils";
 import { ModelForm } from "../../elements/forms/ModelForm";
 import { until } from "lit-html/directives/until";
+import { DefaultTenant } from "../../elements/sidebar/SidebarBrand";
 
 @customElement("ak-tenant-form")
 export class TenantForm extends ModelForm<Tenant, string> {
@@ -66,15 +67,22 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         label=${t`Title`}
                         ?required=${true}
                         name="brandingTitle">
-                        <input type="text" value="${first(this.instance?.brandingTitle, "authentik")}" class="pf-c-form-control" required>
+                        <input type="text" value="${first(this.instance?.brandingTitle, DefaultTenant.brandingTitle)}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`Branding shown in page title and several other places.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Logo`}
                         ?required=${true}
                         name="brandingLogo">
-                        <input type="text" value="${first(this.instance?.brandingLogo, "/static/dist/assets/icons/icon_left_brand.svg")}" class="pf-c-form-control" required>
+                        <input type="text" value="${first(this.instance?.brandingLogo, DefaultTenant.brandingLogo)}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`Icon shown in sidebar/header and flow executor.`}</p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Favicon`}
+                        ?required=${true}
+                        name="brandingFavicon">
+                        <input type="text" value="${first(this.instance?.brandingFavicon, DefaultTenant.brandingFavicon)}" class="pf-c-form-control" required>
+                        <p class="pf-c-form__helper-text">${t`Icon shown in the browser tab.`}</p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

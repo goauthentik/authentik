@@ -354,9 +354,11 @@ msgid "Backends"
 msgstr "Backends"
 
 #: src/pages/flows/FlowForm.ts
+#: src/pages/flows/FlowForm.ts
 msgid "Background"
 msgstr "Background"
 
+#: src/pages/flows/FlowForm.ts
 #: src/pages/flows/FlowForm.ts
 #: src/pages/flows/FlowImportForm.ts
 msgid "Background shown during execution."
@@ -367,8 +369,8 @@ msgid "Backup finished with errors."
 msgstr "Backup finished with errors."
 
 #: src/pages/admin-overview/cards/BackupStatusCard.ts
-msgid "Backup finished with warnings."
-msgstr "Backup finished with warnings."
+msgid "Backup finished with warnings/backup not supported."
+msgstr "Backup finished with warnings/backup not supported."
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "Backup status"
@@ -595,12 +597,20 @@ msgstr "Clear Flow cache"
 msgid "Clear Policy cache"
 msgstr "Clear Policy cache"
 
+#: src/pages/flows/FlowForm.ts
+msgid "Clear background image"
+msgstr "Clear background image"
+
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 msgid "Clear cache"
 msgstr "Clear cache"
+
+#: src/pages/applications/ApplicationForm.ts
+msgid "Clear icon"
+msgstr "Clear icon"
 
 #: src/elements/forms/HorizontalFormElement.ts
 msgid "Click to change value"
@@ -644,6 +654,10 @@ msgstr "Code"
 #: src/pages/crypto/CertificateGenerateForm.ts
 msgid "Common Name"
 msgstr "Common Name"
+
+#: src/pages/flows/FlowForm.ts
+msgid "Compatibility mode"
+msgstr "Compatibility mode"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Confidential"
@@ -946,6 +960,11 @@ msgstr "Created {0}"
 msgid "Creation Date"
 msgstr "Creation Date"
 
+#: src/pages/applications/ApplicationForm.ts
+#: src/pages/flows/FlowForm.ts
+msgid "Currently set to:"
+msgstr "Currently set to:"
+
 #: src/interfaces/AdminInterface.ts
 msgid "Customisation"
 msgstr "Customisation"
@@ -1033,6 +1052,14 @@ msgstr "Delete Session"
 #: src/pages/user-settings/UserDetailsPage.ts
 msgid "Delete account"
 msgstr "Delete account"
+
+#: src/pages/flows/FlowForm.ts
+msgid "Delete currently set background image."
+msgstr "Delete currently set background image."
+
+#: src/pages/applications/ApplicationForm.ts
+msgid "Delete currently set icon."
+msgstr "Delete currently set icon."
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Delete temporary users after"
@@ -1272,6 +1299,10 @@ msgstr "Enable Static Tokens"
 msgid "Enable TOTP"
 msgstr "Enable TOTP"
 
+#: src/pages/flows/FlowForm.ts
+msgid "Enable compatibility mode, increases compatibility with password managers on mobile devices."
+msgstr "Enable compatibility mode, increases compatibility with password managers on mobile devices."
+
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Enable forward-auth mode"
 msgstr "Enable forward-auth mode"
@@ -1468,6 +1499,10 @@ msgstr "Failed to delete {0}: {1}"
 #: src/pages/users/UserActiveForm.ts
 msgid "Failed to update {0}: {1}"
 msgstr "Failed to update {0}: {1}"
+
+#: src/pages/tenants/TenantForm.ts
+msgid "Favicon"
+msgstr "Favicon"
 
 #: src/pages/stages/prompt/PromptListPage.ts
 msgid "Field"
@@ -1718,6 +1753,10 @@ msgstr "How many attempts a user has before the flow is canceled. To lock the us
 msgid "ID"
 msgstr "ID"
 
+#: src/elements/oauth/UserRefreshList.ts
+msgid "ID Token"
+msgstr "ID Token"
+
 #: src/pages/policies/reputation/IPReputationListPage.ts
 msgid "IP"
 msgstr "IP"
@@ -1728,12 +1767,17 @@ msgid "IP Reputation"
 msgstr "IP Reputation"
 
 #: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/ApplicationForm.ts
 msgid "Icon"
 msgstr "Icon"
 
 #: src/pages/tenants/TenantForm.ts
 msgid "Icon shown in sidebar/header and flow executor."
 msgstr "Icon shown in sidebar/header and flow executor."
+
+#: src/pages/tenants/TenantForm.ts
+msgid "Icon shown in the browser tab."
+msgstr "Icon shown in the browser tab."
 
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
@@ -1984,7 +2028,6 @@ msgstr "Loading"
 #: src/pages/groups/GroupForm.ts
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostForm.ts
-#: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
@@ -2023,6 +2066,7 @@ msgstr "Loading"
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 #: src/pages/stages/email/EmailStageForm.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
@@ -2549,6 +2593,8 @@ msgstr "Pass policy?"
 msgid "Passing"
 msgstr "Passing"
 
+#: src/flows/stages/identification/IdentificationStage.ts
+#: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/password/PasswordStage.ts
 msgid "Password"
 msgstr "Password"
@@ -2557,6 +2603,10 @@ msgstr "Password"
 #: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Password field"
 msgstr "Password field"
+
+#: src/pages/stages/identification/IdentificationStageForm.ts
+msgid "Password stage"
+msgstr "Password stage"
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical."
@@ -4354,6 +4404,10 @@ msgstr "When enabled, the invitation will be deleted after usage."
 msgid "When enabled, user fields are matched regardless of their casing."
 msgstr "When enabled, user fields are matched regardless of their casing."
 
+#: src/pages/stages/identification/IdentificationStageForm.ts
+msgid "When selected, a password field is shown on the same page instead of a separate page. This prevents username enumeration attacks."
+msgstr "When selected, a password field is shown on the same page instead of a separate page. This prevents username enumeration attacks."
+
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."
 msgstr "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."
@@ -4407,6 +4461,10 @@ msgstr "X509 Subject"
 #: src/pages/users/UserListPage.ts
 msgid "Yes"
 msgstr "Yes"
+
+#: src/pages/outposts/OutpostForm.ts
+msgid "You can only select providers that match the type of the outpost."
+msgstr "You can only select providers that match the type of the outpost."
 
 #: src/interfaces/Interface.ts
 msgid "You're currently impersonating {0}."

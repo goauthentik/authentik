@@ -72,7 +72,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
                 ),
                 "GF_AUTH_SIGNOUT_REDIRECT_URL": (
                     self.url(
-                        "authentik_providers_oauth2:end-session",
+                        "authentik_core:if-session-end",
                         application_slug=APPLICATION_SLUG,
                     )
                 ),
@@ -250,7 +250,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         self.driver.get("http://localhost:3000/logout")
         self.wait_for_url(
             self.url(
-                "authentik_providers_oauth2:end-session",
+                "authentik_core:if-session-end",
                 application_slug=APPLICATION_SLUG,
             )
         )

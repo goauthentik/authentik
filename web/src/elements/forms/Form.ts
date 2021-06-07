@@ -45,6 +45,11 @@ export class Form<T> extends LitElement {
         `];
     }
 
+    get isInViewport(): boolean {
+        const rect = this.getBoundingClientRect();
+        return !(rect.x + rect.y + rect.width + rect.height === 0);
+    }
+
     getSuccessMessage(): string {
         return this.successMessage;
     }
@@ -74,7 +79,7 @@ export class Form<T> extends LitElement {
     /**
      * Reset the inner iron-form
      */
-    reset(): void {
+    resetForm(): void {
         const ironForm = this.shadowRoot?.querySelector("iron-form");
         ironForm?.reset();
     }
@@ -145,7 +150,10 @@ export class Form<T> extends LitElement {
                 })
             );
             return r;
-        }).catch((ex: Response) => {
+        }).catch((ex: Response | Error) => {
+            if (ex instanceof Error) {
+                throw ex;
+            }
             if (ex.status > 399 && ex.status < 500) {
                 return ex.json().then((errorMessage: ValidationError) => {
                     if (!errorMessage) return errorMessage;
@@ -168,6 +176,14 @@ export class Form<T> extends LitElement {
                     throw new APIError(errorMessage);
                 });
             }
+            throw ex;
+        }).catch((ex: Error) => {
+            // error is local or not from rest_framework
+            showMessage({
+                message: ex.toString(),
+                level: MessageLevel.error,
+            });
+            // rethrow the error so the form doesn't close
             throw ex;
         });
     }
@@ -203,8 +219,7 @@ export class Form<T> extends LitElement {
     }
 
     render(): TemplateResult {
-        const rect = this.getBoundingClientRect();
-        if (rect.x + rect.y + rect.width + rect.height === 0) {
+        if (!this.isInViewport) {
             return html``;
         }
         return this.renderVisible();

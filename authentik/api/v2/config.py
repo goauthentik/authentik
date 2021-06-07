@@ -1,9 +1,10 @@
 """core Configs API"""
-from os import path
+from os import environ, path
 
 from django.conf import settings
 from django.db import models
 from drf_spectacular.utils import extend_schema
+from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
 from rest_framework.fields import BooleanField, CharField, ChoiceField, ListField
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
@@ -20,6 +21,7 @@ class Capabilities(models.TextChoices):
 
     CAN_SAVE_MEDIA = "can_save_media"
     CAN_GEO_IP = "can_geo_ip"
+    CAN_BACKUP = "can_backup"
 
 
 class ConfigSerializer(PassiveSerializer):
@@ -43,8 +45,15 @@ class ConfigView(APIView):
         deb_test = settings.DEBUG or settings.TEST
         if path.ismount(settings.MEDIA_ROOT) or deb_test:
             caps.append(Capabilities.CAN_SAVE_MEDIA)
-        if GEOIP_READER:
+        if GEOIP_READER.enabled:
             caps.append(Capabilities.CAN_GEO_IP)
+        if SERVICE_HOST_ENV_NAME in environ:
+            # Running in k8s, only s3 backup is supported
+            if CONFIG.y("postgresql.s3_backup"):
+                caps.append(Capabilities.CAN_BACKUP)
+        else:
+            # Running in compose, backup is always supported
+            caps.append(Capabilities.CAN_BACKUP)
         return caps
 
     @extend_schema(responses={200: ConfigSerializer(many=False)})

@@ -1,4 +1,5 @@
-import { LitElement, property } from "lit-element";
+import { ErrorDetail } from "authentik-api";
+import { html, LitElement, property, TemplateResult } from "lit-element";
 
 export interface StageHost {
     challenge?: unknown;
@@ -21,5 +22,24 @@ export class BaseStage<Tin, Tout> extends LitElement {
         form.forEach((value, key) => object[key] = value);
         this.host?.submit(object as unknown as Tout);
     }
+
+    renderNonFieldErrors(errors: ErrorDetail[]): TemplateResult {
+        if (!errors) {
+            return html``;
+        }
+        return html`<div class="pf-c-form__alert">
+            ${errors.map(err => {
+                return html`<div class="pf-c-alert pf-m-inline pf-m-danger">
+                    <div class="pf-c-alert__icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <h4 class="pf-c-alert__title">
+                        ${err.string}
+                    </h4>
+                </div>`;
+            })}
+        </div>`;
+    }
+
 
 }

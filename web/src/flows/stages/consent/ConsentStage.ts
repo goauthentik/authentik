@@ -47,12 +47,14 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                         <p id="header-text">
                             ${this.challenge.headerText}
                         </p>
-                        <p>${t`Application requires following permissions`}</p>
-                        <ul class="pf-c-list" id="permmissions">
-                            ${(this.challenge.permissions || []).map((permission) => {
-                                return html`<li data-permission-code="${permission.id}">${permission.name}</li>`;
-                            })}
-                        </ul>
+                        ${this.challenge.permissions.length > 0 ? html`
+                            <p>${t`Application requires following permissions`}</p>
+                            <ul class="pf-c-list" id="permmissions">
+                                ${this.challenge.permissions.map((permission) => {
+                                    return html`<li data-permission-code="${permission.id}">${permission.name}</li>`;
+                                })}
+                            </ul>
+                        ` : html``}
                     </div>
 
                     <div class="pf-c-form__group pf-m-action">

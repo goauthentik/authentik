@@ -45,6 +45,8 @@ export class UserSettingsAuthenticatorStatic extends BaseUserSettings {
                             // TODO: Handle multiple devices, currently we assume only one TOTP Device
                             return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsStaticDestroy({
                                 id: devices.results[0].pk || 0
+                            }).then(() => {
+                                this.requestUpdate();
                             });
                         });
                     }}>

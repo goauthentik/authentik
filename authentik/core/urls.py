@@ -6,6 +6,8 @@ from django.views.generic import RedirectView
 from django.views.generic.base import TemplateView
 
 from authentik.core.views import impersonate
+from authentik.core.views.interface import FlowInterfaceView
+from authentik.core.views.session import EndSessionView
 
 urlpatterns = [
     path(
@@ -37,7 +39,18 @@ urlpatterns = [
     ),
     path(
         "if/flow/<slug:flow_slug>/",
-        ensure_csrf_cookie(TemplateView.as_view(template_name="if/flow.html")),
+        ensure_csrf_cookie(FlowInterfaceView.as_view()),
         name="if-flow",
+    ),
+    path(
+        "if/session-end/<slug:application_slug>/",
+        ensure_csrf_cookie(EndSessionView.as_view()),
+        name="if-session-end",
+    ),
+    # Fallback for WS
+    path("ws/outpost/<uuid:pk>/", TemplateView.as_view(template_name="if/admin.html")),
+    path(
+        "ws/client/",
+        TemplateView.as_view(template_name="if/admin.html"),
     ),
 ]

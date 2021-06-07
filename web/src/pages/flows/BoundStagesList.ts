@@ -135,8 +135,21 @@ export class BoundStagesList extends Table<FlowStageBinding> {
 
     renderToolbar(): TemplateResult {
         return html`
+        <ak-forms-modal>
+            <span slot="submit">
+                ${t`Create`}
+            </span>
+            <span slot="header">
+                ${t`Create Stage binding`}
+            </span>
+            <ak-stage-binding-form slot="form" targetPk=${ifDefined(this.target)}>
+            </ak-stage-binding-form>
+            <button slot="trigger" class="pf-c-button pf-m-primary">
+                ${t`Bind stage`}
+            </button>
+        </ak-forms-modal>
         <ak-dropdown class="pf-c-dropdown">
-            <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
+            <button class="pf-m-secondary pf-c-button pf-c-dropdown__toggle" type="button">
                 <span class="pf-c-dropdown__toggle-text">${t`Create Stage`}</span>
                 <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </button>
@@ -165,19 +178,6 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                 }), html`<ak-spinner></ak-spinner>`)}
             </ul>
         </ak-dropdown>
-        <ak-forms-modal>
-            <span slot="submit">
-                ${t`Create`}
-            </span>
-            <span slot="header">
-                ${t`Create Stage binding`}
-            </span>
-            <ak-stage-binding-form slot="form" targetPk=${ifDefined(this.target)}>
-            </ak-stage-binding-form>
-            <button slot="trigger" class="pf-c-button pf-m-secondary">
-                ${t`Bind stage`}
-            </button>
-        </ak-forms-modal>
         ${super.renderToolbar()}
         `;
     }

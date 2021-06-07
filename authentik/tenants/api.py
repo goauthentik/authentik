@@ -32,6 +32,7 @@ class TenantSerializer(ModelSerializer):
             "default",
             "branding_title",
             "branding_logo",
+            "branding_favicon",
             "flow_authentication",
             "flow_invalidation",
             "flow_recovery",
@@ -45,6 +46,7 @@ class CurrentTenantSerializer(PassiveSerializer):
     matched_domain = CharField(source="domain")
     branding_title = CharField()
     branding_logo = CharField()
+    branding_favicon = CharField()
     ui_footer_links = ListField(
         child=FooterLinkSerializer(),
         read_only=True,

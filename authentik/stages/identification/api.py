@@ -13,6 +13,7 @@ class IdentificationStageSerializer(StageSerializer):
         model = IdentificationStage
         fields = StageSerializer.Meta.fields + [
             "user_fields",
+            "password_stage",
             "case_insensitive_matching",
             "show_matched_user",
             "enrollment_flow",

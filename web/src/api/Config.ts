@@ -25,7 +25,23 @@ export function config(): Promise<Config> {
 let globalTenantPromise: Promise<CurrentTenant>;
 export function tenant(): Promise<CurrentTenant> {
     if (!globalTenantPromise) {
-        globalTenantPromise = new CoreApi(DEFAULT_CONFIG).coreTenantsCurrentRetrieve();
+        globalTenantPromise = new CoreApi(DEFAULT_CONFIG).coreTenantsCurrentRetrieve().then(tenant => {
+            /**
+             *  <link rel="icon" href="/static/dist/assets/icons/icon.png">
+             *  <link rel="shortcut icon" href="/static/dist/assets/icons/icon.png">
+             */
+            const rels = ["icon", "shortcut icon"];
+            rels.forEach(rel => {
+                let relIcon = document.head.querySelector<HTMLLinkElement>(`link[rel='${rel}']`);
+                if (!relIcon) {
+                    relIcon = document.createElement('link');
+                    relIcon.rel = rel;
+                    document.getElementsByTagName('head')[0].appendChild(relIcon);
+                }
+                relIcon.href = tenant.brandingFavicon;
+            })
+            return tenant;
+        });
     }
     return globalTenantPromise;
 }

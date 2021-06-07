@@ -14,7 +14,7 @@ RUN	docker-entrypoint.sh generate \
     rm -f /local/outpost/api/go.mod /local/outpost/api/go.sum
 
 # Stage 2: Build
-FROM golang:1.16.4 AS builder
+FROM golang:1.16.5 AS builder
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
@@ -29,5 +29,7 @@ RUN go build -o /go/ldap ./cmd/ldap
 FROM gcr.io/distroless/base-debian10:debug
 
 COPY --from=builder /go/ldap /
+
+HEALTHCHECK CMD [ "wget", "--spider", "http://localhost:4180/akprox/ping" ]
 
 ENTRYPOINT ["/ldap"]

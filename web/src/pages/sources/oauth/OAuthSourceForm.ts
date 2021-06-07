@@ -41,7 +41,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
     }
 
     send = (data: OAuthSource): Promise<OAuthSource> => {
-        if (this.instance) {
+        if (this.instance?.slug) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
                 slug: this.instance.slug,
                 patchedOAuthSourceRequest: data
@@ -181,16 +181,8 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         <select class="pf-c-form-control" @change=${(ev: Event) => {
                             const el = (ev.target as HTMLSelectElement);
                             const selected = el.selectedOptions[0];
-                            if ("data-urls-custom" in selected.attributes) {
-                                this.showUrlOptions = true;
-                            } else {
-                                this.showUrlOptions = false;
-                            }
-                            if ("data-request-token" in selected.attributes) {
-                                this.showRequestTokenURL = true;
-                            } else {
-                                this.showRequestTokenURL = false;
-                            }
+                            this.showUrlOptions = "data-urls-custom" in selected.attributes;
+                            this.showRequestTokenURL = "data-request-token" in selected.attributes;
                             if (!this.instance) {
                                 this.instance = {} as OAuthSource;
                             }
@@ -199,9 +191,13 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                             ${until(new SourcesApi(DEFAULT_CONFIG).sourcesOauthSourceTypesList().then(types => {
                                 return types.map(type => {
                                     let selected = this.instance?.providerType === type.slug;
+                                    const modelSlug = this.modelName?.replace("oauthsource", "").replace("-", "");
+                                    const typeSlug = type.slug.replace("-", "");
                                     if (!this.instance?.pk) {
-                                        if (this.modelName?.replace("oauthsource", "") === type.slug) {
+                                        if (modelSlug === typeSlug) {
                                             selected = true;
+                                            this.showUrlOptions = type.urlsCustomizable;
+                                            this.showRequestTokenURL = type.requestTokenUrl !== null;
                                         }
                                     }
                                     return html`<option

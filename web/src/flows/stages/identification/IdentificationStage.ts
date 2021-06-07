@@ -7,6 +7,7 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import AKGlobal from "../../../authentik.css";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
@@ -25,7 +26,7 @@ export const PasswordManagerPrefill: {
 export class IdentificationStage extends BaseStage<IdentificationChallenge, IdentificationChallengeResponseRequest> {
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal].concat(
+        return [PFBase, PFAlert, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal].concat(
             css`
                 /* login page's icons */
                 .pf-c-login__main-footer-links-item button {
@@ -160,7 +161,7 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
                 label=${label}
                 ?required="${true}"
                 class="pf-c-form__group"
-                .errors=${(this.challenge?.responseErrors || {})["uid_field"]}>
+                .errors=${(this.challenge.responseErrors || {})["uid_field"]}>
                 <!-- @ts-ignore -->
                 <input type=${type}
                     name="uidField"
@@ -170,6 +171,25 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
                     class="pf-c-form-control"
                     required>
             </ak-form-element>
+            ${this.challenge.passwordFields ? html`
+                <ak-form-element
+                    label="${t`Password`}"
+                    ?required="${true}"
+                    class="pf-c-form__group"
+                    .errors=${(this.challenge.responseErrors || {})["password"]}>
+                    <input type="password"
+                        name="password"
+                        placeholder="${t`Password`}"
+                        autofocus=""
+                        autocomplete="current-password"
+                        class="pf-c-form-control"
+                        required
+                        value=${PasswordManagerPrefill.password || ""}>
+                </ak-form-element>
+            `: html``}
+            ${"non_field_errors" in (this.challenge?.responseErrors || {}) ?
+                this.renderNonFieldErrors(this.challenge?.responseErrors?.non_field_errors || []) :
+                html``}
             <div class="pf-c-form__group pf-m-action">
                 <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                     ${this.challenge.primaryAction}

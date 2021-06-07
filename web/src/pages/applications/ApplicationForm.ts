@@ -27,6 +27,9 @@ export class ApplicationForm extends ModelForm<Application, string> {
     @property({ attribute: false })
     provider?: number;
 
+    @property({ type: Boolean })
+    clearIcon = false;
+
     getSuccessMessage(): string {
         if (this.instance) {
             return t`Successfully updated application.`;
@@ -52,13 +55,14 @@ export class ApplicationForm extends ModelForm<Application, string> {
             });
         }
         return config().then((c) => {
-            if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
+            if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
                 const icon = this.getFormFile();
-                if (icon) {
+                if (icon || this.clearIcon) {
                     return writeOp.then(app => {
                         return new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
                             slug: app.slug,
-                            file: icon
+                            file: icon,
+                            clear: this.clearIcon,
                         });
                     });
                 }
@@ -178,15 +182,34 @@ export class ApplicationForm extends ModelForm<Application, string> {
                         <p class="pf-c-form__helper-text">${t`If left empty, authentik will try to extract the launch URL based on the selected provider.`}</p>
                     </ak-form-element-horizontal>
                     ${until(config().then((c) => {
-                        let type = "text";
-                        if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
-                            type = "file";
+                        if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
+                            return html`<ak-form-element-horizontal
+                                label=${t`Icon`}
+                                name="metaIcon">
+                                <input type="file" value="" class="pf-c-form-control">
+                                ${this.instance?.metaIcon ? html`
+                                    <p class="pf-c-form__helper-text">${t`Currently set to:`} ${this.instance?.metaIcon}</p>
+                                `: html``}
+                            </ak-form-element-horizontal>
+                            ${this.instance?.metaIcon ? html`
+                                <ak-form-element-horizontal>
+                                    <div class="pf-c-check">
+                                        <input type="checkbox" class="pf-c-check__input" @change=${(ev: Event) => {
+                                            const target = ev.target as HTMLInputElement;
+                                            this.clearIcon = target.checked;
+                                        }}>
+                                        <label class="pf-c-check__label">
+                                            ${t`Clear icon`}
+                                        </label>
+                                    </div>
+                                    <p class="pf-c-form__helper-text">${t`Delete currently set icon.`}</p>
+                                </ak-form-element-horizontal>
+                            `: html``}`;
                         }
                         return html`<ak-form-element-horizontal
                             label=${t`Icon`}
                             name="metaIcon">
-                            <!-- @ts-ignore -->
-                            <input type=${type} value="${first(this.instance?.metaIcon, "")}" class="pf-c-form-control">
+                            <input type="text" value="${first(this.instance?.metaIcon, "")}" class="pf-c-form-control">
                         </ak-form-element-horizontal>`;
                     }))}
                     <ak-form-element-horizontal

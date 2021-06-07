@@ -23,8 +23,9 @@ def get_tenant_for_request(request: HttpRequest) -> Tenant:
 
 def context_processor(request: HttpRequest) -> dict[str, Any]:
     """Context Processor that injects tenant object into every template"""
+    tenant = getattr(request, "tenant", Tenant(domain="fallback"))
     return {
-        "tenant": request.tenant,
+        "tenant": tenant,
         "ak_version": __version__,
         "footer_links": CONFIG.y("authentik.footer_links"),
     }

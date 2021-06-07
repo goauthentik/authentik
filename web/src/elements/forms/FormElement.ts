@@ -1,8 +1,8 @@
 import { customElement, LitElement, CSSResult, property, css } from "lit-element";
 import { TemplateResult, html } from "lit-html";
-import { Error } from "../../api/Flows";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import { ErrorDetail } from "authentik-api";
 
 @customElement("ak-form-element")
 export class FormElement extends LitElement {
@@ -25,7 +25,7 @@ export class FormElement extends LitElement {
     required = false;
 
     @property({ attribute: false })
-    errors?: Error[];
+    errors?: ErrorDetail[];
 
     updated(): void {
         this.querySelectorAll<HTMLInputElement>("input[autofocus]").forEach(input => {
