@@ -10,7 +10,7 @@ function APIBrowser() {
     return (
         <Layout title="API Browser" description={siteConfig.tagline}>
             <rapi-doc
-                spec-url={useBaseUrl("schema.yml")}
+                spec-url={useBaseUrl("schema.yaml")}
                 allow-try="false"
                 show-header="false"
                 theme="dark"
