@@ -89,9 +89,7 @@ class PromptChallengeResponse(ChallengeResponse):
         if len(all_passwords) > 1:
             raise ValidationError(_("Passwords don't match."))
 
-    def validate(self, attrs):
-        if attrs == {}:
-            return {}
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         # Check if we have two password fields, and make sure they are the same
         password_fields: QuerySet[Prompt] = self.stage.fields.filter(
             type=FieldTypes.PASSWORD
@@ -172,7 +170,7 @@ class PromptStageView(ChallengeStageView):
         return challenge
 
     def get_response_instance(self, data: QueryDict) -> ChallengeResponse:
-        if not self.executor.plan:
+        if not self.executor.plan:  # pragma: no cover
             raise ValueError
         return PromptChallengeResponse(
             instance=None,
