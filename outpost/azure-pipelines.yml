@@ -77,7 +77,7 @@ stages:
               buildContext: '$(Build.SourcesDirectory)'
               tags: |
                 gh-$(branchName)
-                gh-$(Build.SourceVersion)
+                gh-$(branchName)-$(timestamp)
               arguments: '--build-arg GIT_BUILD_HASH=$(Build.SourceVersion)'
           - task: Docker@2
             inputs:
@@ -86,7 +86,7 @@ stages:
               command: 'push'
               tags: |
                 gh-$(branchName)
-                gh-$(Build.SourceVersion)
+                gh-$(branchName)-$(timestamp)
       - job: ldap_build_docker
         pool:
           vmImage: 'ubuntu-latest'
@@ -108,7 +108,7 @@ stages:
               buildContext: '$(Build.SourcesDirectory)'
               tags: |
                 gh-$(branchName)
-                gh-$(Build.SourceVersion)
+                gh-$(branchName)-$(timestamp)
               arguments: '--build-arg GIT_BUILD_HASH=$(Build.SourceVersion)'
           - task: Docker@2
             inputs:
@@ -117,4 +117,4 @@ stages:
               command: 'push'
               tags: |
                 gh-$(branchName)
-                gh-$(Build.SourceVersion)
+                gh-$(branchName)-$(timestamp)
