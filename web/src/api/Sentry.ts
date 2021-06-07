@@ -25,8 +25,8 @@ export function configureSentry(canDoPpi: boolean = false, tags: { [key: string]
                     if (hint.originalException instanceof SentryIgnoredError) {
                         return null;
                     }
-                    if (hint.originalException instanceof Error) {
-                        if (hint.originalException.name == 'NetworkError') {
+                    if ((hint.originalException as Error | undefined)?.hasOwnProperty("name")) {
+                        if ((hint.originalException as Error | undefined)?.name == 'NetworkError') {
                             return null;
                         }
                     }
