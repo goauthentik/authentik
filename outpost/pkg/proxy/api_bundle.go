@@ -153,6 +153,8 @@ func (pb *providerBundle) Build(provider api.ProxyOutpostConfig) {
 		oauthproxy.BasicAuthPasswordAttribute = *provider.BasicAuthPasswordAttribute
 	}
 
+	oauthproxy.ExternalHost = pb.Host
+
 	pb.proxy = oauthproxy
 	pb.Handler = chain.Then(oauthproxy)
 }

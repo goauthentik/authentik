@@ -77,6 +77,7 @@ type OAuthProxy struct {
 	PassUserHeaders            bool
 	BasicAuthUserAttribute     string
 	BasicAuthPasswordAttribute string
+	ExternalHost               string
 	PassAccessToken            bool
 	SetAuthorization           bool
 	PassAuthorization          bool
@@ -346,7 +347,12 @@ func (p *OAuthProxy) AuthenticateOnly(rw http.ResponseWriter, req *http.Request)
 				return
 			}
 			if _, ok := req.URL.Query()["traefik"]; ok {
-				host := getHost(req)
+				host := ""
+				if p.mode == api.PROXYMODE_FORWARD_SINGLE {
+					host = getHost(req)
+				} else if p.mode == api.PROXYMODE_FORWARD_DOMAIN {
+					host = p.ExternalHost
+				}
 				proto := req.Header.Get("X-Forwarded-Proto")
 				if proto != "" {
 					proto = proto + ":"
