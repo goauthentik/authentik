@@ -1611,11 +1611,11 @@
         },
         "pytest-django": {
             "hashes": [
-                "sha256:d1c6758a592fb0ef8abaa2fe12dd28858c1dcfc3d466102ffe52aa8934733dca",
-                "sha256:f96c4556f4e7b15d987dd1dcc1d1526df81d40c1548d31ce840d597ed2be8c46"
+                "sha256:65783e78382456528bd9d79a35843adde9e6a47347b20464eb2c885cb0f1f606",
+                "sha256:b5171e3798bf7e3fc5ea7072fe87324db67a4dd9f1192b037fed4cc3c1b7f455"
             ],
             "index": "pypi",
-            "version": "==4.3.0"
+            "version": "==4.4.0"
         },
         "pyyaml": {
             "hashes": [
