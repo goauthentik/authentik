@@ -30,4 +30,6 @@ FROM gcr.io/distroless/base-debian10:debug
 
 COPY --from=builder /go/ldap /
 
+HEALTHCHECK CMD [ "wget", "--spider", "http://localhost:4180/akprox/ping" ]
+
 ENTRYPOINT ["/ldap"]

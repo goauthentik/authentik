@@ -42,14 +42,40 @@ func (ls *LDAPServer) Refresh() error {
 	return nil
 }
 
-func (ls *LDAPServer) Start() error {
+func (ls *LDAPServer) StartHTTPServer() error {
+	listen := "0.0.0.0:4180" // same port as proxy
+	m := http.NewServeMux()
+	m.HandleFunc("/akprox/ping", func(rw http.ResponseWriter, r *http.Request) {
+		rw.WriteHeader(204)
+	})
+	ls.log.WithField("listen", listen).Info("Starting http server")
+	return http.ListenAndServe(listen, m)
+}
+
+func (ls *LDAPServer) StartLDAPServer() error {
 	listen := "0.0.0.0:3389"
-	log.Debugf("Listening on %s", listen)
-	err := ls.s.ListenAndServe(listen)
-	if err != nil {
-		ls.log.Errorf("LDAP Server Failed: %s", err.Error())
-		return err
-	}
+	ls.log.WithField("listen", listen).Info("Starting ldap server")
+	return ls.s.ListenAndServe(listen)
+}
+
+func (ls *LDAPServer) Start() error {
+	wg := sync.WaitGroup{}
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		err := ls.StartHTTPServer()
+		if err != nil {
+			panic(err)
+		}
+	}()
+	go func() {
+		defer wg.Done()
+		err := ls.StartLDAPServer()
+		if err != nil {
+			panic(err)
+		}
+	}()
+	wg.Wait()
 	return nil
 }
 

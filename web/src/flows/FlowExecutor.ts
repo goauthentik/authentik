@@ -269,7 +269,11 @@ export class FlowExecutor extends LitElement implements StageHost {
                             </li>`;
                         }))}
                         ${this.tenant?.brandingTitle != "authentik" ? html`
-                        <li><a href="https://goauthentik.io">${t`Powered by authentik`}</a></li>` : html``}
+                            <li><a href="https://goauthentik.io">${t`Powered by authentik`}</a></li>
+                        ` : html``}
+                        ${this.challenge?.background?.startsWith("/static") ? html`
+                            <li><a href="https://unsplash.com/@danasaki">${t`Background image`}</a></li>
+                        ` : html``}
                     </ul>
                 </footer>
             </div>

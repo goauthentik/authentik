@@ -8,7 +8,11 @@ import (
 const VERSION = "2021.5.4"
 
 func BUILD() string {
-	return os.Getenv("GIT_BUILD_HASH")
+	build := os.Getenv("GIT_BUILD_HASH")
+	if build == "" {
+		return "tagged"
+	}
+	return build
 }
 
 func UserAgent() string {
