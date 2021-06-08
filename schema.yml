@@ -22966,10 +22966,13 @@ components:
           title: HTTP-Basic Username Key
           description: User/Group Attribute used for the user part of the HTTP-Basic
             Header. If not set, the user's Email address is used.
-        forward_auth_mode:
-          type: boolean
+        mode:
+          allOf:
+          - $ref: '#/components/schemas/ProxyMode'
           description: Enable support for forwardAuth in traefik and nginx auth_request.
             Exclusive with internal_host.
+        cookie_domain:
+          type: string
     PatchedReputationPolicyRequest:
       type: object
       description: Reputation Policy Serializer
@@ -23971,9 +23974,15 @@ components:
       required:
       - authorization_flow
       - name
+    ProxyMode:
+      enum:
+      - proxy
+      - forward_single
+      - forward_domain
+      type: string
     ProxyOutpostConfig:
       type: object
-      description: ProxyProvider Serializer
+      description: Proxy provider serializer for outposts
       properties:
         pk:
           type: integer
@@ -24025,12 +24034,19 @@ components:
           title: HTTP-Basic Username Key
           description: User/Group Attribute used for the user part of the HTTP-Basic
             Header. If not set, the user's Email address is used.
-        forward_auth_mode:
-          type: boolean
+        mode:
+          allOf:
+          - $ref: '#/components/schemas/ProxyMode'
           description: Enable support for forwardAuth in traefik and nginx auth_request.
             Exclusive with internal_host.
+        cookie_domain:
+          type: string
+        forward_auth_mode:
+          type: boolean
+          readOnly: true
       required:
       - external_host
+      - forward_auth_mode
       - name
       - oidc_configuration
       - pk
@@ -24102,13 +24118,16 @@ components:
           title: HTTP-Basic Username Key
           description: User/Group Attribute used for the user part of the HTTP-Basic
             Header. If not set, the user's Email address is used.
-        forward_auth_mode:
-          type: boolean
+        mode:
+          allOf:
+          - $ref: '#/components/schemas/ProxyMode'
           description: Enable support for forwardAuth in traefik and nginx auth_request.
             Exclusive with internal_host.
         redirect_uris:
           type: string
           readOnly: true
+        cookie_domain:
+          type: string
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -24167,10 +24186,13 @@ components:
           title: HTTP-Basic Username Key
           description: User/Group Attribute used for the user part of the HTTP-Basic
             Header. If not set, the user's Email address is used.
-        forward_auth_mode:
-          type: boolean
+        mode:
+          allOf:
+          - $ref: '#/components/schemas/ProxyMode'
           description: Enable support for forwardAuth in traefik and nginx auth_request.
             Exclusive with internal_host.
+        cookie_domain:
+          type: string
       required:
       - authorization_flow
       - external_host

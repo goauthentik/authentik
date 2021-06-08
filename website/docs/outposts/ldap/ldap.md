@@ -31,24 +31,24 @@ ldapsearch \
 
 The following fields are currently sent for users:
 
-- cn: User's username
-- uid: Unique user identifier
-- name: User's name
-- displayName: User's name
-- mail: User's email address
-- objectClass: A list of these strings:
+- `cn`: User's username
+- `uid`: Unique user identifier
+- `name`: User's name
+- `displayName`: User's name
+- `mail`: User's email address
+- `objectClass`: A list of these strings:
   - "user"
   - "organizationalPerson"
   - "goauthentik.io/ldap/user"
-- accountStatus: "active" if the account is active, otherwise "inactive"
-- superuser: "active" if the account is part of a group with superuser permissions, otherwise "inactive"
-- memberOf: A list of all DNs that the user is a member of
+- `accountStatus`: "active" if the account is active, otherwise "inactive"
+- `superuser`: "active" if the account is part of a group with superuser permissions, otherwise "inactive"
+- `memberOf`: A list of all DNs that the user is a member of
 
 The following fields are current set for groups:
 
-- cn: The group's name
-- uid: Unique group identifier
-- objectClass: A list of these strings:
+- `cn`: The group's name
+- `uid`: Unique group identifier
+- `objectClass`: A list of these strings:
   - "group"
   - "goauthentik.io/ldap/group"
 

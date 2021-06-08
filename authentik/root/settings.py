@@ -155,6 +155,7 @@ SPECTACULAR_SETTINGS = {
         "ChallengeChoices": "authentik.flows.challenge.ChallengeTypes",
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
+        "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "POSTPROCESSING_HOOKS": [
@@ -391,7 +392,10 @@ if _ERROR_REPORTING:
 STATIC_URL = "/static/"
 MEDIA_URL = "/media/"
 
-LOG_LEVEL = CONFIG.y("log_level").upper()
+TEST = False
+TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
+
+LOG_LEVEL = CONFIG.y("log_level").upper() if not TEST else "DEBUG"
 
 
 structlog.configure_once(
@@ -448,9 +452,6 @@ LOGGING = {
     },
     "loggers": {},
 }
-
-TEST = False
-TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
 
 _LOGGING_HANDLER_MAP = {
     "": LOG_LEVEL,

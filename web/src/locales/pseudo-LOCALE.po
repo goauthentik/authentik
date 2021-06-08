@@ -788,6 +788,10 @@ msgid "Control how authentik exposes and interprets information."
 msgstr ""
 
 #: 
+msgid "Cookie domain"
+msgstr ""
+
+#: 
 msgid "Copy"
 msgstr ""
 
@@ -1295,14 +1299,6 @@ msgid "Enable compatibility mode, increases compatibility with password managers
 msgstr ""
 
 #: 
-msgid "Enable forward-auth mode"
-msgstr ""
-
-#: 
-msgid "Enable this if you don't want to use this provider as a proxy, and want to use it with Traefik's forwardAuth or nginx's auth_request."
-msgstr ""
-
-#: 
 #: 
 #: 
 #: 
@@ -1464,6 +1460,8 @@ msgid "External Host"
 msgstr ""
 
 #: 
+#: 
+#: 
 msgid "External host"
 msgstr ""
 
@@ -1617,7 +1615,11 @@ msgid "Form didn't return a promise for submitting"
 msgstr ""
 
 #: 
-msgid "Forward auth"
+msgid "Forward auth (domain level)"
+msgstr ""
+
+#: 
+msgid "Forward auth (single application)"
 msgstr ""
 
 #: 
@@ -2172,6 +2174,7 @@ msgstr ""
 #: 
 #: 
 #: 
+#: 
 msgid "Mode"
 msgstr ""
 
@@ -2292,7 +2295,6 @@ msgstr ""
 msgid "New version available!"
 msgstr ""
 
-#: 
 #: 
 #: 
 #: 
@@ -2504,6 +2506,10 @@ msgstr ""
 
 #: 
 msgid "Optionally set the 'FriendlyName' value of the Assertion attribute."
+msgstr ""
+
+#: 
+msgid "Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
 msgstr ""
 
 #: 
@@ -2749,7 +2755,6 @@ msgstr ""
 #: 
 #: 
 #: 
-#: 
 msgid "Protocol settings"
 msgstr ""
 
@@ -2782,6 +2787,7 @@ msgstr ""
 msgid "Providers"
 msgstr ""
 
+#: 
 #: 
 msgid "Proxy"
 msgstr ""
@@ -3769,7 +3775,12 @@ msgid "The URL \"{0}\" was not found."
 msgstr ""
 
 #: 
+#: 
 msgid "The external URL you'll access the application at. Include any non-standard port."
+msgstr ""
+
+#: 
+msgid "The external URL you'll authenticate at. Can be the same domain as authentik."
 msgstr ""
 
 #: 
@@ -3800,6 +3811,10 @@ msgstr ""
 
 #: 
 msgid "These policies control which users can access this application."
+msgstr ""
+
+#: 
+msgid "This provider will behave like a transparent reverse-proxy, except requests must be authenticated. If your upstream application uses HTTPS, make sure to connect to the outpost using HTTPS as well."
 msgstr ""
 
 #: 
@@ -4158,6 +4173,14 @@ msgid "Use the user's username, but deny enrollment when the username already ex
 msgstr ""
 
 #: 
+msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /akprox must be routed to the outpost (when using a manged outpost, this is done for you)."
+msgstr ""
+
+#: 
+msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application."
+msgstr ""
+
+#: 
 msgid "Use this tenant for each domain that doesn't have a dedicated tenant."
 msgstr ""
 
@@ -4425,7 +4448,6 @@ msgstr ""
 msgid "X509 Subject"
 msgstr ""
 
-#: 
 #: 
 #: 
 #: 

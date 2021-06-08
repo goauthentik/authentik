@@ -793,6 +793,10 @@ msgstr "Continue flow without invitation"
 msgid "Control how authentik exposes and interprets information."
 msgstr "Control how authentik exposes and interprets information."
 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Cookie domain"
+msgstr "Cookie domain"
+
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 msgid "Copy"
 msgstr "Copy"
@@ -1302,14 +1306,6 @@ msgstr "Enable TOTP"
 msgid "Enable compatibility mode, increases compatibility with password managers on mobile devices."
 msgstr "Enable compatibility mode, increases compatibility with password managers on mobile devices."
 
-#: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "Enable forward-auth mode"
-msgstr "Enable forward-auth mode"
-
-#: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "Enable this if you don't want to use this provider as a proxy, and want to use it with Traefik's forwardAuth or nginx's auth_request."
-msgstr "Enable this if you don't want to use this provider as a proxy, and want to use it with Traefik's forwardAuth or nginx's auth_request."
-
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
@@ -1472,6 +1468,8 @@ msgid "External Host"
 msgstr "External Host"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "External host"
 msgstr "External host"
 
@@ -1624,9 +1622,13 @@ msgstr "Forgot username or password?"
 msgid "Form didn't return a promise for submitting"
 msgstr "Form didn't return a promise for submitting"
 
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts
-msgid "Forward auth"
-msgstr "Forward auth"
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Forward auth (domain level)"
+msgstr "Forward auth (domain level)"
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Forward auth (single application)"
+msgstr "Forward auth (single application)"
 
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 msgid "Friendly Name"
@@ -2179,6 +2181,7 @@ msgstr "Minimum length"
 
 #: src/pages/events/TransportForm.ts
 #: src/pages/events/TransportListPage.ts
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
 #: src/pages/stages/consent/ConsentStageForm.ts
 msgid "Mode"
 msgstr "Mode"
@@ -2307,7 +2310,6 @@ msgstr "New version available!"
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyTestForm.ts
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
@@ -2513,6 +2515,10 @@ msgstr "Optionally pre-fill the input value"
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 msgid "Optionally set the 'FriendlyName' value of the Assertion attribute."
 msgstr "Optionally set the 'FriendlyName' value of the Assertion attribute."
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
+msgstr "Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
 
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts
@@ -2753,7 +2759,6 @@ msgstr "Protocol Settings"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-#: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
@@ -2791,6 +2796,7 @@ msgid "Providers"
 msgstr "Providers"
 
 #: src/pages/outposts/OutpostForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Proxy"
 msgstr "Proxy"
 
@@ -3777,8 +3783,13 @@ msgid "The URL \"{0}\" was not found."
 msgstr "The URL \"{0}\" was not found."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "The external URL you'll access the application at. Include any non-standard port."
 msgstr "The external URL you'll access the application at. Include any non-standard port."
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "The external URL you'll authenticate at. Can be the same domain as authentik."
+msgstr "The external URL you'll authenticate at. Can be the same domain as authentik."
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts
 msgid "The policy takes a random time to execute. This controls the minimum time it will take."
@@ -3813,6 +3824,10 @@ msgstr ""
 #: src/pages/applications/ApplicationViewPage.ts
 msgid "These policies control which users can access this application."
 msgstr "These policies control which users can access this application."
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "This provider will behave like a transparent reverse-proxy, except requests must be authenticated. If your upstream application uses HTTPS, make sure to connect to the outpost using HTTPS as well."
+msgstr "This provider will behave like a transparent reverse-proxy, except requests must be authenticated. If your upstream application uses HTTPS, make sure to connect to the outpost using HTTPS as well."
 
 #: src/pages/stages/invitation/InvitationStageForm.ts
 msgid "This stage can be included in enrollment flows to accept invitations."
@@ -4169,6 +4184,14 @@ msgstr "Use the user's email address, but deny enrollment when the email address
 msgid "Use the user's username, but deny enrollment when the username already exists."
 msgstr "Use the user's username, but deny enrollment when the username already exists."
 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /akprox must be routed to the outpost (when using a manged outpost, this is done for you)."
+msgstr "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /akprox must be routed to the outpost (when using a manged outpost, this is done for you)."
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application."
+msgstr "Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application."
+
 #: src/pages/tenants/TenantForm.ts
 msgid "Use this tenant for each domain that doesn't have a dedicated tenant."
 msgstr "Use this tenant for each domain that doesn't have a dedicated tenant."
@@ -4446,7 +4469,6 @@ msgstr "X509 Subject"
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyTestForm.ts
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts

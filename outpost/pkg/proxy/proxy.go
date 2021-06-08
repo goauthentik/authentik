@@ -65,7 +65,7 @@ type OAuthProxy struct {
 	AuthOnlyPath      string
 	UserInfoPath      string
 
-	forwardAuthMode            bool
+	mode                       api.ProxyMode
 	redirectURL                *url.URL // the url to receive requests at
 	whitelistDomains           []string
 	provider                   providers.Provider
@@ -77,6 +77,7 @@ type OAuthProxy struct {
 	PassUserHeaders            bool
 	BasicAuthUserAttribute     string
 	BasicAuthPasswordAttribute string
+	ExternalHost               string
 	PassAccessToken            bool
 	SetAuthorization           bool
 	PassAuthorization          bool
@@ -136,7 +137,7 @@ func NewOAuthProxy(opts *options.Options, provider api.ProxyOutpostConfig, c *ht
 		CookieRefresh:  opts.Cookie.Refresh,
 		CookieSameSite: opts.Cookie.SameSite,
 
-		forwardAuthMode:   *provider.ForwardAuthMode,
+		mode:              *provider.Mode,
 		RobotsPath:        "/robots.txt",
 		SignInPath:        fmt.Sprintf("%s/sign_in", opts.ProxyPrefix),
 		SignOutPath:       fmt.Sprintf("%s/sign_out", opts.ProxyPrefix),
@@ -214,43 +215,6 @@ func (p *OAuthProxy) ErrorPage(rw http.ResponseWriter, code int, title string, m
 		p.logger.Printf("Error rendering error.html template: %v", err)
 		http.Error(rw, "Internal Server Error", http.StatusInternalServerError)
 	}
-}
-
-// splitHostPort separates host and port. If the port is not valid, it returns
-// the entire input as host, and it doesn't check the validity of the host.
-// Unlike net.SplitHostPort, but per RFC 3986, it requires ports to be numeric.
-// *** taken from net/url, modified validOptionalPort() to accept ":*"
-func splitHostPort(hostport string) (host, port string) {
-	host = hostport
-
-	colon := strings.LastIndexByte(host, ':')
-	if colon != -1 && validOptionalPort(host[colon:]) {
-		host, port = host[:colon], host[colon+1:]
-	}
-
-	if strings.HasPrefix(host, "[") && strings.HasSuffix(host, "]") {
-		host = host[1 : len(host)-1]
-	}
-
-	return
-}
-
-// validOptionalPort reports whether port is either an empty string
-// or matches /^:\d*$/
-// *** taken from net/url, modified to accept ":*"
-func validOptionalPort(port string) bool {
-	if port == "" || port == ":*" {
-		return true
-	}
-	if port[0] != ':' {
-		return false
-	}
-	for _, b := range port[1:] {
-		if b < '0' || b > '9' {
-			return false
-		}
-	}
-	return true
 }
 
 // See https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching?hl=en
@@ -340,18 +304,41 @@ func (p *OAuthProxy) SignOut(rw http.ResponseWriter, req *http.Request) {
 func (p *OAuthProxy) AuthenticateOnly(rw http.ResponseWriter, req *http.Request) {
 	session, err := p.getAuthenticatedSession(rw, req)
 	if err != nil {
-		if p.forwardAuthMode {
+		if p.mode == api.PROXYMODE_FORWARD_SINGLE || p.mode == api.PROXYMODE_FORWARD_DOMAIN {
 			if _, ok := req.URL.Query()["nginx"]; ok {
 				rw.WriteHeader(401)
 				return
 			}
 			if _, ok := req.URL.Query()["traefik"]; ok {
-				host := getHost(req)
+				host := ""
+				// Optional suffix, which is appended to the URL
+				suffix := ""
+				if p.mode == api.PROXYMODE_FORWARD_SINGLE {
+					host = getHost(req)
+				} else if p.mode == api.PROXYMODE_FORWARD_DOMAIN {
+					host = p.ExternalHost
+					// set the ?rd flag to the current URL we have, since we redirect
+					// to a (possibly) different domain, but we want to be redirected back
+					// to the application
+					v := url.Values{
+						// see https://doc.traefik.io/traefik/middlewares/forwardauth/
+						// X-Forwarded-Uri is only the path, so we need to build the entire URL
+						"rd": []string{fmt.Sprintf(
+							"%s://%s%s",
+							req.Header.Get("X-Forwarded-Proto"),
+							req.Header.Get("X-Forwarded-Host"),
+							req.Header.Get("X-Forwarded-Uri"),
+						)},
+					}
+					suffix = fmt.Sprintf("?%s", v.Encode())
+				}
 				proto := req.Header.Get("X-Forwarded-Proto")
 				if proto != "" {
 					proto = proto + ":"
 				}
-				http.Redirect(rw, req, fmt.Sprintf("%s//%s%s", proto, host, p.OAuthStartPath), http.StatusTemporaryRedirect)
+				rdFinal := fmt.Sprintf("%s//%s%s%s", proto, host, p.OAuthStartPath, suffix)
+				p.logger.WithField("url", rdFinal).Debug("Redirecting to login")
+				http.Redirect(rw, req, rdFinal, http.StatusTemporaryRedirect)
 				return
 			}
 		}
@@ -360,7 +347,7 @@ func (p *OAuthProxy) AuthenticateOnly(rw http.ResponseWriter, req *http.Request)
 	}
 	// we are authenticated
 	p.addHeadersForProxying(rw, req, session)
-	if p.forwardAuthMode {
+	if p.mode == api.PROXYMODE_FORWARD_SINGLE || p.mode == api.PROXYMODE_FORWARD_DOMAIN {
 		for headerKey, headers := range req.Header {
 			for _, value := range headers {
 				rw.Header().Set(headerKey, value)
