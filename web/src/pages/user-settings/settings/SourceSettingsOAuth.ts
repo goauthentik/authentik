@@ -4,7 +4,7 @@ import { SourcesApi } from "authentik-api";
 import { until } from "lit-html/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { t } from "@lingui/macro";
-import { AppURLManager } from "../../../api/legacy";
+import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-user-settings-source-oauth")
 export class SourceSettingsOAuth extends BaseUserSettings {
@@ -40,7 +40,7 @@ export class SourceSettingsOAuth extends BaseUserSettings {
             }
             return html`<p>${t`Not connected.`}</p>
                 <a class="pf-c-button pf-m-primary"
-                    href=${AppURLManager.sourceOAuth(this.objectId, "login")}>
+                    href=${ifDefined(this.configureUrl)}>
                     ${t`Connect`}
                 </a>`;
         }))}`;

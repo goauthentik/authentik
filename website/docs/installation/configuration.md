@@ -93,7 +93,12 @@ Defaults to `info`.
 
 - `AUTHENTIK_OUTPOSTS__DOCKER_IMAGE_BASE`
 
-  This is the prefix used for authentik-managed outposts. Default: `beryju/authentik`.
+  Placeholders:
+   - `%(type)s`: Outpost type; proxy, ldap, etc
+   - `%(version)s`: Current version; 2021.4.1
+   - `%(build_hash)s`: Build hash if you're running a beta version
+
+  Placeholder for outpost docker images. Default: `ghcr.io/goauthentik/%(type)s:%(version)s`.
 
 ### AUTHENTIK_AUTHENTIK
 

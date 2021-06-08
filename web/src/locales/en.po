@@ -3864,6 +3864,10 @@ msgstr "Timeout"
 msgid "Title"
 msgstr "Title"
 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+msgid "To use SSL instead, use 'ldaps://' and disable this option."
+msgstr "To use SSL instead, use 'ldaps://' and disable this option."
+
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
 msgid "Token"
@@ -4187,10 +4191,6 @@ msgstr "Use this provider with nginx's auth_request or traefik's forwardAuth. Ea
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application."
 msgstr "Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application."
-
-#: src/pages/sources/oauth/OAuthSourceForm.ts
-msgid "Use this redirect URL:"
-msgstr "Use this redirect URL:"
 
 #: src/pages/tenants/TenantForm.ts
 msgid "Use this tenant for each domain that doesn't have a dedicated tenant."

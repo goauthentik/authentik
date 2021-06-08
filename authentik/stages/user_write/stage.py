@@ -2,6 +2,7 @@
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.backends import ModelBackend
+from django.db import transaction
 from django.db.utils import IntegrityError
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
@@ -86,10 +87,11 @@ class UserWriteStageView(StageView):
             ]
             user.attributes[USER_ATTRIBUTE_SOURCES].append(connection.source.name)
         try:
-            user.save()
+            with transaction.atomic():
+                user.save()
         except IntegrityError as exc:
             LOGGER.warning("Failed to save user", exc=exc)
-            self.executor.stage_invalid()
+            return self.executor.stage_invalid()
         user_write.send(
             sender=self, request=request, user=user, data=data, created=user_created
         )

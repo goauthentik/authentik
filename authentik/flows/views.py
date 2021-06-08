@@ -8,6 +8,7 @@ from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
 from django.http.request import QueryDict
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
+from django.urls.base import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import View
@@ -309,9 +310,13 @@ class FlowExecutorView(APIView):
             AccessDeniedChallenge(
                 {
                     "error_message": error_message,
-                    "title": self.flow.title,
                     "type": ChallengeTypes.NATIVE.value,
                     "component": "ak-stage-access-denied",
+                    "flow_info": {
+                        "title": self.flow.title,
+                        "background": self.flow.background_url,
+                        "cancel_url": reverse("authentik_flows:cancel"),
+                    },
                 }
             )
         )
@@ -413,7 +418,10 @@ def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpRespons
         )
         return HttpChallengeResponse(
             RedirectChallenge(
-                {"type": ChallengeTypes.REDIRECT, "to": str(redirect_url)}
+                {
+                    "type": ChallengeTypes.REDIRECT,
+                    "to": str(redirect_url),
+                }
             )
         )
     if isinstance(source, TemplateResponse):
@@ -425,7 +433,7 @@ def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpRespons
                 }
             )
         )
-    # Check for actual HttpResponse (without isinstance as we dont want to check inheritance)
+    # Check for actual HttpResponse (without isinstance as we don't want to check inheritance)
     if source.__class__ == HttpResponse:
         return HttpChallengeResponse(
             ShellChallenge(

@@ -3,6 +3,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.http import HttpRequest
 from django.http.request import QueryDict
 from django.http.response import HttpResponse
+from django.urls import reverse
 from django.views.generic.base import View
 from rest_framework.request import Request
 from structlog.stdlib import get_logger
@@ -11,6 +12,7 @@ from authentik.core.models import DEFAULT_AVATAR, User
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
+    ContextualFlowInfo,
     HttpChallengeResponse,
     WithUserInfoChallenge,
 )
@@ -93,10 +95,16 @@ class ChallengeStageView(StageView):
 
     def _get_challenge(self, *args, **kwargs) -> Challenge:
         challenge = self.get_challenge(*args, **kwargs)
-        if "title" not in challenge.initial_data:
-            challenge.initial_data["title"] = self.executor.flow.title
-        if "background" not in challenge.initial_data:
-            challenge.initial_data["background"] = self.executor.flow.background_url
+        if "flow_info" not in challenge.initial_data:
+            flow_info = ContextualFlowInfo(
+                data={
+                    "title": self.executor.flow.title,
+                    "background": self.executor.flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                }
+            )
+            flow_info.is_valid()
+            challenge.initial_data["flow_info"] = flow_info.data
         if isinstance(challenge, WithUserInfoChallenge):
             # If there's a pending user, update the `username` field
             # this field is only used by password managers.

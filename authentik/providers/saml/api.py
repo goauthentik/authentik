@@ -60,6 +60,7 @@ class SAMLMetadataSerializer(PassiveSerializer):
     """SAML Provider Metadata serializer"""
 
     metadata = ReadOnlyField()
+    download_url = ReadOnlyField(required=False)
 
 
 class SAMLProviderImportSerializer(PassiveSerializer):

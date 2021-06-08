@@ -13,7 +13,7 @@ import AKGlobal from "../../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import { SourcesApi, StagesApi, StageUserSetting, UserSetting } from "authentik-api";
+import { SourcesApi, StagesApi, UserSetting } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
@@ -35,22 +35,22 @@ export class UserSettingsPage extends LitElement {
         return [PFBase, PFPage, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, PFForm, PFFormControl, AKGlobal];
     }
 
-    renderStageSettings(stage: StageUserSetting): TemplateResult {
+    renderStageSettings(stage: UserSetting): TemplateResult {
         switch (stage.component) {
             case "ak-user-settings-authenticator-webauthn":
-                return html`<ak-user-settings-authenticator-webauthn objectId=${stage.objectUid} ?configureFlow=${stage.configureFlow}>
+                return html`<ak-user-settings-authenticator-webauthn objectId=${stage.objectUid} configureUrl=${stage.configureUrl}>
                 </ak-user-settings-authenticator-webauthn>`;
             case "ak-user-settings-password":
-                return html`<ak-user-settings-password objectId=${stage.objectUid}>
+                return html`<ak-user-settings-password objectId=${stage.objectUid} configureUrl=${stage.configureUrl}>
                 </ak-user-settings-password>`;
             case "ak-user-settings-authenticator-totp":
-                return html`<ak-user-settings-authenticator-totp objectId=${stage.objectUid} ?configureFlow=${stage.configureFlow}>
+                return html`<ak-user-settings-authenticator-totp objectId=${stage.objectUid} configureUrl=${stage.configureUrl}>
                 </ak-user-settings-authenticator-totp>`;
             case "ak-user-settings-authenticator-static":
-                return html`<ak-user-settings-authenticator-static objectId=${stage.objectUid} ?configureFlow=${stage.configureFlow}>
+                return html`<ak-user-settings-authenticator-static objectId=${stage.objectUid} configureUrl=${stage.configureUrl}>
                 </ak-user-settings-authenticator-static>`;
             case "ak-user-settings-authenticator-duo":
-                return html`<ak-user-settings-authenticator-duo objectId=${stage.objectUid} ?configureFlow=${stage.configureFlow}>
+                return html`<ak-user-settings-authenticator-duo objectId=${stage.objectUid} configureUrl=${stage.configureUrl}>
                 </ak-user-settings-authenticator-duo>`;
             default:
                 return html`<p>${t`Error: unsupported stage settings: ${stage.component}`}</p>`;
@@ -60,7 +60,7 @@ export class UserSettingsPage extends LitElement {
     renderSourceSettings(source: UserSetting): TemplateResult {
         switch (source.component) {
             case "ak-user-settings-source-oauth":
-                return html`<ak-user-settings-source-oauth objectId=${source.objectUid} title=${source.title}>
+                return html`<ak-user-settings-source-oauth objectId=${source.objectUid} title=${source.title} configureUrl=${source.configureUrl}>
                 </ak-user-settings-source-oauth>`;
             default:
                 return html`<p>${t`Error: unsupported source settings: ${source.component}`}</p>`;

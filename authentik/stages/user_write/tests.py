@@ -7,7 +7,13 @@ from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
 
-from authentik.core.models import User
+from authentik.core.models import (
+    USER_ATTRIBUTE_SOURCES,
+    Source,
+    User,
+    UserSourceConnection,
+)
+from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
@@ -32,6 +38,7 @@ class TestUserWriteStage(TestCase):
         )
         self.stage = UserWriteStage.objects.create(name="write")
         FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
+        self.source = Source.objects.create(name="fake_source")
 
     def test_user_create(self):
         """Test creation of user"""
@@ -49,6 +56,9 @@ class TestUserWriteStage(TestCase):
             "email": "test@beryju.org",
             "password": password,
         }
+        plan.context[PLAN_CONTEXT_SOURCES_CONNECTION] = UserSourceConnection(
+            source=self.source
+        )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -71,6 +81,9 @@ class TestUserWriteStage(TestCase):
         )
         self.assertTrue(user_qs.exists())
         self.assertTrue(user_qs.first().check_password(password))
+        self.assertEqual(
+            user_qs.first().attributes, {USER_ATTRIBUTE_SOURCES: [self.source.name]}
+        )
 
     def test_user_update(self):
         """Test update of existing user"""
@@ -138,8 +151,12 @@ class TestUserWriteStage(TestCase):
             {
                 "component": "ak-stage-access-denied",
                 "error_message": None,
-                "title": "",
                 "type": ChallengeTypes.NATIVE.value,
+                "flow_info": {
+                    "background": self.flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": "",
+                },
             },
         )
 
@@ -147,7 +164,7 @@ class TestUserWriteStage(TestCase):
         "authentik.flows.views.to_stage_response",
         TO_STAGE_RESPONSE_MOCK,
     )
-    def test_with_blank_username(self):
+    def test_blank_username(self):
         """Test with blank username results in error"""
         plan = FlowPlan(
             flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
@@ -171,7 +188,48 @@ class TestUserWriteStage(TestCase):
             {
                 "component": "ak-stage-access-denied",
                 "error_message": None,
-                "title": "",
                 "type": ChallengeTypes.NATIVE.value,
+                "flow_info": {
+                    "background": self.flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": "",
+                },
+            },
+        )
+
+    @patch(
+        "authentik.flows.views.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
+    )
+    def test_duplicate_data(self):
+        """Test with duplicate data, should trigger error"""
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
+        session = self.client.session
+        plan.context[PLAN_CONTEXT_PROMPT] = {
+            "username": "akadmin",
+            "attribute_some-custom-attribute": "test",
+            "some_ignored_attribute": "bar",
+        }
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_str(response.content),
+            {
+                "component": "ak-stage-access-denied",
+                "error_message": None,
+                "type": ChallengeTypes.NATIVE.value,
+                "flow_info": {
+                    "background": self.flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": "",
+                },
             },
         )

@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, patch
 from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
+from rest_framework.exceptions import ErrorDetail
 
 from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
@@ -28,6 +29,13 @@ class TestPromptStage(TestCase):
             name="test-prompt",
             slug="test-prompt",
             designation=FlowDesignation.AUTHENTICATION,
+        )
+        username_prompt = Prompt.objects.create(
+            field_key="username_prompt",
+            label="USERNAME_LABEL",
+            type=FieldTypes.USERNAME,
+            required=True,
+            placeholder="USERNAME_PLACEHOLDER",
         )
         text_prompt = Prompt.objects.create(
             field_key="text_prompt",
@@ -73,6 +81,7 @@ class TestPromptStage(TestCase):
         self.stage = PromptStage.objects.create(name="prompt-stage")
         self.stage.fields.set(
             [
+                username_prompt,
                 text_prompt,
                 email_prompt,
                 password_prompt,
@@ -84,6 +93,7 @@ class TestPromptStage(TestCase):
         self.stage.save()
 
         self.prompt_data = {
+            username_prompt.field_key: "test-username",
             text_prompt.field_key: "test-input",
             email_prompt.field_key: "test@test.test",
             password_prompt.field_key: "test",
@@ -182,3 +192,41 @@ class TestPromptStage(TestCase):
         for prompt in self.stage.fields.all():
             prompt: Prompt
             self.assertEqual(data[prompt.field_key], self.prompt_data[prompt.field_key])
+
+    def test_invalid_password(self):
+        """Test challenge_response validation"""
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
+        self.prompt_data["password2_prompt"] = "qwerqwerqr"
+        challenge_response = PromptChallengeResponse(
+            None, stage=self.stage, plan=plan, data=self.prompt_data
+        )
+        self.assertEqual(challenge_response.is_valid(), False)
+        self.assertEqual(
+            challenge_response.errors,
+            {
+                "non_field_errors": [
+                    ErrorDetail(string="Passwords don't match.", code="invalid")
+                ]
+            },
+        )
+
+    def test_invalid_username(self):
+        """Test challenge_response validation"""
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
+        self.prompt_data["username_prompt"] = "akadmin"
+        challenge_response = PromptChallengeResponse(
+            None, stage=self.stage, plan=plan, data=self.prompt_data
+        )
+        self.assertEqual(challenge_response.is_valid(), False)
+        self.assertEqual(
+            challenge_response.errors,
+            {
+                "username_prompt": [
+                    ErrorDetail(string="Username is already taken.", code="invalid")
+                ]
+            },
+        )

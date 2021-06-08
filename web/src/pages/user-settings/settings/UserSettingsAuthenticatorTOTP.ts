@@ -1,16 +1,12 @@
 import { AuthenticatorsApi } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, html, property, TemplateResult } from "lit-element";
+import { customElement, html, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { FlowURLManager } from "../../../api/legacy";
 import { BaseUserSettings } from "./BaseUserSettings";
 
 @customElement("ak-user-settings-authenticator-totp")
 export class UserSettingsAuthenticatorTOTP extends BaseUserSettings {
-
-    @property({ type: Boolean })
-    configureFlow = false;
 
     renderEnabled(): TemplateResult {
         return html`<div class="pf-c-card__body">
@@ -49,8 +45,8 @@ export class UserSettingsAuthenticatorTOTP extends BaseUserSettings {
                 </p>
             </div>
             <div class="pf-c-card__footer">
-                ${this.configureFlow ?
-                    html`<a href="${FlowURLManager.configure(this.objectId || "", "?next=/%23%2Fuser")}"
+                ${this.configureUrl ?
+                    html`<a href="${this.configureUrl}?next=/%23%2Fuser"
                             class="pf-c-button pf-m-primary">${t`Enable TOTP`}
                         </a>`: html``}
             </div>`;

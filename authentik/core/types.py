@@ -36,3 +36,4 @@ class UserSettingSerializer(PassiveSerializer):
     object_uid = CharField()
     component = CharField()
     title = CharField()
+    configure_url = CharField()

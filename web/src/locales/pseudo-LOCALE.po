@@ -3853,6 +3853,10 @@ msgid "Title"
 msgstr ""
 
 #: 
+msgid "To use SSL instead, use 'ldaps://' and disable this option."
+msgstr ""
+
+#: 
 #: 
 msgid "Token"
 msgstr ""
@@ -4174,10 +4178,6 @@ msgstr ""
 
 #: 
 msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application."
-msgstr ""
-
-#: 
-msgid "Use this redirect URL:"
 msgstr ""
 
 #: 

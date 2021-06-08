@@ -11170,7 +11170,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/StageUserSetting'
+                  $ref: '#/components/schemas/UserSetting'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
@@ -15347,10 +15347,8 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/ChallengeChoices'
-        title:
-          type: string
-        background:
-          type: string
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
         component:
           type: string
           default: ak-stage-access-denied
@@ -15669,10 +15667,8 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/ChallengeChoices'
-        title:
-          type: string
-        background:
-          type: string
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
         component:
           type: string
           default: ak-stage-authenticator-duo
@@ -15782,10 +15778,8 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/ChallengeChoices'
-        title:
-          type: string
-        background:
-          type: string
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
         component:
           type: string
           default: ak-stage-authenticator-static
@@ -15883,10 +15877,8 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/ChallengeChoices'
-        title:
-          type: string
-        background:
-          type: string
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
         component:
           type: string
           default: ak-stage-authenticator-totp
@@ -16060,10 +16052,8 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/ChallengeChoices'
-        title:
-          type: string
-        background:
-          type: string
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
         component:
           type: string
           default: ak-stage-authenticator-validate
@@ -16106,10 +16096,8 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/ChallengeChoices'
-        title:
-          type: string
-        background:
-          type: string
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
         component:
           type: string
           default: ak-stage-authenticator-webauthn
@@ -16156,10 +16144,8 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/ChallengeChoices'
-        title:
-          type: string
-        background:
-          type: string
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
         component:
           type: string
           default: ak-stage-autosubmit
@@ -16211,10 +16197,8 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/ChallengeChoices'
-        title:
-          type: string
-        background:
-          type: string
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
         component:
           type: string
           default: ak-stage-captcha
@@ -16416,10 +16400,8 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/ChallengeChoices'
-        title:
-          type: string
-        background:
-          type: string
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
         component:
           type: string
           default: ak-stage-consent
@@ -16512,6 +16494,18 @@ components:
           description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - name
+    ContextualFlowInfo:
+      type: object
+      description: Contextual flow information for a challenge
+      properties:
+        title:
+          type: string
+        background:
+          type: string
+        cancel_url:
+          type: string
+      required:
+      - cancel_url
     Coordinate:
       type: object
       description: Coordinates for diagrams
@@ -16715,10 +16709,8 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/ChallengeChoices'
-        title:
-          type: string
-        background:
-          type: string
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
         component:
           type: string
           default: ak-stage-dummy
@@ -16875,10 +16867,8 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/ChallengeChoices'
-        title:
-          type: string
-        background:
-          type: string
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
         component:
           type: string
           default: ak-stage-email
@@ -17668,10 +17658,8 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/ChallengeChoices'
-        title:
-          type: string
-        background:
-          type: string
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
         component:
           type: string
           default: ak-stage-identification
@@ -21626,10 +21614,8 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/ChallengeChoices'
-        title:
-          type: string
-        background:
-          type: string
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
         component:
           type: string
           default: ak-stage-password
@@ -23381,10 +23367,8 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/ChallengeChoices'
-        title:
-          type: string
-        background:
-          type: string
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
         component:
           type: string
           default: ak-flow-sources-plex
@@ -23742,10 +23726,8 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/ChallengeChoices'
-        title:
-          type: string
-        background:
-          type: string
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
         component:
           type: string
           default: ak-stage-prompt
@@ -24221,10 +24203,8 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/ChallengeChoices'
-        title:
-          type: string
-        background:
-          type: string
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
         component:
           type: string
           default: xak-flow-redirect
@@ -24339,7 +24319,11 @@ components:
         metadata:
           type: string
           readOnly: true
+        download_url:
+          type: string
+          readOnly: true
       required:
+      - download_url
       - metadata
     SAMLPropertyMapping:
       type: object
@@ -24934,10 +24918,8 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/ChallengeChoices'
-        title:
-          type: string
-        background:
-          type: string
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
         component:
           type: string
           default: xak-flow-shell
@@ -25116,22 +25098,6 @@ components:
             $ref: '#/components/schemas/FlowRequest'
       required:
       - name
-    StageUserSetting:
-      type: object
-      description: User settings but can include a configure flow
-      properties:
-        object_uid:
-          type: string
-        component:
-          type: string
-        title:
-          type: string
-        configure_flow:
-          type: boolean
-      required:
-      - component
-      - object_uid
-      - title
     StaticDevice:
       type: object
       description: Serializer for static authenticator devices
@@ -25811,8 +25777,11 @@ components:
           type: string
         title:
           type: string
+        configure_url:
+          type: string
       required:
       - component
+      - configure_url
       - object_uid
       - title
     UserWriteStage:
