@@ -52,7 +52,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         sleep(1)
         client: DockerClient = from_env()
         container = client.containers.run(
-            image="beryju/oidc-test-client",
+            image="ghcr.io/beryju/oidc-test-client:latest",
             detach=True,
             network_mode="host",
             auto_remove=True,
