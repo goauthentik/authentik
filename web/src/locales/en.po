@@ -354,6 +354,10 @@ msgstr "Backends"
 msgid "Background"
 msgstr "Background"
 
+#: src/flows/FlowExecutor.ts
+msgid "Background image"
+msgstr "Background image"
+
 #: src/pages/flows/FlowForm.ts
 #: src/pages/flows/FlowForm.ts
 #: src/pages/flows/FlowImportForm.ts
@@ -3844,6 +3848,10 @@ msgstr "Timeout"
 #: src/pages/tenants/TenantForm.ts
 msgid "Title"
 msgstr "Title"
+
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+msgid "To use SSL instead, use 'ldaps://' and disable this option."
+msgstr "To use SSL instead, use 'ldaps://' and disable this option."
 
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts

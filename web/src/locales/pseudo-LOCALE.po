@@ -351,6 +351,10 @@ msgid "Background"
 msgstr ""
 
 #: 
+msgid "Background image"
+msgstr ""
+
+#: 
 #: 
 #: 
 msgid "Background shown during execution."
@@ -3831,6 +3835,10 @@ msgstr ""
 #: 
 #: 
 msgid "Title"
+msgstr ""
+
+#: 
+msgid "To use SSL instead, use 'ldaps://' and disable this option."
 msgstr ""
 
 #: 
