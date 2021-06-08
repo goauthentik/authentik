@@ -34,11 +34,30 @@ module.exports = {
             label: "Outposts",
             items: [
                 "outposts/outposts",
-                "outposts/proxy",
-                "outposts/ldap",
-                "outposts/upgrading",
-                "outposts/manual-deploy-docker-compose",
-                "outposts/manual-deploy-kubernetes",
+                {
+                    type: "category",
+                    label: "Running and upgrading",
+                    items: [
+                        "outposts/upgrading",
+                        "outposts/manual-deploy-docker-compose",
+                        "outposts/manual-deploy-kubernetes",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Proxy",
+                    items: [
+                        "outposts/proxy/proxy",
+                        "outposts/proxy/forward_auth",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "LDAP",
+                    items: [
+                        "outposts/ldap/ldap",
+                    ],
+                },
             ],
         },
         {
