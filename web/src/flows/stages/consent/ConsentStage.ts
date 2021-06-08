@@ -46,7 +46,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                         </div>
                     </ak-form-static>
                     <div class="pf-c-form__group">
-                        <p class="pf-u-mb-xl">
+                        <p id="header-text" class="pf-u-mb-xl">
                             ${this.challenge.headerText}
                         </p>
                         ${this.challenge.permissions.length > 0 ? html`
