@@ -1,11 +1,13 @@
 import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, TemplateResult } from "lit-element";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 import AKGlobal from "../../../authentik.css";
 import { BaseStage } from "../base";
 import "../../../elements/EmptyState";
@@ -18,7 +20,7 @@ import { ifDefined } from "lit-html/directives/if-defined";
 export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeResponseRequest> {
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
+        return [PFBase, PFLogin, PFList, PFForm, PFSpacing, PFFormControl, PFTitle, PFButton, AKGlobal];
     }
 
     render(): TemplateResult {
@@ -44,11 +46,11 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                         </div>
                     </ak-form-static>
                     <div class="pf-c-form__group">
-                        <p id="header-text">
+                        <p class="pf-u-mb-xl">
                             ${this.challenge.headerText}
                         </p>
                         ${this.challenge.permissions.length > 0 ? html`
-                            <p>${t`Application requires following permissions`}</p>
+                            <p class="pf-u-mb-sm">${t`Application requires following permissions:`}</p>
                             <ul class="pf-c-list" id="permmissions">
                                 ${this.challenge.permissions.map((permission) => {
                                     return html`<li data-permission-code="${permission.id}">${permission.name}</li>`;
