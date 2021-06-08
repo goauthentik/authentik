@@ -24313,7 +24313,11 @@ components:
         metadata:
           type: string
           readOnly: true
+        download_url:
+          type: string
+          readOnly: true
       required:
+      - download_url
       - metadata
     SAMLPropertyMapping:
       type: object

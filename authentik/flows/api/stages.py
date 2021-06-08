@@ -1,7 +1,7 @@
 """Flow Stage API Views"""
 from typing import Iterable
-from django.urls.base import reverse
 
+from django.urls.base import reverse
 from drf_spectacular.utils import extend_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
@@ -100,7 +100,8 @@ class StageViewSet(
             user_settings.initial_data["object_uid"] = str(stage.pk)
             if hasattr(stage, "configure_flow"):
                 user_settings.initial_data["configure_flow"] = reverse(
-                    "authentik_flows:configure", kwargs={"stage_uuid": stage.uuid.hex},
+                    "authentik_flows:configure",
+                    kwargs={"stage_uuid": stage.uuid.hex},
                 )
             if not user_settings.is_valid():
                 LOGGER.warning(user_settings.errors)

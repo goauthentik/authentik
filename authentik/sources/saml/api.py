@@ -1,4 +1,5 @@
 """SAMLSource API Views"""
+from django.urls import reverse
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.request import Request
@@ -46,4 +47,9 @@ class SAMLSourceViewSet(ModelViewSet):
         """Return metadata as XML string"""
         source = self.get_object()
         metadata = MetadataProcessor(source, request).build_entity_descriptor()
-        return Response({"metadata": metadata})
+        return Response(
+            {
+                "metadata": metadata,
+                "download_url": reverse("authentik_sources_saml:metadata"),
+            }
+        )

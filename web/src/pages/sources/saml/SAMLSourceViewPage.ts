@@ -23,7 +23,6 @@ import "../../policies/BoundPoliciesList";
 import "./SAMLSourceForm";
 import { SAMLSource, SourcesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { AppURLManager } from "../../../api/legacy";
 import { EVENT_REFRESH } from "../../../constants";
 import { ifDefined } from "lit-html/directives/if-defined";
 
@@ -135,19 +134,21 @@ export class SAMLSourceViewPage extends LitElement {
                     <div class="pf-u-display-flex pf-u-justify-content-center">
                         <div class="pf-u-w-75">
                             <div class="pf-c-card">
-                                <div class="pf-c-card__body">
-                                    ${until(new SourcesApi(DEFAULT_CONFIG).sourcesSamlMetadataRetrieve({
-                                            slug: this.source.slug,
-                                        }).then(m => {
-                                            return html`<ak-codemirror mode="xml" ?readOnly=${true} value="${ifDefined(m.metadata)}"></ak-codemirror>`;
-                                        })
-                                    )}
-                                </div>
-                                <div class="pf-c-card__footer">
-                                    <a class="pf-c-button pf-m-primary" target="_blank" href="${AppURLManager.sourceSAML(this.source.slug, "metadata/")}">
-                                        ${t`Download`}
-                                    </a>
-                                </div>
+                                ${until(new SourcesApi(DEFAULT_CONFIG).sourcesSamlMetadataRetrieve({
+                                        slug: this.source.slug,
+                                    }).then(m => {
+                                        return html`
+                                        <div class="pf-c-card__body">
+                                            <ak-codemirror mode="xml" ?readOnly=${true} value="${ifDefined(m.metadata)}"></ak-codemirror>
+                                        </div>
+                                        <div class="pf-c-card__footer">
+                                            <a class="pf-c-button pf-m-primary" target="_blank" href=${ifDefined(m.downloadUrl)}>
+                                                ${t`Download`}
+                                            </a>
+                                        </div>
+                                        `;
+                                    })
+                                )}
                             </div>
                         </div>
                     </div>
