@@ -3,14 +3,13 @@ import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { FlowURLManager } from "../../../api/legacy";
 import { BaseUserSettings } from "./BaseUserSettings";
 
 @customElement("ak-user-settings-authenticator-duo")
 export class UserSettingsAuthenticatorDuo extends BaseUserSettings {
 
-    @property({ type: Boolean })
-    configureFlow = false;
+    @property()
+    configureFlow?: string;
 
     renderEnabled(): TemplateResult {
         return html`<div class="pf-c-card__body">
@@ -50,7 +49,7 @@ export class UserSettingsAuthenticatorDuo extends BaseUserSettings {
             </div>
             <div class="pf-c-card__footer">
                 ${this.configureFlow ?
-                    html`<a href="${FlowURLManager.configure(this.objectId || "", "?next=/%23%2Fuser")}"
+                    html`<a href="${this.configureFlow}?next=/%23%2Fuser"
                             class="pf-c-button pf-m-primary">${t`Enable Static Tokens`}
                         </a>`: html``}
             </div>`;

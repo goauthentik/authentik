@@ -1,10 +1,11 @@
 """Flow Stage API Views"""
 from typing import Iterable
+from django.urls.base import reverse
 
 from drf_spectacular.utils import extend_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
-from rest_framework.fields import BooleanField
+from rest_framework.fields import BooleanField, CharField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
@@ -23,7 +24,7 @@ LOGGER = get_logger()
 class StageUserSettingSerializer(UserSettingSerializer):
     """User settings but can include a configure flow"""
 
-    configure_flow = BooleanField(required=False)
+    configure_flow = CharField(required=False)
 
 
 class StageSerializer(ModelSerializer, MetaNameSerializer):
@@ -98,8 +99,8 @@ class StageViewSet(
                 continue
             user_settings.initial_data["object_uid"] = str(stage.pk)
             if hasattr(stage, "configure_flow"):
-                user_settings.initial_data["configure_flow"] = bool(
-                    stage.configure_flow
+                user_settings.initial_data["configure_flow"] = reverse(
+                    "authentik_flows:configure", kwargs={"stage_uuid": stage.uuid.hex},
                 )
             if not user_settings.is_valid():
                 LOGGER.warning(user_settings.errors)

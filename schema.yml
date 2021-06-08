@@ -25100,7 +25100,7 @@ components:
         title:
           type: string
         configure_flow:
-          type: boolean
+          type: string
       required:
       - component
       - object_uid

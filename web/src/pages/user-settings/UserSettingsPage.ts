@@ -38,19 +38,19 @@ export class UserSettingsPage extends LitElement {
     renderStageSettings(stage: StageUserSetting): TemplateResult {
         switch (stage.component) {
             case "ak-user-settings-authenticator-webauthn":
-                return html`<ak-user-settings-authenticator-webauthn objectId=${stage.objectUid} ?configureFlow=${stage.configureFlow}>
+                return html`<ak-user-settings-authenticator-webauthn objectId=${stage.objectUid} configureFlow=${stage.configureFlow}>
                 </ak-user-settings-authenticator-webauthn>`;
             case "ak-user-settings-password":
                 return html`<ak-user-settings-password objectId=${stage.objectUid}>
                 </ak-user-settings-password>`;
             case "ak-user-settings-authenticator-totp":
-                return html`<ak-user-settings-authenticator-totp objectId=${stage.objectUid} ?configureFlow=${stage.configureFlow}>
+                return html`<ak-user-settings-authenticator-totp objectId=${stage.objectUid} configureFlow=${stage.configureFlow}>
                 </ak-user-settings-authenticator-totp>`;
             case "ak-user-settings-authenticator-static":
-                return html`<ak-user-settings-authenticator-static objectId=${stage.objectUid} ?configureFlow=${stage.configureFlow}>
+                return html`<ak-user-settings-authenticator-static objectId=${stage.objectUid} configureFlow=${stage.configureFlow}>
                 </ak-user-settings-authenticator-static>`;
             case "ak-user-settings-authenticator-duo":
-                return html`<ak-user-settings-authenticator-duo objectId=${stage.objectUid} ?configureFlow=${stage.configureFlow}>
+                return html`<ak-user-settings-authenticator-duo objectId=${stage.objectUid} configureFlow=${stage.configureFlow}>
                 </ak-user-settings-authenticator-duo>`;
             default:
                 return html`<p>${t`Error: unsupported stage settings: ${stage.component}`}</p>`;

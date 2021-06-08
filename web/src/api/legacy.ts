@@ -8,11 +8,3 @@ export class AppURLManager {
     }
 
 }
-
-export class FlowURLManager {
-
-    static configure(stageUuid: string, rest: string): string {
-        return `/flows/-/configure/${stageUuid}/${rest}`;
-    }
-
-}
