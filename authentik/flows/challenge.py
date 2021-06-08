@@ -43,7 +43,7 @@ class Challenge(PassiveSerializer):
     type = ChoiceField(
         choices=[(x.value, x.name) for x in ChallengeTypes],
     )
-    flow_info = ContextualFlowInfo()
+    flow_info = ContextualFlowInfo(required=False)
     component = CharField(default="")
 
     response_errors = DictField(

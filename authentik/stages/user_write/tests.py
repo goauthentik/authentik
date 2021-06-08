@@ -151,8 +151,12 @@ class TestUserWriteStage(TestCase):
             {
                 "component": "ak-stage-access-denied",
                 "error_message": None,
-                "title": "",
                 "type": ChallengeTypes.NATIVE.value,
+                "flow_info": {
+                    "background": self.flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": "",
+                },
             },
         )
 
@@ -184,8 +188,12 @@ class TestUserWriteStage(TestCase):
             {
                 "component": "ak-stage-access-denied",
                 "error_message": None,
-                "title": "",
                 "type": ChallengeTypes.NATIVE.value,
+                "flow_info": {
+                    "background": self.flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": "",
+                },
             },
         )
 
@@ -217,7 +225,11 @@ class TestUserWriteStage(TestCase):
             {
                 "component": "ak-stage-access-denied",
                 "error_message": None,
-                "title": "",
                 "type": ChallengeTypes.NATIVE.value,
+                "flow_info": {
+                    "background": self.flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": "",
+                },
             },
         )

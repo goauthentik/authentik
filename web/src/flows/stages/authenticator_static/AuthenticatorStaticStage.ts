@@ -13,6 +13,7 @@ import "../../../elements/EmptyState";
 import "../../FormStatic";
 import { AuthenticatorStaticChallenge } from "authentik-api";
 import { AuthenticatorStaticChallengeResponseRequest } from "authentik-api/dist/models/AuthenticatorStaticChallengeResponseRequest";
+import { ifDefined } from "lit-html/directives/if-defined";
 
 export const STATIC_TOKEN_STYLE = css`
 /* Static OTP Tokens */
@@ -46,7 +47,7 @@ export class AuthenticatorStaticStage extends BaseStage<AuthenticatorStaticChall
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">
-                    ${this.challenge.flowInfo.title}
+                    ${this.challenge.flowInfo?.title}
                 </h1>
             </header>
             <div class="pf-c-login__main-body">
@@ -56,7 +57,7 @@ export class AuthenticatorStaticStage extends BaseStage<AuthenticatorStaticChall
                         userAvatar="${this.challenge.pendingUserAvatar}"
                         user=${this.challenge.pendingUser}>
                         <div slot="link">
-                            <a href="${this.challenge.flowInfo.cancelUrl}">${t`Not you?`}</a>
+                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}">${t`Not you?`}</a>
                         </div>
                     </ak-form-static>
                     <ak-form-element

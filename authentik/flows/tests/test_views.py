@@ -93,7 +93,11 @@ class TestFlowExecutor(TestCase):
             {
                 "component": "ak-stage-access-denied",
                 "error_message": FlowNonApplicableException.__doc__,
-                "title": "",
+                "flow_info": {
+                    "background": flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": "",
+                },
                 "type": ChallengeTypes.NATIVE.value,
             },
         )
@@ -422,10 +426,13 @@ class TestFlowExecutor(TestCase):
             self.assertJSONEqual(
                 force_str(response.content),
                 {
-                    "background": flow.background_url,
                     "type": ChallengeTypes.NATIVE.value,
                     "component": "ak-stage-dummy",
-                    "title": binding.stage.name,
+                    "flow_info": {
+                        "background": flow.background_url,
+                        "cancel_url": reverse("authentik_flows:cancel"),
+                        "title": "",
+                    },
                 },
             )
 
@@ -453,10 +460,13 @@ class TestFlowExecutor(TestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
-                "background": flow.background_url,
                 "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-dummy",
-                "title": binding4.stage.name,
+                "flow_info": {
+                    "background": flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": "",
+                },
             },
         )
 

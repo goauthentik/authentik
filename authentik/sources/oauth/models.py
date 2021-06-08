@@ -87,6 +87,10 @@ class OAuthSource(Source):
             data={
                 "title": f"OAuth {self.name}",
                 "component": "ak-user-settings-source-oauth",
+                "configure_url": reverse(
+                    "authentik_sources_oauth:oauth-client-login",
+                    kwargs={"source_slug": self.slug},
+                ),
             }
         )
 

@@ -108,7 +108,6 @@ class TestIdentificationStage(TestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
-                "background": self.flow.background_url,
                 "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-identification",
                 "password_fields": True,
@@ -117,6 +116,11 @@ class TestIdentificationStage(TestCase):
                     "non_field_errors": [
                         {"code": "invalid", "string": "Failed to " "authenticate."}
                     ]
+                },
+                "flow_info": {
+                    "background": self.flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": "",
                 },
                 "sources": [
                     {
@@ -129,7 +133,6 @@ class TestIdentificationStage(TestCase):
                         "name": "test",
                     }
                 ],
-                "title": "",
                 "user_fields": ["email"],
             },
         )
@@ -181,7 +184,6 @@ class TestIdentificationStage(TestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
-                "background": flow.background_url,
                 "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-identification",
                 "user_fields": ["email"],
@@ -191,7 +193,11 @@ class TestIdentificationStage(TestCase):
                     kwargs={"flow_slug": "unique-enrollment-string"},
                 ),
                 "primary_action": "Log in",
-                "title": self.flow.title,
+                "flow_info": {
+                    "background": flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": self.flow.title,
+                },
                 "sources": [
                     {
                         "icon_url": "/static/authentik/sources/.svg",
@@ -229,7 +235,6 @@ class TestIdentificationStage(TestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
-                "background": flow.background_url,
                 "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-identification",
                 "user_fields": ["email"],
@@ -239,7 +244,11 @@ class TestIdentificationStage(TestCase):
                     kwargs={"flow_slug": "unique-recovery-string"},
                 ),
                 "primary_action": "Log in",
-                "title": self.flow.title,
+                "flow_info": {
+                    "background": flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": self.flow.title,
+                },
                 "sources": [
                     {
                         "challenge": {

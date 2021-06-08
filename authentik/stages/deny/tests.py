@@ -47,7 +47,11 @@ class TestUserDenyStage(TestCase):
             {
                 "component": "ak-stage-access-denied",
                 "error_message": None,
-                "title": "",
+                "flow_info": {
+                    "background": self.flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": "",
+                },
                 "type": ChallengeTypes.NATIVE.value,
             },
         )

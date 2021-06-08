@@ -15,6 +15,7 @@ import { PasswordManagerPrefill } from "../identification/IdentificationStage";
 import "../../FormStatic";
 import { AuthenticatorValidationChallenge } from "authentik-api/dist/models/AuthenticatorValidationChallenge";
 import { AuthenticatorValidationChallengeResponseRequest, DeviceChallenge } from "authentik-api";
+import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-stage-authenticator-validate-code")
 export class AuthenticatorValidateStageWebCode extends BaseStage<AuthenticatorValidationChallenge, AuthenticatorValidationChallengeResponseRequest> {
@@ -43,7 +44,7 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<AuthenticatorVa
                     userAvatar="${this.challenge.pendingUserAvatar}"
                     user=${this.challenge.pendingUser}>
                     <div slot="link">
-                        <a href="${this.challenge.flowInfo.cancelUrl}">${t`Not you?`}</a>
+                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}">${t`Not you?`}</a>
                     </div>
                 </ak-form-static>
                 <ak-form-element

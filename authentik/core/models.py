@@ -24,8 +24,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.signals import password_changed
-from authentik.core.types import UILoginButton
-from authentik.flows.challenge import Challenge
+from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.models import Flow
 from authentik.lib.config import CONFIG
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
@@ -342,9 +341,9 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         return None
 
     @property
-    def ui_user_settings(self) -> Optional[Challenge]:
+    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
         """Entrypoint to integrate with User settings. Can either return None if no
-        user settings are available, or a challenge."""
+        user settings are available, or UserSettingSerializer."""
         return None
 
     def __str__(self):

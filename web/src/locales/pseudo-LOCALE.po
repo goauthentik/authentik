@@ -4158,10 +4158,6 @@ msgid "Use the user's username, but deny enrollment when the username already ex
 msgstr ""
 
 #: 
-msgid "Use this redirect URL:"
-msgstr ""
-
-#: 
 msgid "Use this tenant for each domain that doesn't have a dedicated tenant."
 msgstr ""
 

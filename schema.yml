@@ -11170,7 +11170,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/StageUserSetting'
+                  $ref: '#/components/schemas/UserSetting'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
@@ -15361,7 +15361,6 @@ components:
         error_message:
           type: string
       required:
-      - flow_info
       - type
     ActionEnum:
       enum:
@@ -15692,7 +15691,6 @@ components:
       required:
       - activation_barcode
       - activation_code
-      - flow_info
       - pending_user
       - pending_user_avatar
       - stage_uuid
@@ -15801,7 +15799,6 @@ components:
             type: string
       required:
       - codes
-      - flow_info
       - pending_user
       - pending_user_avatar
       - type
@@ -15899,7 +15896,6 @@ components:
           type: string
       required:
       - config_url
-      - flow_info
       - pending_user
       - pending_user_avatar
       - type
@@ -16077,7 +16073,6 @@ components:
             $ref: '#/components/schemas/DeviceChallenge'
       required:
       - device_challenges
-      - flow_info
       - pending_user
       - pending_user_avatar
       - type
@@ -16120,7 +16115,6 @@ components:
           type: object
           additionalProperties: {}
       required:
-      - flow_info
       - pending_user
       - pending_user_avatar
       - registration
@@ -16169,7 +16163,6 @@ components:
             type: string
       required:
       - attrs
-      - flow_info
       - type
       - url
     BackendsEnum:
@@ -16222,7 +16215,6 @@ components:
         site_key:
           type: string
       required:
-      - flow_info
       - pending_user
       - pending_user_avatar
       - site_key
@@ -16430,7 +16422,6 @@ components:
           items:
             $ref: '#/components/schemas/Permission'
       required:
-      - flow_info
       - header_text
       - pending_user
       - pending_user_avatar
@@ -16730,7 +16721,6 @@ components:
             items:
               $ref: '#/components/schemas/ErrorDetail'
       required:
-      - flow_info
       - type
     DummyChallengeResponseRequest:
       type: object
@@ -16889,7 +16879,6 @@ components:
             items:
               $ref: '#/components/schemas/ErrorDetail'
       required:
-      - flow_info
       - type
     EmailChallengeResponseRequest:
       type: object
@@ -17700,7 +17689,6 @@ components:
           items:
             $ref: '#/components/schemas/UILoginButton'
       required:
-      - flow_info
       - password_fields
       - primary_action
       - type
@@ -21644,7 +21632,6 @@ components:
         recovery_url:
           type: string
       required:
-      - flow_info
       - pending_user
       - pending_user_avatar
       - type
@@ -23394,7 +23381,6 @@ components:
           type: string
       required:
       - client_id
-      - flow_info
       - slug
       - type
     PlexAuthenticationChallengeResponseRequest:
@@ -23754,7 +23740,6 @@ components:
             $ref: '#/components/schemas/StagePrompt'
       required:
       - fields
-      - flow_info
       - type
     PromptChallengeResponseRequest:
       type: object
@@ -24210,7 +24195,6 @@ components:
         to:
           type: string
       required:
-      - flow_info
       - to
       - type
     RefreshTokenModel:
@@ -24927,7 +24911,6 @@ components:
           type: string
       required:
       - body
-      - flow_info
       - type
     SignatureAlgorithmEnum:
       enum:
@@ -25093,22 +25076,6 @@ components:
             $ref: '#/components/schemas/FlowRequest'
       required:
       - name
-    StageUserSetting:
-      type: object
-      description: User settings but can include a configure flow
-      properties:
-        object_uid:
-          type: string
-        component:
-          type: string
-        title:
-          type: string
-        configure_flow:
-          type: string
-      required:
-      - component
-      - object_uid
-      - title
     StaticDevice:
       type: object
       description: Serializer for static authenticator devices
@@ -25788,8 +25755,11 @@ components:
           type: string
         title:
           type: string
+        configure_url:
+          type: string
       required:
       - component
+      - configure_url
       - object_uid
       - title
     UserWriteStage:

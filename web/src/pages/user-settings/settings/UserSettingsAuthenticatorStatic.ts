@@ -1,6 +1,6 @@
 import { AuthenticatorsApi } from "authentik-api";
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { STATIC_TOKEN_STYLE } from "../../../flows/stages/authenticator_static/AuthenticatorStaticStage";
@@ -8,9 +8,6 @@ import { BaseUserSettings } from "./BaseUserSettings";
 
 @customElement("ak-user-settings-authenticator-static")
 export class UserSettingsAuthenticatorStatic extends BaseUserSettings {
-
-    @property()
-    configureFlow?: string;
 
     static get styles(): CSSResult[] {
         return super.styles.concat(STATIC_TOKEN_STYLE);
@@ -63,8 +60,8 @@ export class UserSettingsAuthenticatorStatic extends BaseUserSettings {
                 </p>
             </div>
             <div class="pf-c-card__footer">
-                ${this.configureFlow ?
-                    html`<a href="${this.configureFlow}?next=/%23%2Fuser"
+                ${this.configureUrl ?
+                    html`<a href="${this.configureUrl}?next=/%23%2Fuser"
                             class="pf-c-button pf-m-primary">${t`Enable Static Tokens`}
                         </a>`: html``}
             </div>`;

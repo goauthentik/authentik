@@ -86,8 +86,8 @@ export class FlowExecutor extends LitElement implements StageHost {
 
     private postUpdate(): void {
         tenant().then(tenant => {
-            if (this.challenge?.flowInfo.title) {
-                document.title = `${this.challenge.flowInfo.title} - ${tenant.brandingTitle}`;
+            if (this.challenge?.flowInfo?.title) {
+                document.title = `${this.challenge.flowInfo?.title} - ${tenant.brandingTitle}`;
             } else {
                 document.title = tenant.brandingTitle || TITLE_DEFAULT;
             }
@@ -124,7 +124,7 @@ export class FlowExecutor extends LitElement implements StageHost {
         }).then((challenge) => {
             this.challenge = challenge;
             // Only set background on first update, flow won't change throughout execution
-            if (this.challenge?.flowInfo.background) {
+            if (this.challenge?.flowInfo?.background) {
                 this.setBackground(this.challenge.flowInfo.background);
             }
             this.postUpdate();
@@ -271,7 +271,7 @@ export class FlowExecutor extends LitElement implements StageHost {
                         ${this.tenant?.brandingTitle != "authentik" ? html`
                             <li><a href="https://goauthentik.io">${t`Powered by authentik`}</a></li>
                         ` : html``}
-                        ${this.challenge?.flowInfo.background?.startsWith("/static") ? html`
+                        ${this.challenge?.flowInfo?.background?.startsWith("/static") ? html`
                             <li><a href="https://unsplash.com/@danasaki">${t`Background image`}</a></li>
                         ` : html``}
                     </ul>

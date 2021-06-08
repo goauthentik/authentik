@@ -1,4 +1,4 @@
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, TemplateResult } from "lit-element";
 import { t } from "@lingui/macro";
 import { AuthenticatorsApi, WebAuthnDevice } from "authentik-api";
 import { until } from "lit-html/directives/until";
@@ -15,9 +15,6 @@ import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-user-settings-authenticator-webauthn")
 export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
-
-    @property()
-    configureFlow?: string;
 
     static get styles(): CSSResult[] {
         return super.styles.concat(PFDataList);
@@ -100,8 +97,8 @@ export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
                 </ul>
             </div>
             <div class="pf-c-card__footer">
-                ${this.configureFlow ?
-                    html`<a href="${this.configureFlow}?next=/%23%2Fuser"
+                ${this.configureUrl ?
+                    html`<a href="${this.configureUrl}?next=/%23%2Fuser"
                             class="pf-c-button pf-m-primary">${t`Configure WebAuthn`}
                         </a>`: html``}
             </div>

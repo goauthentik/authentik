@@ -1,7 +1,7 @@
 import { customElement, html, TemplateResult } from "lit-element";
 import { t } from "@lingui/macro";
-import { FlowURLManager } from "../../../api/legacy";
 import { BaseUserSettings } from "./BaseUserSettings";
+import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-user-settings-password")
 export class UserSettingsPassword extends BaseUserSettings {
@@ -14,7 +14,7 @@ export class UserSettingsPassword extends BaseUserSettings {
                 ${t`Change your password`}
             </div>
             <div class="pf-c-card__body">
-                <a href="${FlowURLManager.configure(this.objectId, "?next=/%23%2Fuser")}"
+                <a href="${ifDefined(this.configureUrl)}"
                     class="pf-c-button pf-m-primary">
                     ${t`Change password`}
                 </a>

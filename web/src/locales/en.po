@@ -4169,10 +4169,6 @@ msgstr "Use the user's email address, but deny enrollment when the email address
 msgid "Use the user's username, but deny enrollment when the username already exists."
 msgstr "Use the user's username, but deny enrollment when the username already exists."
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts
-msgid "Use this redirect URL:"
-msgstr "Use this redirect URL:"
-
 #: src/pages/tenants/TenantForm.ts
 msgid "Use this tenant for each domain that doesn't have a dedicated tenant."
 msgstr "Use this tenant for each domain that doesn't have a dedicated tenant."
