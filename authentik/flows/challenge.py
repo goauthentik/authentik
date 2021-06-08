@@ -28,6 +28,14 @@ class ErrorDetailSerializer(PassiveSerializer):
     code = CharField()
 
 
+class ContextualFlowInfo(PassiveSerializer):
+    """Contextual flow information for a challenge"""
+
+    title = CharField(required=False, allow_blank=True)
+    background = CharField(required=False)
+    cancel_url = CharField()
+
+
 class Challenge(PassiveSerializer):
     """Challenge that gets sent to the client based on which stage
     is currently active"""
@@ -35,8 +43,7 @@ class Challenge(PassiveSerializer):
     type = ChoiceField(
         choices=[(x.value, x.name) for x in ChallengeTypes],
     )
-    title = CharField(required=False, allow_blank=True)
-    background = CharField(required=False)
+    flow_info = ContextualFlowInfo()
     component = CharField(default="")
 
     response_errors = DictField(

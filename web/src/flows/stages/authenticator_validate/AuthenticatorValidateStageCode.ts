@@ -13,7 +13,6 @@ import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import { PasswordManagerPrefill } from "../identification/IdentificationStage";
 import "../../FormStatic";
-import { FlowURLManager } from "../../../api/legacy";
 import { AuthenticatorValidationChallenge } from "authentik-api/dist/models/AuthenticatorValidationChallenge";
 import { AuthenticatorValidationChallengeResponseRequest, DeviceChallenge } from "authentik-api";
 
@@ -44,7 +43,7 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<AuthenticatorVa
                     userAvatar="${this.challenge.pendingUserAvatar}"
                     user=${this.challenge.pendingUser}>
                     <div slot="link">
-                        <a href="${FlowURLManager.cancel()}">${t`Not you?`}</a>
+                        <a href="${this.challenge.flowInfo.cancelUrl}">${t`Not you?`}</a>
                     </div>
                 </ak-form-static>
                 <ak-form-element

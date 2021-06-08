@@ -15,8 +15,4 @@ export class FlowURLManager {
         return `/flows/-/configure/${stageUuid}/${rest}`;
     }
 
-    static cancel(): string {
-        return "/flows/-/cancel/";
-    }
-
 }

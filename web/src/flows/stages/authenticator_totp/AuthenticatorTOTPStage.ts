@@ -14,7 +14,6 @@ import { showMessage } from "../../../elements/messages/MessageContainer";
 import "../../../elements/EmptyState";
 import "../../FormStatic";
 import { MessageLevel } from "../../../elements/messages/Message";
-import { FlowURLManager } from "../../../api/legacy";
 import { AuthenticatorTOTPChallenge, AuthenticatorTOTPChallengeResponseRequest } from "authentik-api";
 
 
@@ -34,7 +33,7 @@ export class AuthenticatorTOTPStage extends BaseStage<AuthenticatorTOTPChallenge
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">
-                    ${this.challenge.title}
+                    ${this.challenge.flowInfo.title}
                 </h1>
             </header>
             <div class="pf-c-login__main-body">
@@ -44,7 +43,7 @@ export class AuthenticatorTOTPStage extends BaseStage<AuthenticatorTOTPChallenge
                         userAvatar="${this.challenge.pendingUserAvatar}"
                         user=${this.challenge.pendingUser}>
                         <div slot="link">
-                            <a href="${FlowURLManager.cancel()}">${t`Not you?`}</a>
+                            <a href="${this.challenge.flowInfo.cancelUrl}">${t`Not you?`}</a>
                         </div>
                     </ak-form-static>
                     <input type="hidden" name="otp_uri" value=${this.challenge.configUrl} />
