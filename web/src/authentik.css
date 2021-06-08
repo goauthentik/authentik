@@ -120,6 +120,9 @@ body {
     .pf-c-title {
         color: var(--ak-dark-foreground);
     }
+    .pf-u-mb-xl {
+        color: var(--ak-dark-foreground);
+    }
     /* Header sections */
     .pf-c-page__main-section {
         --pf-c-page__main-section--BackgroundColor: var(--ak-dark-background);
