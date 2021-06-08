@@ -124,10 +124,10 @@
         },
         "botocore": {
             "hashes": [
-                "sha256:bc989edab52d4788aadd8d1aff925f5c6a7cbc68900bfdb8e379965aeac17317",
-                "sha256:be3cb73fab60a2349e2932bd0cbbe7e7736e3a2cd8c05b539d362ff3e406be76"
+                "sha256:ce0fa8bc260ad187824052805d224cee239d953bb4bfb1e52cf35ad79481b316",
+                "sha256:e112f9a45db1c5a42f787e4b228a35da6e823bcba70f43f43005b4fb58066446"
             ],
-            "version": "==1.20.88"
+            "version": "==1.20.89"
         },
         "cachetools": {
             "hashes": [
@@ -422,11 +422,11 @@
         },
         "duo-client": {
             "hashes": [
-                "sha256:790de9573e2a0a85cc10cdb671b37759ee5f6c8557fe9972a8837bb07d71f69b",
-                "sha256:a5c9282cba3a02ae2ffbb16552e66379c19272664561baec86ad3a661f26ebf2"
+                "sha256:038c40c86615b2c176252ec32888898807861371536ac29a39a707c71dd0e693",
+                "sha256:652548002767d27a5eaaa700b312205dfc1c252033bb0ab7f98d1d3961bceba7"
             ],
             "index": "pypi",
-            "version": "==4.3.1"
+            "version": "==4.3.2"
         },
         "facebook-sdk": {
             "hashes": [
