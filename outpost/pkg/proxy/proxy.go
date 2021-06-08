@@ -348,16 +348,34 @@ func (p *OAuthProxy) AuthenticateOnly(rw http.ResponseWriter, req *http.Request)
 			}
 			if _, ok := req.URL.Query()["traefik"]; ok {
 				host := ""
+				// Optional suffix, which is appended to the URL
+				suffix := ""
 				if p.mode == api.PROXYMODE_FORWARD_SINGLE {
 					host = getHost(req)
 				} else if p.mode == api.PROXYMODE_FORWARD_DOMAIN {
 					host = p.ExternalHost
+					// set the ?rd flag to the current URL we have, since we redirect
+					// to a (possibly) different domain, but we want to be redirected back
+					// to the application
+					v := url.Values{
+						// see https://doc.traefik.io/traefik/middlewares/forwardauth/
+						// X-Forwarded-Uri is only the path, so we need to build the entire URL
+						"rd": []string{fmt.Sprintf(
+							"%s://%s%s",
+							req.Header.Get("X-Forwarded-Proto"),
+							req.Header.Get("X-Forwarded-Host"),
+							req.Header.Get("X-Forwarded-Uri"),
+						)},
+					}
+					suffix = fmt.Sprintf("?%s", v.Encode())
 				}
 				proto := req.Header.Get("X-Forwarded-Proto")
 				if proto != "" {
 					proto = proto + ":"
 				}
-				http.Redirect(rw, req, fmt.Sprintf("%s//%s%s", proto, host, p.OAuthStartPath), http.StatusTemporaryRedirect)
+				rdFinal := fmt.Sprintf("%s//%s%s%s", proto, host, p.OAuthStartPath, suffix)
+				p.logger.WithField("url", rdFinal).Debug("Redirecting to login")
+				http.Redirect(rw, req, rdFinal, http.StatusTemporaryRedirect)
 				return
 			}
 		}
