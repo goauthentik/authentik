@@ -28,7 +28,7 @@ COPY ./web /static/
 COPY --from=api-builder /local/web/api /static/api
 
 ENV NODE_ENV=production
-RUN cd /static && npm i --production=false && npm run build
+RUN cd /static && npm i && npm run build
 
 # Stage 4: Build go proxy
 FROM golang:1.16.5 AS builder
