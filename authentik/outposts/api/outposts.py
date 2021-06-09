@@ -13,6 +13,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.utils import PassiveSerializer, is_dict
 from authentik.core.models import Provider
+from authentik.outposts.api.service_connections import ServiceConnectionSerializer
 from authentik.outposts.models import (
     Outpost,
     OutpostConfig,
@@ -33,6 +34,9 @@ class OutpostSerializer(ModelSerializer):
         queryset=Provider.objects.select_subclasses().all(),
     )
     providers_obj = ProviderSerializer(source="providers", many=True, read_only=True)
+    service_connection_obj = ServiceConnectionSerializer(
+        source="service_connection", read_only=True
+    )
 
     def validate_providers(self, providers: list[Provider]) -> list[Provider]:
         """Check that all providers match the type of the outpost"""
@@ -69,6 +73,7 @@ class OutpostSerializer(ModelSerializer):
             "providers",
             "providers_obj",
             "service_connection",
+            "service_connection_obj",
             "token_identifier",
             "config",
         ]
@@ -102,7 +107,7 @@ class OutpostViewSet(ModelViewSet):
         "name",
         "providers__name",
     ]
-    ordering = ["name"]
+    ordering = ["name", "service_connection__name"]
 
     @extend_schema(responses={200: OutpostHealthSerializer(many=True)})
     @action(methods=["GET"], detail=True, pagination_class=None)

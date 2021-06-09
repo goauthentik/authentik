@@ -18976,6 +18976,10 @@ components:
           nullable: true
           description: Select Service-Connection authentik should use to manage this
             outpost. Leave empty if authentik should not handle the deployment.
+        service_connection_obj:
+          allOf:
+          - $ref: '#/components/schemas/ServiceConnection'
+          readOnly: true
         token_identifier:
           type: string
           readOnly: true
@@ -18988,6 +18992,7 @@ components:
       - pk
       - providers
       - providers_obj
+      - service_connection_obj
       - token_identifier
       - type
     OutpostDefaultConfig:
@@ -24865,6 +24870,18 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    ServiceConnectionRequest:
+      type: object
+      description: ServiceConnection Serializer
+      properties:
+        name:
+          type: string
+        local:
+          type: boolean
+          description: If enabled, use the local connection. Required Docker socket/Kubernetes
+            Integration
+      required:
+      - name
     ServiceConnectionState:
       type: object
       description: Serializer for Service connection state

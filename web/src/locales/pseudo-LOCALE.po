@@ -209,7 +209,7 @@ msgid "Application Icon"
 msgstr ""
 
 #: 
-msgid "Application requires following permissions"
+msgid "Application requires following permissions:"
 msgstr ""
 
 #: 
@@ -3159,6 +3159,7 @@ msgid "Service Provider Binding"
 msgstr ""
 
 #: 
+#: 
 msgid "Service connection"
 msgstr ""
 
@@ -3983,6 +3984,10 @@ msgstr ""
 
 #: 
 msgid "Unknown"
+msgstr ""
+
+#: 
+msgid "Unmanaged"
 msgstr ""
 
 #: 

@@ -209,8 +209,8 @@ msgid "Application Icon"
 msgstr "Application Icon"
 
 #: src/flows/stages/consent/ConsentStage.ts
-msgid "Application requires following permissions"
-msgstr "Application requires following permissions"
+msgid "Application requires following permissions:"
+msgstr "Application requires following permissions:"
 
 #: src/pages/applications/ApplicationForm.ts
 msgid "Application's display Name."
@@ -3167,6 +3167,7 @@ msgid "Service Provider Binding"
 msgstr "Service Provider Binding"
 
 #: src/pages/outposts/OutpostForm.ts
+#: src/pages/outposts/OutpostListPage.ts
 msgid "Service connection"
 msgstr "Service connection"
 
@@ -3996,6 +3997,10 @@ msgstr "Unhealthy outposts"
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Unknown"
 msgstr "Unknown"
+
+#: src/pages/outposts/OutpostListPage.ts
+msgid "Unmanaged"
+msgstr "Unmanaged"
 
 #: src/pages/admin-overview/charts/LDAPSyncStatusChart.ts
 msgid "Unsynced sources"
