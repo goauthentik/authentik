@@ -46,7 +46,7 @@
         "@fortawesome/fontawesome-free": "^5.15.3",
         "@lingui/cli": "^3.10.2",
         "@lingui/core": "^3.9.0",
-        "@lingui/macro": "^3.9.0",
+        "@lingui/macro": "^3.10.2",
         "@patternfly/patternfly": "^4.108.2",
         "@polymer/iron-form": "^3.0.1",
         "@polymer/paper-input": "^3.2.1",
