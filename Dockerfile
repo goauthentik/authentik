@@ -73,12 +73,12 @@ RUN apt-get update && \
     mkdir /backups && \
     chown authentik:authentik /backups
 
-COPY ./authentik/ /authentik
-COPY ./pyproject.toml /
-COPY ./xml /xml
-COPY ./tests /tests
-COPY ./manage.py /
-COPY ./lifecycle/ /lifecycle
+COPY --chown=authentik:authentik ./authentik/ /authentik
+COPY --chown=authentik:authentik ./pyproject.toml /
+COPY --chown=authentik:authentik ./xml /xml
+COPY --chown=authentik:authentik ./tests /tests
+COPY --chown=authentik:authentik ./manage.py /
+COPY --chown=authentik:authentik ./lifecycle/ /lifecycle
 COPY --from=builder /work/authentik /authentik-proxy
 
 USER authentik
