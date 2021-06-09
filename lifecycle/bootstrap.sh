@@ -32,6 +32,9 @@ elif [[ "$1" == "restore" ]]; then
     python -m manage dbrestore ${@:2}
 elif [[ "$1" == "bash" ]]; then
     /bin/bash
+elif [[ "$1" == "test" ]]; then
+    pip install --no-cache -r requirements-dev.txt
+    check_if_root "python -m manage test authentik"
 else
     python -m manage "$@"
 fi
