@@ -53,7 +53,7 @@ export class OutpostStatusChart extends AKChart<OutpostStats> {
         }));
         this.centerText = outposts.pagination.count.toString();
         return {
-            healthy: healthy === 0 ? -1 : healthy,
+            healthy: outposts.pagination.count === 0 ? -1 : healthy,
             outdated,
             unhealthy
         };
