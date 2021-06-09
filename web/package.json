@@ -5,7 +5,7 @@
     "license": "GNU GPLv3",
     "scripts": {
         "extract": "lingui extract",
-        "build": "lingui compile && rollup -c ./rollup.config.js",
+        "build": "cd api && npx tsc && cd .. && lingui compile && rollup -c",
         "watch": "lingui compile && rollup -c -w",
         "lint": "eslint . --max-warnings 0",
         "lit-analyse": "lit-analyzer src"
