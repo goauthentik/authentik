@@ -55,6 +55,11 @@ export class IPReputationListPage extends TablePage<IPReputation> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`IP Reputation`}
+                .usedBy=${() => {
+                    return new PoliciesApi(DEFAULT_CONFIG).policiesReputationIpsUsedByList({
+                        id: item.pk
+                    });
+                }}
                 .delete=${() => {
                     return new PoliciesApi(DEFAULT_CONFIG).policiesReputationIpsDestroy({
                         id: item.pk,

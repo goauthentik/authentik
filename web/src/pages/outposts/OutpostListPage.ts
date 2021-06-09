@@ -77,9 +77,14 @@ export class OutpostListPage extends TablePage<Outpost> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Outpost`}
+                .usedBy=${() => {
+                    return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesUsedByList({
+                        uuid: item.pk
+                    });
+                }}
                 .delete=${() => {
                     return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesDestroy({
-                        uuid: item.pk || ""
+                        uuid: item.pk
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">

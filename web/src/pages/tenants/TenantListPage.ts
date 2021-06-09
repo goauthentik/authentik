@@ -68,6 +68,11 @@ export class TenantListPage extends TablePage<Tenant> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Tenant`}
+                .usedBy=${() => {
+                    return new CoreApi(DEFAULT_CONFIG).coreTenantsUsedByList({
+                        tenantUuid: item.tenantUuid
+                    });
+                }}
                 .delete=${() => {
                     return new CoreApi(DEFAULT_CONFIG).coreTenantsDestroy({
                         tenantUuid: item.tenantUuid

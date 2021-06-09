@@ -58,9 +58,14 @@ export class InvitationListPage extends TablePage<Invitation> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Invitation`}
+                .usedBy=${() => {
+                    return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsUsedByList({
+                        inviteUuid: item.pk
+                    });
+                }}
                 .delete=${() => {
                     return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsDestroy({
-                        inviteUuid: item.pk || ""
+                        inviteUuid: item.pk
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">

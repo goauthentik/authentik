@@ -73,9 +73,14 @@ export class RuleListPage extends TablePage<NotificationRule> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Notification rule`}
+                .usedBy=${() => {
+                    return new EventsApi(DEFAULT_CONFIG).eventsRulesUsedByList({
+                        pbmUuid: item.pk
+                    });
+                }}
                 .delete=${() => {
                     return new EventsApi(DEFAULT_CONFIG).eventsRulesDestroy({
-                        pbmUuid: item.pk || ""
+                        pbmUuid: item.pk
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">

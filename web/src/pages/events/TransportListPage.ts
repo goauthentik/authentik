@@ -77,9 +77,14 @@ export class TransportListPage extends TablePage<NotificationTransport> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Notifications Transport`}
+                .usedBy=${() => {
+                    return new EventsApi(DEFAULT_CONFIG).eventsTransportsUsedByList({
+                        uuid: item.pk
+                    });
+                }}
                 .delete=${() => {
                     return new EventsApi(DEFAULT_CONFIG).eventsTransportsDestroy({
-                        uuid: item.pk || ""
+                        uuid: item.pk
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">

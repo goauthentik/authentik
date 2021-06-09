@@ -90,9 +90,14 @@ export class ProviderListPage extends TablePage<Provider> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Provider`}
+                .usedBy=${() => {
+                    return new ProvidersApi(DEFAULT_CONFIG).providersAllUsedByList({
+                        id: item.pk
+                    });
+                }}
                 .delete=${() => {
                     return new ProvidersApi(DEFAULT_CONFIG).providersAllDestroy({
-                        id: item.pk || 0
+                        id: item.pk
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">
