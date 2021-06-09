@@ -1,19 +1,28 @@
 import { t } from "@lingui/macro";
-import { customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { EVENT_REFRESH } from "../../constants";
 import { ModalButton } from "../buttons/ModalButton";
 import { MessageLevel } from "../messages/Message";
 import { showMessage } from "../messages/MessageContainer";
 import "../buttons/SpinnerButton";
+import { UsedBy } from "authentik-api";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 
 @customElement("ak-forms-delete")
 export class DeleteForm extends ModalButton {
+
+    static get styles(): CSSResult[] {
+        return super.styles.concat(PFList);
+    }
 
     @property({attribute: false})
     obj?: Record<string, unknown>;
 
     @property()
     objectLabel?: string;
+
+    @property({attribute: false})
+    usedBy?: () => Promise<UsedBy[]>;
 
     @property({attribute: false})
     delete!: () => Promise<unknown>;
@@ -69,6 +78,22 @@ export class DeleteForm extends ModalButton {
                 </p>
             </form>
         </section>
+        ${this.usedBy ? this.usedBy().then(usedBy => {
+            return html`
+                <section class="pf-c-page__main-section pf-m-light">
+                    <form class="pf-c-form pf-m-horizontal">
+                        <p>
+                            ${t`The following objects use ${objName}`}
+                        </p>
+                        <ul class="pf-c-list">
+                            ${usedBy.map(ub => {
+                                return html`<li>${ub.name}</li>`;
+                            })}
+                        </ul>
+                    </form>
+                </section>
+            `;
+        }) : html``}
         <footer class="pf-c-modal-box__footer">
             <ak-spinner-button
                 .callAction=${() => {

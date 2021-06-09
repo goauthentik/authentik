@@ -33,7 +33,10 @@ class SAMLSourceSerializer(SourceSerializer):
         ]
 
 
-class SAMLSourceViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class SAMLSourceViewSet(UsedByMixin, ModelViewSet):
     """SAMLSource Viewset"""
 
     queryset = SAMLSource.objects.all()

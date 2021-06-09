@@ -22,7 +22,10 @@ class IdentificationStageSerializer(StageSerializer):
         ]
 
 
-class IdentificationStageViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class IdentificationStageViewSet(UsedByMixin, ModelViewSet):
     """IdentificationStage Viewset"""
 
     queryset = IdentificationStage.objects.all()

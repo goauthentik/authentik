@@ -24,7 +24,10 @@ class NotificationRuleSerializer(ModelSerializer):
         ]
 
 
-class NotificationRuleViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class NotificationRuleViewSet(UsedByMixin, ModelViewSet):
     """NotificationRule Viewset"""
 
     queryset = NotificationRule.objects.all()

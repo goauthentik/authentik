@@ -79,9 +79,14 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Certificate-Key Pair`}
+                .usedBy=${() => {
+                    return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsUsedByList({
+                        kpUuid: item.pk
+                    });
+                }}
                 .delete=${() => {
                     return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsDestroy({
-                        kpUuid: item.pk || ""
+                        kpUuid: item.pk
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">

@@ -29,6 +29,7 @@ from structlog.stdlib import get_logger
 from authentik.admin.api.metrics import CoordinateSerializer, get_events_per_1h
 from authentik.api.decorators import permission_required
 from authentik.core.api.providers import ProviderSerializer
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.models import Application, User
 from authentik.events.models import EventAction
 from authentik.policies.api.exec import PolicyTestResultSerializer
@@ -73,7 +74,7 @@ class ApplicationSerializer(ModelSerializer):
         }
 
 
-class ApplicationViewSet(ModelViewSet):
+class ApplicationViewSet(UsedByMixin, ModelViewSet):
     """Application Viewset"""
 
     queryset = Application.objects.all()

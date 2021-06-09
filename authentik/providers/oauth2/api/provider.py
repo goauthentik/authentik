@@ -61,7 +61,10 @@ class OAuth2ProviderSetupURLs(PassiveSerializer):
     logout = ReadOnlyField()
 
 
-class OAuth2ProviderViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
     """OAuth2Provider Viewset"""
 
     queryset = OAuth2Provider.objects.all()

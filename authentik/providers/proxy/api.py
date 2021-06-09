@@ -76,7 +76,10 @@ class ProxyProviderSerializer(ProviderSerializer):
         ]
 
 
-class ProxyProviderViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class ProxyProviderViewSet(UsedByMixin, ModelViewSet):
     """ProxyProvider Viewset"""
 
     queryset = ProxyProvider.objects.all()

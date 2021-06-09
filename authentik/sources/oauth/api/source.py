@@ -78,7 +78,10 @@ class OAuthSourceSerializer(SourceSerializer):
         extra_kwargs = {"consumer_secret": {"write_only": True}}
 
 
-class OAuthSourceViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class OAuthSourceViewSet(UsedByMixin, ModelViewSet):
     """Source Viewset"""
 
     queryset = OAuthSource.objects.all()

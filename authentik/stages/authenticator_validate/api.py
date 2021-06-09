@@ -32,7 +32,10 @@ class AuthenticatorValidateStageSerializer(StageSerializer):
         ]
 
 
-class AuthenticatorValidateStageViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class AuthenticatorValidateStageViewSet(UsedByMixin, ModelViewSet):
     """AuthenticatorValidateStage Viewset"""
 
     queryset = AuthenticatorValidateStage.objects.all()

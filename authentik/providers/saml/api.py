@@ -75,7 +75,10 @@ class SAMLProviderImportSerializer(PassiveSerializer):
     file = FileField()
 
 
-class SAMLProviderViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
     """SAMLProvider Viewset"""
 
     queryset = SAMLProvider.objects.all()
@@ -166,7 +169,10 @@ class SAMLPropertyMappingSerializer(PropertyMappingSerializer):
         ]
 
 
-class SAMLPropertyMappingViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class SAMLPropertyMappingViewSet(UsedByMixin, ModelViewSet):
     """SAMLPropertyMapping Viewset"""
 
     queryset = SAMLPropertyMapping.objects.all()

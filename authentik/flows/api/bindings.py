@@ -27,7 +27,10 @@ class FlowStageBindingSerializer(ModelSerializer):
         ]
 
 
-class FlowStageBindingViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class FlowStageBindingViewSet(UsedByMixin, ModelViewSet):
     """FlowStageBinding Viewset"""
 
     queryset = FlowStageBinding.objects.all()

@@ -14,7 +14,10 @@ class UserDeleteStageSerializer(StageSerializer):
         fields = StageSerializer.Meta.fields
 
 
-class UserDeleteStageViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class UserDeleteStageViewSet(UsedByMixin, ModelViewSet):
     """UserDeleteStage Viewset"""
 
     queryset = UserDeleteStage.objects.all()

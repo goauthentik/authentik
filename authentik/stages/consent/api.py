@@ -20,7 +20,10 @@ class ConsentStageSerializer(StageSerializer):
         fields = StageSerializer.Meta.fields + ["mode", "consent_expire_in"]
 
 
-class ConsentStageViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class ConsentStageViewSet(UsedByMixin, ModelViewSet):
     """ConsentStage Viewset"""
 
     queryset = ConsentStage.objects.all()
@@ -42,6 +45,7 @@ class UserConsentSerializer(StageSerializer):
 class UserConsentViewSet(
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
+    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

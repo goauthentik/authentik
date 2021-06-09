@@ -42,7 +42,10 @@ class PlexTokenRedeemSerializer(PassiveSerializer):
     plex_token = CharField()
 
 
-class PlexSourceViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class PlexSourceViewSet(UsedByMixin, ModelViewSet):
     """Plex source Viewset"""
 
     queryset = PlexSource.objects.all()

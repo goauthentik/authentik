@@ -15,7 +15,10 @@ class CaptchaStageSerializer(StageSerializer):
         extra_kwargs = {"private_key": {"write_only": True}}
 
 
-class CaptchaStageViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class CaptchaStageViewSet(UsedByMixin, ModelViewSet):
     """CaptchaStage Viewset"""
 
     queryset = CaptchaStage.objects.all()

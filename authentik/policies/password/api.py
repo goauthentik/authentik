@@ -21,7 +21,10 @@ class PasswordPolicySerializer(PolicySerializer):
         ]
 
 
-class PasswordPolicyViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class PasswordPolicyViewSet(UsedByMixin, ModelViewSet):
     """Password Policy Viewset"""
 
     queryset = PasswordPolicy.objects.all()

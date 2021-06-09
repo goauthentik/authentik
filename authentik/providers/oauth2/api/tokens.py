@@ -10,6 +10,7 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import MetaNameSerializer
 from authentik.providers.oauth2.api.provider import OAuth2ProviderSerializer
@@ -57,6 +58,7 @@ class RefreshTokenModelSerializer(ExpiringBaseGrantModelSerializer):
 class AuthorizationCodeViewSet(
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
+    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):
@@ -82,6 +84,7 @@ class AuthorizationCodeViewSet(
 class RefreshTokenViewSet(
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
+    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

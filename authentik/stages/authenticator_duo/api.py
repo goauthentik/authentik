@@ -37,7 +37,10 @@ class AuthenticatorDuoStageSerializer(StageSerializer):
         }
 
 
-class AuthenticatorDuoStageViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
     """AuthenticatorDuoStage Viewset"""
 
     queryset = AuthenticatorDuoStage.objects.all()
@@ -78,6 +81,7 @@ class DuoDeviceViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
+    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

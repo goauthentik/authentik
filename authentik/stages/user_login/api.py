@@ -16,7 +16,10 @@ class UserLoginStageSerializer(StageSerializer):
         ]
 
 
-class UserLoginStageViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class UserLoginStageViewSet(UsedByMixin, ModelViewSet):
     """UserLoginStage Viewset"""
 
     queryset = UserLoginStage.objects.all()

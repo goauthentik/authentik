@@ -52,7 +52,10 @@ class NotificationTransportTestSerializer(Serializer):
         raise NotImplementedError
 
 
-class NotificationTransportViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class NotificationTransportViewSet(UsedByMixin, ModelViewSet):
     """NotificationTransport Viewset"""
 
     queryset = NotificationTransport.objects.all()

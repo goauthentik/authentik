@@ -21,7 +21,10 @@ class PromptStageSerializer(StageSerializer):
         ]
 
 
-class PromptStageViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class PromptStageViewSet(UsedByMixin, ModelViewSet):
     """PromptStage Viewset"""
 
     queryset = PromptStage.objects.all()
@@ -48,7 +51,10 @@ class PromptSerializer(ModelSerializer):
         ]
 
 
-class PromptViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class PromptViewSet(UsedByMixin, ModelViewSet):
     """Prompt Viewset"""
 
     queryset = Prompt.objects.all().prefetch_related("promptstage_set")

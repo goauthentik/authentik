@@ -14,7 +14,10 @@ class UserLogoutStageSerializer(StageSerializer):
         fields = StageSerializer.Meta.fields
 
 
-class UserLogoutStageViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class UserLogoutStageViewSet(UsedByMixin, ModelViewSet):
     """UserLogoutStage Viewset"""
 
     queryset = UserLogoutStage.objects.all()

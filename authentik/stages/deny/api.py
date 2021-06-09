@@ -14,7 +14,10 @@ class DenyStageSerializer(StageSerializer):
         fields = StageSerializer.Meta.fields
 
 
-class DenyStageViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class DenyStageViewSet(UsedByMixin, ModelViewSet):
     """DenyStage Viewset"""
 
     queryset = DenyStage.objects.all()

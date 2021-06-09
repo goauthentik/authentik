@@ -21,7 +21,10 @@ class AuthenticatorTOTPStageSerializer(StageSerializer):
         fields = StageSerializer.Meta.fields + ["configure_flow", "digits"]
 
 
-class AuthenticatorTOTPStageViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class AuthenticatorTOTPStageViewSet(UsedByMixin, ModelViewSet):
     """AuthenticatorTOTPStage Viewset"""
 
     queryset = AuthenticatorTOTPStage.objects.all()
@@ -45,6 +48,7 @@ class TOTPDeviceViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
+    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

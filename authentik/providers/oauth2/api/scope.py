@@ -17,7 +17,10 @@ class ScopeMappingSerializer(PropertyMappingSerializer):
         ]
 
 
-class ScopeMappingViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class ScopeMappingViewSet(UsedByMixin, ModelViewSet):
     """ScopeMapping Viewset"""
 
     queryset = ScopeMapping.objects.all()

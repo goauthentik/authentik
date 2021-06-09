@@ -23,7 +23,10 @@ class ReputationPolicySerializer(PolicySerializer):
         ]
 
 
-class ReputationPolicyViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class ReputationPolicyViewSet(UsedByMixin, ModelViewSet):
     """Reputation Policy Viewset"""
 
     queryset = ReputationPolicy.objects.all()
@@ -46,6 +49,7 @@ class IPReputationSerializer(ModelSerializer):
 class IPReputationViewSet(
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
+    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):
@@ -74,6 +78,7 @@ class UserReputationSerializer(ModelSerializer):
 class UserReputationViewSet(
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
+    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

@@ -23,7 +23,10 @@ class AuthenticateWebAuthnStageSerializer(StageSerializer):
         fields = StageSerializer.Meta.fields + ["configure_flow"]
 
 
-class AuthenticateWebAuthnStageViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class AuthenticateWebAuthnStageViewSet(UsedByMixin, ModelViewSet):
     """AuthenticateWebAuthnStage Viewset"""
 
     queryset = AuthenticateWebAuthnStage.objects.all()
@@ -44,6 +47,7 @@ class WebAuthnDeviceViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
+    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

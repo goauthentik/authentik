@@ -17,7 +17,10 @@ class EventMatcherPolicySerializer(PolicySerializer):
         ]
 
 
-class EventMatcherPolicyViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class EventMatcherPolicyViewSet(UsedByMixin, ModelViewSet):
     """Event Matcher Policy Viewset"""
 
     queryset = EventMatcherPolicy.objects.all()

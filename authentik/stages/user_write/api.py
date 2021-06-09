@@ -14,7 +14,10 @@ class UserWriteStageSerializer(StageSerializer):
         fields = StageSerializer.Meta.fields
 
 
-class UserWriteStageViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class UserWriteStageViewSet(UsedByMixin, ModelViewSet):
     """UserWriteStage Viewset"""
 
     queryset = UserWriteStage.objects.all()

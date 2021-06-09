@@ -13,7 +13,10 @@ class PasswordExpiryPolicySerializer(PolicySerializer):
         fields = PolicySerializer.Meta.fields + ["days", "deny_only"]
 
 
-class PasswordExpiryPolicyViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class PasswordExpiryPolicyViewSet(UsedByMixin, ModelViewSet):
     """Password Expiry Viewset"""
 
     queryset = PasswordExpiryPolicy.objects.all()

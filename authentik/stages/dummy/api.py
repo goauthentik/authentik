@@ -14,7 +14,10 @@ class DummyStageSerializer(StageSerializer):
         fields = StageSerializer.Meta.fields
 
 
-class DummyStageViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class DummyStageViewSet(UsedByMixin, ModelViewSet):
     """DummyStage Viewset"""
 
     queryset = DummyStage.objects.all()

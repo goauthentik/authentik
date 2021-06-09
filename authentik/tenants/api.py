@@ -56,7 +56,10 @@ class CurrentTenantSerializer(PassiveSerializer):
     flow_unenrollment = CharField(source="flow_unenrollment.slug", required=False)
 
 
-class TenantViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class TenantViewSet(UsedByMixin, ModelViewSet):
     """Tenant Viewset"""
 
     queryset = Tenant.objects.all()

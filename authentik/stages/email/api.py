@@ -46,7 +46,10 @@ class EmailStageSerializer(StageSerializer):
         extra_kwargs = {"password": {"write_only": True}}
 
 
-class EmailStageViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class EmailStageViewSet(UsedByMixin, ModelViewSet):
     """EmailStage Viewset"""
 
     queryset = EmailStage.objects.all()

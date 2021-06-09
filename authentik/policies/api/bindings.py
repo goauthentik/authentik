@@ -99,7 +99,10 @@ class PolicyBindingSerializer(ModelSerializer):
         return data
 
 
-class PolicyBindingViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class PolicyBindingViewSet(UsedByMixin, ModelViewSet):
     """PolicyBinding Viewset"""
 
     queryset = (

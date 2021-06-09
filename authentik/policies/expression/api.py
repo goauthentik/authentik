@@ -20,7 +20,10 @@ class ExpressionPolicySerializer(PolicySerializer):
         fields = PolicySerializer.Meta.fields + ["expression"]
 
 
-class ExpressionPolicyViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class ExpressionPolicyViewSet(UsedByMixin, ModelViewSet):
     """Source Viewset"""
 
     queryset = ExpressionPolicy.objects.all()

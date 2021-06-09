@@ -20,7 +20,10 @@ class InvitationStageSerializer(StageSerializer):
         ]
 
 
-class InvitationStageViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class InvitationStageViewSet(UsedByMixin, ModelViewSet):
     """InvitationStage Viewset"""
 
     queryset = InvitationStage.objects.all()
@@ -45,7 +48,10 @@ class InvitationSerializer(ModelSerializer):
         ]
 
 
-class InvitationViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class InvitationViewSet(UsedByMixin, ModelViewSet):
     """Invitation Viewset"""
 
     queryset = Invitation.objects.all()

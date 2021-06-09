@@ -21,7 +21,10 @@ class AuthenticatorStaticStageSerializer(StageSerializer):
         fields = StageSerializer.Meta.fields + ["configure_flow", "token_count"]
 
 
-class AuthenticatorStaticStageViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class AuthenticatorStaticStageViewSet(UsedByMixin, ModelViewSet):
     """AuthenticatorStaticStage Viewset"""
 
     queryset = AuthenticatorStaticStage.objects.all()
@@ -52,6 +55,7 @@ class StaticDeviceViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
+    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

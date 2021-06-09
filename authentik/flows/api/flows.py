@@ -94,7 +94,10 @@ class DiagramElement:
         return f"{self.identifier}=>{self.type}: {self.rest}"
 
 
-class FlowViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class FlowViewSet(UsedByMixin, ModelViewSet):
     """Flow Viewset"""
 
     queryset = Flow.objects.all()

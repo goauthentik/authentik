@@ -19,7 +19,10 @@ class LDAPProviderSerializer(ProviderSerializer):
         ]
 
 
-class LDAPProviderViewSet(ModelViewSet):
+from authentik.core.api.used_by import UsedByMixin
+
+
+class LDAPProviderViewSet(UsedByMixin, ModelViewSet):
     """LDAPProvider Viewset"""
 
     queryset = LDAPProvider.objects.all()

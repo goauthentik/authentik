@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
 from authentik.core.models import Provider
 from authentik.lib.utils.reflection import all_subclasses
@@ -48,6 +49,7 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
 class ProviderViewSet(
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
+    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):
