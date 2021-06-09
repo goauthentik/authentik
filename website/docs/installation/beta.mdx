@@ -28,9 +28,11 @@ Afterwards, run the upgrade commands from the latest releasae notes.
 Add the following block to your `values.yml` file:
 
 ```yaml
+authentik:
+  outposts:
+    docker_image_base: beryju.org/authentik/outpost-%(type)s:gh-%(build_hash)s
 image:
   name: beryju.org/authentik/server
-  name_outposts: beryju.org/authentik/outpost-%(type)s:gh-next
   tag: gh-next
   # pullPolicy: Always to ensure you always get the latest version
   pullPolicy: Always

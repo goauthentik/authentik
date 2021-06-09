@@ -8,7 +8,7 @@ WORKDIR /app/
 
 RUN pip install pipenv && \
     pipenv lock -r > requirements.txt && \
-    pipenv lock -rd > requirements-dev.txt
+    pipenv lock -r --dev-only > requirements-dev.txt
 
 # Stage 2: Build web API
 FROM openapitools/openapi-generator-cli as api-builder
@@ -76,6 +76,7 @@ RUN apt-get update && \
 COPY ./authentik/ /authentik
 COPY ./pyproject.toml /
 COPY ./xml /xml
+COPY ./tests /tests
 COPY ./manage.py /
 COPY ./lifecycle/ /lifecycle
 COPY --from=builder /work/authentik /authentik-proxy
