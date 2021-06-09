@@ -76,6 +76,7 @@ RUN apt-get update && \
 COPY ./authentik/ /authentik
 COPY ./pyproject.toml /
 COPY ./xml /xml
+COPY ./tests /tests
 COPY ./manage.py /
 COPY ./lifecycle/ /lifecycle
 COPY --from=builder /work/authentik /authentik-proxy
