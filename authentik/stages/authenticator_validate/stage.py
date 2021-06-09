@@ -91,6 +91,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         """Get a list of all device challenges applicable for the current stage"""
         challenges = []
         user_devices = devices_for_user(self.get_pending_user())
+        LOGGER.debug("Got devices for user", devices=user_devices)
 
         # static and totp are only shown once
         # since their challenges are device-independant
@@ -101,6 +102,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         for device in user_devices:
             device_class = device.__class__.__name__.lower().replace("device", "")
             if device_class not in stage.device_classes:
+                LOGGER.debug("device class not allowed", device_class=device_class)
                 continue
             # Ensure only classes in PER_DEVICE_CLASSES are returned per device
             # otherwise only return a single challenge
@@ -108,15 +110,16 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 continue
             if device_class not in seen_classes:
                 seen_classes.append(device_class)
-            challenges.append(
-                DeviceChallenge(
-                    data={
-                        "device_class": device_class,
-                        "device_uid": device.pk,
-                        "challenge": get_challenge_for_device(self.request, device),
-                    }
-                ).initial_data
+            challenge = DeviceChallenge(
+                data={
+                    "device_class": device_class,
+                    "device_uid": device.pk,
+                    "challenge": get_challenge_for_device(self.request, device),
+                }
             )
+            challenge.is_valid()
+            challenges.append(challenge.data)
+            LOGGER.debug("adding challenge for device", challenge=challenge)
         return challenges
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
