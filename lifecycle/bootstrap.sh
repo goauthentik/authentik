@@ -36,6 +36,8 @@ elif [[ "$1" == "bash" ]]; then
     /bin/bash
 elif [[ "$1" == "test" ]]; then
     pip install --no-cache -r requirements-dev.txt
+    touch /unittest.xml
+    chown authentik:authentik /unittest.xml
     check_if_root "python -m manage test authentik"
 else
     python -m manage "$@"
