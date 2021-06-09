@@ -32,6 +32,7 @@ while True:
             user=CONFIG.y("postgresql.user"),
             password=CONFIG.y("postgresql.password"),
             host=CONFIG.y("postgresql.host"),
+            port=int(CONFIG.y("postgresql.port")),
         )
         conn.cursor()
         break
