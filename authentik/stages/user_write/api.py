@@ -1,6 +1,7 @@
 """User Write Stage API Views"""
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.user_write.models import UserWriteStage
 
@@ -12,9 +13,6 @@ class UserWriteStageSerializer(StageSerializer):
 
         model = UserWriteStage
         fields = StageSerializer.Meta.fields
-
-
-from authentik.core.api.used_by import UsedByMixin
 
 
 class UserWriteStageViewSet(UsedByMixin, ModelViewSet):

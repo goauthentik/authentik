@@ -7,6 +7,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelViewSet
 
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
+from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.authenticator_webauthn.models import (
     AuthenticateWebAuthnStage,
@@ -21,9 +22,6 @@ class AuthenticateWebAuthnStageSerializer(StageSerializer):
 
         model = AuthenticateWebAuthnStage
         fields = StageSerializer.Meta.fields + ["configure_flow"]
-
-
-from authentik.core.api.used_by import UsedByMixin
 
 
 class AuthenticateWebAuthnStageViewSet(UsedByMixin, ModelViewSet):

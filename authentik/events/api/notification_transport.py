@@ -9,6 +9,7 @@ from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.decorators import permission_required
+from authentik.core.api.used_by import UsedByMixin
 from authentik.events.models import (
     Notification,
     NotificationSeverity,
@@ -50,9 +51,6 @@ class NotificationTransportTestSerializer(Serializer):
 
     def update(self, request: Request) -> Response:
         raise NotImplementedError
-
-
-from authentik.core.api.used_by import UsedByMixin
 
 
 class NotificationTransportViewSet(UsedByMixin, ModelViewSet):

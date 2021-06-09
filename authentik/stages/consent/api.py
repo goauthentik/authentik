@@ -6,6 +6,7 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.core.api.applications import ApplicationSerializer
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.consent.models import ConsentStage, UserConsent
@@ -18,9 +19,6 @@ class ConsentStageSerializer(StageSerializer):
 
         model = ConsentStage
         fields = StageSerializer.Meta.fields + ["mode", "consent_expire_in"]
-
-
-from authentik.core.api.used_by import UsedByMixin
 
 
 class ConsentStageViewSet(UsedByMixin, ModelViewSet):

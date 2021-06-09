@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.config import CONFIG
 from authentik.tenants.models import Tenant
@@ -54,9 +55,6 @@ class CurrentTenantSerializer(PassiveSerializer):
     )
 
     flow_unenrollment = CharField(source="flow_unenrollment.slug", required=False)
-
-
-from authentik.core.api.used_by import UsedByMixin
 
 
 class TenantViewSet(UsedByMixin, ModelViewSet):

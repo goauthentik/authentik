@@ -2,6 +2,7 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.flows.models import FlowStageBinding
 
@@ -25,9 +26,6 @@ class FlowStageBindingSerializer(ModelSerializer):
             "order",
             "policy_engine_mode",
         ]
-
-
-from authentik.core.api.used_by import UsedByMixin
 
 
 class FlowStageBindingViewSet(UsedByMixin, ModelViewSet):

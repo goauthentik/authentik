@@ -3,6 +3,7 @@ from rest_framework import mixins
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.policies.api.policies import PolicySerializer
 from authentik.policies.reputation.models import (
     IPReputation,
@@ -21,9 +22,6 @@ class ReputationPolicySerializer(PolicySerializer):
             "check_username",
             "threshold",
         ]
-
-
-from authentik.core.api.used_by import UsedByMixin
 
 
 class ReputationPolicyViewSet(UsedByMixin, ModelViewSet):

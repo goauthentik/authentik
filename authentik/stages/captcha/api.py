@@ -1,6 +1,7 @@
 """CaptchaStage API Views"""
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.captcha.models import CaptchaStage
 
@@ -13,9 +14,6 @@ class CaptchaStageSerializer(StageSerializer):
         model = CaptchaStage
         fields = StageSerializer.Meta.fields + ["public_key", "private_key"]
         extra_kwargs = {"private_key": {"write_only": True}}
-
-
-from authentik.core.api.used_by import UsedByMixin
 
 
 class CaptchaStageViewSet(UsedByMixin, ModelViewSet):

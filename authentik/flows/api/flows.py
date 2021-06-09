@@ -24,6 +24,7 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.decorators import permission_required
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import CacheSerializer, LinkSerializer
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow
@@ -92,9 +93,6 @@ class DiagramElement:
 
     def __str__(self) -> str:
         return f"{self.identifier}=>{self.type}: {self.rest}"
-
-
-from authentik.core.api.used_by import UsedByMixin
 
 
 class FlowViewSet(UsedByMixin, ModelViewSet):

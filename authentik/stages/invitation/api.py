@@ -3,6 +3,7 @@ from rest_framework.fields import JSONField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import is_dict
 from authentik.flows.api.stages import StageSerializer
@@ -18,9 +19,6 @@ class InvitationStageSerializer(StageSerializer):
         fields = StageSerializer.Meta.fields + [
             "continue_flow_without_invitation",
         ]
-
-
-from authentik.core.api.used_by import UsedByMixin
 
 
 class InvitationStageViewSet(UsedByMixin, ModelViewSet):
@@ -46,9 +44,6 @@ class InvitationSerializer(ModelSerializer):
             "created_by",
             "single_use",
         ]
-
-
-from authentik.core.api.used_by import UsedByMixin
 
 
 class InvitationViewSet(UsedByMixin, ModelViewSet):

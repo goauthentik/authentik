@@ -1,6 +1,7 @@
 """Password Policy API Views"""
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.policies.api.policies import PolicySerializer
 from authentik.policies.password.models import PasswordPolicy
 
@@ -19,9 +20,6 @@ class PasswordPolicySerializer(PolicySerializer):
             "symbol_charset",
             "error_message",
         ]
-
-
-from authentik.core.api.used_by import UsedByMixin
 
 
 class PasswordPolicyViewSet(UsedByMixin, ModelViewSet):

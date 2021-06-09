@@ -4,6 +4,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
+from authentik.core.api.used_by import UsedByMixin
 from authentik.providers.ldap.models import LDAPProvider
 
 
@@ -17,9 +18,6 @@ class LDAPProviderSerializer(ProviderSerializer):
             "base_dn",
             "search_group",
         ]
-
-
-from authentik.core.api.used_by import UsedByMixin
 
 
 class LDAPProviderViewSet(UsedByMixin, ModelViewSet):

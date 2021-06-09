@@ -3,6 +3,7 @@ from rest_framework.serializers import CharField, ModelSerializer
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.prompt.models import Prompt, PromptStage
 
@@ -19,9 +20,6 @@ class PromptStageSerializer(StageSerializer):
             "fields",
             "validation_policies",
         ]
-
-
-from authentik.core.api.used_by import UsedByMixin
 
 
 class PromptStageViewSet(UsedByMixin, ModelViewSet):
@@ -49,9 +47,6 @@ class PromptSerializer(ModelSerializer):
             "order",
             "promptstage_set",
         ]
-
-
-from authentik.core.api.used_by import UsedByMixin
 
 
 class PromptViewSet(UsedByMixin, ModelViewSet):
