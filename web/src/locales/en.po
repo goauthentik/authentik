@@ -3805,6 +3805,10 @@ msgstr "The external URL you'll access the application at. Include any non-stand
 msgid "The external URL you'll authenticate at. Can be the same domain as authentik."
 msgstr "The external URL you'll authenticate at. Can be the same domain as authentik."
 
+#: src/elements/forms/DeleteForm.ts
+msgid "The following objects use {objName}"
+msgstr "The following objects use {objName}"
+
 #: src/pages/policies/dummy/DummyPolicyForm.ts
 msgid "The policy takes a random time to execute. This controls the minimum time it will take."
 msgstr "The policy takes a random time to execute. This controls the minimum time it will take."

@@ -7,6 +7,7 @@ import { showMessage } from "../messages/MessageContainer";
 import "../buttons/SpinnerButton";
 import { UsedBy } from "authentik-api";
 import PFList from "@patternfly/patternfly/components/List/list.css";
+import { until } from "lit-html/directives/until";
 
 @customElement("ak-forms-delete")
 export class DeleteForm extends ModalButton {
@@ -78,12 +79,12 @@ export class DeleteForm extends ModalButton {
                 </p>
             </form>
         </section>
-        ${this.usedBy ? this.usedBy().then(usedBy => {
+        ${this.usedBy ? until(this.usedBy().then(usedBy => {
             return html`
-                <section class="pf-c-page__main-section pf-m-light">
+                <section class="pf-c-page__main-section">
                     <form class="pf-c-form pf-m-horizontal">
                         <p>
-                            ${t`The following objects use ${objName}`}
+                            ${t`The following objects use ${objName} `}
                         </p>
                         <ul class="pf-c-list">
                             ${usedBy.map(ub => {
@@ -93,7 +94,7 @@ export class DeleteForm extends ModalButton {
                     </form>
                 </section>
             `;
-        }) : html``}
+        })) : html``}
         <footer class="pf-c-modal-box__footer">
             <ak-spinner-button
                 .callAction=${() => {
