@@ -35,6 +35,7 @@ class UsedByMixin:
         # pyright: reportGeneralTypeIssues=false
         certificate: Model = self.get_object()
         used_by = []
+        shadows = []
         for attr_name, manager in getmembers(
             certificate, lambda x: isinstance(x, Manager)
         ):
@@ -43,6 +44,7 @@ class UsedByMixin:
             manager: Manager
             if manager.model._meta.abstract:
                 continue
+            shadows += getattr(manager.model._meta, "authentik_used_by_shadows", [])
             app = manager.model._meta.app_label
             model_name = manager.model._meta.model_name
             perm = f"{app}.view_{model_name}"
@@ -57,4 +59,9 @@ class UsedByMixin:
                 )
                 serializer.is_valid()
                 used_by.append(serializer.data)
+        # Check the shadows map and remove anything that should be shadowed
+        for idx, user in enumerate(used_by):
+            fqmn = f"{user['app']}.{user['model_name']}"
+            if fqmn in shadows:
+                del used_by[idx]
         return Response(used_by)
