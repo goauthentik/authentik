@@ -57,7 +57,6 @@ export class UserSettingsAuthenticatorDuo extends BaseUserSettings {
             <div class="pf-c-card__title">
                 ${t`Duo`}
             </div>
-            ${this.renderDisabled()}
             ${until(new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsDuoList({}).then((devices) => {
                 return devices.results.length > 0 ? this.renderEnabled() : this.renderDisabled();
             }))}

@@ -91,10 +91,10 @@ class StageViewSet(
             if not user_settings:
                 continue
             user_settings.initial_data["object_uid"] = str(stage.pk)
-            if hasattr(stage, "configure_url"):
+            if hasattr(stage, "configure_flow"):
                 user_settings.initial_data["configure_url"] = reverse(
                     "authentik_flows:configure",
-                    kwargs={"stage_uuid": stage.uuid.hex},
+                    kwargs={"stage_uuid": stage.pk},
                 )
             if not user_settings.is_valid():
                 LOGGER.warning(user_settings.errors)
