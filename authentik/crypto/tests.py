@@ -4,6 +4,7 @@ import datetime
 from django.test import TestCase
 from django.urls import reverse
 
+from authentik.core.api.used_by import DeleteAction
 from authentik.core.models import User
 from authentik.crypto.api import CertificateKeyPairSerializer
 from authentik.crypto.builder import CertificateBuilder
@@ -122,6 +123,7 @@ class TestCrypto(TestCase):
                     "model_name": "oauth2provider",
                     "pk": str(provider.pk),
                     "name": str(provider),
+                    "action": DeleteAction.SET_NULL.value,
                 }
             ],
         )

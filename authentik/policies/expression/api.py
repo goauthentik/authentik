@@ -1,6 +1,7 @@
 """Expression Policy API"""
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.policies.api.policies import PolicySerializer
 from authentik.policies.expression.evaluator import PolicyEvaluator
 from authentik.policies.expression.models import ExpressionPolicy
@@ -18,9 +19,6 @@ class ExpressionPolicySerializer(PolicySerializer):
     class Meta:
         model = ExpressionPolicy
         fields = PolicySerializer.Meta.fields + ["expression"]
-
-
-from authentik.core.api.used_by import UsedByMixin
 
 
 class ExpressionPolicyViewSet(UsedByMixin, ModelViewSet):

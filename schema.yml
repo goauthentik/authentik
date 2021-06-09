@@ -17437,33 +17437,6 @@ components:
           type: string
       required:
       - type
-    ActionEnum:
-      enum:
-      - login
-      - login_failed
-      - logout
-      - user_write
-      - suspicious_request
-      - password_set
-      - secret_view
-      - invitation_used
-      - authorize_application
-      - source_linked
-      - impersonation_started
-      - impersonation_ended
-      - policy_execution
-      - policy_exception
-      - property_mapping_exception
-      - system_task_execution
-      - system_task_exception
-      - configuration_error
-      - model_created
-      - model_updated
-      - model_deleted
-      - email_sent
-      - update_available
-      - custom_
-      type: string
     App:
       type: object
       description: Serialize Application info
@@ -19151,7 +19124,7 @@ components:
           readOnly: true
         action:
           allOf:
-          - $ref: '#/components/schemas/ActionEnum'
+          - $ref: '#/components/schemas/EventMatcherPolicyActionEnum'
           description: Match created events with this action type. When left empty,
             all action types will be matched.
         client_ip:
@@ -19169,6 +19142,33 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    EventMatcherPolicyActionEnum:
+      enum:
+      - login
+      - login_failed
+      - logout
+      - user_write
+      - suspicious_request
+      - password_set
+      - secret_view
+      - invitation_used
+      - authorize_application
+      - source_linked
+      - impersonation_started
+      - impersonation_ended
+      - policy_execution
+      - policy_exception
+      - property_mapping_exception
+      - system_task_execution
+      - system_task_exception
+      - configuration_error
+      - model_created
+      - model_updated
+      - model_deleted
+      - email_sent
+      - update_available
+      - custom_
+      type: string
     EventMatcherPolicyRequest:
       type: object
       description: Event Matcher Policy Serializer
@@ -19182,7 +19182,7 @@ components:
             will be logged. By default, only execution errors are logged.
         action:
           allOf:
-          - $ref: '#/components/schemas/ActionEnum'
+          - $ref: '#/components/schemas/EventMatcherPolicyActionEnum'
           description: Match created events with this action type. When left empty,
             all action types will be matched.
         client_ip:
@@ -24274,7 +24274,7 @@ components:
             will be logged. By default, only execution errors are logged.
         action:
           allOf:
-          - $ref: '#/components/schemas/ActionEnum'
+          - $ref: '#/components/schemas/EventMatcherPolicyActionEnum'
           description: Match created events with this action type. When left empty,
             all action types will be matched.
         client_ip:
@@ -27535,11 +27535,20 @@ components:
           type: string
         name:
           type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
       required:
+      - action
       - app
       - model_name
       - name
       - pk
+    UsedByActionEnum:
+      enum:
+      - CASCADE
+      - SET_NULL
+      - SET_DEFAULT
+      type: string
     User:
       type: object
       description: User Serializer
