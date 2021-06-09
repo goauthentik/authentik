@@ -36,10 +36,10 @@ class UsedBySerializer(PassiveSerializer):
 def get_delete_action(manager: Manager) -> str:
     """Get the delete action from the Foreign key, falls back to cascade"""
     if manager.field.remote_field.on_delete.__name__ == SET_NULL.__name__:
-        return DeleteAction.SET_NULL.value
+        return DeleteAction.SET_NULL.name
     if manager.field.remote_field.on_delete.__name__ == SET_DEFAULT.__name__:
-        return DeleteAction.SET_DEFAULT.value
-    return DeleteAction.CASCADE.value
+        return DeleteAction.SET_DEFAULT.name
+    return DeleteAction.CASCADE.name
 
 
 class UsedByMixin:

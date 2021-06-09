@@ -1136,6 +1136,9 @@ msgid "Disable"
 msgstr ""
 
 #: 
+msgid "Disable Duo authenticator"
+msgstr ""
+
 #: 
 msgid "Disable Static Tokens"
 msgstr ""
@@ -1286,10 +1289,13 @@ msgid "Enable"
 msgstr ""
 
 #: 
-msgid "Enable StartTLS"
+msgid "Enable Duo authenticator"
 msgstr ""
 
 #: 
+msgid "Enable StartTLS"
+msgstr ""
+
 #: 
 msgid "Enable Static Tokens"
 msgstr ""
@@ -4510,6 +4516,18 @@ msgid "no tabs defined"
 msgstr ""
 
 #: 
+msgid "object will be DELETED"
+msgstr ""
+
+#: 
+msgid "reference will be reset to default value"
+msgstr ""
+
+#: 
+msgid "reference will be set to an empty value"
+msgstr ""
+
+#: 
 #: 
 msgid "{0}"
 msgstr ""
@@ -4520,6 +4538,10 @@ msgstr ""
 
 #: 
 msgid "{0} ({1})"
+msgstr ""
+
+#: 
+msgid "{0} ({consequence})"
 msgstr ""
 
 #: 

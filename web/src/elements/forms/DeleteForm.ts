@@ -5,7 +5,7 @@ import { ModalButton } from "../buttons/ModalButton";
 import { MessageLevel } from "../messages/Message";
 import { showMessage } from "../messages/MessageContainer";
 import "../buttons/SpinnerButton";
-import { UsedBy } from "authentik-api";
+import { UsedBy, UsedByActionEnum } from "authentik-api";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import { until } from "lit-html/directives/until";
 
@@ -88,7 +88,16 @@ export class DeleteForm extends ModalButton {
                         </p>
                         <ul class="pf-c-list">
                             ${usedBy.map(ub => {
-                                return html`<li>${ub.name}</li>`;
+                                let consequence = "";
+                                switch (ub.action) {
+                                case UsedByActionEnum.Cascade:
+                                    consequence = t`object will be DELETED`;
+                                case UsedByActionEnum.SetDefault:
+                                    consequence = t`reference will be reset to default value`;
+                                case UsedByActionEnum.SetNull:
+                                    consequence = t`reference will be set to an empty value`;
+                                }
+                                return html`<li>${t`${ub.name} (${consequence})`}</li>`;
                             })}
                         </ul>
                     </form>
