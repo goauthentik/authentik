@@ -15385,6 +15385,7 @@ components:
       - model_created
       - model_updated
       - model_deleted
+      - email_sent
       - update_available
       - custom_
       type: string

@@ -8,6 +8,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 
 from authentik.core.models import User
+from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
@@ -55,6 +56,13 @@ class TestEmailStageSending(TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertEqual(len(mail.outbox), 1)
             self.assertEqual(mail.outbox[0].subject, "authentik")
+            events = Event.objects.filter(action=EventAction.EMAIL_SENT)
+            self.assertEqual(len(events), 1)
+            event = events.first()
+            self.assertEqual(event.context["message"], "Email to test@beryju.org sent")
+            self.assertEqual(event.context["subject"], "authentik")
+            self.assertEqual(event.context["to_email"], ["test@beryju.org"])
+            self.assertEqual(event.context["from_email"], "system@authentik.local")
 
     def test_send_error(self):
         """Test error during sending (sending will be retried)"""

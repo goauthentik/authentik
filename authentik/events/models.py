@@ -77,6 +77,7 @@ class EventAction(models.TextChoices):
     MODEL_CREATED = "model_created"
     MODEL_UPDATED = "model_updated"
     MODEL_DELETED = "model_deleted"
+    EMAIL_SENT = "email_sent"
 
     UPDATE_AVAILABLE = "update_available"
 

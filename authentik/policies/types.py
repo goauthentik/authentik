@@ -45,6 +45,9 @@ class PolicyRequest:
             return
         self.context["geoip"] = GEOIP_READER.city(client_ip)
 
+    def __repr__(self) -> str:
+        return self.__str__()
+
     def __str__(self):
         text = f"<PolicyRequest user={self.user}"
         if self.obj:

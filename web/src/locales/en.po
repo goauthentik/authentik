@@ -1276,6 +1276,10 @@ msgstr "Email"
 msgid "Email address"
 msgstr "Email address"
 
+#: src/pages/events/EventInfo.ts
+msgid "Email info:"
+msgstr "Email info:"
+
 #: src/flows/stages/identification/IdentificationStage.ts
 msgid "Email or username"
 msgstr "Email or username"
@@ -1633,6 +1637,10 @@ msgstr "Forward auth (single application)"
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 msgid "Friendly Name"
 msgstr "Friendly Name"
+
+#: src/pages/events/EventInfo.ts
+msgid "From"
+msgstr "From"
 
 #: src/pages/stages/email/EmailStageForm.ts
 msgid "From address"
@@ -2148,6 +2156,10 @@ msgstr "Maximum age (in days)"
 #: src/pages/groups/GroupListPage.ts
 msgid "Members"
 msgstr "Members"
+
+#: src/pages/events/EventInfo.ts
+msgid "Message"
+msgstr "Message"
 
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/events/EventInfo.ts
@@ -3391,6 +3403,7 @@ msgstr "Status: Enabled"
 msgid "Stop impersonation"
 msgstr "Stop impersonation"
 
+#: src/pages/events/EventInfo.ts
 #: src/pages/stages/email/EmailStageForm.ts
 msgid "Subject"
 msgstr "Subject"
@@ -3864,6 +3877,10 @@ msgstr "Timeout"
 #: src/pages/tenants/TenantForm.ts
 msgid "Title"
 msgstr "Title"
+
+#: src/pages/events/EventInfo.ts
+msgid "To"
+msgstr "To"
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "To use SSL instead, use 'ldaps://' and disable this option."

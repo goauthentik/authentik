@@ -1269,6 +1269,10 @@ msgid "Email address"
 msgstr ""
 
 #: 
+msgid "Email info:"
+msgstr ""
+
+#: 
 msgid "Email or username"
 msgstr ""
 
@@ -1624,6 +1628,10 @@ msgstr ""
 
 #: 
 msgid "Friendly Name"
+msgstr ""
+
+#: 
+msgid "From"
 msgstr ""
 
 #: 
@@ -2139,6 +2147,10 @@ msgstr ""
 #: 
 #: 
 msgid "Members"
+msgstr ""
+
+#: 
+msgid "Message"
 msgstr ""
 
 #: 
@@ -3384,6 +3396,7 @@ msgid "Stop impersonation"
 msgstr ""
 
 #: 
+#: 
 msgid "Subject"
 msgstr ""
 
@@ -3851,6 +3864,10 @@ msgstr ""
 #: 
 #: 
 msgid "Title"
+msgstr ""
+
+#: 
+msgid "To"
 msgstr ""
 
 #: 

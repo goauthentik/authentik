@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
-import { FlowsApi } from "authentik-api";
+import { ActionEnum, FlowsApi } from "authentik-api";
 import "../../elements/Spinner";
 import "../../elements/Expand";
 import { PFSize } from "../../elements/Spinner";
@@ -31,6 +31,10 @@ export class EventInfo extends LitElement {
                 }
                 .pf-l-flex__item {
                     min-width: 25%;
+                }
+                iframe {
+                    width: 100%;
+                    height: 50rem;
                 }
             `
         ];
@@ -76,6 +80,50 @@ export class EventInfo extends LitElement {
         </dl>`;
     }
 
+    getEmailInfo(context: EventContext): TemplateResult {
+        if (context === null) {
+            return html`<span>-</span>`;
+        }
+        return html`<dl class="pf-c-description-list pf-m-horizontal">
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${t`Message`}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">${context.message}</div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${t`Subject`}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">${context.subject}</div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${t`From`}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">${context.from_email}</div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${t`To`}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        ${(context.to_email as string[]).map(to => {
+                            return html`<li>${to}</li>`;
+                        })}
+                    </div>
+                </dd>
+            </div>
+        </dl>`;
+    }
+
     defaultResponse(): TemplateResult {
         return html`<div class="pf-l-flex">
                 <div class="pf-l-flex__item">
@@ -94,14 +142,14 @@ export class EventInfo extends LitElement {
             return html`<ak-spinner size=${PFSize.Medium}></ak-spinner>`;
         }
         switch (this.event?.action) {
-        case "model_created":
-        case "model_updated":
-        case "model_deleted":
+        case ActionEnum.ModelCreated:
+        case ActionEnum.ModelUpdated:
+        case ActionEnum.ModelDeleted:
             return html`
                 <h3>${t`Affected model:`}</h3>
                 ${this.getModelInfo(this.event.context?.model as EventContext)}
                 `;
-        case "authorize_application":
+        case ActionEnum.AuthorizeApplication:
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${t`Authorized application:`}</h3>
@@ -118,15 +166,17 @@ export class EventInfo extends LitElement {
                     </div>
                 </div>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case "login_failed":
-            return html`
-                <h3>${t`Attempted to log in as ${this.event.context.username}`}</h3>
-                <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case "secret_view":
+        case ActionEnum.EmailSent:
+            return html`<h3>${t`Email info:`}</h3>
+                ${this.getEmailInfo(this.event.context)}
+                <ak-expand>
+                    <iframe srcdoc=${this.event.context.body}></iframe>
+                </ak-expand>`;
+        case ActionEnum.SecretView:
             return html`
                 <h3>${t`Secret:`}</h3>
                 ${this.getModelInfo(this.event.context.secret as EventContext)}`;
-        case "property_mapping_exception":
+        case ActionEnum.PropertyMappingException:
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${t`Exception`}</h3>
@@ -138,7 +188,7 @@ export class EventInfo extends LitElement {
                     </div>
                 </div>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case "policy_exception":
+        case ActionEnum.PolicyException:
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${t`Binding`}</h3>
@@ -157,7 +207,7 @@ export class EventInfo extends LitElement {
                     </div>
                 </div>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case "policy_execution":
+        case ActionEnum.PolicyExecution:
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${t`Binding`}</h3>
@@ -185,16 +235,19 @@ export class EventInfo extends LitElement {
                     </div>
                 </div>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case "configuration_error":
+        case ActionEnum.ConfigurationError:
             return html`<h3>${this.event.context.message}</h3>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case "update_available":
+        case ActionEnum.UpdateAvailable:
             return html`<h3>${t`New version available!`}</h3>
-                <a target="_blank" href="https://github.com/goauthentik/authentik/releases/tag/version%2F${this.event.context.new_version}">${this.event.context.new_version}</a>
-                `;
+                <a
+                    target="_blank"
+                    href="https://github.com/goauthentik/authentik/releases/tag/version%2F${this.event.context.new_version}">
+                    ${this.event.context.new_version}
+                </a>`;
         // Action types which typically don't record any extra context.
         // If context is not empty, we fall to the default response.
-        case "login":
+        case ActionEnum.Login:
             if ("using_source" in this.event.context) {
                 return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
@@ -204,7 +257,11 @@ export class EventInfo extends LitElement {
                 </div>`;
             }
             return this.defaultResponse();
-        case "logout":
+        case ActionEnum.LoginFailed:
+            return html`
+                <h3>${t`Attempted to log in as ${this.event.context.username}`}</h3>
+                <ak-expand>${this.defaultResponse()}</ak-expand>`;
+        case ActionEnum.Logout:
             if (this.event.context === {}) {
                 return html`<span>${t`No additional data available.`}</span>`;
             }
