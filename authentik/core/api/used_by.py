@@ -53,11 +53,11 @@ class UsedByMixin:
     def used_by(self, request: Request, pk: str) -> Response:
         """Get a list of all objects that use this object"""
         # pyright: reportGeneralTypeIssues=false
-        certificate: Model = self.get_object()
+        model: Model = self.get_object()
         used_by = []
         shadows = []
         for attr_name, manager in getmembers(
-            certificate, lambda x: isinstance(x, Manager)
+            model, lambda x: isinstance(x, Manager)
         ):
             if attr_name == "objects":  # pragma: no cover
                 continue
