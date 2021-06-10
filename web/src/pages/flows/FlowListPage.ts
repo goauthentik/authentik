@@ -103,7 +103,7 @@ export class FlowListPage extends TablePage<Flow> {
                 }}>
                 ${t`Execute`}
             </button>
-            <a class="pf-c-button pf-m-secondary" href=${flow.exportUrl}>
+            <a class="pf-c-button pf-m-secondary" href=${item.exportUrl}>
                 ${t`Export`}
             </a>`,
         ];

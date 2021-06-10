@@ -163,7 +163,7 @@ export class SAMLProviderViewPage extends LitElement {
                                     <ak-action-button
                                         class="pf-m-secondary"
                                         .apiRequest=${() => {
-                                            const fullUrl = window.location.origin + this.provider.metadataDownloadUrl;
+                                            const fullUrl = window.location.origin + this.provider?.metadataDownloadUrl;
                                             return navigator.clipboard.writeText(fullUrl);
                                         }}>
                                         ${t`Copy download URL`}
