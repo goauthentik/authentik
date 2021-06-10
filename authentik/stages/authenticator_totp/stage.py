@@ -1,6 +1,7 @@
 """TOTP Setup stage"""
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
+from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from rest_framework.fields import CharField, IntegerField
@@ -16,6 +17,7 @@ from authentik.flows.challenge import (
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage
+from authentik.stages.authenticator_totp.settings import OTP_TOTP_ISSUER
 
 LOGGER = get_logger()
 SESSION_TOTP_DEVICE = "totp_device"
@@ -54,7 +56,9 @@ class AuthenticatorTOTPStageView(ChallengeStageView):
         return AuthenticatorTOTPChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "config_url": device.config_url,
+                "config_url": device.config_url.replace(
+                    OTP_TOTP_ISSUER, slugify(self.request.tenant.branding_title)
+                ),
             }
         )
 
