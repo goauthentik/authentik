@@ -92,10 +92,13 @@ export class DeleteForm extends ModalButton {
                                 switch (ub.action) {
                                 case UsedByActionEnum.Cascade:
                                     consequence = t`object will be DELETED`;
+                                    break;
                                 case UsedByActionEnum.SetDefault:
                                     consequence = t`reference will be reset to default value`;
+                                    break;
                                 case UsedByActionEnum.SetNull:
                                     consequence = t`reference will be set to an empty value`;
+                                    break;
                                 }
                                 return html`<li>${t`${ub.name} (${consequence})`}</li>`;
                             })}
