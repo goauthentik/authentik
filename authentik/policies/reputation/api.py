@@ -3,6 +3,7 @@ from rest_framework import mixins
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.policies.api.policies import PolicySerializer
 from authentik.policies.reputation.models import (
     IPReputation,
@@ -23,7 +24,7 @@ class ReputationPolicySerializer(PolicySerializer):
         ]
 
 
-class ReputationPolicyViewSet(ModelViewSet):
+class ReputationPolicyViewSet(UsedByMixin, ModelViewSet):
     """Reputation Policy Viewset"""
 
     queryset = ReputationPolicy.objects.all()
@@ -46,6 +47,7 @@ class IPReputationSerializer(ModelSerializer):
 class IPReputationViewSet(
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
+    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):
@@ -74,6 +76,7 @@ class UserReputationSerializer(ModelSerializer):
 class UserReputationViewSet(
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
+    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

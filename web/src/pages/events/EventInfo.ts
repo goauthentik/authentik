@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
-import { ActionEnum, FlowsApi } from "authentik-api";
+import { EventMatcherPolicyActionEnum, FlowsApi } from "authentik-api";
 import "../../elements/Spinner";
 import "../../elements/Expand";
 import { PFSize } from "../../elements/Spinner";
@@ -142,14 +142,14 @@ export class EventInfo extends LitElement {
             return html`<ak-spinner size=${PFSize.Medium}></ak-spinner>`;
         }
         switch (this.event?.action) {
-        case ActionEnum.ModelCreated:
-        case ActionEnum.ModelUpdated:
-        case ActionEnum.ModelDeleted:
+        case EventMatcherPolicyActionEnum.ModelCreated:
+        case EventMatcherPolicyActionEnum.ModelUpdated:
+        case EventMatcherPolicyActionEnum.ModelDeleted:
             return html`
                 <h3>${t`Affected model:`}</h3>
                 ${this.getModelInfo(this.event.context?.model as EventContext)}
                 `;
-        case ActionEnum.AuthorizeApplication:
+        case EventMatcherPolicyActionEnum.AuthorizeApplication:
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${t`Authorized application:`}</h3>
@@ -166,17 +166,17 @@ export class EventInfo extends LitElement {
                     </div>
                 </div>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case ActionEnum.EmailSent:
+        case EventMatcherPolicyActionEnum.EmailSent:
             return html`<h3>${t`Email info:`}</h3>
                 ${this.getEmailInfo(this.event.context)}
                 <ak-expand>
                     <iframe srcdoc=${this.event.context.body}></iframe>
                 </ak-expand>`;
-        case ActionEnum.SecretView:
+        case EventMatcherPolicyActionEnum.SecretView:
             return html`
                 <h3>${t`Secret:`}</h3>
                 ${this.getModelInfo(this.event.context.secret as EventContext)}`;
-        case ActionEnum.PropertyMappingException:
+        case EventMatcherPolicyActionEnum.PropertyMappingException:
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${t`Exception`}</h3>
@@ -188,7 +188,7 @@ export class EventInfo extends LitElement {
                     </div>
                 </div>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case ActionEnum.PolicyException:
+        case EventMatcherPolicyActionEnum.PolicyException:
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${t`Binding`}</h3>
@@ -207,7 +207,7 @@ export class EventInfo extends LitElement {
                     </div>
                 </div>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case ActionEnum.PolicyExecution:
+        case EventMatcherPolicyActionEnum.PolicyExecution:
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${t`Binding`}</h3>
@@ -235,10 +235,10 @@ export class EventInfo extends LitElement {
                     </div>
                 </div>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case ActionEnum.ConfigurationError:
+        case EventMatcherPolicyActionEnum.ConfigurationError:
             return html`<h3>${this.event.context.message}</h3>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case ActionEnum.UpdateAvailable:
+        case EventMatcherPolicyActionEnum.UpdateAvailable:
             return html`<h3>${t`New version available!`}</h3>
                 <a
                     target="_blank"
@@ -247,7 +247,7 @@ export class EventInfo extends LitElement {
                 </a>`;
         // Action types which typically don't record any extra context.
         // If context is not empty, we fall to the default response.
-        case ActionEnum.Login:
+        case EventMatcherPolicyActionEnum.Login:
             if ("using_source" in this.event.context) {
                 return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
@@ -257,11 +257,11 @@ export class EventInfo extends LitElement {
                 </div>`;
             }
             return this.defaultResponse();
-        case ActionEnum.LoginFailed:
+        case EventMatcherPolicyActionEnum.LoginFailed:
             return html`
                 <h3>${t`Attempted to log in as ${this.event.context.username}`}</h3>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case ActionEnum.Logout:
+        case EventMatcherPolicyActionEnum.Logout:
             if (this.event.context === {}) {
                 return html`<span>${t`No additional data available.`}</span>`;
             }

@@ -137,9 +137,14 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Policy binding`}
+                .usedBy=${() => {
+                    return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsUsedByList({
+                        policyBindingUuid: item.pk
+                    });
+                }}
                 .delete=${() => {
                     return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsDestroy({
-                        policyBindingUuid: item.pk || "",
+                        policyBindingUuid: item.pk,
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">

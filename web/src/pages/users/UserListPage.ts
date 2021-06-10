@@ -111,9 +111,14 @@ export class UserListPage extends TablePage<User> {
                         <ak-forms-delete
                             .obj=${item}
                             objectLabel=${t`User`}
+                            .usedBy=${() => {
+                                return new CoreApi(DEFAULT_CONFIG).coreUsersUsedByList({
+                                    id: item.pk
+                                });
+                            }}
                             .delete=${() => {
                                 return new CoreApi(DEFAULT_CONFIG).coreUsersDestroy({
-                                    id: item.pk || 0
+                                    id: item.pk
                                 });
                             }}>
                             <button slot="trigger" class="pf-c-dropdown__menu-item">

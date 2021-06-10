@@ -1,6 +1,7 @@
 """Source API Views"""
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.policies.api.policies import PolicySerializer
 from authentik.policies.hibp.models import HaveIBeenPwendPolicy
 
@@ -13,7 +14,7 @@ class HaveIBeenPwendPolicySerializer(PolicySerializer):
         fields = PolicySerializer.Meta.fields + ["password_field", "allowed_count"]
 
 
-class HaveIBeenPwendPolicyViewSet(ModelViewSet):
+class HaveIBeenPwendPolicyViewSet(UsedByMixin, ModelViewSet):
     """Source Viewset"""
 
     queryset = HaveIBeenPwendPolicy.objects.all()

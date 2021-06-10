@@ -5,6 +5,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_guardian.filters import ObjectPermissionsFilter
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import is_dict
 from authentik.core.models import Group
 
@@ -20,7 +21,7 @@ class GroupSerializer(ModelSerializer):
         fields = ["pk", "name", "is_superuser", "parent", "users", "attributes"]
 
 
-class GroupViewSet(ModelViewSet):
+class GroupViewSet(UsedByMixin, ModelViewSet):
     """Group Viewset"""
 
     queryset = Group.objects.all()

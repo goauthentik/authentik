@@ -58,6 +58,11 @@ export class TokenListPage extends TablePage<Token> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Token`}
+                .usedBy=${() => {
+                    return new CoreApi(DEFAULT_CONFIG).coreTokensUsedByList({
+                        identifier: item.identifier
+                    });
+                }}
                 .delete=${() => {
                     return new CoreApi(DEFAULT_CONFIG).coreTokensDestroy({
                         identifier: item.identifier

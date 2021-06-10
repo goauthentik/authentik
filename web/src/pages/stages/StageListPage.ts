@@ -102,9 +102,14 @@ export class StageListPage extends TablePage<Stage> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${item.verboseName || ""}
+                .usedBy=${() => {
+                    return new StagesApi(DEFAULT_CONFIG).stagesAllUsedByList({
+                        stageUuid: item.pk
+                    });
+                }}
                 .delete=${() => {
                     return new StagesApi(DEFAULT_CONFIG).stagesAllDestroy({
-                        stageUuid: item.pk || ""
+                        stageUuid: item.pk
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">

@@ -1136,6 +1136,9 @@ msgid "Disable"
 msgstr ""
 
 #: 
+msgid "Disable Duo authenticator"
+msgstr ""
+
 #: 
 msgid "Disable Static Tokens"
 msgstr ""
@@ -1286,10 +1289,13 @@ msgid "Enable"
 msgstr ""
 
 #: 
-msgid "Enable StartTLS"
+msgid "Enable Duo authenticator"
 msgstr ""
 
 #: 
+msgid "Enable StartTLS"
+msgstr ""
+
 #: 
 msgid "Enable Static Tokens"
 msgstr ""
@@ -2138,6 +2144,10 @@ msgstr ""
 
 #: 
 msgid "Matches an event against a set of criteria. If any of the configured values match, the policy passes."
+msgstr ""
+
+#: 
+msgid "Matching is done based on domain suffix, so if you enter domain.tld, foo.domain.tld will still match."
 msgstr ""
 
 #: 
@@ -3798,6 +3808,10 @@ msgid "The external URL you'll authenticate at. Can be the same domain as authen
 msgstr ""
 
 #: 
+msgid "The following objects use {objName}"
+msgstr ""
+
+#: 
 msgid "The policy takes a random time to execute. This controls the minimum time it will take."
 msgstr ""
 
@@ -4506,6 +4520,18 @@ msgid "no tabs defined"
 msgstr ""
 
 #: 
+msgid "object will be DELETED"
+msgstr ""
+
+#: 
+msgid "reference will be reset to default value"
+msgstr ""
+
+#: 
+msgid "reference will be set to an empty value"
+msgstr ""
+
+#: 
 #: 
 msgid "{0}"
 msgstr ""
@@ -4516,6 +4542,10 @@ msgstr ""
 
 #: 
 msgid "{0} ({1})"
+msgstr ""
+
+#: 
+msgid "{0} ({consequence})"
 msgstr ""
 
 #: 

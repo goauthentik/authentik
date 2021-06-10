@@ -68,9 +68,14 @@ export class UserOAuthRefreshList extends Table<RefreshTokenModel> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Refresh Code`}
+                .usedBy=${() => {
+                    return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensUsedByList({
+                        id: item.pk
+                    });
+                }}
                 .delete=${() => {
                     return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensDestroy({
-                        id: item.pk || 0,
+                        id: item.pk,
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">

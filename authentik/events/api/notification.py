@@ -7,6 +7,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
+from authentik.core.api.used_by import UsedByMixin
 from authentik.events.api.event import EventSerializer
 from authentik.events.models import Notification
 
@@ -35,6 +36,7 @@ class NotificationViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
+    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

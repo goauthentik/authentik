@@ -45,6 +45,11 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Session`}
+                .usedBy=${() => {
+                    return new CoreApi(DEFAULT_CONFIG).coreAuthenticatedSessionsUsedByList({
+                        uuid: item.uuid || "",
+                    });
+                }}
                 .delete=${() => {
                     return new CoreApi(DEFAULT_CONFIG).coreAuthenticatedSessionsDestroy({
                         uuid: item.uuid || "",

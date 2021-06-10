@@ -103,9 +103,14 @@ export class ApplicationListPage extends TablePage<Application> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Application`}
+                .usedBy=${() => {
+                    return new CoreApi(DEFAULT_CONFIG).coreApplicationsUsedByList({
+                        slug: item.slug
+                    });
+                }}
                 .delete=${() => {
                     return new CoreApi(DEFAULT_CONFIG).coreApplicationsDestroy({
-                        slug: item.slug || ""
+                        slug: item.slug
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">

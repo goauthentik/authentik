@@ -1,10 +1,11 @@
 """Crypto API Views"""
-import django_filters
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import load_pem_x509_certificate
 from django.http.response import HttpResponse
 from django.utils.translation import gettext_lazy as _
+from django_filters import FilterSet
+from django_filters.filters import BooleanFilter
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
@@ -20,6 +21,7 @@ from rest_framework.serializers import ModelSerializer, ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.decorators import permission_required
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.crypto.builder import CertificateBuilder
 from authentik.crypto.models import CertificateKeyPair
@@ -100,10 +102,10 @@ class CertificateGenerationSerializer(PassiveSerializer):
     validity_days = IntegerField(initial=365)
 
 
-class CertificateKeyPairFilter(django_filters.FilterSet):
+class CertificateKeyPairFilter(FilterSet):
     """Filter for certificates"""
 
-    has_key = django_filters.BooleanFilter(
+    has_key = BooleanFilter(
         label="Only return certificate-key pairs with keys", method="filter_has_key"
     )
 
@@ -117,7 +119,7 @@ class CertificateKeyPairFilter(django_filters.FilterSet):
         fields = ["name"]
 
 
-class CertificateKeyPairViewSet(ModelViewSet):
+class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
     """CertificateKeyPair Viewset"""
 
     queryset = CertificateKeyPair.objects.all()

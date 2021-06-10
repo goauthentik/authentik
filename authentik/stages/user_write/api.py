@@ -1,6 +1,7 @@
 """User Write Stage API Views"""
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.user_write.models import UserWriteStage
 
@@ -14,7 +15,7 @@ class UserWriteStageSerializer(StageSerializer):
         fields = StageSerializer.Meta.fields
 
 
-class UserWriteStageViewSet(ModelViewSet):
+class UserWriteStageViewSet(UsedByMixin, ModelViewSet):
     """UserWriteStage Viewset"""
 
     queryset = UserWriteStage.objects.all()

@@ -664,6 +664,35 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/authenticators/duo/{id}/used_by/:
+    get:
+      operationId: authenticators_duo_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Duo Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/authenticators/static/:
     get:
       operationId: authenticators_static_list
@@ -833,6 +862,35 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/authenticators/static/{id}/used_by/:
+    get:
+      operationId: authenticators_static_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this static device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -1010,6 +1068,35 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/authenticators/totp/{id}/used_by/:
+    get:
+      operationId: authenticators_totp_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this TOTP device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/authenticators/webauthn/:
     get:
       operationId: authenticators_webauthn_list
@@ -1179,6 +1266,35 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/authenticators/webauthn/{id}/used_by/:
+    get:
+      operationId: authenticators_webauthn_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this WebAuthn Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -1519,6 +1635,35 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/core/applications/{slug}/used_by/:
+    get:
+      operationId: core_applications_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal application name, used in URLs.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/authenticated_sessions/:
     get:
       operationId: core_authenticated_sessions_list
@@ -1623,6 +1768,36 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/core/authenticated_sessions/{uuid}/used_by/:
+    get:
+      operationId: core_authenticated_sessions_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this authenticated session.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -1839,6 +2014,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/core/groups/{group_uuid}/used_by/:
+    get:
+      operationId: core_groups_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: group_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this group.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/tenants/:
     get:
       operationId: core_tenants_list
@@ -2039,6 +2244,36 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/core/tenants/{tenant_uuid}/used_by/:
+    get:
+      operationId: core_tenants_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: tenant_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Tenant.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -2280,6 +2515,34 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/core/tokens/{identifier}/used_by/:
+    get:
+      operationId: core_tokens_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: identifier
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/tokens/{identifier}/view_key/:
     get:
       operationId: core_tokens_view_key_retrieve
@@ -2407,6 +2670,35 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/core/user_consent/{id}/used_by/:
+    get:
+      operationId: core_user_consent_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User Consent.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -2692,6 +2984,35 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/core/users/{id}/used_by/:
+    get:
+      operationId: core_users_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/users/me/:
     get:
       operationId: core_users_me_retrieve
@@ -2921,6 +3242,36 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/crypto/certificatekeypairs/{kp_uuid}/used_by/:
+    get:
+      operationId: crypto_certificatekeypairs_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: kp_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Certificate-Key Pair.
+        required: true
+      tags:
+      - crypto
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -3419,6 +3770,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/events/notifications/{uuid}/used_by/:
+    get:
+      operationId: events_notifications_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification.
+        required: true
+      tags:
+      - events
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/events/rules/:
     get:
       operationId: events_rules_list
@@ -3619,6 +4000,36 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/events/rules/{pbm_uuid}/used_by/:
+    get:
+      operationId: events_rules_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification Rule.
+        required: true
+      tags:
+      - events
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -3855,6 +4266,36 @@ paths:
           description: ''
         '500':
           description: Failed to test transport
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/events/transports/{uuid}/used_by/:
+    get:
+      operationId: events_transports_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification Transport.
+        required: true
+      tags:
+      - events
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -4107,6 +4548,36 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/flows/bindings/{fsb_uuid}/used_by/:
+    get:
+      operationId: flows_bindings_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: fsb_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Flow Stage Binding.
+        required: true
+      tags:
+      - flows
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -4563,6 +5034,35 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/flows/instances/{slug}/used_by/:
+    get:
+      operationId: flows_instances_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Visible in the URL.
+        required: true
+      tags:
+      - flows
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/flows/instances/cache_clear/:
     post:
       operationId: flows_instances_cache_clear_create
@@ -4722,6 +5222,35 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/oauth2/authorization_codes/{id}/used_by/:
+    get:
+      operationId: oauth2_authorization_codes_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Authorization Code.
+        required: true
+      tags:
+      - oauth2
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/oauth2/refresh_tokens/:
     get:
       operationId: oauth2_refresh_tokens_list
@@ -4820,6 +5349,35 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/oauth2/refresh_tokens/{id}/used_by/:
+    get:
+      operationId: oauth2_refresh_tokens_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this OAuth2 Token.
+        required: true
+      tags:
+      - oauth2
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -5073,6 +5631,36 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/OutpostHealth'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/outposts/instances/{uuid}/used_by/:
+    get:
+      operationId: outposts_instances_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this outpost.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
@@ -5370,6 +5958,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/outposts/service_connections/all/{uuid}/used_by/:
+    get:
+      operationId: outposts_service_connections_all_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Outpost Service-Connection.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/outposts/service_connections/all/types/:
     get:
       operationId: outposts_service_connections_all_types_list
@@ -5596,6 +6214,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/outposts/service_connections/docker/{uuid}/used_by/:
+    get:
+      operationId: outposts_service_connections_docker_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Docker Service-Connection.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/outposts/service_connections/kubernetes/:
     get:
       operationId: outposts_service_connections_kubernetes_list
@@ -5800,6 +6448,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/outposts/service_connections/kubernetes/{uuid}/used_by/:
+    get:
+      operationId: outposts_service_connections_kubernetes_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Kubernetes Service-Connection.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/all/:
     get:
       operationId: policies_all_list
@@ -5942,6 +6620,36 @@ paths:
           description: ''
         '400':
           description: Invalid parameters
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/policies/all/{policy_uuid}/used_by/:
+    get:
+      operationId: policies_all_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/all/cache_clear/:
@@ -6228,6 +6936,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/policies/bindings/{policy_binding_uuid}/used_by/:
+    get:
+      operationId: policies_bindings_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: policy_binding_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Policy Binding.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/dummy/:
     get:
       operationId: policies_dummy_list
@@ -6430,6 +7168,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/policies/dummy/{policy_uuid}/used_by/:
+    get:
+      operationId: policies_dummy_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Dummy Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/event_matcher/:
     get:
       operationId: policies_event_matcher_list
@@ -6628,6 +7396,36 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/policies/event_matcher/{policy_uuid}/used_by/:
+    get:
+      operationId: policies_event_matcher_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Event Matcher Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -6836,6 +7634,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/policies/expression/{policy_uuid}/used_by/:
+    get:
+      operationId: policies_expression_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Expression Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/haveibeenpwned/:
     get:
       operationId: policies_haveibeenpwned_list
@@ -7034,6 +7862,36 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/policies/haveibeenpwned/{policy_uuid}/used_by/:
+    get:
+      operationId: policies_haveibeenpwned_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Have I Been Pwned Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -7242,6 +8100,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/policies/password/{policy_uuid}/used_by/:
+    get:
+      operationId: policies_password_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Password Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/password_expiry/:
     get:
       operationId: policies_password_expiry_list
@@ -7442,6 +8330,36 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/policies/password_expiry/{policy_uuid}/used_by/:
+    get:
+      operationId: policies_password_expiry_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Password Expiry Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -7648,6 +8566,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/policies/reputation/{policy_uuid}/used_by/:
+    get:
+      operationId: policies_reputation_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Reputation Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/reputation/ips/:
     get:
       operationId: policies_reputation_ips_list
@@ -7750,6 +8698,35 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/policies/reputation/ips/{id}/used_by/:
+    get:
+      operationId: policies_reputation_ips_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this ip reputation.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/policies/reputation/users/:
     get:
       operationId: policies_reputation_users_list
@@ -7848,6 +8825,35 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/policies/reputation/users/{id}/used_by/:
+    get:
+      operationId: policies_reputation_users_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user reputation.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -7994,6 +9000,36 @@ paths:
           description: ''
         '400':
           description: Invalid parameters
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/propertymappings/all/{pm_uuid}/used_by/:
+    get:
+      operationId: propertymappings_all_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
   /api/v2beta/propertymappings/all/types/:
@@ -8222,6 +9258,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/propertymappings/ldap/{pm_uuid}/used_by/:
+    get:
+      operationId: propertymappings_ldap_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this LDAP Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/propertymappings/saml/:
     get:
       operationId: propertymappings_saml_list
@@ -8422,6 +9488,36 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/propertymappings/saml/{pm_uuid}/used_by/:
+    get:
+      operationId: propertymappings_saml_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SAML Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -8630,6 +9726,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/propertymappings/scope/{pm_uuid}/used_by/:
+    get:
+      operationId: propertymappings_scope_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Scope Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/providers/all/:
     get:
       operationId: providers_all_list
@@ -8724,6 +9850,35 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/providers/all/{id}/used_by/:
+    get:
+      operationId: providers_all_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -8946,6 +10101,35 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/providers/ldap/{id}/used_by/:
+    get:
+      operationId: providers_ldap_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this LDAP Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -9179,6 +10363,35 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/providers/oauth2/{id}/used_by/:
+    get:
+      operationId: providers_oauth2_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this OAuth2/OpenID Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/providers/proxy/:
     get:
       operationId: providers_proxy_list
@@ -9375,6 +10588,35 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/providers/proxy/{id}/used_by/:
+    get:
+      operationId: providers_proxy_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Proxy Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -9609,6 +10851,35 @@ paths:
           description: ''
         '404':
           description: Provider has no application assigned
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/providers/saml/{id}/used_by/:
+    get:
+      operationId: providers_saml_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SAML Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -9897,6 +11168,35 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/sources/all/{slug}/used_by/:
+    get:
+      operationId: sources_all_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/sources/all/types/:
     get:
       operationId: sources_all_types_list
@@ -10170,6 +11470,35 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/sources/ldap/{slug}/used_by/:
+    get:
+      operationId: sources_ldap_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/sources/oauth/:
     get:
       operationId: sources_oauth_list
@@ -10370,6 +11699,35 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/sources/oauth/{slug}/used_by/:
+    get:
+      operationId: sources_oauth_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/sources/oauth/source_types/:
     get:
       operationId: sources_oauth_source_types_list
@@ -10561,6 +11919,35 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/sources/oauth_user_connections/{id}/used_by/:
+    get:
+      operationId: sources_oauth_user_connections_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User OAuth Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -10761,6 +12148,35 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/sources/plex/{slug}/used_by/:
+    get:
+      operationId: sources_plex_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -11032,6 +12448,35 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/sources/saml/{slug}/used_by/:
+    get:
+      operationId: sources_saml_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/all/:
     get:
       operationId: stages_all_list
@@ -11128,6 +12573,36 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/all/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_all_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -11406,6 +12881,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/authenticator/duo/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_authenticator_duo_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Duo Authenticator Setup Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/authenticator/static/:
     get:
       operationId: stages_authenticator_static_list
@@ -11606,6 +13111,36 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/authenticator/static/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_authenticator_static_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Static Authenticator Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -11814,6 +13349,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/authenticator/totp/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_authenticator_totp_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this TOTP Authenticator Setup Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/authenticator/validate/:
     get:
       operationId: stages_authenticator_validate_list
@@ -12014,6 +13579,36 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/authenticator/validate/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_authenticator_validate_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Authenticator Validation Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -12222,6 +13817,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/authenticator/webauthn/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_authenticator_webauthn_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this WebAuthn Authenticator Setup Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/captcha/:
     get:
       operationId: stages_captcha_list
@@ -12422,6 +14047,36 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/captcha/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_captcha_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Captcha Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -12630,6 +14285,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/consent/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_consent_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Consent Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/deny/:
     get:
       operationId: stages_deny_list
@@ -12830,6 +14515,36 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/deny/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_deny_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Deny Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -13038,6 +14753,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/dummy/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_dummy_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Dummy Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/email/:
     get:
       operationId: stages_email_list
@@ -13238,6 +14983,36 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/email/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_email_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Email Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -13468,6 +15243,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/identification/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_identification_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Identification Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/invitation/invitations/:
     get:
       operationId: stages_invitation_invitations_list
@@ -13679,6 +15484,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/invitation/invitations/{invite_uuid}/used_by/:
+    get:
+      operationId: stages_invitation_invitations_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: invite_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Invitation.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/invitation/stages/:
     get:
       operationId: stages_invitation_stages_list
@@ -13883,6 +15718,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/invitation/stages/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_invitation_stages_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Invitation Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/password/:
     get:
       operationId: stages_password_list
@@ -14083,6 +15948,36 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/password/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_password_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Password Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -14319,6 +16214,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/prompt/prompts/{prompt_uuid}/used_by/:
+    get:
+      operationId: stages_prompt_prompts_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: prompt_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Prompt.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/prompt/stages/:
     get:
       operationId: stages_prompt_stages_list
@@ -14519,6 +16444,36 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/prompt/stages/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_prompt_stages_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Prompt Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -14727,6 +16682,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/user_delete/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_user_delete_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Delete Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/user_login/:
     get:
       operationId: stages_user_login_list
@@ -14927,6 +16912,36 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/user_login/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_user_login_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Login Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -15135,6 +17150,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/user_logout/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_user_logout_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Logout Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/stages/user_write/:
     get:
       operationId: stages_user_write_list
@@ -15339,6 +17384,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/stages/user_write/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_user_write_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Write Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
 components:
   schemas:
     AccessDeniedChallenge:
@@ -15362,33 +17437,6 @@ components:
           type: string
       required:
       - type
-    ActionEnum:
-      enum:
-      - login
-      - login_failed
-      - logout
-      - user_write
-      - suspicious_request
-      - password_set
-      - secret_view
-      - invitation_used
-      - authorize_application
-      - source_linked
-      - impersonation_started
-      - impersonation_ended
-      - policy_execution
-      - policy_exception
-      - property_mapping_exception
-      - system_task_execution
-      - system_task_exception
-      - configuration_error
-      - model_created
-      - model_updated
-      - model_deleted
-      - email_sent
-      - update_available
-      - custom_
-      type: string
     App:
       type: object
       description: Serialize Application info
@@ -17076,7 +19124,7 @@ components:
           readOnly: true
         action:
           allOf:
-          - $ref: '#/components/schemas/ActionEnum'
+          - $ref: '#/components/schemas/EventMatcherPolicyActionEnum'
           description: Match created events with this action type. When left empty,
             all action types will be matched.
         client_ip:
@@ -17094,6 +19142,33 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    EventMatcherPolicyActionEnum:
+      enum:
+      - login
+      - login_failed
+      - logout
+      - user_write
+      - suspicious_request
+      - password_set
+      - secret_view
+      - invitation_used
+      - authorize_application
+      - source_linked
+      - impersonation_started
+      - impersonation_ended
+      - policy_execution
+      - policy_exception
+      - property_mapping_exception
+      - system_task_execution
+      - system_task_exception
+      - configuration_error
+      - model_created
+      - model_updated
+      - model_deleted
+      - email_sent
+      - update_available
+      - custom_
+      type: string
     EventMatcherPolicyRequest:
       type: object
       description: Event Matcher Policy Serializer
@@ -17107,7 +19182,7 @@ components:
             will be logged. By default, only execution errors are logged.
         action:
           allOf:
-          - $ref: '#/components/schemas/ActionEnum'
+          - $ref: '#/components/schemas/EventMatcherPolicyActionEnum'
           description: Match created events with this action type. When left empty,
             all action types will be matched.
         client_ip:
@@ -22199,7 +24274,7 @@ components:
             will be logged. By default, only execution errors are logged.
         action:
           allOf:
-          - $ref: '#/components/schemas/ActionEnum'
+          - $ref: '#/components/schemas/EventMatcherPolicyActionEnum'
           description: Match created events with this action type. When left empty,
             all action types will be matched.
         client_ip:
@@ -25448,6 +27523,33 @@ components:
       required:
       - challenge
       - name
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    UsedByActionEnum:
+      enum:
+      - CASCADE
+      - CASCADE_MANY
+      - SET_NULL
+      - SET_DEFAULT
+      type: string
     User:
       type: object
       description: User Serializer

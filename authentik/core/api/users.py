@@ -25,6 +25,7 @@ from rest_framework_guardian.filters import ObjectPermissionsFilter
 from authentik.admin.api.metrics import CoordinateSerializer, get_events_per_1h
 from authentik.api.decorators import permission_required
 from authentik.core.api.groups import GroupSerializer
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import LinkSerializer, PassiveSerializer, is_dict
 from authentik.core.middleware import (
     SESSION_IMPERSONATE_ORIGINAL_USER,
@@ -131,7 +132,7 @@ class UsersFilter(FilterSet):
         fields = ["username", "name", "is_active", "is_superuser", "attributes"]
 
 
-class UserViewSet(ModelViewSet):
+class UserViewSet(UsedByMixin, ModelViewSet):
     """User Viewset"""
 
     queryset = User.objects.none()

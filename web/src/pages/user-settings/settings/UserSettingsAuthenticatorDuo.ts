@@ -31,7 +31,7 @@ export class UserSettingsAuthenticatorDuo extends BaseUserSettings {
                             });
                         });
                     }}>
-                    ${t`Disable Static Tokens`}
+                    ${t`Disable Duo authenticator`}
                 </button>
             </div>`;
     }
@@ -47,7 +47,7 @@ export class UserSettingsAuthenticatorDuo extends BaseUserSettings {
             <div class="pf-c-card__footer">
                 ${this.configureUrl ?
                     html`<a href="${this.configureUrl}?next=/%23%2Fuser"
-                            class="pf-c-button pf-m-primary">${t`Enable Static Tokens`}
+                            class="pf-c-button pf-m-primary">${t`Enable Duo authenticator`}
                         </a>`: html``}
             </div>`;
     }

@@ -86,9 +86,14 @@ export class SourceListPage extends TablePage<Source> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Source`}
+                .usedBy=${() => {
+                    return new SourcesApi(DEFAULT_CONFIG).sourcesAllUsedByList({
+                        slug: item.slug
+                    });
+                }}
                 .delete=${() => {
                     return new SourcesApi(DEFAULT_CONFIG).sourcesAllDestroy({
-                        slug: item.slug || ""
+                        slug: item.slug
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">

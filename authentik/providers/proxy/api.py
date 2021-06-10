@@ -8,6 +8,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.providers.oauth2.views.provider import ProviderInfoView
 from authentik.providers.proxy.models import ProxyMode, ProxyProvider
@@ -76,7 +77,7 @@ class ProxyProviderSerializer(ProviderSerializer):
         ]
 
 
-class ProxyProviderViewSet(ModelViewSet):
+class ProxyProviderViewSet(UsedByMixin, ModelViewSet):
     """ProxyProvider Viewset"""
 
     queryset = ProxyProvider.objects.all()

@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
     MetaNameSerializer,
     PassiveSerializer,
@@ -55,6 +56,7 @@ class ServiceConnectionStateSerializer(PassiveSerializer):
 class ServiceConnectionViewSet(
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
+    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):
@@ -105,7 +107,7 @@ class DockerServiceConnectionSerializer(ServiceConnectionSerializer):
         ]
 
 
-class DockerServiceConnectionViewSet(ModelViewSet):
+class DockerServiceConnectionViewSet(UsedByMixin, ModelViewSet):
     """DockerServiceConnection Viewset"""
 
     queryset = DockerServiceConnection.objects.all()
@@ -139,7 +141,7 @@ class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
         fields = ServiceConnectionSerializer.Meta.fields + ["kubeconfig"]
 
 
-class KubernetesServiceConnectionViewSet(ModelViewSet):
+class KubernetesServiceConnectionViewSet(UsedByMixin, ModelViewSet):
     """KubernetesServiceConnection Viewset"""
 
     queryset = KubernetesServiceConnection.objects.all()

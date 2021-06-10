@@ -1,6 +1,7 @@
 """Identification Stage API Views"""
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.identification.models import IdentificationStage
 
@@ -22,7 +23,7 @@ class IdentificationStageSerializer(StageSerializer):
         ]
 
 
-class IdentificationStageViewSet(ModelViewSet):
+class IdentificationStageViewSet(UsedByMixin, ModelViewSet):
     """IdentificationStage Viewset"""
 
     queryset = IdentificationStage.objects.all()

@@ -11,6 +11,7 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.core.api.groups import GroupSerializer
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
 from authentik.policies.api.policies import PolicySerializer
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
@@ -99,7 +100,7 @@ class PolicyBindingSerializer(ModelSerializer):
         return data
 
 
-class PolicyBindingViewSet(ModelViewSet):
+class PolicyBindingViewSet(UsedByMixin, ModelViewSet):
     """PolicyBinding Viewset"""
 
     queryset = (
