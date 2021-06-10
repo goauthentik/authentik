@@ -80,6 +80,9 @@ export class DeleteForm extends ModalButton {
             </form>
         </section>
         ${this.usedBy ? until(this.usedBy().then(usedBy => {
+            if (usedBy.length < 1) {
+                return html``;
+            }
             return html`
                 <section class="pf-c-page__main-section">
                     <form class="pf-c-form pf-m-horizontal">
