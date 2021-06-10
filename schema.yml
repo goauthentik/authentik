@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2021.5.4
+  version: 2021.6.1-rc1
   description: Making authentication simple.
   contact:
     email: hello@beryju.org
@@ -18380,13 +18380,21 @@ components:
         private_key_available:
           type: boolean
           readOnly: true
+        certificate_download_url:
+          type: string
+          readOnly: true
+        private_key_download_url:
+          type: string
+          readOnly: true
       required:
       - cert_expiry
       - cert_subject
+      - certificate_download_url
       - fingerprint
       - name
       - pk
       - private_key_available
+      - private_key_download_url
     CertificateKeyPairRequest:
       type: object
       description: CertificateKeyPair Serializer

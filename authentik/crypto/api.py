@@ -3,6 +3,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import load_pem_x509_certificate
 from django.http.response import HttpResponse
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django_filters import FilterSet
 from django_filters.filters import BooleanFilter
@@ -35,6 +36,9 @@ class CertificateKeyPairSerializer(ModelSerializer):
     cert_subject = SerializerMethodField()
     private_key_available = SerializerMethodField()
 
+    certificate_download_url = SerializerMethodField()
+    private_key_download_url = SerializerMethodField()
+
     def get_cert_subject(self, instance: CertificateKeyPair) -> str:
         """Get certificate subject as full rfc4514"""
         return instance.certificate.subject.rfc4514_string()
@@ -42,6 +46,26 @@ class CertificateKeyPairSerializer(ModelSerializer):
     def get_private_key_available(self, instance: CertificateKeyPair) -> bool:
         """Show if this keypair has a private key configured or not"""
         return instance.key_data != "" and instance.key_data is not None
+
+    def get_certificate_download_url(self, instance: CertificateKeyPair) -> str:
+        """Get URL to download certificate"""
+        return (
+            reverse(
+                "authentik_api:certificatekeypair-view-certificate",
+                kwargs={"pk": instance.pk},
+            )
+            + "?download"
+        )
+
+    def get_private_key_download_url(self, instance: CertificateKeyPair) -> str:
+        """Get URL to download private key"""
+        return (
+            reverse(
+                "authentik_api:certificatekeypair-view-private-key",
+                kwargs={"pk": instance.pk},
+            )
+            + "?download"
+        )
 
     def validate_certificate_data(self, value: str) -> str:
         """Verify that input is a valid PEM x509 Certificate"""
@@ -79,6 +103,8 @@ class CertificateKeyPairSerializer(ModelSerializer):
             "cert_expiry",
             "cert_subject",
             "private_key_available",
+            "certificate_download_url",
+            "private_key_download_url",
         ]
         extra_kwargs = {
             "key_data": {"write_only": True},

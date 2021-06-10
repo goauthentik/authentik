@@ -124,11 +124,11 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                         <dd class="pf-c-description-list__description">
                             <div class="pf-c-description-list__text">
                                 <a class="pf-c-button pf-m-secondary" target="_blank"
-                                    href="/api/v2beta/crypto/certificatekeypairs/${item.pk}/view_certificate/?download">
+                                    href=${item.certificateDownloadUrl}>
                                     ${t`Download Certificate`}
                                 </a>
                                 ${item.privateKeyAvailable ? html`<a class="pf-c-button pf-m-secondary" target="_blank"
-                                    href="/api/v2beta/crypto/certificatekeypairs/${item.pk}/view_private_key/?download">
+                                    href=${item.privateKeyDownloadUrl}>
                                     ${t`Download Private key`}
                                 </a>` : html``}
                             </div>
