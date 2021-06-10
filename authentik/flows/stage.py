@@ -50,14 +50,17 @@ class StageView(View):
         self.executor = executor
         super().__init__(**kwargs)
 
-    def get_pending_user(self) -> User:
+    def get_pending_user(self, for_display=False) -> User:
         """Either show the matched User object or show what the user entered,
         based on what the earlier stage (mostly IdentificationStage) set.
         _USER_IDENTIFIER overrides the first User, as PENDING_USER is used for
         other things besides the form display.
 
         If no user is pending, returns request.user"""
-        if PLAN_CONTEXT_PENDING_USER_IDENTIFIER in self.executor.plan.context:
+        if (
+            PLAN_CONTEXT_PENDING_USER_IDENTIFIER in self.executor.plan.context
+            and for_display
+        ):
             return User(
                 username=self.executor.plan.context.get(
                     PLAN_CONTEXT_PENDING_USER_IDENTIFIER
@@ -109,7 +112,7 @@ class ChallengeStageView(StageView):
             # If there's a pending user, update the `username` field
             # this field is only used by password managers.
             # If there's no user set, an error is raised later.
-            if user := self.get_pending_user():
+            if user := self.get_pending_user(for_display=True):
                 challenge.initial_data["pending_user"] = user.username
             challenge.initial_data["pending_user_avatar"] = DEFAULT_AVATAR
             if not isinstance(user, AnonymousUser):

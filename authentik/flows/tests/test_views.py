@@ -511,4 +511,4 @@ class TestFlowExecutor(TestCase):
         executor.flow = flow
 
         stage_view = StageView(executor)
-        self.assertEqual(ident, stage_view.get_pending_user().username)
+        self.assertEqual(ident, stage_view.get_pending_user(for_display=True).username)
