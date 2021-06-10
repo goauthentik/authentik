@@ -2147,6 +2147,10 @@ msgid "Matches an event against a set of criteria. If any of the configured valu
 msgstr ""
 
 #: 
+msgid "Matching is done based on domain suffix, so if you enter domain.tld, foo.domain.tld will still match."
+msgstr ""
+
+#: 
 msgid "Maximum age (in days)"
 msgstr ""
 

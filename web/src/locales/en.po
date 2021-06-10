@@ -2154,6 +2154,10 @@ msgstr "Matches Event's Client IP (strict matching, for network matching use an 
 msgid "Matches an event against a set of criteria. If any of the configured values match, the policy passes."
 msgstr "Matches an event against a set of criteria. If any of the configured values match, the policy passes."
 
+#: src/pages/tenants/TenantForm.ts
+msgid "Matching is done based on domain suffix, so if you enter domain.tld, foo.domain.tld will still match."
+msgstr "Matching is done based on domain suffix, so if you enter domain.tld, foo.domain.tld will still match."
+
 #: src/pages/policies/expiry/ExpiryPolicyForm.ts
 msgid "Maximum age (in days)"
 msgstr "Maximum age (in days)"
