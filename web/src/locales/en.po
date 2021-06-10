@@ -1144,6 +1144,9 @@ msgid "Disable"
 msgstr "Disable"
 
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
+msgid "Disable Duo authenticator"
+msgstr "Disable Duo authenticator"
+
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts
 msgid "Disable Static Tokens"
 msgstr "Disable Static Tokens"
@@ -1293,11 +1296,14 @@ msgstr "Email: Text field with Email type."
 msgid "Enable"
 msgstr "Enable"
 
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
+msgid "Enable Duo authenticator"
+msgstr "Enable Duo authenticator"
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Enable StartTLS"
 msgstr "Enable StartTLS"
 
-#: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts
 msgid "Enable Static Tokens"
 msgstr "Enable Static Tokens"
@@ -2147,6 +2153,10 @@ msgstr "Matches Event's Client IP (strict matching, for network matching use an 
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 msgid "Matches an event against a set of criteria. If any of the configured values match, the policy passes."
 msgstr "Matches an event against a set of criteria. If any of the configured values match, the policy passes."
+
+#: src/pages/tenants/TenantForm.ts
+msgid "Matching is done based on domain suffix, so if you enter domain.tld, foo.domain.tld will still match."
+msgstr "Matching is done based on domain suffix, so if you enter domain.tld, foo.domain.tld will still match."
 
 #: src/pages/policies/expiry/ExpiryPolicyForm.ts
 msgid "Maximum age (in days)"
@@ -3805,6 +3815,10 @@ msgstr "The external URL you'll access the application at. Include any non-stand
 msgid "The external URL you'll authenticate at. Can be the same domain as authentik."
 msgstr "The external URL you'll authenticate at. Can be the same domain as authentik."
 
+#: src/elements/forms/DeleteForm.ts
+msgid "The following objects use {objName}"
+msgstr "The following objects use {objName}"
+
 #: src/pages/policies/dummy/DummyPolicyForm.ts
 msgid "The policy takes a random time to execute. This controls the minimum time it will take."
 msgstr "The policy takes a random time to execute. This controls the minimum time it will take."
@@ -4519,6 +4533,18 @@ msgstr "authentik LDAP Backend"
 msgid "no tabs defined"
 msgstr "no tabs defined"
 
+#: src/elements/forms/DeleteForm.ts
+msgid "object will be DELETED"
+msgstr "object will be DELETED"
+
+#: src/elements/forms/DeleteForm.ts
+msgid "reference will be reset to default value"
+msgstr "reference will be reset to default value"
+
+#: src/elements/forms/DeleteForm.ts
+msgid "reference will be set to an empty value"
+msgstr "reference will be set to an empty value"
+
 #: src/elements/Expand.ts
 #: src/elements/Expand.ts
 msgid "{0}"
@@ -4531,6 +4557,10 @@ msgstr "{0} (\"{1}\", of type {2})"
 #: src/pages/stages/prompt/PromptStageForm.ts
 msgid "{0} ({1})"
 msgstr "{0} ({1})"
+
+#: src/elements/forms/DeleteForm.ts
+msgid "{0} ({consequence})"
+msgstr "{0} ({consequence})"
 
 #: src/elements/table/TablePagination.ts
 msgid "{0} - {1} of {2}"

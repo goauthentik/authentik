@@ -3,6 +3,7 @@ from rest_framework.fields import JSONField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import is_dict
 from authentik.flows.api.stages import StageSerializer
@@ -20,7 +21,7 @@ class InvitationStageSerializer(StageSerializer):
         ]
 
 
-class InvitationStageViewSet(ModelViewSet):
+class InvitationStageViewSet(UsedByMixin, ModelViewSet):
     """InvitationStage Viewset"""
 
     queryset = InvitationStage.objects.all()
@@ -45,7 +46,7 @@ class InvitationSerializer(ModelSerializer):
         ]
 
 
-class InvitationViewSet(ModelViewSet):
+class InvitationViewSet(UsedByMixin, ModelViewSet):
     """Invitation Viewset"""
 
     queryset = Invitation.objects.all()

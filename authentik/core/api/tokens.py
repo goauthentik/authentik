@@ -9,6 +9,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.decorators import permission_required
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Token, TokenIntents
@@ -43,7 +44,7 @@ class TokenViewSerializer(PassiveSerializer):
     key = CharField(read_only=True)
 
 
-class TokenViewSet(ModelViewSet):
+class TokenViewSet(UsedByMixin, ModelViewSet):
     """Token Viewset"""
 
     lookup_field = "identifier"

@@ -47,6 +47,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                 ?required=${true}
                 name="domain">
                 <input type="text" value="${first(this.instance?.domain, window.location.host)}" class="pf-c-form-control" required>
+                <p class="pf-c-form__helper-text">${t`Matching is done based on domain suffix, so if you enter domain.tld, foo.domain.tld will still match.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="default">
                 <div class="pf-c-check">

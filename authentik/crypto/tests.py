@@ -4,10 +4,14 @@ import datetime
 from django.test import TestCase
 from django.urls import reverse
 
+from authentik.core.api.used_by import DeleteAction
 from authentik.core.models import User
 from authentik.crypto.api import CertificateKeyPairSerializer
 from authentik.crypto.builder import CertificateBuilder
 from authentik.crypto.models import CertificateKeyPair
+from authentik.flows.models import Flow
+from authentik.providers.oauth2.generators import generate_client_secret
+from authentik.providers.oauth2.models import OAuth2Provider
 
 
 class TestCrypto(TestCase):
@@ -91,3 +95,35 @@ class TestCrypto(TestCase):
         )
         self.assertEqual(200, response.status_code)
         self.assertIn("Content-Disposition", response)
+
+    def test_used_by(self):
+        """Test used_by endpoint"""
+        self.client.force_login(User.objects.get(username="akadmin"))
+        keypair = CertificateKeyPair.objects.first()
+        provider = OAuth2Provider.objects.create(
+            name="test",
+            client_id="test",
+            client_secret=generate_client_secret(),
+            authorization_flow=Flow.objects.first(),
+            redirect_uris="http://localhost",
+            rsa_key=CertificateKeyPair.objects.first(),
+        )
+        response = self.client.get(
+            reverse(
+                "authentik_api:certificatekeypair-used-by",
+                kwargs={"pk": keypair.pk},
+            )
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertJSONEqual(
+            response.content.decode(),
+            [
+                {
+                    "app": "authentik_providers_oauth2",
+                    "model_name": "oauth2provider",
+                    "pk": str(provider.pk),
+                    "name": str(provider),
+                    "action": DeleteAction.SET_NULL.name,
+                }
+            ],
+        )

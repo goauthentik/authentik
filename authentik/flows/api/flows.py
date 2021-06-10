@@ -24,6 +24,7 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.decorators import permission_required
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import CacheSerializer, LinkSerializer
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow
@@ -94,7 +95,7 @@ class DiagramElement:
         return f"{self.identifier}=>{self.type}: {self.rest}"
 
 
-class FlowViewSet(ModelViewSet):
+class FlowViewSet(UsedByMixin, ModelViewSet):
     """Flow Viewset"""
 
     queryset = Flow.objects.all()

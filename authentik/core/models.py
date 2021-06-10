@@ -5,6 +5,7 @@ from typing import Any, Optional, Type
 from urllib.parse import urlencode
 from uuid import uuid4
 
+import django.db.models.options as options
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
@@ -39,6 +40,9 @@ USER_ATTRIBUTE_SOURCES = "goauthentik.io/user/sources"
 
 GRAVATAR_URL = "https://secure.gravatar.com"
 DEFAULT_AVATAR = static("dist/assets/images/user_default.png")
+
+
+options.DEFAULT_NAMES = options.DEFAULT_NAMES + ("authentik_used_by_shadows",)
 
 
 def default_token_duration():

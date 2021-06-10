@@ -11,6 +11,7 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.api.flows import FlowSerializer
@@ -49,6 +50,7 @@ class StageSerializer(ModelSerializer, MetaNameSerializer):
 class StageViewSet(
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
+    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

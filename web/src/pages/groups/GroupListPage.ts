@@ -72,9 +72,14 @@ export class GroupListPage extends TablePage<Group> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Group`}
+                .usedBy=${() => {
+                    return new CoreApi(DEFAULT_CONFIG).coreGroupsUsedByList({
+                        groupUuid: item.pk
+                    });
+                }}
                 .delete=${() => {
                     return new CoreApi(DEFAULT_CONFIG).coreGroupsDestroy({
-                        groupUuid: item.pk || ""
+                        groupUuid: item.pk
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">

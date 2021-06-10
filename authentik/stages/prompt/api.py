@@ -3,6 +3,7 @@ from rest_framework.serializers import CharField, ModelSerializer
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.prompt.models import Prompt, PromptStage
 
@@ -21,7 +22,7 @@ class PromptStageSerializer(StageSerializer):
         ]
 
 
-class PromptStageViewSet(ModelViewSet):
+class PromptStageViewSet(UsedByMixin, ModelViewSet):
     """PromptStage Viewset"""
 
     queryset = PromptStage.objects.all()
@@ -48,7 +49,7 @@ class PromptSerializer(ModelSerializer):
         ]
 
 
-class PromptViewSet(ModelViewSet):
+class PromptViewSet(UsedByMixin, ModelViewSet):
     """Prompt Viewset"""
 
     queryset = Prompt.objects.all().prefetch_related("promptstage_set")

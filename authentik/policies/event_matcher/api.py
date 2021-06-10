@@ -1,6 +1,7 @@
 """Event Matcher Policy API"""
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.policies.api.policies import PolicySerializer
 from authentik.policies.event_matcher.models import EventMatcherPolicy
 
@@ -17,7 +18,7 @@ class EventMatcherPolicySerializer(PolicySerializer):
         ]
 
 
-class EventMatcherPolicyViewSet(ModelViewSet):
+class EventMatcherPolicyViewSet(UsedByMixin, ModelViewSet):
     """Event Matcher Policy Viewset"""
 
     queryset = EventMatcherPolicy.objects.all()

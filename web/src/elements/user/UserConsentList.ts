@@ -40,9 +40,14 @@ export class UserConsentList extends Table<UserConsent> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Consent`}
+                .usedBy=${() => {
+                    return new CoreApi(DEFAULT_CONFIG).coreUserConsentUsedByList({
+                        id: item.pk
+                    });
+                }}
                 .delete=${() => {
                     return new CoreApi(DEFAULT_CONFIG).coreUserConsentDestroy({
-                        id: item.pk || 0,
+                        id: item.pk,
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">

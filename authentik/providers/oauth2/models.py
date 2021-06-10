@@ -215,8 +215,7 @@ class OAuth2Provider(Provider):
     rsa_key = models.ForeignKey(
         CertificateKeyPair,
         verbose_name=_("RSA Key"),
-        on_delete=models.CASCADE,
-        blank=True,
+        on_delete=models.SET_NULL,
         null=True,
         help_text=_(
             "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."

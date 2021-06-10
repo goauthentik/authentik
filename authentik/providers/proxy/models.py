@@ -167,3 +167,4 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
 
         verbose_name = _("Proxy Provider")
         verbose_name_plural = _("Proxy Providers")
+        authentik_used_by_shadows = ["authentik_providers_oauth2.oauth2provider"]

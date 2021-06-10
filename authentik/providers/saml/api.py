@@ -21,6 +21,7 @@ from structlog.stdlib import get_logger
 from authentik.api.decorators import permission_required
 from authentik.core.api.propertymappings import PropertyMappingSerializer
 from authentik.core.api.providers import ProviderSerializer
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Provider
 from authentik.flows.models import Flow, FlowDesignation
@@ -75,7 +76,7 @@ class SAMLProviderImportSerializer(PassiveSerializer):
     file = FileField()
 
 
-class SAMLProviderViewSet(ModelViewSet):
+class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
     """SAMLProvider Viewset"""
 
     queryset = SAMLProvider.objects.all()
@@ -166,7 +167,7 @@ class SAMLPropertyMappingSerializer(PropertyMappingSerializer):
         ]
 
 
-class SAMLPropertyMappingViewSet(ModelViewSet):
+class SAMLPropertyMappingViewSet(UsedByMixin, ModelViewSet):
     """SAMLPropertyMapping Viewset"""
 
     queryset = SAMLPropertyMapping.objects.all()

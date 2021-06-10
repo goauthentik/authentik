@@ -44,9 +44,14 @@ export class UserOAuthCodeList extends Table<ExpiringBaseGrantModel> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Authorization Code`}
+                .usedBy=${() => {
+                    return new Oauth2Api(DEFAULT_CONFIG).oauth2AuthorizationCodesUsedByList({
+                        id: item.pk
+                    });
+                }}
                 .delete=${() => {
                     return new Oauth2Api(DEFAULT_CONFIG).oauth2AuthorizationCodesDestroy({
-                        id: item.pk || 0,
+                        id: item.pk,
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">

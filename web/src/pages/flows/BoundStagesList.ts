@@ -82,9 +82,14 @@ export class BoundStagesList extends Table<FlowStageBinding> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Stage binding`}
+                .usedBy=${() => {
+                    return new FlowsApi(DEFAULT_CONFIG).flowsBindingsUsedByList({
+                        fsbUuid: item.pk
+                    });
+                }}
                 .delete=${() => {
                     return new FlowsApi(DEFAULT_CONFIG).flowsBindingsDestroy({
-                        fsbUuid: item.pk || "",
+                        fsbUuid: item.pk,
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">

@@ -107,9 +107,14 @@ export class PolicyListPage extends TablePage<Policy> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Policy`}
+                .usedBy=${() => {
+                    return new PoliciesApi(DEFAULT_CONFIG).policiesAllUsedByList({
+                        policyUuid: item.pk
+                    });
+                }}
                 .delete=${() => {
                     return new PoliciesApi(DEFAULT_CONFIG).policiesAllDestroy({
-                        policyUuid: item.pk || ""
+                        policyUuid: item.pk
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">

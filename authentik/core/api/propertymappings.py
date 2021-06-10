@@ -14,6 +14,7 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.api.decorators import permission_required
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
     MetaNameSerializer,
     PassiveSerializer,
@@ -65,6 +66,7 @@ class PropertyMappingSerializer(ManagedSerializer, ModelSerializer, MetaNameSeri
 class PropertyMappingViewSet(
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
+    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

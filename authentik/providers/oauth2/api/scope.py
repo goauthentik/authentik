@@ -2,6 +2,7 @@
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.propertymappings import PropertyMappingSerializer
+from authentik.core.api.used_by import UsedByMixin
 from authentik.providers.oauth2.models import ScopeMapping
 
 
@@ -17,7 +18,7 @@ class ScopeMappingSerializer(PropertyMappingSerializer):
         ]
 
 
-class ScopeMappingViewSet(ModelViewSet):
+class ScopeMappingViewSet(UsedByMixin, ModelViewSet):
     """ScopeMapping Viewset"""
 
     queryset = ScopeMapping.objects.all()

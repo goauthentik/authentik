@@ -14,6 +14,7 @@ from structlog.stdlib import get_logger
 
 from authentik.api.decorators import permission_required
 from authentik.core.api.applications import user_app_cache_key
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
     CacheSerializer,
     MetaNameSerializer,
@@ -79,6 +80,7 @@ class PolicySerializer(ModelSerializer, MetaNameSerializer):
 class PolicyViewSet(
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
+    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

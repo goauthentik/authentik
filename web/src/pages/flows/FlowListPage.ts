@@ -78,6 +78,11 @@ export class FlowListPage extends TablePage<Flow> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Flow`}
+                .usedBy=${() => {
+                    return new FlowsApi(DEFAULT_CONFIG).flowsInstancesUsedByList({
+                        slug: item.slug
+                    });
+                }}
                 .delete=${() => {
                     return new FlowsApi(DEFAULT_CONFIG).flowsInstancesDestroy({
                         slug: item.slug

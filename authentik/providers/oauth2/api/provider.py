@@ -11,6 +11,7 @@ from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Provider
 from authentik.providers.oauth2.models import JWTAlgorithms, OAuth2Provider
@@ -61,7 +62,7 @@ class OAuth2ProviderSetupURLs(PassiveSerializer):
     logout = ReadOnlyField()
 
 
-class OAuth2ProviderViewSet(ModelViewSet):
+class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
     """OAuth2Provider Viewset"""
 
     queryset = OAuth2Provider.objects.all()

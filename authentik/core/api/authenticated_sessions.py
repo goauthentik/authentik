@@ -11,6 +11,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 from ua_parser import user_agent_parser
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.models import AuthenticatedSession
 from authentik.events.geo import GEOIP_READER, GeoIPDict
 
@@ -92,6 +93,7 @@ class AuthenticatedSessionSerializer(ModelSerializer):
 class AuthenticatedSessionViewSet(
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
+    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):
