@@ -72,6 +72,9 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                             <option value=${UserFieldsEnum.Email} ?selected=${this.isUserFieldSelected(UserFieldsEnum.Email)}>
                                 ${t`Email`}
                             </option>
+                            <option value=${UserFieldsEnum.Upn} ?selected=${this.isUserFieldSelected(UserFieldsEnum.Upn)}>
+                                ${t`UPN`}
+                            </option>
                         </select>
                         <p class="pf-c-form__helper-text">${t`Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources.`}</p>
                         <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>

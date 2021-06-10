@@ -674,10 +674,13 @@ msgstr "Configuration"
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
-#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 #: src/pages/stages/password/PasswordStageForm.ts
 msgid "Configuration flow"
 msgstr "Configuration flow"
+
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "Configuration stage"
+msgstr "Configuration stage"
 
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
 msgid "Configure WebAuthn"
@@ -1286,6 +1289,10 @@ msgstr "Email info:"
 #: src/flows/stages/identification/IdentificationStage.ts
 msgid "Email or username"
 msgstr "Email or username"
+
+#: src/flows/stages/identification/IdentificationStage.ts
+msgid "Email, UPN or username"
+msgstr "Email, UPN or username"
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Email: Text field with Email type."
@@ -3981,6 +3988,11 @@ msgstr "UI settings"
 msgid "UID"
 msgstr "UID"
 
+#: src/flows/stages/identification/IdentificationStage.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
+msgid "UPN"
+msgstr "UPN"
+
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 msgid "URL settings"
 msgstr "URL settings"
@@ -4528,6 +4540,10 @@ msgstr "authentik Builtin Database"
 #: src/pages/stages/password/PasswordStageForm.ts
 msgid "authentik LDAP Backend"
 msgstr "authentik LDAP Backend"
+
+#: src/elements/forms/DeleteForm.ts
+msgid "connecting object will be deleted"
+msgstr "connecting object will be deleted"
 
 #: src/elements/Tabs.ts
 msgid "no tabs defined"

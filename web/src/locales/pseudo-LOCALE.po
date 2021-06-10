@@ -669,8 +669,11 @@ msgstr ""
 #: 
 #: 
 #: 
-#: 
 msgid "Configuration flow"
+msgstr ""
+
+#: 
+msgid "Configuration stage"
 msgstr ""
 
 #: 
@@ -1277,6 +1280,10 @@ msgstr ""
 
 #: 
 msgid "Email or username"
+msgstr ""
+
+#: 
+msgid "Email, UPN or username"
 msgstr ""
 
 #: 
@@ -3970,6 +3977,11 @@ msgid "UID"
 msgstr ""
 
 #: 
+#: 
+msgid "UPN"
+msgstr ""
+
+#: 
 msgid "URL settings"
 msgstr ""
 
@@ -4513,6 +4525,10 @@ msgstr ""
 
 #: 
 msgid "authentik LDAP Backend"
+msgstr ""
+
+#: 
+msgid "connecting object will be deleted"
 msgstr ""
 
 #: 

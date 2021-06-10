@@ -17,6 +17,7 @@ class UserFields(models.TextChoices):
 
     E_MAIL = "email"
     USERNAME = "username"
+    UPN = "upn"
 
 
 class IdentificationStage(Stage):

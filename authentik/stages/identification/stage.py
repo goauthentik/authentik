@@ -96,7 +96,11 @@ class IdentificationStageView(ChallengeStageView):
         current_stage: IdentificationStage = self.executor.current_stage
         query = Q()
         for search_field in current_stage.user_fields:
-            model_field = search_field
+            model_field = {
+                "email": "email",
+                "username": "username",
+                "upn": "attributes__upn",
+            }[search_field]
             if current_stage.case_insensitive_matching:
                 model_field += "__iexact"
             else:

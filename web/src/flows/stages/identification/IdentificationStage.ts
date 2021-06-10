@@ -11,7 +11,7 @@ import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import AKGlobal from "../../../authentik.css";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
-import { FlowChallengeRequest, IdentificationChallenge, IdentificationChallengeResponseRequest, UILoginButton } from "authentik-api";
+import { FlowChallengeRequest, IdentificationChallenge, IdentificationChallengeResponseRequest, UILoginButton, UserFieldsEnum } from "authentik-api";
 
 export const PasswordManagerPrefill: {
     password: string | undefined;
@@ -149,13 +149,18 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
                 ${t`Select one of the sources below to login.`}
             </p>`;
         }
-        if (this.challenge?.userFields === ["email"]) {
+        const fields = this.challenge?.userFields.sort() || [];
+        if (fields === [UserFieldsEnum.Email]) {
             label = t`Email`;
             type = "email";
-        } else if (this.challenge?.userFields === ["username"]) {
+        } else if (fields === [UserFieldsEnum.Username]) {
             label = t`Username`;
-        } else {
+        } else if (fields === [UserFieldsEnum.Upn]) {
+            label = t`UPN`;
+        } else if (fields === [UserFieldsEnum.Email, UserFieldsEnum.Username]) {
             label = t`Email or username`;
+        } else {
+            label = t`Email, UPN or username`;
         }
         return html`<ak-form-element
                 label=${label}

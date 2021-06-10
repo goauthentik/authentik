@@ -27687,6 +27687,7 @@ components:
       enum:
       - email
       - username
+      - upn
       type: string
     UserLoginStage:
       type: object
