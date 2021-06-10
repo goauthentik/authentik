@@ -20,7 +20,7 @@ jobs:
           docker-compose pull -q
           docker build \
             --no-cache \
-            -t beryju/authentik:latest \
+            -t ghcr.io/goauthentik/server:latest \
             -f Dockerfile .
           docker-compose up --no-start
           docker-compose start postgresql redis
