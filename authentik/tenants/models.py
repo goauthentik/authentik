@@ -41,7 +41,9 @@ class Tenant(models.Model):
     )
 
     def __str__(self) -> str:
-        return self.domain
+        if self.default:
+            return f"Default tenant"
+        return f"Tenant {self.domain}"
 
     class Meta:
 

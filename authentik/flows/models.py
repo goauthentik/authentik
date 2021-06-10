@@ -72,7 +72,7 @@ class Stage(SerializerModel):
     def __str__(self):
         if hasattr(self, "__in_memory_type"):
             return f"In-memory Stage {getattr(self, '__in_memory_type')}"
-        return self.name
+        return f"Stage {self.name}"
 
 
 def in_memory_stage(view: Type["StageView"]) -> Stage:
@@ -212,7 +212,7 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
         return FlowStageBindingSerializer
 
     def __str__(self) -> str:
-        return f"{self.target} #{self.order}"
+        return f"Flow-stage binding #{self.order} to {self.target}"
 
     class Meta:
 
