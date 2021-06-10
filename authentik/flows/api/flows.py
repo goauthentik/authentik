@@ -45,9 +45,15 @@ class FlowSerializer(ModelSerializer):
 
     background = ReadOnlyField(source="background_url")
 
+    export_url = SerializerMethodField()
+
     def get_cache_count(self, flow: Flow) -> int:
         """Get count of cached flows"""
         return len(cache.keys(f"{cache_key(flow)}*"))
+
+    def get_export_url(self, flow: Flow) -> str:
+        """Get export URL for flow"""
+        return reverse("authentik_api:flow-export", kwargs={"slug": flow.slug})
 
     class Meta:
 
@@ -65,6 +71,7 @@ class FlowSerializer(ModelSerializer):
             "cache_count",
             "policy_engine_mode",
             "compatibility_mode",
+            "export_url",
         ]
         extra_kwargs = {
             "background": {"read_only": True},

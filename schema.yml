@@ -19372,10 +19372,14 @@ components:
           type: boolean
           description: Enable compatibility mode, increases compatibility with password
             managers on mobile devices.
+        export_url:
+          type: string
+          readOnly: true
       required:
       - background
       - cache_count
       - designation
+      - export_url
       - name
       - pk
       - policies
