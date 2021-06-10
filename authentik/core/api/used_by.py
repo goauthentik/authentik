@@ -19,6 +19,7 @@ class DeleteAction(Enum):
     """Which action a delete will have on a used object"""
 
     CASCADE = "cascade"
+    CASCADE_MANY = "cascade_many"
     SET_NULL = "set_null"
     SET_DEFAULT = "set_default"
 
@@ -35,10 +36,13 @@ class UsedBySerializer(PassiveSerializer):
 
 def get_delete_action(manager: Manager) -> str:
     """Get the delete action from the Foreign key, falls back to cascade"""
-    if manager.field.remote_field.on_delete.__name__ == SET_NULL.__name__:
-        return DeleteAction.SET_NULL.name
-    if manager.field.remote_field.on_delete.__name__ == SET_DEFAULT.__name__:
-        return DeleteAction.SET_DEFAULT.name
+    if hasattr(manager, "field"):
+        if manager.field.remote_field.on_delete.__name__ == SET_NULL.__name__:
+            return DeleteAction.SET_NULL.name
+        if manager.field.remote_field.on_delete.__name__ == SET_DEFAULT.__name__:
+            return DeleteAction.SET_DEFAULT.name
+    if hasattr(manager, "source_field"):
+        return DeleteAction.CASCADE_MANY.name
     return DeleteAction.CASCADE.name
 
 
@@ -56,9 +60,7 @@ class UsedByMixin:
         model: Model = self.get_object()
         used_by = []
         shadows = []
-        for attr_name, manager in getmembers(
-            model, lambda x: isinstance(x, Manager)
-        ):
+        for attr_name, manager in getmembers(model, lambda x: isinstance(x, Manager)):
             if attr_name == "objects":  # pragma: no cover
                 continue
             manager: Manager
@@ -67,13 +69,14 @@ class UsedByMixin:
             app = manager.model._meta.app_label
             model_name = manager.model._meta.model_name
             delete_action = get_delete_action(manager)
-            perm = f"{app}.view_{model_name}"
 
             # To make sure we only apply shadows when there are any objects,
             # but so we only apply them once, have a simple flag for the first object
             first_object = True
 
-            for obj in get_objects_for_user(request.user, perm, manager).all():
+            for obj in get_objects_for_user(
+                request.user, f"{app}.view_{model_name}", manager
+            ).all():
                 # Only merge shadows on first object
                 if first_object:
                     shadows += getattr(

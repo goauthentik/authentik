@@ -27546,6 +27546,7 @@ components:
     UsedByActionEnum:
       enum:
       - CASCADE
+      - CASCADE_MANY
       - SET_NULL
       - SET_DEFAULT
       type: string

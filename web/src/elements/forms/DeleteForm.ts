@@ -96,6 +96,9 @@ export class DeleteForm extends ModalButton {
                                 case UsedByActionEnum.Cascade:
                                     consequence = t`object will be DELETED`;
                                     break;
+                                case UsedByActionEnum.CascadeMany:
+                                    consequence = t`connecting object will be deleted`;
+                                    break;
                                 case UsedByActionEnum.SetDefault:
                                     consequence = t`reference will be reset to default value`;
                                     break;
