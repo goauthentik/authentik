@@ -26576,12 +26576,16 @@ components:
           title: Service Provider Binding
           description: This determines how authentik sends the response back to the
             Service Provider.
+        metadata_download_url:
+          type: string
+          readOnly: true
       required:
       - acs_url
       - assigned_application_name
       - assigned_application_slug
       - authorization_flow
       - component
+      - metadata_download_url
       - name
       - pk
       - verbose_name

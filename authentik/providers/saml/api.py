@@ -4,11 +4,17 @@ from xml.etree.ElementTree import ParseError  # nosec
 from defusedxml.ElementTree import fromstring
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, FileField, ReadOnlyField
+from rest_framework.fields import (
+    CharField,
+    FileField,
+    ReadOnlyField,
+    SerializerMethodField,
+)
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny
 from rest_framework.relations import SlugRelatedField
@@ -37,6 +43,15 @@ LOGGER = get_logger()
 class SAMLProviderSerializer(ProviderSerializer):
     """SAMLProvider Serializer"""
 
+    metadata_download_url = SerializerMethodField()
+
+    def get_metadata_download_url(self, instance: SAMLProvider) -> str:
+        """Get metadata download URL"""
+        return (
+            reverse("authentik_api:samlprovider-metadata", kwargs={"pk": instance.pk})
+            + "?download"
+        )
+
     class Meta:
 
         model = SAMLProvider
@@ -54,6 +69,7 @@ class SAMLProviderSerializer(ProviderSerializer):
             "signing_kp",
             "verification_kp",
             "sp_binding",
+            "metadata_download_url",
         ]
 
 

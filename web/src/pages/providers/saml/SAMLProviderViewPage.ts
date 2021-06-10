@@ -157,14 +157,13 @@ export class SAMLProviderViewPage extends LitElement {
                                 </div>
                                 <div class="pf-c-card__footer">
                                     <a class="pf-c-button pf-m-primary" target="_blank"
-                                        href="/api/v2beta/providers/saml/${this.provider.pk}/metadata/?download">
+                                        href=${this.provider.metadataDownloadUrl}>
                                         ${t`Download`}
                                     </a>
                                     <ak-action-button
                                         class="pf-m-secondary"
                                         .apiRequest=${() => {
-                                            const path = `/api/v2beta/providers/saml/${this.provider?.pk}/metadata/?download`;
-                                            const fullUrl = window.location.origin + path;
+                                            const fullUrl = window.location.origin + this.provider.metadataDownloadUrl;
                                             return navigator.clipboard.writeText(fullUrl);
                                         }}>
                                         ${t`Copy download URL`}
