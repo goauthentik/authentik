@@ -38,19 +38,19 @@ export class UserSettingsPage extends LitElement {
     renderStageSettings(stage: UserSetting): TemplateResult {
         switch (stage.component) {
             case "ak-user-settings-authenticator-webauthn":
-                return html`<ak-user-settings-authenticator-webauthn objectId=${stage.objectUid} configureUrl=${stage.configureUrl}>
+                return html`<ak-user-settings-authenticator-webauthn objectId=${stage.objectUid} .configureUrl=${stage.configureUrl}>
                 </ak-user-settings-authenticator-webauthn>`;
             case "ak-user-settings-password":
-                return html`<ak-user-settings-password objectId=${stage.objectUid} configureUrl=${stage.configureUrl}>
+                return html`<ak-user-settings-password objectId=${stage.objectUid} .configureUrl=${stage.configureUrl}>
                 </ak-user-settings-password>`;
             case "ak-user-settings-authenticator-totp":
-                return html`<ak-user-settings-authenticator-totp objectId=${stage.objectUid} configureUrl=${stage.configureUrl}>
+                return html`<ak-user-settings-authenticator-totp objectId=${stage.objectUid} .configureUrl=${stage.configureUrl}>
                 </ak-user-settings-authenticator-totp>`;
             case "ak-user-settings-authenticator-static":
-                return html`<ak-user-settings-authenticator-static objectId=${stage.objectUid} configureUrl=${stage.configureUrl}>
+                return html`<ak-user-settings-authenticator-static objectId=${stage.objectUid} .configureUrl=${stage.configureUrl}>
                 </ak-user-settings-authenticator-static>`;
             case "ak-user-settings-authenticator-duo":
-                return html`<ak-user-settings-authenticator-duo objectId=${stage.objectUid} configureUrl=${stage.configureUrl}>
+                return html`<ak-user-settings-authenticator-duo objectId=${stage.objectUid} .configureUrl=${stage.configureUrl}>
                 </ak-user-settings-authenticator-duo>`;
             default:
                 return html`<p>${t`Error: unsupported stage settings: ${stage.component}`}</p>`;
@@ -60,7 +60,7 @@ export class UserSettingsPage extends LitElement {
     renderSourceSettings(source: UserSetting): TemplateResult {
         switch (source.component) {
             case "ak-user-settings-source-oauth":
-                return html`<ak-user-settings-source-oauth objectId=${source.objectUid} title=${source.title} configureUrl=${source.configureUrl}>
+                return html`<ak-user-settings-source-oauth objectId=${source.objectUid} title=${source.title} .configureUrl=${source.configureUrl}>
                 </ak-user-settings-source-oauth>`;
             default:
                 return html`<p>${t`Error: unsupported source settings: ${source.component}`}</p>`;
