@@ -149,15 +149,15 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
                 ${t`Select one of the sources below to login.`}
             </p>`;
         }
-        const fields = this.challenge?.userFields.sort() || [];
-        if (fields === [UserFieldsEnum.Email]) {
+        const fields = this.challenge?.userFields || [];
+        if (fields.includes(UserFieldsEnum.Email) && fields.length === 1) {
             label = t`Email`;
             type = "email";
-        } else if (fields === [UserFieldsEnum.Username]) {
+        } else if (fields.includes(UserFieldsEnum.Username) && fields.length === 1) {
             label = t`Username`;
-        } else if (fields === [UserFieldsEnum.Upn]) {
+        } else if (fields.includes(UserFieldsEnum.Upn) && fields.length === 1) {
             label = t`UPN`;
-        } else if (fields === [UserFieldsEnum.Email, UserFieldsEnum.Username]) {
+        } else if (fields.includes(UserFieldsEnum.Email) && fields.includes(UserFieldsEnum.Username) && fields.length === 2) {
             label = t`Email or username`;
         } else {
             label = t`Email, UPN or username`;
