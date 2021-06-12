@@ -114,13 +114,5 @@ module.exports = {
                 editUrl: "https://github.com/goauthentik/authentik/edit/master/website/",
             },
         ],
-        [
-            '@docusaurus/plugin-sitemap',
-            {
-                changefreq: 'weekly',
-                priority: 0.5,
-                trailingSlash: false,
-            },
-        ],
     ],
 };
