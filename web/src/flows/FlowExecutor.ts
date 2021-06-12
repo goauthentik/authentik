@@ -107,8 +107,8 @@ export class FlowExecutor extends LitElement implements StageHost {
         }).then((data) => {
             this.challenge = data;
             this.postUpdate();
-        }).catch((e: Error) => {
-            this.errorMessage(e.toString());
+        }).catch((e: Error | Response) => {
+            this.errorMessage(e);
         }).finally(() => {
             this.loading = false;
         });
@@ -128,15 +128,21 @@ export class FlowExecutor extends LitElement implements StageHost {
                 this.setBackground(this.challenge.flowInfo.background);
             }
             this.postUpdate();
-        }).catch((e: Error) => {
+        }).catch((e: Error | Response) => {
             // Catch JSON or Update errors
-            this.errorMessage(e.toString());
+            this.errorMessage(e);
         }).finally(() => {
             this.loading = false;
         });
     }
 
-    errorMessage(error: string): void {
+    async errorMessage(error: Error | Response): Promise<void> {
+        let body = "";
+        if (error instanceof Error) {
+            body = error.message;
+        } else if (error instanceof Response) {
+            body = await error.text();
+        }
         this.challenge = {
             type: ChallengeChoices.Shell,
             body: `<header class="pf-c-login__main-header">
@@ -146,7 +152,7 @@ export class FlowExecutor extends LitElement implements StageHost {
             </header>
             <div class="pf-c-login__main-body">
                 <h3>${t`Something went wrong! Please try again later.`}</h3>
-                <pre class="ak-exception">${error}</pre>
+                <pre class="ak-exception">${body}</pre>
             </div>
             <footer class="pf-c-login__main-footer">
                 <ul class="pf-c-login__main-footer-links">
