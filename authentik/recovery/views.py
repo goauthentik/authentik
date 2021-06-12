@@ -7,6 +7,7 @@ from django.utils.translation import gettext as _
 from django.views import View
 
 from authentik.core.models import Token, TokenIntents
+from authentik.stages.password import BACKEND_DJANGO
 
 
 class UseTokenView(View):
@@ -18,7 +19,7 @@ class UseTokenView(View):
         if not tokens.exists():
             raise Http404
         token = tokens.first()
-        login(request, token.user, backend="django.contrib.auth.backends.ModelBackend")
+        login(request, token.user, backend=BACKEND_DJANGO)
         token.delete()
         messages.warning(request, _("Used recovery-link to authenticate."))
         return redirect("authentik_core:if-admin")

@@ -9,6 +9,7 @@ from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.views import SESSION_KEY_PLAN
+from authentik.stages.password import BACKEND_DJANGO
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.user_logout.models import UserLogoutStage
 
@@ -35,9 +36,7 @@ class TestUserLogoutStage(TestCase):
             flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
         )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        plan.context[
-            PLAN_CONTEXT_AUTHENTICATION_BACKEND
-        ] = "django.contrib.auth.backends.ModelBackend"
+        plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = BACKEND_DJANGO
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()

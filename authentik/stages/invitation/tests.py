@@ -17,6 +17,7 @@ from authentik.flows.tests.test_views import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.stages.invitation.models import Invitation, InvitationStage
 from authentik.stages.invitation.stage import INVITATION_TOKEN_KEY, PLAN_CONTEXT_PROMPT
+from authentik.stages.password import BACKEND_DJANGO
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 
 
@@ -46,9 +47,7 @@ class TestUserLoginStage(TestCase):
             flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
         )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        plan.context[
-            PLAN_CONTEXT_AUTHENTICATION_BACKEND
-        ] = "django.contrib.auth.backends.ModelBackend"
+        plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = BACKEND_DJANGO
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -79,9 +78,7 @@ class TestUserLoginStage(TestCase):
             flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
         )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        plan.context[
-            PLAN_CONTEXT_AUTHENTICATION_BACKEND
-        ] = "django.contrib.auth.backends.ModelBackend"
+        plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = BACKEND_DJANGO
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()

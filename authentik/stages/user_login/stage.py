@@ -8,10 +8,10 @@ from structlog.stdlib import get_logger
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.stages.password import BACKEND_DJANGO
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 
 LOGGER = get_logger()
-DEFAULT_BACKEND = "django.contrib.auth.backends.ModelBackend"
 USER_LOGIN_AUTHENTICATED = "user_login_authenticated"
 
 
@@ -26,7 +26,7 @@ class UserLoginStageView(StageView):
             LOGGER.debug(message)
             return self.executor.stage_invalid()
         backend = self.executor.plan.context.get(
-            PLAN_CONTEXT_AUTHENTICATION_BACKEND, DEFAULT_BACKEND
+            PLAN_CONTEXT_AUTHENTICATION_BACKEND, BACKEND_DJANGO
         )
         login(
             self.request,

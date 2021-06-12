@@ -33,6 +33,7 @@ from authentik.flows.planner import (
 from authentik.flows.views import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.policies.utils import delete_none_keys
+from authentik.stages.password import BACKEND_DJANGO
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
@@ -198,7 +199,7 @@ class SourceFlowManager:
         kwargs.update(
             {
                 # Since we authenticate the user by their token, they have no backend set
-                PLAN_CONTEXT_AUTHENTICATION_BACKEND: "django.contrib.auth.backends.ModelBackend",
+                PLAN_CONTEXT_AUTHENTICATION_BACKEND: BACKEND_DJANGO,
                 PLAN_CONTEXT_SSO: True,
                 PLAN_CONTEXT_SOURCE: self.source,
                 PLAN_CONTEXT_REDIRECT: final_redirect,

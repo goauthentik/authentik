@@ -15,9 +15,6 @@ PREFILL_POLICY_EXPRESSION = """# This policy sets the user for the currently run
 # by injecting "pending_user"
 akadmin = ak_user_by(username="akadmin")
 context["pending_user"] = akadmin
-# We're also setting the backend for the user, so we can
-# directly login without having to identify again
-context["user_backend"] = "django.contrib.auth.backends.ModelBackend"
 return True"""
 
 
