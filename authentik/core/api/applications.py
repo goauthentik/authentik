@@ -107,15 +107,19 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         return applications
 
     @extend_schema(
-        request=inline_serializer(
-            "CheckAccessRequest", fields={"for_user": IntegerField(required=False)}
-        ),
+        parameters=[
+            OpenApiParameter(
+                name="for_user",
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.INT,
+            )
+        ],
         responses={
             200: PolicyTestResultSerializer(),
             404: OpenApiResponse(description="for_user user not found"),
         },
     )
-    @action(detail=True, methods=["POST"])
+    @action(detail=True, methods=["GET"])
     # pylint: disable=unused-argument
     def check_access(self, request: Request, slug: str) -> Response:
         """Check access to a single application by slug"""

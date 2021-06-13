@@ -1504,10 +1504,14 @@ paths:
         '403':
           $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/applications/{slug}/check_access/:
-    post:
-      operationId: core_applications_check_access_create
+    get:
+      operationId: core_applications_check_access_retrieve
       description: Check access to a single application by slug
       parameters:
+      - in: query
+        name: for_user
+        schema:
+          type: integer
       - in: path
         name: slug
         schema:
@@ -1516,17 +1520,6 @@ paths:
         required: true
       tags:
       - core
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CheckAccessRequestRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/CheckAccessRequestRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/CheckAccessRequestRequest'
       security:
       - authentik: []
       - cookieAuth: []
@@ -18415,11 +18408,6 @@ components:
       - shell
       - redirect
       type: string
-    CheckAccessRequestRequest:
-      type: object
-      properties:
-        for_user:
-          type: integer
     ClientTypeEnum:
       enum:
       - confidential
