@@ -11,12 +11,7 @@ from drf_spectacular.utils import (
     inline_serializer,
 )
 from rest_framework.decorators import action
-from rest_framework.fields import (
-    BooleanField,
-    CharField,
-    FileField,
-    ReadOnlyField,
-)
+from rest_framework.fields import BooleanField, CharField, FileField, ReadOnlyField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
