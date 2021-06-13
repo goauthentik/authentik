@@ -18,7 +18,6 @@ class AuthentikAPIConfig(AppConfig):
 
         # Class is defined here as it needs to be created early enough that drf-spectacular will
         # find it, but also won't cause any import issues
-
         # pylint: disable=unused-variable
         class TokenSchema(OpenApiAuthenticationExtension):
             """Auth schema"""
