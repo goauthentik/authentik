@@ -303,8 +303,12 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         background = request.FILES.get("file", None)
         clear = request.data.get("clear", False)
         if clear:
-            # .delete() saves the model by default
-            flow.background.delete()
+            if flow.background_url.startswith("/media"):
+                # .delete() saves the model by default
+                flow.background.delete()
+            else:
+                flow.background = None
+                flow.save()
             return Response({})
         if background:
             flow.background = background
