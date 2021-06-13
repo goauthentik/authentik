@@ -375,7 +375,11 @@ if _ERROR_REPORTING:
         environment=CONFIG.y("error_reporting.environment", "customer"),
         send_default_pii=CONFIG.y_bool("error_reporting.send_pii", False),
     )
-    set_tag("authentik.build_hash", os.environ.get(ENV_GIT_HASH_KEY, "tagged"))
+    # Default to empty string as that is what docker has
+    build_hash = os.environ.get(ENV_GIT_HASH_KEY, "")
+    if build_hash == "":
+        build_hash = "tagged"
+    set_tag("authentik.build_hash", build_hash)
     set_tag(
         "authentik.env", "kubernetes" if "KUBERNETES_PORT" in os.environ else "compose"
     )
