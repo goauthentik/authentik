@@ -141,7 +141,7 @@ class OutpostServiceConnection(models.Model):
     @property
     def component(self) -> str:
         """Return component used to edit this object"""
-        raise NotImplementedError
+        return ""
 
     class Meta:
 
