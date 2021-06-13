@@ -193,10 +193,6 @@ pip-selfcheck.json
 local.env.yml
 .vscode/
 
-### Helm ###
-# Chart dependencies
-**/charts/*.tgz
-
 # Selenium Screenshots
 selenium_screenshots/
 backups/

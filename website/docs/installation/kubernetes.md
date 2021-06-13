@@ -2,7 +2,7 @@
 title: Kubernetes installation
 ---
 
-For a mid to high-load installation, Kubernetes is recommended. authentik is installed using a helm-chart.
+authentik is installed using a helm-chart.
 
 To install authentik using the helm chart, generate a password for the database and the cache, using `pwgen` or `openssl rand -base64 36`.
 

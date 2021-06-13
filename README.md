@@ -21,7 +21,7 @@ authentik is an open-source Identity Provider focused on flexibility and versati
 
 For small/test setups it is recommended to use docker-compose, see the [documentation](https://goauthentik.io/docs/installation/docker-compose/)
 
-For bigger setups, there is a Helm Chart in the `helm/` directory. This is documented [here](https://goauthentik.io/docs/installation/kubernetes/)
+For bigger setups, there is a Helm Chart [here])(https://github.com/goauthentik/helm). This is documented [here](https://goauthentik.io/docs/installation/kubernetes/)
 
 ## Screenshots
 
