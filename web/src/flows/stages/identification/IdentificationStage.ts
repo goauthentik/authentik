@@ -21,7 +21,7 @@ export const PasswordManagerPrefill: {
     totp: undefined,
 };
 
-declare module "Intl" {
+declare module Intl {
     class ListFormat {
         constructor(locale: string, args: { [key: string]: string });
         public format: (items: string[]) => string;

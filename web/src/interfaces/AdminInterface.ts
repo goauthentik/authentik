@@ -13,7 +13,6 @@ import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import "../elements/router/RouterOutlet";
 import "../elements/messages/MessageContainer";
 import "../elements/notifications/NotificationDrawer";
-import "../elements/Banner";
 import "../elements/sidebar/Sidebar";
 import { until } from "lit-html/directives/until";
 import { EVENT_NOTIFICATION_TOGGLE, EVENT_SIDEBAR_TOGGLE, VERSION } from "../constants";
@@ -54,28 +53,6 @@ export class AdminInterface extends LitElement {
 
     render(): TemplateResult {
         return html`
-            ${until(new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve().then(version => {
-                if (version.versionCurrent !== VERSION) {
-                    return html`<ak-banner>
-                        ${t`A newer version of the frontend is available.`}
-                        <button @click=${() => { window.location.reload(true); }}>
-                            ${t`Reload`}
-                        </button>
-                    </ak-banner>`;
-                }
-                return html``;
-            }))}
-            ${until(me().then((u) => {
-                if (u.original) {
-                    return html`<ak-banner>
-                        ${t`You're currently impersonating ${u.user.username}.`}
-                        <a href=${`/-/impersonation/end/?back=${window.location.pathname}%23${window.location.hash}`}>
-                            ${t`Stop impersonation`}
-                        </a>
-                    </ak-banner>`;
-                }
-                return html``;
-            }))}
             <div class="pf-c-page">
                 <ak-sidebar class="pf-c-page__sidebar ${this.sidebarOpen ? "pf-m-expanded" : "pf-m-collapsed"}">
                     ${this.renderSidebarItems()}
@@ -104,6 +81,22 @@ export class AdminInterface extends LitElement {
             return me().then(u => u.user.isSuperuser || false);
         };
         return html`
+            ${until(new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve().then(version => {
+                if (version.versionCurrent !== VERSION) {
+                    return html`<ak-sidebar-item ?highlight=${true}>
+                        <span slot="label">${t`A newer version of the frontend is available.`}</span>
+                    </ak-sidebar-item>`;
+                }
+                return html``;
+            }))}
+            ${until(me().then((u) => {
+                if (u.original) {
+                    return html`<ak-sidebar-item ?highlight=${true} ?isAbsoluteLink=${true} path=${`/-/impersonation/end/?back=${window.location.pathname}%23${window.location.hash}`}>
+                        <span slot="label">${t`You're currently impersonating ${u.user.username}. Click to stop.`}</span>
+                    </ak-sidebar-item>`;
+                }
+                return html``;
+            }))}
             <ak-sidebar-item path="/library">
                 <span slot="label">${t`Library`}</span>
             </ak-sidebar-item>

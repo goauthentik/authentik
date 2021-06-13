@@ -32,7 +32,7 @@ msgstr "6 digits, widely compatible"
 msgid "8 digits, not compatible with apps like Google Authenticator"
 msgstr "8 digits, not compatible with apps like Google Authenticator"
 
-#: src/interfaces/Interface.ts
+#: src/interfaces/AdminInterface.ts
 msgid "A newer version of the frontend is available."
 msgstr "A newer version of the frontend is available."
 
@@ -1285,14 +1285,6 @@ msgstr "Email address"
 #: src/pages/events/EventInfo.ts
 msgid "Email info:"
 msgstr "Email info:"
-
-#: src/flows/stages/identification/IdentificationStage.ts
-msgid "Email or username"
-msgstr "Email or username"
-
-#: src/flows/stages/identification/IdentificationStage.ts
-msgid "Email, UPN or username"
-msgstr "Email, UPN or username"
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Email: Text field with Email type."
@@ -2935,10 +2927,6 @@ msgstr "Regular expressions for which authentication is not required. Each new l
 msgid "Related"
 msgstr "Related"
 
-#: src/interfaces/Interface.ts
-msgid "Reload"
-msgstr "Reload"
-
 #: src/pages/stages/user_logout/UserLogoutStageForm.ts
 msgid "Remove the user from the current session."
 msgstr "Remove the user from the current session."
@@ -3415,10 +3403,6 @@ msgstr "Status: Disabled"
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts
 msgid "Status: Enabled"
 msgstr "Status: Enabled"
-
-#: src/interfaces/Interface.ts
-msgid "Stop impersonation"
-msgstr "Stop impersonation"
 
 #: src/pages/events/EventInfo.ts
 #: src/pages/stages/email/EmailStageForm.ts
@@ -4529,9 +4513,9 @@ msgstr "Yes"
 msgid "You can only select providers that match the type of the outpost."
 msgstr "You can only select providers that match the type of the outpost."
 
-#: src/interfaces/Interface.ts
-msgid "You're currently impersonating {0}."
-msgstr "You're currently impersonating {0}."
+#: src/interfaces/AdminInterface.ts
+msgid "You're currently impersonating {0}. Click to stop."
+msgstr "You're currently impersonating {0}. Click to stop."
 
 #: src/pages/stages/password/PasswordStageForm.ts
 msgid "authentik Builtin Database"

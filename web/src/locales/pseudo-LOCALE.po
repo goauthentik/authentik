@@ -1279,14 +1279,6 @@ msgid "Email info:"
 msgstr ""
 
 #: 
-msgid "Email or username"
-msgstr ""
-
-#: 
-msgid "Email, UPN or username"
-msgstr ""
-
-#: 
 msgid "Email: Text field with Email type."
 msgstr ""
 
@@ -2928,10 +2920,6 @@ msgid "Related"
 msgstr ""
 
 #: 
-msgid "Reload"
-msgstr ""
-
-#: 
 msgid "Remove the user from the current session."
 msgstr ""
 
@@ -3406,10 +3394,6 @@ msgstr ""
 #: 
 #: 
 msgid "Status: Enabled"
-msgstr ""
-
-#: 
-msgid "Stop impersonation"
 msgstr ""
 
 #: 
@@ -4516,7 +4500,7 @@ msgid "You can only select providers that match the type of the outpost."
 msgstr ""
 
 #: 
-msgid "You're currently impersonating {0}."
+msgid "You're currently impersonating {0}. Click to stop."
 msgstr ""
 
 #: 
