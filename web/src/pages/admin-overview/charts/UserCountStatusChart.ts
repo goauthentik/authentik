@@ -34,7 +34,7 @@ export class UserCountStatusChart extends AKChart<UserMetrics> {
             pageSize: 1
         })).pagination.count;
         const superusers = (await api.coreUsersList({
-            isSuperuser: "true"
+            isSuperuser: true
         })).pagination.count;
         this.centerText = count.toString();
         return {

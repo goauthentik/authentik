@@ -115,7 +115,7 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                             <option value="" ?selected=${this.instance?.signingKp === undefined}>---------</option>
                             ${until(new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
                                 ordering: "pk",
-                                hasKey: "true",
+                                hasKey: true,
                             }).then(keys => {
                                 return keys.results.map(key => {
                                     return html`<option value=${ifDefined(key.pk)} ?selected=${this.instance?.signingKp === key.pk}>${key.name}</option>`;

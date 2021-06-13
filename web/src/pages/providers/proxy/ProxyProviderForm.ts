@@ -218,7 +218,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                             <option value="" ?selected=${this.instance?.certificate === undefined}>---------</option>
                             ${until(new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
                                 ordering: "pk",
-                                hasKey: "true",
+                                hasKey: true,
                             }).then(keys => {
                                 return keys.results.map(key => {
                                     return html`<option value=${ifDefined(key.pk)} ?selected=${this.instance?.certificate === key.pk}>${key.name}</option>`;

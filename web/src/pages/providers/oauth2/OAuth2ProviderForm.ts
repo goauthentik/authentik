@@ -186,7 +186,7 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                             <option value="" ?selected=${this.instance?.rsaKey === undefined}>---------</option>
                             ${until(new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
                                 ordering: "pk",
-                                hasKey: "true",
+                                hasKey: true,
                             }).then(keys => {
                                 return keys.results.map(key => {
                                     let selected = this.instance?.rsaKey === key.pk;
