@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2021.6.1-rc4
+  version: 2021.6.1-rc5
   description: Making authentication simple.
   contact:
     email: hello@beryju.org
@@ -2717,14 +2717,10 @@ paths:
         name: is_active
         schema:
           type: boolean
-          title: Active
-        description: Designates whether this user should be treated as active. Unselect
-          this instead of deleting accounts.
       - in: query
         name: is_superuser
         schema:
-          type: string
-          format: uuid
+          type: boolean
       - in: query
         name: name
         schema:
@@ -3041,7 +3037,7 @@ paths:
       - in: query
         name: has_key
         schema:
-          type: string
+          type: boolean
         description: Only return certificate-key pairs with keys
       - in: query
         name: name
@@ -26137,6 +26133,7 @@ components:
         forward_auth_mode:
           type: boolean
           readOnly: true
+          deprecated: true
       required:
       - external_host
       - forward_auth_mode
