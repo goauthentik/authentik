@@ -3,7 +3,6 @@ package ldap
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net"
 	"net/http"
 	"net/http/cookiejar"
@@ -66,15 +65,15 @@ func (pi *ProviderInstance) Bind(username string, bindDN, bindPW string, conn ne
 
 	params := url.Values{}
 	params.Add("goauthentik.io/outpost/ldap", "true")
-	passed, err := pi.solveFlowChallenge(username, bindPW, apiClient, params.Encode(), 1)
-	if err != nil {
+	passed, rerr := pi.solveFlowChallenge(username, bindPW, apiClient, params.Encode(), 1)
+	if rerr != ldap.LDAPResultSuccess {
 		pi.log.WithField("bindDN", bindDN).WithError(err).Warning("failed to solve challenge")
-		return ldap.LDAPResultOperationsError, nil
+		return rerr, nil
 	}
 	if !passed {
 		return ldap.LDAPResultInvalidCredentials, nil
 	}
-	p, _, err := apiClient.CoreApi.CoreApplicationsCheckAccessCreate(context.Background(), pi.appSlug).Execute()
+	p, _, err := apiClient.CoreApi.CoreApplicationsCheckAccessRetrieve(context.Background(), pi.appSlug).Execute()
 	if !p.Passing {
 		pi.log.WithField("bindDN", bindDN).Info("Access denied for user")
 		return ldap.LDAPResultInsufficientAccessRights, nil
@@ -138,12 +137,12 @@ type ChallengeInt interface {
 	GetResponseErrors() map[string][]api.ErrorDetail
 }
 
-func (pi *ProviderInstance) solveFlowChallenge(bindDN string, password string, client *api.APIClient, urlParams string, depth int) (bool, error) {
+func (pi *ProviderInstance) solveFlowChallenge(bindDN string, password string, client *api.APIClient, urlParams string, depth int) (bool, ldap.LDAPResultCode) {
 	req := client.FlowsApi.FlowsExecutorGet(context.Background(), pi.flowSlug).Query(urlParams)
 	challenge, _, err := req.Execute()
 	if err != nil {
 		pi.log.WithError(err).Warning("Failed to get challenge")
-		return false, err
+		return false, ldap.LDAPResultOperationsError
 	}
 	ch := challenge.GetActualInstance().(ChallengeInt)
 	pi.log.WithField("component", ch.GetComponent()).WithField("type", ch.GetType()).Debug("Got challenge")
@@ -162,45 +161,51 @@ func (pi *ProviderInstance) solveFlowChallenge(bindDN string, password string, c
 			}
 		}
 		if deviceChallenge == nil {
-			return false, errors.New("got ak-stage-authenticator-validate without duo")
+			pi.log.Warning("got ak-stage-authenticator-validate without duo")
+			return false, ldap.LDAPResultOperationsError
 		}
 		devId, err := strconv.Atoi(deviceChallenge.DeviceUid)
 		if err != nil {
-			return false, errors.New("failed to convert duo device id to int")
+			pi.log.Warning("failed to convert duo device id to int")
+			return false, ldap.LDAPResultOperationsError
 		}
 		devId32 := int32(devId)
 		inner := api.NewAuthenticatorValidationChallengeResponseRequest()
 		inner.Duo = &devId32
 		responseReq = responseReq.FlowChallengeResponseRequest(api.AuthenticatorValidationChallengeResponseRequestAsFlowChallengeResponseRequest(inner))
 	case "ak-stage-access-denied":
-		return false, errors.New("got ak-stage-access-denied")
+		pi.log.Info("got ak-stage-access-denied")
+		return false, ldap.LDAPResultInsufficientAccessRights
 	default:
-		return false, fmt.Errorf("unsupported challenge type: %s", ch.GetComponent())
+		pi.log.Warning("unsupported challenge type: %s", ch.GetComponent())
+		return false, ldap.LDAPResultOperationsError
 	}
 	response, _, err := responseReq.Execute()
 	ch = response.GetActualInstance().(ChallengeInt)
 	pi.log.WithField("component", ch.GetComponent()).WithField("type", ch.GetType()).Debug("Got response")
 	switch ch.GetComponent() {
 	case "ak-stage-access-denied":
-		return false, errors.New("got ak-stage-access-denied")
+		pi.log.Info("got ak-stage-access-denied")
+		return false, ldap.LDAPResultInsufficientAccessRights
 	}
 	if ch.GetType() == "redirect" {
-		return true, nil
+		return true, ldap.LDAPResultSuccess
 	}
 	if err != nil {
 		pi.log.WithError(err).Warning("Failed to submit challenge")
-		return false, err
+		return false, ldap.LDAPResultOperationsError
 	}
 	if len(ch.GetResponseErrors()) > 0 {
 		for key, errs := range ch.GetResponseErrors() {
 			for _, err := range errs {
 				pi.log.WithField("key", key).WithField("code", err.Code).WithField("msg", err.String).Warning("Flow error")
-				return false, nil
+				return false, ldap.LDAPResultInsufficientAccessRights
 			}
 		}
 	}
 	if depth >= 10 {
-		return false, errors.New("exceeded stage recursion depth")
+		pi.log.Warning("exceeded stage recursion depth")
+		return false, ldap.LDAPResultOperationsError
 	}
 	return pi.solveFlowChallenge(bindDN, password, client, urlParams, depth+1)
 }
