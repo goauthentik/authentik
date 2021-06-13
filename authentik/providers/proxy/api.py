@@ -1,7 +1,7 @@
 """ProxyProvider API Views"""
 from typing import Any
 
-from drf_spectacular.utils import extend_schema_field
+from drf_spectacular.utils import extend_schema_field, extend_schema_serializer
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ListField, SerializerMethodField
 from rest_framework.serializers import ModelSerializer
@@ -85,6 +85,7 @@ class ProxyProviderViewSet(UsedByMixin, ModelViewSet):
     ordering = ["name"]
 
 
+@extend_schema_serializer(deprecate_fields=["forward_auth_mode"])
 class ProxyOutpostConfigSerializer(ModelSerializer):
     """Proxy provider serializer for outposts"""
 
