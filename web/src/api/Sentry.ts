@@ -7,8 +7,9 @@ import { config } from "./Config";
 import { Config } from "authentik-api";
 
 export const TAG_SENTRY_COMPONENT = "authentik.component";
+export const TAG_SENTRY_CAPABILITIES = "authentik.capabilities";
 
-export function configureSentry(canDoPpi: boolean = false, tags: { [key: string]: string; } = {}): Promise<Config> {
+export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
     return config().then((config) => {
         if (config.errorReportingEnabled) {
             Sentry.init({
@@ -53,7 +54,7 @@ export function configureSentry(canDoPpi: boolean = false, tags: { [key: string]
                     return event;
                 },
             });
-            Sentry.setTags(tags);
+            Sentry.setTag(TAG_SENTRY_CAPABILITIES, config.capabilities.join(","));
             if (window.location.pathname.includes("if/")) {
                 // Get the interface name from URL
                 const intf = window.location.pathname.replace(/.+if\/(.+)\//, "$1");
