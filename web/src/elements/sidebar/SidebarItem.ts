@@ -173,7 +173,7 @@ export class SidebarItem extends LitElement {
         }
         return html`<li class="pf-c-nav__item">
             ${this.path ? html`
-                <a href="${this.isAbsoluteLink ? '' : '#'}${this.path}" class="pf-c-nav__link ${this.isActive ? "pf-m-current" : ""}">
+                <a href="${this.isAbsoluteLink ? "" : "#"}${this.path}" class="pf-c-nav__link ${this.isActive ? "pf-m-current" : ""}">
                     <slot name="label"></slot>
                 </a>
             ` : html`

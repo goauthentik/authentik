@@ -26,7 +26,7 @@ class TestApplicationsAPI(APITestCase):
     def test_check_access(self):
         """Test check_access operation"""
         self.client.force_login(self.user)
-        response = self.client.post(
+        response = self.client.get(
             reverse(
                 "authentik_api:application-check-access",
                 kwargs={"slug": self.allowed.slug},
@@ -36,7 +36,7 @@ class TestApplicationsAPI(APITestCase):
         self.assertJSONEqual(
             force_str(response.content), {"messages": [], "passing": True}
         )
-        response = self.client.post(
+        response = self.client.get(
             reverse(
                 "authentik_api:application-check-access",
                 kwargs={"slug": self.denied.slug},

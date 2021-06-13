@@ -15,7 +15,6 @@ from rest_framework.fields import (
     BooleanField,
     CharField,
     FileField,
-    IntegerField,
     ReadOnlyField,
 )
 from rest_framework.parsers import MultiPartParser

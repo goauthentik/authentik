@@ -21,13 +21,6 @@ export const PasswordManagerPrefill: {
     totp: undefined,
 };
 
-declare module Intl {
-    class ListFormat {
-        constructor(locale: string, args: { [key: string]: string });
-        public format: (items: string[]) => string;
-    }
-}
-
 export const OR_LIST_FORMATTERS = new Intl.ListFormat("default", { style: "short", type: "disjunction" });
 
 @customElement("ak-stage-identification")

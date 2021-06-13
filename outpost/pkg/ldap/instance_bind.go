@@ -177,7 +177,7 @@ func (pi *ProviderInstance) solveFlowChallenge(bindDN string, password string, c
 		pi.log.Info("got ak-stage-access-denied")
 		return false, ldap.LDAPResultInsufficientAccessRights
 	default:
-		pi.log.Warning("unsupported challenge type: %s", ch.GetComponent())
+		pi.log.WithField("component", ch.GetComponent()).Warning("unsupported challenge type")
 		return false, ldap.LDAPResultOperationsError
 	}
 	response, _, err := responseReq.Execute()
