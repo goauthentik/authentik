@@ -21,6 +21,14 @@ export const PasswordManagerPrefill: {
     totp: undefined,
 };
 
+declare module "Intl" {
+    class ListFormat {
+        constructor(locale: string, args: { [key: string]: string });
+        public format: (items: string[]) => string;
+    }
+}
+
+export const OR_LIST_FORMATTERS = new Intl.ListFormat("default", { style: "short", type: "disjunction" });
 
 @customElement("ak-stage-identification")
 export class IdentificationStage extends BaseStage<IdentificationChallenge, IdentificationChallengeResponseRequest> {
@@ -142,26 +150,23 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
     }
 
     renderInput(): TemplateResult {
-        let label = "";
         let type = "text";
         if (!this.challenge?.userFields) {
             return html`<p>
                 ${t`Select one of the sources below to login.`}
             </p>`;
         }
-        const fields = this.challenge?.userFields || [];
+        const fields = (this.challenge?.userFields || []).sort();
+        // Check if the field should be *only* email to set the input type
         if (fields.includes(UserFieldsEnum.Email) && fields.length === 1) {
-            label = t`Email`;
             type = "email";
-        } else if (fields.includes(UserFieldsEnum.Username) && fields.length === 1) {
-            label = t`Username`;
-        } else if (fields.includes(UserFieldsEnum.Upn) && fields.length === 1) {
-            label = t`UPN`;
-        } else if (fields.includes(UserFieldsEnum.Email) && fields.includes(UserFieldsEnum.Username) && fields.length === 2) {
-            label = t`Email or username`;
-        } else {
-            label = t`Email, UPN or username`;
         }
+        const uiFields: { [key: string]: string } = {
+            [UserFieldsEnum.Username]: t`Username`,
+            [UserFieldsEnum.Email]: t`Email`,
+            [UserFieldsEnum.Upn]: t`UPN`,
+        };
+        const label = OR_LIST_FORMATTERS.format(fields.map(f => uiFields[f]));
         return html`<ak-form-element
                 label=${label}
                 ?required="${true}"
@@ -170,7 +175,7 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
                 <!-- @ts-ignore -->
                 <input type=${type}
                     name="uidField"
-                    placeholder="Email or Username"
+                    placeholder=${label}
                     autofocus=""
                     autocomplete="username"
                     class="pf-c-form-control"
