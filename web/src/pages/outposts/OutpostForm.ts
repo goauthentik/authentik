@@ -102,7 +102,11 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         ordering: "pk"
                     }).then(scs => {
                         return scs.results.map(sc => {
-                            return html`<option value=${ifDefined(sc.pk)} ?selected=${this.instance?.serviceConnection === sc.pk}>
+                            let selected = this.instance?.serviceConnection === sc.pk;
+                            if (scs.results.length === 1 && !this.instance) {
+                                selected = true;
+                            }
+                            return html`<option value=${ifDefined(sc.pk)} ?selected=${selected}>
                                 ${sc.name} (${sc.verboseName})
                             </option>`;
                         });
