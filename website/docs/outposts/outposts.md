@@ -19,3 +19,44 @@ To deploy an outpost manually, see:
 
 - [Kubernetes](./manual-deploy-kubernetes.md)
 - [docker-compose](./manual-deploy-docker-compose.md)
+
+## Configuration
+
+Outposts fetch their configuration from authentik. Below are all the options you can set, and how they influence the outpost.
+
+```yaml
+# Log level that the outpost will set
+log_level: debug
+# Enable/disable error reporting for the outpost, based on the authentik settings
+error_reporting_enabled: true
+error_reporting_environment: beryjuorg-prod
+########################################
+# The settings below are only relevant when using a managed outpost
+########################################
+# URL that the outpost uses to connect back to authentik
+authentik_host: https://authentik.tld/
+# Disable SSL Validation for the authentik connection
+authentik_host_insecure: false
+# Template used for objects created (deployments, services, secrets, etc)
+object_naming_template: ak-outpost-%(name)s
+########################################
+# Kubernetes outpost specific settings
+########################################
+# Replica count for the deployment of the outpost
+kubernetes_replicas: 1
+# Namespace to deploy in, defaults to the same namespace authentik is deployed in (if available)
+kubernetes_namespace: authentik
+# Any additional annotations to add to the ingress object, for example cert-manager
+kubernetes_ingress_annotations: {}
+# Name of the secret that is used for TLS connections
+kubernetes_ingress_secret_name: authentik-outpost-tls
+# Service kind created, can be set to LoadBalancer for LDAP outposts for example
+kubernetes_service_type: ClusterIP
+# Disable any components of the kubernetes integration, can be any of
+# - 'secret'
+# - 'deployment'
+# - 'service'
+# - 'ingress'
+# - 'traefik middleware'
+kubernetes_disabled_components: []
+```

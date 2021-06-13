@@ -131,13 +131,16 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 label=${t`Configuration`}
                 name="config">
                 <ak-codemirror mode="yaml" value="${until(new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesDefaultSettingsRetrieve().then(config => {
-                        let fc = config.config;
-                        if (this.instance) {
-                            fc = this.instance.config;
-                        }
-                        return YAML.stringify(fc);
-                    }))}"></ak-codemirror>
+                    let fc = config.config;
+                    if (this.instance) {
+                        fc = this.instance.config;
+                    }
+                    return YAML.stringify(fc);
+                }))}"></ak-codemirror>
                 <p class="pf-c-form__helper-text">${t`Set custom attributes using YAML or JSON.`}</p>
+                <p class="pf-c-form__helper-text">
+                    See <a target="_blank" href="https://goauthentik.io/docs/outposts/outposts#configuration">documentation</a>.
+                </p>
             </ak-form-element-horizontal>
         </form>`;
     }

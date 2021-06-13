@@ -63,7 +63,7 @@ class DockerController(BaseController):
             self.client.images.pull(image_name)
             container_args = {
                 "image": image_name,
-                "name": f"authentik-proxy-{self.outpost.uuid.hex}",
+                "name": container_name,
                 "detach": True,
                 "ports": {
                     f"{port.port}/{port.protocol.lower()}": port.inner_port or port.port
