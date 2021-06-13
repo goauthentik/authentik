@@ -130,11 +130,11 @@
         },
         "botocore": {
             "hashes": [
-                "sha256:5adb6679e3bf7b5ea0ca3363118a0111d087dce18a94fc7a5a542fcc5cba0ddc",
-                "sha256:950ff7d4985427f8dfbb90aa1a8b48da98506d25319f1af1fe20341be3365633"
+                "sha256:47b8cea6213490866f34fb31ab30f04c2d7cf188c7ab9714556f0e8f7926ebc4",
+                "sha256:aae0f08627ef411a9579ae2a588a15f0859b2b40cecd5cde6055f0354712dd6f"
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'",
-            "version": "==1.20.92"
+            "version": "==1.20.93"
         },
         "cachetools": {
             "hashes": [
@@ -426,11 +426,11 @@
         },
         "drf-spectacular": {
             "hashes": [
-                "sha256:4d35e890b8139e1c056588c5529a2f2066615635482563f0840b96d3b879d7d2",
-                "sha256:f552476dfde647963c21615249672e7f4f9ece3788036b5ee5c6cc5ad50748ab"
+                "sha256:146e8c21dc806a20c84c687811c30163970fbf620213ab87280f7403469d80bb",
+                "sha256:8a028d251a6d0b39739ebdec487fd43ee4ecba244d8ffaaac43ff06430728dd8"
             ],
             "index": "pypi",
-            "version": "==0.17.0"
+            "version": "==0.17.1"
         },
         "duo-client": {
             "hashes": [
@@ -1563,7 +1563,7 @@
                 "sha256:0a943902919f65c5684ac4e0154b1ad4fac6dcaa5d9f3426b732f1c8b5419be6",
                 "sha256:2bb1680aad211e3c9944dbce1d4ba09a989f04e238296c87fe2139faa26d655d"
             ],
-            "markers": "python_version >= '3.6' and python_version < '4.0'",
+            "markers": "python_version >= '3.6' and python_version < '4'",
             "version": "==5.8.0"
         },
         "lazy-object-proxy": {
