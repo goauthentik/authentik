@@ -21,11 +21,12 @@ from authentik.core.middleware import (
 )
 from authentik.core.models import ExpiringModel, Group, User
 from authentik.events.geo import GEOIP_READER
-from authentik.events.utils import cleanse_dict, get_user, sanitize_dict
+from authentik.events.utils import cleanse_dict, get_user, model_to_dict, sanitize_dict
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.models import PolicyBindingModel
 from authentik.stages.email.utils import TemplateEmailMessage
+from authentik.tenants.utils import DEFAULT_TENANT
 
 LOGGER = get_logger("authentik.events")
 GAUGE_EVENTS = Gauge(
@@ -38,6 +39,11 @@ GAUGE_EVENTS = Gauge(
 def default_event_duration():
     """Default duration an Event is saved"""
     return now() + timedelta(days=365)
+
+
+def default_tenant():
+    """Get a default value for tenant"""
+    return sanitize_dict(model_to_dict(DEFAULT_TENANT))
 
 
 class NotificationTransportError(SentryIgnoredException):
@@ -95,6 +101,7 @@ class Event(ExpiringModel):
     context = models.JSONField(default=dict, blank=True)
     client_ip = models.GenericIPAddressField(null=True)
     created = models.DateTimeField(auto_now_add=True)
+    tenant = models.JSONField(default=default_tenant, blank=True)
 
     # Shadow the expires attribute from ExpiringModel to override the default duration
     expires = models.DateTimeField(default=default_event_duration)
@@ -133,6 +140,13 @@ class Event(ExpiringModel):
         """Add data from a Django-HttpRequest, allowing the creation of
         Events independently from requests.
         `user` arguments optionally overrides user from requests."""
+        if request:
+            self.context["http_request"] = {
+                "path": request.get_full_path(),
+                "method": request.method,
+            }
+        if hasattr(request, "tenant"):
+            self.tenant = sanitize_dict(model_to_dict(request.tenant))
         if hasattr(request, "user"):
             original_user = None
             if hasattr(request, "session"):

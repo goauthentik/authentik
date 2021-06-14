@@ -36,6 +36,7 @@ class EventSerializer(ModelSerializer):
             "client_ip",
             "created",
             "expires",
+            "tenant",
         ]
 
 
@@ -75,6 +76,11 @@ class EventsFilter(django_filters.FilterSet):
     action = django_filters.CharFilter(
         field_name="action",
         lookup_expr="icontains",
+    )
+    tenant_name = django_filters.CharFilter(
+        field_name="tenant",
+        lookup_expr="name",
+        label="Tenant name",
     )
 
     # pylint: disable=unused-argument

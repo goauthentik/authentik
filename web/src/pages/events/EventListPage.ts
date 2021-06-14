@@ -44,6 +44,7 @@ export class EventListPage extends TablePage<Event> {
             new TableColumn(t`User`, "user"),
             new TableColumn(t`Creation Date`, "created"),
             new TableColumn(t`Client IP`, "client_ip"),
+            new TableColumn(t`Tenant`, "tenant_name"),
             new TableColumn(""),
         ];
     }
@@ -62,6 +63,7 @@ export class EventListPage extends TablePage<Event> {
                 html`-`,
             html`<span>${item.created?.toLocaleString()}</span>`,
             html`<span>${item.clientIp || "-"}</span>`,
+            html`<span>${item.tenant?.name || "-"}</span>`,
             html`<a href="#/events/log/${item.pk}">
                 <i class="fas fas fa-share-square"></i>
             </a>`,

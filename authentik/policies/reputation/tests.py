@@ -1,7 +1,7 @@
 """test reputation signals and policy"""
 from django.contrib.auth import authenticate
 from django.core.cache import cache
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
 
 from authentik.core.models import User
 from authentik.policies.reputation.models import (
@@ -19,7 +19,9 @@ class TestReputationPolicy(TestCase):
     """test reputation signals and policy"""
 
     def setUp(self):
-        self.test_ip = "255.255.255.255"
+        self.request_factory = RequestFactory()
+        self.request = self.request_factory.get("/")
+        self.test_ip = "127.0.0.1"
         self.test_username = "test"
         cache.delete(CACHE_KEY_IP_PREFIX + self.test_ip)
         cache.delete(CACHE_KEY_USER_PREFIX + self.test_username)
@@ -29,7 +31,9 @@ class TestReputationPolicy(TestCase):
     def test_ip_reputation(self):
         """test IP reputation"""
         # Trigger negative reputation
-        authenticate(None, username=self.test_username, password=self.test_username)
+        authenticate(
+            self.request, username=self.test_username, password=self.test_username
+        )
         # Test value in cache
         self.assertEqual(cache.get(CACHE_KEY_IP_PREFIX + self.test_ip), -1)
         # Save cache and check db values
@@ -39,7 +43,9 @@ class TestReputationPolicy(TestCase):
     def test_user_reputation(self):
         """test User reputation"""
         # Trigger negative reputation
-        authenticate(None, username=self.test_username, password=self.test_username)
+        authenticate(
+            self.request, username=self.test_username, password=self.test_username
+        )
         # Test value in cache
         self.assertEqual(cache.get(CACHE_KEY_USER_PREFIX + self.test_username), -1)
         # Save cache and check db values

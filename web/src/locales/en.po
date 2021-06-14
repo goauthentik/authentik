@@ -3768,6 +3768,7 @@ msgstr "Task finished with warnings"
 msgid "Template"
 msgstr "Template"
 
+#: src/pages/events/EventListPage.ts
 #: src/pages/tenants/TenantListPage.ts
 msgid "Tenant"
 msgstr "Tenant"

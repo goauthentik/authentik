@@ -5,7 +5,7 @@ import { EventMatcherPolicyActionEnum, FlowsApi } from "authentik-api";
 import "../../elements/Spinner";
 import "../../elements/Expand";
 import { PFSize } from "../../elements/Spinner";
-import { EventContext, EventWithContext } from "../../api/Events";
+import { EventContext, EventModel, EventWithContext } from "../../api/Events";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -41,7 +41,7 @@ export class EventInfo extends LitElement {
         ];
     }
 
-    getModelInfo(context: EventContext): TemplateResult {
+    getModelInfo(context: EventModel): TemplateResult {
         if (context === null) {
             return html`<span>-</span>`;
         }
@@ -51,7 +51,7 @@ export class EventInfo extends LitElement {
                     <span class="pf-c-description-list__text">${t`UID`}</span>
                 </dt>
                 <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">${context.pk as string}</div>
+                    <div class="pf-c-description-list__text">${context.pk}</div>
                 </dd>
             </div>
             <div class="pf-c-description-list__group">
@@ -59,7 +59,7 @@ export class EventInfo extends LitElement {
                     <span class="pf-c-description-list__text">${t`Name`}</span>
                 </dt>
                 <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">${context.name as string}</div>
+                    <div class="pf-c-description-list__text">${context.name}</div>
                 </dd>
             </div>
             <div class="pf-c-description-list__group">
@@ -67,7 +67,7 @@ export class EventInfo extends LitElement {
                     <span class="pf-c-description-list__text">${t`App`}</span>
                 </dt>
                 <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">${context.app as string}</div>
+                    <div class="pf-c-description-list__text">${context.app}</div>
                 </dd>
             </div>
             <div class="pf-c-description-list__group">
@@ -75,7 +75,7 @@ export class EventInfo extends LitElement {
                     <span class="pf-c-description-list__text">${t`Model Name`}</span>
                 </dt>
                 <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">${context.model_name as string}</div>
+                    <div class="pf-c-description-list__text">${context.model_name}</div>
                 </dd>
             </div>
         </dl>`;
@@ -138,7 +138,12 @@ export class EventInfo extends LitElement {
             </div>`;
     }
 
-    buildGitHubIssueUrl(title: string, body: string): string {
+    buildGitHubIssueUrl(context: EventContext): string {
+        const httpRequest = this.event.context.http_request as EventContext;
+        let title = "";
+        if (httpRequest) {
+            title = `${httpRequest?.method} ${httpRequest?.path}`;
+        }
         // https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-issues/about-automation-for-issues-and-pull-requests-with-query-parameters
         const fullBody = `
 **Describe the bug**
@@ -162,7 +167,7 @@ If applicable, add screenshots to help explain your problem.
     <summary>Stacktrace from authentik</summary>
 
 \`\`\`
-${body}
+${context.message as string}
 \`\`\`
 </details>
 
@@ -174,7 +179,9 @@ ${body}
 **Additional context**
 Add any other context about the problem here.
         `;
-        return `https://github.com/goauthentik/authentik/issues/new?labels=bug+from_authentik&title=${encodeURIComponent(title)}&body=${encodeURIComponent(fullBody)}`;
+        return `https://github.com/goauthentik/authentik/issues/
+        new?labels=bug+from_authentik&title=${encodeURIComponent(title)}
+        &body=${encodeURIComponent(fullBody)}`.trim();
     }
 
     render(): TemplateResult {
@@ -187,13 +194,13 @@ Add any other context about the problem here.
         case EventMatcherPolicyActionEnum.ModelDeleted:
             return html`
                 <h3>${t`Affected model:`}</h3>
-                ${this.getModelInfo(this.event.context?.model as EventContext)}
+                ${this.getModelInfo(this.event.context?.model as EventModel)}
                 `;
         case EventMatcherPolicyActionEnum.AuthorizeApplication:
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${t`Authorized application:`}</h3>
-                        ${this.getModelInfo(this.event.context.authorized_application as EventContext)}
+                        ${this.getModelInfo(this.event.context.authorized_application as EventModel)}
                     </div>
                     <div class="pf-l-flex__item">
                         <h3>${t`Using flow`}</h3>
@@ -215,15 +222,14 @@ Add any other context about the problem here.
         case EventMatcherPolicyActionEnum.SecretView:
             return html`
                 <h3>${t`Secret:`}</h3>
-                ${this.getModelInfo(this.event.context.secret as EventContext)}`;
+                ${this.getModelInfo(this.event.context.secret as EventModel)}`;
         case EventMatcherPolicyActionEnum.SystemException:
             return html`
                 <a
                     class="pf-c-button pf-m-primary"
                     target="_blank"
                     href=${this.buildGitHubIssueUrl(
-                        "",
-                        this.event.context.message as string
+                        this.event.context
                     )}>
                     ${t`Open issue on GitHub...`}
                 </a>
@@ -250,12 +256,12 @@ Add any other context about the problem here.
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${t`Binding`}</h3>
-                        ${this.getModelInfo(this.event.context.binding as EventContext)}
+                        ${this.getModelInfo(this.event.context.binding as EventModel)}
                     </div>
                     <div class="pf-l-flex__item">
                         <h3>${t`Request`}</h3>
                         <ul class="pf-c-list">
-                            <li>${t`Object`}: ${this.getModelInfo((this.event.context.request as EventContext).obj as EventContext)}</li>
+                            <li>${t`Object`}: ${this.getModelInfo((this.event.context.request as EventContext).obj as EventModel)}</li>
                             <li><span>${t`Context`}: <code>${JSON.stringify((this.event.context.request as EventContext).context, null, 4)}</code></span></li>
                         </ul>
                     </div>
@@ -269,12 +275,12 @@ Add any other context about the problem here.
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${t`Binding`}</h3>
-                        ${this.getModelInfo(this.event.context.binding as EventContext)}
+                        ${this.getModelInfo(this.event.context.binding as EventModel)}
                     </div>
                     <div class="pf-l-flex__item">
                         <h3>${t`Request`}</h3>
                         <ul class="pf-c-list">
-                            <li>${t`Object`}: ${this.getModelInfo((this.event.context.request as EventContext).obj as EventContext)}</li>
+                            <li>${t`Object`}: ${this.getModelInfo((this.event.context.request as EventContext).obj as EventModel)}</li>
                             <li><span>${t`Context`}: <code>${JSON.stringify((this.event.context.request as EventContext).context, null, 4)}</code></span></li>
                         </ul>
                     </div>
@@ -310,7 +316,7 @@ Add any other context about the problem here.
                 return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${t`Using source`}</h3>
-                        ${this.getModelInfo(this.event.context.using_source as EventContext)}
+                        ${this.getModelInfo(this.event.context.using_source as EventModel)}
                     </div>
                 </div>`;
             }

@@ -3,11 +3,13 @@ from django.core.cache import cache
 from django.db import models
 from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
+from structlog import get_logger
 
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
 
+LOGGER = get_logger()
 CACHE_KEY_IP_PREFIX = "authentik_reputation_ip_"
 CACHE_KEY_USER_PREFIX = "authentik_reputation_user_"
 
@@ -34,9 +36,13 @@ class ReputationPolicy(Policy):
         passing = True
         if self.check_ip:
             score = cache.get_or_set(CACHE_KEY_IP_PREFIX + remote_ip, 0)
+            LOGGER.debug("Score for IP", ip=remote_ip, score=score)
             passing = passing and score <= self.threshold
         if self.check_username:
             score = cache.get_or_set(CACHE_KEY_USER_PREFIX + request.user.username, 0)
+            LOGGER.debug(
+                "Score for Username", username=request.user.username, score=score
+            )
             passing = passing and score <= self.threshold
         return PolicyResult(passing)
 

@@ -3419,6 +3419,11 @@ paths:
         schema:
           type: string
       - in: query
+        name: tenant_name
+        schema:
+          type: string
+        description: Tenant name
+      - in: query
         name: username
         schema:
           type: string
@@ -3534,6 +3539,11 @@ paths:
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: tenant_name
+        schema:
+          type: string
+        description: Tenant name
       - in: query
         name: top_n
         schema:
@@ -19081,6 +19091,9 @@ components:
         expires:
           type: string
           format: date-time
+        tenant:
+          type: object
+          additionalProperties: {}
       required:
       - action
       - app
@@ -19207,6 +19220,9 @@ components:
         expires:
           type: string
           format: date-time
+        tenant:
+          type: object
+          additionalProperties: {}
       required:
       - action
       - app

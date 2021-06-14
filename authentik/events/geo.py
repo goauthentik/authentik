@@ -40,9 +40,9 @@ class GeoIPReader:
             return
         try:
             reader = Reader(path)
-            LOGGER.info("Loaded GeoIP database")
             self.__reader = reader
             self.__last_mtime = stat(path).st_mtime
+            LOGGER.info("Loaded GeoIP database", last_write=self.__last_mtime)
         except OSError as exc:
             LOGGER.warning("Failed to load GeoIP database", exc=exc)
 
