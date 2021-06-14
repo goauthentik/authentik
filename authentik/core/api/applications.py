@@ -202,7 +202,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         """Set application icon"""
         app: Application = self.get_object()
         icon = request.FILES.get("file", None)
-        clear = request.data.get("clear", False)
+        clear = request.data.get("clear", "false").lower() == "true"
         if clear:
             # .delete() saves the model by default
             app.meta_icon.delete()

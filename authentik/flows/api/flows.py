@@ -301,7 +301,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         """Set Flow background"""
         flow: Flow = self.get_object()
         background = request.FILES.get("file", None)
-        clear = request.data.get("clear", False)
+        clear = request.data.get("clear", "false").lower() == "true"
         if clear:
             if flow.background_url.startswith("/media"):
                 # .delete() saves the model by default
