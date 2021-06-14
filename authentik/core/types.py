@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from rest_framework.fields import CharField, DictField
+from rest_framework.fields import CharField
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.flows.challenge import Challenge
@@ -20,14 +20,6 @@ class UILoginButton:
 
     # Icon URL, used as-is
     icon_url: Optional[str] = None
-
-
-class UILoginButtonSerializer(PassiveSerializer):
-    """Serializer for Login buttons of sources"""
-
-    name = CharField()
-    challenge = DictField()
-    icon_url = CharField(required=False, allow_null=True)
 
 
 class UserSettingSerializer(PassiveSerializer):

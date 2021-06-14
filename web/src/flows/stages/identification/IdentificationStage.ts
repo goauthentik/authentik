@@ -11,7 +11,7 @@ import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import AKGlobal from "../../../authentik.css";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
-import { FlowChallengeRequest, IdentificationChallenge, IdentificationChallengeResponseRequest, UILoginButton, UserFieldsEnum } from "authentik-api";
+import { IdentificationChallenge, IdentificationChallengeResponseRequest, LoginSource, UserFieldsEnum } from "authentik-api";
 
 export const PasswordManagerPrefill: {
     password: string | undefined;
@@ -110,7 +110,7 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
         wrapperForm.appendChild(totp);
     }
 
-    renderSource(source: UILoginButton): TemplateResult {
+    renderSource(source: LoginSource): TemplateResult {
         let icon = html`<i class="fas fas fa-share-square" title="${source.name}"></i>`;
         if (source.iconUrl) {
             icon = html`<img src="${source.iconUrl}" alt="${source.name}">`;
@@ -118,7 +118,7 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
         return html`<li class="pf-c-login__main-footer-links-item">
                 <button type="button" @click=${() => {
                     if (!this.host) return;
-                    this.host.challenge = source.challenge as FlowChallengeRequest;
+                    this.host.challenge = source.challenge;
                 }}>
                     ${icon}
                 </button>

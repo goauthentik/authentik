@@ -8,24 +8,50 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.urls import reverse
 from django.utils.translation import gettext as _
-from rest_framework.fields import BooleanField, CharField, ListField
+from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema_field
+from rest_framework.fields import (
+    BooleanField,
+    CharField,
+    DictField,
+    ListField,
+)
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
+from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Application, Source, User
-from authentik.core.types import UILoginButtonSerializer
 from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import (
     PLAN_CONTEXT_PENDING_USER_IDENTIFIER,
     ChallengeStageView,
 )
-from authentik.flows.views import SESSION_KEY_APPLICATION_PRE
+from authentik.flows.views import SESSION_KEY_APPLICATION_PRE, challenge_types
 from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.identification.signals import identification_failed
 from authentik.stages.password.stage import authenticate
 
 LOGGER = get_logger()
+
+
+@extend_schema_field(
+    PolymorphicProxySerializer(
+        component_name="ChallengeTypes",
+        serializers=challenge_types(),
+        resource_type_field_name="component",
+    )
+)
+class ChallengeDictWrapper(DictField):
+    """Wrapper around DictField that annotates itself as challenge proxy"""
+
+
+class LoginSourceSerializer(PassiveSerializer):
+    """Serializer for Login buttons of sources"""
+
+    name = CharField()
+    icon_url = CharField(required=False, allow_null=True)
+
+    challenge = ChallengeDictWrapper()
 
 
 class IdentificationChallenge(Challenge):
@@ -38,7 +64,7 @@ class IdentificationChallenge(Challenge):
     enroll_url = CharField(required=False)
     recovery_url = CharField(required=False)
     primary_action = CharField()
-    sources = UILoginButtonSerializer(many=True, required=False)
+    sources = LoginSourceSerializer(many=True, required=False)
 
     component = CharField(default="ak-stage-identification")
 
@@ -154,6 +180,7 @@ class IdentificationStageView(ChallengeStageView):
                 button = asdict(ui_login_button)
                 button["challenge"] = ui_login_button.challenge.data
                 ui_sources.append(button)
+        print(ui_sources)
         challenge.initial_data["sources"] = ui_sources
         return challenge
 

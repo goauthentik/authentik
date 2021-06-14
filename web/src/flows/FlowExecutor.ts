@@ -26,7 +26,7 @@ import "./stages/password/PasswordStage";
 import "./stages/prompt/PromptStage";
 import "./sources/plex/PlexLoginInit";
 import { StageHost } from "./stages/base";
-import { ChallengeChoices, CurrentTenant, FlowChallengeRequest, FlowChallengeResponseRequest, FlowsApi, RedirectChallenge, ShellChallenge } from "authentik-api";
+import { ChallengeChoices, CurrentTenant, ChallengeTypes, FlowChallengeResponseRequest, FlowsApi, RedirectChallenge, ShellChallenge } from "authentik-api";
 import { DEFAULT_CONFIG, tenant } from "../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
@@ -40,7 +40,7 @@ export class FlowExecutor extends LitElement implements StageHost {
     flowSlug: string;
 
     @property({attribute: false})
-    challenge?: FlowChallengeRequest;
+    challenge?: ChallengeTypes;
 
     @property({type: Boolean})
     loading = false;
@@ -163,7 +163,7 @@ export class FlowExecutor extends LitElement implements StageHost {
                     </li>
                 </ul>
             </footer>`
-        } as FlowChallengeRequest;
+        } as ChallengeTypes;
     }
 
     renderLoading(): TemplateResult {
