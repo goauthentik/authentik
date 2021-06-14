@@ -33,6 +33,13 @@ class ServiceConnectionSerializer(ModelSerializer, MetaNameSerializer):
 
     component = ReadOnlyField()
 
+    def get_component(self, obj: OutpostServiceConnection) -> str:
+        """Get object type so that we know how to edit the object"""
+        # pyright: reportGeneralTypeIssues=false
+        if obj.__class__ == OutpostServiceConnection:
+            return ""
+        return obj.component
+
     class Meta:
 
         model = OutpostServiceConnection
