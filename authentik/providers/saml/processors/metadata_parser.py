@@ -120,7 +120,7 @@ class ServiceProviderMetadataParser:
                 )
                 ctx.key = key
                 ctx.verify(signature_node)
-            except xmlsec.VerificationError as exc:
+            except xmlsec.Error as exc:
                 raise ValueError("Failed to verify Metadata signature") from exc
 
     def parse(self, raw_xml: str) -> ServiceProviderMetadata:

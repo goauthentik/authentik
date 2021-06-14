@@ -108,7 +108,7 @@ class AuthNRequestParser:
                 )
                 ctx.key = key
                 ctx.verify(signature_node)
-            except xmlsec.VerificationError as exc:
+            except xmlsec.Error as exc:
                 raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
 
         return self._parse_xml(decoded_xml, relay_state)
@@ -160,7 +160,7 @@ class AuthNRequestParser:
                     sign_algorithm_transform,
                     b64decode(signature),
                 )
-            except xmlsec.VerificationError as exc:
+            except xmlsec.Error as exc:
                 raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
         return self._parse_xml(decoded_xml, relay_state)
 
