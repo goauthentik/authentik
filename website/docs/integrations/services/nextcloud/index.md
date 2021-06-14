@@ -38,7 +38,7 @@ You can of course use a custom signing certificate, and adjust durations.
 
 ## NextCloud
 
-In NextCloud, ensure that the `SSO & SAML Authentication` extension is installed. Navigate to `Settings`, then `SSO & SAML Authentication`.
+In NextCloud, ensure that the `SSO & SAML Authentication` app is installed. Navigate to `Settings`, then `SSO & SAML Authentication`.
 
 Set the following values:
 

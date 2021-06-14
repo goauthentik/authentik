@@ -36,14 +36,17 @@ class ReputationPolicy(Policy):
         passing = True
         if self.check_ip:
             score = cache.get_or_set(CACHE_KEY_IP_PREFIX + remote_ip, 0)
-            LOGGER.debug("Score for IP", ip=remote_ip, score=score)
             passing = passing and score <= self.threshold
+            LOGGER.debug("Score for IP", ip=remote_ip, score=score, passing=passing)
         if self.check_username:
             score = cache.get_or_set(CACHE_KEY_USER_PREFIX + request.user.username, 0)
-            LOGGER.debug(
-                "Score for Username", username=request.user.username, score=score
-            )
             passing = passing and score <= self.threshold
+            LOGGER.debug(
+                "Score for Username",
+                username=request.user.username,
+                score=score,
+                passing=passing,
+            )
         return PolicyResult(passing)
 
     class Meta:

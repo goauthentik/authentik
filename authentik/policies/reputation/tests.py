@@ -4,6 +4,7 @@ from django.core.cache import cache
 from django.test import RequestFactory, TestCase
 
 from authentik.core.models import User
+from authentik.lib.utils.http import DEFAULT_IP
 from authentik.policies.reputation.models import (
     CACHE_KEY_IP_PREFIX,
     CACHE_KEY_USER_PREFIX,
@@ -24,6 +25,7 @@ class TestReputationPolicy(TestCase):
         self.test_ip = "127.0.0.1"
         self.test_username = "test"
         cache.delete(CACHE_KEY_IP_PREFIX + self.test_ip)
+        cache.delete(CACHE_KEY_IP_PREFIX + DEFAULT_IP)
         cache.delete(CACHE_KEY_USER_PREFIX + self.test_username)
         # We need a user for the one-to-one in userreputation
         self.user = User.objects.create(username=self.test_username)
