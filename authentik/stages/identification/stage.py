@@ -9,12 +9,7 @@ from django.http import HttpResponse
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema_field
-from rest_framework.fields import (
-    BooleanField,
-    CharField,
-    DictField,
-    ListField,
-)
+from rest_framework.fields import BooleanField, CharField, DictField, ListField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
