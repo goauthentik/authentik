@@ -71,6 +71,7 @@ class EventAction(models.TextChoices):
 
     SYSTEM_TASK_EXECUTION = "system_task_execution"
     SYSTEM_TASK_EXCEPTION = "system_task_exception"
+    SYSTEM_EXCEPTION = "system_exception"
 
     CONFIGURATION_ERROR = "configuration_error"
 

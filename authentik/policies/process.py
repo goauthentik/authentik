@@ -1,7 +1,6 @@
 """authentik policy task"""
 from multiprocessing import get_context
 from multiprocessing.connection import Connection
-from traceback import format_tb
 from typing import Optional
 
 from django.core.cache import cache
@@ -11,12 +10,12 @@ from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction
+from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.models import PolicyBinding
 from authentik.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
-TRACEBACK_HEADER = "Traceback (most recent call last):\n"
 
 FORK_CTX = get_context("fork")
 PROCESS_CLASS = FORK_CTX.Process
@@ -106,11 +105,7 @@ class PolicyProcess(PROCESS_CLASS):
         except PolicyException as exc:
             # Either use passed original exception or whatever we have
             src_exc = exc.src_exc if exc.src_exc else exc
-            error_string = (
-                TRACEBACK_HEADER
-                + "".join(format_tb(src_exc.__traceback__))
-                + str(src_exc)
-            )
+            error_string = exception_to_string(src_exc)
             # Create policy exception event, only when we're not debugging
             if not self.request.debug:
                 self.create_event(EventAction.POLICY_EXCEPTION, message=error_string)

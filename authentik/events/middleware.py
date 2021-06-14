@@ -12,6 +12,7 @@ from authentik.core.models import User
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.signals import EventNewThread
 from authentik.events.utils import model_to_dict
+from authentik.lib.utils.errors import exception_to_string
 
 
 class AuditMiddleware:
@@ -54,7 +55,14 @@ class AuditMiddleware:
 
     # pylint: disable=unused-argument
     def process_exception(self, request: HttpRequest, exception: Exception):
-        """Unregister handlers in case of exception"""
+        """Disconnect handlers in case of exception"""
+        thread = EventNewThread(
+            EventAction.SYSTEM_EXCEPTION,
+            request,
+            message=exception_to_string(exception),
+        )
+        thread.run()
+
         post_save.disconnect(dispatch_uid=LOCAL.authentik["request_id"])
         pre_delete.disconnect(dispatch_uid=LOCAL.authentik["request_id"])
 

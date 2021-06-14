@@ -1385,6 +1385,7 @@ msgstr ""
 
 #: 
 #: 
+#: 
 msgid "Exception"
 msgstr ""
 
@@ -2487,6 +2488,10 @@ msgstr ""
 
 #: 
 msgid "Open application"
+msgstr ""
+
+#: 
+msgid "Open issue on GitHub..."
 msgstr ""
 
 #: 

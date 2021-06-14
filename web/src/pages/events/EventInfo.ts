@@ -7,11 +7,12 @@ import "../../elements/Expand";
 import { PFSize } from "../../elements/Spinner";
 import { EventContext, EventWithContext } from "../../api/Events";
 import { DEFAULT_CONFIG } from "../../api/Config";
-
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
+import { VERSION } from "../../constants";
 
 @customElement("ak-event-info")
 export class EventInfo extends LitElement {
@@ -20,7 +21,7 @@ export class EventInfo extends LitElement {
     event!: EventWithContext;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFFlex, PFList, PFDescriptionList,
+        return [PFBase, PFButton, PFFlex, PFList, PFDescriptionList,
             css`
                 code {
                     display: block;
@@ -137,6 +138,45 @@ export class EventInfo extends LitElement {
             </div>`;
     }
 
+    buildGitHubIssueUrl(title: string, body: string): string {
+        // https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-issues/about-automation-for-issues-and-pull-requests-with-query-parameters
+        const fullBody = `
+**Describe the bug**
+A clear and concise description of what the bug is.
+
+**To Reproduce**
+Steps to reproduce the behavior:
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
+
+**Expected behavior**
+A clear and concise description of what you expected to happen.
+
+**Screenshots**
+If applicable, add screenshots to help explain your problem.
+
+**Logs**
+<details>
+    <summary>Stacktrace from authentik</summary>
+
+\`\`\`
+${body}
+\`\`\`
+</details>
+
+
+**Version and Deployment (please complete the following information):**
+- authentik version: ${VERSION}
+- Deployment: [e.g. docker-compose, helm]
+
+**Additional context**
+Add any other context about the problem here.
+        `;
+        return `https://github.com/goauthentik/authentik/issues/new?labels=bug+from_authentik&title=${encodeURIComponent(title)}&body=${encodeURIComponent(fullBody)}`;
+    }
+
     render(): TemplateResult {
         if (!this.event) {
             return html`<ak-spinner size=${PFSize.Medium}></ak-spinner>`;
@@ -176,6 +216,24 @@ export class EventInfo extends LitElement {
             return html`
                 <h3>${t`Secret:`}</h3>
                 ${this.getModelInfo(this.event.context.secret as EventContext)}`;
+        case EventMatcherPolicyActionEnum.SystemException:
+            return html`
+                <a
+                    class="pf-c-button pf-m-primary"
+                    target="_blank"
+                    href=${this.buildGitHubIssueUrl(
+                        "",
+                        this.event.context.message as string
+                    )}>
+                    ${t`Open issue on GitHub...`}
+                </a>
+                <div class="pf-l-flex">
+                    <div class="pf-l-flex__item">
+                        <h3>${t`Exception`}</h3>
+                        <code>${this.event.context.message}</code>
+                    </div>
+                </div>
+                <ak-expand>${this.defaultResponse()}</ak-expand>`;
         case EventMatcherPolicyActionEnum.PropertyMappingException:
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">

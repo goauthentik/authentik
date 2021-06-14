@@ -1393,6 +1393,7 @@ msgstr "Events"
 
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
+#: src/pages/events/EventInfo.ts
 msgid "Exception"
 msgstr "Exception"
 
@@ -2496,6 +2497,10 @@ msgstr "Only send notification once, for example when sending a webhook into a c
 #: src/pages/applications/ApplicationListPage.ts
 msgid "Open application"
 msgstr "Open application"
+
+#: src/pages/events/EventInfo.ts
+msgid "Open issue on GitHub..."
+msgstr "Open issue on GitHub..."
 
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 msgid "OpenID Configuration Issuer"
