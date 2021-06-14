@@ -2,12 +2,13 @@
 from base64 import b64encode
 
 from django.contrib.sessions.middleware import SessionMiddleware
-from django.http.request import HttpRequest, QueryDict
+from django.http.request import QueryDict
 from django.test import RequestFactory, TestCase
 from guardian.utils import get_anonymous_user
 
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
+from authentik.flows.tests.test_planner import dummy_get_response
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.request_parser import AuthNRequestParser
@@ -56,11 +57,6 @@ LRsRlJutDzZ18SRmAJPXPbka7z7D+LA1mbNQElOgiKyQHD9rIJSBr6X5SM9As3CR
 Dm52Vkq+xFDDUq9IqIoYvLaE86MDvtpMQEx65tIGU19vUf3fL/+sSfdRZ1HDzP4d
 qNAZMq1DqpibfCBg
 -----END CERTIFICATE-----"""
-
-
-def dummy_get_response(request: HttpRequest):  # pragma: no cover
-    """Dummy get_response for SessionMiddleware"""
-    return None
 
 
 class TestAuthNRequest(TestCase):
