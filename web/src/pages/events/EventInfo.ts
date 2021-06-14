@@ -180,8 +180,8 @@ ${context.message as string}
 Add any other context about the problem here.
         `;
         return `https://github.com/goauthentik/authentik/issues/
-        new?labels=bug+from_authentik&title=${encodeURIComponent(title)}
-        &body=${encodeURIComponent(fullBody)}`.trim();
+new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
+&body=${encodeURIComponent(fullBody)}`.trim();
     }
 
     render(): TemplateResult {
