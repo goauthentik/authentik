@@ -2,6 +2,7 @@
 from functools import partial
 from typing import Callable
 
+from django.conf import settings
 from django.db.models import Model
 from django.db.models.signals import post_save, pre_delete
 from django.http import HttpRequest, HttpResponse
@@ -56,15 +57,17 @@ class AuditMiddleware:
     # pylint: disable=unused-argument
     def process_exception(self, request: HttpRequest, exception: Exception):
         """Disconnect handlers in case of exception"""
+        post_save.disconnect(dispatch_uid=LOCAL.authentik["request_id"])
+        pre_delete.disconnect(dispatch_uid=LOCAL.authentik["request_id"])
+
+        if settings.DEBUG:
+            return
         thread = EventNewThread(
             EventAction.SYSTEM_EXCEPTION,
             request,
             message=exception_to_string(exception),
         )
         thread.run()
-
-        post_save.disconnect(dispatch_uid=LOCAL.authentik["request_id"])
-        pre_delete.disconnect(dispatch_uid=LOCAL.authentik["request_id"])
 
     @staticmethod
     # pylint: disable=unused-argument
