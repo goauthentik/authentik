@@ -12,5 +12,9 @@ module.exports = {
             type: "doc",
             id: "translation",
         },
+        {
+            type: "doc",
+            id: "flow-executor",
+        },
     ],
 };
