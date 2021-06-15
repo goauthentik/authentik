@@ -18412,27 +18412,6 @@ components:
       required:
       - certificate_data
       - name
-    ChallT:
-      type: object
-      description: |-
-        Challenge that gets sent to the client based on which stage
-        is currently active
-      properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
-        flow_info:
-          $ref: '#/components/schemas/ContextualFlowInfo'
-        component:
-          type: string
-          default: ''
-        response_errors:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              $ref: '#/components/schemas/ErrorDetail'
-      required:
-      - type
     ChallengeChoices:
       enum:
       - native
@@ -18449,7 +18428,6 @@ components:
       - $ref: '#/components/schemas/AuthenticatorWebAuthnChallenge'
       - $ref: '#/components/schemas/AutosubmitChallenge'
       - $ref: '#/components/schemas/CaptchaChallenge'
-      - $ref: '#/components/schemas/ChallT'
       - $ref: '#/components/schemas/ConsentChallenge'
       - $ref: '#/components/schemas/DummyChallenge'
       - $ref: '#/components/schemas/EmailChallenge'
@@ -18470,8 +18448,6 @@ components:
           ak-stage-authenticator-webauthn: '#/components/schemas/AuthenticatorWebAuthnChallenge'
           ak-stage-autosubmit: '#/components/schemas/AutosubmitChallenge'
           ak-stage-captcha: '#/components/schemas/CaptchaChallenge'
-          ? ''
-          : '#/components/schemas/ChallT'
           ak-stage-consent: '#/components/schemas/ConsentChallenge'
           ak-stage-dummy: '#/components/schemas/DummyChallenge'
           ak-stage-email: '#/components/schemas/EmailChallenge'
