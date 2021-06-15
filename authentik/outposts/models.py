@@ -143,7 +143,9 @@ class OutpostServiceConnection(models.Model):
     @property
     def component(self) -> str:
         """Return component used to edit this object"""
-        raise NotImplementedError
+        # This is called when creating an outpost with a service connection
+        # since the response doesn't use the correct inheritance
+        return ""
 
     class Meta:
 
