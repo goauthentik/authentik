@@ -39,6 +39,15 @@ jobs:
             ghcr.io/goauthentik/server:latest
           platforms: linux/amd64,linux/arm64
           context: .
+      - name: Building Docker Image (stable)
+        uses: docker/build-push-action@v2
+        with:
+          push: ${{ github.event_name == 'release' && !contains('2021.6.1-rc5', 'rc') }}
+          tags: |
+            beryju/authentik:stable,
+            ghcr.io/goauthentik/server:stable
+          platforms: linux/amd64,linux/arm64
+          context: .
   build-proxy:
     runs-on: ubuntu-latest
     steps:
@@ -72,6 +81,15 @@ jobs:
             ghcr.io/goauthentik/proxy:latest
           file: outpost/proxy.Dockerfile
           platforms: linux/amd64,linux/arm64
+      - name: Building Docker Image (stable)
+        uses: docker/build-push-action@v2
+        with:
+          push: ${{ github.event_name == 'release' && !contains('2021.6.1-rc5', 'rc') }}
+          tags: |
+            beryju/authentik-proxy:stable,
+            ghcr.io/goauthentik/proxy:stable
+          platforms: linux/amd64,linux/arm64
+          context: .
   build-ldap:
     runs-on: ubuntu-latest
     steps:
@@ -105,6 +123,15 @@ jobs:
             ghcr.io/goauthentik/ldap:latest
           file: outpost/ldap.Dockerfile
           platforms: linux/amd64,linux/arm64
+      - name: Building Docker Image (stable)
+        uses: docker/build-push-action@v2
+        with:
+          push: ${{ github.event_name == 'release' && !contains('2021.6.1-rc5', 'rc') }}
+          tags: |
+            beryju/authentik-ldap:stable,
+            ghcr.io/goauthentik/ldap:stable
+          platforms: linux/amd64,linux/arm64
+          context: .
   test-release:
     if: ${{ github.event_name == 'release' }}
     needs:
