@@ -1,8 +1,12 @@
-Title: Generic OAuth Source
+---
+title: Generic OAuth Source
+---
 
 ## Generic OAuth Source
 
-**All Integration-specific Sources are documented in the Integrations Section**
+:::note
+All Integration-specific Sources are documented in the Integrations Section
+:::
 
 This source allows users to enroll themselves with an external OAuth-based Identity Provider. The generic provider expects the endpoint to return OpenID-Connect compatible information. Vendor-specific implementations have their own OAuth Source.
 
