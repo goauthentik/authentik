@@ -183,6 +183,8 @@ class SourceFlowManager:
     # pylint: disable=unused-argument
     def get_stages_to_append(self, flow: Flow) -> list[Stage]:
         """Hook to override stages which are appended to the flow"""
+        if not self.source.enrollment_flow:
+            return []
         if flow.slug == self.source.enrollment_flow.slug:
             return [
                 in_memory_stage(PostUserEnrollmentStage),
