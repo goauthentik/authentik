@@ -4,10 +4,6 @@ title: LDAP
 
 Sources allow you to connect authentik to an existing user directory. They can also be used for social logins, using external providers such as Facebook, Twitter, etc.
 
-## SAML Source
-
-This source allows authentik to act as a SAML Service Provider. Just like the SAML Provider, it supports signed requests. Vendor-specific documentation can be found in the Integrations Section.
-
 ## LDAP Source
 
 This source allows you to import users and groups from an LDAP Server.
