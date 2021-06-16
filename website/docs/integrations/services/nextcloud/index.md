@@ -55,6 +55,12 @@ Under Attribute mapping, set these values:
 - Attribute to map the email address to.: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
 - Attribute to map the users groups to.: `http://schemas.xmlsoap.org/claims/Group`
 
+:::note
+If Nextcloud is behind a reverse proxy you may need to force Nextcloud to use HTTPS. 
+To do this you will need to add the line `'overwriteprotocol' => 'https'` to `config.php` in the Nextcloud `config\config.php` file
+See https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/reverse_proxy_configuration.html#overwrite-parameters for additional information
+:::
+
 ## Group Quotas
 
 Create a group for each different level of quota you want users to have. Set a custom attribute, for example called `nextcloud_quota`, to the quota you want, for example `15 GB`.
