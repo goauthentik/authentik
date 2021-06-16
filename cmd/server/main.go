@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 	"sync"
-	"time"
 
 	"github.com/getsentry/sentry-go"
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/common"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/gounicorn"
@@ -28,13 +28,13 @@ func main() {
 			Release:          fmt.Sprintf("authentik@%s", constants.VERSION),
 			Environment:      config.G.ErrorReporting.Environment,
 		})
-		defer sentry.Flush(time.Second * 5)
-		defer sentry.Recover()
 	}
+
+	defer common.Defer()
 
 	rl := log.WithField("logger", "authentik.g")
 	wg := sync.WaitGroup{}
-	wg.Add(2)
+	wg.Add(3)
 	go func() {
 		defer wg.Done()
 		g := gounicorn.NewGoUnicorn()
