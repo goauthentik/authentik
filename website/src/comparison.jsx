@@ -22,7 +22,7 @@ function Comparison() {
                         </thead>
                         <thead className="group">
                             <tr>
-                                <th>Protocol Support</th>
+                                <th>Protocol Support (as a provider)</th>
                                 <th></th>
                                 <th></th>
                                 <th></th>
@@ -62,6 +62,60 @@ function Comparison() {
                                 <td className="result passed"><Check></Check></td>
                                 <td className="result passed"><Check></Check></td>
                                 <td className="result failed"><X></X></td>
+                            </tr>
+                        </tbody>
+                        <thead className="group">
+                            <tr>
+                                <th>Federation support</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td className="row-label">SAML2</td>
+                                <td className="result passed authentik"><Check></Check></td>
+                                <td className="result passed"><Check></Check></td>
+                                <td className="result failed"><X></X></td>
+                                <td className="result passed"><Check></Check></td>
+                                <td className="result passed"><Check></Check></td>
+                                <td className="result passed"><Check></Check></td>
+                                <td className="result failed"><X></X></td>
+                            </tr>
+                            <tr>
+                                <td className="row-label">OAuth2 and OIDC</td>
+                                <td className="result passed authentik"><Check></Check></td>
+                                <td className="result passed"><Check></Check></td>
+                                <td className="result failed"><X></X></td>
+                                <td className="result passed"><Check></Check></td>
+                                <td className="result passed"><Check></Check></td>
+                                <td className="result passed"><Check></Check></td>
+                                <td className="result failed"><X></X></td>
+                            </tr>
+                            <tr>
+                                <td className="row-label">OAuth1</td>
+                                <td className="result passed authentik"><Check></Check></td>
+                                <td className="result passed"><Check></Check></td>
+                                <td className="result failed"><X></X></td>
+                                <td className="result failed"><X></X></td>
+                                <td className="result failed"><X></X></td>
+                                <td className="result failed"><X></X></td>
+                                <td className="result failed"><X></X></td>
+                            </tr>
+                            <tr>
+                                <td className="row-label">LDAP</td>
+                                <td className="result passed authentik"><Check></Check></td>
+                                <td className="result passed"><Check></Check></td>
+                                <td className="result passed"><Check></Check></td>
+                                <td className="result passed"><Check></Check></td>
+                                <td className="result passed"><Check></Check></td>
+                                <td className="result passed"><Check></Check></td>
+                                <td className="result passed"><Check></Check></td>
                             </tr>
                         </tbody>
                         <thead className="group">
