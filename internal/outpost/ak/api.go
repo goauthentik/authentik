@@ -13,7 +13,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"github.com/recws-org/recws"
-	pkg "goauthentik.io/internal/outpost"
+	"goauthentik.io/internal/constants"
 	"goauthentik.io/outpost/api"
 
 	log "github.com/sirupsen/logrus"
@@ -44,7 +44,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	config.Host = akURL.Host
 	config.Scheme = akURL.Scheme
 	config.HTTPClient = &http.Client{
-		Transport: SetUserAgent(GetTLSTransport(), pkg.UserAgent()),
+		Transport: SetUserAgent(GetTLSTransport(), constants.OutpostUserAgent()),
 	}
 	config.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
 

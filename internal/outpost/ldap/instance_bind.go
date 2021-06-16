@@ -13,7 +13,7 @@ import (
 
 	goldap "github.com/go-ldap/ldap/v3"
 	"github.com/nmcclain/ldap"
-	pkg "goauthentik.io/internal/outpost"
+	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/outpost/api"
 )
@@ -56,7 +56,7 @@ func (pi *ProviderInstance) Bind(username string, bindDN, bindPW string, conn ne
 	config.Scheme = pi.s.ac.Client.GetConfig().Scheme
 	config.HTTPClient = &http.Client{
 		Jar: jar,
-		Transport: newTransport(ak.SetUserAgent(ak.GetTLSTransport(), pkg.UserAgent()), map[string]string{
+		Transport: newTransport(ak.SetUserAgent(ak.GetTLSTransport(), constants.OutpostUserAgent()), map[string]string{
 			"X-authentik-remote-ip": host,
 		}),
 	}

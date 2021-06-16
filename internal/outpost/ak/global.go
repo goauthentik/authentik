@@ -9,7 +9,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	httptransport "github.com/go-openapi/runtime/client"
 	log "github.com/sirupsen/logrus"
-	pkg "goauthentik.io/internal/outpost"
+	"goauthentik.io/internal/constants"
 )
 
 func doGlobalSetup(config map[string]interface{}) {
@@ -33,7 +33,7 @@ func doGlobalSetup(config map[string]interface{}) {
 	default:
 		log.SetLevel(log.DebugLevel)
 	}
-	log.WithField("buildHash", pkg.BUILD()).WithField("version", pkg.VERSION).Info("Starting authentik outpost")
+	log.WithField("buildHash", constants.BUILD()).WithField("version", constants.VERSION).Info("Starting authentik outpost")
 
 	var dsn string
 	if config[ConfigErrorReportingEnabled].(bool) {
