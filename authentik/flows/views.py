@@ -164,7 +164,11 @@ class FlowExecutorView(APIView):
             current_stage=self.current_stage,
             flow_slug=self.flow.slug,
         )
-        stage_cls = self.current_stage.type
+        try:
+            stage_cls = self.current_stage.type
+        except NotImplementedError as exc:
+            self._logger.debug("Error getting stage type", exc=exc)
+            return self.stage_invalid()
         self.current_stage_view = stage_cls(self)
         self.current_stage_view.args = self.args
         self.current_stage_view.kwargs = self.kwargs
