@@ -74,7 +74,6 @@ Afterwards, run these commands to finish
 ```shell
 docker-compose pull
 docker-compose up -d
-docker-compose run --rm server migrate
 ```
 
 The compose file statically references the latest version available at the time of downloading, which can be overridden with the `SERVER_TAG` environment variable.
