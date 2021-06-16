@@ -44,6 +44,7 @@ from authentik.flows.planner import (
     FlowPlan,
     FlowPlanner,
 )
+from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
 from authentik.tenants.models import Tenant
@@ -91,6 +92,10 @@ def challenge_response_types():
             return mapping.items()
 
     return Inner()
+
+
+class InvalidStageError(SentryIgnoredException):
+    """Error raised when a challenge from a stage is not valid"""
 
 
 @method_decorator(xframe_options_sameorigin, name="dispatch")
@@ -173,7 +178,10 @@ class FlowExecutorView(APIView):
         self.current_stage_view.args = self.args
         self.current_stage_view.kwargs = self.kwargs
         self.current_stage_view.request = request
-        return super().dispatch(request)
+        try:
+            return super().dispatch(request)
+        except InvalidStageError as exc:
+            return self.stage_invalid(str(exc))
 
     @extend_schema(
         responses={
