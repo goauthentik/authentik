@@ -494,8 +494,12 @@ class AuthenticatedSession(ExpiringModel):
     last_used = models.DateTimeField(auto_now=True)
 
     @staticmethod
-    def from_request(request: HttpRequest, user: User) -> "AuthenticatedSession":
+    def from_request(
+        request: HttpRequest, user: User
+    ) -> Optional["AuthenticatedSession"]:
         """Create a new session from a http request"""
+        if not hasattr(request, "session") or not request.session.session_key:
+            return None
         return AuthenticatedSession(
             session_key=request.session.session_key,
             user=user,

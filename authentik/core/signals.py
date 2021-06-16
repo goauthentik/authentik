@@ -49,7 +49,9 @@ def user_logged_in_session(sender, request: HttpRequest, user: "User", **_):
     """Create an AuthenticatedSession from request"""
     from authentik.core.models import AuthenticatedSession
 
-    AuthenticatedSession.from_request(request, user).save()
+    session = AuthenticatedSession.from_request(request, user)
+    if session:
+        session.save()
 
 
 @receiver(user_logged_out)
