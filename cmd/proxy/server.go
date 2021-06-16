@@ -10,11 +10,11 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"goauthentik.io/outpost/pkg/ak"
-	"goauthentik.io/outpost/pkg/ldap"
+	"goauthentik.io/internal/outpost/ak"
+	"goauthentik.io/internal/outpost/proxy"
 )
 
-const helpMessage = `authentik ldap
+const helpMessage = `authentik proxy
 
 Required environment variables:
 - AUTHENTIK_HOST: URL to connect to (format "http://authentik.company")
@@ -50,7 +50,7 @@ func main() {
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
 
-	ac.Server = ldap.NewServer(ac)
+	ac.Server = proxy.NewServer(ac)
 
 	err = ac.Start()
 	if err != nil {

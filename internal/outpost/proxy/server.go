@@ -10,7 +10,7 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/outpost/pkg/ak"
+	"goauthentik.io/internal/outpost/ak"
 )
 
 // Server represents an HTTP server

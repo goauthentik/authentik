@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/gorilla/websocket"
 	"github.com/recws-org/recws"
-	"goauthentik.io/outpost/pkg"
+	pkg "goauthentik.io/internal/outpost"
 )
 
 func (ac *APIController) initWS(akURL url.URL, outpostUUID strfmt.UUID) {

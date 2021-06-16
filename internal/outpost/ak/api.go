@@ -13,8 +13,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"github.com/recws-org/recws"
+	pkg "goauthentik.io/internal/outpost"
 	"goauthentik.io/outpost/api"
-	"goauthentik.io/outpost/pkg"
 
 	log "github.com/sirupsen/logrus"
 )
