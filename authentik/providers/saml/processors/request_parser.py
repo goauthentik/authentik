@@ -69,7 +69,7 @@ class AuthNRequestParser:
         auth_n_request = AuthNRequest(id=root.attrib["ID"], relay_state=relay_state)
 
         # Check if AuthnRequest has a NameID Policy object
-        name_id_policies = root.findall(f"{{{NS_SAML_PROTOCOL}}}:NameIDPolicy")
+        name_id_policies = root.findall(f"{{{NS_SAML_PROTOCOL}}}NameIDPolicy")
         if len(name_id_policies) > 0:
             name_id_policy = name_id_policies[0]
             auth_n_request.name_id_policy = name_id_policy.attrib["Format"]

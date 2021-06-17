@@ -51,7 +51,7 @@ class AuthenticatorDuoStageView(ChallengeStageView):
                 EventAction.CONFIGURATION_ERROR,
                 message=f"Failed to enroll user: {str(exc)}",
                 user=user,
-            ).from_http(self.request).set_user(user).save()
+            ).from_http(self.request, user)
             raise InvalidStageError(str(exc)) from exc
         user_id = enroll["user_id"]
         self.request.session[SESSION_KEY_DUO_USER_ID] = user_id
