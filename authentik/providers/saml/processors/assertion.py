@@ -24,6 +24,7 @@ from authentik.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_PERSISTENT,
     SAML_NAME_ID_FORMAT_TRANSIENT,
+    SAML_NAME_ID_FORMAT_UNSPECIFIED,
     SAML_NAME_ID_FORMAT_WINDOWS,
     SAML_NAME_ID_FORMAT_X509,
     SIGN_ALGORITHM_TRANSFORM_MAP,
@@ -165,7 +166,10 @@ class AssertionProcessor:
         if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_EMAIL:
             name_id.text = self.http_request.user.email
             return name_id
-        if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_PERSISTENT:
+        if name_id.attrib["Format"] in [
+            SAML_NAME_ID_FORMAT_PERSISTENT,
+            SAML_NAME_ID_FORMAT_UNSPECIFIED,
+        ]:
             name_id.text = persistent
             return name_id
         if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_X509:

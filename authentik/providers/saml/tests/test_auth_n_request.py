@@ -14,7 +14,7 @@ from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.request_parser import AuthNRequestParser
 from authentik.sources.saml.exceptions import MismatchedRequestID
 from authentik.sources.saml.models import SAMLSource
-from authentik.sources.saml.processors.constants import SAML_NAME_ID_FORMAT_EMAIL
+from authentik.sources.saml.processors.constants import SAML_NAME_ID_FORMAT_UNSPECIFIED
 from authentik.sources.saml.processors.request import (
     SESSION_REQUEST_ID,
     RequestProcessor,
@@ -206,5 +206,5 @@ class TestAuthNRequest(TestCase):
             REDIRECT_REQUEST, REDIRECT_RELAY_STATE, REDIRECT_SIGNATURE, REDIRECT_SIG_ALG
         )
         self.assertEqual(parsed_request.id, "_dcf55fcd27a887e60a7ef9ee6fd3adab")
-        self.assertEqual(parsed_request.name_id_policy, SAML_NAME_ID_FORMAT_EMAIL)
+        self.assertEqual(parsed_request.name_id_policy, SAML_NAME_ID_FORMAT_UNSPECIFIED)
         self.assertEqual(parsed_request.relay_state, REDIRECT_RELAY_STATE)
