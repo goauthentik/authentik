@@ -37,7 +37,9 @@ class AccessDeniedResponse(TemplateResponse):
             if self._request.user and self._request.user.is_authenticated:
                 if (
                     self._request.user.is_superuser
-                    or self._request.user.attributes.get(USER_ATTRIBUTE_DEBUG, False)
+                    or self._request.user.group_attributes().get(
+                        USER_ATTRIBUTE_DEBUG, False
+                    )
                 ):
                     context["policy_result"] = self.policy_result
         return context

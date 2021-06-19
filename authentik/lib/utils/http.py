@@ -33,7 +33,7 @@ def _get_outpost_override_ip(request: HttpRequest) -> Optional[str]:
         return None
     if OUTPOST_REMOTE_IP_HEADER not in request.META:
         return None
-    if request.user.attributes.get(USER_ATTRIBUTE_CAN_OVERRIDE_IP, False):
+    if request.user.group_attributes().get(USER_ATTRIBUTE_CAN_OVERRIDE_IP, False):
         return None
     return request.META[OUTPOST_REMOTE_IP_HEADER]
 
