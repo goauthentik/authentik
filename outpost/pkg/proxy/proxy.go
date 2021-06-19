@@ -446,15 +446,17 @@ func (p *OAuthProxy) addHeadersForProxying(rw http.ResponseWriter, req *http.Req
 			username = session.Email
 		}
 		authVal := b64.StdEncoding.EncodeToString([]byte(username + ":" + password))
+		p.logger.WithField("username", username).Trace("setting http basic auth")
 		req.Header["Authorization"] = []string{fmt.Sprintf("Basic %s", authVal)}
 	}
 	// Check if user has additional headers set that we should sent
-	if additionalHeaders, ok := userAttributes["additionalHeaders"].(map[string]string); ok {
+	if additionalHeaders, ok := userAttributes["additionalHeaders"].(map[string]interface{}); ok {
+		p.logger.WithField("headers", additionalHeaders).Trace("setting additional headers")
 		if additionalHeaders == nil {
 			return
 		}
 		for key, value := range additionalHeaders {
-			req.Header.Set(key, value)
+			req.Header.Set(key, toString(value))
 		}
 	}
 }
