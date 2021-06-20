@@ -12,7 +12,9 @@ You will need to create a Discord Application via the Discord Developer Portal.
 ## Discord
 
 1. Create an application in the Discord Developer Portal (This is Free) https://discord.com/developers/applications
+![New Application Button](discord1.png)
 2. Name the Application
+![Nname App](discord2.png)
 3. 
 
 ## Authentik -> Sources
