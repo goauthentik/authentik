@@ -21,8 +21,16 @@ module.exports = {
             ],
         },
         {
-            type: "doc",
-            id: "sources",
+            type: "category",
+            label: "sources",
+            items: [
+                "sources/index",
+                "sources/ldap",
+                "sources/oauth",
+                "sources/discord",
+                "sources/plex",
+                "sources/saml",
+            ],
         },
         {
             type: "category",
