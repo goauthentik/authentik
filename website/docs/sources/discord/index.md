@@ -21,27 +21,27 @@ The following placeholders will be used:
 
 ![Name App](discord2.png)
 
-3. Select OAuth2 from the left Menu
+3. Select **OAuth2** from the left Menu
 
-4. Copy the Client ID and save it for later
+4. Copy the **Client ID** and _save it for later_
 
-5. Click to Reveal the Client Secret and save it for later
+5. **Click to Reveal** the Client Secret and _save it for later_
 
-6. Click Add Redirect and add https://authentik.company/source/oauth/callback/discord
+6. Click **Add Redirect** and add https://authentik.company/source/oauth/callback/discord
 
 Here is an example of a completed OAuth2 screen for Discord.
 
 ![Example Screen](discord4.png)
 
-## Authentik -> Sources
+## Authentik
 
-8. Add _Discord_ as a _source_
+8. Under _Resources -> Sources_ Click **Create Discord OAuth Source**
 
-9. Name: <Choose a name> (For the example I used Discord)
-10. Slug: discord (You can choose a different slug, if you do you will need to update the Discord redirect URLand point it to the correct slug.)
-11. Consumer Key: <Client ID from step 4>
-12. Consumer Secret: <Client Secret from step 5>
-13. Provider type: Discord
+9. **Name:** <Choose a name> (For the example I used Discord)
+10. **Slug:** discord (You can choose a different slug, if you do you will need to update the Discord redirect URLand point it to the correct slug.)
+11. **Consumer Key:** <Client ID from step 4>
+12. **Consumer Secret:** <Client Secret from step 5>
+13. **Provider type:** Discord
 
 Here is an exmple of a complete Authentik Discord OAuth Source
 
