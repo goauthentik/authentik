@@ -6,6 +6,7 @@ from urllib.parse import urlencode
 from uuid import uuid4
 
 import django.db.models.options as options
+from deepmerge import always_merger
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
@@ -114,8 +115,8 @@ class User(GuardianUserMixin, AbstractUser):
         including the users attributes"""
         final_attributes = {}
         for group in self.ak_groups.all().order_by("name"):
-            final_attributes.update(group.attributes)
-        final_attributes.update(self.attributes)
+            always_merger.merge(final_attributes, group.attributes)
+        always_merger.merge(final_attributes, self.attributes)
         return final_attributes
 
     @cached_property

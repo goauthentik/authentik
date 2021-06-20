@@ -105,11 +105,3 @@ Defaults to `info`.
 - `AUTHENTIK_AUTHENTIK__AVATARS`
 
   Controls which avatars are shown. Defaults to `gravatar`. Can be set to `none` to disable avatars.
-
-- `AUTHENTIK_AUTHENTIK__BRANDING__TITLE`
-
-  Branding title used throughout the UI. Defaults to `authentik`.
-
-- `AUTHENTIK_AUTHENTIK__BRANDING__LOGO`
-
-  Logo shown in the sidebar and flow executions. Defaults to `/static/dist/assets/icons/icon_left_brand.svg`

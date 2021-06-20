@@ -20,7 +20,7 @@ from authentik.sources.saml.processors.constants import (
     RSA_SHA256,
     RSA_SHA384,
     RSA_SHA512,
-    SAML_NAME_ID_FORMAT_EMAIL,
+    SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
 
 LOGGER = get_logger()
@@ -42,7 +42,7 @@ class AuthNRequest:
 
     relay_state: Optional[str] = None
 
-    name_id_policy: str = SAML_NAME_ID_FORMAT_EMAIL
+    name_id_policy: str = SAML_NAME_ID_FORMAT_UNSPECIFIED
 
 
 class AuthNRequestParser:
@@ -69,10 +69,12 @@ class AuthNRequestParser:
         auth_n_request = AuthNRequest(id=root.attrib["ID"], relay_state=relay_state)
 
         # Check if AuthnRequest has a NameID Policy object
-        name_id_policies = root.findall(f"{{{NS_SAML_PROTOCOL}}}:NameIDPolicy")
+        name_id_policies = root.findall(f"{{{NS_SAML_PROTOCOL}}}NameIDPolicy")
         if len(name_id_policies) > 0:
             name_id_policy = name_id_policies[0]
-            auth_n_request.name_id_policy = name_id_policy.attrib["Format"]
+            auth_n_request.name_id_policy = name_id_policy.attrib.get(
+                "Format", SAML_NAME_ID_FORMAT_UNSPECIFIED
+            )
 
         return auth_n_request
 

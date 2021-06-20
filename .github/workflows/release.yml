@@ -33,15 +33,15 @@ jobs:
         with:
           push: ${{ github.event_name == 'release' }}
           tags: |
-            beryju/authentik:2021.6.1-rc6,
+            beryju/authentik:2021.6.1,
             beryju/authentik:latest,
-            ghcr.io/goauthentik/server:2021.6.1-rc6,
+            ghcr.io/goauthentik/server:2021.6.1,
             ghcr.io/goauthentik/server:latest
           platforms: linux/amd64,linux/arm64
           context: .
       - name: Building Docker Image (stable)
         uses: docker/build-push-action@v2
-        if: ${{ github.event_name == 'release' && !contains('2021.6.1-rc6', 'rc') }}
+        if: ${{ github.event_name == 'release' && !contains('2021.6.1', 'rc') }}
         with:
           push: true
           tags: |
@@ -76,15 +76,15 @@ jobs:
         with:
           push: ${{ github.event_name == 'release' }}
           tags: |
-            beryju/authentik-proxy:2021.6.1-rc6,
+            beryju/authentik-proxy:2021.6.1,
             beryju/authentik-proxy:latest,
-            ghcr.io/goauthentik/proxy:2021.6.1-rc6,
+            ghcr.io/goauthentik/proxy:2021.6.1,
             ghcr.io/goauthentik/proxy:latest
           file: outpost/proxy.Dockerfile
           platforms: linux/amd64,linux/arm64
       - name: Building Docker Image (stable)
         uses: docker/build-push-action@v2
-        if: ${{ github.event_name == 'release' && !contains('2021.6.1-rc6', 'rc') }}
+        if: ${{ github.event_name == 'release' && !contains('2021.6.1', 'rc') }}
         with:
           push: true
           tags: |
@@ -119,15 +119,15 @@ jobs:
         with:
           push: ${{ github.event_name == 'release' }}
           tags: |
-            beryju/authentik-ldap:2021.6.1-rc6,
+            beryju/authentik-ldap:2021.6.1,
             beryju/authentik-ldap:latest,
-            ghcr.io/goauthentik/ldap:2021.6.1-rc6,
+            ghcr.io/goauthentik/ldap:2021.6.1,
             ghcr.io/goauthentik/ldap:latest
           file: outpost/ldap.Dockerfile
           platforms: linux/amd64,linux/arm64
       - name: Building Docker Image (stable)
         uses: docker/build-push-action@v2
-        if: ${{ github.event_name == 'release' && !contains('2021.6.1-rc6', 'rc') }}
+        if: ${{ github.event_name == 'release' && !contains('2021.6.1', 'rc') }}
         with:
           push: true
           tags: |
@@ -168,5 +168,5 @@ jobs:
           SENTRY_PROJECT: authentik
           SENTRY_URL: https://sentry.beryju.org
         with:
-          version: authentik@2021.6.1-rc6
+          version: authentik@2021.6.1
           environment: beryjuorg-prod

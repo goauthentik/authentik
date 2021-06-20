@@ -365,8 +365,11 @@ class FlowErrorResponse(TemplateResponse):
             context = {}
         context["error"] = self.error
         if self._request.user and self._request.user.is_authenticated:
-            if self._request.user.is_superuser or self._request.user.attributes.get(
-                USER_ATTRIBUTE_DEBUG, False
+            if (
+                self._request.user.is_superuser
+                or self._request.user.group_attributes().get(
+                    USER_ATTRIBUTE_DEBUG, False
+                )
             ):
                 context["tb"] = "".join(format_tb(self.error.__traceback__))
         return context

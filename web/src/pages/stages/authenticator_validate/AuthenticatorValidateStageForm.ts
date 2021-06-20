@@ -68,6 +68,27 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                 </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
+                        label=${t`Device classes`}
+                        ?required=${true}
+                        name="deviceClasses">
+                        <select name="users" class="pf-c-form-control" multiple>
+                            <option value=${DeviceClassesEnum.Static} ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Static)}>
+                                ${t`Static Tokens`}
+                            </option>
+                            <option value=${DeviceClassesEnum.Totp} ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Totp)}>
+                                ${t`TOTP Authenticators`}
+                            </option>
+                            <option value=${DeviceClassesEnum.Webauthn} ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Webauthn)}>
+                                ${t`WebAuthn Authenticators`}
+                            </option>
+                            <option value=${DeviceClassesEnum.Duo} ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Duo)}>
+                                ${t`Duo Authenticators`}
+                            </option>
+                        </select>
+                        <p class="pf-c-form__helper-text">${t`Device classes which can be used to authenticate.`}</p>
+                        <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
                         label=${t`Not configured action`}
                         ?required=${true}
                         name="notConfiguredAction">
@@ -89,27 +110,6 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                                 ${t`Continue`}
                             </option>
                         </select>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`Device classes`}
-                        ?required=${true}
-                        name="deviceClasses">
-                        <select name="users" class="pf-c-form-control" multiple>
-                            <option value=${DeviceClassesEnum.Static} ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Static)}>
-                                ${t`Static Tokens`}
-                            </option>
-                            <option value=${DeviceClassesEnum.Totp} ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Totp)}>
-                                ${t`TOTP Authenticators`}
-                            </option>
-                            <option value=${DeviceClassesEnum.Webauthn} ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Webauthn)}>
-                                ${t`WebAuthn Authenticators`}
-                            </option>
-                            <option value=${DeviceClassesEnum.Duo} ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Duo)}>
-                                ${t`Duo Authenticators`}
-                            </option>
-                        </select>
-                        <p class="pf-c-form__helper-text">${t`Device classes which can be used to authenticate.`}</p>
-                        <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
                     </ak-form-element-horizontal>
                     ${this.showConfigurationStage ? html`
                         <ak-form-element-horizontal
