@@ -22,12 +22,13 @@ module.exports = {
         },
         {
             type: "category",
-            label: "sources",
+            label: "Sources",
             items: [
                 "sources/index",
+                "sources/discord",
+                "sources/github",
                 "sources/ldap",
                 "sources/oauth",
-                "sources/discord",
                 "sources/plex",
                 "sources/saml",
             ],
