@@ -1,5 +1,5 @@
 ---
-title: LDAP
+title: SAML
 ---
 
 ## SAML Source
