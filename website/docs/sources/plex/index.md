@@ -19,6 +19,3 @@ Add _Plex_ as a _source_
 - Decide if *anyone* with a plex account can authenticate or only friends you share with
 
 Save, and you now have Plex as a source.
-  
-:::note
-To have the source appear on the default login page you must modify your Identification stage.  If you haven't customized the stages it is called _default-authentication-identification_
