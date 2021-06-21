@@ -10,6 +10,7 @@ from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction
+from authentik.lib.config import CONFIG
 from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.models import PolicyBinding
@@ -18,6 +19,7 @@ from authentik.policies.types import PolicyRequest, PolicyResult
 LOGGER = get_logger()
 
 FORK_CTX = get_context("fork")
+CACHE_TIMEOUT = int(CONFIG.y("redis.cache_timeout_policies"))
 PROCESS_CLASS = FORK_CTX.Process
 HIST_POLICIES_EXECUTION_TIME = Histogram(
     "authentik_policies_execution_time",
@@ -114,7 +116,7 @@ class PolicyProcess(PROCESS_CLASS):
         policy_result.source_binding = self.binding
         if not self.request.debug:
             key = cache_key(self.binding, self.request)
-            cache.set(key, policy_result)
+            cache.set(key, policy_result, CACHE_TIMEOUT)
         LOGGER.debug(
             "P_ENG(proc): finished and cached ",
             policy=self.binding.policy,
