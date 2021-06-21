@@ -461,7 +461,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         from authentik.core.expression import PropertyMappingEvaluator
 
         evaluator = PropertyMappingEvaluator()
-        evaluator.set_context(user, request, **kwargs)
+        evaluator.set_context(user, request, self, **kwargs)
         try:
             return evaluator.evaluate(self.expression)
         except (ValueError, SyntaxError) as exc:
