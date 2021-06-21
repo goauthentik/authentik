@@ -6,8 +6,8 @@ import BrowserOnly from "@docusaurus/core/lib/client/exports/BrowserOnly";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import styles from "./styles.module.css";
-import BeforeAfterSlider from 'react-before-after-slider'
 import Comparison from "../comparison";
+import 'react-before-after-slider-component/dist/build.css';
 
 const features = [
     {
@@ -105,12 +105,16 @@ function Home() {
                                 <div>
                                     <BrowserOnly>
                                         {() => {
-                                            return <BeforeAfterSlider
-                                                className={styles.featureImage}
-                                                before={useBaseUrl("img/screen_apps_light.jpg")}
-                                                after={useBaseUrl("img/screen_apps_dark.jpg")}
-                                                width={640}
-                                                height={480}
+                                            const ReactBeforeSliderComponent = require('react-before-after-slider-component').default;
+                                            return <ReactBeforeSliderComponent
+                                                firstImage={{
+                                                    id: 1,
+                                                    imageUrl: useBaseUrl("img/screen_apps_light.jpg"),
+                                                }}
+                                                secondImage={{
+                                                    id: 2,
+                                                    imageUrl: useBaseUrl("img/screen_apps_dark.jpg"),
+                                                }}
                                             />
                                         }}
                                     </BrowserOnly>
@@ -146,12 +150,16 @@ function Home() {
                                 <div>
                                     <BrowserOnly>
                                         {() => {
-                                            return <BeforeAfterSlider
-                                                className={styles.featureImage}
-                                                before={useBaseUrl("img/screen_admin_light.jpg")}
-                                                after={useBaseUrl("img/screen_admin_dark.jpg")}
-                                                width={640}
-                                                height={480}
+                                            const ReactBeforeSliderComponent = require('react-before-after-slider-component').default;
+                                            return <ReactBeforeSliderComponent
+                                                firstImage={{
+                                                    id: 1,
+                                                    imageUrl: useBaseUrl("img/screen_admin_light.jpg"),
+                                                }}
+                                                secondImage={{
+                                                    id: 2,
+                                                    imageUrl: useBaseUrl("img/screen_admin_dark.jpg"),
+                                                }}
                                             />
                                         }}
                                     </BrowserOnly>
