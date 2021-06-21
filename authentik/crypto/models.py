@@ -57,7 +57,9 @@ class CertificateKeyPair(CreatedUpdatedModel):
         if not self._private_key and self._private_key != "":
             try:
                 self._private_key = load_pem_private_key(
-                    str.encode("\n".join([x.strip() for x in self.key_data.split("\n")])),
+                    str.encode(
+                        "\n".join([x.strip() for x in self.key_data.split("\n")])
+                    ),
                     password=None,
                     backend=default_backend(),
                 )
