@@ -10,9 +10,12 @@ If you want to only make changes on the UI, you don't need a backend running fro
 
     ```
     AUTHENTIK_WEB__LOAD_LOCAL_FILES=true
+    AUTHENTIK_IMAGE=beryju.org/authentik/server
+    AUTHENTIK_TAG=gh-next
+    AUTHENTIK_OUTPOSTS__DOCKER_IMAGE_BASE=beryju.org/authentik/outpost-%(type)s:gh-next
     ```
 
-    This will cause authentik to load static files from a folder and ignore the bundeled files.
+    This will cause authentik to load static files from a folder and ignore the bundeled files. Also the beta image is used.
 
 4. Add this volume mapping to your compose file
 
@@ -20,11 +23,11 @@ If you want to only make changes on the UI, you don't need a backend running fro
     version: '3.2'
 
     services:
+      # [...]
+      server:
         # [...]
-        server:
-            # [...]
-            volumes:
-            - ./web:/web
+        volumes:
+          - ./web:/web
     ```
 
     This makes the local web files available to the authentik server.
