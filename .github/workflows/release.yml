@@ -133,7 +133,6 @@ jobs:
           docker tag ghcr.io/goauthentik/ldap:latest ghcr.io/goauthentik/ldap:stable
           docker push ghcr.io/goauthentik/ldap:stable
   test-release:
-    if: ${{ github.event_name == 'release' }}
     needs:
       - build-server
       - build-proxy
@@ -157,8 +156,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: 12.x
+      - name: Build web api client and web ui
+        run: |
+          export NODE_ENV=production
+          make gen-web
+          cd web
+          npm i
+          npm run build
       - name: Create a Sentry.io release
         uses: getsentry/action-release@v1
+        if: ${{ github.event_name == 'release' }}
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: beryjuorg
@@ -167,3 +178,4 @@ jobs:
         with:
           version: authentik@2021.6.1
           environment: beryjuorg-prod
+          sourcemaps: './web/dist'
