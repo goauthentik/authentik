@@ -9,6 +9,7 @@ postgresql:
 web:
   listen: 0.0.0.0:9000
   listen_tls: 0.0.0.0:9443
+  load_local_files: false
 
 redis:
   host: localhost

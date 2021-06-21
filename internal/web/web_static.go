@@ -10,7 +10,7 @@ import (
 
 func (ws *WebServer) configureStatic() {
 	statRouter := ws.lh.NewRoute().Subrouter()
-	if config.G.Debug {
+	if config.G.Debug || config.G.Web.LoadLocalFiles {
 		ws.log.Debug("Using local static files")
 		ws.lh.PathPrefix("/static/dist").Handler(http.StripPrefix("/static/dist", http.FileServer(http.Dir("./web/dist"))))
 		ws.lh.PathPrefix("/static/authentik").Handler(http.StripPrefix("/static/authentik", http.FileServer(http.Dir("./web/authentik"))))
