@@ -10,7 +10,7 @@ from authentik.flows.challenge import (
     ChallengeTypes,
     WithUserInfoChallenge,
 )
-from authentik.flows.models import NotConfiguredAction
+from authentik.flows.models import NotConfiguredAction, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_validate.challenge import (
@@ -143,9 +143,12 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 return self.executor.stage_invalid()
             if stage.not_configured_action == NotConfiguredAction.CONFIGURE:
                 LOGGER.debug("Authenticator not configured, sending user to configure")
+                # Because the foreign key to stage.configuration_stage points to
+                # a base stage class, we need to do another lookup
+                stage = Stage.objects.get_subclass(pk=stage.configuration_stage.pk)
                 # plan.insert inserts at 1 index, so when stage_ok pops 0,
                 # the configuration stage is next
-                self.executor.plan.insert(stage.configuration_stage)
+                self.executor.plan.insert(stage)
                 return self.executor.stage_ok()
         return super().get(request, *args, **kwargs)
 
