@@ -38,14 +38,6 @@ services:
       - geoip:/geoip
     networks:
       - internal
-    labels:
-      traefik.enable: 'true'
-      traefik.docker.network: internal
-      traefik.http.routers.app-router.rule: PathPrefix(`/`)
-      traefik.http.routers.app-router.service: app-service
-      traefik.http.routers.app-router.tls: 'true'
-      traefik.http.services.app-service.loadbalancer.healthcheck.path: /-/health/live/
-      traefik.http.services.app-service.loadbalancer.server.port: '9000'
     env_file:
       - .env
     ports:

@@ -3,23 +3,33 @@ from traceback import format_tb
 from typing import Optional
 
 from django.http import HttpRequest
+from guardian.utils import get_anonymous_user
 
-from authentik.core.models import User
+from authentik.core.models import PropertyMapping, User
 from authentik.events.models import Event, EventAction
 from authentik.lib.expression.evaluator import BaseEvaluator
+from authentik.policies.types import PolicyRequest
 
 
 class PropertyMappingEvaluator(BaseEvaluator):
     """Custom Evalautor that adds some different context variables."""
 
     def set_context(
-        self, user: Optional[User], request: Optional[HttpRequest], **kwargs
+        self,
+        user: Optional[User],
+        request: Optional[HttpRequest],
+        mapping: PropertyMapping,
+        **kwargs,
     ):
         """Update context with context from PropertyMapping's evaluate"""
+        req = PolicyRequest(user=get_anonymous_user())
+        req.obj = mapping
         if user:
+            req.user = user
             self._context["user"] = user
         if request:
-            self._context["request"] = request
+            req.http_request = request
+        self._context["request"] = req
         self._context.update(**kwargs)
 
     def handle_error(self, exc: Exception, expression_source: str):
@@ -30,9 +40,8 @@ class PropertyMappingEvaluator(BaseEvaluator):
             expression=expression_source,
             message=error_string,
         )
-        if "user" in self._context:
-            event.set_user(self._context["user"])
         if "request" in self._context:
-            event.from_http(self._context["request"])
+            req: PolicyRequest = self._context["request"]
+            event.from_http(req.http_request, req.user)
             return
         event.save()

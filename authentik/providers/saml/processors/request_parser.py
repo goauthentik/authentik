@@ -24,6 +24,7 @@ from authentik.sources.saml.processors.constants import (
 )
 
 LOGGER = get_logger()
+ERROR_CANNOT_DECODE_REQUEST = "Cannot decode SAML request."
 ERROR_SIGNATURE_REQUIRED_BUT_ABSENT = (
     "Verification Certificate configured, but request is not signed."
 )
@@ -80,7 +81,10 @@ class AuthNRequestParser:
 
     def parse(self, saml_request: str, relay_state: Optional[str]) -> AuthNRequest:
         """Validate and parse raw request with enveloped signautre."""
-        decoded_xml = b64decode(saml_request.encode()).decode()
+        try:
+            decoded_xml = b64decode(saml_request.encode()).decode()
+        except UnicodeDecodeError:
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST)
 
         verifier = self.provider.verification_kp
 
@@ -123,7 +127,10 @@ class AuthNRequestParser:
         sig_alg: Optional[str] = None,
     ) -> AuthNRequest:
         """Validate and parse raw request with detached signature"""
-        decoded_xml = decode_base64_and_inflate(saml_request)
+        try:
+            decoded_xml = decode_base64_and_inflate(saml_request)
+        except UnicodeDecodeError:
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST)
 
         verifier = self.provider.verification_kp
 
