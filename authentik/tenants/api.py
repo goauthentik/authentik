@@ -51,7 +51,7 @@ class CurrentTenantSerializer(PassiveSerializer):
     ui_footer_links = ListField(
         child=FooterLinkSerializer(),
         read_only=True,
-        default=CONFIG.y("authentik.footer_links"),
+        default=CONFIG.y("footer_links", []),
     )
 
     flow_unenrollment = CharField(source="flow_unenrollment.slug", required=False)

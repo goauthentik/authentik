@@ -31,5 +31,5 @@ def context_processor(request: HttpRequest) -> dict[str, Any]:
     return {
         "tenant": tenant,
         "ak_version": __version__,
-        "footer_links": CONFIG.y("authentik.footer_links"),
+        "footer_links": CONFIG.y("footer_links"),
     }

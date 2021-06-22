@@ -19,7 +19,7 @@ class TestTenants(TestCase):
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
                 "branding_title": "authentik",
                 "matched_domain": "authentik-default",
-                "ui_footer_links": CONFIG.y("authentik.footer_links"),
+                "ui_footer_links": CONFIG.y("footer_links"),
             },
         )
 
@@ -38,7 +38,7 @@ class TestTenants(TestCase):
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
                 "branding_title": "custom",
                 "matched_domain": "bar.baz",
-                "ui_footer_links": CONFIG.y("authentik.footer_links"),
+                "ui_footer_links": CONFIG.y("footer_links"),
             },
         )
 
@@ -52,6 +52,6 @@ class TestTenants(TestCase):
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
                 "branding_title": "authentik",
                 "matched_domain": "fallback",
-                "ui_footer_links": CONFIG.y("authentik.footer_links"),
+                "ui_footer_links": CONFIG.y("footer_links"),
             },
         )
