@@ -41,7 +41,7 @@ jobs:
           context: .
       - name: Building Docker Image (stable)
         if: ${{ github.event_name == 'release' && !contains('2021.6.1', 'rc') }}
-        run:
+        run: |
           docker pull beryju/authentik:latest
           docker tag beryju/authentik:latest beryju/authentik:stable
           docker push beryju/authentik:stable
@@ -83,7 +83,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
       - name: Building Docker Image (stable)
         if: ${{ github.event_name == 'release' && !contains('2021.6.1', 'rc') }}
-        run:
+        run: |
           docker pull beryju/authentik-proxy:latest
           docker tag beryju/authentik-proxy:latest beryju/authentik-proxy:stable
           docker push beryju/authentik-proxy:stable
@@ -125,7 +125,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
       - name: Building Docker Image (stable)
         if: ${{ github.event_name == 'release' && !contains('2021.6.1', 'rc') }}
-        run:
+        run: |
           docker pull beryju/authentik-ldap:latest
           docker tag beryju/authentik-ldap:latest beryju/authentik-ldap:stable
           docker push beryju/authentik-ldap:stable
