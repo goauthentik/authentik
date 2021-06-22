@@ -17,7 +17,7 @@ The following placeholders will be used:
 
 ![Register OAuth App](githubdeveloper1.png)
 
-2. **Application Name:** <Choose a name users will recognize ie: Authentik>
+2. **Application Name:** Choose a name users will recognize ie: Authentik
 3. **Homepage URL**:: www.my.company
 4. **Authorization callback URL**: https://authentik.company/source/oauth/callback/github
 5. Click **Register Application**
@@ -33,10 +33,10 @@ Example screenshot
 
 8. Under _Resources -> Sources_ Click **Create Github OAuth Source**
 
-9. **Name**: <Choose a name> (For the example I use Github)
+9. **Name**: Choose a name (For the example I use Github)
 10. **Slug**: github (If you choose a different slug the URLs will need to be updated to reflect the change)
-11.  **Consumer Key:** <Client ID from step 6>
-12. **Consumer Secret:** <Client Secret from step 7>
+11.  **Consumer Key:** Client ID from step 6
+12. **Consumer Secret:** Client Secret from step 7
 13. **Provider Type:** Github
 
 Expand URL settings:
