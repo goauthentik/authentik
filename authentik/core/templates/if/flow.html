@@ -11,6 +11,11 @@
 
 {% block head %}
 <script src="{% static 'dist/FlowInterface.js' %}?v={{ ak_version }}" type="module"></script>
+<style>
+.pf-c-background-image::before {
+    background-image: url("{{ flow.background_url }}");
+}
+</style>
 {% endblock %}
 
 {% block body %}

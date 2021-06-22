@@ -55,11 +55,16 @@ class CertificateKeyPair(CreatedUpdatedModel):
     def private_key(self) -> Optional[RSAPrivateKey]:
         """Get python cryptography PrivateKey instance"""
         if not self._private_key and self._private_key != "":
-            self._private_key = load_pem_private_key(
-                str.encode("\n".join([x.strip() for x in self.key_data.split("\n")])),
-                password=None,
-                backend=default_backend(),
-            )
+            try:
+                self._private_key = load_pem_private_key(
+                    str.encode(
+                        "\n".join([x.strip() for x in self.key_data.split("\n")])
+                    ),
+                    password=None,
+                    backend=default_backend(),
+                )
+            except ValueError:
+                return None
         return self._private_key
 
     @property

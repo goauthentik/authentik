@@ -14,6 +14,7 @@ from authentik.events.models import cleanse_dict
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import Flow, FlowStageBinding, Stage
+from authentik.lib.config import CONFIG
 from authentik.policies.engine import PolicyEngine
 from authentik.root.monitoring import UpdatingGauge
 
@@ -33,6 +34,7 @@ HIST_FLOWS_PLAN_TIME = Histogram(
     "Duration to build a plan for a flow",
     ["flow_slug"],
 )
+CACHE_TIMEOUT = int(CONFIG.y("redis.cache_timeout_flows"))
 
 
 def cache_key(flow: Flow, user: Optional[User] = None) -> str:
@@ -157,7 +159,7 @@ class FlowPlanner:
                 "f(plan): building plan",
             )
             plan = self._build_plan(user, request, default_context)
-            cache.set(cache_key(self.flow, user), plan)
+            cache.set(cache_key(self.flow, user), plan, CACHE_TIMEOUT)
             GAUGE_FLOWS_CACHED.update()
             if not plan.stages and not self.allow_empty_flows:
                 raise EmptyFlowException()
