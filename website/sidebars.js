@@ -21,10 +21,6 @@ module.exports = {
             ],
         },
         {
-            type: "doc",
-            id: "sources",
-        },
-        {
             type: "category",
             label: "Providers",
             items: ["providers/oauth2", "providers/saml", "providers/proxy"],
@@ -67,7 +63,17 @@ module.exports = {
                 {
                     type: "category",
                     label: "as Source",
-                    items: ["integrations/sources/active-directory/index"],
+                    items: [
+                        "integrations/sources/index",
+                        "integrations/sources/active-directory/index",
+                        "integrations/sources/discord/index",
+                        "integrations/sources/github/index",
+                        "integrations/sources/google/index",
+                        "integrations/sources/ldap/index",
+                        "integrations/sources/oauth/index",
+                        "integrations/sources/plex/index",
+                        "integrations/sources/saml/index",
+                    ],
                 },
                 {
                     type: "category",
