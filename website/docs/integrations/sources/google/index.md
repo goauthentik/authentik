@@ -78,5 +78,6 @@ Here is an exmple of a complete Authentik Google OAuth Source
 
 Save, and you now have Google as a source.
 
-:::note:::
+:::note
 For more details on how-to have the new source display on the Login Page see the Sources page
+:::

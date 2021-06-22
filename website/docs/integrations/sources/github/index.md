@@ -41,8 +41,9 @@ Example screenshot
 
 Expand URL settings:
 
-:::note:::
+:::note
 As of June 20 2021 these URLS are correct. Here is the Github reference URL https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps
+:::
 
 14. **Authorization URL:** `https://github.com/login/oauth/authorize`
 15. **Access token URL:** `https://github.com/login/oauth/access_token`
@@ -54,5 +55,6 @@ Here is an exmple of a complete Authentik Github OAuth Source
 
 Save, and you now have Github as a source.
 
-:::note:::
+:::note
 For more details on how-to have the new source display on the Login Page see the Sources page
+:::

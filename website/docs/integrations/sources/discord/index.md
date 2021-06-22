@@ -49,5 +49,6 @@ Here is an exmple of a complete Authentik Discord OAuth Source
 
 Save, and you now have Discord as a source.
 
-:::note:::
+:::note
 For more details on how-to have the new source display on the Login Page see the Sources page
+:::
