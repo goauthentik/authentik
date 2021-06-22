@@ -21,11 +21,11 @@ You will need to create a new project, and OAuth credentials in the Google Devel
 
 3. **Project Name**: <Choose a name>
 4. **Organization**: <Leave as defaut if unsure>
-5. **Location**: <Leave as default if unsure
+5. **Location**: <Leave as default if unsure>
 
 ![Example Screen](googledeveloper2.png)
 
-6. CLick **Create**
+6. Click **Create**
 7. Choose your project from the drop down at the top
 8. Click the **Credentials** menu item on the left.  It looks like a key.
 
@@ -36,9 +36,9 @@ You will need to create a new project, and OAuth credentials in the Google Devel
 ![Example Screen](googledeveloper4.png)
 
 
-10. **User Type:** If you do not have a Google Workspace (GSuite) account choose _External_.  If you do have a Google Worksapce (Gsuite) account and want to limit acces to only users inside of your organization choose _Internal_
+10. **User Type:** If you do not have a Google Workspace (GSuite) account choose _External_.  If you do have a Google Workspace (Gsuite) account and want to limit acces to only users inside of your organization choose _Internal_
 
-I'm only going to list the mandatory/important fields to complete. 
+_I'm only going to list the mandatory/important fields to complete._
 
 11. **App Name:** <Choose an Application>
 12. **User Support Email:** <Must have a value>
@@ -74,7 +74,7 @@ I'm only going to list the mandatory/important fields to complete.
 
 Here is an exmple of a complete Authentik Google OAuth Source
 
-![Example Screen](autheniksource.png)
+![Example Screen](authentiksource.png)
 
 Save, and you now have Google as a source.
 
