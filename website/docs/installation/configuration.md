@@ -104,8 +104,16 @@ Defaults to `info`.
 
   Placeholder for outpost docker images. Default: `ghcr.io/goauthentik/%(type)s:%(version)s`.
 
-### AUTHENTIK_AUTHENTIK
+### AUTHENTIK_AVATARS
 
-- `AUTHENTIK_AUTHENTIK__AVATARS`
+Configure how authentik should show avatars for users. Following values can be set:
 
-  Controls which avatars are shown. Defaults to `gravatar`. Can be set to `none` to disable avatars.
+- `none`: Disables per-user avatars and just shows a 1x1 pixel transparent picture
+- `gravatar`: Uses gravatar with the user's email address
+- Any URL: If you want to use images hosted on another server, you can set any URL.
+
+  Additionally, these placeholders can be used:
+
+   - `%(username)s`: The user's username
+   - `%(mail_hash)s`: The email address, md5 hashed
+   - `%(upn)s`: The user's UPN, if set (otherwise an empty string)

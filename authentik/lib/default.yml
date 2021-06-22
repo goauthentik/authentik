@@ -50,12 +50,12 @@ outposts:
   # %(build_hash)s: Build hash if you're running a beta version
   docker_image_base: "ghcr.io/goauthentik/%(type)s:%(version)s"
 
-authentik:
-  avatars: gravatar  # gravatar or none
-  geoip: "./GeoLite2-City.mmdb"
-  # Optionally add links to the footer on the login page
-  footer_links:
-    - name: Documentation
-      href: https://goauthentik.io/docs/
-    - name: authentik Website
-      href: https://goauthentik.io/
+avatars: env://AUTHENTIK_AUTHENTIK__AVATARS?gravatar
+geoip: "./GeoLite2-City.mmdb"
+
+# Can't currently be configured via environment variables, only yaml
+footer_links:
+  - name: Documentation
+    href: https://goauthentik.io/docs/
+  - name: authentik Website
+    href: https://goauthentik.io/

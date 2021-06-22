@@ -143,21 +143,25 @@ class User(GuardianUserMixin, AbstractUser):
     @property
     def avatar(self) -> str:
         """Get avatar, depending on authentik.avatar setting"""
-        mode = CONFIG.raw.get("authentik").get("avatars")
+        mode: str = CONFIG.y("avatars", "none")
         if mode == "none":
             return DEFAULT_AVATAR
+        # gravatar uses md5 for their URLs, so md5 can't be avoided
+        mail_hash = md5(self.email.encode("utf-8")).hexdigest()  # nosec
         if mode == "gravatar":
             parameters = [
                 ("s", "158"),
                 ("r", "g"),
             ]
-            # gravatar uses md5 for their URLs, so md5 can't be avoided
-            mail_hash = md5(self.email.encode("utf-8")).hexdigest()  # nosec
             gravatar_url = (
                 f"{GRAVATAR_URL}/avatar/{mail_hash}?{urlencode(parameters, doseq=True)}"
             )
             return escape(gravatar_url)
-        raise ValueError(f"Invalid avatar mode {mode}")
+        return mode % {
+            "username": self.username,
+            "mail_hash": mail_hash,
+            "upn": self.attributes.get("upn", ""),
+        }
 
     class Meta:
 
