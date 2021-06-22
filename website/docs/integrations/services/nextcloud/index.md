@@ -56,7 +56,7 @@ Under Attribute mapping, set these values:
 - Attribute to map the users groups to.: `http://schemas.xmlsoap.org/claims/Group`
 
 :::note
-If Nextcloud is behind a reverse proxy you may need to force Nextcloud to use HTTPS. 
+If Nextcloud is behind a reverse proxy you may need to force Nextcloud to use HTTPS.
 To do this you will need to add the line `'overwriteprotocol' => 'https'` to `config.php` in the Nextcloud `config\config.php` file
 See https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/reverse_proxy_configuration.html#overwrite-parameters for additional information
 :::
@@ -67,7 +67,7 @@ Create a group for each different level of quota you want users to have. Set a c
 
 Afterwards, create a custom SAML Property Mapping with the name `SAML NextCloud Quota`.
 Set the *SAML Name* to `nextcloud_quota`.
-Set the *Expression* to `return user.group_attributes.get("nextcloud_quota", "1 GB")`, where `1 GB` is the default value for users that don't belong to another group (or have another value set).
+Set the *Expression* to `return user.group_attributes().get("nextcloud_quota", "1 GB")`, where `1 GB` is the default value for users that don't belong to another group (or have another value set).
 
 ## Admin Group
 
