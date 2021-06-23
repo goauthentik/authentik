@@ -34,6 +34,7 @@ from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.http import USER_ATTRIBUTE_CAN_OVERRIDE_IP
+from authentik.managed.models import ManagedModel
 from authentik.outposts.controllers.k8s.utils import get_namespace
 from authentik.outposts.docker_tls import DockerInlineTLS
 
@@ -281,7 +282,7 @@ class KubernetesServiceConnection(OutpostServiceConnection):
         verbose_name_plural = _("Kubernetes Service-Connections")
 
 
-class Outpost(models.Model):
+class Outpost(ManagedModel):
     """Outpost instance which manages a service user and token"""
 
     uuid = models.UUIDField(default=uuid4, editable=False, primary_key=True)

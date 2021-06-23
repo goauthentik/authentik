@@ -77,6 +77,7 @@ class OutpostSerializer(ModelSerializer):
             "service_connection_obj",
             "token_identifier",
             "config",
+            "managed",
         ]
         extra_kwargs = {"type": {"required": True}}
 
