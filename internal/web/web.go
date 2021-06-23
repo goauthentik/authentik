@@ -5,7 +5,6 @@ import (
 	"errors"
 	"net"
 	"net/http"
-	"sync"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -49,17 +48,12 @@ func NewWebServer() *WebServer {
 }
 
 func (ws *WebServer) Run() {
-	wg := sync.WaitGroup{}
-	wg.Add(2)
-	go func() {
-		defer wg.Done()
-		ws.listenPlain()
-	}()
-	go func() {
-		defer wg.Done()
-		ws.listenTLS()
-	}()
-	wg.Done()
+	ws.listenPlain()
+	ws.listenTLS()
+}
+
+func (ws *WebServer) Stop() {
+	ws.stop <- struct{}{}
 }
 
 func (ws *WebServer) listenPlain() {

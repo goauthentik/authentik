@@ -66,7 +66,7 @@ class DockerController(BaseController):
                 "name": container_name,
                 "detach": True,
                 "ports": {
-                    f"{port.port}/{port.protocol.lower()}": port.inner_port or port.port
+                    f"{port.inner_port or port.port}/{port.protocol.lower()}": port.port
                     for port in self.deployment_ports
                 },
                 "environment": self._get_env(),

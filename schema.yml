@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2021.6.1-rc5
+  version: 2021.6.2
   description: Making authentication simple.
   contact:
     email: hello@beryju.org
@@ -236,6 +236,37 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+    post:
+      operationId: authenticators_admin_duo_create
+      description: Viewset for Duo authenticator devices (for admins)
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DuoDeviceRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DuoDeviceRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DuoDeviceRequest'
+        required: true
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DuoDevice'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/authenticators/admin/duo/{id}/:
     get:
       operationId: authenticators_admin_duo_retrieve
@@ -259,6 +290,103 @@ paths:
               schema:
                 $ref: '#/components/schemas/DuoDevice'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    put:
+      operationId: authenticators_admin_duo_update
+      description: Viewset for Duo authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Duo Device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DuoDeviceRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DuoDeviceRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DuoDeviceRequest'
+        required: true
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DuoDevice'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    patch:
+      operationId: authenticators_admin_duo_partial_update
+      description: Viewset for Duo authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Duo Device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDuoDeviceRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDuoDeviceRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDuoDeviceRequest'
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DuoDevice'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    delete:
+      operationId: authenticators_admin_duo_destroy
+      description: Viewset for Duo authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Duo Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':

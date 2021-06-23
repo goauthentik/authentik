@@ -29,6 +29,10 @@ All of these variables can be set to values, but you can also use a URI-like for
 - `AUTHENTIK_REDIS__CACHE_DB`: Database for caching, defaults to 0
 - `AUTHENTIK_REDIS__MESSAGE_QUEUE_DB`: Database for the message queue, defaults to 1
 - `AUTHENTIK_REDIS__WS_DB`: Database for websocket connections, defaults to 2
+- `AUTHENTIK_REDIS__CACHE_TIMEOUT`: Timeout for cached data until it expires in seconds, defaults to 300
+- `AUTHENTIK_REDIS__CACHE_TIMEOUT_FLOWS`: Timeout for cached flow plans until they expire in seconds, defaults to 300
+- `AUTHENTIK_REDIS__CACHE_TIMEOUT_POLICIES`: Timeout for cached polices until they expire in seconds, defaults to 300
+- `AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION`: Timeout for cached reputation until they expire in seconds, defaults to 300
 
 ## authentik Settings
 
@@ -100,16 +104,16 @@ Defaults to `info`.
 
   Placeholder for outpost docker images. Default: `ghcr.io/goauthentik/%(type)s:%(version)s`.
 
-### AUTHENTIK_AUTHENTIK
+### AUTHENTIK_AVATARS
 
-- `AUTHENTIK_AUTHENTIK__AVATARS`
+Configure how authentik should show avatars for users. Following values can be set:
 
-  Controls which avatars are shown. Defaults to `gravatar`. Can be set to `none` to disable avatars.
+- `none`: Disables per-user avatars and just shows a 1x1 pixel transparent picture
+- `gravatar`: Uses gravatar with the user's email address
+- Any URL: If you want to use images hosted on another server, you can set any URL.
 
-- `AUTHENTIK_AUTHENTIK__BRANDING__TITLE`
+  Additionally, these placeholders can be used:
 
-  Branding title used throughout the UI. Defaults to `authentik`.
-
-- `AUTHENTIK_AUTHENTIK__BRANDING__LOGO`
-
-  Logo shown in the sidebar and flow executions. Defaults to `/static/dist/assets/icons/icon_left_brand.svg`
+   - `%(username)s`: The user's username
+   - `%(mail_hash)s`: The email address, md5 hashed
+   - `%(upn)s`: The user's UPN, if set (otherwise an empty string)

@@ -67,11 +67,6 @@ class OutpostConsumer(AuthJsonConsumer):
         self.accept()
         self.outpost = outpost.first()
         self.last_uid = self.channel_name
-        LOGGER.debug(
-            "added outpost instace to cache",
-            outpost=self.outpost,
-            channel_name=self.channel_name,
-        )
 
     # pylint: disable=unused-argument
     def disconnect(self, close_code):
@@ -108,6 +103,11 @@ class OutpostConsumer(AuthJsonConsumer):
                 outpost=self.outpost.name,
                 uid=self.last_uid,
             ).inc()
+            LOGGER.debug(
+                "added outpost instace to cache",
+                outpost=self.outpost,
+                instance_uuid=self.last_uid,
+            )
             self.first_msg = True
 
         if msg.instruction == WebsocketMessageInstruction.HELLO:

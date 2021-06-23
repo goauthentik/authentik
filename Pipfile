@@ -46,6 +46,7 @@ webauthn = "*"
 xmlsec = "*"
 duo-client = "*"
 ua-parser = "*"
+deepmerge = "*"
 
 [requires]
 python_version = "3.9"

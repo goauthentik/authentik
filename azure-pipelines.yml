@@ -148,7 +148,7 @@ stages:
             inputs:
               script: |
                 pipenv run python -m scripts.generate_ci_config
-                pipenv run ./manage.py migrate
+                pipenv run python -m lifecycle.migrate
       - job: migrations_from_previous_release
         pool:
           vmImage: 'ubuntu-latest'

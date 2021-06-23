@@ -10,27 +10,34 @@ import (
 
 type GoUnicorn struct {
 	log *log.Entry
+	p   *exec.Cmd
 }
 
 func NewGoUnicorn() *GoUnicorn {
-	return &GoUnicorn{
-		log: log.WithField("logger", "authentik.g.unicorn"),
-	}
-}
-
-func (g *GoUnicorn) Start() error {
+	logger := log.WithField("logger", "authentik.g.unicorn")
 	command := "gunicorn"
 	args := []string{"-c", "./lifecycle/gunicorn.conf.py", "authentik.root.asgi:application"}
 	if config.G.Debug {
 		command = "python"
 		args = []string{"manage.py", "runserver", "localhost:8000"}
 	}
-	g.log.WithField("args", args).WithField("cmd", command).Debug("Starting gunicorn")
+	logger.WithField("args", args).WithField("cmd", command).Debug("Starting gunicorn")
 	p := exec.Command(command, args...)
 	p.Env = append(os.Environ(),
 		"WORKERS=2",
 	)
 	p.Stdout = os.Stdout
 	p.Stderr = os.Stderr
-	return p.Run()
+	return &GoUnicorn{
+		log: logger,
+		p:   p,
+	}
+}
+
+func (g *GoUnicorn) Start() error {
+	return g.p.Run()
+}
+
+func (g *GoUnicorn) Kill() error {
+	return g.p.Process.Kill()
 }

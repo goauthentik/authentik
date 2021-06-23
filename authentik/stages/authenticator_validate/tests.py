@@ -4,11 +4,14 @@ from unittest.mock import MagicMock, patch
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import TestCase
 from django.test.client import RequestFactory
+from django.urls.base import reverse
+from django.utils.encoding import force_str
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from rest_framework.exceptions import ValidationError
 
 from authentik.core.models import User
-from authentik.flows.models import NotConfiguredAction
+from authentik.flows.challenge import ChallengeTypes
+from authentik.flows.models import Flow, FlowStageBinding, NotConfiguredAction
 from authentik.flows.tests.test_planner import dummy_get_response
 from authentik.providers.oauth2.generators import (
     generate_client_id,
@@ -24,7 +27,9 @@ from authentik.stages.authenticator_validate.challenge import (
     validate_challenge_duo,
     validate_challenge_webauthn,
 )
+from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
+from authentik.stages.identification.models import IdentificationStage, UserFields
 
 
 class AuthenticatorValidateStageTests(TestCase):
@@ -33,6 +38,50 @@ class AuthenticatorValidateStageTests(TestCase):
     def setUp(self) -> None:
         self.user = User.objects.get(username="akadmin")
         self.request_factory = RequestFactory()
+
+    def test_not_configured_action(self):
+        """Test not_configured_action"""
+        conf_stage = IdentificationStage.objects.create(
+            name="conf",
+            user_fields=[
+                UserFields.USERNAME,
+            ],
+        )
+        stage = AuthenticatorValidateStage.objects.create(
+            name="foo",
+            not_configured_action=NotConfiguredAction.CONFIGURE,
+            configuration_stage=conf_stage,
+        )
+        flow = Flow.objects.create(name="test", slug="test", title="test")
+        FlowStageBinding.objects.create(target=flow, stage=conf_stage, order=0)
+        FlowStageBinding.objects.create(target=flow, stage=stage, order=1)
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            {"uid_field": "akadmin"},
+        )
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            follow=True,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_str(response.content),
+            {
+                "type": ChallengeTypes.NATIVE.value,
+                "component": "ak-stage-identification",
+                "password_fields": False,
+                "primary_action": "Log in",
+                "flow_info": {
+                    "background": flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": flow.title,
+                },
+                "user_fields": ["username"],
+                "sources": [],
+            },
+        )
 
     def test_stage_validation(self):
         """Test serializer validation"""

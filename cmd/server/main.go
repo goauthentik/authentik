@@ -1,8 +1,11 @@
 package main
 
 import (
+	"errors"
 	"fmt"
-	"sync"
+	"net/url"
+	"os"
+	"time"
 
 	"github.com/getsentry/sentry-go"
 	log "github.com/sirupsen/logrus"
@@ -10,6 +13,8 @@ import (
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/gounicorn"
+	"goauthentik.io/internal/outpost/ak"
+	"goauthentik.io/internal/outpost/proxy"
 	"goauthentik.io/internal/web"
 )
 
@@ -30,23 +35,53 @@ func main() {
 		})
 	}
 
+	ex := common.Init()
 	defer common.Defer()
 
-	rl := log.WithField("logger", "authentik.g")
-	wg := sync.WaitGroup{}
-	wg.Add(3)
-	go func() {
-		defer wg.Done()
+	u, _ := url.Parse("http://localhost:8000")
+
+	for {
 		g := gounicorn.NewGoUnicorn()
-		for {
-			err := g.Start()
-			rl.WithError(err).Warning("gunicorn process died, restarting")
-		}
-	}()
-	go func() {
-		defer wg.Done()
+		go attemptStartBackend(g)
+
 		ws := web.NewWebServer()
 		ws.Run()
+
+		proxy :=
+
+			<-ex
+		ws.Stop()
+		g.Kill()
+	}
+	go func() {
+
+		maxTries := 100
+		attempt := 0
+		for {
+			err := attemptProxyStart(u, ex)
+			if err != nil {
+				attempt += 1
+				time.Sleep(5 * time.Second)
+				if attempt > maxTries {
+					break
+				}
+			}
+		}
 	}()
-	wg.Wait()
+}
+
+func attemptStartBackend(g *gounicorn.GoUnicorn) error {
+	for {
+		err := g.Start()
+		log.WithField("logger", "authentik.g").WithError(err).Warning("gunicorn process died, restarting")
+	}
+}
+
+func attemptProxyStart(u *url.URL, exitSignal chan os.Signal) (*ak.APIController, error) {
+	ac := ak.NewAPIController(*u, config.G.SecretKey)
+	if ac == nil {
+		return nil, errors.New("failed to start")
+	}
+	ac.Server = proxy.NewServer(ac)
+	return ac, nil
 }

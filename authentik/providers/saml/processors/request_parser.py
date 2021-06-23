@@ -20,10 +20,11 @@ from authentik.sources.saml.processors.constants import (
     RSA_SHA256,
     RSA_SHA384,
     RSA_SHA512,
-    SAML_NAME_ID_FORMAT_EMAIL,
+    SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
 
 LOGGER = get_logger()
+ERROR_CANNOT_DECODE_REQUEST = "Cannot decode SAML request."
 ERROR_SIGNATURE_REQUIRED_BUT_ABSENT = (
     "Verification Certificate configured, but request is not signed."
 )
@@ -42,7 +43,7 @@ class AuthNRequest:
 
     relay_state: Optional[str] = None
 
-    name_id_policy: str = SAML_NAME_ID_FORMAT_EMAIL
+    name_id_policy: str = SAML_NAME_ID_FORMAT_UNSPECIFIED
 
 
 class AuthNRequestParser:
@@ -69,16 +70,21 @@ class AuthNRequestParser:
         auth_n_request = AuthNRequest(id=root.attrib["ID"], relay_state=relay_state)
 
         # Check if AuthnRequest has a NameID Policy object
-        name_id_policies = root.findall(f"{{{NS_SAML_PROTOCOL}}}:NameIDPolicy")
+        name_id_policies = root.findall(f"{{{NS_SAML_PROTOCOL}}}NameIDPolicy")
         if len(name_id_policies) > 0:
             name_id_policy = name_id_policies[0]
-            auth_n_request.name_id_policy = name_id_policy.attrib["Format"]
+            auth_n_request.name_id_policy = name_id_policy.attrib.get(
+                "Format", SAML_NAME_ID_FORMAT_UNSPECIFIED
+            )
 
         return auth_n_request
 
     def parse(self, saml_request: str, relay_state: Optional[str]) -> AuthNRequest:
         """Validate and parse raw request with enveloped signautre."""
-        decoded_xml = b64decode(saml_request.encode()).decode()
+        try:
+            decoded_xml = b64decode(saml_request.encode()).decode()
+        except UnicodeDecodeError:
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST)
 
         verifier = self.provider.verification_kp
 
@@ -121,7 +127,10 @@ class AuthNRequestParser:
         sig_alg: Optional[str] = None,
     ) -> AuthNRequest:
         """Validate and parse raw request with detached signature"""
-        decoded_xml = decode_base64_and_inflate(saml_request)
+        try:
+            decoded_xml = decode_base64_and_inflate(saml_request)
+        except UnicodeDecodeError:
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST)
 
         verifier = self.provider.verification_kp
 

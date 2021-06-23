@@ -17,6 +17,7 @@ from authentik.providers.saml.models import SAMLBindings, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.request_parser import AuthNRequest
 from authentik.providers.saml.utils.encoding import deflate_and_base64_encode, nice64
+from authentik.sources.saml.exceptions import SAMLException
 
 LOGGER = get_logger()
 URL_VALIDATOR = URLValidator(schemes=("http", "https"))
@@ -56,22 +57,30 @@ class SAMLFlowFinalView(ChallengeStageView):
         provider: SAMLProvider = get_object_or_404(
             SAMLProvider, pk=application.provider_id
         )
-        # Log Application Authorization
-        Event.new(
-            EventAction.AUTHORIZE_APPLICATION,
-            authorized_application=application,
-            flow=self.executor.plan.flow_pk,
-        ).from_http(self.request)
-
         if SESSION_KEY_AUTH_N_REQUEST not in self.request.session:
             return self.executor.stage_invalid()
 
         auth_n_request: AuthNRequest = self.request.session.pop(
             SESSION_KEY_AUTH_N_REQUEST
         )
-        response = AssertionProcessor(
-            provider, request, auth_n_request
-        ).build_response()
+        try:
+            response = AssertionProcessor(
+                provider, request, auth_n_request
+            ).build_response()
+        except SAMLException as exc:
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message=f"Failed to process SAML assertion: {str(exc)}",
+                provider=provider,
+            ).from_http(self.request)
+            return self.executor.stage_invalid()
+
+        # Log Application Authorization
+        Event.new(
+            EventAction.AUTHORIZE_APPLICATION,
+            authorized_application=application,
+            flow=self.executor.plan.flow_pk,
+        ).from_http(self.request)
 
         if provider.sp_binding == SAMLBindings.POST:
             form_attrs = {

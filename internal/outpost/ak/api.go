@@ -6,7 +6,6 @@ import (
 	"math/rand"
 	"net/http"
 	"net/url"
-	"os"
 	"time"
 
 	"github.com/go-openapi/strfmt"
@@ -59,7 +58,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 
 	if err != nil {
 		log.WithError(err).Error("Failed to fetch configuration")
-		os.Exit(1)
+		return nil
 	}
 	outpost := outposts.Results[0]
 	doGlobalSetup(outpost.Config)

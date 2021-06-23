@@ -2,6 +2,7 @@ package config
 
 type Config struct {
 	Debug          bool                 `yaml:"debug"`
+	SecretKey      string               `yaml:"secret_key"`
 	Web            WebConfig            `yaml:"web"`
 	Paths          PathsConfig          `yaml:"paths"`
 	LogLevel       string               `yaml:"log_level"`
@@ -9,8 +10,9 @@ type Config struct {
 }
 
 type WebConfig struct {
-	Listen    string `yaml:"listen"`
-	ListenTLS string `yaml:"listen_tls"`
+	Listen         string `yaml:"listen"`
+	ListenTLS      string `yaml:"listen_tls"`
+	LoadLocalFiles bool   `yaml:"load_local_files"`
 }
 
 type PathsConfig struct {

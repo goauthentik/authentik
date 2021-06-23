@@ -1,6 +1,5 @@
 ---
-title: Getting started
-slug: /
+title: Full development environment
 ---
 
 ## Backend

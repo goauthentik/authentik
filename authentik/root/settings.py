@@ -15,6 +15,7 @@ import logging
 import os
 import sys
 from json import dumps
+from tempfile import gettempdir
 from time import time
 
 import structlog
@@ -193,6 +194,7 @@ CACHES = {
             f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:6379"
             f"/{CONFIG.y('redis.cache_db')}"
         ),
+        "TIMEOUT": int(CONFIG.y("redis.cache_timeout", 300)),
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
     }
 }
@@ -341,7 +343,7 @@ DBBACKUP_FILENAME_TEMPLATE = "authentik-backup-{datetime}.sql"
 DBBACKUP_CONNECTOR_MAPPING = {
     "django_prometheus.db.backends.postgresql": "dbbackup.db.postgresql.PgDumpConnector",
 }
-
+DBBACKUP_TMP_DIR = gettempdir() if DEBUG else "/tmp"  # nosec
 if CONFIG.y("postgresql.s3_backup"):
     DBBACKUP_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
     DBBACKUP_STORAGE_OPTIONS = {

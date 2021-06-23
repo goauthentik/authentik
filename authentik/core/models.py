@@ -6,6 +6,7 @@ from urllib.parse import urlencode
 from uuid import uuid4
 
 import django.db.models.options as options
+from deepmerge import always_merger
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
@@ -114,8 +115,8 @@ class User(GuardianUserMixin, AbstractUser):
         including the users attributes"""
         final_attributes = {}
         for group in self.ak_groups.all().order_by("name"):
-            final_attributes.update(group.attributes)
-        final_attributes.update(self.attributes)
+            always_merger.merge(final_attributes, group.attributes)
+        always_merger.merge(final_attributes, self.attributes)
         return final_attributes
 
     @cached_property
@@ -142,21 +143,25 @@ class User(GuardianUserMixin, AbstractUser):
     @property
     def avatar(self) -> str:
         """Get avatar, depending on authentik.avatar setting"""
-        mode = CONFIG.raw.get("authentik").get("avatars")
+        mode: str = CONFIG.y("avatars", "none")
         if mode == "none":
             return DEFAULT_AVATAR
+        # gravatar uses md5 for their URLs, so md5 can't be avoided
+        mail_hash = md5(self.email.encode("utf-8")).hexdigest()  # nosec
         if mode == "gravatar":
             parameters = [
                 ("s", "158"),
                 ("r", "g"),
             ]
-            # gravatar uses md5 for their URLs, so md5 can't be avoided
-            mail_hash = md5(self.email.encode("utf-8")).hexdigest()  # nosec
             gravatar_url = (
                 f"{GRAVATAR_URL}/avatar/{mail_hash}?{urlencode(parameters, doseq=True)}"
             )
             return escape(gravatar_url)
-        raise ValueError(f"Invalid avatar mode {mode}")
+        return mode % {
+            "username": self.username,
+            "mail_hash": mail_hash,
+            "upn": self.attributes.get("upn", ""),
+        }
 
     class Meta:
 
@@ -460,7 +465,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         from authentik.core.expression import PropertyMappingEvaluator
 
         evaluator = PropertyMappingEvaluator()
-        evaluator.set_context(user, request, **kwargs)
+        evaluator.set_context(user, request, self, **kwargs)
         try:
             return evaluator.evaluate(self.expression)
         except (ValueError, SyntaxError) as exc:
@@ -494,8 +499,12 @@ class AuthenticatedSession(ExpiringModel):
     last_used = models.DateTimeField(auto_now=True)
 
     @staticmethod
-    def from_request(request: HttpRequest, user: User) -> "AuthenticatedSession":
+    def from_request(
+        request: HttpRequest, user: User
+    ) -> Optional["AuthenticatedSession"]:
         """Create a new session from a http request"""
+        if not hasattr(request, "session") or not request.session.session_key:
+            return None
         return AuthenticatedSession(
             session_key=request.session.session_key,
             user=user,

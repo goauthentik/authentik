@@ -3,6 +3,7 @@ import re
 from textwrap import indent
 from typing import Any, Iterable, Optional
 
+from django.core.exceptions import FieldError
 from requests import Session
 from rest_framework.serializers import ValidationError
 from sentry_sdk.hub import Hub
@@ -29,10 +30,10 @@ class BaseEvaluator:
         # update website/docs/expressions/_objects.md
         # update website/docs/expressions/_functions.md
         self._globals = {
-            "regex_match": BaseEvaluator.expr_filter_regex_match,
-            "regex_replace": BaseEvaluator.expr_filter_regex_replace,
-            "ak_is_group_member": BaseEvaluator.expr_func_is_group_member,
-            "ak_user_by": BaseEvaluator.expr_func_user_by,
+            "regex_match": BaseEvaluator.expr_regex_match,
+            "regex_replace": BaseEvaluator.expr_regex_replace,
+            "ak_is_group_member": BaseEvaluator.expr_is_group_member,
+            "ak_user_by": BaseEvaluator.expr_user_by,
             "ak_logger": get_logger(),
             "requests": Session(),
         }
@@ -40,25 +41,28 @@ class BaseEvaluator:
         self._filename = "BaseEvalautor"
 
     @staticmethod
-    def expr_filter_regex_match(value: Any, regex: str) -> bool:
+    def expr_regex_match(value: Any, regex: str) -> bool:
         """Expression Filter to run re.search"""
-        return re.search(regex, value) is None
+        return re.search(regex, value) is not None
 
     @staticmethod
-    def expr_filter_regex_replace(value: Any, regex: str, repl: str) -> str:
+    def expr_regex_replace(value: Any, regex: str, repl: str) -> str:
         """Expression Filter to run re.sub"""
         return re.sub(regex, repl, value)
 
     @staticmethod
-    def expr_func_user_by(**filters) -> Optional[User]:
+    def expr_user_by(**filters) -> Optional[User]:
         """Get user by filters"""
-        users = User.objects.filter(**filters)
-        if users:
-            return users.first()
-        return None
+        try:
+            users = User.objects.filter(**filters)
+            if users:
+                return users.first()
+            return None
+        except FieldError:
+            return None
 
     @staticmethod
-    def expr_func_is_group_member(user: User, **group_filters) -> bool:
+    def expr_is_group_member(user: User, **group_filters) -> bool:
         """Check if `user` is member of group with name `group_name`"""
         return user.ak_groups.filter(**group_filters).exists()
 
