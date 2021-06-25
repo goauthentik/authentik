@@ -374,9 +374,9 @@ class OAuthFulfillmentStage(StageView):
             query_fragment["code"] = code.code
 
         query_fragment["token_type"] = "bearer"
-        query_fragment["expires_in"] = timedelta_from_string(
-            self.provider.token_validity
-        ).seconds
+        query_fragment["expires_in"] = int(
+            timedelta_from_string(self.provider.token_validity).total_seconds()
+        )
         query_fragment["state"] = self.params.state if self.params.state else ""
 
         return query_fragment
