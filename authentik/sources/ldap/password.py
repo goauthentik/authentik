@@ -60,14 +60,21 @@ class LDAPPasswordChanger:
     def check_ad_password_complexity_enabled(self) -> bool:
         """Check if DOMAIN_PASSWORD_COMPLEX is enabled"""
         root_dn = self.get_domain_root_dn()
-        root_attrs = self._source.connection.extend.standard.paged_search(
-            search_base=root_dn,
-            search_filter="(objectClass=*)",
-            search_scope=ldap3.BASE,
-            attributes=["pwdProperties"],
-        )
+        try:
+            root_attrs = self._source.connection.extend.standard.paged_search(
+                search_base=root_dn,
+                search_filter="(objectClass=*)",
+                search_scope=ldap3.BASE,
+                attributes=["pwdProperties"],
+            )
+        except ldap3.core.exceptions.LDAPAttributeError:
+            return False
         root_attrs = list(root_attrs)[0]
-        pwd_properties = PwdProperties(root_attrs["attributes"]["pwdProperties"])
+        raw_pwd_properties = root_attrs.get("attributes", {}).get("pwdProperties", None)
+        if raw_pwd_properties is None:
+            return False
+
+        pwd_properties = PwdProperties(raw_pwd_properties)
         if PwdProperties.DOMAIN_PASSWORD_COMPLEX in pwd_properties:
             return True
 

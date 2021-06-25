@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { EventsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { EventWithContext } from "../../api/Events";
@@ -27,11 +27,7 @@ export class EventInfoPage extends LitElement {
     event!: EventWithContext;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFContent, PFCard, AKGlobal].concat(css`
-            .pf-c-card {
-                color: var(--ak-dark-foreground);
-            }
-        `);
+        return [PFBase, PFPage, PFContent, PFCard, AKGlobal];
     }
 
     render(): TemplateResult {
