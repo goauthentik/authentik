@@ -405,7 +405,10 @@ class Outpost(models.Model):
 
     def get_required_objects(self) -> Iterable[Union[models.Model, str]]:
         """Get an iterator of all objects the user needs read access to"""
-        objects: list[Union[models.Model, str]] = [self]
+        objects: list[Union[models.Model, str]] = [
+            self,
+            "authentik_events.add_event",
+        ]
         for provider in (
             Provider.objects.filter(outpost=self).select_related().select_subclasses()
         ):

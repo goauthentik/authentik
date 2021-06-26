@@ -153,6 +153,7 @@ SPECTACULAR_SETTINGS = {
         "url": "https://github.com/goauthentik/authentik/blob/master/LICENSE",
     },
     "ENUM_NAME_OVERRIDES": {
+        "EventActions": "authentik.events.models.EventAction",
         "ChallengeChoices": "authentik.flows.challenge.ChallengeTypes",
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
