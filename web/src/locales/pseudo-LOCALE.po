@@ -3814,6 +3814,13 @@ msgid "The following objects use {objName}"
 msgstr ""
 
 #: 
+msgid ""
+"The policy passes when the reputation score is above the threshold, and\n"
+"doesn't pass when either or both of the selected options are equal or less than the\n"
+"threshold."
+msgstr ""
+
+#: 
 msgid "The policy takes a random time to execute. This controls the minimum time it will take."
 msgstr ""
 

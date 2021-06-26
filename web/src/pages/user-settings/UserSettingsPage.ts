@@ -36,10 +36,10 @@ export class UserSettingsPage extends LitElement {
         return [PFBase, PFPage, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, PFForm, PFFormControl, AKGlobal];
     }
 
-    @property()
+    @property({attribute: false})
     userSettings?: Promise<UserSetting[]>;
 
-    @property()
+    @property({attribute: false})
     sourceSettings?: Promise<UserSetting[]>;
 
     constructor() {
@@ -49,7 +49,7 @@ export class UserSettingsPage extends LitElement {
         });
     }
 
-    firstUpdated() {
+    firstUpdated(): void {
         this.userSettings = new StagesApi(DEFAULT_CONFIG).stagesAllUserSettingsList();
         this.sourceSettings = new SourcesApi(DEFAULT_CONFIG).sourcesAllUserSettingsList();
     }

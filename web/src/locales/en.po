@@ -3821,6 +3821,16 @@ msgstr "The external URL you'll authenticate at. Can be the same domain as authe
 msgid "The following objects use {objName}"
 msgstr "The following objects use {objName}"
 
+#: src/pages/policies/reputation/ReputationPolicyForm.ts
+msgid ""
+"The policy passes when the reputation score is above the threshold, and\n"
+"doesn't pass when either or both of the selected options are equal or less than the\n"
+"threshold."
+msgstr ""
+"The policy passes when the reputation score is above the threshold, and\n"
+"doesn't pass when either or both of the selected options are equal or less than the\n"
+"threshold."
+
 #: src/pages/policies/dummy/DummyPolicyForm.ts
 msgid "The policy takes a random time to execute. This controls the minimum time it will take."
 msgstr "The policy takes a random time to execute. This controls the minimum time it will take."
