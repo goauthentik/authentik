@@ -40,6 +40,11 @@ class ReevaluateMarker(StageMarker):
         self, plan: "FlowPlan", stage: Stage, http_request: Optional[HttpRequest]
     ) -> Optional[Stage]:
         """Re-evaluate policies bound to stage, and if they fail, remove from plan"""
+        LOGGER.debug(
+            "f(plan_inst)[re-eval marker]: running re-evaluation",
+            stage=stage,
+            binding=self.binding,
+        )
         engine = PolicyEngine(self.binding, self.user)
         engine.use_cache = False
         if http_request:

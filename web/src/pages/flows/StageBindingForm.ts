@@ -123,7 +123,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                     </label>
                 </div>
                 <p class="pf-c-form__helper-text">
-                    ${t`Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with this option disabled, policies are **not** evaluated.`}
+                    ${t`Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with both options disabled, policies are **not** evaluated.`}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="reEvaluatePolicies">

@@ -1372,8 +1372,8 @@ msgid "Evaluate policies before the Stage is present to the user."
 msgstr "Evaluate policies before the Stage is present to the user."
 
 #: src/pages/flows/StageBindingForm.ts
-msgid "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with this option disabled, policies are **not** evaluated."
-msgstr "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with this option disabled, policies are **not** evaluated."
+msgid "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with both options disabled, policies are **not** evaluated."
+msgstr "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with both options disabled, policies are **not** evaluated."
 
 #: src/pages/events/EventListPage.ts
 msgid "Event Log"
@@ -1451,8 +1451,13 @@ msgid "Explicit Consent"
 msgstr "Explicit Consent"
 
 #: src/pages/flows/FlowListPage.ts
+#: src/pages/flows/FlowViewPage.ts
 msgid "Export"
 msgstr "Export"
+
+#: src/pages/flows/FlowViewPage.ts
+msgid "Export flow"
+msgstr "Export flow"
 
 #: src/pages/events/EventInfo.ts
 #: src/pages/policies/expression/ExpressionPolicyForm.ts

@@ -1364,7 +1364,7 @@ msgid "Evaluate policies before the Stage is present to the user."
 msgstr ""
 
 #: 
-msgid "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with this option disabled, policies are **not** evaluated."
+msgid "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with both options disabled, policies are **not** evaluated."
 msgstr ""
 
 #: 
@@ -1443,7 +1443,12 @@ msgid "Explicit Consent"
 msgstr ""
 
 #: 
+#: 
 msgid "Export"
+msgstr ""
+
+#: 
+msgid "Export flow"
 msgstr ""
 
 #: 
