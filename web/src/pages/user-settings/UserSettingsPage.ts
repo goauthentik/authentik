@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -27,12 +27,31 @@ import "./settings/UserSettingsAuthenticatorTOTP";
 import "./settings/UserSettingsAuthenticatorWebAuthn";
 import "./settings/UserSettingsPassword";
 import "./settings/SourceSettingsOAuth";
+import { EVENT_REFRESH } from "../../constants";
 
 @customElement("ak-user-settings")
 export class UserSettingsPage extends LitElement {
 
     static get styles(): CSSResult[] {
         return [PFBase, PFPage, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, PFForm, PFFormControl, AKGlobal];
+    }
+
+    @property()
+    userSettings?: Promise<UserSetting[]>;
+
+    @property()
+    sourceSettings?: Promise<UserSetting[]>;
+
+    constructor() {
+        super();
+        this.addEventListener(EVENT_REFRESH, () => {
+            this.firstUpdated();
+        });
+    }
+
+    firstUpdated() {
+        this.userSettings = new StagesApi(DEFAULT_CONFIG).stagesAllUserSettingsList();
+        this.sourceSettings = new SourcesApi(DEFAULT_CONFIG).sourcesAllUserSettingsList();
     }
 
     renderStageSettings(stage: UserSetting): TemplateResult {
@@ -82,14 +101,14 @@ export class UserSettingsPage extends LitElement {
                     <section slot="page-tokens" data-tab-title="${t`Tokens`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                         <ak-user-token-list></ak-user-token-list>
                     </section>
-                    ${until(new StagesApi(DEFAULT_CONFIG).stagesAllUserSettingsList().then((stages) => {
+                    ${until(this.userSettings?.then((stages) => {
                         return stages.map((stage) => {
                             return html`<section slot="page-${stage.objectUid}" data-tab-title="${ifDefined(stage.title)}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                                 ${this.renderStageSettings(stage)}
                             </section>`;
                         });
                     }))}
-                    ${until(new SourcesApi(DEFAULT_CONFIG).sourcesAllUserSettingsList().then((source) => {
+                    ${until(this.sourceSettings?.then((source) => {
                         return source.map((stage) => {
                             return html`<section slot="page-${stage.objectUid}" data-tab-title="${ifDefined(stage.title)}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                                 ${this.renderSourceSettings(stage)}

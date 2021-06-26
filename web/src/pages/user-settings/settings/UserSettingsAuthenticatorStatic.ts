@@ -5,6 +5,7 @@ import { until } from "lit-html/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { STATIC_TOKEN_STYLE } from "../../../flows/stages/authenticator_static/AuthenticatorStaticStage";
 import { BaseUserSettings } from "./BaseUserSettings";
+import { EVENT_REFRESH } from "../../../constants";
 
 @customElement("ak-user-settings-authenticator-static")
 export class UserSettingsAuthenticatorStatic extends BaseUserSettings {
@@ -42,7 +43,12 @@ export class UserSettingsAuthenticatorStatic extends BaseUserSettings {
                             return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsStaticDestroy({
                                 id: devices.results[0].pk || 0
                             }).then(() => {
-                                this.requestUpdate();
+                                this.dispatchEvent(
+                                    new CustomEvent(EVENT_REFRESH, {
+                                        bubbles: true,
+                                        composed: true,
+                                    })
+                                );
                             });
                         });
                     }}>
