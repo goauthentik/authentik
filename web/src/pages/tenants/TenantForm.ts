@@ -150,7 +150,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                             <option value="" ?selected=${this.instance?.flowUnenrollment === undefined}>---------</option>
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
-                                designation: FlowsInstancesListDesignationEnum.Recovery,
+                                designation: FlowsInstancesListDesignationEnum.Unenrollment,
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     const selected = this.instance?.flowUnenrollment === flow.pk;
