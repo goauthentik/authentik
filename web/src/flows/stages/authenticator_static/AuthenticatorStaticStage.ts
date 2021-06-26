@@ -11,8 +11,7 @@ import { BaseStage } from "../base";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import "../../FormStatic";
-import { AuthenticatorStaticChallenge } from "authentik-api";
-import { AuthenticatorStaticChallengeResponseRequest } from "authentik-api/dist/models/AuthenticatorStaticChallengeResponseRequest";
+import { AuthenticatorStaticChallenge, AuthenticatorStaticChallengeResponseRequest } from "authentik-api";
 import { ifDefined } from "lit-html/directives/if-defined";
 
 export const STATIC_TOKEN_STYLE = css`

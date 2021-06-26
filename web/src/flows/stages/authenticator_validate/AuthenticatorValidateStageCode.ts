@@ -13,8 +13,7 @@ import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import { PasswordManagerPrefill } from "../identification/IdentificationStage";
 import "../../FormStatic";
-import { AuthenticatorValidationChallenge } from "authentik-api/dist/models/AuthenticatorValidationChallenge";
-import { AuthenticatorValidationChallengeResponseRequest, DeviceChallenge } from "authentik-api";
+import { AuthenticatorValidationChallenge, AuthenticatorValidationChallengeResponseRequest, DeviceChallenge } from "authentik-api";
 import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-stage-authenticator-validate-code")

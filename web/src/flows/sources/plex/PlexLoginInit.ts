@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { PlexAuthenticationChallenge } from "authentik-api";
+import { PlexAuthenticationChallenge, PlexAuthenticationChallengeResponseRequest } from "authentik-api";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -15,7 +15,6 @@ import { DEFAULT_CONFIG } from "../../../api/Config";
 import { SourcesApi } from "authentik-api";
 import { showMessage } from "../../../elements/messages/MessageContainer";
 import { MessageLevel } from "../../../elements/messages/Message";
-import { PlexAuthenticationChallengeResponseRequest } from "authentik-api/dist/models/PlexAuthenticationChallengeResponseRequest";
 
 
 @customElement("ak-flow-sources-plex")

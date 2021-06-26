@@ -12,8 +12,7 @@ import "./AuthenticatorValidateStageWebAuthn";
 import "./AuthenticatorValidateStageCode";
 import "./AuthenticatorValidateStageDuo";
 import { PasswordManagerPrefill } from "../identification/IdentificationStage";
-import { AuthenticatorValidationChallengeResponseRequest, DeviceChallenge } from "authentik-api";
-import { AuthenticatorValidationChallenge } from "authentik-api/dist/models/AuthenticatorValidationChallenge";
+import { AuthenticatorValidationChallenge, AuthenticatorValidationChallengeResponseRequest, DeviceChallenge } from "authentik-api";
 
 export enum DeviceClasses {
     STATIC = "static",
