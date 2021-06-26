@@ -99,15 +99,15 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 	}
 
 	if *u.IsActive {
-		attrs = append(attrs, &ldap.EntryAttribute{Name: "accountStatus", Values: []string{"inactive"}})
+        attrs = append(attrs, &ldap.EntryAttribute{Name: "accountStatus", Values: []string{"active"}})
 	} else {
-		attrs = append(attrs, &ldap.EntryAttribute{Name: "accountStatus", Values: []string{"active"}})
+        attrs = append(attrs, &ldap.EntryAttribute{Name: "accountStatus", Values: []string{"inactive"}})
 	}
 
 	if u.IsSuperuser {
-		attrs = append(attrs, &ldap.EntryAttribute{Name: "superuser", Values: []string{"inactive"}})
-	} else {
 		attrs = append(attrs, &ldap.EntryAttribute{Name: "superuser", Values: []string{"active"}})
+	} else {
+        attrs = append(attrs, &ldap.EntryAttribute{Name: "superuser", Values: []string{"inactive"}})
 	}
 
 	attrs = append(attrs, &ldap.EntryAttribute{Name: "memberOf", Values: pi.GroupsForUser(u)})
