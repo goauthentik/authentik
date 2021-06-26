@@ -18890,6 +18890,12 @@ components:
             name: Documentation
           - href: https://goauthentik.io/
             name: authentik Website
+        flow_authentication:
+          type: string
+        flow_invalidation:
+          type: string
+        flow_recovery:
+          type: string
         flow_unenrollment:
           type: string
       required:

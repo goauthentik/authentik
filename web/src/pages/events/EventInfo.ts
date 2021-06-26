@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
-import { EventMatcherPolicyActionEnum, FlowsApi } from "authentik-api";
+import { EventActions, FlowsApi } from "authentik-api";
 import "../../elements/Spinner";
 import "../../elements/Expand";
 import { PFSize } from "../../elements/Spinner";
@@ -189,14 +189,14 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
             return html`<ak-spinner size=${PFSize.Medium}></ak-spinner>`;
         }
         switch (this.event?.action) {
-        case EventMatcherPolicyActionEnum.ModelCreated:
-        case EventMatcherPolicyActionEnum.ModelUpdated:
-        case EventMatcherPolicyActionEnum.ModelDeleted:
+        case EventActions.ModelCreated:
+        case EventActions.ModelUpdated:
+        case EventActions.ModelDeleted:
             return html`
                 <h3>${t`Affected model:`}</h3>
                 ${this.getModelInfo(this.event.context?.model as EventModel)}
                 `;
-        case EventMatcherPolicyActionEnum.AuthorizeApplication:
+        case EventActions.AuthorizeApplication:
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${t`Authorized application:`}</h3>
@@ -213,17 +213,17 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                     </div>
                 </div>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case EventMatcherPolicyActionEnum.EmailSent:
+        case EventActions.EmailSent:
             return html`<h3>${t`Email info:`}</h3>
                 ${this.getEmailInfo(this.event.context)}
                 <ak-expand>
                     <iframe srcdoc=${this.event.context.body}></iframe>
                 </ak-expand>`;
-        case EventMatcherPolicyActionEnum.SecretView:
+        case EventActions.SecretView:
             return html`
                 <h3>${t`Secret:`}</h3>
                 ${this.getModelInfo(this.event.context.secret as EventModel)}`;
-        case EventMatcherPolicyActionEnum.SystemException:
+        case EventActions.SystemException:
             return html`
                 <a
                     class="pf-c-button pf-m-primary"
@@ -240,7 +240,7 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                     </div>
                 </div>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case EventMatcherPolicyActionEnum.PropertyMappingException:
+        case EventActions.PropertyMappingException:
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${t`Exception`}</h3>
@@ -252,7 +252,7 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                     </div>
                 </div>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case EventMatcherPolicyActionEnum.PolicyException:
+        case EventActions.PolicyException:
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${t`Binding`}</h3>
@@ -271,7 +271,7 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                     </div>
                 </div>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case EventMatcherPolicyActionEnum.PolicyExecution:
+        case EventActions.PolicyExecution:
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${t`Binding`}</h3>
@@ -299,10 +299,10 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                     </div>
                 </div>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case EventMatcherPolicyActionEnum.ConfigurationError:
+        case EventActions.ConfigurationError:
             return html`<h3>${this.event.context.message}</h3>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case EventMatcherPolicyActionEnum.UpdateAvailable:
+        case EventActions.UpdateAvailable:
             return html`<h3>${t`New version available!`}</h3>
                 <a
                     target="_blank"
@@ -311,7 +311,7 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                 </a>`;
         // Action types which typically don't record any extra context.
         // If context is not empty, we fall to the default response.
-        case EventMatcherPolicyActionEnum.Login:
+        case EventActions.Login:
             if ("using_source" in this.event.context) {
                 return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
@@ -321,11 +321,11 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                 </div>`;
             }
             return this.defaultResponse();
-        case EventMatcherPolicyActionEnum.LoginFailed:
+        case EventActions.LoginFailed:
             return html`
                 <h3>${t`Attempted to log in as ${this.event.context.username}`}</h3>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case EventMatcherPolicyActionEnum.Logout:
+        case EventActions.Logout:
             if (this.event.context === {}) {
                 return html`<span>${t`No additional data available.`}</span>`;
             }

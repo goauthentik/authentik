@@ -54,6 +54,9 @@ class CurrentTenantSerializer(PassiveSerializer):
         default=CONFIG.y("footer_links", []),
     )
 
+    flow_authentication = CharField(source="flow_authentication.slug", required=False)
+    flow_invalidation = CharField(source="flow_invalidation.slug", required=False)
+    flow_recovery = CharField(source="flow_recovery.slug", required=False)
     flow_unenrollment = CharField(source="flow_unenrollment.slug", required=False)
 
 
