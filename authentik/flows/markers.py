@@ -6,7 +6,7 @@ from django.http.request import HttpRequest
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
-from authentik.flows.models import Stage
+from authentik.flows.models import FlowStageBinding
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding
 
@@ -22,11 +22,14 @@ class StageMarker:
 
     # pylint: disable=unused-argument
     def process(
-        self, plan: "FlowPlan", stage: Stage, http_request: Optional[HttpRequest]
-    ) -> Optional[Stage]:
+        self,
+        plan: "FlowPlan",
+        binding: FlowStageBinding,
+        http_request: Optional[HttpRequest],
+    ) -> Optional[FlowStageBinding]:
         """Process callback for this marker. This should be overridden by sub-classes.
         If a stage should be removed, return None."""
-        return stage
+        return binding
 
 
 @dataclass
@@ -37,13 +40,16 @@ class ReevaluateMarker(StageMarker):
     user: User
 
     def process(
-        self, plan: "FlowPlan", stage: Stage, http_request: Optional[HttpRequest]
-    ) -> Optional[Stage]:
+        self,
+        plan: "FlowPlan",
+        binding: FlowStageBinding,
+        http_request: Optional[HttpRequest],
+    ) -> Optional[FlowStageBinding]:
         """Re-evaluate policies bound to stage, and if they fail, remove from plan"""
         LOGGER.debug(
             "f(plan_inst)[re-eval marker]: running re-evaluation",
-            stage=stage,
-            binding=self.binding,
+            binding=binding,
+            policy_binding=self.binding,
         )
         engine = PolicyEngine(self.binding, self.user)
         engine.use_cache = False
@@ -53,10 +59,10 @@ class ReevaluateMarker(StageMarker):
         engine.build()
         result = engine.result
         if result.passing:
-            return stage
+            return binding
         LOGGER.warning(
-            "f(plan_inst)[re-eval marker]: stage failed re-evaluation",
-            stage=stage,
+            "f(plan_inst)[re-eval marker]: binding failed re-evaluation",
+            binding=binding,
             messages=result.messages,
         )
         return None

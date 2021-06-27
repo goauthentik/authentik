@@ -35,7 +35,9 @@ class TestUserLoginStage(TestCase):
             designation=FlowDesignation.AUTHENTICATION,
         )
         self.stage = InvitationStage.objects.create(name="invitation")
-        FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
+        self.binding = FlowStageBinding.objects.create(
+            target=self.flow, stage=self.stage, order=2
+        )
 
     @patch(
         "authentik.flows.views.to_stage_response",
@@ -44,7 +46,7 @@ class TestUserLoginStage(TestCase):
     def test_without_invitation_fail(self):
         """Test without any invitation, continue_flow_without_invitation not set."""
         plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
         )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = BACKEND_DJANGO
@@ -75,7 +77,7 @@ class TestUserLoginStage(TestCase):
         self.stage.continue_flow_without_invitation = True
         self.stage.save()
         plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
         )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = BACKEND_DJANGO
@@ -103,7 +105,7 @@ class TestUserLoginStage(TestCase):
     def test_with_invitation_get(self):
         """Test with invitation, check data in session"""
         plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
         )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
@@ -143,7 +145,7 @@ class TestUserLoginStage(TestCase):
         )
 
         plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
         )
         plan.context[PLAN_CONTEXT_PROMPT] = {INVITATION_TOKEN_KEY: invite.pk.hex}
         session = self.client.session

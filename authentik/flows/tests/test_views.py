@@ -52,8 +52,9 @@ class TestFlowExecutor(TestCase):
             designation=FlowDesignation.AUTHENTICATION,
         )
         stage = DummyStage.objects.create(name="dummy")
+        binding = FlowStageBinding.objects.create(target=flow, stage=stage)
         plan = FlowPlan(
-            flow_pk=flow.pk.hex + "a", stages=[stage], markers=[StageMarker()]
+            flow_pk=flow.pk.hex + "a", bindings=[binding], markers=[StageMarker()]
         )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
@@ -163,7 +164,7 @@ class TestFlowExecutor(TestCase):
         # Check that two stages are in plan
         session = self.client.session
         plan: FlowPlan = session[SESSION_KEY_PLAN]
-        self.assertEqual(len(plan.stages), 2)
+        self.assertEqual(len(plan.bindings), 2)
         # Second request, submit form, one stage left
         response = self.client.post(exec_url)
         # Second request redirects to the same URL
@@ -172,7 +173,7 @@ class TestFlowExecutor(TestCase):
         # Check that two stages are in plan
         session = self.client.session
         plan: FlowPlan = session[SESSION_KEY_PLAN]
-        self.assertEqual(len(plan.stages), 1)
+        self.assertEqual(len(plan.bindings), 1)
 
     @patch(
         "authentik.flows.views.to_stage_response",
@@ -213,8 +214,8 @@ class TestFlowExecutor(TestCase):
 
             plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
 
-            self.assertEqual(plan.stages[0], binding.stage)
-            self.assertEqual(plan.stages[1], binding2.stage)
+            self.assertEqual(plan.bindings[0], binding)
+            self.assertEqual(plan.bindings[1], binding2)
 
             self.assertIsInstance(plan.markers[0], StageMarker)
             self.assertIsInstance(plan.markers[1], ReevaluateMarker)
@@ -267,9 +268,9 @@ class TestFlowExecutor(TestCase):
             self.assertEqual(response.status_code, 200)
             plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
 
-            self.assertEqual(plan.stages[0], binding.stage)
-            self.assertEqual(plan.stages[1], binding2.stage)
-            self.assertEqual(plan.stages[2], binding3.stage)
+            self.assertEqual(plan.bindings[0], binding)
+            self.assertEqual(plan.bindings[1], binding2)
+            self.assertEqual(plan.bindings[2], binding3)
 
             self.assertIsInstance(plan.markers[0], StageMarker)
             self.assertIsInstance(plan.markers[1], ReevaluateMarker)
@@ -281,8 +282,8 @@ class TestFlowExecutor(TestCase):
 
             plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
 
-            self.assertEqual(plan.stages[0], binding2.stage)
-            self.assertEqual(plan.stages[1], binding3.stage)
+            self.assertEqual(plan.bindings[0], binding2)
+            self.assertEqual(plan.bindings[1], binding3)
 
             self.assertIsInstance(plan.markers[0], StageMarker)
             self.assertIsInstance(plan.markers[1], StageMarker)
@@ -338,9 +339,9 @@ class TestFlowExecutor(TestCase):
             self.assertEqual(response.status_code, 200)
             plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
 
-            self.assertEqual(plan.stages[0], binding.stage)
-            self.assertEqual(plan.stages[1], binding2.stage)
-            self.assertEqual(plan.stages[2], binding3.stage)
+            self.assertEqual(plan.bindings[0], binding)
+            self.assertEqual(plan.bindings[1], binding2)
+            self.assertEqual(plan.bindings[2], binding3)
 
             self.assertIsInstance(plan.markers[0], StageMarker)
             self.assertIsInstance(plan.markers[1], ReevaluateMarker)
@@ -352,8 +353,8 @@ class TestFlowExecutor(TestCase):
 
             plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
 
-            self.assertEqual(plan.stages[0], binding2.stage)
-            self.assertEqual(plan.stages[1], binding3.stage)
+            self.assertEqual(plan.bindings[0], binding2)
+            self.assertEqual(plan.bindings[1], binding3)
 
             self.assertIsInstance(plan.markers[0], StageMarker)
             self.assertIsInstance(plan.markers[1], StageMarker)
@@ -364,7 +365,7 @@ class TestFlowExecutor(TestCase):
 
             plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
 
-            self.assertEqual(plan.stages[0], binding3.stage)
+            self.assertEqual(plan.bindings[0], binding3)
 
             self.assertIsInstance(plan.markers[0], StageMarker)
 
@@ -438,10 +439,10 @@ class TestFlowExecutor(TestCase):
 
             plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
 
-            self.assertEqual(plan.stages[0], binding.stage)
-            self.assertEqual(plan.stages[1], binding2.stage)
-            self.assertEqual(plan.stages[2], binding3.stage)
-            self.assertEqual(plan.stages[3], binding4.stage)
+            self.assertEqual(plan.bindings[0], binding)
+            self.assertEqual(plan.bindings[1], binding2)
+            self.assertEqual(plan.bindings[2], binding3)
+            self.assertEqual(plan.bindings[3], binding4)
 
             self.assertIsInstance(plan.markers[0], StageMarker)
             self.assertIsInstance(plan.markers[1], ReevaluateMarker)

@@ -37,7 +37,13 @@ from authentik.flows.challenge import (
     WithUserInfoChallenge,
 )
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
-from authentik.flows.models import ConfigurableStage, Flow, FlowDesignation, Stage
+from authentik.flows.models import (
+    ConfigurableStage,
+    Flow,
+    FlowDesignation,
+    FlowStageBinding,
+    Stage,
+)
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
     PLAN_CONTEXT_REDIRECT,
@@ -107,6 +113,7 @@ class FlowExecutorView(APIView):
     flow: Flow
 
     plan: Optional[FlowPlan] = None
+    current_binding: FlowStageBinding
     current_stage: Stage
     current_stage_view: View
 
@@ -159,11 +166,12 @@ class FlowExecutorView(APIView):
         request.session[SESSION_KEY_GET] = QueryDict(request.GET.get("query", ""))
         # We don't save the Plan after getting the next stage
         # as it hasn't been successfully passed yet
-        next_stage = self.plan.next(self.request)
-        if not next_stage:
+        next_binding = self.plan.next(self.request)
+        if not next_binding:
             self._logger.debug("f(exec): no more stages, flow is done.")
             return self._flow_done()
-        self.current_stage = next_stage
+        self.current_binding = next_binding
+        self.current_stage = next_binding.stage
         self._logger.debug(
             "f(exec): Current stage",
             current_stage=self.current_stage,
@@ -293,10 +301,10 @@ class FlowExecutorView(APIView):
         )
         self.plan.pop()
         self.request.session[SESSION_KEY_PLAN] = self.plan
-        if self.plan.stages:
+        if self.plan.bindings:
             self._logger.debug(
                 "f(exec): Continuing with next stage",
-                remaining=len(self.plan.stages),
+                remaining=len(self.plan.bindings),
             )
             kwargs = self.kwargs
             kwargs.update({"flow_slug": self.flow.slug})

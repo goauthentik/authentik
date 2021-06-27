@@ -30,7 +30,9 @@ class TestUserDeleteStage(TestCase):
             designation=FlowDesignation.AUTHENTICATION,
         )
         self.stage = UserDeleteStage.objects.create(name="delete")
-        FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
+        self.binding = FlowStageBinding.objects.create(
+            target=self.flow, stage=self.stage, order=2
+        )
 
     @patch(
         "authentik.flows.views.to_stage_response",
@@ -39,7 +41,7 @@ class TestUserDeleteStage(TestCase):
     def test_no_user(self):
         """Test without user set"""
         plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
         )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
@@ -66,7 +68,7 @@ class TestUserDeleteStage(TestCase):
     def test_user_delete_get(self):
         """Test Form render"""
         plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
         )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session

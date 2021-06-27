@@ -13,7 +13,7 @@ from authentik.core.models import User
 from authentik.events.models import cleanse_dict
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
-from authentik.flows.models import Flow, FlowStageBinding, Stage
+from authentik.flows.models import Flow, FlowStageBinding
 from authentik.lib.config import CONFIG
 from authentik.policies.engine import PolicyEngine
 from authentik.root.monitoring import UpdatingGauge
@@ -52,33 +52,37 @@ class FlowPlan:
 
     flow_pk: str
 
-    stages: list[Stage] = field(default_factory=list)
+    bindings: list[FlowStageBinding] = field(default_factory=list)
     context: dict[str, Any] = field(default_factory=dict)
     markers: list[StageMarker] = field(default_factory=list)
 
-    def append(self, stage: Stage, marker: Optional[StageMarker] = None):
+    def append(self, binding: FlowStageBinding, marker: Optional[StageMarker] = None):
         """Append `stage` to all stages, optionall with stage marker"""
-        self.stages.append(stage)
+        self.bindings.append(binding)
         self.markers.append(marker or StageMarker())
 
-    def insert(self, stage: Stage, marker: Optional[StageMarker] = None):
+    def insert(self, binding: FlowStageBinding, marker: Optional[StageMarker] = None):
         """Insert stage into plan, as immediate next stage"""
-        self.stages.insert(1, stage)
+        self.bindings.insert(1, binding)
         self.markers.insert(1, marker or StageMarker())
 
-    def next(self, http_request: Optional[HttpRequest]) -> Optional[Stage]:
+    def next(self, http_request: Optional[HttpRequest]) -> Optional[FlowStageBinding]:
         """Return next pending stage from the bottom of the list"""
         if not self.has_stages:
             return None
-        stage = self.stages[0]
+        binding = self.bindings[0]
         marker = self.markers[0]
 
         if marker.__class__ is not StageMarker:
-            LOGGER.debug("f(plan_inst): stage has marker", stage=stage, marker=marker)
-        marked_stage = marker.process(self, stage, http_request)
+            LOGGER.debug(
+                "f(plan_inst): stage has marker", binding=binding, marker=marker
+            )
+        marked_stage = marker.process(self, binding, http_request)
         if not marked_stage:
-            LOGGER.debug("f(plan_inst): marker returned none, next stage", stage=stage)
-            self.stages.remove(stage)
+            LOGGER.debug(
+                "f(plan_inst): marker returned none, next stage", binding=binding
+            )
+            self.bindings.remove(binding)
             self.markers.remove(marker)
             if not self.has_stages:
                 return None
@@ -89,12 +93,12 @@ class FlowPlan:
     def pop(self):
         """Pop next pending stage from bottom of list"""
         self.markers.pop(0)
-        self.stages.pop(0)
+        self.bindings.pop(0)
 
     @property
     def has_stages(self) -> bool:
         """Check if there are any stages left in this plan"""
-        return len(self.markers) + len(self.stages) > 0
+        return len(self.markers) + len(self.bindings) > 0
 
 
 class FlowPlanner:
@@ -161,7 +165,7 @@ class FlowPlanner:
             plan = self._build_plan(user, request, default_context)
             cache.set(cache_key(self.flow, user), plan, CACHE_TIMEOUT)
             GAUGE_FLOWS_CACHED.update()
-            if not plan.stages and not self.allow_empty_flows:
+            if not plan.bindings and not self.allow_empty_flows:
                 raise EmptyFlowException()
             return plan
 
@@ -218,7 +222,7 @@ class FlowPlanner:
                     )
                     marker = ReevaluateMarker(binding=binding, user=user)
                 if stage:
-                    plan.append(stage, marker)
+                    plan.append(binding, marker)
             HIST_FLOWS_PLAN_TIME.labels(flow_slug=self.flow.slug)
         self._logger.debug(
             "f(plan): finished building",

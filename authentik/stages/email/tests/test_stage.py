@@ -35,12 +35,14 @@ class TestEmailStage(TestCase):
         self.stage = EmailStage.objects.create(
             name="email",
         )
-        FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
+        self.binding = FlowStageBinding.objects.create(
+            target=self.flow, stage=self.stage, order=2
+        )
 
     def test_rendering(self):
         """Test with pending user"""
         plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
         )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
@@ -56,7 +58,7 @@ class TestEmailStage(TestCase):
     def test_without_user(self):
         """Test without pending user"""
         plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
         )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
@@ -71,7 +73,7 @@ class TestEmailStage(TestCase):
     def test_pending_user(self):
         """Test with pending user"""
         plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
         )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
@@ -102,7 +104,7 @@ class TestEmailStage(TestCase):
         # Make sure token exists
         self.test_pending_user()
         plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
         )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
