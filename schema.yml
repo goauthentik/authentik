@@ -4573,6 +4573,18 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: invalid_response_action
+        schema:
+          type: string
+          enum:
+          - restart
+          - restart_with_context
+          - retry
+        description: Configure how the flow executor should handle an invalid response
+          to a challenge. RETRY returns the error message and a similar challenge
+          to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
+          restarts the flow while keeping the current context.
+      - in: query
         name: order
         schema:
           type: integer
@@ -19810,6 +19822,13 @@ components:
           minimum: -2147483648
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
+        invalid_response_action:
+          allOf:
+          - $ref: '#/components/schemas/InvalidResponseActionEnum'
+          description: Configure how the flow executor should handle an invalid response
+            to a challenge. RETRY returns the error message and a similar challenge
+            to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
+            restarts the flow while keeping the current context.
       required:
       - order
       - pk
@@ -19840,6 +19859,13 @@ components:
           minimum: -2147483648
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
+        invalid_response_action:
+          allOf:
+          - $ref: '#/components/schemas/InvalidResponseActionEnum'
+          description: Configure how the flow executor should handle an invalid response
+            to a challenge. RETRY returns the error message and a similar challenge
+            to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
+            restarts the flow while keeping the current context.
       required:
       - order
       - stage
@@ -20184,6 +20210,12 @@ components:
       - verification
       - api
       - recovery
+      type: string
+    InvalidResponseActionEnum:
+      enum:
+      - retry
+      - restart
+      - restart_with_context
       type: string
     Invitation:
       type: object
@@ -24662,6 +24694,13 @@ components:
           minimum: -2147483648
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
+        invalid_response_action:
+          allOf:
+          - $ref: '#/components/schemas/InvalidResponseActionEnum'
+          description: Configure how the flow executor should handle an invalid response
+            to a challenge. RETRY returns the error message and a similar challenge
+            to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
+            restarts the flow while keeping the current context.
     PatchedGroupRequest:
       type: object
       description: Group Serializer

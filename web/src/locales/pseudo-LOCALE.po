@@ -693,6 +693,10 @@ msgid "Configure how the NameID value will be created. When left empty, the Name
 msgstr ""
 
 #: 
+msgid "Configure how the flow executor should handle an invalid response to a challenge."
+msgstr ""
+
+#: 
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr ""
 
@@ -1874,6 +1878,10 @@ msgid "Internal host SSL Validation"
 msgstr ""
 
 #: 
+msgid "Invalid response action"
+msgstr ""
+
+#: 
 msgid "Invalidation"
 msgstr ""
 
@@ -2837,6 +2845,18 @@ msgstr ""
 
 #: 
 msgid "Publisher"
+msgstr ""
+
+#: 
+msgid "RESTART restarts the flow from the beginning, while keeping the flow context."
+msgstr ""
+
+#: 
+msgid "RESTART restarts the flow from the beginning."
+msgstr ""
+
+#: 
+msgid "RETRY returns the error message and a similar challenge to the executor."
 msgstr ""
 
 #: 

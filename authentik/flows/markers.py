@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, Optional
 from django.http.request import HttpRequest
 from structlog.stdlib import get_logger
 
-from authentik.core.models import User
 from authentik.flows.models import FlowStageBinding
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding
@@ -25,7 +24,7 @@ class StageMarker:
         self,
         plan: "FlowPlan",
         binding: FlowStageBinding,
-        http_request: Optional[HttpRequest],
+        http_request: HttpRequest,
     ) -> Optional[FlowStageBinding]:
         """Process callback for this marker. This should be overridden by sub-classes.
         If a stage should be removed, return None."""
@@ -37,24 +36,26 @@ class ReevaluateMarker(StageMarker):
     """Reevaluate Marker, forces stage's policies to be evaluated again."""
 
     binding: PolicyBinding
-    user: User
 
     def process(
         self,
         plan: "FlowPlan",
         binding: FlowStageBinding,
-        http_request: Optional[HttpRequest],
+        http_request: HttpRequest,
     ) -> Optional[FlowStageBinding]:
         """Re-evaluate policies bound to stage, and if they fail, remove from plan"""
+        from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
+
         LOGGER.debug(
             "f(plan_inst)[re-eval marker]: running re-evaluation",
             binding=binding,
             policy_binding=self.binding,
         )
-        engine = PolicyEngine(self.binding, self.user)
+        engine = PolicyEngine(
+            self.binding, plan.context.get(PLAN_CONTEXT_PENDING_USER, http_request.user)
+        )
         engine.use_cache = False
-        if http_request:
-            engine.request.set_http_request(http_request)
+        engine.request.set_http_request(http_request)
         engine.request.context = plan.context
         engine.build()
         result = engine.result

@@ -698,6 +698,10 @@ msgstr "Configure how long refresh tokens and their id_tokens are valid for."
 msgid "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected."
 msgstr "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected."
 
+#: src/pages/flows/StageBindingForm.ts
+msgid "Configure how the flow executor should handle an invalid response to a challenge."
+msgstr "Configure how the flow executor should handle an invalid response to a challenge."
+
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr "Configure how the issuer field of the ID Token should be filled."
@@ -1881,6 +1885,10 @@ msgstr "Internal host"
 msgid "Internal host SSL Validation"
 msgstr "Internal host SSL Validation"
 
+#: src/pages/flows/StageBindingForm.ts
+msgid "Invalid response action"
+msgstr "Invalid response action"
+
 #: src/pages/flows/FlowForm.ts
 msgid "Invalidation"
 msgstr "Invalidation"
@@ -2846,6 +2854,18 @@ msgstr "Public key, acquired from https://www.google.com/recaptcha/intro/v3.html
 #: src/pages/applications/ApplicationForm.ts
 msgid "Publisher"
 msgstr "Publisher"
+
+#: src/pages/flows/StageBindingForm.ts
+msgid "RESTART restarts the flow from the beginning, while keeping the flow context."
+msgstr "RESTART restarts the flow from the beginning, while keeping the flow context."
+
+#: src/pages/flows/StageBindingForm.ts
+msgid "RESTART restarts the flow from the beginning."
+msgstr "RESTART restarts the flow from the beginning."
+
+#: src/pages/flows/StageBindingForm.ts
+msgid "RETRY returns the error message and a similar challenge to the executor."
+msgstr "RETRY returns the error message and a similar challenge to the executor."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "RS256 (Asymmetric Encryption)"

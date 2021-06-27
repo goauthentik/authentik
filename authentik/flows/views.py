@@ -288,6 +288,20 @@ class FlowExecutorView(APIView):
             return self._initiate_plan()
         return plan
 
+    def restart_flow(self, keep_context=False) -> HttpResponse:
+        """Restart the currently active flow, optionally keeping the current context"""
+        planner = FlowPlanner(self.flow)
+        default_context = None
+        if keep_context:
+            default_context = self.plan.context
+        plan = planner.plan(self.request, default_context)
+        self.request.session[SESSION_KEY_PLAN] = plan
+        kwargs = self.kwargs
+        kwargs.update({"flow_slug": self.flow.slug})
+        return redirect_with_qs(
+            "authentik_api:flow-executor", self.request.GET, **kwargs
+        )
+
     def _flow_done(self) -> HttpResponse:
         """User Successfully passed all stages"""
         # Since this is wrapped by the ExecutorShell, the next argument is saved in the session

@@ -224,7 +224,7 @@ class FlowPlanner:
                         "f(plan): stage has re-evaluate marker",
                         stage=binding.stage,
                     )
-                    marker = ReevaluateMarker(binding=binding, user=user)
+                    marker = ReevaluateMarker(binding=binding)
                 if stage:
                     plan.append(binding, marker)
             HIST_FLOWS_PLAN_TIME.labels(flow_slug=self.flow.slug)
