@@ -20,6 +20,8 @@ class TestTenants(TestCase):
                 "branding_title": "authentik",
                 "matched_domain": "authentik-default",
                 "ui_footer_links": CONFIG.y("footer_links"),
+                "flow_authentication": "default-authentication-flow",
+                "flow_invalidation": "default-invalidation-flow",
             },
         )
 
