@@ -79,7 +79,7 @@ class SAMLSSOView(PolicyAccessView):
                 PLAN_CONTEXT_CONSENT_PERMISSIONS: [],
             },
         )
-        plan.append(in_memory_stage(SAMLFlowFinalView))
+        plan.append_stage(in_memory_stage(SAMLFlowFinalView))
         request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
             "authentik_core:if-flow",

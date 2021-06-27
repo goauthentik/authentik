@@ -474,8 +474,8 @@ class AuthorizationFlowInitView(PolicyAccessView):
                     name="OAuth2 Provider In-memory consent stage",
                     mode=ConsentMode.ALWAYS_REQUIRE,
                 )
-                plan.append(stage)
-        plan.append(in_memory_stage(OAuthFulfillmentStage))
+                plan.append_stage(stage)
+        plan.append_stage(in_memory_stage(OAuthFulfillmentStage))
         self.request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
             "authentik_core:if-flow",

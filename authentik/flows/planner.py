@@ -13,7 +13,7 @@ from authentik.core.models import User
 from authentik.events.models import cleanse_dict
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
-from authentik.flows.models import Flow, FlowStageBinding
+from authentik.flows.models import Flow, FlowStageBinding, Stage
 from authentik.lib.config import CONFIG
 from authentik.policies.engine import PolicyEngine
 from authentik.root.monitoring import UpdatingGauge
@@ -56,14 +56,18 @@ class FlowPlan:
     context: dict[str, Any] = field(default_factory=dict)
     markers: list[StageMarker] = field(default_factory=list)
 
+    def append_stage(self, stage: Stage, marker: Optional[StageMarker] = None):
+        """Append `stage` to all stages, optionall with stage marker"""
+        return self.append(FlowStageBinding(stage=stage), marker)
+
     def append(self, binding: FlowStageBinding, marker: Optional[StageMarker] = None):
         """Append `stage` to all stages, optionall with stage marker"""
         self.bindings.append(binding)
         self.markers.append(marker or StageMarker())
 
-    def insert(self, binding: FlowStageBinding, marker: Optional[StageMarker] = None):
+    def insert_stage(self, stage: Stage, marker: Optional[StageMarker] = None):
         """Insert stage into plan, as immediate next stage"""
-        self.bindings.insert(1, binding)
+        self.bindings.insert(1, FlowStageBinding(stage=stage, order=0))
         self.markers.insert(1, marker or StageMarker())
 
     def next(self, http_request: Optional[HttpRequest]) -> Optional[FlowStageBinding]:

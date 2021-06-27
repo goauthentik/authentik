@@ -52,7 +52,7 @@ class TestFlowExecutor(TestCase):
             designation=FlowDesignation.AUTHENTICATION,
         )
         stage = DummyStage.objects.create(name="dummy")
-        binding = FlowStageBinding.objects.create(target=flow, stage=stage)
+        binding = FlowStageBinding(target=flow, stage=stage, order=0)
         plan = FlowPlan(
             flow_pk=flow.pk.hex + "a", bindings=[binding], markers=[StageMarker()]
         )

@@ -4,6 +4,7 @@ from typing import Any, Optional
 
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.cache import cache
 from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
 from django.http.request import QueryDict
 from django.shortcuts import get_object_or_404, redirect
@@ -276,6 +277,15 @@ class FlowExecutorView(APIView):
         planner = FlowPlanner(self.flow)
         plan = planner.plan(self.request)
         self.request.session[SESSION_KEY_PLAN] = plan
+        try:
+            # Call the has_stages getter to check that
+            # there are no issues with the class we might've gotten
+            # from the cache. If there are errors, just delete all cached flows
+            _ = plan.has_stages
+        except Exception:  # pylint: disable=broad-except
+            keys = cache.keys("flow_*")
+            cache.delete_many(keys)
+            return self._initiate_plan()
         return plan
 
     def _flow_done(self) -> HttpResponse:
