@@ -105,7 +105,9 @@ def notification_transport(
     """Send notification over specified transport"""
     self.save_on_success = False
     try:
-        notification: Notification = Notification.objects.get(pk=notification_pk)
+        notification: Notification = Notification.objects.filter(pk=notification_pk).first()
+        if not notification:
+            return
         transport: NotificationTransport = NotificationTransport.objects.get(
             pk=transport_pk
         )
