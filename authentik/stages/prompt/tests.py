@@ -78,6 +78,12 @@ class TestPromptStage(TestCase):
             required=True,
             placeholder="HIDDEN_PLACEHOLDER",
         )
+        static_prompt = Prompt.objects.create(
+            field_key="static_prompt",
+            type=FieldTypes.STATIC,
+            required=True,
+            placeholder="static",
+        )
         self.stage = PromptStage.objects.create(name="prompt-stage")
         self.stage.fields.set(
             [
@@ -88,6 +94,7 @@ class TestPromptStage(TestCase):
                 password2_prompt,
                 number_prompt,
                 hidden_prompt,
+                static_prompt,
             ]
         )
         self.stage.save()
@@ -100,6 +107,7 @@ class TestPromptStage(TestCase):
             password2_prompt.field_key: "test",
             number_prompt.field_key: 3,
             hidden_prompt.field_key: hidden_prompt.placeholder,
+            static_prompt.field_key: static_prompt.placeholder,
         }
 
         self.binding = FlowStageBinding.objects.create(
@@ -232,3 +240,17 @@ class TestPromptStage(TestCase):
                 ]
             },
         )
+
+    def test_static_hidden_overwrite(self):
+        """Test that static and hidden fields ignore any value sent to them"""
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
+        )
+        self.prompt_data["hidden_prompt"] = "foo"
+        self.prompt_data["static_prompt"] = "foo"
+        challenge_response = PromptChallengeResponse(
+            None, stage=self.stage, plan=plan, data=self.prompt_data
+        )
+        self.assertEqual(challenge_response.is_valid(), True)
+        self.assertNotEqual(challenge_response.validated_data["hidden_prompt"], "foo")
+        self.assertNotEqual(challenge_response.validated_data["static_prompt"], "foo")

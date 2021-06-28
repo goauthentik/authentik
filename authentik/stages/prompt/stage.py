@@ -90,6 +90,14 @@ class PromptChallengeResponse(ChallengeResponse):
             raise ValidationError(_("Passwords don't match."))
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
+        # Check if we have any static or hidden fields, and ensure they
+        # still have the same value
+        static_hidden_fields: QuerySet[Prompt] = self.stage.fields.filter(
+            type__in=[FieldTypes.HIDDEN, FieldTypes.STATIC]
+        )
+        for static_hidden in static_hidden_fields:
+            attrs[static_hidden.field_key] = static_hidden.placeholder
+
         # Check if we have two password fields, and make sure they are the same
         password_fields: QuerySet[Prompt] = self.stage.fields.filter(
             type=FieldTypes.PASSWORD
