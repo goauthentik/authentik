@@ -5,7 +5,9 @@ import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
+import "../../../elements/forms/FormGroup";
 import { ModelForm } from "../../../elements/forms/ModelForm";
+import { first } from "../../../utils";
 
 @customElement("ak-stage-user-write-form")
 export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
@@ -49,6 +51,22 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                 name="name">
                 <input type="text" value="${ifDefined(this.instance?.name || "")}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
+            <ak-form-group .expanded=${true}>
+                <span slot="header">
+                    ${t`Stage-specific settings`}
+                </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal name="createUsersAsInactive">
+                        <div class="pf-c-check">
+                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.createUsersAsInactive, true)}>
+                            <label class="pf-c-check__label">
+                                ${t`Create users as inactive`}
+                            </label>
+                        </div>
+                        <p class="pf-c-form__helper-text">${t`Mark newly created users as inactive.`}</p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
         </form>`;
     }
 

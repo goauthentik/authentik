@@ -35,7 +35,9 @@ class UserWriteStageView(StageView):
         data = self.executor.plan.context[PLAN_CONTEXT_PROMPT]
         user_created = False
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
-            self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = User()
+            self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = User(
+                is_active=not self.executor.current_stage.create_users_as_inactive
+            )
             self.executor.plan.context[
                 PLAN_CONTEXT_AUTHENTICATION_BACKEND
             ] = class_to_path(ModelBackend)

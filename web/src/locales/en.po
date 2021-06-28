@@ -945,6 +945,10 @@ msgstr "Create User"
 msgid "Create provider"
 msgstr "Create provider"
 
+#: src/pages/stages/user_write/UserWriteStageForm.ts
+msgid "Create users as inactive"
+msgstr "Create users as inactive"
+
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
@@ -2150,6 +2154,10 @@ msgstr "Logs"
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Long-running operations which authentik executes in the background."
 msgstr "Long-running operations which authentik executes in the background."
+
+#: src/pages/stages/user_write/UserWriteStageForm.ts
+msgid "Mark newly created users as inactive."
+msgstr "Mark newly created users as inactive."
 
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 msgid "Match created events with this action type. When left empty, all action types will be matched."
@@ -3384,6 +3392,7 @@ msgstr "Stage used to validate any authenticator. This stage should be used duri
 #: src/pages/stages/password/PasswordStageForm.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
 #: src/pages/stages/user_login/UserLoginStageForm.ts
+#: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Stage-specific settings"
 msgstr "Stage-specific settings"
 

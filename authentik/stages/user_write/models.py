@@ -1,6 +1,7 @@
 """write stage models"""
 from typing import Type
 
+from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
@@ -11,6 +12,11 @@ from authentik.flows.models import Stage
 class UserWriteStage(Stage):
     """Writes currently pending data into the pending user, or if no user exists,
     creates a new user with the data."""
+
+    create_users_as_inactive = models.BooleanField(
+        default=False,
+        help_text=_("When set, newly created users are inactive and cannot login."),
+    )
 
     @property
     def serializer(self) -> BaseSerializer:

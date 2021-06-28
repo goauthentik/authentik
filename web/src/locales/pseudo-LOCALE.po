@@ -940,6 +940,10 @@ msgid "Create provider"
 msgstr ""
 
 #: 
+msgid "Create users as inactive"
+msgstr ""
+
+#: 
 #: 
 #: 
 #: 
@@ -2141,6 +2145,10 @@ msgstr ""
 
 #: 
 msgid "Long-running operations which authentik executes in the background."
+msgstr ""
+
+#: 
+msgid "Mark newly created users as inactive."
 msgstr ""
 
 #: 
@@ -3364,6 +3372,7 @@ msgstr ""
 msgid "Stage used to validate any authenticator. This stage should be used during authentication or authorization flows."
 msgstr ""
 
+#: 
 #: 
 #: 
 #: 

@@ -25778,6 +25778,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowRequest'
+        create_users_as_inactive:
+          type: boolean
+          description: When set, newly created users are inactive and cannot login.
     PatchedWebAuthnDeviceRequest:
       type: object
       description: Serializer for WebAuthn authenticator devices
@@ -28272,6 +28275,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Flow'
+        create_users_as_inactive:
+          type: boolean
+          description: When set, newly created users are inactive and cannot login.
       required:
       - component
       - name
@@ -28288,6 +28294,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowRequest'
+        create_users_as_inactive:
+          type: boolean
+          description: When set, newly created users are inactive and cannot login.
       required:
       - name
     ValidationError:
