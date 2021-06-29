@@ -1,6 +1,6 @@
 """Outpost managed objects"""
-from authentik.outposts.models import Outpost, OutpostType
 from authentik.managed.manager import EnsureExists, ObjectManager
+from authentik.outposts.models import Outpost, OutpostType
 
 
 class OutpostManager(ObjectManager):
