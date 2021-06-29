@@ -179,3 +179,4 @@ jobs:
           version: authentik@2021.6.3
           environment: beryjuorg-prod
           sourcemaps: './web/dist'
+          finalize: false
