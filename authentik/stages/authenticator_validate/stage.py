@@ -148,7 +148,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 stage = Stage.objects.get_subclass(pk=stage.configuration_stage.pk)
                 # plan.insert inserts at 1 index, so when stage_ok pops 0,
                 # the configuration stage is next
-                self.executor.plan.insert(stage)
+                self.executor.plan.insert_stage(stage)
                 return self.executor.stage_ok()
         return super().get(request, *args, **kwargs)
 

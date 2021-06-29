@@ -9,8 +9,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import AKGlobal from "../../../authentik.css";
 import { BaseStage } from "../base";
 import "../../../elements/EmptyState";
-import { AutosubmitChallenge } from "authentik-api";
-import { AutoSubmitChallengeResponseRequest } from "authentik-api/dist/models/AutoSubmitChallengeResponseRequest";
+import { AutosubmitChallenge, AutoSubmitChallengeResponseRequest } from "authentik-api";
 
 @customElement("ak-stage-autosubmit")
 export class AutosubmitStage extends BaseStage<AutosubmitChallenge, AutoSubmitChallengeResponseRequest> {

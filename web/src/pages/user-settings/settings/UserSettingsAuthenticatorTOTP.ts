@@ -4,6 +4,7 @@ import { customElement, html, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { BaseUserSettings } from "./BaseUserSettings";
+import { EVENT_REFRESH } from "../../../constants";
 
 @customElement("ak-user-settings-authenticator-totp")
 export class UserSettingsAuthenticatorTOTP extends BaseUserSettings {
@@ -27,7 +28,12 @@ export class UserSettingsAuthenticatorTOTP extends BaseUserSettings {
                             return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsTotpDestroy({
                                 id: devices.results[0].pk || 0
                             }).then(() => {
-                                this.requestUpdate();
+                                this.dispatchEvent(
+                                    new CustomEvent(EVENT_REFRESH, {
+                                        bubbles: true,
+                                        composed: true,
+                                    })
+                                );
                             });
                         });
                     }}>

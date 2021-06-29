@@ -374,9 +374,9 @@ class OAuthFulfillmentStage(StageView):
             query_fragment["code"] = code.code
 
         query_fragment["token_type"] = "bearer"
-        query_fragment["expires_in"] = timedelta_from_string(
-            self.provider.token_validity
-        ).seconds
+        query_fragment["expires_in"] = int(
+            timedelta_from_string(self.provider.token_validity).total_seconds()
+        )
         query_fragment["state"] = self.params.state if self.params.state else ""
 
         return query_fragment
@@ -468,14 +468,14 @@ class AuthorizationFlowInitView(PolicyAccessView):
         # OpenID clients can specify a `prompt` parameter, and if its set to consent we
         # need to inject a consent stage
         if PROMPT_CONSNET in self.params.prompt:
-            if not any(isinstance(x, ConsentStageView) for x in plan.stages):
+            if not any(isinstance(x.stage, ConsentStageView) for x in plan.bindings):
                 # Plan does not have any consent stage, so we add an in-memory one
                 stage = ConsentStage(
                     name="OAuth2 Provider In-memory consent stage",
                     mode=ConsentMode.ALWAYS_REQUIRE,
                 )
-                plan.append(stage)
-        plan.append(in_memory_stage(OAuthFulfillmentStage))
+                plan.append_stage(stage)
+        plan.append_stage(in_memory_stage(OAuthFulfillmentStage))
         self.request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
             "authentik_core:if-flow",

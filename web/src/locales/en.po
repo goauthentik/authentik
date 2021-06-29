@@ -698,6 +698,10 @@ msgstr "Configure how long refresh tokens and their id_tokens are valid for."
 msgid "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected."
 msgstr "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected."
 
+#: src/pages/flows/StageBindingForm.ts
+msgid "Configure how the flow executor should handle an invalid response to a challenge."
+msgstr "Configure how the flow executor should handle an invalid response to a challenge."
+
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr "Configure how the issuer field of the ID Token should be filled."
@@ -940,6 +944,10 @@ msgstr "Create User"
 #: src/pages/applications/ApplicationForm.ts
 msgid "Create provider"
 msgstr "Create provider"
+
+#: src/pages/stages/user_write/UserWriteStageForm.ts
+msgid "Create users as inactive"
+msgstr "Create users as inactive"
 
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/flows/BoundStagesList.ts
@@ -1372,8 +1380,8 @@ msgid "Evaluate policies before the Stage is present to the user."
 msgstr "Evaluate policies before the Stage is present to the user."
 
 #: src/pages/flows/StageBindingForm.ts
-msgid "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with this option disabled, policies are **not** evaluated."
-msgstr "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with this option disabled, policies are **not** evaluated."
+msgid "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with both options disabled, policies are **not** evaluated."
+msgstr "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with both options disabled, policies are **not** evaluated."
 
 #: src/pages/events/EventListPage.ts
 msgid "Event Log"
@@ -1451,8 +1459,13 @@ msgid "Explicit Consent"
 msgstr "Explicit Consent"
 
 #: src/pages/flows/FlowListPage.ts
+#: src/pages/flows/FlowViewPage.ts
 msgid "Export"
 msgstr "Export"
+
+#: src/pages/flows/FlowViewPage.ts
+msgid "Export flow"
+msgstr "Export flow"
 
 #: src/pages/events/EventInfo.ts
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
@@ -1876,6 +1889,10 @@ msgstr "Internal host"
 msgid "Internal host SSL Validation"
 msgstr "Internal host SSL Validation"
 
+#: src/pages/flows/StageBindingForm.ts
+msgid "Invalid response action"
+msgstr "Invalid response action"
+
 #: src/pages/flows/FlowForm.ts
 msgid "Invalidation"
 msgstr "Invalidation"
@@ -2137,6 +2154,10 @@ msgstr "Logs"
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Long-running operations which authentik executes in the background."
 msgstr "Long-running operations which authentik executes in the background."
+
+#: src/pages/stages/user_write/UserWriteStageForm.ts
+msgid "Mark newly created users as inactive."
+msgstr "Mark newly created users as inactive."
 
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 msgid "Match created events with this action type. When left empty, all action types will be matched."
@@ -2842,6 +2863,18 @@ msgstr "Public key, acquired from https://www.google.com/recaptcha/intro/v3.html
 msgid "Publisher"
 msgstr "Publisher"
 
+#: src/pages/flows/StageBindingForm.ts
+msgid "RESTART restarts the flow from the beginning, while keeping the flow context."
+msgstr "RESTART restarts the flow from the beginning, while keeping the flow context."
+
+#: src/pages/flows/StageBindingForm.ts
+msgid "RESTART restarts the flow from the beginning."
+msgstr "RESTART restarts the flow from the beginning."
+
+#: src/pages/flows/StageBindingForm.ts
+msgid "RETRY returns the error message and a similar challenge to the executor."
+msgstr "RETRY returns the error message and a similar challenge to the executor."
+
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "RS256 (Asymmetric Encryption)"
 msgstr "RS256 (Asymmetric Encryption)"
@@ -3359,6 +3392,7 @@ msgstr "Stage used to validate any authenticator. This stage should be used duri
 #: src/pages/stages/password/PasswordStageForm.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
 #: src/pages/stages/user_login/UserLoginStageForm.ts
+#: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Stage-specific settings"
 msgstr "Stage-specific settings"
 
@@ -3815,6 +3849,16 @@ msgstr "The external URL you'll authenticate at. Can be the same domain as authe
 #: src/elements/forms/DeleteForm.ts
 msgid "The following objects use {objName}"
 msgstr "The following objects use {objName}"
+
+#: src/pages/policies/reputation/ReputationPolicyForm.ts
+msgid ""
+"The policy passes when the reputation score is above the threshold, and\n"
+"doesn't pass when either or both of the selected options are equal or less than the\n"
+"threshold."
+msgstr ""
+"The policy passes when the reputation score is above the threshold, and\n"
+"doesn't pass when either or both of the selected options are equal or less than the\n"
+"threshold."
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts
 msgid "The policy takes a random time to execute. This controls the minimum time it will take."

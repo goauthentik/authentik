@@ -16,6 +16,7 @@ from authentik.flows.challenge import (
     HttpChallengeResponse,
     WithUserInfoChallenge,
 )
+from authentik.flows.models import InvalidResponseAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.views import FlowExecutorView
 
@@ -69,7 +70,13 @@ class ChallengeStageView(StageView):
         """Return a challenge for the frontend to solve"""
         challenge = self._get_challenge(*args, **kwargs)
         if not challenge.is_valid():
-            LOGGER.warning(challenge.errors, stage_view=self, challenge=challenge)
+            LOGGER.warning(
+                "f(ch): Invalid challenge",
+                binding=self.executor.current_binding,
+                errors=challenge.errors,
+                stage_view=self,
+                challenge=challenge,
+            )
         return HttpChallengeResponse(challenge)
 
     # pylint: disable=unused-argument
@@ -77,6 +84,21 @@ class ChallengeStageView(StageView):
         """Handle challenge response"""
         challenge: ChallengeResponse = self.get_response_instance(data=request.data)
         if not challenge.is_valid():
+            if self.executor.current_binding.invalid_response_action in [
+                InvalidResponseAction.RESTART,
+                InvalidResponseAction.RESTART_WITH_CONTEXT,
+            ]:
+                keep_context = (
+                    self.executor.current_binding.invalid_response_action
+                    == InvalidResponseAction.RESTART_WITH_CONTEXT
+                )
+                LOGGER.debug(
+                    "f(ch): Invalid response, restarting flow",
+                    binding=self.executor.current_binding,
+                    stage_view=self,
+                    keep_context=keep_context,
+                )
+                return self.executor.restart_flow(keep_context)
             return self.challenge_invalid(challenge)
         return self.challenge_valid(challenge)
 
@@ -126,5 +148,10 @@ class ChallengeStageView(StageView):
                 )
         challenge_response.initial_data["response_errors"] = full_errors
         if not challenge_response.is_valid():
-            LOGGER.warning(challenge_response.errors)
+            LOGGER.warning(
+                "f(ch): invalid challenge response",
+                binding=self.executor.current_binding,
+                errors=challenge_response.errors,
+                stage_view=self,
+            )
         return HttpChallengeResponse(challenge_response)

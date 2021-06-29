@@ -693,6 +693,10 @@ msgid "Configure how the NameID value will be created. When left empty, the Name
 msgstr ""
 
 #: 
+msgid "Configure how the flow executor should handle an invalid response to a challenge."
+msgstr ""
+
+#: 
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr ""
 
@@ -933,6 +937,10 @@ msgstr ""
 
 #: 
 msgid "Create provider"
+msgstr ""
+
+#: 
+msgid "Create users as inactive"
 msgstr ""
 
 #: 
@@ -1364,7 +1372,7 @@ msgid "Evaluate policies before the Stage is present to the user."
 msgstr ""
 
 #: 
-msgid "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with this option disabled, policies are **not** evaluated."
+msgid "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with both options disabled, policies are **not** evaluated."
 msgstr ""
 
 #: 
@@ -1443,7 +1451,12 @@ msgid "Explicit Consent"
 msgstr ""
 
 #: 
+#: 
 msgid "Export"
+msgstr ""
+
+#: 
+msgid "Export flow"
 msgstr ""
 
 #: 
@@ -1869,6 +1882,10 @@ msgid "Internal host SSL Validation"
 msgstr ""
 
 #: 
+msgid "Invalid response action"
+msgstr ""
+
+#: 
 msgid "Invalidation"
 msgstr ""
 
@@ -2128,6 +2145,10 @@ msgstr ""
 
 #: 
 msgid "Long-running operations which authentik executes in the background."
+msgstr ""
+
+#: 
+msgid "Mark newly created users as inactive."
 msgstr ""
 
 #: 
@@ -2835,6 +2856,18 @@ msgid "Publisher"
 msgstr ""
 
 #: 
+msgid "RESTART restarts the flow from the beginning, while keeping the flow context."
+msgstr ""
+
+#: 
+msgid "RESTART restarts the flow from the beginning."
+msgstr ""
+
+#: 
+msgid "RETRY returns the error message and a similar challenge to the executor."
+msgstr ""
+
+#: 
 msgid "RS256 (Asymmetric Encryption)"
 msgstr ""
 
@@ -3351,6 +3384,7 @@ msgstr ""
 #: 
 #: 
 #: 
+#: 
 msgid "Stage-specific settings"
 msgstr ""
 
@@ -3806,6 +3840,13 @@ msgstr ""
 
 #: 
 msgid "The following objects use {objName}"
+msgstr ""
+
+#: 
+msgid ""
+"The policy passes when the reputation score is above the threshold, and\n"
+"doesn't pass when either or both of the selected options are equal or less than the\n"
+"threshold."
 msgstr ""
 
 #: 

@@ -139,6 +139,7 @@ body {
     /* Card */
     .pf-c-card {
         --pf-c-card--BackgroundColor: var(--ak-dark-background-light);
+        color: var(--ak-dark-foreground);
     }
     .pf-c-card__title,
     .pf-c-card__body {

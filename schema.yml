@@ -3572,6 +3572,37 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+    post:
+      operationId: events_events_create
+      description: Event Read-Only Viewset
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EventRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EventRequest'
+        required: true
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/events/events/{event_uuid}/:
     get:
       operationId: events_events_retrieve
@@ -3596,6 +3627,106 @@ paths:
               schema:
                 $ref: '#/components/schemas/Event'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    put:
+      operationId: events_events_update
+      description: Event Read-Only Viewset
+      parameters:
+      - in: path
+        name: event_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Event.
+        required: true
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EventRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EventRequest'
+        required: true
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    patch:
+      operationId: events_events_partial_update
+      description: Event Read-Only Viewset
+      parameters:
+      - in: path
+        name: event_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Event.
+        required: true
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEventRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEventRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEventRequest'
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    delete:
+      operationId: events_events_destroy
+      description: Event Read-Only Viewset
+      parameters:
+      - in: path
+        name: event_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Event.
+        required: true
+      tags:
+      - events
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -4441,6 +4572,18 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: invalid_response_action
+        schema:
+          type: string
+          enum:
+          - restart
+          - restart_with_context
+          - retry
+        description: Configure how the flow executor should handle an invalid response
+          to a challenge. RETRY returns the error message and a similar challenge
+          to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
+          restarts the flow while keeping the current context.
       - in: query
         name: order
         schema:
@@ -18759,6 +18902,12 @@ components:
             name: Documentation
           - href: https://goauthentik.io/
             name: authentik Website
+        flow_authentication:
+          type: string
+        flow_invalidation:
+          type: string
+        flow_recovery:
+          type: string
         flow_unenrollment:
           type: string
       required:
@@ -19242,7 +19391,7 @@ components:
           type: object
           additionalProperties: {}
         action:
-          type: string
+          $ref: '#/components/schemas/EventActions'
         app:
           type: string
         context:
@@ -19266,6 +19415,34 @@ components:
       - app
       - created
       - pk
+    EventActions:
+      enum:
+      - login
+      - login_failed
+      - logout
+      - user_write
+      - suspicious_request
+      - password_set
+      - secret_view
+      - invitation_used
+      - authorize_application
+      - source_linked
+      - impersonation_started
+      - impersonation_ended
+      - policy_execution
+      - policy_exception
+      - property_mapping_exception
+      - system_task_execution
+      - system_task_exception
+      - system_exception
+      - configuration_error
+      - model_created
+      - model_updated
+      - model_deleted
+      - email_sent
+      - update_available
+      - custom_
+      type: string
     EventMatcherPolicy:
       type: object
       description: Event Matcher Policy Serializer
@@ -19296,7 +19473,7 @@ components:
           readOnly: true
         action:
           allOf:
-          - $ref: '#/components/schemas/EventMatcherPolicyActionEnum'
+          - $ref: '#/components/schemas/EventActions'
           description: Match created events with this action type. When left empty,
             all action types will be matched.
         client_ip:
@@ -19314,34 +19491,6 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
-    EventMatcherPolicyActionEnum:
-      enum:
-      - login
-      - login_failed
-      - logout
-      - user_write
-      - suspicious_request
-      - password_set
-      - secret_view
-      - invitation_used
-      - authorize_application
-      - source_linked
-      - impersonation_started
-      - impersonation_ended
-      - policy_execution
-      - policy_exception
-      - property_mapping_exception
-      - system_task_execution
-      - system_task_exception
-      - system_exception
-      - configuration_error
-      - model_created
-      - model_updated
-      - model_deleted
-      - email_sent
-      - update_available
-      - custom_
-      type: string
     EventMatcherPolicyRequest:
       type: object
       description: Event Matcher Policy Serializer
@@ -19355,7 +19504,7 @@ components:
             will be logged. By default, only execution errors are logged.
         action:
           allOf:
-          - $ref: '#/components/schemas/EventMatcherPolicyActionEnum'
+          - $ref: '#/components/schemas/EventActions'
           description: Match created events with this action type. When left empty,
             all action types will be matched.
         client_ip:
@@ -19375,7 +19524,7 @@ components:
           type: object
           additionalProperties: {}
         action:
-          type: string
+          $ref: '#/components/schemas/EventActions'
         app:
           type: string
         context:
@@ -19673,6 +19822,13 @@ components:
           minimum: -2147483648
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
+        invalid_response_action:
+          allOf:
+          - $ref: '#/components/schemas/InvalidResponseActionEnum'
+          description: Configure how the flow executor should handle an invalid response
+            to a challenge. RETRY returns the error message and a similar challenge
+            to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
+            restarts the flow while keeping the current context.
       required:
       - order
       - pk
@@ -19703,6 +19859,13 @@ components:
           minimum: -2147483648
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
+        invalid_response_action:
+          allOf:
+          - $ref: '#/components/schemas/InvalidResponseActionEnum'
+          description: Configure how the flow executor should handle an invalid response
+            to a challenge. RETRY returns the error message and a similar challenge
+            to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
+            restarts the flow while keeping the current context.
       required:
       - order
       - stage
@@ -20047,6 +20210,12 @@ components:
       - verification
       - api
       - recovery
+      type: string
+    InvalidResponseActionEnum:
+      enum:
+      - retry
+      - restart
+      - restart_with_context
       type: string
     Invitation:
       type: object
@@ -24445,7 +24614,7 @@ components:
             will be logged. By default, only execution errors are logged.
         action:
           allOf:
-          - $ref: '#/components/schemas/EventMatcherPolicyActionEnum'
+          - $ref: '#/components/schemas/EventActions'
           description: Match created events with this action type. When left empty,
             all action types will be matched.
         client_ip:
@@ -24457,6 +24626,29 @@ components:
           - $ref: '#/components/schemas/AppEnum'
           description: Match events created by selected application. When left empty,
             all applications are matched.
+    PatchedEventRequest:
+      type: object
+      description: Event Serializer
+      properties:
+        user:
+          type: object
+          additionalProperties: {}
+        action:
+          $ref: '#/components/schemas/EventActions'
+        app:
+          type: string
+        context:
+          type: object
+          additionalProperties: {}
+        client_ip:
+          type: string
+          nullable: true
+        expires:
+          type: string
+          format: date-time
+        tenant:
+          type: object
+          additionalProperties: {}
     PatchedExpressionPolicyRequest:
       type: object
       description: Group Membership Policy Serializer
@@ -24518,6 +24710,13 @@ components:
           minimum: -2147483648
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
+        invalid_response_action:
+          allOf:
+          - $ref: '#/components/schemas/InvalidResponseActionEnum'
+          description: Configure how the flow executor should handle an invalid response
+            to a challenge. RETRY returns the error message and a similar challenge
+            to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
+            restarts the flow while keeping the current context.
     PatchedGroupRequest:
       type: object
       description: Group Serializer
@@ -25603,6 +25802,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowRequest'
+        create_users_as_inactive:
+          type: boolean
+          description: When set, newly created users are inactive and cannot login.
     PatchedWebAuthnDeviceRequest:
       type: object
       description: Serializer for WebAuthn authenticator devices
@@ -28097,6 +28299,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Flow'
+        create_users_as_inactive:
+          type: boolean
+          description: When set, newly created users are inactive and cannot login.
       required:
       - component
       - name
@@ -28113,6 +28318,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowRequest'
+        create_users_as_inactive:
+          type: boolean
+          description: When set, newly created users are inactive and cannot login.
       required:
       - name
     ValidationError:

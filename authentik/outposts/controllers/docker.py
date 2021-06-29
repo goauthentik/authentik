@@ -53,6 +53,27 @@ class DockerController(BaseController):
                 return True
         return False
 
+    def _comp_ports(self, container: Container) -> bool:
+        """Check that the container has the correct ports exposed. Return true if container needs
+        to be rebuilt."""
+        # with TEST enabled, we use host-network
+        if settings.TEST:
+            return False
+        # When the container isn't running, the API doesn't report any port mappings
+        if container.status != "running":
+            return False
+        # {'6379/tcp': [{'HostIp': '127.0.0.1', 'HostPort': '6379'}]}
+        for port in self.deployment_ports:
+            key = f"{port.inner_port or port.port}/{port.protocol.lower()}"
+            if key not in container.ports:
+                return True
+            host_matching = False
+            for host_port in container.ports[key]:
+                host_matching = host_port.get("HostPort") == port.port
+            if not host_matching:
+                return True
+        return False
+
     def _get_container(self) -> tuple[Container, bool]:
         container_name = f"authentik-proxy-{self.outpost.uuid.hex}"
         try:
@@ -98,6 +119,11 @@ class DockerController(BaseController):
                     )
                     self.down()
                     return self.up()
+            # Check container's ports
+            if self._comp_ports(container):
+                self.logger.info("Container has mis-matched ports, re-creating...")
+                self.down()
+                return self.up()
             # Check that container values match our values
             if self._comp_env(container):
                 self.logger.info("Container has outdated config, re-creating...")

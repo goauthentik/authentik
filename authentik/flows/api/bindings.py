@@ -25,6 +25,7 @@ class FlowStageBindingSerializer(ModelSerializer):
             "re_evaluate_policies",
             "order",
             "policy_engine_mode",
+            "invalid_response_action",
         ]
 
 

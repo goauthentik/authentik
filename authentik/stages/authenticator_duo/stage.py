@@ -63,7 +63,7 @@ class AuthenticatorDuoStageView(ChallengeStageView):
                 "type": ChallengeTypes.NATIVE.value,
                 "activation_barcode": enroll["activation_barcode"],
                 "activation_code": enroll["activation_code"],
-                "stage_uuid": stage.stage_uuid,
+                "stage_uuid": str(stage.stage_uuid),
             }
         )
 

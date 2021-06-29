@@ -27,6 +27,14 @@ class NotConfiguredAction(models.TextChoices):
     CONFIGURE = "configure"
 
 
+class InvalidResponseAction(models.TextChoices):
+    """Configure how the flow executor should handle invalid responses to challenges"""
+
+    RETRY = "retry"
+    RESTART = "restart"
+    RESTART_WITH_CONTEXT = "restart_with_context"
+
+
 class FlowDesignation(models.TextChoices):
     """Designation of what a Flow should be used for. At a later point, this
     should be replaced by a database entry."""
@@ -199,6 +207,17 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
     re_evaluate_policies = models.BooleanField(
         default=False,
         help_text=_("Evaluate policies when the Stage is present to the user."),
+    )
+
+    invalid_response_action = models.TextField(
+        choices=InvalidResponseAction.choices,
+        default=InvalidResponseAction.RETRY,
+        help_text=_(
+            "Configure how the flow executor should handle an invalid response to a "
+            "challenge. RETRY returns the error message and a similar challenge to the "
+            "executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT "
+            "restarts the flow while keeping the current context."
+        ),
     )
 
     order = models.IntegerField()

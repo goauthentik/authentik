@@ -90,7 +90,7 @@ class InitiateView(View):
         planner.allow_empty_flows = True
         plan = planner.plan(self.request, kwargs)
         for stage in stages_to_append:
-            plan.append(stage)
+            plan.append_stage(stage)
         self.request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
             "authentik_core:if-flow",

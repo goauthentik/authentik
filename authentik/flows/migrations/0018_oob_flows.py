@@ -135,7 +135,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_flows", "0017_auto_20210329_1334"),
-        ("authentik_stages_user_write", "__latest__"),
+        ("authentik_stages_user_write", "0002_auto_20200918_1653"),
         ("authentik_stages_user_login", "__latest__"),
         ("authentik_stages_password", "0002_passwordstage_change_flow"),
         ("authentik_policies", "0001_initial"),

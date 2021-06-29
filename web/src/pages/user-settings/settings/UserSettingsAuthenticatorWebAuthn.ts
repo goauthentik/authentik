@@ -12,6 +12,7 @@ import "../../../elements/forms/Form";
 import "../../../elements/forms/ModalForm";
 import "../../../elements/forms/HorizontalFormElement";
 import { ifDefined } from "lit-html/directives/if-defined";
+import { EVENT_REFRESH } from "../../../constants";
 
 @customElement("ak-user-settings-authenticator-webauthn")
 export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
@@ -28,7 +29,12 @@ export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
                 return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsWebauthnDestroy({
                     id: device.pk || 0
                 }).then(() => {
-                    this.requestUpdate();
+                    this.dispatchEvent(
+                        new CustomEvent(EVENT_REFRESH, {
+                            bubbles: true,
+                            composed: true,
+                        })
+                    );
                 });
             }}>
             <button slot="trigger" class="pf-c-button pf-m-danger">

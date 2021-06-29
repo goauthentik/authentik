@@ -85,6 +85,18 @@ class IdentificationChallengeResponse(ChallengeResponse):
             identification_failed.send(
                 sender=self, request=self.stage.request, uid_field=uid_field
             )
+            # We set the pending_user even on failure so it's part of the context, even
+            # when the input is invalid
+            # This is so its part of the current flow plan, and on flow restart can be kept, and
+            # policies can be applied.
+            self.stage.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = User(
+                username=uid_field,
+                email=uid_field,
+            )
+            if not current_stage.show_matched_user:
+                self.stage.executor.plan.context[
+                    PLAN_CONTEXT_PENDING_USER_IDENTIFIER
+                ] = uid_field
             raise ValidationError("Failed to authenticate.")
         self.pre_user = pre_user
         if not current_stage.password_stage:

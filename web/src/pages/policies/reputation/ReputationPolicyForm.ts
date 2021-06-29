@@ -44,6 +44,11 @@ export class ReputationPolicyForm extends ModelForm<ReputationPolicy, string> {
             <div class="form-help-text">
                 ${t`Allows/denys requests based on the users and/or the IPs reputation.`}
             </div>
+            <div class="form-help-text">
+                ${t`The policy passes when the reputation score is above the threshold, and
+                doesn't pass when either or both of the selected options are equal or less than the
+                threshold.`}
+            </div>
             <ak-form-element-horizontal
                 label=${t`Name`}
                 ?required=${true}

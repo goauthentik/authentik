@@ -19,7 +19,7 @@ def token_from_header(raw_header: bytes) -> Optional[Token]:
     auth_credentials = raw_header.decode()
     if auth_credentials == "" or " " not in auth_credentials:
         return None
-    auth_type, auth_credentials = auth_credentials.split()
+    auth_type, _, auth_credentials = auth_credentials.partition(" ")
     if auth_type.lower() not in ["basic", "bearer"]:
         LOGGER.debug("Unsupported authentication type, denying", type=auth_type.lower())
         raise AuthenticationFailed("Unsupported authentication type")

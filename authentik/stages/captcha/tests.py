@@ -36,12 +36,14 @@ class TestCaptchaStage(TestCase):
             public_key=RECAPTCHA_PUBLIC_KEY,
             private_key=RECAPTCHA_PRIVATE_KEY,
         )
-        FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
+        self.binding = FlowStageBinding.objects.create(
+            target=self.flow, stage=self.stage, order=2
+        )
 
     def test_valid(self):
         """Test valid captcha"""
         plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
         )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan

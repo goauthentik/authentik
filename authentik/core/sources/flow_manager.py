@@ -213,7 +213,7 @@ class SourceFlowManager:
         planner = FlowPlanner(flow)
         plan = planner.plan(self.request, kwargs)
         for stage in self.get_stages_to_append(flow):
-            plan.append(stage)
+            plan.append_stage(stage=stage)
         self.request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
             "authentik_core:if-flow",

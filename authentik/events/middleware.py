@@ -13,6 +13,7 @@ from authentik.core.models import User
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.signals import EventNewThread
 from authentik.events.utils import model_to_dict
+from authentik.lib.sentry import before_send
 from authentik.lib.utils.errors import exception_to_string
 
 
@@ -62,12 +63,13 @@ class AuditMiddleware:
 
         if settings.DEBUG:
             return
-        thread = EventNewThread(
-            EventAction.SYSTEM_EXCEPTION,
-            request,
-            message=exception_to_string(exception),
-        )
-        thread.run()
+        if before_send({}, {"exc_info": (None, exception, None)}) is not None:
+            thread = EventNewThread(
+                EventAction.SYSTEM_EXCEPTION,
+                request,
+                message=exception_to_string(exception),
+            )
+            thread.run()
 
     @staticmethod
     # pylint: disable=unused-argument

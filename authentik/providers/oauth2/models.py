@@ -474,7 +474,7 @@ class RefreshToken(ExpiringModel, BaseGrantModel):
         now = int(time.time())
         iat_time = now
         exp_time = int(
-            now + timedelta_from_string(self.provider.token_validity).seconds
+            now + timedelta_from_string(self.provider.token_validity).total_seconds()
         )
         # We use the timestamp of the user's last successful login (EventAction.LOGIN) for auth_time
         auth_events = Event.objects.filter(
