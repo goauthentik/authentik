@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-const VERSION = "2021.6.2"
+const VERSION = "2021.6.3"
 
 func BUILD() string {
 	build := os.Getenv("GIT_BUILD_HASH")
