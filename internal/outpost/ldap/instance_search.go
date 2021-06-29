@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/nmcclain/ldap"
-	"goauthentik.io/outpost/api"
+	"goauthentik.io/api"
 )
 
 func (pi *ProviderInstance) SearchMe(user api.User, searchReq ldap.SearchRequest, conn net.Conn) (ldap.ServerSearchResult, error) {

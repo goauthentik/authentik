@@ -13,9 +13,9 @@ import (
 
 	goldap "github.com/go-ldap/ldap/v3"
 	"github.com/nmcclain/ldap"
+	"goauthentik.io/api"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/outpost/ak"
-	"goauthentik.io/outpost/api"
 )
 
 const ContextUserKey = "ak_user"

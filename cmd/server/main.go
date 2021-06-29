@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"net/url"
 	"os"
@@ -40,48 +39,67 @@ func main() {
 
 	u, _ := url.Parse("http://localhost:8000")
 
+	g := gounicorn.NewGoUnicorn()
+	ws := web.NewWebServer()
+	defer g.Kill()
+	defer ws.Shutdown()
 	for {
-		g := gounicorn.NewGoUnicorn()
-		go attemptStartBackend(g)
+		go attemptStartBackend(g, ex)
+		ws.Start()
+		go attemptProxyStart(u, ex)
 
-		ws := web.NewWebServer()
-		ws.Run()
-
-		proxy :=
-
-			<-ex
-		ws.Stop()
+		<-ex
+		log.WithField("logger", "authentik").Debug("shutting down webserver")
+		ws.Shutdown()
+		log.WithField("logger", "authentik").Debug("killing gunicorn")
 		g.Kill()
 	}
-	go func() {
-
-		maxTries := 100
-		attempt := 0
-		for {
-			err := attemptProxyStart(u, ex)
-			if err != nil {
-				attempt += 1
-				time.Sleep(5 * time.Second)
-				if attempt > maxTries {
-					break
-				}
-			}
-		}
-	}()
 }
 
-func attemptStartBackend(g *gounicorn.GoUnicorn) error {
+func attemptStartBackend(g *gounicorn.GoUnicorn, exitSignal chan os.Signal) error {
 	for {
 		err := g.Start()
-		log.WithField("logger", "authentik.g").WithError(err).Warning("gunicorn process died, restarting")
+		select {
+		case <-exitSignal:
+			return nil
+		default:
+			log.WithField("logger", "authentik.g").WithError(err).Warning("gunicorn process died, restarting")
+		}
 	}
 }
 
-func attemptProxyStart(u *url.URL, exitSignal chan os.Signal) (*ak.APIController, error) {
-	ac := ak.NewAPIController(*u, config.G.SecretKey)
-	if ac == nil {
-		return nil, errors.New("failed to start")
+func attemptProxyStart(u *url.URL, exitSignal chan os.Signal) error {
+	maxTries := 100
+	attempt := 0
+	for {
+		log.WithField("logger", "authentik").Debug("attempting to init outpost")
+		ac := ak.NewAPIController(*u, config.G.SecretKey)
+		if ac == nil {
+			attempt += 1
+			time.Sleep(1 * time.Second)
+			if attempt > maxTries {
+				break
+			}
+			continue
+		}
+		ac.Server = proxy.NewServer(ac)
+		err := ac.Start()
+		log.WithField("logger", "authentik").Debug("attempting to start outpost")
+		if err != nil {
+			attempt += 1
+			time.Sleep(5 * time.Second)
+			if attempt > maxTries {
+				break
+			}
+			continue
+		}
+		select {
+		case <-exitSignal:
+			ac.Shutdown()
+			return nil
+		default:
+			break
+		}
 	}
-	ac.Server = proxy.NewServer(ac)
-	return ac, nil
+	return nil
 }

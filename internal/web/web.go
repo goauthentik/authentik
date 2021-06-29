@@ -47,12 +47,12 @@ func NewWebServer() *WebServer {
 	return ws
 }
 
-func (ws *WebServer) Run() {
-	ws.listenPlain()
-	ws.listenTLS()
+func (ws *WebServer) Start() {
+	go ws.listenPlain()
+	go ws.listenTLS()
 }
 
-func (ws *WebServer) Stop() {
+func (ws *WebServer) Shutdown() {
 	ws.stop <- struct{}{}
 }
 

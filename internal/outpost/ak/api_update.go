@@ -3,7 +3,7 @@ package ak
 import (
 	"context"
 
-	"goauthentik.io/outpost/api"
+	"goauthentik.io/api"
 )
 
 func (a *APIController) Update() ([]api.ProxyOutpostConfig, error) {

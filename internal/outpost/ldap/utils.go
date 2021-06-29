@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/nmcclain/ldap"
-	"goauthentik.io/outpost/api"
+	"goauthentik.io/api"
 )
 
 func AKAttrsToLDAP(attrs interface{}) []*ldap.EntryAttribute {

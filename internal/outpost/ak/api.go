@@ -13,7 +13,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/recws-org/recws"
 	"goauthentik.io/internal/constants"
-	"goauthentik.io/outpost/api"
+	"goauthentik.io/api"
 
 	log "github.com/sirupsen/logrus"
 )
