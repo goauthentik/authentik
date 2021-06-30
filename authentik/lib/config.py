@@ -26,10 +26,9 @@ class ConfigLoader:
 
     loaded_file = []
 
-    __config = {}
-
     def __init__(self):
         super().__init__()
+        self.__config = {}
         base_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), "../.."))
         for path in SEARCH_PATHS:
             # Check if path is relative, and if so join with base_dir

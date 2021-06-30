@@ -16,11 +16,6 @@ from authentik.crypto.models import CertificateKeyPair
 class CertificateBuilder:
     """Build self-signed certificates"""
 
-    __public_key = None
-    __private_key = None
-    __builder = None
-    __certificate = None
-
     common_name: str
 
     def __init__(self):

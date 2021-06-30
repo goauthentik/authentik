@@ -62,11 +62,14 @@ class TestProxyDocker(TestCase):
         )
         authentication_kp = CertificateKeyPair.objects.create(
             name="docker-authentication",
+            # pylint: disable=consider-using-with
             certificate_data=open(f"{self.ssl_folder}/client/cert.pem").read(),
+            # pylint: disable=consider-using-with
             key_data=open(f"{self.ssl_folder}/client/key.pem").read(),
         )
         verification_kp = CertificateKeyPair.objects.create(
             name="docker-verification",
+            # pylint: disable=consider-using-with
             certificate_data=open(f"{self.ssl_folder}/client/ca.pem").read(),
         )
         self.service_connection = DockerServiceConnection.objects.create(

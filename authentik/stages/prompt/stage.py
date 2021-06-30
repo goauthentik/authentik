@@ -146,8 +146,6 @@ def password_single_validator_factory() -> Callable[[PromptChallenge, str], Any]
 class ListPolicyEngine(PolicyEngine):
     """Slightly modified policy engine, which uses a list instead of a PolicyBindingModel"""
 
-    __list: list[Policy]
-
     def __init__(
         self, policies: list[Policy], user: User, request: HttpRequest = None
     ) -> None:

@@ -74,12 +74,12 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
             duo, self.stage.request, self.stage.get_pending_user()
         )
 
-    def validate(self, data: dict):
+    def validate(self, attrs: dict):
         # Checking if the given data is from a valid device class is done above
         # Here we only check if the any data was sent at all
-        if "code" not in data and "webauthn" not in data and "duo" not in data:
+        if "code" not in attrs and "webauthn" not in attrs and "duo" not in attrs:
             raise ValidationError("Empty response")
-        return data
+        return attrs
 
 
 class AuthenticatorValidateStageView(ChallengeStageView):
@@ -163,7 +163,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
 
     # pylint: disable=unused-argument
     def challenge_valid(
-        self, challenge: AuthenticatorValidationChallengeResponse
+        self, response: AuthenticatorValidationChallengeResponse
     ) -> HttpResponse:
         # All validation is done by the serializer
         return self.executor.stage_ok()
