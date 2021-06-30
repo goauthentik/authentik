@@ -73,9 +73,9 @@ class IdentificationChallengeResponse(ChallengeResponse):
 
     pre_user: Optional[User] = None
 
-    def validate(self, data: dict[str, Any]) -> dict[str, Any]:
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Validate that user exists, and optionally their password"""
-        uid_field = data["uid_field"]
+        uid_field = attrs["uid_field"]
         current_stage: IdentificationStage = self.stage.executor.current_stage
 
         pre_user = self.stage.get_user(uid_field)
@@ -101,9 +101,9 @@ class IdentificationChallengeResponse(ChallengeResponse):
         self.pre_user = pre_user
         if not current_stage.password_stage:
             # No password stage select, don't validate the password
-            return data
+            return attrs
 
-        password = data["password"]
+        password = attrs["password"]
         try:
             user = authenticate(
                 self.stage.request,
@@ -116,7 +116,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
             self.pre_user = user
         except PermissionDenied as exc:
             raise ValidationError(str(exc)) from exc
-        return data
+        return attrs
 
 
 class IdentificationStageView(ChallengeStageView):

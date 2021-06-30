@@ -5,14 +5,13 @@ from typing import Any, Optional, Type
 from urllib.parse import urlencode
 from uuid import uuid4
 
-import django.db.models.options as options
 from deepmerge import always_merger
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.core import validators
 from django.db import models
-from django.db.models import Q, QuerySet
+from django.db.models import Q, QuerySet, options
 from django.http import HttpRequest
 from django.templatetags.static import static
 from django.utils.functional import cached_property

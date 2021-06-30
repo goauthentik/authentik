@@ -40,15 +40,11 @@ def transaction_rollback():
 class FlowImporter:
     """Import Flow from json"""
 
-    __import: FlowBundle
-
-    __pk_map: dict[Any, Model]
-
     logger: BoundLogger
 
     def __init__(self, json_input: str):
+        self.__pk_map: dict[Any, Model] = {}
         self.logger = get_logger()
-        self.__pk_map = {}
         import_dict = loads(json_input)
         try:
             self.__import = from_dict(FlowBundle, import_dict)
