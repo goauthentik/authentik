@@ -157,7 +157,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.1.5
+        uses: actions/setup-node@v2.2.0
         with:
           node-version: 12.x
       - name: Build web api client and web ui
