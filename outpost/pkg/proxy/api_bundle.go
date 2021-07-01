@@ -58,6 +58,8 @@ func (pb *providerBundle) prepareOpts(provider api.ProxyOutpostConfig) *options.
 	providerOpts.RedeemURL = provider.OidcConfiguration.TokenEndpoint
 	providerOpts.OIDCJwksURL = provider.OidcConfiguration.JwksUri
 	providerOpts.ProfileURL = provider.OidcConfiguration.UserinfoEndpoint
+	providerOpts.ValidateURL = provider.OidcConfiguration.UserinfoEndpoint
+	providerOpts.AcrValues = "goauthentik.io/providers/oauth2/default"
 
 	if *provider.SkipPathRegex != "" {
 		skipRegexes := strings.Split(*provider.SkipPathRegex, "\n")
