@@ -25,6 +25,8 @@ type providerBundle struct {
 	proxy *OAuthProxy
 	Host  string
 
+	endSessionUrl string
+
 	cert *tls.Certificate
 
 	log *log.Entry
@@ -155,6 +157,7 @@ func (pb *providerBundle) Build(provider api.ProxyOutpostConfig) {
 		oauthproxy.BasicAuthPasswordAttribute = *provider.BasicAuthPasswordAttribute
 	}
 
+	oauthproxy.endSessionEndpoint = pb.endSessionUrl
 	oauthproxy.ExternalHost = pb.Host
 
 	pb.proxy = oauthproxy

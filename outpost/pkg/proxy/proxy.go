@@ -65,31 +65,33 @@ type OAuthProxy struct {
 	AuthOnlyPath      string
 	UserInfoPath      string
 
+	endSessionEndpoint         string
 	mode                       api.ProxyMode
-	redirectURL                *url.URL // the url to receive requests at
-	whitelistDomains           []string
-	provider                   providers.Provider
-	sessionStore               sessionsapi.SessionStore
-	ProxyPrefix                string
-	serveMux                   http.Handler
-	SetXAuthRequest            bool
-	SetBasicAuth               bool
-	PassUserHeaders            bool
 	BasicAuthUserAttribute     string
 	BasicAuthPasswordAttribute string
 	ExternalHost               string
-	PassAccessToken            bool
-	SetAuthorization           bool
-	PassAuthorization          bool
-	PreferEmailToUser          bool
-	skipAuthRegex              []string
-	skipAuthPreflight          bool
-	skipAuthStripHeaders       bool
-	mainJwtBearerVerifier      *oidc.IDTokenVerifier
-	extraJwtBearerVerifiers    []*oidc.IDTokenVerifier
-	compiledRegex              []*regexp.Regexp
-	templates                  *template.Template
-	realClientIPParser         ipapi.RealClientIPParser
+
+	redirectURL             *url.URL // the url to receive requests at
+	whitelistDomains        []string
+	provider                providers.Provider
+	sessionStore            sessionsapi.SessionStore
+	ProxyPrefix             string
+	serveMux                http.Handler
+	SetXAuthRequest         bool
+	SetBasicAuth            bool
+	PassUserHeaders         bool
+	PassAccessToken         bool
+	SetAuthorization        bool
+	PassAuthorization       bool
+	PreferEmailToUser       bool
+	skipAuthRegex           []string
+	skipAuthPreflight       bool
+	skipAuthStripHeaders    bool
+	mainJwtBearerVerifier   *oidc.IDTokenVerifier
+	extraJwtBearerVerifiers []*oidc.IDTokenVerifier
+	compiledRegex           []*regexp.Regexp
+	templates               *template.Template
+	realClientIPParser      ipapi.RealClientIPParser
 
 	sessionChain alice.Chain
 
@@ -285,19 +287,13 @@ func (p *OAuthProxy) UserInfo(rw http.ResponseWriter, req *http.Request) {
 
 // SignOut sends a response to clear the authentication cookie
 func (p *OAuthProxy) SignOut(rw http.ResponseWriter, req *http.Request) {
-	redirect, err := p.GetRedirect(req)
-	if err != nil {
-		p.logger.Errorf("Error obtaining redirect: %v", err)
-		p.ErrorPage(rw, http.StatusInternalServerError, "Internal Server Error", err.Error())
-		return
-	}
-	err = p.ClearSessionCookie(rw, req)
+	err := p.ClearSessionCookie(rw, req)
 	if err != nil {
 		p.logger.Errorf("Error clearing session cookie: %v", err)
 		p.ErrorPage(rw, http.StatusInternalServerError, "Internal Server Error", err.Error())
 		return
 	}
-	http.Redirect(rw, req, redirect, http.StatusFound)
+	http.Redirect(rw, req, p.endSessionEndpoint, http.StatusFound)
 }
 
 // AuthenticateOnly checks whether the user is currently logged in
