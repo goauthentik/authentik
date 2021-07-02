@@ -46,7 +46,7 @@ class NotificationTransportTestSerializer(Serializer):
 
     messages = ListField(child=CharField())
 
-    def create(self, request: Request) -> Response:
+    def create(self, validated_data: Request) -> Response:
         raise NotImplementedError
 
     def update(self, request: Request) -> Response:

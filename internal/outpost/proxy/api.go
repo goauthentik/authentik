@@ -29,9 +29,10 @@ func (s *Server) bundleProviders(providers []api.ProxyOutpostConfig) []*provider
 			log.WithError(err).Warning("Failed to parse URL, skipping provider")
 		}
 		bundles[idx] = &providerBundle{
-			s:    s,
-			Host: externalHost.Host,
-			log:  log.WithField("logger", "authentik.outpost.proxy-bundle").WithField("provider", provider.Name),
+			s:             s,
+			Host:          externalHost.Host,
+			log:           log.WithField("logger", "authentik.outpost.proxy-bundle").WithField("provider", provider.Name),
+			endSessionUrl: provider.OidcConfiguration.EndSessionEndpoint,
 		}
 		bundles[idx].Build(provider)
 	}

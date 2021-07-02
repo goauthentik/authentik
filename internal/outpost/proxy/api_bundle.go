@@ -25,6 +25,8 @@ type providerBundle struct {
 	proxy *OAuthProxy
 	Host  string
 
+	endSessionUrl string
+
 	cert *tls.Certificate
 
 	log *log.Entry
@@ -58,6 +60,8 @@ func (pb *providerBundle) prepareOpts(provider api.ProxyOutpostConfig) *options.
 	providerOpts.RedeemURL = provider.OidcConfiguration.TokenEndpoint
 	providerOpts.OIDCJwksURL = provider.OidcConfiguration.JwksUri
 	providerOpts.ProfileURL = provider.OidcConfiguration.UserinfoEndpoint
+	providerOpts.ValidateURL = provider.OidcConfiguration.UserinfoEndpoint
+	providerOpts.AcrValues = "goauthentik.io/providers/oauth2/default"
 
 	if *provider.SkipPathRegex != "" {
 		skipRegexes := strings.Split(*provider.SkipPathRegex, "\n")
@@ -153,6 +157,7 @@ func (pb *providerBundle) Build(provider api.ProxyOutpostConfig) {
 		oauthproxy.BasicAuthPasswordAttribute = *provider.BasicAuthPasswordAttribute
 	}
 
+	oauthproxy.endSessionEndpoint = pb.endSessionUrl
 	oauthproxy.ExternalHost = pb.Host
 
 	pb.proxy = oauthproxy

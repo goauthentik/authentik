@@ -69,7 +69,7 @@ class OutpostConsumer(AuthJsonConsumer):
         self.last_uid = self.channel_name
 
     # pylint: disable=unused-argument
-    def disconnect(self, close_code):
+    def disconnect(self, code):
         if self.outpost and self.last_uid:
             state = OutpostState.for_instance_uid(self.outpost, self.last_uid)
             if self.channel_name in state.channel_ids:

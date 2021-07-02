@@ -278,7 +278,7 @@ class OAuth2Provider(Provider):
         """Guess launch_url based on first redirect_uri"""
         if self.redirect_uris == "":
             return None
-        main_url = self.redirect_uris.split("\n")[0]
+        main_url = self.redirect_uris.split("\n", maxsplit=1)[0]
         launch_url = urlparse(main_url)
         return main_url.replace(launch_url.path, "")
 

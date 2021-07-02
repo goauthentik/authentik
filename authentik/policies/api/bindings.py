@@ -82,13 +82,13 @@ class PolicyBindingSerializer(ModelSerializer):
             "timeout",
         ]
 
-    def validate(self, data: OrderedDict) -> OrderedDict:
+    def validate(self, attrs: OrderedDict) -> OrderedDict:
         """Check that either policy, group or user is set."""
         count = sum(
             [
-                bool(data.get("policy", None)),
-                bool(data.get("group", None)),
-                bool(data.get("user", None)),
+                bool(attrs.get("policy", None)),
+                bool(attrs.get("group", None)),
+                bool(attrs.get("user", None)),
             ]
         )
         invalid = count > 1
@@ -97,7 +97,7 @@ class PolicyBindingSerializer(ModelSerializer):
             raise ValidationError("Only one of 'policy', 'group' or 'user' can be set.")
         if empty:
             raise ValidationError("One of 'policy', 'group' or 'user' must be set.")
-        return data
+        return attrs
 
 
 class PolicyBindingViewSet(UsedByMixin, ModelViewSet):

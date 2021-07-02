@@ -5,8 +5,6 @@ import (
 	"os"
 )
 
-const VERSION = "2021.6.2"
-
 func BUILD() string {
 	build := os.Getenv("GIT_BUILD_HASH")
 	if build == "" {
@@ -18,3 +16,5 @@ func BUILD() string {
 func OutpostUserAgent() string {
 	return fmt.Sprintf("authentik-outpost@%s (%s)", VERSION, BUILD())
 }
+
+const VERSION = "2021.6.3"

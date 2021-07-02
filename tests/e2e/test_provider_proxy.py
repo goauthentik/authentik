@@ -119,6 +119,13 @@ class TestProviderProxy(SeleniumTestCase):
         self.assertIn("X-Forwarded-Preferred-Username: akadmin", full_body_text)
         self.assertIn("X-Foo: bar", full_body_text)
 
+        self.driver.get("http://localhost:4180/akprox/sign_out")
+        sleep(2)
+        full_body_text = self.driver.find_element(
+            By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl"
+        ).text
+        self.assertIn("You've logged out of proxy.", full_body_text)
+
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
 class TestProviderProxyConnect(ChannelsLiveServerTestCase):

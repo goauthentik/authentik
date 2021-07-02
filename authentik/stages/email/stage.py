@@ -38,7 +38,7 @@ class EmailChallengeResponse(ChallengeResponse):
 
     component = CharField(default="ak-stage-email")
 
-    def validate(self, data):
+    def validate(self, attrs):
         raise ValidationError("")
 
 
