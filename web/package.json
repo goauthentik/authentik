@@ -77,7 +77,7 @@
         "lit-html": "^1.4.1",
         "moment": "^2.29.1",
         "rapidoc": "^9.0.0",
-        "rollup": "^2.52.4",
+        "rollup": "^2.52.7",
         "rollup-plugin-commonjs": "^10.1.0",
         "rollup-plugin-copy": "^3.4.0",
         "rollup-plugin-cssimport": "^1.0.2",
