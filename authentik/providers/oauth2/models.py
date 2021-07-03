@@ -473,9 +473,7 @@ class RefreshToken(ExpiringModel, BaseGrantModel):
         # Convert datetimes into timestamps.
         now = int(time.time())
         iat_time = now
-        exp_time = int(
-            now + timedelta_from_string(self.provider.token_validity).total_seconds()
-        )
+        exp_time = int(dateformat.format(self.expires, "U"))
         # We use the timestamp of the user's last successful login (EventAction.LOGIN) for auth_time
         auth_events = Event.objects.filter(
             action=EventAction.LOGIN, user=get_user(user)
