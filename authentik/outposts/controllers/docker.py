@@ -79,7 +79,7 @@ class DockerController(BaseController):
         try:
             return self.client.containers.get(container_name), False
         except NotFound:
-            self.logger.info("Container does not exist, creating")
+            self.logger.info("(Re-)creating container...")
             image_name = self.get_container_image()
             self.client.images.pull(image_name)
             container_args = {
@@ -107,6 +107,7 @@ class DockerController(BaseController):
         try:
             container, has_been_created = self._get_container()
             if has_been_created:
+                container.start()
                 return None
             # Check if the container is out of date, delete it and retry
             if len(container.image.tags) > 0:
