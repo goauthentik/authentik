@@ -36,8 +36,10 @@ class DockerController(BaseController):
 
     def _get_env(self) -> dict[str, str]:
         return {
-            "AUTHENTIK_HOST": self.outpost.config.authentik_host,
-            "AUTHENTIK_INSECURE": str(self.outpost.config.authentik_host_insecure),
+            "AUTHENTIK_HOST": self.outpost.config.authentik_host.lower(),
+            "AUTHENTIK_INSECURE": str(
+                self.outpost.config.authentik_host_insecure
+            ).lower(),
             "AUTHENTIK_TOKEN": self.outpost.token.key,
         }
 
@@ -45,11 +47,10 @@ class DockerController(BaseController):
         """Check if container's env is equal to what we would set. Return true if container needs
         to be rebuilt."""
         should_be = self._get_env()
-        container_env = container.attrs.get("Config", {}).get("Env", {})
+        container_env = container.attrs.get("Config", {}).get("Env", [])
         for key, expected_value in should_be.items():
-            if key not in container_env:
-                continue
-            if container_env[key] != expected_value:
+            entry = f"{key.upper()}={expected_value}"
+            if entry not in container_env:
                 return True
         return False
 

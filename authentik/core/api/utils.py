@@ -14,7 +14,9 @@ def is_dict(value: Any):
     """Ensure a value is a dictionary, useful for JSONFields"""
     if isinstance(value, dict):
         return
-    raise ValidationError("Value must be a dictionary, and not have any duplicate keys.")
+    raise ValidationError(
+        "Value must be a dictionary, and not have any duplicate keys."
+    )
 
 
 class PassiveSerializer(Serializer):
