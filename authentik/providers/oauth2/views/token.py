@@ -8,6 +8,7 @@ from django.http import HttpRequest, HttpResponse
 from django.views import View
 from structlog.stdlib import get_logger
 
+from authentik.events.models import Event, EventAction
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.constants import (
     GRANT_TYPE_AUTHORIZATION_CODE,
@@ -59,6 +60,7 @@ class TokenParams:
         client_id: str,
         client_secret: str,
     ) -> "TokenParams":
+        """Parse params for request"""
         return TokenParams(
             # Init vars
             raw_code=request.POST.get("code", ""),
@@ -107,7 +109,14 @@ class TokenParams:
                     token=raw_token,
                 )
                 raise TokenError("invalid_grant")
-
+            if self.refresh_token.revoked:
+                LOGGER.warning("Refresh token is revoked", token=raw_token)
+                Event.new(
+                    action=EventAction.SUSPICIOUS_REQUEST,
+                    message="Revoked refresh token was used",
+                    token=raw_token,
+                ).from_http(request)
+                raise TokenError("invalid_grant")
         else:
             LOGGER.warning("Invalid grant type", grant_type=self.grant_type)
             raise TokenError("unsupported_grant_type")
@@ -178,15 +187,15 @@ class TokenView(View):
         try:
             client_id, client_secret = extract_client_auth(request)
             try:
-                self.provider: OAuth2Provider = OAuth2Provider.objects.get(
-                    client_id=client_id
-                )
+                self.provider = OAuth2Provider.objects.get(client_id=client_id)
             except OAuth2Provider.DoesNotExist:
                 LOGGER.warning(
                     "OAuth2Provider does not exist", client_id=self.client_id
                 )
                 raise TokenError("invalid_client")
 
+            if not self.provider:
+                raise ValueError
             self.params = TokenParams.parse(
                 request, self.provider, client_id, client_secret
             )
@@ -265,8 +274,9 @@ class TokenView(View):
             # Store the refresh_token.
             refresh_token.save()
 
-        # Forget the old token.
-        self.params.refresh_token.delete()
+        # Mark old token as revoked
+        self.params.refresh_token.revoked = True
+        self.params.refresh_token.save()
 
         return {
             "access_token": refresh_token.access_token,

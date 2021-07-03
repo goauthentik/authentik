@@ -318,6 +318,7 @@ class BaseGrantModel(models.Model):
     provider = models.ForeignKey(OAuth2Provider, on_delete=models.CASCADE)
     user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
     _scope = models.TextField(default="", verbose_name=_("Scopes"))
+    revoked = models.BooleanField(default=False)
 
     @property
     def scope(self) -> list[str]:

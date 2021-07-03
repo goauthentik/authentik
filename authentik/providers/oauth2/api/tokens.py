@@ -51,6 +51,7 @@ class RefreshTokenModelSerializer(ExpiringBaseGrantModelSerializer):
             "expires",
             "scope",
             "id_token",
+            "revoked",
         ]
         depth = 2
 
