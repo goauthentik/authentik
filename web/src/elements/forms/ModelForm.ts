@@ -12,6 +12,7 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
         if (this.isInViewport) {
             this.loadInstance(value).then(instance => {
                 this.instance = instance;
+                this.requestUpdate();
             });
         }
     }

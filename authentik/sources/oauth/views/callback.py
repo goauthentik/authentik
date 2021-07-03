@@ -51,7 +51,7 @@ class OAuthCallback(OAuthClientMixin, View):
         except JSONDecodeError as exc:
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
-                message=f"Failed to JSON-decode profile.",
+                message="Failed to JSON-decode profile.",
                 raw_profile=exc.doc,
             ).from_http(self.request)
             return self.handle_login_failure("Could not retrieve profile.")
