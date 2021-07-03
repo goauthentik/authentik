@@ -134,7 +134,7 @@ class FlowExecutorView(APIView):
         message = exc.__doc__ if exc.__doc__ else str(exc)
         return self.stage_invalid(error_message=message)
 
-    # pylint: disable=unused-argument
+    # pylint: disable=unused-argument, too-many-return-statements
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
         # Early check if theres an active Plan for the current session
         if SESSION_KEY_PLAN in self.request.session:
@@ -173,7 +173,9 @@ class FlowExecutorView(APIView):
             # in which case we just delete the plan and invalidate everything
             next_binding = self.plan.next(self.request)
         except Exception as exc:  # pylint: disable=broad-except
-            self._logger.warning("f(exec): found incompatible flow plan, invalidating run", exc=exc)
+            self._logger.warning(
+                "f(exec): found incompatible flow plan, invalidating run", exc=exc
+            )
             keys = cache.keys("flow_*")
             cache.delete_many(keys)
             return self.stage_invalid()

@@ -77,9 +77,9 @@ class CertificateKeyPair(CreatedUpdatedModel):
     @property
     def fingerprint_sha1(self) -> str:
         """Get SHA1 Fingerprint of certificate_data"""
-        return hexlify(self.certificate.fingerprint(hashes.SHA1()), ":").decode(
-            "utf-8"
-        )
+        return hexlify(
+            self.certificate.fingerprint(hashes.SHA1()), ":"  # nosec
+        ).decode("utf-8")
 
     @property
     def kid(self):
