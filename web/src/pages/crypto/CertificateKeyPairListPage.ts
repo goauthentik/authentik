@@ -103,10 +103,18 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                 <dl class="pf-c-description-list pf-m-horizontal">
                     <div class="pf-c-description-list__group">
                         <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${t`Certificate Fingerprint`}</span>
+                            <span class="pf-c-description-list__text">${t`Certificate Fingerprint (SHA1)`}</span>
                         </dt>
                         <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">${item.fingerprint}</div>
+                            <div class="pf-c-description-list__text">${item.fingerprintSha1}</div>
+                        </dd>
+                    </div>
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${t`Certificate Fingerprint (SHA256)`}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">${item.fingerprintSha256}</div>
                         </dd>
                     </div>
                     <div class="pf-c-description-list__group">

@@ -488,8 +488,12 @@ msgid "Certificate"
 msgstr "Certificate"
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts
-msgid "Certificate Fingerprint"
-msgstr "Certificate Fingerprint"
+msgid "Certificate Fingerprint (SHA1)"
+msgstr "Certificate Fingerprint (SHA1)"
+
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+msgid "Certificate Fingerprint (SHA256)"
+msgstr "Certificate Fingerprint (SHA256)"
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Certificate Subjet"

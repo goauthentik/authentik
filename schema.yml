@@ -18637,7 +18637,10 @@ components:
           title: Kp uuid
         name:
           type: string
-        fingerprint:
+        fingerprint_sha256:
+          type: string
+          readOnly: true
+        fingerprint_sha1:
           type: string
           readOnly: true
         cert_expiry:
@@ -18660,7 +18663,8 @@ components:
       - cert_expiry
       - cert_subject
       - certificate_download_url
-      - fingerprint
+      - fingerprint_sha1
+      - fingerprint_sha256
       - name
       - pk
       - private_key_available

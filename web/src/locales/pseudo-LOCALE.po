@@ -484,7 +484,11 @@ msgid "Certificate"
 msgstr ""
 
 #: 
-msgid "Certificate Fingerprint"
+msgid "Certificate Fingerprint (SHA1)"
+msgstr ""
+
+#: 
+msgid "Certificate Fingerprint (SHA256)"
 msgstr ""
 
 #: 

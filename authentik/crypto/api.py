@@ -97,7 +97,8 @@ class CertificateKeyPairSerializer(ModelSerializer):
         fields = [
             "pk",
             "name",
-            "fingerprint",
+            "fingerprint_sha256",
+            "fingerprint_sha1",
             "certificate_data",
             "key_data",
             "cert_expiry",
