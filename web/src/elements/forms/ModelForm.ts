@@ -39,7 +39,7 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
     }
 
     resetForm(): void {
-        super.resetForm();
+        this.instance = undefined;
         this._initialLoad = false;
     }
 
