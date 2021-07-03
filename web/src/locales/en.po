@@ -2346,6 +2346,7 @@ msgstr "Negates the outcome of the binding. Messages are unaffected."
 msgid "New version available!"
 msgstr "New version available!"
 
+#: src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/groups/GroupListPage.ts
@@ -3043,6 +3044,10 @@ msgstr "Return home"
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn.ts
 msgid "Return to device picker"
 msgstr "Return to device picker"
+
+#: src/elements/oauth/UserRefreshList.ts
+msgid "Revoked?"
+msgstr "Revoked?"
 
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 msgid "SAML Attribute Name"
@@ -4544,6 +4549,7 @@ msgstr ""
 msgid "X509 Subject"
 msgstr "X509 Subject"
 
+#: src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/groups/GroupListPage.ts

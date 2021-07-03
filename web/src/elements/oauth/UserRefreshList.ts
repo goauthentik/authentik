@@ -34,6 +34,7 @@ export class UserOAuthRefreshList extends Table<RefreshTokenModel> {
     columns(): TableColumn[] {
         return [
             new TableColumn(t`Provider`, "provider"),
+            new TableColumn(t`Revoked?`, "revoked"),
             new TableColumn(t`Expires`, "expires"),
             new TableColumn(t`Scopes`, "scope"),
             new TableColumn(""),
@@ -62,6 +63,7 @@ export class UserOAuthRefreshList extends Table<RefreshTokenModel> {
             html`<a href="#/core/providers/${item.provider?.pk}">
                 ${item.provider?.name}
             </a>`,
+            html`${item.revoked ? t`Yes` : t`No`}`,
             html`${item.expires?.toLocaleString()}`,
             html`${item.scope.join(", ")}`,
             html`
