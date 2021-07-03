@@ -6,7 +6,7 @@ This installation method is for test-setups and small-scale productive setups.
 
 ## Requirements
 
-- A Linux host with at least 2 CPU cores and 4 GB of RAM.
+- A Linux host with at least 2 CPU cores and 2 GB of RAM.
 - docker
 - docker-compose
 
