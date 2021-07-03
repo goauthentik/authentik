@@ -50,7 +50,7 @@ def cors_allow(request: HttpRequest, response: HttpResponse, *allowed_origins: s
     if not allowed:
         LOGGER.warning(
             "CORS: Origin is not an allowed origin",
-            requested=origin,
+            requested=received_origin,
             allowed=allowed_origins,
         )
         return response
