@@ -63,14 +63,17 @@ class DockerController(BaseController):
         # When the container isn't running, the API doesn't report any port mappings
         if container.status != "running":
             return False
-        # {'6379/tcp': [{'HostIp': '127.0.0.1', 'HostPort': '6379'}]}
+        # {'3389/tcp': [
+        #   {'HostIp': '0.0.0.0', 'HostPort': '389'},
+        #   {'HostIp': '::', 'HostPort': '389'}
+        # ]}
         for port in self.deployment_ports:
             key = f"{port.inner_port or port.port}/{port.protocol.lower()}"
             if key not in container.ports:
                 return True
             host_matching = False
             for host_port in container.ports[key]:
-                host_matching = host_port.get("HostPort") == port.port
+                host_matching = host_port.get("HostPort") == str(port.port)
             if not host_matching:
                 return True
         return False
