@@ -3096,7 +3096,11 @@ paths:
                 $ref: '#/components/schemas/Link'
           description: ''
         '404':
-          description: No recovery flow found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Link'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
