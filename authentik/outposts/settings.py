@@ -9,7 +9,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     "outposts_service_connection_check": {
         "task": "authentik.outposts.tasks.outpost_service_connection_monitor",
-        "schedule": crontab(minute="*/60"),
+        "schedule": crontab(minute="*/5"),
         "options": {"queue": "authentik_scheduled"},
     },
     "outpost_token_ensurer": {

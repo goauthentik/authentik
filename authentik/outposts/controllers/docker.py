@@ -169,6 +169,7 @@ class DockerController(BaseController):
                 self.logger.info("Container is not running, restarting...")
                 container.start()
                 return None
+            self.logger.info("Container is running")
             return None
         except DockerException as exc:
             raise ControllerException(str(exc)) from exc
