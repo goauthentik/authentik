@@ -1,3 +1,3 @@
 package constants
 
-const VERSION = "2021.6.3"
+const VERSION = "2021.6.4"
