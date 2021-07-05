@@ -15,7 +15,7 @@ export class OutpostHealthElement extends LitElement {
     outpostId?: string;
 
     @property({attribute: false})
-    outpostHealth: OutpostHealth[] = [];
+    outpostHealth?: OutpostHealth[];
 
     static get styles(): CSSResult[] {
         return [PFBase, AKGlobal];
@@ -23,7 +23,8 @@ export class OutpostHealthElement extends LitElement {
 
     constructor() {
         super();
-        this.addEventListener(EVENT_REFRESH, () => {
+        window.addEventListener(EVENT_REFRESH, () => {
+            this.outpostHealth = undefined;
             this.firstUpdated();
         });
     }
@@ -38,7 +39,7 @@ export class OutpostHealthElement extends LitElement {
     }
 
     render(): TemplateResult {
-        if (!this.outpostId) {
+        if (!this.outpostId || !this.outpostHealth) {
             return html`<ak-spinner></ak-spinner>`;
         }
         if (this.outpostHealth.length === 0) {

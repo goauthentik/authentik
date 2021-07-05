@@ -225,7 +225,14 @@ export abstract class Table<T> extends LitElement {
 
     renderToolbar(): TemplateResult {
         return html`<button
-            @click=${() => { this.fetch(); }}
+            @click=${() => {
+                this.dispatchEvent(
+                    new CustomEvent(EVENT_REFRESH, {
+                        bubbles: true,
+                        composed: true,
+                    })
+                );
+            }}
             class="pf-c-button pf-m-primary">
             ${t`Refresh`}
         </button>`;
@@ -241,7 +248,12 @@ export abstract class Table<T> extends LitElement {
         }
         return html`<ak-table-search value=${ifDefined(this.search)} .onSearch=${(value: string) => {
             this.search = value;
-            this.fetch();
+            this.dispatchEvent(
+                new CustomEvent(EVENT_REFRESH, {
+                    bubbles: true,
+                    composed: true,
+                })
+            );
         }}>
         </ak-table-search>&nbsp;`;
     }
@@ -274,7 +286,15 @@ export abstract class Table<T> extends LitElement {
                     <ak-table-pagination
                         class="pf-c-toolbar__item pf-m-pagination"
                         .pages=${this.data?.pagination}
-                        .pageChangeHandler=${(page: number) => { this.page = page; this.fetch(); }}>
+                        .pageChangeHandler=${(page: number) => {
+                            this.page = page;
+                            this.dispatchEvent(
+                                new CustomEvent(EVENT_REFRESH, {
+                                    bubbles: true,
+                                    composed: true,
+                                })
+                            );
+                        }}>
                     </ak-table-pagination>
                 </div>
             </div>
@@ -300,7 +320,15 @@ export abstract class Table<T> extends LitElement {
                 <ak-table-pagination
                     class="pf-c-toolbar__item pf-m-pagination"
                     .pages=${this.data?.pagination}
-                    .pageChangeHandler=${(page: number) => { this.page = page; this.fetch(); }}>
+                    .pageChangeHandler=${(page: number) => {
+                        this.page = page;
+                        this.dispatchEvent(
+                            new CustomEvent(EVENT_REFRESH, {
+                                bubbles: true,
+                                composed: true,
+                            })
+                        );
+                    }}>
                 </ak-table-pagination>
             </div>`;
     }
