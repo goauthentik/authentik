@@ -55,7 +55,7 @@
         "@rollup/plugin-typescript": "^8.2.1",
         "@sentry/browser": "^6.8.0",
         "@sentry/tracing": "^6.8.0",
-        "@types/chart.js": "^2.9.32",
+        "@types/chart.js": "^2.9.33",
         "@types/codemirror": "5.60.1",
         "@types/grecaptcha": "^3.0.2",
         "@typescript-eslint/eslint-plugin": "^4.28.1",
