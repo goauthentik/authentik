@@ -484,7 +484,11 @@ msgid "Certificate"
 msgstr ""
 
 #: 
-msgid "Certificate Fingerprint"
+msgid "Certificate Fingerprint (SHA1)"
+msgstr ""
+
+#: 
+msgid "Certificate Fingerprint (SHA256)"
 msgstr ""
 
 #: 
@@ -2350,6 +2354,7 @@ msgstr ""
 #: 
 #: 
 #: 
+#: 
 msgid "No"
 msgstr ""
 
@@ -3034,6 +3039,10 @@ msgstr ""
 #: 
 #: 
 msgid "Return to device picker"
+msgstr ""
+
+#: 
+msgid "Revoked?"
 msgstr ""
 
 #: 
@@ -4527,6 +4536,7 @@ msgstr ""
 msgid "X509 Subject"
 msgstr ""
 
+#: 
 #: 
 #: 
 #: 

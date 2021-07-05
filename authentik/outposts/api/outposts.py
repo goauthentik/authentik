@@ -51,7 +51,7 @@ class OutpostSerializer(ModelSerializer):
                 raise ValidationError(
                     (
                         f"Outpost type {self.initial_data['type']} can't be used with "
-                        f"{type(provider)} providers."
+                        f"{provider.__class__.__name__} providers."
                     )
                 )
         return providers

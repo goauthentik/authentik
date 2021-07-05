@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2021.6.3
+  version: 2021.6.4
   description: Making authentication simple.
   contact:
     email: hello@beryju.org
@@ -3096,7 +3096,11 @@ paths:
                 $ref: '#/components/schemas/Link'
           description: ''
         '404':
-          description: No recovery flow found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Link'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -18637,7 +18641,10 @@ components:
           title: Kp uuid
         name:
           type: string
-        fingerprint:
+        fingerprint_sha256:
+          type: string
+          readOnly: true
+        fingerprint_sha1:
           type: string
           readOnly: true
         cert_expiry:
@@ -18660,7 +18667,8 @@ components:
       - cert_expiry
       - cert_subject
       - certificate_download_url
-      - fingerprint
+      - fingerprint_sha1
+      - fingerprint_sha256
       - name
       - pk
       - private_key_available
@@ -26707,6 +26715,8 @@ components:
         id_token:
           type: string
           readOnly: true
+        revoked:
+          type: boolean
       required:
       - id_token
       - is_expired

@@ -318,6 +318,7 @@ class BaseGrantModel(models.Model):
     provider = models.ForeignKey(OAuth2Provider, on_delete=models.CASCADE)
     user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
     _scope = models.TextField(default="", verbose_name=_("Scopes"))
+    revoked = models.BooleanField(default=False)
 
     @property
     def scope(self) -> list[str]:
@@ -473,9 +474,7 @@ class RefreshToken(ExpiringModel, BaseGrantModel):
         # Convert datetimes into timestamps.
         now = int(time.time())
         iat_time = now
-        exp_time = int(
-            now + timedelta_from_string(self.provider.token_validity).total_seconds()
-        )
+        exp_time = int(dateformat.format(self.expires, "U"))
         # We use the timestamp of the user's last successful login (EventAction.LOGIN) for auth_time
         auth_events = Event.objects.filter(
             action=EventAction.LOGIN, user=get_user(user)

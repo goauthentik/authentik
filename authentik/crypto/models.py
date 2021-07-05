@@ -68,11 +68,18 @@ class CertificateKeyPair(CreatedUpdatedModel):
         return self._private_key
 
     @property
-    def fingerprint(self) -> str:
+    def fingerprint_sha256(self) -> str:
         """Get SHA256 Fingerprint of certificate_data"""
         return hexlify(self.certificate.fingerprint(hashes.SHA256()), ":").decode(
             "utf-8"
         )
+
+    @property
+    def fingerprint_sha1(self) -> str:
+        """Get SHA1 Fingerprint of certificate_data"""
+        return hexlify(
+            self.certificate.fingerprint(hashes.SHA1()), ":"  # nosec
+        ).decode("utf-8")
 
     @property
     def kid(self):

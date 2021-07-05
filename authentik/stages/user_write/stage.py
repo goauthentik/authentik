@@ -24,6 +24,10 @@ LOGGER = get_logger()
 class UserWriteStageView(StageView):
     """Finalise Enrollment flow by creating a user object."""
 
+    def post(self, request: HttpRequest) -> HttpResponse:
+        """Wrapper for post requests"""
+        return self.get(request)
+
     def get(self, request: HttpRequest) -> HttpResponse:
         """Save data in the current flow to the currently pending user. If no user is pending,
         a new user is created."""

@@ -1,7 +1,7 @@
 """authentik outpost signals"""
 from django.core.cache import cache
 from django.db.models import Model
-from django.db.models.signals import post_save, pre_delete, pre_save
+from django.db.models.signals import m2m_changed, post_save, pre_delete, pre_save
 from django.dispatch import receiver
 from structlog.stdlib import get_logger
 
@@ -44,6 +44,14 @@ def pre_save_outpost(sender, instance: Outpost, **_):
         LOGGER.info("Outpost needs re-deployment due to changes", instance=instance)
         cache.set(CACHE_KEY_OUTPOST_DOWN % instance.pk.hex, old_instance)
         outpost_controller.delay(instance.pk.hex, action="down", from_cache=True)
+
+
+@receiver(m2m_changed, sender=Outpost.providers.through)
+# pylint: disable=unused-argument
+def m2m_changed_update(sender, instance: Model, action: str, **_):
+    """Update outpost on m2m change, when providers are added or removed"""
+    if action in ["post_add", "post_remove", "post_clear"]:
+        outpost_post_save.delay(class_to_path(instance.__class__), instance.pk)
 
 
 @receiver(post_save)

@@ -2,12 +2,11 @@
 from json import loads
 
 from django.db.models.query import QuerySet
-from django.http.response import Http404
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
 from django_filters.filters import BooleanFilter, CharFilter
 from django_filters.filterset import FilterSet
-from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_field
+from drf_spectacular.utils import extend_schema, extend_schema_field
 from guardian.utils import get_anonymous_user
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, JSONField, SerializerMethodField
@@ -173,7 +172,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(
         responses={
             "200": LinkSerializer(many=False),
-            "404": OpenApiResponse(description="No recovery flow found."),
+            "404": LinkSerializer(many=False),
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
@@ -184,7 +183,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         # Check that there is a recovery flow, if not return an error
         flow = tenant.flow_recovery
         if not flow:
-            raise Http404
+            return Response({"link": ""}, status=404)
         user: User = self.get_object()
         token, __ = Token.objects.get_or_create(
             identifier=f"{user.uid}-password-reset",

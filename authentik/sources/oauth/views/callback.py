@@ -1,4 +1,5 @@
 """OAuth Callback Views"""
+from json import JSONDecodeError
 from typing import Any, Optional
 
 from django.conf import settings
@@ -10,6 +11,7 @@ from django.views.generic import View
 from structlog.stdlib import get_logger
 
 from authentik.core.sources.flow_manager import SourceFlowManager
+from authentik.events.models import Event, EventAction
 from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from authentik.sources.oauth.views.base import OAuthClientMixin
 
@@ -42,8 +44,16 @@ class OAuthCallback(OAuthClientMixin, View):
         if "error" in token:
             return self.handle_login_failure(token["error"])
         # Fetch profile info
-        raw_info = client.get_profile_info(token)
-        if raw_info is None:
+        try:
+            raw_info = client.get_profile_info(token)
+            if raw_info is None:
+                return self.handle_login_failure("Could not retrieve profile.")
+        except JSONDecodeError as exc:
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message="Failed to JSON-decode profile.",
+                raw_profile=exc.doc,
+            ).from_http(self.request)
             return self.handle_login_failure("Could not retrieve profile.")
         identifier = self.get_user_id(raw_info)
         if identifier is None:
