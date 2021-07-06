@@ -22,3 +22,13 @@ The outpost listens on both 4180 for HTTP and 4443 for HTTPS.
 :::info
 If your upstream host is HTTPS, and you're not using forward auth, you need to access the outpost over HTTPS too.
 :::
+
+# Logging out
+
+Login is done automatically when you visit the domain without a valid cookie.
+
+When using single-application mode, navigate to `app.domain.tld/akprox/sign_out`.
+
+When using domain-level mode, navigate to `auth.domain.tld/akprox/sign_out`, where auth.domain.tld is the external host configured for the provider.
+
+To log out, navigate to `/akprox/sign_out`.
