@@ -14,13 +14,29 @@ from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.request_parser import AuthNRequestParser
 from authentik.sources.saml.exceptions import MismatchedRequestID
 from authentik.sources.saml.models import SAMLSource
-from authentik.sources.saml.processors.constants import SAML_NAME_ID_FORMAT_UNSPECIFIED
+from authentik.sources.saml.processors.constants import (
+    SAML_NAME_ID_FORMAT_EMAIL,
+    SAML_NAME_ID_FORMAT_UNSPECIFIED,
+)
 from authentik.sources.saml.processors.request import (
     SESSION_REQUEST_ID,
     RequestProcessor,
 )
 from authentik.sources.saml.processors.response import ResponseProcessor
 
+POST_REQUEST = (
+    "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c2FtbDJwOkF1dGhuUmVxdWVzdCB4bWxuczpzYW1sMn"
+    "A9InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDpwcm90b2NvbCIgQXNzZXJ0aW9uQ29uc3VtZXJTZXJ2aWNlVVJMPSJo"
+    "dHRwczovL2V1LWNlbnRyYWwtMS5zaWduaW4uYXdzLmFtYXpvbi5jb20vcGxhdGZvcm0vc2FtbC9hY3MvMmQ3MzdmOTYtNT"
+    "VmYi00MDM1LTk1M2UtNWUyNDEzNGViNzc4IiBEZXN0aW5hdGlvbj0iaHR0cHM6Ly9pZC5iZXJ5anUub3JnL2FwcGxpY2F0"
+    "aW9uL3NhbWwvYXdzLXNzby9zc28vYmluZGluZy9wb3N0LyIgSUQ9ImF3c19MRHhMR2V1YnBjNWx4MTJneENnUzZ1UGJpeD"
+    "F5ZDVyZSIgSXNzdWVJbnN0YW50PSIyMDIxLTA3LTA2VDE0OjIzOjA2LjM4OFoiIFByb3RvY29sQmluZGluZz0idXJuOm9h"
+    "c2lzOm5hbWVzOnRjOlNBTUw6Mi4wOmJpbmRpbmdzOkhUVFAtUE9TVCIgVmVyc2lvbj0iMi4wIj48c2FtbDI6SXNzdWVyIH"
+    "htbG5zOnNhbWwyPSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6YXNzZXJ0aW9uIj5odHRwczovL2V1LWNlbnRyYWwt"
+    "MS5zaWduaW4uYXdzLmFtYXpvbi5jb20vcGxhdGZvcm0vc2FtbC9kLTk5NjcyZjgyNzg8L3NhbWwyOklzc3Vlcj48c2FtbD"
+    "JwOk5hbWVJRFBvbGljeSBGb3JtYXQ9InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjEuMTpuYW1laWQtZm9ybWF0OmVtYWls"
+    "QWRkcmVzcyIvPjwvc2FtbDJwOkF1dGhuUmVxdWVzdD4="
+)
 REDIRECT_REQUEST = (
     "fZLNbsIwEIRfJfIdbKeFgEUipXAoEm0jSHvopTLJplhK7NTr9Oft6yRUKhekPdk73+yOdoWyqVuRdu6k9/DRAbrgu6k1iu"
     "EjJp3VwkhUKLRsAIUrxCF92IlwykRrjTOFqUmQIoJ1yui10dg1YA9gP1UBz/tdTE7OtSgo5WzKQzYditGeP8GW9rSQZk+H"
@@ -208,3 +224,22 @@ class TestAuthNRequest(TestCase):
         self.assertEqual(parsed_request.id, "_dcf55fcd27a887e60a7ef9ee6fd3adab")
         self.assertEqual(parsed_request.name_id_policy, SAML_NAME_ID_FORMAT_UNSPECIFIED)
         self.assertEqual(parsed_request.relay_state, REDIRECT_RELAY_STATE)
+
+    def test_signed_static(self):
+        """Test post request with static request"""
+        provider = SAMLProvider(
+            name="aws",
+            authorization_flow=Flow.objects.get(
+                slug="default-provider-authorization-implicit-consent"
+            ),
+            acs_url=(
+                "https://eu-central-1.signin.aws.amazon.com/platform/"
+                "saml/acs/2d737f96-55fb-4035-953e-5e24134eb778"
+            ),
+            audience="https://10.120.20.200/saml-sp/SAML2/POST",
+            issuer="https://10.120.20.200/saml-sp/SAML2/POST",
+            signing_kp=CertificateKeyPair.objects.first(),
+        )
+        parsed_request = AuthNRequestParser(provider).parse(POST_REQUEST)
+        self.assertEqual(parsed_request.id, "aws_LDxLGeubpc5lx12gxCgS6uPbix1yd5re")
+        self.assertEqual(parsed_request.name_id_policy, SAML_NAME_ID_FORMAT_EMAIL)
