@@ -57,7 +57,7 @@
         "@sentry/tracing": "^6.8.0",
         "@types/chart.js": "^2.9.34",
         "@types/codemirror": "5.60.2",
-        "@types/grecaptcha": "^3.0.2",
+        "@types/grecaptcha": "^3.0.3",
         "@typescript-eslint/eslint-plugin": "^4.28.2",
         "@typescript-eslint/parser": "^4.28.2",
         "@webcomponents/webcomponentsjs": "^2.5.0",
