@@ -117,6 +117,9 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                         <p class="pf-c-form__helper-text">
                             ${t`Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows.`}
                         </p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`If no explicit redirect URIs are specified, any redirect URI is allowed.`}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

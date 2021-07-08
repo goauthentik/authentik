@@ -1832,6 +1832,10 @@ msgstr "If enabled, use the local connection. Required Docker socket/Kubernetes 
 msgid "If left empty, authentik will try to extract the launch URL based on the selected provider."
 msgstr "If left empty, authentik will try to extract the launch URL based on the selected provider."
 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+msgid "If no explicit redirect URIs are specified, any redirect URI is allowed."
+msgstr "If no explicit redirect URIs are specified, any redirect URI is allowed."
+
 #: src/pages/tenants/TenantForm.ts
 msgid "If set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown."
 msgstr "If set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown."
