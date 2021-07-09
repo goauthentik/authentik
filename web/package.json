@@ -7,7 +7,7 @@
         "extract": "lingui extract",
         "build": "lingui compile && rollup -c ./rollup.config.js",
         "watch": "lingui compile && rollup -c -w",
-        "lint": "eslint . --max-warnings 0",
+        "lint": "eslint . --max-warnings 0 --fix",
         "lit-analyse": "lit-analyzer src"
     },
     "lingui": {

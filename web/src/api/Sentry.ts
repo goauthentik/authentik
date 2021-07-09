@@ -37,7 +37,9 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
                         if (response.status < 500) {
                             return null;
                         }
-                        const body = await response.json();
+                        // Need to clone the response, otherwise the .text() and .json() can't be re-used
+                        const resCopy = response.clone();
+                        const body = await resCopy.json();
                         event.message = `${response.status} ${response.url}: ${JSON.stringify(body)}`
                     }
                     if (event.exception) {
