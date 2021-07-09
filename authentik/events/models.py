@@ -313,7 +313,8 @@ class NotificationTransport(models.Model):
             response = post(self.webhook_url, json=body)
             response.raise_for_status()
         except RequestException as exc:
-            raise NotificationTransportError(exc.response.text) from exc
+            text = exc.response.text if exc.response else str(exc)
+            raise NotificationTransportError(text) from exc
         return [
             response.status_code,
             response.text,
