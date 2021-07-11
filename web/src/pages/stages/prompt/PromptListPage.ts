@@ -77,9 +77,14 @@ export class PromptListPage extends TablePage<Prompt> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Prompt`}
+                .usedBy=${() => {
+                    return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsUsedByList({
+                        promptUuid: item.pk
+                    });
+                }}
                 .delete=${() => {
                     return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsDestroy({
-                        promptUuid: item.pk || ""
+                        promptUuid: item.pk
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">

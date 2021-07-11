@@ -55,19 +55,31 @@ class CertificateKeyPair(CreatedUpdatedModel):
     def private_key(self) -> Optional[RSAPrivateKey]:
         """Get python cryptography PrivateKey instance"""
         if not self._private_key and self._private_key != "":
-            self._private_key = load_pem_private_key(
-                str.encode("\n".join([x.strip() for x in self.key_data.split("\n")])),
-                password=None,
-                backend=default_backend(),
-            )
+            try:
+                self._private_key = load_pem_private_key(
+                    str.encode(
+                        "\n".join([x.strip() for x in self.key_data.split("\n")])
+                    ),
+                    password=None,
+                    backend=default_backend(),
+                )
+            except ValueError:
+                return None
         return self._private_key
 
     @property
-    def fingerprint(self) -> str:
+    def fingerprint_sha256(self) -> str:
         """Get SHA256 Fingerprint of certificate_data"""
         return hexlify(self.certificate.fingerprint(hashes.SHA256()), ":").decode(
             "utf-8"
         )
+
+    @property
+    def fingerprint_sha1(self) -> str:
+        """Get SHA1 Fingerprint of certificate_data"""
+        return hexlify(
+            self.certificate.fingerprint(hashes.SHA1()), ":"  # nosec
+        ).decode("utf-8")
 
     @property
     def kid(self):

@@ -1,16 +1,13 @@
 import { AuthenticatorsApi } from "authentik-api";
 import { t } from "@lingui/macro";
-import { customElement, html, property, TemplateResult } from "lit-element";
+import { customElement, html, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { FlowURLManager } from "../../../api/legacy";
 import { BaseUserSettings } from "./BaseUserSettings";
+import { EVENT_REFRESH } from "../../../constants";
 
 @customElement("ak-user-settings-authenticator-duo")
 export class UserSettingsAuthenticatorDuo extends BaseUserSettings {
-
-    @property({ type: Boolean })
-    configureFlow = false;
 
     renderEnabled(): TemplateResult {
         return html`<div class="pf-c-card__body">
@@ -31,11 +28,16 @@ export class UserSettingsAuthenticatorDuo extends BaseUserSettings {
                             return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsDuoDestroy({
                                 id: devices.results[0].pk || 0
                             }).then(() => {
-                                this.requestUpdate();
+                                this.dispatchEvent(
+                                    new CustomEvent(EVENT_REFRESH, {
+                                        bubbles: true,
+                                        composed: true,
+                                    })
+                                );
                             });
                         });
                     }}>
-                    ${t`Disable Static Tokens`}
+                    ${t`Disable Duo authenticator`}
                 </button>
             </div>`;
     }
@@ -49,9 +51,9 @@ export class UserSettingsAuthenticatorDuo extends BaseUserSettings {
                 </p>
             </div>
             <div class="pf-c-card__footer">
-                ${this.configureFlow ?
-                    html`<a href="${FlowURLManager.configure(this.objectId || "", "?next=/%23%2Fuser")}"
-                            class="pf-c-button pf-m-primary">${t`Enable Static Tokens`}
+                ${this.configureUrl ?
+                    html`<a href="${this.configureUrl}?next=/%23%2Fuser"
+                            class="pf-c-button pf-m-primary">${t`Enable Duo authenticator`}
                         </a>`: html``}
             </div>`;
     }
@@ -61,7 +63,6 @@ export class UserSettingsAuthenticatorDuo extends BaseUserSettings {
             <div class="pf-c-card__title">
                 ${t`Duo`}
             </div>
-            ${this.renderDisabled()}
             ${until(new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsDuoList({}).then((devices) => {
                 return devices.results.length > 0 ? this.renderEnabled() : this.renderDisabled();
             }))}

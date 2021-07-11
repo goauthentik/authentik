@@ -26,6 +26,8 @@ class ImpersonateMiddleware:
 
         if SESSION_IMPERSONATE_USER in request.session:
             request.user = request.session[SESSION_IMPERSONATE_USER]
+            # Ensure that the user is active, otherwise nothing will work
+            request.user.is_active = True
 
         return self.get_response(request)
 

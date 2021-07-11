@@ -51,9 +51,9 @@ export class FlowViewPage extends LitElement {
             return html``;
         }
         return html`<ak-page-header
-            icon="pf-icon pf-icon-process-automation"
-            header=${this.flow.name}
-            description=${this.flow.title}>
+                icon="pf-icon pf-icon-process-automation"
+                header=${this.flow.name}
+                description=${this.flow.title}>
             </ak-page-header>
             <ak-tabs>
                 <div slot="page-overview" data-tab-title="${t`Flow Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
@@ -69,7 +69,7 @@ export class FlowViewPage extends LitElement {
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">
                                                 <button
-                                                    class="pf-c-button pf-m-secondary"
+                                                    class="pf-c-button pf-m-primary"
                                                     @click=${() => {
                                                     new FlowsApi(DEFAULT_CONFIG).flowsInstancesExecuteRetrieve({
                                                         slug: this.flow.slug
@@ -80,6 +80,16 @@ export class FlowViewPage extends LitElement {
                                                 }}>
                                                     ${t`Execute`}
                                                 </button>
+                                            </div>
+                                        </dd>
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text">${t`Export flow`}</span>
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                <a class="pf-c-button pf-m-secondary" href=${this.flow.exportUrl}>
+                                                    ${t`Export`}
+                                                </a>
                                             </div>
                                         </dd>
                                     </div>

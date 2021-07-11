@@ -14,6 +14,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests.test_views import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.providers.oauth2.generators import generate_client_secret
+from authentik.stages.password import BACKEND_DJANGO
 from authentik.stages.password.models import PasswordStage
 
 MOCK_BACKEND_AUTHENTICATE = MagicMock(side_effect=PermissionDenied("test"))
@@ -36,9 +37,11 @@ class TestPasswordStage(TestCase):
             designation=FlowDesignation.AUTHENTICATION,
         )
         self.stage = PasswordStage.objects.create(
-            name="password", backends=["django.contrib.auth.backends.ModelBackend"]
+            name="password", backends=[BACKEND_DJANGO]
         )
-        FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
+        self.binding = FlowStageBinding.objects.create(
+            target=self.flow, stage=self.stage, order=2
+        )
 
     @patch(
         "authentik.flows.views.to_stage_response",
@@ -47,7 +50,7 @@ class TestPasswordStage(TestCase):
     def test_without_user(self):
         """Test without user"""
         plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
         )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
@@ -67,8 +70,12 @@ class TestPasswordStage(TestCase):
             {
                 "component": "ak-stage-access-denied",
                 "error_message": None,
-                "title": "",
                 "type": ChallengeTypes.NATIVE.value,
+                "flow_info": {
+                    "background": self.flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": "",
+                },
             },
         )
 
@@ -79,7 +86,7 @@ class TestPasswordStage(TestCase):
         )
 
         plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
         )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
@@ -96,7 +103,7 @@ class TestPasswordStage(TestCase):
     def test_valid_password(self):
         """Test with a valid pending user and valid password"""
         plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
         )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
@@ -124,7 +131,7 @@ class TestPasswordStage(TestCase):
     def test_invalid_password(self):
         """Test with a valid pending user and invalid password"""
         plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
         )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
@@ -143,7 +150,7 @@ class TestPasswordStage(TestCase):
     def test_invalid_password_lockout(self):
         """Test with a valid pending user and invalid password (trigger logout counter)"""
         plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
         )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
@@ -184,7 +191,7 @@ class TestPasswordStage(TestCase):
         """Test with a valid pending user and valid password.
         Backend is patched to return PermissionError"""
         plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
         )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
@@ -205,7 +212,11 @@ class TestPasswordStage(TestCase):
             {
                 "component": "ak-stage-access-denied",
                 "error_message": None,
-                "title": "",
+                "flow_info": {
+                    "background": self.flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": "",
+                },
                 "type": ChallengeTypes.NATIVE.value,
             },
         )

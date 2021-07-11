@@ -96,7 +96,7 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                         label=${t`Server URI`}
                         ?required=${true}
                         name="serverUri">
-                        <input type="text" value="${ifDefined(this.instance?.serverUri)}" class="pf-c-form-control" required>
+                        <input type="text" placeholder="ldap://1.2.3.4" value="${ifDefined(this.instance?.serverUri)}" class="pf-c-form-control" required>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="startTls">
                         <div class="pf-c-check">
@@ -105,6 +105,7 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                                 ${t`Enable StartTLS`}
                             </label>
                         </div>
+                        <p class="pf-c-form__helper-text">${t`To use SSL instead, use 'ldaps://' and disable this option.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Bind CN`}

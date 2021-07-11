@@ -1,5 +1,4 @@
 env
-helm
 static
 htmlcov
 *.env.yml

@@ -1,4 +1,4 @@
-import { Application, CoreApi, CheckAccessRequestRequest, PolicyTestResult } from "authentik-api";
+import { Application, CoreApi, PolicyTestResult } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -8,7 +8,7 @@ import { until } from "lit-html/directives/until";
 import "../../elements/forms/HorizontalFormElement";
 
 @customElement("ak-application-check-access-form")
-export class ApplicationCheckAccessForm extends Form<CheckAccessRequestRequest> {
+export class ApplicationCheckAccessForm extends Form<number> {
 
     @property({attribute: false})
     application!: Application;
@@ -17,17 +17,17 @@ export class ApplicationCheckAccessForm extends Form<CheckAccessRequestRequest> 
     result?: PolicyTestResult;
 
     @property({ attribute: false})
-    request?: CheckAccessRequestRequest;
+    request?: number;
 
     getSuccessMessage(): string {
         return t`Successfully sent test-request.`;
     }
 
-    send = (data: CheckAccessRequestRequest): Promise<PolicyTestResult> => {
+    send = (data: number): Promise<PolicyTestResult> => {
         this.request = data;
-        return new CoreApi(DEFAULT_CONFIG).coreApplicationsCheckAccessCreate({
+        return new CoreApi(DEFAULT_CONFIG).coreApplicationsCheckAccessRetrieve({
             slug: this.application?.slug,
-            checkAccessRequestRequest: data,
+            forUser: data,
         }).then(result => this.result = result);
     };
 
@@ -68,7 +68,7 @@ export class ApplicationCheckAccessForm extends Form<CheckAccessRequestRequest> 
                         ordering: "username",
                     }).then(users => {
                         return users.results.map(user => {
-                            return html`<option ?selected=${user.pk.toString() === this.request?.forUser?.toString()} value=${user.pk}>${user.username}</option>`;
+                            return html`<option ?selected=${user.pk.toString() === this.request?.toString()} value=${user.pk}>${user.username}</option>`;
                         });
                     }), html`<option>${t`Loading...`}</option>`)}
                 </select>

@@ -9,6 +9,7 @@ from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.sources import SourceSerializer
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.manager import MANAGER
@@ -78,7 +79,7 @@ class OAuthSourceSerializer(SourceSerializer):
         extra_kwargs = {"consumer_secret": {"write_only": True}}
 
 
-class OAuthSourceViewSet(ModelViewSet):
+class OAuthSourceViewSet(UsedByMixin, ModelViewSet):
     """Source Viewset"""
 
     queryset = OAuthSource.objects.all()

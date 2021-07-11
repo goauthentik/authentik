@@ -1,31 +1,36 @@
 ---
-title: Proxy Outpost
+title: Forward auth
 ---
 
-The proxy outpost sets the following headers:
+Using forward auth uses your existing reverse proxy to do the proxying, and only uses the
+authentik outpost to check authentication and authoirzation.
 
-```
-X-Auth-Username: akadmin # The username of the currently logged in user
-X-Forwarded-Email: root@localhost # The email address of the currently logged in user
-X-Forwarded-Preferred-Username: akadmin  # The username of the currently logged in user
-X-Forwarded-User: 900347b8a29876b45ca6f75722635ecfedf0e931c6022e3a29a8aa13fb5516fb # The hashed identifier of the currently logged in user.
-```
+To use forward auth instead of proxying, you have to change a couple of settings.
+In the Proxy Provider, make sure to use one of the Forward auth modes.
 
-Additionally, you can set `additionalHeaders` on groups or users to set additional headers.
+## Single application
 
-If you enable *Set HTTP-Basic Authentication* option, the HTTP Authorization header is being set.
+Single application mode works for a single application hosted on its dedicated subdomain. This
+has the advantage that you can still do per-application access policies in authentik.
 
-# HTTPS
+## Domain level
 
-The outpost listens on both 4180 for HTTP and 4443 for HTTPS.
+To use forward auth instead of proxying, you have to change a couple of settings.
+In the Proxy Provider, make sure to use the *Forward auth (domain level)* mode.
 
-:::warning
-If your upstream host is HTTPS, and you're not using forward auth, you need to access the outpost over HTTPS too.
-:::
+This mode differs from the *Forward auth (single application)* mode in the following points:
+- You don't have to configure an application in authentik for each domain
+- Users don't have to authorize multiple times
 
-# Forward auth
+There are however also some downsides, mainly the fact that you **can't** restrict individual
+applications to different users.
 
-To use forward auth instead of proxying, you have to change a couple of settings. In the Proxy Provider, make sure to enable `Enable forward-auth mode` on the provider.
+The only configuration difference between single application and domain level is the host you specify.
+
+For single application, you'd use the domain which the application is running on, and only /akprox
+is redirect to the outpost.
+
+For domain level, you'd use the same domain as authentik.
 
 ## Nginx
 
@@ -41,24 +46,46 @@ import TabItem from '@theme/TabItem';
   <TabItem value="standalone-nginx">
 
 ```
-    location /akprox {
-        proxy_pass http://*ip of your outpost*:4180;
-        error_page 401 = @akprox_signin;
-        proxy_set_header    X-Forwarded-Host $http_host;
-        auth_request_set    $auth_cookie $upstream_http_set_cookie;
-        add_header          Set-Cookie $auth_cookie;
-    }
+server {
+    # SSL and VHost configuration
+    listen                  443 ssl http2;
+    server_name             _;
 
-    location @akprox_signin {
-      internal;
-      add_header Set-Cookie $auth_cookie;
-      return 302 /akprox/start?rd=$escaped_request_uri;
-    }
+    ssl_certificate         /etc/ssl/certs/ssl-cert-snakeoil.pem;
+    ssl_certificate_key     /etc/ssl/private/ssl-cert-snakeoil.key;
 
     location / {
-        auth_request /akprox/auth?nginx;
-        # All your other options...
+        # Put your proxy_pass to your application here
+        # proxy_pass          http://localhost:5000;
+
+        # authentik-specific config
+        auth_request        /akprox/auth;
+        error_page          401 = @akprox_signin;
+        # translate headers from the outposts back to the actual upstream
+        auth_request_set    $username    $upstream_http_x_auth_username;
+        auth_request_set    $email       $upstream_http_X_Forwarded_Email;
+        proxy_set_header    X-Auth-Username   $username;
+        proxy_set_header    X-Forwarded-Email $email;
     }
+
+    # all requests to /akprox must be accessible without authentication
+    location /akprox {
+        proxy_pass          http://*ip or hostname of the authentik OUTPOST*:4180;
+        # ensure the host of this vserver matches your external URL you've configured
+        # in authentik
+        proxy_set_header    Host $host;
+        add_header          Set-Cookie $auth_cookie;
+        auth_request_set    $auth_cookie $upstream_http_set_cookie;
+    }
+
+    # Special location for when the /auth endpoint returns a 401,
+    # redirect to the /start URL which initiates SSO
+    location @akprox_signin {
+        internal;
+        add_header Set-Cookie $auth_cookie;
+        return 302 /akprox/start?rd=$request_uri;
+    }
+}
 ```
 
   </TabItem>

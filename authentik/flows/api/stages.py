@@ -1,16 +1,17 @@
 """Flow Stage API Views"""
 from typing import Iterable
 
+from django.urls.base import reverse
 from drf_spectacular.utils import extend_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
-from rest_framework.fields import BooleanField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.api.flows import FlowSerializer
@@ -18,12 +19,6 @@ from authentik.flows.models import Stage
 from authentik.lib.utils.reflection import all_subclasses
 
 LOGGER = get_logger()
-
-
-class StageUserSettingSerializer(UserSettingSerializer):
-    """User settings but can include a configure flow"""
-
-    configure_flow = BooleanField(required=False)
 
 
 class StageSerializer(ModelSerializer, MetaNameSerializer):
@@ -55,6 +50,7 @@ class StageSerializer(ModelSerializer, MetaNameSerializer):
 class StageViewSet(
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
+    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):
@@ -86,7 +82,7 @@ class StageViewSet(
         data = sorted(data, key=lambda x: x["name"])
         return Response(TypeCreateSerializer(data, many=True).data)
 
-    @extend_schema(responses={200: StageUserSettingSerializer(many=True)})
+    @extend_schema(responses={200: UserSettingSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])
     def user_settings(self, request: Request) -> Response:
         """Get all stages the user can configure"""
@@ -97,9 +93,10 @@ class StageViewSet(
             if not user_settings:
                 continue
             user_settings.initial_data["object_uid"] = str(stage.pk)
-            if hasattr(stage, "configure_flow"):
-                user_settings.initial_data["configure_flow"] = bool(
-                    stage.configure_flow
+            if hasattr(stage, "configure_flow") and stage.configure_flow:
+                user_settings.initial_data["configure_url"] = reverse(
+                    "authentik_flows:configure",
+                    kwargs={"stage_uuid": stage.pk},
                 )
             if not user_settings.is_valid():
                 LOGGER.warning(user_settings.errors)

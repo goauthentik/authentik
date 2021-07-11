@@ -36,7 +36,8 @@ class SourceType:
 class SourceTypeManager:
     """Manager to hold all Source types."""
 
-    __sources: list[SourceType] = []
+    def __init__(self) -> None:
+        self.__sources: list[SourceType] = []
 
     def type(self):
         """Class decorator to register classes inline."""

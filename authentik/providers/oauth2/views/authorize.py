@@ -156,20 +156,23 @@ class OAuthAuthorizationParams:
 
     def check_redirect_uri(self):
         """Redirect URI validation."""
+        allowed_redirect_urls = self.provider.redirect_uris.split()
         if not self.redirect_uri:
             LOGGER.warning("Missing redirect uri.")
-            raise RedirectUriError("", self.provider.redirect_uris.split())
-        if self.redirect_uri.lower() not in [
-            x.lower() for x in self.provider.redirect_uris.split()
-        ]:
+            raise RedirectUriError("", allowed_redirect_urls)
+        if len(allowed_redirect_urls) < 1:
+            LOGGER.warning(
+                "Provider has no allowed redirect_uri set, allowing all.",
+                allow=self.redirect_uri.lower(),
+            )
+            return
+        if self.redirect_uri.lower() not in [x.lower() for x in allowed_redirect_urls]:
             LOGGER.warning(
                 "Invalid redirect uri",
                 redirect_uri=self.redirect_uri,
-                excepted=self.provider.redirect_uris.split(),
+                excepted=allowed_redirect_urls,
             )
-            raise RedirectUriError(
-                self.redirect_uri, self.provider.redirect_uris.split()
-            )
+            raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
         if self.request:
             raise AuthorizeError(
                 self.redirect_uri, "request_not_supported", self.grant_type, self.state
@@ -374,9 +377,9 @@ class OAuthFulfillmentStage(StageView):
             query_fragment["code"] = code.code
 
         query_fragment["token_type"] = "bearer"
-        query_fragment["expires_in"] = timedelta_from_string(
-            self.provider.token_validity
-        ).seconds
+        query_fragment["expires_in"] = int(
+            timedelta_from_string(self.provider.token_validity).total_seconds()
+        )
         query_fragment["state"] = self.params.state if self.params.state else ""
 
         return query_fragment
@@ -468,14 +471,14 @@ class AuthorizationFlowInitView(PolicyAccessView):
         # OpenID clients can specify a `prompt` parameter, and if its set to consent we
         # need to inject a consent stage
         if PROMPT_CONSNET in self.params.prompt:
-            if not any(isinstance(x, ConsentStageView) for x in plan.stages):
+            if not any(isinstance(x.stage, ConsentStageView) for x in plan.bindings):
                 # Plan does not have any consent stage, so we add an in-memory one
                 stage = ConsentStage(
                     name="OAuth2 Provider In-memory consent stage",
                     mode=ConsentMode.ALWAYS_REQUIRE,
                 )
-                plan.append(stage)
-        plan.append(in_memory_stage(OAuthFulfillmentStage))
+                plan.append_stage(stage)
+        plan.append_stage(in_memory_stage(OAuthFulfillmentStage))
         self.request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
             "authentik_core:if-flow",

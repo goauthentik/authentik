@@ -1,11 +1,12 @@
 """authentik core signals"""
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Type
 
 from django.contrib.auth.signals import user_logged_in, user_logged_out
+from django.contrib.sessions.backends.cache import KEY_PREFIX
 from django.core.cache import cache
 from django.core.signals import Signal
 from django.db.models import Model
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.http.request import HttpRequest
 from prometheus_client import Gauge
@@ -18,7 +19,7 @@ GAUGE_MODELS = Gauge(
 )
 
 if TYPE_CHECKING:
-    from authentik.core.models import User
+    from authentik.core.models import AuthenticatedSession, User
 
 
 @receiver(post_save)
@@ -48,7 +49,9 @@ def user_logged_in_session(sender, request: HttpRequest, user: "User", **_):
     """Create an AuthenticatedSession from request"""
     from authentik.core.models import AuthenticatedSession
 
-    AuthenticatedSession.from_request(request, user).save()
+    session = AuthenticatedSession.from_request(request, user)
+    if session:
+        session.save()
 
 
 @receiver(user_logged_out)
@@ -60,3 +63,17 @@ def user_logged_out_session(sender, request: HttpRequest, user: "User", **_):
     AuthenticatedSession.objects.filter(
         session_key=request.session.session_key
     ).delete()
+
+
+@receiver(pre_delete)
+def authenticated_session_delete(
+    sender: Type[Model], instance: "AuthenticatedSession", **_
+):
+    """Delete session when authenticated session is deleted"""
+    from authentik.core.models import AuthenticatedSession
+
+    if sender != AuthenticatedSession:
+        return
+
+    cache_key = f"{KEY_PREFIX}{instance.session_key}"
+    cache.delete(cache_key)

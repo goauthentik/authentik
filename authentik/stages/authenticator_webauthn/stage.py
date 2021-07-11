@@ -28,8 +28,6 @@ from authentik.stages.authenticator_webauthn.utils import (
     get_rp_id,
 )
 
-RP_NAME = "authentik"
-
 LOGGER = get_logger()
 
 SESSION_KEY_WEBAUTHN_AUTHENTICATED = (
@@ -119,7 +117,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         user = self.get_pending_user()
         make_credential_options = WebAuthnMakeCredentialOptions(
             challenge,
-            RP_NAME,
+            self.request.tenant.branding_title,
             get_rp_id(self.request),
             user.uid,
             user.username,

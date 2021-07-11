@@ -9,7 +9,7 @@ return {}
 """
 SCOPE_EMAIL_EXPRESSION = """
 return {
-    "email": user.email,
+    "email": request.user.email,
     "email_verified": True
 }
 """
@@ -17,14 +17,14 @@ SCOPE_PROFILE_EXPRESSION = """
 return {
     # Because authentik only saves the user's full name, and has no concept of first and last names,
     # the full name is used as given name.
-    # You can override this behaviour in custom mappings, i.e. `user.name.split(" ")`
-    "name": user.name,
-    "given_name": user.name,
+    # You can override this behaviour in custom mappings, i.e. `request.user.name.split(" ")`
+    "name": request.user.name,
+    "given_name": request.user.name,
     "family_name": "",
-    "preferred_username": user.username,
-    "nickname": user.username,
+    "preferred_username": request.user.username,
+    "nickname": request.user.username,
     # groups is not part of the official userinfo schema, but is a quasi-standard
-    "groups": [group.name for group in user.ak_groups.all()],
+    "groups": [group.name for group in request.user.ak_groups.all()],
 }
 """
 

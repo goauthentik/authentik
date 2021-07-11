@@ -6,6 +6,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.sources import SourceSerializer
+from authentik.core.api.used_by import UsedByMixin
 from authentik.sources.oauth.models import UserOAuthSourceConnection
 
 
@@ -26,6 +27,7 @@ class UserOAuthSourceConnectionViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
+    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

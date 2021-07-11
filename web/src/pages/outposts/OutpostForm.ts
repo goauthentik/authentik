@@ -14,7 +14,7 @@ import { ModelForm } from "../../elements/forms/ModelForm";
 export class OutpostForm extends ModelForm<Outpost, string> {
 
     @property()
-    type!: OutpostTypeEnum;
+    type: OutpostTypeEnum = OutpostTypeEnum.Proxy;
 
     loadInstance(pk: string): Promise<Outpost> {
         return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesRetrieve({
@@ -102,7 +102,11 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         ordering: "pk"
                     }).then(scs => {
                         return scs.results.map(sc => {
-                            return html`<option value=${ifDefined(sc.pk)} ?selected=${this.instance?.serviceConnection === sc.pk}>
+                            let selected = this.instance?.serviceConnection === sc.pk;
+                            if (scs.results.length === 1 && !this.instance) {
+                                selected = true;
+                            }
+                            return html`<option value=${ifDefined(sc.pk)} ?selected=${selected}>
                                 ${sc.name} (${sc.verboseName})
                             </option>`;
                         });
@@ -127,13 +131,16 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 label=${t`Configuration`}
                 name="config">
                 <ak-codemirror mode="yaml" value="${until(new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesDefaultSettingsRetrieve().then(config => {
-                        let fc = config.config;
-                        if (this.instance) {
-                            fc = this.instance.config;
-                        }
-                        return YAML.stringify(fc);
-                    }))}"></ak-codemirror>
+                    let fc = config.config;
+                    if (this.instance) {
+                        fc = this.instance.config;
+                    }
+                    return YAML.stringify(fc);
+                }))}"></ak-codemirror>
                 <p class="pf-c-form__helper-text">${t`Set custom attributes using YAML or JSON.`}</p>
+                <p class="pf-c-form__helper-text">
+                    See <a target="_blank" href="https://goauthentik.io/docs/outposts/outposts#configuration">documentation</a>.
+                </p>
             </ak-form-element-horizontal>
         </form>`;
     }

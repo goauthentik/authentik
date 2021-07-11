@@ -2,7 +2,7 @@
 from django.utils.timezone import now
 from structlog.stdlib import get_logger
 
-from authentik.core.models import User
+from authentik.core.models import AuthenticatedSession, User
 from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.celery import CELERY_APP
@@ -31,11 +31,13 @@ def clean_temporary_users(self: MonitoredTask):
             continue
         source = sources.first()
         source_delta = timedelta_from_string(source.temporary_user_delete_after)
-        if _now - user.last_login >= source_delta:
+        if (
+            _now - user.last_login >= source_delta
+            and not AuthenticatedSession.objects.filter(user=user).exists()
+        ):
             LOGGER.debug(
                 "User is expired and will be deleted.", user=user, delta=source_delta
             )
-            # TODO: Check if user is signed in anywhere?
             user.delete()
             deleted_users += 1
     messages.append(f"Successfully deleted {deleted_users} users.")

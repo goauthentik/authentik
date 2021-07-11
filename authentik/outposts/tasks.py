@@ -149,8 +149,9 @@ def outpost_post_save(model_class: str, model_pk: Any):
         return
 
     if isinstance(instance, Outpost):
-        LOGGER.debug("Ensuring token for outpost", instance=instance)
+        LOGGER.debug("Ensuring token and permissions for outpost", instance=instance)
         _ = instance.token
+        _ = instance.user
         LOGGER.debug("Trigger reconcile for outpost")
         outpost_controller.delay(instance.pk)
 
@@ -201,6 +202,7 @@ def _outpost_single_update(outpost: Outpost, layer=None):
     # Ensure token again, because this function is called when anything related to an
     # OutpostModel is saved, so we can be sure permissions are right
     _ = outpost.token
+    _ = outpost.user
     if not layer:  # pragma: no cover
         layer = get_channel_layer()
     for state in OutpostState.for_outpost(outpost):

@@ -65,30 +65,33 @@ type OAuthProxy struct {
 	AuthOnlyPath      string
 	UserInfoPath      string
 
-	forwardAuthMode            bool
-	redirectURL                *url.URL // the url to receive requests at
-	whitelistDomains           []string
-	provider                   providers.Provider
-	sessionStore               sessionsapi.SessionStore
-	ProxyPrefix                string
-	serveMux                   http.Handler
-	SetXAuthRequest            bool
-	SetBasicAuth               bool
-	PassUserHeaders            bool
+	endSessionEndpoint         string
+	mode                       api.ProxyMode
 	BasicAuthUserAttribute     string
 	BasicAuthPasswordAttribute string
-	PassAccessToken            bool
-	SetAuthorization           bool
-	PassAuthorization          bool
-	PreferEmailToUser          bool
-	skipAuthRegex              []string
-	skipAuthPreflight          bool
-	skipAuthStripHeaders       bool
-	mainJwtBearerVerifier      *oidc.IDTokenVerifier
-	extraJwtBearerVerifiers    []*oidc.IDTokenVerifier
-	compiledRegex              []*regexp.Regexp
-	templates                  *template.Template
-	realClientIPParser         ipapi.RealClientIPParser
+	ExternalHost               string
+
+	redirectURL             *url.URL // the url to receive requests at
+	whitelistDomains        []string
+	provider                providers.Provider
+	sessionStore            sessionsapi.SessionStore
+	ProxyPrefix             string
+	serveMux                http.Handler
+	SetXAuthRequest         bool
+	SetBasicAuth            bool
+	PassUserHeaders         bool
+	PassAccessToken         bool
+	SetAuthorization        bool
+	PassAuthorization       bool
+	PreferEmailToUser       bool
+	skipAuthRegex           []string
+	skipAuthPreflight       bool
+	skipAuthStripHeaders    bool
+	mainJwtBearerVerifier   *oidc.IDTokenVerifier
+	extraJwtBearerVerifiers []*oidc.IDTokenVerifier
+	compiledRegex           []*regexp.Regexp
+	templates               *template.Template
+	realClientIPParser      ipapi.RealClientIPParser
 
 	sessionChain alice.Chain
 
@@ -136,7 +139,7 @@ func NewOAuthProxy(opts *options.Options, provider api.ProxyOutpostConfig, c *ht
 		CookieRefresh:  opts.Cookie.Refresh,
 		CookieSameSite: opts.Cookie.SameSite,
 
-		forwardAuthMode:   *provider.ForwardAuthMode,
+		mode:              *provider.Mode,
 		RobotsPath:        "/robots.txt",
 		SignInPath:        fmt.Sprintf("%s/sign_in", opts.ProxyPrefix),
 		SignOutPath:       fmt.Sprintf("%s/sign_out", opts.ProxyPrefix),
@@ -216,43 +219,6 @@ func (p *OAuthProxy) ErrorPage(rw http.ResponseWriter, code int, title string, m
 	}
 }
 
-// splitHostPort separates host and port. If the port is not valid, it returns
-// the entire input as host, and it doesn't check the validity of the host.
-// Unlike net.SplitHostPort, but per RFC 3986, it requires ports to be numeric.
-// *** taken from net/url, modified validOptionalPort() to accept ":*"
-func splitHostPort(hostport string) (host, port string) {
-	host = hostport
-
-	colon := strings.LastIndexByte(host, ':')
-	if colon != -1 && validOptionalPort(host[colon:]) {
-		host, port = host[:colon], host[colon+1:]
-	}
-
-	if strings.HasPrefix(host, "[") && strings.HasSuffix(host, "]") {
-		host = host[1 : len(host)-1]
-	}
-
-	return
-}
-
-// validOptionalPort reports whether port is either an empty string
-// or matches /^:\d*$/
-// *** taken from net/url, modified to accept ":*"
-func validOptionalPort(port string) bool {
-	if port == "" || port == ":*" {
-		return true
-	}
-	if port[0] != ':' {
-		return false
-	}
-	for _, b := range port[1:] {
-		if b < '0' || b > '9' {
-			return false
-		}
-	}
-	return true
-}
-
 // See https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching?hl=en
 var noCacheHeaders = map[string]string{
 	"Expires":         time.Unix(0, 0).Format(time.RFC1123),
@@ -321,37 +287,54 @@ func (p *OAuthProxy) UserInfo(rw http.ResponseWriter, req *http.Request) {
 
 // SignOut sends a response to clear the authentication cookie
 func (p *OAuthProxy) SignOut(rw http.ResponseWriter, req *http.Request) {
-	redirect, err := p.GetRedirect(req)
-	if err != nil {
-		p.logger.Errorf("Error obtaining redirect: %v", err)
-		p.ErrorPage(rw, http.StatusInternalServerError, "Internal Server Error", err.Error())
-		return
-	}
-	err = p.ClearSessionCookie(rw, req)
+	err := p.ClearSessionCookie(rw, req)
 	if err != nil {
 		p.logger.Errorf("Error clearing session cookie: %v", err)
 		p.ErrorPage(rw, http.StatusInternalServerError, "Internal Server Error", err.Error())
 		return
 	}
-	http.Redirect(rw, req, redirect, http.StatusFound)
+	http.Redirect(rw, req, p.endSessionEndpoint, http.StatusFound)
 }
 
 // AuthenticateOnly checks whether the user is currently logged in
 func (p *OAuthProxy) AuthenticateOnly(rw http.ResponseWriter, req *http.Request) {
 	session, err := p.getAuthenticatedSession(rw, req)
 	if err != nil {
-		if p.forwardAuthMode {
+		if p.mode == api.PROXYMODE_FORWARD_SINGLE || p.mode == api.PROXYMODE_FORWARD_DOMAIN {
 			if _, ok := req.URL.Query()["nginx"]; ok {
 				rw.WriteHeader(401)
 				return
 			}
 			if _, ok := req.URL.Query()["traefik"]; ok {
-				host := getHost(req)
+				host := ""
+				// Optional suffix, which is appended to the URL
+				suffix := ""
+				if p.mode == api.PROXYMODE_FORWARD_SINGLE {
+					host = getHost(req)
+				} else if p.mode == api.PROXYMODE_FORWARD_DOMAIN {
+					host = p.ExternalHost
+					// set the ?rd flag to the current URL we have, since we redirect
+					// to a (possibly) different domain, but we want to be redirected back
+					// to the application
+					v := url.Values{
+						// see https://doc.traefik.io/traefik/middlewares/forwardauth/
+						// X-Forwarded-Uri is only the path, so we need to build the entire URL
+						"rd": []string{fmt.Sprintf(
+							"%s://%s%s",
+							req.Header.Get("X-Forwarded-Proto"),
+							req.Header.Get("X-Forwarded-Host"),
+							req.Header.Get("X-Forwarded-Uri"),
+						)},
+					}
+					suffix = fmt.Sprintf("?%s", v.Encode())
+				}
 				proto := req.Header.Get("X-Forwarded-Proto")
 				if proto != "" {
 					proto = proto + ":"
 				}
-				http.Redirect(rw, req, fmt.Sprintf("%s//%s%s", proto, host, p.OAuthStartPath), http.StatusTemporaryRedirect)
+				rdFinal := fmt.Sprintf("%s//%s%s%s", proto, host, p.OAuthStartPath, suffix)
+				p.logger.WithField("url", rdFinal).Debug("Redirecting to login")
+				http.Redirect(rw, req, rdFinal, http.StatusTemporaryRedirect)
 				return
 			}
 		}
@@ -360,7 +343,7 @@ func (p *OAuthProxy) AuthenticateOnly(rw http.ResponseWriter, req *http.Request)
 	}
 	// we are authenticated
 	p.addHeadersForProxying(rw, req, session)
-	if p.forwardAuthMode {
+	if p.mode == api.PROXYMODE_FORWARD_SINGLE || p.mode == api.PROXYMODE_FORWARD_DOMAIN {
 		for headerKey, headers := range req.Header {
 			for _, value := range headers {
 				rw.Header().Set(headerKey, value)
@@ -459,15 +442,17 @@ func (p *OAuthProxy) addHeadersForProxying(rw http.ResponseWriter, req *http.Req
 			username = session.Email
 		}
 		authVal := b64.StdEncoding.EncodeToString([]byte(username + ":" + password))
+		p.logger.WithField("username", username).Trace("setting http basic auth")
 		req.Header["Authorization"] = []string{fmt.Sprintf("Basic %s", authVal)}
 	}
 	// Check if user has additional headers set that we should sent
-	if additionalHeaders, ok := userAttributes["additionalHeaders"].(map[string]string); ok {
+	if additionalHeaders, ok := userAttributes["additionalHeaders"].(map[string]interface{}); ok {
+		p.logger.WithField("headers", additionalHeaders).Trace("setting additional headers")
 		if additionalHeaders == nil {
 			return
 		}
 		for key, value := range additionalHeaders {
-			req.Header.Set(key, value)
+			req.Header.Set(key, toString(value))
 		}
 	}
 }

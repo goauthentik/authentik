@@ -55,6 +55,11 @@ export class UserReputationListPage extends TablePage<UserReputation> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`User Reputation`}
+                .usedBy=${() => {
+                    return new PoliciesApi(DEFAULT_CONFIG).policiesReputationUsersUsedByList({
+                        id: item.pk
+                    });
+                }}
                 .delete=${() => {
                     return new PoliciesApi(DEFAULT_CONFIG).policiesReputationUsersDestroy({
                         id: item.pk,

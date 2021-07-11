@@ -7,7 +7,17 @@ export class LoggingMiddleware implements Middleware {
 
     post(context: ResponseContext): Promise<Response | void> {
         tenant().then(tenant => {
-            console.debug(`authentik/api[${tenant.matchedDomain}]: ${context.response.status} ${context.init.method} ${context.url}`);
+            let msg = `authentik/api[${tenant.matchedDomain}]: `;
+            msg += `${context.response.status} ${context.init.method} ${context.url}`;
+            if (context.response.status >= 400) {
+                const resClone = context.response.clone();
+                resClone.text().then(t => {
+                    msg += ` => ${t}`;
+                    console.debug(msg);
+                });
+            } else {
+                console.debug(msg);
+            }
         });
         return Promise.resolve(context.response);
     }

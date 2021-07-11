@@ -182,8 +182,8 @@ class TestFlowPlanner(TestCase):
             planner = FlowPlanner(flow)
             plan = planner.plan(request)
 
-            self.assertEqual(plan.stages[0], binding.stage)
-            self.assertEqual(plan.stages[1], binding2.stage)
+            self.assertEqual(plan.bindings[0], binding)
+            self.assertEqual(plan.bindings[1], binding2)
 
             self.assertIsInstance(plan.markers[0], StageMarker)
             self.assertIsInstance(plan.markers[1], ReevaluateMarker)

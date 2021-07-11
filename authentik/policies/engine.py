@@ -62,12 +62,6 @@ class PolicyEngine:
     # Allow objects with no policies attached to pass
     empty_result: bool
 
-    __pbm: PolicyBindingModel
-    __cached_policies: list[PolicyResult]
-    __processes: list[PolicyProcessInfo]
-
-    __expected_result_count: int
-
     def __init__(
         self, pbm: PolicyBindingModel, user: User, request: HttpRequest = None
     ):
@@ -83,8 +77,8 @@ class PolicyEngine:
         self.request.obj = pbm
         if request:
             self.request.set_http_request(request)
-        self.__cached_policies = []
-        self.__processes = []
+        self.__cached_policies: list[PolicyResult] = []
+        self.__processes: list[PolicyProcessInfo] = []
         self.use_cache = True
         self.__expected_result_count = 0
 

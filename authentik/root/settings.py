@@ -15,6 +15,7 @@ import logging
 import os
 import sys
 from json import dumps
+from tempfile import gettempdir
 from time import time
 
 import structlog
@@ -152,9 +153,11 @@ SPECTACULAR_SETTINGS = {
         "url": "https://github.com/goauthentik/authentik/blob/master/LICENSE",
     },
     "ENUM_NAME_OVERRIDES": {
+        "EventActions": "authentik.events.models.EventAction",
         "ChallengeChoices": "authentik.flows.challenge.ChallengeTypes",
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
+        "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "POSTPROCESSING_HOOKS": [
@@ -192,6 +195,7 @@ CACHES = {
             f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:6379"
             f"/{CONFIG.y('redis.cache_db')}"
         ),
+        "TIMEOUT": int(CONFIG.y("redis.cache_timeout", 300)),
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
     }
 }
@@ -199,14 +203,16 @@ DJANGO_REDIS_IGNORE_EXCEPTIONS = True
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
-SESSION_COOKIE_SAMESITE = "lax"
+# Configured via custom SessionMiddleware
+# SESSION_COOKIE_SAMESITE = "None"
+# SESSION_COOKIE_SECURE = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 MESSAGE_STORAGE = "authentik.root.messages.storage.ChannelsStorage"
 
 MIDDLEWARE = [
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
+    "authentik.root.middleware.SessionMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "authentik.core.middleware.RequestIDMiddleware",
     "authentik.tenants.middleware.TenantMiddleware",
@@ -340,7 +346,7 @@ DBBACKUP_FILENAME_TEMPLATE = "authentik-backup-{datetime}.sql"
 DBBACKUP_CONNECTOR_MAPPING = {
     "django_prometheus.db.backends.postgresql": "dbbackup.db.postgresql.PgDumpConnector",
 }
-
+DBBACKUP_TMP_DIR = gettempdir() if DEBUG else "/tmp"  # nosec
 if CONFIG.y("postgresql.s3_backup"):
     DBBACKUP_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
     DBBACKUP_STORAGE_OPTIONS = {
@@ -374,7 +380,11 @@ if _ERROR_REPORTING:
         environment=CONFIG.y("error_reporting.environment", "customer"),
         send_default_pii=CONFIG.y_bool("error_reporting.send_pii", False),
     )
-    set_tag("authentik.build_hash", os.environ.get(ENV_GIT_HASH_KEY, "tagged"))
+    # Default to empty string as that is what docker has
+    build_hash = os.environ.get(ENV_GIT_HASH_KEY, "")
+    if build_hash == "":
+        build_hash = "tagged"
+    set_tag("authentik.build_hash", build_hash)
     set_tag(
         "authentik.env", "kubernetes" if "KUBERNETES_PORT" in os.environ else "compose"
     )
@@ -391,7 +401,10 @@ if _ERROR_REPORTING:
 STATIC_URL = "/static/"
 MEDIA_URL = "/media/"
 
-LOG_LEVEL = CONFIG.y("log_level").upper()
+TEST = False
+TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
+
+LOG_LEVEL = CONFIG.y("log_level").upper() if not TEST else "DEBUG"
 
 
 structlog.configure_once(
@@ -448,9 +461,6 @@ LOGGING = {
     },
     "loggers": {},
 }
-
-TEST = False
-TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
 
 _LOGGING_HANDLER_MAP = {
     "": LOG_LEVEL,

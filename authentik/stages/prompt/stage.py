@@ -89,9 +89,15 @@ class PromptChallengeResponse(ChallengeResponse):
         if len(all_passwords) > 1:
             raise ValidationError(_("Passwords don't match."))
 
-    def validate(self, attrs):
-        if attrs == {}:
-            return {}
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
+        # Check if we have any static or hidden fields, and ensure they
+        # still have the same value
+        static_hidden_fields: QuerySet[Prompt] = self.stage.fields.filter(
+            type__in=[FieldTypes.HIDDEN, FieldTypes.STATIC]
+        )
+        for static_hidden in static_hidden_fields:
+            attrs[static_hidden.field_key] = static_hidden.placeholder
+
         # Check if we have two password fields, and make sure they are the same
         password_fields: QuerySet[Prompt] = self.stage.fields.filter(
             type=FieldTypes.PASSWORD
@@ -140,8 +146,6 @@ def password_single_validator_factory() -> Callable[[PromptChallenge, str], Any]
 class ListPolicyEngine(PolicyEngine):
     """Slightly modified policy engine, which uses a list instead of a PolicyBindingModel"""
 
-    __list: list[Policy]
-
     def __init__(
         self, policies: list[Policy], user: User, request: HttpRequest = None
     ) -> None:
@@ -172,7 +176,7 @@ class PromptStageView(ChallengeStageView):
         return challenge
 
     def get_response_instance(self, data: QueryDict) -> ChallengeResponse:
-        if not self.executor.plan:
+        if not self.executor.plan:  # pragma: no cover
             raise ValueError
         return PromptChallengeResponse(
             instance=None,

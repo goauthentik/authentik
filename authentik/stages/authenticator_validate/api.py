@@ -2,6 +2,7 @@
 from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.flows.models import NotConfiguredAction
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
@@ -32,7 +33,7 @@ class AuthenticatorValidateStageSerializer(StageSerializer):
         ]
 
 
-class AuthenticatorValidateStageViewSet(ModelViewSet):
+class AuthenticatorValidateStageViewSet(UsedByMixin, ModelViewSet):
     """AuthenticatorValidateStage Viewset"""
 
     queryset = AuthenticatorValidateStage.objects.all()

@@ -1,4 +1,5 @@
 """SAMLSource API Views"""
+from django.urls import reverse
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.request import Request
@@ -6,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.sources import SourceSerializer
+from authentik.core.api.used_by import UsedByMixin
 from authentik.providers.saml.api import SAMLMetadataSerializer
 from authentik.sources.saml.models import SAMLSource
 from authentik.sources.saml.processors.metadata import MetadataProcessor
@@ -32,7 +34,7 @@ class SAMLSourceSerializer(SourceSerializer):
         ]
 
 
-class SAMLSourceViewSet(ModelViewSet):
+class SAMLSourceViewSet(UsedByMixin, ModelViewSet):
     """SAMLSource Viewset"""
 
     queryset = SAMLSource.objects.all()
@@ -46,4 +48,9 @@ class SAMLSourceViewSet(ModelViewSet):
         """Return metadata as XML string"""
         source = self.get_object()
         metadata = MetadataProcessor(source, request).build_entity_descriptor()
-        return Response({"metadata": metadata})
+        return Response(
+            {
+                "metadata": metadata,
+                "download_url": reverse("authentik_sources_saml:metadata"),
+            }
+        )

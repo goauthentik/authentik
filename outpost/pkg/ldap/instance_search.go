@@ -98,19 +98,14 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 		},
 	}
 
-	if *u.IsActive {
-		attrs = append(attrs, &ldap.EntryAttribute{Name: "accountStatus", Values: []string{"inactive"}})
-	} else {
-		attrs = append(attrs, &ldap.EntryAttribute{Name: "accountStatus", Values: []string{"active"}})
-	}
-
-	if u.IsSuperuser {
-		attrs = append(attrs, &ldap.EntryAttribute{Name: "superuser", Values: []string{"inactive"}})
-	} else {
-		attrs = append(attrs, &ldap.EntryAttribute{Name: "superuser", Values: []string{"active"}})
-	}
-
 	attrs = append(attrs, &ldap.EntryAttribute{Name: "memberOf", Values: pi.GroupsForUser(u)})
+
+	// Old fields for backwards compatibility
+	attrs = append(attrs, &ldap.EntryAttribute{Name: "accountStatus", Values: []string{BoolToString(*u.IsActive)}})
+	attrs = append(attrs, &ldap.EntryAttribute{Name: "superuser", Values: []string{BoolToString(u.IsSuperuser)}})
+
+	attrs = append(attrs, &ldap.EntryAttribute{Name: "goauthentik.io/ldap/active", Values: []string{BoolToString(*u.IsActive)}})
+	attrs = append(attrs, &ldap.EntryAttribute{Name: "goauthentik.io/ldap/superuser", Values: []string{BoolToString(u.IsSuperuser)}})
 
 	attrs = append(attrs, AKAttrsToLDAP(u.Attributes)...)
 

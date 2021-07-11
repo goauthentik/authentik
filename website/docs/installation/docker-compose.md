@@ -6,17 +6,17 @@ This installation method is for test-setups and small-scale productive setups.
 
 ## Requirements
 
-- A Linux host with at least 2 CPU cores and 4 GB of RAM.
+- A Linux host with at least 2 CPU cores and 2 GB of RAM.
 - docker
 - docker-compose
 
 ## Preparation
 
-Download the latest `docker-compose.yml` from [here](https://raw.githubusercontent.com/goauthentik/authentik/version/2021.5.4/docker-compose.yml). Place it in a directory of your choice.
+Download the latest `docker-compose.yml` from [here](https://raw.githubusercontent.com/goauthentik/authentik/version/2021.6.4/docker-compose.yml). Place it in a directory of your choice.
 
 To optionally enable error-reporting, run `echo AUTHENTIK_ERROR_REPORTING__ENABLED=true >> .env`
 
-To optionally deploy a different version run `echo AUTHENTIK_TAG=2021.5.4 >> .env`
+To optionally deploy a different version run `echo AUTHENTIK_TAG=2021.6.4 >> .env`
 
 If this is a fresh authentik install run the following commands to generate a password:
 
@@ -74,7 +74,6 @@ Afterwards, run these commands to finish
 ```shell
 docker-compose pull
 docker-compose up -d
-docker-compose run --rm server migrate
 ```
 
 The compose file statically references the latest version available at the time of downloading, which can be overridden with the `SERVER_TAG` environment variable.

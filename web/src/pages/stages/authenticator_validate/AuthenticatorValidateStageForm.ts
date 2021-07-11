@@ -16,13 +16,13 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
         return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateRetrieve({
             stageUuid: pk,
         }).then(stage => {
-            this.showConfigureFlow = stage.notConfiguredAction === NotConfiguredActionEnum.Configure;
+            this.showConfigurationStage = stage.notConfiguredAction === NotConfiguredActionEnum.Configure;
             return stage;
         });
     }
 
     @property({ type: Boolean })
-    showConfigureFlow = false;
+    showConfigurationStage = true;
 
     getSuccessMessage(): string {
         if (this.instance) {
@@ -68,29 +68,6 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                 </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Not configured action`}
-                        ?required=${true}
-                        name="notConfiguredAction">
-                        <select class="pf-c-form-control" @change=${(ev: Event) => {
-                            const target = ev.target as HTMLSelectElement;
-                            if (target.selectedOptions[0].value === NotConfiguredActionEnum.Configure) {
-                                this.showConfigureFlow = true;
-                            } else {
-                                this.showConfigureFlow = false;
-                            }
-                        }}>
-                            <option value=${NotConfiguredActionEnum.Configure} ?selected=${this.instance?.notConfiguredAction === NotConfiguredActionEnum.Configure}>
-                                ${t`Force the user to configure an authenticator`}
-                            </option>
-                            <option value=${NotConfiguredActionEnum.Deny} ?selected=${this.instance?.notConfiguredAction === NotConfiguredActionEnum.Deny}>
-                                ${t`Deny the user access`}
-                            </option>
-                            <option value=${NotConfiguredActionEnum.Skip} ?selected=${this.instance?.notConfiguredAction === NotConfiguredActionEnum.Skip}>
-                                ${t`Continue`}
-                            </option>
-                        </select>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
                         label=${t`Device classes`}
                         ?required=${true}
                         name="deviceClasses">
@@ -111,24 +88,47 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                         <p class="pf-c-form__helper-text">${t`Device classes which can be used to authenticate.`}</p>
                         <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
                     </ak-form-element-horizontal>
-                    ${this.showConfigureFlow ? html`
                     <ak-form-element-horizontal
-                        label=${t`Configuration flow`}
+                        label=${t`Not configured action`}
                         ?required=${true}
-                        name="configureFlow">
-                        <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.configurationStage === undefined}>---------</option>
-                            ${until(new StagesApi(DEFAULT_CONFIG).stagesAllList({
-                                ordering: "pk",
-                            }).then(stages => {
-                                return stages.results.map(stage => {
-                                    const selected = this.instance?.configurationStage === stage.pk;
-                                    return html`<option value=${ifDefined(stage.pk)} ?selected=${selected}>${stage.name} (${stage.verboseName})</option>`;
-                                });
-                            }), html`<option>${t`Loading...`}</option>`)}
+                        name="notConfiguredAction">
+                        <select class="pf-c-form-control" @change=${(ev: Event) => {
+                            const target = ev.target as HTMLSelectElement;
+                            if (target.selectedOptions[0].value === NotConfiguredActionEnum.Configure) {
+                                this.showConfigurationStage = true;
+                            } else {
+                                this.showConfigurationStage = false;
+                            }
+                        }}>
+                            <option value=${NotConfiguredActionEnum.Configure} ?selected=${this.instance?.notConfiguredAction === NotConfiguredActionEnum.Configure}>
+                                ${t`Force the user to configure an authenticator`}
+                            </option>
+                            <option value=${NotConfiguredActionEnum.Deny} ?selected=${this.instance?.notConfiguredAction === NotConfiguredActionEnum.Deny}>
+                                ${t`Deny the user access`}
+                            </option>
+                            <option value=${NotConfiguredActionEnum.Skip} ?selected=${this.instance?.notConfiguredAction === NotConfiguredActionEnum.Skip}>
+                                ${t`Continue`}
+                            </option>
                         </select>
-                        <p class="pf-c-form__helper-text">${t`Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.`}</p>
                     </ak-form-element-horizontal>
+                    ${this.showConfigurationStage ? html`
+                        <ak-form-element-horizontal
+                            label=${t`Configuration stage`}
+                            ?required=${true}
+                            name="configurationStage">
+                            <select class="pf-c-form-control">
+                                <option value="" ?selected=${this.instance?.configurationStage === undefined}>---------</option>
+                                ${until(new StagesApi(DEFAULT_CONFIG).stagesAllList({
+                                    ordering: "pk",
+                                }).then(stages => {
+                                    return stages.results.map(stage => {
+                                        const selected = this.instance?.configurationStage === stage.pk;
+                                        return html`<option value=${ifDefined(stage.pk)} ?selected=${selected}>${stage.name} (${stage.verboseName})</option>`;
+                                    });
+                                }), html`<option>${t`Loading...`}</option>`)}
+                            </select>
+                            <p class="pf-c-form__helper-text">${t`Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.`}</p>
+                        </ak-form-element-horizontal>
                     `: html``}
                 </div>
             </ak-form-group>

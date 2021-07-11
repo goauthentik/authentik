@@ -215,8 +215,7 @@ class OAuth2Provider(Provider):
     rsa_key = models.ForeignKey(
         CertificateKeyPair,
         verbose_name=_("RSA Key"),
-        on_delete=models.CASCADE,
-        blank=True,
+        on_delete=models.SET_NULL,
         null=True,
         help_text=_(
             "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
@@ -279,7 +278,7 @@ class OAuth2Provider(Provider):
         """Guess launch_url based on first redirect_uri"""
         if self.redirect_uris == "":
             return None
-        main_url = self.redirect_uris.split("\n")[0]
+        main_url = self.redirect_uris.split("\n", maxsplit=1)[0]
         launch_url = urlparse(main_url)
         return main_url.replace(launch_url.path, "")
 
@@ -319,6 +318,7 @@ class BaseGrantModel(models.Model):
     provider = models.ForeignKey(OAuth2Provider, on_delete=models.CASCADE)
     user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
     _scope = models.TextField(default="", verbose_name=_("Scopes"))
+    revoked = models.BooleanField(default=False)
 
     @property
     def scope(self) -> list[str]:
@@ -474,9 +474,7 @@ class RefreshToken(ExpiringModel, BaseGrantModel):
         # Convert datetimes into timestamps.
         now = int(time.time())
         iat_time = now
-        exp_time = int(
-            now + timedelta_from_string(self.provider.token_validity).seconds
-        )
+        exp_time = int(dateformat.format(self.expires, "U"))
         # We use the timestamp of the user's last successful login (EventAction.LOGIN) for auth_time
         auth_events = Event.objects.filter(
             action=EventAction.LOGIN, user=get_user(user)

@@ -26,7 +26,7 @@ import "./stages/password/PasswordStage";
 import "./stages/prompt/PromptStage";
 import "./sources/plex/PlexLoginInit";
 import { StageHost } from "./stages/base";
-import { ChallengeChoices, CurrentTenant, FlowChallengeRequest, FlowChallengeResponseRequest, FlowsApi, RedirectChallenge, ShellChallenge } from "authentik-api";
+import { ChallengeChoices, CurrentTenant, ChallengeTypes, FlowChallengeResponseRequest, FlowsApi, RedirectChallenge, ShellChallenge } from "authentik-api";
 import { DEFAULT_CONFIG, tenant } from "../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
@@ -40,7 +40,7 @@ export class FlowExecutor extends LitElement implements StageHost {
     flowSlug: string;
 
     @property({attribute: false})
-    challenge?: FlowChallengeRequest;
+    challenge?: ChallengeTypes;
 
     @property({type: Boolean})
     loading = false;
@@ -86,8 +86,8 @@ export class FlowExecutor extends LitElement implements StageHost {
 
     private postUpdate(): void {
         tenant().then(tenant => {
-            if (this.challenge?.title) {
-                document.title = `${this.challenge.title} - ${tenant.brandingTitle}`;
+            if (this.challenge?.flowInfo?.title) {
+                document.title = `${this.challenge.flowInfo?.title} - ${tenant.brandingTitle}`;
             } else {
                 document.title = tenant.brandingTitle || TITLE_DEFAULT;
             }
@@ -107,8 +107,8 @@ export class FlowExecutor extends LitElement implements StageHost {
         }).then((data) => {
             this.challenge = data;
             this.postUpdate();
-        }).catch((e: Error) => {
-            this.errorMessage(e.toString());
+        }).catch((e: Error | Response) => {
+            this.errorMessage(e);
         }).finally(() => {
             this.loading = false;
         });
@@ -124,19 +124,25 @@ export class FlowExecutor extends LitElement implements StageHost {
         }).then((challenge) => {
             this.challenge = challenge;
             // Only set background on first update, flow won't change throughout execution
-            if (this.challenge?.background) {
-                this.setBackground(this.challenge.background);
+            if (this.challenge?.flowInfo?.background) {
+                this.setBackground(this.challenge.flowInfo.background);
             }
             this.postUpdate();
-        }).catch((e: Error) => {
+        }).catch((e: Error | Response) => {
             // Catch JSON or Update errors
-            this.errorMessage(e.toString());
+            this.errorMessage(e);
         }).finally(() => {
             this.loading = false;
         });
     }
 
-    errorMessage(error: string): void {
+    async errorMessage(error: Error | Response): Promise<void> {
+        let body = "";
+        if (error instanceof Error) {
+            body = error.message;
+        } else if (error instanceof Response) {
+            body = await error.text();
+        }
         this.challenge = {
             type: ChallengeChoices.Shell,
             body: `<header class="pf-c-login__main-header">
@@ -146,7 +152,7 @@ export class FlowExecutor extends LitElement implements StageHost {
             </header>
             <div class="pf-c-login__main-body">
                 <h3>${t`Something went wrong! Please try again later.`}</h3>
-                <pre class="ak-exception">${error}</pre>
+                <pre class="ak-exception">${body}</pre>
             </div>
             <footer class="pf-c-login__main-footer">
                 <ul class="pf-c-login__main-footer-links">
@@ -157,7 +163,7 @@ export class FlowExecutor extends LitElement implements StageHost {
                     </li>
                 </ul>
             </footer>`
-        } as FlowChallengeRequest;
+        } as ChallengeTypes;
     }
 
     renderLoading(): TemplateResult {
@@ -271,8 +277,8 @@ export class FlowExecutor extends LitElement implements StageHost {
                         ${this.tenant?.brandingTitle != "authentik" ? html`
                             <li><a href="https://goauthentik.io">${t`Powered by authentik`}</a></li>
                         ` : html``}
-                        ${this.challenge?.background?.startsWith("/static") ? html`
-                            <li><a href="https://unsplash.com/@danasaki">${t`Background image`}</a></li>
+                        ${this.challenge?.flowInfo?.background?.startsWith("/static") ? html`
+                            <li><a href="https://unsplash.com/@ventiviews">${t`Background image`}</a></li>
                         ` : html``}
                     </ul>
                 </footer>

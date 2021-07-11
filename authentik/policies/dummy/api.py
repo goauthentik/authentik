@@ -1,6 +1,7 @@
 """Dummy Policy API Views"""
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.policies.api.policies import PolicySerializer
 from authentik.policies.dummy.models import DummyPolicy
 
@@ -13,7 +14,7 @@ class DummyPolicySerializer(PolicySerializer):
         fields = PolicySerializer.Meta.fields + ["result", "wait_min", "wait_max"]
 
 
-class DummyPolicyViewSet(ModelViewSet):
+class DummyPolicyViewSet(UsedByMixin, ModelViewSet):
     """Dummy Viewset"""
 
     queryset = DummyPolicy.objects.all()

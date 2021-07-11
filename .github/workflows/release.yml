@@ -33,12 +33,21 @@ jobs:
         with:
           push: ${{ github.event_name == 'release' }}
           tags: |
-            beryju/authentik:2021.5.4,
+            beryju/authentik:2021.6.4,
             beryju/authentik:latest,
-            ghcr.io/goauthentik/server:2021.5.4,
+            ghcr.io/goauthentik/server:2021.6.4,
             ghcr.io/goauthentik/server:latest
           platforms: linux/amd64,linux/arm64
           context: .
+      - name: Building Docker Image (stable)
+        if: ${{ github.event_name == 'release' && !contains('2021.6.4', 'rc') }}
+        run: |
+          docker pull beryju/authentik:latest
+          docker tag beryju/authentik:latest beryju/authentik:stable
+          docker push beryju/authentik:stable
+          docker pull ghcr.io/goauthentik/server:latest
+          docker tag ghcr.io/goauthentik/server:latest ghcr.io/goauthentik/server:stable
+          docker push ghcr.io/goauthentik/server:stable
   build-proxy:
     runs-on: ubuntu-latest
     steps:
@@ -66,12 +75,21 @@ jobs:
         with:
           push: ${{ github.event_name == 'release' }}
           tags: |
-            beryju/authentik-proxy:2021.5.4,
+            beryju/authentik-proxy:2021.6.4,
             beryju/authentik-proxy:latest,
-            ghcr.io/goauthentik/proxy:2021.5.4,
+            ghcr.io/goauthentik/proxy:2021.6.4,
             ghcr.io/goauthentik/proxy:latest
           file: outpost/proxy.Dockerfile
           platforms: linux/amd64,linux/arm64
+      - name: Building Docker Image (stable)
+        if: ${{ github.event_name == 'release' && !contains('2021.6.4', 'rc') }}
+        run: |
+          docker pull beryju/authentik-proxy:latest
+          docker tag beryju/authentik-proxy:latest beryju/authentik-proxy:stable
+          docker push beryju/authentik-proxy:stable
+          docker pull ghcr.io/goauthentik/proxy:latest
+          docker tag ghcr.io/goauthentik/proxy:latest ghcr.io/goauthentik/proxy:stable
+          docker push ghcr.io/goauthentik/proxy:stable
   build-ldap:
     runs-on: ubuntu-latest
     steps:
@@ -99,14 +117,22 @@ jobs:
         with:
           push: ${{ github.event_name == 'release' }}
           tags: |
-            beryju/authentik-ldap:2021.5.4,
+            beryju/authentik-ldap:2021.6.4,
             beryju/authentik-ldap:latest,
-            ghcr.io/goauthentik/ldap:2021.5.4,
+            ghcr.io/goauthentik/ldap:2021.6.4,
             ghcr.io/goauthentik/ldap:latest
           file: outpost/ldap.Dockerfile
           platforms: linux/amd64,linux/arm64
+      - name: Building Docker Image (stable)
+        if: ${{ github.event_name == 'release' && !contains('2021.6.4', 'rc') }}
+        run: |
+          docker pull beryju/authentik-ldap:latest
+          docker tag beryju/authentik-ldap:latest beryju/authentik-ldap:stable
+          docker push beryju/authentik-ldap:stable
+          docker pull ghcr.io/goauthentik/ldap:latest
+          docker tag ghcr.io/goauthentik/ldap:latest ghcr.io/goauthentik/ldap:stable
+          docker push ghcr.io/goauthentik/ldap:stable
   test-release:
-    if: ${{ github.event_name == 'release' }}
     needs:
       - build-server
       - build-proxy
@@ -122,7 +148,7 @@ jobs:
           docker-compose pull -q
           docker-compose up --no-start
           docker-compose start postgresql redis
-          docker-compose run -u root --entrypoint /bin/bash server -c "apt-get update && apt-get install -y --no-install-recommends git && pip install --no-cache -r requirements-dev.txt && ./manage.py test authentik"
+          docker-compose run -u root server test
   sentry-release:
     if: ${{ github.event_name == 'release' }}
     needs:
@@ -130,13 +156,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.2.0
+        with:
+          node-version: 12.x
+      - name: Build web api client and web ui
+        run: |
+          export NODE_ENV=production
+          make gen-web
+          cd web
+          npm i
+          npm run build
       - name: Create a Sentry.io release
         uses: getsentry/action-release@v1
+        if: ${{ github.event_name == 'release' }}
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: beryjuorg
           SENTRY_PROJECT: authentik
           SENTRY_URL: https://sentry.beryju.org
         with:
-          version: authentik@2021.5.4
+          version: authentik@2021.6.4
           environment: beryjuorg-prod
+          sourcemaps: './web/dist'

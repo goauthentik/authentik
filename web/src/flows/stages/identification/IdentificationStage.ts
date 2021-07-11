@@ -11,7 +11,7 @@ import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import AKGlobal from "../../../authentik.css";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
-import { FlowChallengeRequest, IdentificationChallenge, IdentificationChallengeResponseRequest, UILoginButton } from "authentik-api";
+import { IdentificationChallenge, IdentificationChallengeResponseRequest, LoginSource, UserFieldsEnum } from "authentik-api";
 
 export const PasswordManagerPrefill: {
     password: string | undefined;
@@ -21,6 +21,7 @@ export const PasswordManagerPrefill: {
     totp: undefined,
 };
 
+export const OR_LIST_FORMATTERS = new Intl.ListFormat("default", { style: "short", type: "disjunction" });
 
 @customElement("ak-stage-identification")
 export class IdentificationStage extends BaseStage<IdentificationChallenge, IdentificationChallengeResponseRequest> {
@@ -109,7 +110,7 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
         wrapperForm.appendChild(totp);
     }
 
-    renderSource(source: UILoginButton): TemplateResult {
+    renderSource(source: LoginSource): TemplateResult {
         let icon = html`<i class="fas fas fa-share-square" title="${source.name}"></i>`;
         if (source.iconUrl) {
             icon = html`<img src="${source.iconUrl}" alt="${source.name}">`;
@@ -117,7 +118,7 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
         return html`<li class="pf-c-login__main-footer-links-item">
                 <button type="button" @click=${() => {
                     if (!this.host) return;
-                    this.host.challenge = source.challenge as FlowChallengeRequest;
+                    this.host.challenge = source.challenge;
                 }}>
                     ${icon}
                 </button>
@@ -142,21 +143,23 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
     }
 
     renderInput(): TemplateResult {
-        let label = "";
         let type = "text";
         if (!this.challenge?.userFields) {
             return html`<p>
                 ${t`Select one of the sources below to login.`}
             </p>`;
         }
-        if (this.challenge?.userFields === ["email"]) {
-            label = t`Email`;
+        const fields = (this.challenge?.userFields || []).sort();
+        // Check if the field should be *only* email to set the input type
+        if (fields.includes(UserFieldsEnum.Email) && fields.length === 1) {
             type = "email";
-        } else if (this.challenge?.userFields === ["username"]) {
-            label = t`Username`;
-        } else {
-            label = t`Email or username`;
         }
+        const uiFields: { [key: string]: string } = {
+            [UserFieldsEnum.Username]: t`Username`,
+            [UserFieldsEnum.Email]: t`Email`,
+            [UserFieldsEnum.Upn]: t`UPN`,
+        };
+        const label = OR_LIST_FORMATTERS.format(fields.map(f => uiFields[f]));
         return html`<ak-form-element
                 label=${label}
                 ?required="${true}"
@@ -165,7 +168,7 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
                 <!-- @ts-ignore -->
                 <input type=${type}
                     name="uidField"
-                    placeholder="Email or Username"
+                    placeholder=${label}
                     autofocus=""
                     autocomplete="username"
                     class="pf-c-form-control"
@@ -206,7 +209,7 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">
-                    ${this.challenge.title}
+                    ${this.challenge.flowInfo?.title}
                 </h1>
             </header>
             <div class="pf-c-login__main-body">

@@ -11,6 +11,9 @@ export abstract class BaseUserSettings extends LitElement {
     @property()
     objectId!: string;
 
+    @property()
+    configureUrl?: string;
+
     static get styles(): CSSResult[] {
         return [PFBase, PFCard, PFButton, PFForm, PFFormControl, AKGlobal];
     }

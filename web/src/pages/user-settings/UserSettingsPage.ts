@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -13,7 +13,7 @@ import AKGlobal from "../../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import { SourcesApi, StagesApi, StageUserSetting, UserSetting } from "authentik-api";
+import { SourcesApi, StagesApi, UserSetting } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
@@ -27,6 +27,7 @@ import "./settings/UserSettingsAuthenticatorTOTP";
 import "./settings/UserSettingsAuthenticatorWebAuthn";
 import "./settings/UserSettingsPassword";
 import "./settings/SourceSettingsOAuth";
+import { EVENT_REFRESH } from "../../constants";
 
 @customElement("ak-user-settings")
 export class UserSettingsPage extends LitElement {
@@ -35,22 +36,40 @@ export class UserSettingsPage extends LitElement {
         return [PFBase, PFPage, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, PFForm, PFFormControl, AKGlobal];
     }
 
-    renderStageSettings(stage: StageUserSetting): TemplateResult {
+    @property({attribute: false})
+    userSettings?: Promise<UserSetting[]>;
+
+    @property({attribute: false})
+    sourceSettings?: Promise<UserSetting[]>;
+
+    constructor() {
+        super();
+        this.addEventListener(EVENT_REFRESH, () => {
+            this.firstUpdated();
+        });
+    }
+
+    firstUpdated(): void {
+        this.userSettings = new StagesApi(DEFAULT_CONFIG).stagesAllUserSettingsList();
+        this.sourceSettings = new SourcesApi(DEFAULT_CONFIG).sourcesAllUserSettingsList();
+    }
+
+    renderStageSettings(stage: UserSetting): TemplateResult {
         switch (stage.component) {
             case "ak-user-settings-authenticator-webauthn":
-                return html`<ak-user-settings-authenticator-webauthn objectId=${stage.objectUid} ?configureFlow=${stage.configureFlow}>
+                return html`<ak-user-settings-authenticator-webauthn objectId=${stage.objectUid} .configureUrl=${stage.configureUrl}>
                 </ak-user-settings-authenticator-webauthn>`;
             case "ak-user-settings-password":
-                return html`<ak-user-settings-password objectId=${stage.objectUid}>
+                return html`<ak-user-settings-password objectId=${stage.objectUid} .configureUrl=${stage.configureUrl}>
                 </ak-user-settings-password>`;
             case "ak-user-settings-authenticator-totp":
-                return html`<ak-user-settings-authenticator-totp objectId=${stage.objectUid} ?configureFlow=${stage.configureFlow}>
+                return html`<ak-user-settings-authenticator-totp objectId=${stage.objectUid} .configureUrl=${stage.configureUrl}>
                 </ak-user-settings-authenticator-totp>`;
             case "ak-user-settings-authenticator-static":
-                return html`<ak-user-settings-authenticator-static objectId=${stage.objectUid} ?configureFlow=${stage.configureFlow}>
+                return html`<ak-user-settings-authenticator-static objectId=${stage.objectUid} .configureUrl=${stage.configureUrl}>
                 </ak-user-settings-authenticator-static>`;
             case "ak-user-settings-authenticator-duo":
-                return html`<ak-user-settings-authenticator-duo objectId=${stage.objectUid} ?configureFlow=${stage.configureFlow}>
+                return html`<ak-user-settings-authenticator-duo objectId=${stage.objectUid} .configureUrl=${stage.configureUrl}>
                 </ak-user-settings-authenticator-duo>`;
             default:
                 return html`<p>${t`Error: unsupported stage settings: ${stage.component}`}</p>`;
@@ -60,7 +79,7 @@ export class UserSettingsPage extends LitElement {
     renderSourceSettings(source: UserSetting): TemplateResult {
         switch (source.component) {
             case "ak-user-settings-source-oauth":
-                return html`<ak-user-settings-source-oauth objectId=${source.objectUid} title=${source.title}>
+                return html`<ak-user-settings-source-oauth objectId=${source.objectUid} title=${source.title} .configureUrl=${source.configureUrl}>
                 </ak-user-settings-source-oauth>`;
             default:
                 return html`<p>${t`Error: unsupported source settings: ${source.component}`}</p>`;
@@ -82,14 +101,14 @@ export class UserSettingsPage extends LitElement {
                     <section slot="page-tokens" data-tab-title="${t`Tokens`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                         <ak-user-token-list></ak-user-token-list>
                     </section>
-                    ${until(new StagesApi(DEFAULT_CONFIG).stagesAllUserSettingsList().then((stages) => {
+                    ${until(this.userSettings?.then((stages) => {
                         return stages.map((stage) => {
                             return html`<section slot="page-${stage.objectUid}" data-tab-title="${ifDefined(stage.title)}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                                 ${this.renderStageSettings(stage)}
                             </section>`;
                         });
                     }))}
-                    ${until(new SourcesApi(DEFAULT_CONFIG).sourcesAllUserSettingsList().then((source) => {
+                    ${until(this.sourceSettings?.then((source) => {
                         return source.map((stage) => {
                             return html`<section slot="page-${stage.objectUid}" data-tab-title="${ifDefined(stage.title)}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                                 ${this.renderSourceSettings(stage)}

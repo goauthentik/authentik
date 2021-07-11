@@ -21,11 +21,12 @@ from authentik.core.middleware import (
 )
 from authentik.core.models import ExpiringModel, Group, User
 from authentik.events.geo import GEOIP_READER
-from authentik.events.utils import cleanse_dict, get_user, sanitize_dict
+from authentik.events.utils import cleanse_dict, get_user, model_to_dict, sanitize_dict
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.models import PolicyBindingModel
 from authentik.stages.email.utils import TemplateEmailMessage
+from authentik.tenants.utils import DEFAULT_TENANT
 
 LOGGER = get_logger("authentik.events")
 GAUGE_EVENTS = Gauge(
@@ -38,6 +39,11 @@ GAUGE_EVENTS = Gauge(
 def default_event_duration():
     """Default duration an Event is saved"""
     return now() + timedelta(days=365)
+
+
+def default_tenant():
+    """Get a default value for tenant"""
+    return sanitize_dict(model_to_dict(DEFAULT_TENANT))
 
 
 class NotificationTransportError(SentryIgnoredException):
@@ -71,12 +77,14 @@ class EventAction(models.TextChoices):
 
     SYSTEM_TASK_EXECUTION = "system_task_execution"
     SYSTEM_TASK_EXCEPTION = "system_task_exception"
+    SYSTEM_EXCEPTION = "system_exception"
 
     CONFIGURATION_ERROR = "configuration_error"
 
     MODEL_CREATED = "model_created"
     MODEL_UPDATED = "model_updated"
     MODEL_DELETED = "model_deleted"
+    EMAIL_SENT = "email_sent"
 
     UPDATE_AVAILABLE = "update_available"
 
@@ -93,6 +101,7 @@ class Event(ExpiringModel):
     context = models.JSONField(default=dict, blank=True)
     client_ip = models.GenericIPAddressField(null=True)
     created = models.DateTimeField(auto_now_add=True)
+    tenant = models.JSONField(default=default_tenant, blank=True)
 
     # Shadow the expires attribute from ExpiringModel to override the default duration
     expires = models.DateTimeField(default=default_event_duration)
@@ -131,6 +140,13 @@ class Event(ExpiringModel):
         """Add data from a Django-HttpRequest, allowing the creation of
         Events independently from requests.
         `user` arguments optionally overrides user from requests."""
+        if request:
+            self.context["http_request"] = {
+                "path": request.get_full_path(),
+                "method": request.method,
+            }
+        if hasattr(request, "tenant"):
+            self.tenant = sanitize_dict(model_to_dict(request.tenant))
         if hasattr(request, "user"):
             original_user = None
             if hasattr(request, "session"):
@@ -297,7 +313,8 @@ class NotificationTransport(models.Model):
             response = post(self.webhook_url, json=body)
             response.raise_for_status()
         except RequestException as exc:
-            raise NotificationTransportError(exc.response.text) from exc
+            text = exc.response.text if exc.response else str(exc)
+            raise NotificationTransportError(text) from exc
         return [
             response.status_code,
             response.text,

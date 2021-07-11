@@ -102,7 +102,7 @@ export class LDAPProviderViewPage extends LitElement {
                                         </span>
                                         <ak-provider-ldap-form
                                             slot="form"
-                                            .instancePk=${this.provider.pk || 0}>
+                                            .instancePk=${this.provider.pk}>
                                         </ak-provider-ldap-form>
                                         <button slot="trigger" class="pf-c-button pf-m-primary">
                                             ${t`Edit`}

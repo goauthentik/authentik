@@ -93,9 +93,14 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Outpost Service-connection`}
+                .usedBy=${() => {
+                    return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllUsedByList({
+                        uuid: item.pk
+                    });
+                }}
                 .delete=${() => {
                     return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllDestroy({
-                        uuid: item.pk || ""
+                        uuid: item.pk
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">

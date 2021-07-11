@@ -5,12 +5,13 @@ from typing import Any, Optional, Type
 from urllib.parse import urlencode
 from uuid import uuid4
 
+from deepmerge import always_merger
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.core import validators
 from django.db import models
-from django.db.models import Q, QuerySet
+from django.db.models import Q, QuerySet, options
 from django.http import HttpRequest
 from django.templatetags.static import static
 from django.utils.functional import cached_property
@@ -24,8 +25,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.signals import password_changed
-from authentik.core.types import UILoginButton
-from authentik.flows.challenge import Challenge
+from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.models import Flow
 from authentik.lib.config import CONFIG
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
@@ -40,6 +40,9 @@ USER_ATTRIBUTE_SOURCES = "goauthentik.io/user/sources"
 
 GRAVATAR_URL = "https://secure.gravatar.com"
 DEFAULT_AVATAR = static("dist/assets/images/user_default.png")
+
+
+options.DEFAULT_NAMES = options.DEFAULT_NAMES + ("authentik_used_by_shadows",)
 
 
 def default_token_duration():
@@ -111,8 +114,8 @@ class User(GuardianUserMixin, AbstractUser):
         including the users attributes"""
         final_attributes = {}
         for group in self.ak_groups.all().order_by("name"):
-            final_attributes.update(group.attributes)
-        final_attributes.update(self.attributes)
+            always_merger.merge(final_attributes, group.attributes)
+        always_merger.merge(final_attributes, self.attributes)
         return final_attributes
 
     @cached_property
@@ -139,21 +142,25 @@ class User(GuardianUserMixin, AbstractUser):
     @property
     def avatar(self) -> str:
         """Get avatar, depending on authentik.avatar setting"""
-        mode = CONFIG.raw.get("authentik").get("avatars")
+        mode: str = CONFIG.y("avatars", "none")
         if mode == "none":
             return DEFAULT_AVATAR
+        # gravatar uses md5 for their URLs, so md5 can't be avoided
+        mail_hash = md5(self.email.encode("utf-8")).hexdigest()  # nosec
         if mode == "gravatar":
             parameters = [
                 ("s", "158"),
                 ("r", "g"),
             ]
-            # gravatar uses md5 for their URLs, so md5 can't be avoided
-            mail_hash = md5(self.email.encode("utf-8")).hexdigest()  # nosec
             gravatar_url = (
                 f"{GRAVATAR_URL}/avatar/{mail_hash}?{urlencode(parameters, doseq=True)}"
             )
             return escape(gravatar_url)
-        raise ValueError(f"Invalid avatar mode {mode}")
+        return mode % {
+            "username": self.username,
+            "mail_hash": mail_hash,
+            "upn": self.attributes.get("upn", ""),
+        }
 
     class Meta:
 
@@ -221,7 +228,10 @@ class Application(PolicyBindingModel):
     )
     # For template applications, this can be set to /static/authentik/applications/*
     meta_icon = models.FileField(
-        upload_to="application-icons/", default=None, null=True
+        upload_to="application-icons/",
+        default=None,
+        null=True,
+        max_length=500,
     )
     meta_description = models.TextField(default="", blank=True)
     meta_publisher = models.TextField(default="", blank=True)
@@ -342,9 +352,9 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         return None
 
     @property
-    def ui_user_settings(self) -> Optional[Challenge]:
+    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
         """Entrypoint to integrate with User settings. Can either return None if no
-        user settings are available, or a challenge."""
+        user settings are available, or UserSettingSerializer."""
         return None
 
     def __str__(self):
@@ -457,7 +467,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         from authentik.core.expression import PropertyMappingEvaluator
 
         evaluator = PropertyMappingEvaluator()
-        evaluator.set_context(user, request, **kwargs)
+        evaluator.set_context(user, request, self, **kwargs)
         try:
             return evaluator.evaluate(self.expression)
         except (ValueError, SyntaxError) as exc:
@@ -491,8 +501,12 @@ class AuthenticatedSession(ExpiringModel):
     last_used = models.DateTimeField(auto_now=True)
 
     @staticmethod
-    def from_request(request: HttpRequest, user: User) -> "AuthenticatedSession":
+    def from_request(
+        request: HttpRequest, user: User
+    ) -> Optional["AuthenticatedSession"]:
         """Create a new session from a http request"""
+        if not hasattr(request, "session") or not request.session.session_key:
+            return None
         return AuthenticatedSession(
             session_key=request.session.session_key,
             user=user,

@@ -1,17 +1,18 @@
 import { t } from "@lingui/macro";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
-import { FlowsApi } from "authentik-api";
+import { EventActions, FlowsApi } from "authentik-api";
 import "../../elements/Spinner";
 import "../../elements/Expand";
 import { PFSize } from "../../elements/Spinner";
-import { EventContext, EventWithContext } from "../../api/Events";
+import { EventContext, EventModel, EventWithContext } from "../../api/Events";
 import { DEFAULT_CONFIG } from "../../api/Config";
-
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
+import { VERSION } from "../../constants";
 
 @customElement("ak-event-info")
 export class EventInfo extends LitElement {
@@ -20,7 +21,7 @@ export class EventInfo extends LitElement {
     event!: EventWithContext;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFFlex, PFList, PFDescriptionList,
+        return [PFBase, PFButton, PFFlex, PFList, PFDescriptionList,
             css`
                 code {
                     display: block;
@@ -32,11 +33,15 @@ export class EventInfo extends LitElement {
                 .pf-l-flex__item {
                     min-width: 25%;
                 }
+                iframe {
+                    width: 100%;
+                    height: 50rem;
+                }
             `
         ];
     }
 
-    getModelInfo(context: EventContext): TemplateResult {
+    getModelInfo(context: EventModel): TemplateResult {
         if (context === null) {
             return html`<span>-</span>`;
         }
@@ -46,7 +51,7 @@ export class EventInfo extends LitElement {
                     <span class="pf-c-description-list__text">${t`UID`}</span>
                 </dt>
                 <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">${context.pk as string}</div>
+                    <div class="pf-c-description-list__text">${context.pk}</div>
                 </dd>
             </div>
             <div class="pf-c-description-list__group">
@@ -54,7 +59,7 @@ export class EventInfo extends LitElement {
                     <span class="pf-c-description-list__text">${t`Name`}</span>
                 </dt>
                 <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">${context.name as string}</div>
+                    <div class="pf-c-description-list__text">${context.name}</div>
                 </dd>
             </div>
             <div class="pf-c-description-list__group">
@@ -62,7 +67,7 @@ export class EventInfo extends LitElement {
                     <span class="pf-c-description-list__text">${t`App`}</span>
                 </dt>
                 <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">${context.app as string}</div>
+                    <div class="pf-c-description-list__text">${context.app}</div>
                 </dd>
             </div>
             <div class="pf-c-description-list__group">
@@ -70,7 +75,51 @@ export class EventInfo extends LitElement {
                     <span class="pf-c-description-list__text">${t`Model Name`}</span>
                 </dt>
                 <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">${context.model_name as string}</div>
+                    <div class="pf-c-description-list__text">${context.model_name}</div>
+                </dd>
+            </div>
+        </dl>`;
+    }
+
+    getEmailInfo(context: EventContext): TemplateResult {
+        if (context === null) {
+            return html`<span>-</span>`;
+        }
+        return html`<dl class="pf-c-description-list pf-m-horizontal">
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${t`Message`}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">${context.message}</div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${t`Subject`}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">${context.subject}</div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${t`From`}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">${context.from_email}</div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${t`To`}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        ${(context.to_email as string[]).map(to => {
+                            return html`<li>${to}</li>`;
+                        })}
+                    </div>
                 </dd>
             </div>
         </dl>`;
@@ -89,23 +138,69 @@ export class EventInfo extends LitElement {
             </div>`;
     }
 
+    buildGitHubIssueUrl(context: EventContext): string {
+        const httpRequest = this.event.context.http_request as EventContext;
+        let title = "";
+        if (httpRequest) {
+            title = `${httpRequest?.method} ${httpRequest?.path}`;
+        }
+        // https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-issues/about-automation-for-issues-and-pull-requests-with-query-parameters
+        const fullBody = `
+**Describe the bug**
+A clear and concise description of what the bug is.
+
+**To Reproduce**
+Steps to reproduce the behavior:
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
+
+**Expected behavior**
+A clear and concise description of what you expected to happen.
+
+**Screenshots**
+If applicable, add screenshots to help explain your problem.
+
+**Logs**
+<details>
+    <summary>Stacktrace from authentik</summary>
+
+\`\`\`
+${context.message as string}
+\`\`\`
+</details>
+
+
+**Version and Deployment (please complete the following information):**
+- authentik version: ${VERSION}
+- Deployment: [e.g. docker-compose, helm]
+
+**Additional context**
+Add any other context about the problem here.
+        `;
+        return `https://github.com/goauthentik/authentik/issues/
+new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
+&body=${encodeURIComponent(fullBody)}`.trim();
+    }
+
     render(): TemplateResult {
         if (!this.event) {
             return html`<ak-spinner size=${PFSize.Medium}></ak-spinner>`;
         }
         switch (this.event?.action) {
-        case "model_created":
-        case "model_updated":
-        case "model_deleted":
+        case EventActions.ModelCreated:
+        case EventActions.ModelUpdated:
+        case EventActions.ModelDeleted:
             return html`
                 <h3>${t`Affected model:`}</h3>
-                ${this.getModelInfo(this.event.context?.model as EventContext)}
+                ${this.getModelInfo(this.event.context?.model as EventModel)}
                 `;
-        case "authorize_application":
+        case EventActions.AuthorizeApplication:
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${t`Authorized application:`}</h3>
-                        ${this.getModelInfo(this.event.context.authorized_application as EventContext)}
+                        ${this.getModelInfo(this.event.context.authorized_application as EventModel)}
                     </div>
                     <div class="pf-l-flex__item">
                         <h3>${t`Using flow`}</h3>
@@ -118,15 +213,34 @@ export class EventInfo extends LitElement {
                     </div>
                 </div>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case "login_failed":
-            return html`
-                <h3>${t`Attempted to log in as ${this.event.context.username}`}</h3>
-                <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case "secret_view":
+        case EventActions.EmailSent:
+            return html`<h3>${t`Email info:`}</h3>
+                ${this.getEmailInfo(this.event.context)}
+                <ak-expand>
+                    <iframe srcdoc=${this.event.context.body}></iframe>
+                </ak-expand>`;
+        case EventActions.SecretView:
             return html`
                 <h3>${t`Secret:`}</h3>
-                ${this.getModelInfo(this.event.context.secret as EventContext)}`;
-        case "property_mapping_exception":
+                ${this.getModelInfo(this.event.context.secret as EventModel)}`;
+        case EventActions.SystemException:
+            return html`
+                <a
+                    class="pf-c-button pf-m-primary"
+                    target="_blank"
+                    href=${this.buildGitHubIssueUrl(
+                        this.event.context
+                    )}>
+                    ${t`Open issue on GitHub...`}
+                </a>
+                <div class="pf-l-flex">
+                    <div class="pf-l-flex__item">
+                        <h3>${t`Exception`}</h3>
+                        <code>${this.event.context.message}</code>
+                    </div>
+                </div>
+                <ak-expand>${this.defaultResponse()}</ak-expand>`;
+        case EventActions.PropertyMappingException:
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${t`Exception`}</h3>
@@ -138,16 +252,16 @@ export class EventInfo extends LitElement {
                     </div>
                 </div>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case "policy_exception":
+        case EventActions.PolicyException:
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${t`Binding`}</h3>
-                        ${this.getModelInfo(this.event.context.binding as EventContext)}
+                        ${this.getModelInfo(this.event.context.binding as EventModel)}
                     </div>
                     <div class="pf-l-flex__item">
                         <h3>${t`Request`}</h3>
                         <ul class="pf-c-list">
-                            <li>${t`Object`}: ${this.getModelInfo((this.event.context.request as EventContext).obj as EventContext)}</li>
+                            <li>${t`Object`}: ${this.getModelInfo((this.event.context.request as EventContext).obj as EventModel)}</li>
                             <li><span>${t`Context`}: <code>${JSON.stringify((this.event.context.request as EventContext).context, null, 4)}</code></span></li>
                         </ul>
                     </div>
@@ -157,16 +271,16 @@ export class EventInfo extends LitElement {
                     </div>
                 </div>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case "policy_execution":
+        case EventActions.PolicyExecution:
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${t`Binding`}</h3>
-                        ${this.getModelInfo(this.event.context.binding as EventContext)}
+                        ${this.getModelInfo(this.event.context.binding as EventModel)}
                     </div>
                     <div class="pf-l-flex__item">
                         <h3>${t`Request`}</h3>
                         <ul class="pf-c-list">
-                            <li>${t`Object`}: ${this.getModelInfo((this.event.context.request as EventContext).obj as EventContext)}</li>
+                            <li>${t`Object`}: ${this.getModelInfo((this.event.context.request as EventContext).obj as EventModel)}</li>
                             <li><span>${t`Context`}: <code>${JSON.stringify((this.event.context.request as EventContext).context, null, 4)}</code></span></li>
                         </ul>
                     </div>
@@ -185,26 +299,33 @@ export class EventInfo extends LitElement {
                     </div>
                 </div>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case "configuration_error":
+        case EventActions.ConfigurationError:
             return html`<h3>${this.event.context.message}</h3>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case "update_available":
+        case EventActions.UpdateAvailable:
             return html`<h3>${t`New version available!`}</h3>
-                <a target="_blank" href="https://github.com/goauthentik/authentik/releases/tag/version%2F${this.event.context.new_version}">${this.event.context.new_version}</a>
-                `;
+                <a
+                    target="_blank"
+                    href="https://github.com/goauthentik/authentik/releases/tag/version%2F${this.event.context.new_version}">
+                    ${this.event.context.new_version}
+                </a>`;
         // Action types which typically don't record any extra context.
         // If context is not empty, we fall to the default response.
-        case "login":
+        case EventActions.Login:
             if ("using_source" in this.event.context) {
                 return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${t`Using source`}</h3>
-                        ${this.getModelInfo(this.event.context.using_source as EventContext)}
+                        ${this.getModelInfo(this.event.context.using_source as EventModel)}
                     </div>
                 </div>`;
             }
             return this.defaultResponse();
-        case "logout":
+        case EventActions.LoginFailed:
+            return html`
+                <h3>${t`Attempted to log in as ${this.event.context.username}`}</h3>
+                <ak-expand>${this.defaultResponse()}</ak-expand>`;
+        case EventActions.Logout:
             if (this.event.context === {}) {
                 return html`<span>${t`No additional data available.`}</span>`;
             }

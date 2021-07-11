@@ -1,8 +1,7 @@
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, TemplateResult } from "lit-element";
 import { t } from "@lingui/macro";
 import { AuthenticatorsApi, WebAuthnDevice } from "authentik-api";
 import { until } from "lit-html/directives/until";
-import { FlowURLManager } from "../../../api/legacy";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { BaseUserSettings } from "./BaseUserSettings";
 import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";
@@ -13,12 +12,10 @@ import "../../../elements/forms/Form";
 import "../../../elements/forms/ModalForm";
 import "../../../elements/forms/HorizontalFormElement";
 import { ifDefined } from "lit-html/directives/if-defined";
+import { EVENT_REFRESH } from "../../../constants";
 
 @customElement("ak-user-settings-authenticator-webauthn")
 export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
-
-    @property({type: Boolean})
-    configureFlow = false;
 
     static get styles(): CSSResult[] {
         return super.styles.concat(PFDataList);
@@ -32,7 +29,12 @@ export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
                 return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsWebauthnDestroy({
                     id: device.pk || 0
                 }).then(() => {
-                    this.requestUpdate();
+                    this.dispatchEvent(
+                        new CustomEvent(EVENT_REFRESH, {
+                            bubbles: true,
+                            composed: true,
+                        })
+                    );
                 });
             }}>
             <button slot="trigger" class="pf-c-button pf-m-danger">
@@ -101,8 +103,8 @@ export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
                 </ul>
             </div>
             <div class="pf-c-card__footer">
-                ${this.configureFlow ?
-                    html`<a href="${FlowURLManager.configure(this.objectId || "", "?next=/%23%2Fuser")}"
+                ${this.configureUrl ?
+                    html`<a href="${this.configureUrl}?next=/%23%2Fuser"
                             class="pf-c-button pf-m-primary">${t`Configure WebAuthn`}
                         </a>`: html``}
             </div>

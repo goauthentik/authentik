@@ -20,11 +20,11 @@ jobs:
           docker-compose pull -q
           docker build \
             --no-cache \
-            -t beryju/authentik:latest \
+            -t ghcr.io/goauthentik/server:latest \
             -f Dockerfile .
           docker-compose up --no-start
           docker-compose start postgresql redis
-          docker-compose run -u root --entrypoint /bin/bash server -c "apt-get update && apt-get install -y --no-install-recommends git && pip install --no-cache -r requirements-dev.txt && ./manage.py test authentik"
+          docker-compose run -u root server test
       - name: Extract version number
         id: get_version
         uses: actions/github-script@v4.0.2

@@ -27,6 +27,14 @@ class NotConfiguredAction(models.TextChoices):
     CONFIGURE = "configure"
 
 
+class InvalidResponseAction(models.TextChoices):
+    """Configure how the flow executor should handle invalid responses to challenges"""
+
+    RETRY = "retry"
+    RESTART = "restart"
+    RESTART_WITH_CONTEXT = "restart_with_context"
+
+
 class FlowDesignation(models.TextChoices):
     """Designation of what a Flow should be used for. At a later point, this
     should be replaced by a database entry."""
@@ -72,7 +80,7 @@ class Stage(SerializerModel):
     def __str__(self):
         if hasattr(self, "__in_memory_type"):
             return f"In-memory Stage {getattr(self, '__in_memory_type')}"
-        return self.name
+        return f"Stage {self.name}"
 
 
 def in_memory_stage(view: Type["StageView"]) -> Stage:
@@ -113,6 +121,7 @@ class Flow(SerializerModel, PolicyBindingModel):
         default=None,
         null=True,
         help_text=_("Background shown during execution"),
+        max_length=500,
     )
 
     compatibility_mode = models.BooleanField(
@@ -201,6 +210,17 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
         help_text=_("Evaluate policies when the Stage is present to the user."),
     )
 
+    invalid_response_action = models.TextField(
+        choices=InvalidResponseAction.choices,
+        default=InvalidResponseAction.RETRY,
+        help_text=_(
+            "Configure how the flow executor should handle an invalid response to a "
+            "challenge. RETRY returns the error message and a similar challenge to the "
+            "executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT "
+            "restarts the flow while keeping the current context."
+        ),
+    )
+
     order = models.IntegerField()
 
     objects = InheritanceManager()
@@ -212,7 +232,7 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
         return FlowStageBindingSerializer
 
     def __str__(self) -> str:
-        return f"{self.target} #{self.order}"
+        return f"Flow-stage binding #{self.order} to {self.target}"
 
     class Meta:
 

@@ -24,6 +24,7 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.decorators import permission_required
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import CacheSerializer, LinkSerializer
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow
@@ -44,9 +45,15 @@ class FlowSerializer(ModelSerializer):
 
     background = ReadOnlyField(source="background_url")
 
+    export_url = SerializerMethodField()
+
     def get_cache_count(self, flow: Flow) -> int:
         """Get count of cached flows"""
         return len(cache.keys(f"{cache_key(flow)}*"))
+
+    def get_export_url(self, flow: Flow) -> str:
+        """Get export URL for flow"""
+        return reverse("authentik_api:flow-export", kwargs={"slug": flow.slug})
 
     class Meta:
 
@@ -64,6 +71,7 @@ class FlowSerializer(ModelSerializer):
             "cache_count",
             "policy_engine_mode",
             "compatibility_mode",
+            "export_url",
         ]
         extra_kwargs = {
             "background": {"read_only": True},
@@ -94,7 +102,7 @@ class DiagramElement:
         return f"{self.identifier}=>{self.type}: {self.rest}"
 
 
-class FlowViewSet(ModelViewSet):
+class FlowViewSet(UsedByMixin, ModelViewSet):
     """Flow Viewset"""
 
     queryset = Flow.objects.all()
@@ -293,10 +301,14 @@ class FlowViewSet(ModelViewSet):
         """Set Flow background"""
         flow: Flow = self.get_object()
         background = request.FILES.get("file", None)
-        clear = request.data.get("clear", False)
+        clear = request.data.get("clear", "false").lower() == "true"
         if clear:
-            # .delete() saves the model by default
-            flow.background.delete()
+            if flow.background_url.startswith("/media"):
+                # .delete() saves the model by default
+                flow.background.delete()
+            else:
+                flow.background = None
+                flow.save()
             return Response({})
         if background:
             flow.background = background

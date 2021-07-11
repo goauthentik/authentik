@@ -9,8 +9,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import AKGlobal from "../../../authentik.css";
 import { BaseStage } from "../base";
 import "../../../elements/EmptyState";
-import { AutosubmitChallenge } from "authentik-api";
-import { AutoSubmitChallengeResponseRequest } from "authentik-api/dist/models/AutoSubmitChallengeResponseRequest";
+import { AutosubmitChallenge, AutoSubmitChallengeResponseRequest } from "authentik-api";
 
 @customElement("ak-stage-autosubmit")
 export class AutosubmitStage extends BaseStage<AutosubmitChallenge, AutoSubmitChallengeResponseRequest> {
@@ -32,7 +31,7 @@ export class AutosubmitStage extends BaseStage<AutosubmitChallenge, AutoSubmitCh
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">
-                    ${this.challenge.title}
+                    ${this.challenge.flowInfo?.title}
                 </h1>
             </header>
             <div class="pf-c-login__main-body">

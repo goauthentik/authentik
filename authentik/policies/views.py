@@ -105,6 +105,7 @@ class PolicyAccessView(AccessMixin, View):
         policy_engine = PolicyEngine(
             self.application, user or self.request.user, self.request
         )
+        policy_engine.use_cache = False
         policy_engine.build()
         result = policy_engine.result
         LOGGER.debug(

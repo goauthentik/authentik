@@ -7,8 +7,9 @@ import { config } from "./Config";
 import { Config } from "authentik-api";
 
 export const TAG_SENTRY_COMPONENT = "authentik.component";
+export const TAG_SENTRY_CAPABILITIES = "authentik.capabilities";
 
-export function configureSentry(canDoPpi: boolean = false, tags: { [key: string]: string; } = {}): Promise<Config> {
+export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
     return config().then((config) => {
         if (config.errorReportingEnabled) {
             Sentry.init({
@@ -25,8 +26,8 @@ export function configureSentry(canDoPpi: boolean = false, tags: { [key: string]
                     if (hint.originalException instanceof SentryIgnoredError) {
                         return null;
                     }
-                    if (hint.originalException instanceof Error) {
-                        if (hint.originalException.name == 'NetworkError') {
+                    if ((hint.originalException as Error | undefined)?.hasOwnProperty("name")) {
+                        if ((hint.originalException as Error | undefined)?.name == 'NetworkError') {
                             return null;
                         }
                     }
@@ -36,7 +37,9 @@ export function configureSentry(canDoPpi: boolean = false, tags: { [key: string]
                         if (response.status < 500) {
                             return null;
                         }
-                        const body = await response.json();
+                        // Need to clone the response, otherwise the .text() and .json() can't be re-used
+                        const resCopy = response.clone();
+                        const body = await resCopy.json();
                         event.message = `${response.status} ${response.url}: ${JSON.stringify(body)}`
                     }
                     if (event.exception) {
@@ -53,7 +56,7 @@ export function configureSentry(canDoPpi: boolean = false, tags: { [key: string]
                     return event;
                 },
             });
-            Sentry.setTags(tags);
+            Sentry.setTag(TAG_SENTRY_CAPABILITIES, config.capabilities.join(","));
             if (window.location.pathname.includes("if/")) {
                 // Get the interface name from URL
                 const intf = window.location.pathname.replace(/.+if\/(.+)\//, "$1");

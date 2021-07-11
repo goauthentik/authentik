@@ -2,6 +2,8 @@
 from functools import partial
 from typing import Callable
 
+from django.conf import settings
+from django.core.exceptions import SuspiciousOperation
 from django.db.models import Model
 from django.db.models.signals import post_save, pre_delete
 from django.http import HttpRequest, HttpResponse
@@ -12,6 +14,8 @@ from authentik.core.models import User
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.signals import EventNewThread
 from authentik.events.utils import model_to_dict
+from authentik.lib.sentry import before_send
+from authentik.lib.utils.errors import exception_to_string
 
 
 class AuditMiddleware:
@@ -54,9 +58,27 @@ class AuditMiddleware:
 
     # pylint: disable=unused-argument
     def process_exception(self, request: HttpRequest, exception: Exception):
-        """Unregister handlers in case of exception"""
+        """Disconnect handlers in case of exception"""
         post_save.disconnect(dispatch_uid=LOCAL.authentik["request_id"])
         pre_delete.disconnect(dispatch_uid=LOCAL.authentik["request_id"])
+
+        if settings.DEBUG:
+            return
+        # Special case for SuspiciousOperation, we have a special event action for that
+        if isinstance(exception, SuspiciousOperation):
+            thread = EventNewThread(
+                EventAction.SUSPICIOUS_REQUEST,
+                request,
+                message=str(exception),
+            )
+            thread.run()
+        elif before_send({}, {"exc_info": (None, exception, None)}) is not None:
+            thread = EventNewThread(
+                EventAction.SYSTEM_EXCEPTION,
+                request,
+                message=exception_to_string(exception),
+            )
+            thread.run()
 
     @staticmethod
     # pylint: disable=unused-argument

@@ -9,17 +9,18 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, Stage
+from authentik.stages.password import BACKEND_DJANGO, BACKEND_LDAP
 
 
 def get_authentication_backends():
     """Return all available authentication backends as tuple set"""
     return [
         (
-            "django.contrib.auth.backends.ModelBackend",
+            BACKEND_DJANGO,
             _("authentik-internal Userdatabase"),
         ),
         (
-            "authentik.sources.ldap.auth.LDAPBackend",
+            BACKEND_LDAP,
             _("authentik LDAP"),
         ),
     ]

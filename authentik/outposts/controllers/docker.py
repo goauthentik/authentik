@@ -36,8 +36,10 @@ class DockerController(BaseController):
 
     def _get_env(self) -> dict[str, str]:
         return {
-            "AUTHENTIK_HOST": self.outpost.config.authentik_host,
-            "AUTHENTIK_INSECURE": str(self.outpost.config.authentik_host_insecure),
+            "AUTHENTIK_HOST": self.outpost.config.authentik_host.lower(),
+            "AUTHENTIK_INSECURE": str(
+                self.outpost.config.authentik_host_insecure
+            ).lower(),
             "AUTHENTIK_TOKEN": self.outpost.token.key,
         }
 
@@ -45,11 +47,34 @@ class DockerController(BaseController):
         """Check if container's env is equal to what we would set. Return true if container needs
         to be rebuilt."""
         should_be = self._get_env()
-        container_env = container.attrs.get("Config", {}).get("Env", {})
+        container_env = container.attrs.get("Config", {}).get("Env", [])
         for key, expected_value in should_be.items():
-            if key not in container_env:
-                continue
-            if container_env[key] != expected_value:
+            entry = f"{key.upper()}={expected_value}"
+            if entry not in container_env:
+                return True
+        return False
+
+    def _comp_ports(self, container: Container) -> bool:
+        """Check that the container has the correct ports exposed. Return true if container needs
+        to be rebuilt."""
+        # with TEST enabled, we use host-network
+        if settings.TEST:
+            return False
+        # When the container isn't running, the API doesn't report any port mappings
+        if container.status != "running":
+            return False
+        # {'3389/tcp': [
+        #   {'HostIp': '0.0.0.0', 'HostPort': '389'},
+        #   {'HostIp': '::', 'HostPort': '389'}
+        # ]}
+        for port in self.deployment_ports:
+            key = f"{port.inner_port or port.port}/{port.protocol.lower()}"
+            if key not in container.ports:
+                return True
+            host_matching = False
+            for host_port in container.ports[key]:
+                host_matching = host_port.get("HostPort") == str(port.port)
+            if not host_matching:
                 return True
         return False
 
@@ -58,15 +83,15 @@ class DockerController(BaseController):
         try:
             return self.client.containers.get(container_name), False
         except NotFound:
-            self.logger.info("Container does not exist, creating")
+            self.logger.info("(Re-)creating container...")
             image_name = self.get_container_image()
             self.client.images.pull(image_name)
             container_args = {
                 "image": image_name,
-                "name": f"authentik-proxy-{self.outpost.uuid.hex}",
+                "name": container_name,
                 "detach": True,
                 "ports": {
-                    f"{port.port}/{port.protocol.lower()}": port.inner_port or port.port
+                    f"{port.inner_port or port.port}/{port.protocol.lower()}": port.port
                     for port in self.deployment_ports
                 },
                 "environment": self._get_env(),
@@ -86,6 +111,7 @@ class DockerController(BaseController):
         try:
             container, has_been_created = self._get_container()
             if has_been_created:
+                container.start()
                 return None
             # Check if the container is out of date, delete it and retry
             if len(container.image.tags) > 0:
@@ -98,6 +124,11 @@ class DockerController(BaseController):
                     )
                     self.down()
                     return self.up()
+            # Check container's ports
+            if self._comp_ports(container):
+                self.logger.info("Container has mis-matched ports, re-creating...")
+                self.down()
+                return self.up()
             # Check that container values match our values
             if self._comp_env(container):
                 self.logger.info("Container has outdated config, re-creating...")
@@ -138,6 +169,7 @@ class DockerController(BaseController):
                 self.logger.info("Container is not running, restarting...")
                 container.start()
                 return None
+            self.logger.info("Container is running")
             return None
         except DockerException as exc:
             raise ControllerException(str(exc)) from exc

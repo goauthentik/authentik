@@ -290,7 +290,7 @@ class TestSourceOAuth1(SeleniumTestCase):
 
     def get_container_specs(self) -> Optional[dict[str, Any]]:
         return {
-            "image": "beryju/oauth1-test-server",
+            "image": "ghcr.io/beryju/oauth1-test-server:latest",
             "detach": True,
             "network_mode": "host",
             "auto_remove": True,

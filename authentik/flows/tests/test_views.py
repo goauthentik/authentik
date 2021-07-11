@@ -11,15 +11,23 @@ from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.flows.models import (
+    Flow,
+    FlowDesignation,
+    FlowStageBinding,
+    InvalidResponseAction,
+)
 from authentik.flows.planner import FlowPlan, FlowPlanner
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageView
 from authentik.flows.views import NEXT_ARG_NAME, SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.config import CONFIG
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
+from authentik.policies.reputation.models import ReputationPolicy
 from authentik.policies.types import PolicyResult
+from authentik.stages.deny.models import DenyStage
 from authentik.stages.dummy.models import DummyStage
+from authentik.stages.identification.models import IdentificationStage, UserFields
 
 POLICY_RETURN_FALSE = PropertyMock(return_value=PolicyResult(False))
 POLICY_RETURN_TRUE = MagicMock(return_value=PolicyResult(True))
@@ -52,8 +60,9 @@ class TestFlowExecutor(TestCase):
             designation=FlowDesignation.AUTHENTICATION,
         )
         stage = DummyStage.objects.create(name="dummy")
+        binding = FlowStageBinding(target=flow, stage=stage, order=0)
         plan = FlowPlan(
-            flow_pk=flow.pk.hex + "a", stages=[stage], markers=[StageMarker()]
+            flow_pk=flow.pk.hex + "a", bindings=[binding], markers=[StageMarker()]
         )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
@@ -93,7 +102,11 @@ class TestFlowExecutor(TestCase):
             {
                 "component": "ak-stage-access-denied",
                 "error_message": FlowNonApplicableException.__doc__,
-                "title": "",
+                "flow_info": {
+                    "background": flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": "",
+                },
                 "type": ChallengeTypes.NATIVE.value,
             },
         )
@@ -159,7 +172,7 @@ class TestFlowExecutor(TestCase):
         # Check that two stages are in plan
         session = self.client.session
         plan: FlowPlan = session[SESSION_KEY_PLAN]
-        self.assertEqual(len(plan.stages), 2)
+        self.assertEqual(len(plan.bindings), 2)
         # Second request, submit form, one stage left
         response = self.client.post(exec_url)
         # Second request redirects to the same URL
@@ -168,7 +181,7 @@ class TestFlowExecutor(TestCase):
         # Check that two stages are in plan
         session = self.client.session
         plan: FlowPlan = session[SESSION_KEY_PLAN]
-        self.assertEqual(len(plan.stages), 1)
+        self.assertEqual(len(plan.bindings), 1)
 
     @patch(
         "authentik.flows.views.to_stage_response",
@@ -209,8 +222,8 @@ class TestFlowExecutor(TestCase):
 
             plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
 
-            self.assertEqual(plan.stages[0], binding.stage)
-            self.assertEqual(plan.stages[1], binding2.stage)
+            self.assertEqual(plan.bindings[0], binding)
+            self.assertEqual(plan.bindings[1], binding2)
 
             self.assertIsInstance(plan.markers[0], StageMarker)
             self.assertIsInstance(plan.markers[1], ReevaluateMarker)
@@ -263,9 +276,9 @@ class TestFlowExecutor(TestCase):
             self.assertEqual(response.status_code, 200)
             plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
 
-            self.assertEqual(plan.stages[0], binding.stage)
-            self.assertEqual(plan.stages[1], binding2.stage)
-            self.assertEqual(plan.stages[2], binding3.stage)
+            self.assertEqual(plan.bindings[0], binding)
+            self.assertEqual(plan.bindings[1], binding2)
+            self.assertEqual(plan.bindings[2], binding3)
 
             self.assertIsInstance(plan.markers[0], StageMarker)
             self.assertIsInstance(plan.markers[1], ReevaluateMarker)
@@ -277,8 +290,8 @@ class TestFlowExecutor(TestCase):
 
             plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
 
-            self.assertEqual(plan.stages[0], binding2.stage)
-            self.assertEqual(plan.stages[1], binding3.stage)
+            self.assertEqual(plan.bindings[0], binding2)
+            self.assertEqual(plan.bindings[1], binding3)
 
             self.assertIsInstance(plan.markers[0], StageMarker)
             self.assertIsInstance(plan.markers[1], StageMarker)
@@ -334,9 +347,9 @@ class TestFlowExecutor(TestCase):
             self.assertEqual(response.status_code, 200)
             plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
 
-            self.assertEqual(plan.stages[0], binding.stage)
-            self.assertEqual(plan.stages[1], binding2.stage)
-            self.assertEqual(plan.stages[2], binding3.stage)
+            self.assertEqual(plan.bindings[0], binding)
+            self.assertEqual(plan.bindings[1], binding2)
+            self.assertEqual(plan.bindings[2], binding3)
 
             self.assertIsInstance(plan.markers[0], StageMarker)
             self.assertIsInstance(plan.markers[1], ReevaluateMarker)
@@ -348,8 +361,8 @@ class TestFlowExecutor(TestCase):
 
             plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
 
-            self.assertEqual(plan.stages[0], binding2.stage)
-            self.assertEqual(plan.stages[1], binding3.stage)
+            self.assertEqual(plan.bindings[0], binding2)
+            self.assertEqual(plan.bindings[1], binding3)
 
             self.assertIsInstance(plan.markers[0], StageMarker)
             self.assertIsInstance(plan.markers[1], StageMarker)
@@ -360,7 +373,7 @@ class TestFlowExecutor(TestCase):
 
             plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
 
-            self.assertEqual(plan.stages[0], binding3.stage)
+            self.assertEqual(plan.bindings[0], binding3)
 
             self.assertIsInstance(plan.markers[0], StageMarker)
 
@@ -422,19 +435,22 @@ class TestFlowExecutor(TestCase):
             self.assertJSONEqual(
                 force_str(response.content),
                 {
-                    "background": flow.background_url,
                     "type": ChallengeTypes.NATIVE.value,
                     "component": "ak-stage-dummy",
-                    "title": binding.stage.name,
+                    "flow_info": {
+                        "background": flow.background_url,
+                        "cancel_url": reverse("authentik_flows:cancel"),
+                        "title": "",
+                    },
                 },
             )
 
             plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
 
-            self.assertEqual(plan.stages[0], binding.stage)
-            self.assertEqual(plan.stages[1], binding2.stage)
-            self.assertEqual(plan.stages[2], binding3.stage)
-            self.assertEqual(plan.stages[3], binding4.stage)
+            self.assertEqual(plan.bindings[0], binding)
+            self.assertEqual(plan.bindings[1], binding2)
+            self.assertEqual(plan.bindings[2], binding3)
+            self.assertEqual(plan.bindings[3], binding4)
 
             self.assertIsInstance(plan.markers[0], StageMarker)
             self.assertIsInstance(plan.markers[1], ReevaluateMarker)
@@ -453,10 +469,13 @@ class TestFlowExecutor(TestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
-                "background": flow.background_url,
                 "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-dummy",
-                "title": binding4.stage.name,
+                "flow_info": {
+                    "background": flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": "",
+                },
             },
         )
 
@@ -501,4 +520,79 @@ class TestFlowExecutor(TestCase):
         executor.flow = flow
 
         stage_view = StageView(executor)
-        self.assertEqual(ident, stage_view.get_pending_user().username)
+        self.assertEqual(ident, stage_view.get_pending_user(for_display=True).username)
+
+    def test_invalid_restart(self):
+        """Test flow that restarts on invalid entry"""
+        flow = Flow.objects.create(
+            name="restart-on-invalid",
+            slug="restart-on-invalid",
+            designation=FlowDesignation.AUTHENTICATION,
+        )
+        # Stage 0 is a deny stage that is added dynamically
+        # when the reputation policy says so
+        deny_stage = DenyStage.objects.create(name="deny")
+        reputation_policy = ReputationPolicy.objects.create(
+            name="reputation", threshold=-1, check_ip=False
+        )
+        deny_binding = FlowStageBinding.objects.create(
+            target=flow,
+            stage=deny_stage,
+            order=0,
+            evaluate_on_plan=False,
+            re_evaluate_policies=True,
+        )
+        PolicyBinding.objects.create(
+            policy=reputation_policy, target=deny_binding, order=0
+        )
+
+        # Stage 1 is an identification stage
+        ident_stage = IdentificationStage.objects.create(
+            name="ident",
+            user_fields=[UserFields.E_MAIL],
+        )
+        FlowStageBinding.objects.create(
+            target=flow,
+            stage=ident_stage,
+            order=1,
+            invalid_response_action=InvalidResponseAction.RESTART_WITH_CONTEXT,
+        )
+        exec_url = reverse(
+            "authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}
+        )
+        # First request, run the planner
+        response = self.client.get(exec_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_str(response.content),
+            {
+                "type": ChallengeTypes.NATIVE.value,
+                "component": "ak-stage-identification",
+                "flow_info": {
+                    "background": flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": "",
+                },
+                "password_fields": False,
+                "primary_action": "Log in",
+                "sources": [],
+                "user_fields": [UserFields.E_MAIL],
+            },
+        )
+        response = self.client.post(
+            exec_url, {"uid_field": "invalid-string"}, follow=True
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_str(response.content),
+            {
+                "component": "ak-stage-access-denied",
+                "error_message": None,
+                "flow_info": {
+                    "background": flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": "",
+                },
+                "type": ChallengeTypes.NATIVE.value,
+            },
+        )

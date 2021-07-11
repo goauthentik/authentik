@@ -68,7 +68,7 @@ html > form > input {
 
 /* ensure background on non-flow pages match */
 .pf-c-background-image::before {
-    background-image: var(--ak-flow-background, url("/static/dist/assets/images/flow_background.jpg"));
+    background-image: var(--ak-flow-background);
     background-position: center;
 }
 
@@ -120,6 +120,9 @@ html > form > input {
     .pf-c-title {
         color: var(--ak-dark-foreground);
     }
+    .pf-u-mb-xl {
+        color: var(--ak-dark-foreground);
+    }
     /* Header sections */
     .pf-c-page__main-section {
         --pf-c-page__main-section--BackgroundColor: var(--ak-dark-background);
@@ -136,6 +139,7 @@ html > form > input {
     /* Card */
     .pf-c-card {
         --pf-c-card--BackgroundColor: var(--ak-dark-background-light);
+        color: var(--ak-dark-foreground);
     }
     .pf-c-card__title,
     .pf-c-card__body {
@@ -253,6 +257,12 @@ html > form > input {
     }
     .pf-c-dropdown__toggle::before {
         border-color: transparent;
+    }
+    .pf-c-toggle-group__button {
+        color: var(--ak-dark-foreground) !important;
+    }
+    .pf-c-toggle-group__button:not(.pf-m-selected) {
+        background-color: var(--ak-dark-background-light) !important;
     }
     /* inputs help text */
     .pf-c-form__helper-text:not(.pf-m-error) {

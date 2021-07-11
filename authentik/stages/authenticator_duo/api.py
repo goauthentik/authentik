@@ -9,9 +9,10 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
-from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
+from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_duo.stage import (
@@ -37,7 +38,7 @@ class AuthenticatorDuoStageSerializer(StageSerializer):
         }
 
 
-class AuthenticatorDuoStageViewSet(ModelViewSet):
+class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
     """AuthenticatorDuoStage Viewset"""
 
     queryset = AuthenticatorDuoStage.objects.all()
@@ -78,6 +79,7 @@ class DuoDeviceViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
+    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):
@@ -92,7 +94,7 @@ class DuoDeviceViewSet(
     filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
 
 
-class DuoAdminDeviceViewSet(ReadOnlyModelViewSet):
+class DuoAdminDeviceViewSet(ModelViewSet):
     """Viewset for Duo authenticator devices (for admins)"""
 
     permission_classes = [IsAdminUser]

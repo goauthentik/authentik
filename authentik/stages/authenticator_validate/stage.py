@@ -10,7 +10,7 @@ from authentik.flows.challenge import (
     ChallengeTypes,
     WithUserInfoChallenge,
 )
-from authentik.flows.models import NotConfiguredAction
+from authentik.flows.models import NotConfiguredAction, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_validate.challenge import (
@@ -74,12 +74,12 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
             duo, self.stage.request, self.stage.get_pending_user()
         )
 
-    def validate(self, data: dict):
+    def validate(self, attrs: dict):
         # Checking if the given data is from a valid device class is done above
         # Here we only check if the any data was sent at all
-        if "code" not in data and "webauthn" not in data and "duo" not in data:
+        if "code" not in attrs and "webauthn" not in attrs and "duo" not in attrs:
             raise ValidationError("Empty response")
-        return data
+        return attrs
 
 
 class AuthenticatorValidateStageView(ChallengeStageView):
@@ -91,6 +91,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         """Get a list of all device challenges applicable for the current stage"""
         challenges = []
         user_devices = devices_for_user(self.get_pending_user())
+        LOGGER.debug("Got devices for user", devices=user_devices)
 
         # static and totp are only shown once
         # since their challenges are device-independant
@@ -101,6 +102,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         for device in user_devices:
             device_class = device.__class__.__name__.lower().replace("device", "")
             if device_class not in stage.device_classes:
+                LOGGER.debug("device class not allowed", device_class=device_class)
                 continue
             # Ensure only classes in PER_DEVICE_CLASSES are returned per device
             # otherwise only return a single challenge
@@ -108,15 +110,16 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 continue
             if device_class not in seen_classes:
                 seen_classes.append(device_class)
-            challenges.append(
-                DeviceChallenge(
-                    data={
-                        "device_class": device_class,
-                        "device_uid": device.pk,
-                        "challenge": get_challenge_for_device(self.request, device),
-                    }
-                ).initial_data
+            challenge = DeviceChallenge(
+                data={
+                    "device_class": device_class,
+                    "device_uid": device.pk,
+                    "challenge": get_challenge_for_device(self.request, device),
+                }
             )
+            challenge.is_valid()
+            challenges.append(challenge.data)
+            LOGGER.debug("adding challenge for device", challenge=challenge)
         return challenges
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
@@ -140,9 +143,12 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 return self.executor.stage_invalid()
             if stage.not_configured_action == NotConfiguredAction.CONFIGURE:
                 LOGGER.debug("Authenticator not configured, sending user to configure")
+                # Because the foreign key to stage.configuration_stage points to
+                # a base stage class, we need to do another lookup
+                stage = Stage.objects.get_subclass(pk=stage.configuration_stage.pk)
                 # plan.insert inserts at 1 index, so when stage_ok pops 0,
                 # the configuration stage is next
-                self.executor.plan.insert(stage.configuration_stage)
+                self.executor.plan.insert_stage(stage)
                 return self.executor.stage_ok()
         return super().get(request, *args, **kwargs)
 
@@ -157,7 +163,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
 
     # pylint: disable=unused-argument
     def challenge_valid(
-        self, challenge: AuthenticatorValidationChallengeResponse
+        self, response: AuthenticatorValidationChallengeResponse
     ) -> HttpResponse:
         # All validation is done by the serializer
         return self.executor.stage_ok()

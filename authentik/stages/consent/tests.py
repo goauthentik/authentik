@@ -39,9 +39,11 @@ class TestConsentStage(TestCase):
         stage = ConsentStage.objects.create(
             name="consent", mode=ConsentMode.ALWAYS_REQUIRE
         )
-        FlowStageBinding.objects.create(target=flow, stage=stage, order=2)
+        binding = FlowStageBinding.objects.create(target=flow, stage=stage, order=2)
 
-        plan = FlowPlan(flow_pk=flow.pk.hex, stages=[stage], markers=[StageMarker()])
+        plan = FlowPlan(
+            flow_pk=flow.pk.hex, bindings=[binding], markers=[StageMarker()]
+        )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -69,11 +71,11 @@ class TestConsentStage(TestCase):
             designation=FlowDesignation.AUTHENTICATION,
         )
         stage = ConsentStage.objects.create(name="consent", mode=ConsentMode.PERMANENT)
-        FlowStageBinding.objects.create(target=flow, stage=stage, order=2)
+        binding = FlowStageBinding.objects.create(target=flow, stage=stage, order=2)
 
         plan = FlowPlan(
             flow_pk=flow.pk.hex,
-            stages=[stage],
+            bindings=[binding],
             markers=[StageMarker()],
             context={PLAN_CONTEXT_APPLICATION: self.application},
         )
@@ -110,11 +112,11 @@ class TestConsentStage(TestCase):
         stage = ConsentStage.objects.create(
             name="consent", mode=ConsentMode.EXPIRING, consent_expire_in="seconds=1"
         )
-        FlowStageBinding.objects.create(target=flow, stage=stage, order=2)
+        binding = FlowStageBinding.objects.create(target=flow, stage=stage, order=2)
 
         plan = FlowPlan(
             flow_pk=flow.pk.hex,
-            stages=[stage],
+            bindings=[binding],
             markers=[StageMarker()],
             context={PLAN_CONTEXT_APPLICATION: self.application},
         )

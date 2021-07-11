@@ -34,6 +34,7 @@ export class UserOAuthRefreshList extends Table<RefreshTokenModel> {
     columns(): TableColumn[] {
         return [
             new TableColumn(t`Provider`, "provider"),
+            new TableColumn(t`Revoked?`, "revoked"),
             new TableColumn(t`Expires`, "expires"),
             new TableColumn(t`Scopes`, "scope"),
             new TableColumn(""),
@@ -62,15 +63,21 @@ export class UserOAuthRefreshList extends Table<RefreshTokenModel> {
             html`<a href="#/core/providers/${item.provider?.pk}">
                 ${item.provider?.name}
             </a>`,
+            html`${item.revoked ? t`Yes` : t`No`}`,
             html`${item.expires?.toLocaleString()}`,
             html`${item.scope.join(", ")}`,
             html`
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Refresh Code`}
+                .usedBy=${() => {
+                    return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensUsedByList({
+                        id: item.pk
+                    });
+                }}
                 .delete=${() => {
                     return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensDestroy({
-                        id: item.pk || 0,
+                        id: item.pk,
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">

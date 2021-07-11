@@ -19,7 +19,28 @@ class TestTenants(TestCase):
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
                 "branding_title": "authentik",
                 "matched_domain": "authentik-default",
-                "ui_footer_links": CONFIG.y("authentik.footer_links"),
+                "ui_footer_links": CONFIG.y("footer_links"),
+                "flow_authentication": "default-authentication-flow",
+                "flow_invalidation": "default-invalidation-flow",
+            },
+        )
+
+    def test_tenant_subdomain(self):
+        """Test Current tenant API"""
+        Tenant.objects.all().delete()
+        Tenant.objects.create(domain="bar.baz", branding_title="custom")
+        self.assertJSONEqual(
+            force_str(
+                self.client.get(
+                    reverse("authentik_api:tenant-current"), HTTP_HOST="foo.bar.baz"
+                ).content
+            ),
+            {
+                "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
+                "branding_favicon": "/static/dist/assets/icons/icon.png",
+                "branding_title": "custom",
+                "matched_domain": "bar.baz",
+                "ui_footer_links": CONFIG.y("footer_links"),
             },
         )
 
@@ -33,6 +54,6 @@ class TestTenants(TestCase):
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
                 "branding_title": "authentik",
                 "matched_domain": "fallback",
-                "ui_footer_links": CONFIG.y("authentik.footer_links"),
+                "ui_footer_links": CONFIG.y("footer_links"),
             },
         )

@@ -1,4 +1,4 @@
-import { FlowsApi, FlowStageBinding, PolicyEngineMode, Stage, StagesApi } from "authentik-api";
+import { FlowsApi, FlowStageBinding, InvalidResponseActionEnum, PolicyEngineMode, Stage, StagesApi } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -123,7 +123,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                     </label>
                 </div>
                 <p class="pf-c-form__helper-text">
-                    ${t`Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with this option disabled, policies are **not** evaluated.`}
+                    ${t`Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with both options disabled, policies are **not** evaluated.`}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="reEvaluatePolicies">
@@ -134,6 +134,23 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                     </label>
                 </div>
                 <p class="pf-c-form__helper-text">${t`Evaluate policies before the Stage is present to the user.`}</p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${t`Invalid response action`}
+                ?required=${true}
+                name="invalidResponseAction">
+                <select class="pf-c-form-control">
+                    <option value=${InvalidResponseActionEnum.Retry} ?selected=${this.instance?.invalidResponseAction === InvalidResponseActionEnum.Retry}>
+                        ${t`RETRY returns the error message and a similar challenge to the executor.`}
+                    </option>
+                    <option value=${InvalidResponseActionEnum.Restart} ?selected=${this.instance?.invalidResponseAction === InvalidResponseActionEnum.Restart}>
+                        ${t`RESTART restarts the flow from the beginning.`}
+                    </option>
+                    <option value=${InvalidResponseActionEnum.RestartWithContext} ?selected=${this.instance?.invalidResponseAction === InvalidResponseActionEnum.RestartWithContext}>
+                        ${t`RESTART restarts the flow from the beginning, while keeping the flow context.`}
+                    </option>
+                </select>
+                <p class="pf-c-form__helper-text">${t`Configure how the flow executor should handle an invalid response to a challenge.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Policy engine mode`}

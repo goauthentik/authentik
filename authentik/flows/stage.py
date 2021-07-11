@@ -3,6 +3,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.http import HttpRequest
 from django.http.request import QueryDict
 from django.http.response import HttpResponse
+from django.urls import reverse
 from django.views.generic.base import View
 from rest_framework.request import Request
 from structlog.stdlib import get_logger
@@ -11,30 +12,16 @@ from authentik.core.models import DEFAULT_AVATAR, User
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
+    ContextualFlowInfo,
     HttpChallengeResponse,
     WithUserInfoChallenge,
 )
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
+from authentik.flows.models import InvalidResponseAction
+from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
 from authentik.flows.views import FlowExecutorView
-from authentik.lib.sentry import SentryIgnoredException
 
 PLAN_CONTEXT_PENDING_USER_IDENTIFIER = "pending_user_identifier"
 LOGGER = get_logger()
-
-
-class InvalidChallengeError(SentryIgnoredException):
-    """Error raised when a challenge from a stage is not valid"""
-
-    def __init__(self, errors, stage_view: View, challenge: Challenge) -> None:
-        super().__init__()
-        self.errors = errors
-        self.stage_view = stage_view
-        self.challenge = challenge
-
-    def __str__(self) -> str:
-        return (
-            f"Invalid challenge from {self.stage_view}: {self.errors}\n{self.challenge}"
-        )
 
 
 class StageView(View):
@@ -48,14 +35,17 @@ class StageView(View):
         self.executor = executor
         super().__init__(**kwargs)
 
-    def get_pending_user(self) -> User:
+    def get_pending_user(self, for_display=False) -> User:
         """Either show the matched User object or show what the user entered,
         based on what the earlier stage (mostly IdentificationStage) set.
         _USER_IDENTIFIER overrides the first User, as PENDING_USER is used for
         other things besides the form display.
 
         If no user is pending, returns request.user"""
-        if PLAN_CONTEXT_PENDING_USER_IDENTIFIER in self.executor.plan.context:
+        if (
+            PLAN_CONTEXT_PENDING_USER_IDENTIFIER in self.executor.plan.context
+            and for_display
+        ):
             return User(
                 username=self.executor.plan.context.get(
                     PLAN_CONTEXT_PENDING_USER_IDENTIFIER
@@ -80,7 +70,13 @@ class ChallengeStageView(StageView):
         """Return a challenge for the frontend to solve"""
         challenge = self._get_challenge(*args, **kwargs)
         if not challenge.is_valid():
-            LOGGER.warning(challenge.errors, stage_view=self, challenge=challenge)
+            LOGGER.warning(
+                "f(ch): Invalid challenge",
+                binding=self.executor.current_binding,
+                errors=challenge.errors,
+                stage_view=self,
+                challenge=challenge,
+            )
         return HttpChallengeResponse(challenge)
 
     # pylint: disable=unused-argument
@@ -88,20 +84,47 @@ class ChallengeStageView(StageView):
         """Handle challenge response"""
         challenge: ChallengeResponse = self.get_response_instance(data=request.data)
         if not challenge.is_valid():
+            if self.executor.current_binding.invalid_response_action in [
+                InvalidResponseAction.RESTART,
+                InvalidResponseAction.RESTART_WITH_CONTEXT,
+            ]:
+                keep_context = (
+                    self.executor.current_binding.invalid_response_action
+                    == InvalidResponseAction.RESTART_WITH_CONTEXT
+                )
+                LOGGER.debug(
+                    "f(ch): Invalid response, restarting flow",
+                    binding=self.executor.current_binding,
+                    stage_view=self,
+                    keep_context=keep_context,
+                )
+                return self.executor.restart_flow(keep_context)
             return self.challenge_invalid(challenge)
         return self.challenge_valid(challenge)
 
+    def format_title(self) -> str:
+        """Allow usage of placeholder in flow title."""
+        return self.executor.flow.title % {
+            "app": self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION, "")
+        }
+
     def _get_challenge(self, *args, **kwargs) -> Challenge:
         challenge = self.get_challenge(*args, **kwargs)
-        if "title" not in challenge.initial_data:
-            challenge.initial_data["title"] = self.executor.flow.title
-        if "background" not in challenge.initial_data:
-            challenge.initial_data["background"] = self.executor.flow.background_url
+        if "flow_info" not in challenge.initial_data:
+            flow_info = ContextualFlowInfo(
+                data={
+                    "title": self.format_title(),
+                    "background": self.executor.flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                }
+            )
+            flow_info.is_valid()
+            challenge.initial_data["flow_info"] = flow_info.data
         if isinstance(challenge, WithUserInfoChallenge):
             # If there's a pending user, update the `username` field
             # this field is only used by password managers.
             # If there's no user set, an error is raised later.
-            if user := self.get_pending_user():
+            if user := self.get_pending_user(for_display=True):
                 challenge.initial_data["pending_user"] = user.username
             challenge.initial_data["pending_user_avatar"] = DEFAULT_AVATAR
             if not isinstance(user, AnonymousUser):
@@ -131,5 +154,10 @@ class ChallengeStageView(StageView):
                 )
         challenge_response.initial_data["response_errors"] = full_errors
         if not challenge_response.is_valid():
-            LOGGER.warning(challenge_response.errors)
+            LOGGER.warning(
+                "f(ch): invalid challenge response",
+                binding=self.executor.current_binding,
+                errors=challenge_response.errors,
+                stage_view=self,
+            )
         return HttpChallengeResponse(challenge_response)

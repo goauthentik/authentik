@@ -78,6 +78,11 @@ export class FlowListPage extends TablePage<Flow> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Flow`}
+                .usedBy=${() => {
+                    return new FlowsApi(DEFAULT_CONFIG).flowsInstancesUsedByList({
+                        slug: item.slug
+                    });
+                }}
                 .delete=${() => {
                     return new FlowsApi(DEFAULT_CONFIG).flowsInstancesDestroy({
                         slug: item.slug
@@ -98,7 +103,7 @@ export class FlowListPage extends TablePage<Flow> {
                 }}>
                 ${t`Execute`}
             </button>
-            <a class="pf-c-button pf-m-secondary" href="/api/v2beta/flows/instances/${item.slug}/export/">
+            <a class="pf-c-button pf-m-secondary" href=${item.exportUrl}>
                 ${t`Export`}
             </a>`,
         ];

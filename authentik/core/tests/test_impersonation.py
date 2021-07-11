@@ -17,6 +17,9 @@ class TestImpersonation(TestCase):
 
     def test_impersonate_simple(self):
         """test simple impersonation and un-impersonation"""
+        # test with an inactive user to ensure that still works
+        self.other_user.is_active = False
+        self.other_user.save()
         self.client.force_login(self.akadmin)
 
         self.client.get(

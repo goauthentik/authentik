@@ -4,11 +4,17 @@ from xml.etree.ElementTree import ParseError  # nosec
 from defusedxml.ElementTree import fromstring
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, FileField, ReadOnlyField
+from rest_framework.fields import (
+    CharField,
+    FileField,
+    ReadOnlyField,
+    SerializerMethodField,
+)
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny
 from rest_framework.relations import SlugRelatedField
@@ -21,6 +27,7 @@ from structlog.stdlib import get_logger
 from authentik.api.decorators import permission_required
 from authentik.core.api.propertymappings import PropertyMappingSerializer
 from authentik.core.api.providers import ProviderSerializer
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Provider
 from authentik.flows.models import Flow, FlowDesignation
@@ -35,6 +42,15 @@ LOGGER = get_logger()
 
 class SAMLProviderSerializer(ProviderSerializer):
     """SAMLProvider Serializer"""
+
+    metadata_download_url = SerializerMethodField()
+
+    def get_metadata_download_url(self, instance: SAMLProvider) -> str:
+        """Get metadata download URL"""
+        return (
+            reverse("authentik_api:samlprovider-metadata", kwargs={"pk": instance.pk})
+            + "?download"
+        )
 
     class Meta:
 
@@ -53,6 +69,7 @@ class SAMLProviderSerializer(ProviderSerializer):
             "signing_kp",
             "verification_kp",
             "sp_binding",
+            "metadata_download_url",
         ]
 
 
@@ -60,6 +77,7 @@ class SAMLMetadataSerializer(PassiveSerializer):
     """SAML Provider Metadata serializer"""
 
     metadata = ReadOnlyField()
+    download_url = ReadOnlyField(required=False)
 
 
 class SAMLProviderImportSerializer(PassiveSerializer):
@@ -74,7 +92,7 @@ class SAMLProviderImportSerializer(PassiveSerializer):
     file = FileField()
 
 
-class SAMLProviderViewSet(ModelViewSet):
+class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
     """SAMLProvider Viewset"""
 
     queryset = SAMLProvider.objects.all()
@@ -165,7 +183,7 @@ class SAMLPropertyMappingSerializer(PropertyMappingSerializer):
         ]
 
 
-class SAMLPropertyMappingViewSet(ModelViewSet):
+class SAMLPropertyMappingViewSet(UsedByMixin, ModelViewSet):
     """SAMLPropertyMapping Viewset"""
 
     queryset = SAMLPropertyMapping.objects.all()

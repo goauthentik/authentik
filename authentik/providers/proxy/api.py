@@ -1,16 +1,17 @@
 """ProxyProvider API Views"""
 from typing import Any
 
-from drf_spectacular.utils import extend_schema_field
+from drf_spectacular.utils import extend_schema_field, extend_schema_serializer
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ListField, SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.providers.oauth2.views.provider import ProviderInfoView
-from authentik.providers.proxy.models import ProxyProvider
+from authentik.providers.proxy.models import ProxyMode, ProxyProvider
 
 
 class OpenIDConnectConfigurationSerializer(PassiveSerializer):
@@ -36,9 +37,9 @@ class ProxyProviderSerializer(ProviderSerializer):
     redirect_uris = CharField(read_only=True)
 
     def validate(self, attrs) -> dict[Any, str]:
-        """Check that internal_host is set when forward_auth_mode is disabled"""
+        """Check that internal_host is set when mode is Proxy"""
         if (
-            not attrs.get("forward_auth_mode", False)
+            attrs.get("mode", ProxyMode.PROXY) == ProxyMode.PROXY
             and attrs.get("internal_host", "") == ""
         ):
             raise ValidationError(
@@ -70,12 +71,13 @@ class ProxyProviderSerializer(ProviderSerializer):
             "basic_auth_enabled",
             "basic_auth_password_attribute",
             "basic_auth_user_attribute",
-            "forward_auth_mode",
+            "mode",
             "redirect_uris",
+            "cookie_domain",
         ]
 
 
-class ProxyProviderViewSet(ModelViewSet):
+class ProxyProviderViewSet(UsedByMixin, ModelViewSet):
     """ProxyProvider Viewset"""
 
     queryset = ProxyProvider.objects.all()
@@ -83,10 +85,17 @@ class ProxyProviderViewSet(ModelViewSet):
     ordering = ["name"]
 
 
+@extend_schema_serializer(deprecate_fields=["forward_auth_mode"])
 class ProxyOutpostConfigSerializer(ModelSerializer):
-    """ProxyProvider Serializer"""
+    """Proxy provider serializer for outposts"""
 
     oidc_configuration = SerializerMethodField()
+    forward_auth_mode = SerializerMethodField()
+
+    def get_forward_auth_mode(self, instance: ProxyProvider) -> bool:
+        """Legacy field for 2021.5 outposts"""
+        # TODO: remove in 2021.7
+        return instance.mode in [ProxyMode.FORWARD_SINGLE, ProxyMode.FORWARD_DOMAIN]
 
     class Meta:
 
@@ -106,6 +115,9 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
             "basic_auth_enabled",
             "basic_auth_password_attribute",
             "basic_auth_user_attribute",
+            "mode",
+            "cookie_domain",
+            # Legacy field, remove in 2021.7
             "forward_auth_mode",
         ]
 

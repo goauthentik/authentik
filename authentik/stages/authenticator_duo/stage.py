@@ -3,6 +3,7 @@ from django.http import HttpRequest, HttpResponse
 from rest_framework.fields import CharField
 from structlog.stdlib import get_logger
 
+from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
@@ -11,6 +12,7 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
+from authentik.flows.views import InvalidStageError
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 
 LOGGER = get_logger()
@@ -42,7 +44,15 @@ class AuthenticatorDuoStageView(ChallengeStageView):
     def get_challenge(self, *args, **kwargs) -> Challenge:
         user = self.get_pending_user()
         stage: AuthenticatorDuoStage = self.executor.current_stage
-        enroll = stage.client.enroll(user.username)
+        try:
+            enroll = stage.client.enroll(user.username)
+        except RuntimeError as exc:
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message=f"Failed to enroll user: {str(exc)}",
+                user=user,
+            ).from_http(self.request, user)
+            raise InvalidStageError(str(exc)) from exc
         user_id = enroll["user_id"]
         self.request.session[SESSION_KEY_DUO_USER_ID] = user_id
         self.request.session[SESSION_KEY_DUO_ACTIVATION_CODE] = enroll[
@@ -53,7 +63,7 @@ class AuthenticatorDuoStageView(ChallengeStageView):
                 "type": ChallengeTypes.NATIVE.value,
                 "activation_barcode": enroll["activation_barcode"],
                 "activation_code": enroll["activation_code"],
-                "stage_uuid": stage.stage_uuid,
+                "stage_uuid": str(stage.stage_uuid),
             }
         )
 

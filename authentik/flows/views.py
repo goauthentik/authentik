@@ -4,10 +4,12 @@ from typing import Any, Optional
 
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.cache import cache
 from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
 from django.http.request import QueryDict
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
+from django.urls.base import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import View
@@ -36,13 +38,20 @@ from authentik.flows.challenge import (
     WithUserInfoChallenge,
 )
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
-from authentik.flows.models import ConfigurableStage, Flow, FlowDesignation, Stage
+from authentik.flows.models import (
+    ConfigurableStage,
+    Flow,
+    FlowDesignation,
+    FlowStageBinding,
+    Stage,
+)
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
     PLAN_CONTEXT_REDIRECT,
     FlowPlan,
     FlowPlanner,
 )
+from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
 from authentik.tenants.models import Tenant
@@ -92,6 +101,10 @@ def challenge_response_types():
     return Inner()
 
 
+class InvalidStageError(SentryIgnoredException):
+    """Error raised when a challenge from a stage is not valid"""
+
+
 @method_decorator(xframe_options_sameorigin, name="dispatch")
 class FlowExecutorView(APIView):
     """Stage 1 Flow executor, passing requests to Stage Views"""
@@ -101,6 +114,7 @@ class FlowExecutorView(APIView):
     flow: Flow
 
     plan: Optional[FlowPlan] = None
+    current_binding: FlowStageBinding
     current_stage: Stage
     current_stage_view: View
 
@@ -120,7 +134,7 @@ class FlowExecutorView(APIView):
         message = exc.__doc__ if exc.__doc__ else str(exc)
         return self.stage_invalid(error_message=message)
 
-    # pylint: disable=unused-argument
+    # pylint: disable=unused-argument, too-many-return-statements
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
         # Early check if theres an active Plan for the current session
         if SESSION_KEY_PLAN in self.request.session:
@@ -153,27 +167,46 @@ class FlowExecutorView(APIView):
         request.session[SESSION_KEY_GET] = QueryDict(request.GET.get("query", ""))
         # We don't save the Plan after getting the next stage
         # as it hasn't been successfully passed yet
-        next_stage = self.plan.next(self.request)
-        if not next_stage:
+        try:
+            # This is the first time we actually access any attribute on the selected plan
+            # if the cached plan is from an older version, it might have different attributes
+            # in which case we just delete the plan and invalidate everything
+            next_binding = self.plan.next(self.request)
+        except Exception as exc:  # pylint: disable=broad-except
+            self._logger.warning(
+                "f(exec): found incompatible flow plan, invalidating run", exc=exc
+            )
+            keys = cache.keys("flow_*")
+            cache.delete_many(keys)
+            return self.stage_invalid()
+        if not next_binding:
             self._logger.debug("f(exec): no more stages, flow is done.")
             return self._flow_done()
-        self.current_stage = next_stage
+        self.current_binding = next_binding
+        self.current_stage = next_binding.stage
         self._logger.debug(
             "f(exec): Current stage",
             current_stage=self.current_stage,
             flow_slug=self.flow.slug,
         )
-        stage_cls = self.current_stage.type
+        try:
+            stage_cls = self.current_stage.type
+        except NotImplementedError as exc:
+            self._logger.debug("Error getting stage type", exc=exc)
+            return self.stage_invalid()
         self.current_stage_view = stage_cls(self)
         self.current_stage_view.args = self.args
         self.current_stage_view.kwargs = self.kwargs
         self.current_stage_view.request = request
-        return super().dispatch(request)
+        try:
+            return super().dispatch(request)
+        except InvalidStageError as exc:
+            return self.stage_invalid(str(exc))
 
     @extend_schema(
         responses={
             200: PolymorphicProxySerializer(
-                component_name="FlowChallengeRequest",
+                component_name="ChallengeTypes",
                 serializers=challenge_types(),
                 resource_type_field_name="component",
             ),
@@ -213,7 +246,7 @@ class FlowExecutorView(APIView):
     @extend_schema(
         responses={
             200: PolymorphicProxySerializer(
-                component_name="FlowChallengeRequest",
+                component_name="ChallengeTypes",
                 serializers=challenge_types(),
                 resource_type_field_name="component",
             ),
@@ -255,7 +288,30 @@ class FlowExecutorView(APIView):
         planner = FlowPlanner(self.flow)
         plan = planner.plan(self.request)
         self.request.session[SESSION_KEY_PLAN] = plan
+        try:
+            # Call the has_stages getter to check that
+            # there are no issues with the class we might've gotten
+            # from the cache. If there are errors, just delete all cached flows
+            _ = plan.has_stages
+        except Exception:  # pylint: disable=broad-except
+            keys = cache.keys("flow_*")
+            cache.delete_many(keys)
+            return self._initiate_plan()
         return plan
+
+    def restart_flow(self, keep_context=False) -> HttpResponse:
+        """Restart the currently active flow, optionally keeping the current context"""
+        planner = FlowPlanner(self.flow)
+        default_context = None
+        if keep_context:
+            default_context = self.plan.context
+        plan = planner.plan(self.request, default_context)
+        self.request.session[SESSION_KEY_PLAN] = plan
+        kwargs = self.kwargs
+        kwargs.update({"flow_slug": self.flow.slug})
+        return redirect_with_qs(
+            "authentik_api:flow-executor", self.request.GET, **kwargs
+        )
 
     def _flow_done(self) -> HttpResponse:
         """User Successfully passed all stages"""
@@ -280,10 +336,10 @@ class FlowExecutorView(APIView):
         )
         self.plan.pop()
         self.request.session[SESSION_KEY_PLAN] = self.plan
-        if self.plan.stages:
+        if self.plan.bindings:
             self._logger.debug(
                 "f(exec): Continuing with next stage",
-                remaining=len(self.plan.stages),
+                remaining=len(self.plan.bindings),
             )
             kwargs = self.kwargs
             kwargs.update({"flow_slug": self.flow.slug})
@@ -309,9 +365,13 @@ class FlowExecutorView(APIView):
             AccessDeniedChallenge(
                 {
                     "error_message": error_message,
-                    "title": self.flow.title,
                     "type": ChallengeTypes.NATIVE.value,
                     "component": "ak-stage-access-denied",
+                    "flow_info": {
+                        "title": self.flow.title,
+                        "background": self.flow.background_url,
+                        "cancel_url": reverse("authentik_flows:cancel"),
+                    },
                 }
             )
         )
@@ -348,8 +408,11 @@ class FlowErrorResponse(TemplateResponse):
             context = {}
         context["error"] = self.error
         if self._request.user and self._request.user.is_authenticated:
-            if self._request.user.is_superuser or self._request.user.attributes.get(
-                USER_ATTRIBUTE_DEBUG, False
+            if (
+                self._request.user.is_superuser
+                or self._request.user.group_attributes().get(
+                    USER_ATTRIBUTE_DEBUG, False
+                )
             ):
                 context["tb"] = "".join(format_tb(self.error.__traceback__))
         return context
@@ -413,7 +476,10 @@ def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpRespons
         )
         return HttpChallengeResponse(
             RedirectChallenge(
-                {"type": ChallengeTypes.REDIRECT, "to": str(redirect_url)}
+                {
+                    "type": ChallengeTypes.REDIRECT,
+                    "to": str(redirect_url),
+                }
             )
         )
     if isinstance(source, TemplateResponse):
@@ -425,7 +491,7 @@ def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpRespons
                 }
             )
         )
-    # Check for actual HttpResponse (without isinstance as we dont want to check inheritance)
+    # Check for actual HttpResponse (without isinstance as we don't want to check inheritance)
     if source.__class__ == HttpResponse:
         return HttpChallengeResponse(
             ShellChallenge(

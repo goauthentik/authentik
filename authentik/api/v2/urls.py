@@ -28,12 +28,12 @@ from authentik.flows.api.bindings import FlowStageBindingViewSet
 from authentik.flows.api.flows import FlowViewSet
 from authentik.flows.api.stages import StageViewSet
 from authentik.flows.views import FlowExecutorView
-from authentik.outposts.api.outpost_service_connections import (
+from authentik.outposts.api.outposts import OutpostViewSet
+from authentik.outposts.api.service_connections import (
     DockerServiceConnectionViewSet,
     KubernetesServiceConnectionViewSet,
     ServiceConnectionViewSet,
 )
-from authentik.outposts.api.outposts import OutpostViewSet
 from authentik.policies.api.bindings import PolicyBindingViewSet
 from authentik.policies.api.policies import PolicyViewSet
 from authentik.policies.dummy.api import DummyPolicyViewSet

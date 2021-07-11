@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from django.http import HttpRequest
 from structlog.stdlib import get_logger
 
+from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.reputation.models import (
     CACHE_KEY_IP_PREFIX,
@@ -13,6 +14,7 @@ from authentik.policies.reputation.models import (
 from authentik.stages.identification.signals import identification_failed
 
 LOGGER = get_logger()
+CACHE_TIMEOUT = int(CONFIG.y("redis.cache_timeout_reputation"))
 
 
 def update_score(request: HttpRequest, username: str, amount: int):
@@ -20,10 +22,10 @@ def update_score(request: HttpRequest, username: str, amount: int):
     remote_ip = get_client_ip(request)
 
     # We only update the cache here, as its faster than writing to the DB
-    cache.get_or_set(CACHE_KEY_IP_PREFIX + remote_ip, 0)
+    cache.get_or_set(CACHE_KEY_IP_PREFIX + remote_ip, 0, CACHE_TIMEOUT)
     cache.incr(CACHE_KEY_IP_PREFIX + remote_ip, amount)
 
-    cache.get_or_set(CACHE_KEY_USER_PREFIX + username, 0)
+    cache.get_or_set(CACHE_KEY_USER_PREFIX + username, 0, CACHE_TIMEOUT)
     cache.incr(CACHE_KEY_USER_PREFIX + username, amount)
 
     LOGGER.debug("Updated score", amount=amount, for_user=username, for_ip=remote_ip)

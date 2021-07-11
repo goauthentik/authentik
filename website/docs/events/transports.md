@@ -19,10 +19,6 @@ This will send a POST request to the given URL with the following contents:
 
 The `Content-Type` header is set to `text/json`.
 
-:::warning
-This will send a request for each user of the group selected in the trigger.
-:::
-
 ## Slack Webhook
 
 This sends a request using the Slack-specific format. This is also compatible with Discord's webhooks by appending `/slack` to the Discord webhook URL.

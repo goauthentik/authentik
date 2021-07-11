@@ -8,7 +8,7 @@ WORKDIR /app/
 
 RUN pip install pipenv && \
     pipenv lock -r > requirements.txt && \
-    pipenv lock -rd > requirements-dev.txt
+    pipenv lock -r --dev-only > requirements-dev.txt
 
 # Stage 2: Build web API
 FROM openapitools/openapi-generator-cli as api-builder
@@ -28,7 +28,7 @@ COPY ./web /static/
 COPY --from=api-builder /local/web/api /static/api
 
 ENV NODE_ENV=production
-RUN cd /static && npm i --production=false && npm run build
+RUN cd /static && npm i && npm run build
 
 # Stage 4: Build go proxy
 FROM golang:1.16.5 AS builder
@@ -76,6 +76,7 @@ RUN apt-get update && \
 COPY ./authentik/ /authentik
 COPY ./pyproject.toml /
 COPY ./xml /xml
+COPY ./tests /tests
 COPY ./manage.py /
 COPY ./lifecycle/ /lifecycle
 COPY --from=builder /work/authentik /authentik-proxy

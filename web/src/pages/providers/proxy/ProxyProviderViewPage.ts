@@ -20,6 +20,7 @@ import "./ProxyProviderForm";
 import { ProvidersApi, ProxyProvider } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";
+import { convertToTitle } from "../../../utils";
 
 @customElement("ak-provider-proxy-view")
 export class ProxyProviderViewPage extends LitElement {
@@ -115,18 +116,11 @@ export class ProxyProviderViewPage extends LitElement {
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${t`Forward auth`}</span>
+                                                <span class="pf-c-description-list__text">${t`Mode`}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">
-                                                    ${this.provider.forwardAuthMode ?
-                                                        html`<span class="pf-c-button__icon pf-m-start">
-                                                            <i class="fas fa-check-circle" aria-hidden="true"></i>&nbsp;
-                                                            </span>${t`Yes`}`:
-                                                        html`<span class="pf-c-button__icon pf-m-start">
-                                                            <i class="fas fa-times-circle" aria-hidden="true"></i>&nbsp;
-                                                            </span>${t`No`}`
-                                                    }
+                                                    ${convertToTitle(this.provider.mode || "")}
                                                 </div>
                                             </dd>
                                         </div>

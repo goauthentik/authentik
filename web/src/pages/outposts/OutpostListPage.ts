@@ -43,6 +43,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         return [
             new TableColumn(t`Name`, "name"),
             new TableColumn(t`Providers`),
+            new TableColumn(t`Service connection`, "service_connection__name"),
             new TableColumn(t`Health and Version`),
             new TableColumn(""),
         ];
@@ -57,6 +58,7 @@ export class OutpostListPage extends TablePage<Outpost> {
             html`<ul>${item.providersObj?.map((p) => {
                 return html`<li><a href="#/core/providers/${p.pk}">${p.name}</a></li>`;
             })}</ul>`,
+            html`${item.serviceConnectionObj?.name || t`Unmanaged`}`,
             html`<ak-outpost-health outpostId=${ifDefined(item.pk)}></ak-outpost-health>`,
             html`
             <ak-forms-modal>
@@ -75,9 +77,14 @@ export class OutpostListPage extends TablePage<Outpost> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Outpost`}
+                .usedBy=${() => {
+                    return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesUsedByList({
+                        uuid: item.pk
+                    });
+                }}
                 .delete=${() => {
                     return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesDestroy({
-                        uuid: item.pk || ""
+                        uuid: item.pk
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">

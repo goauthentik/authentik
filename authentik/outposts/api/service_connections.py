@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
     MetaNameSerializer,
     PassiveSerializer,
@@ -31,6 +32,13 @@ class ServiceConnectionSerializer(ModelSerializer, MetaNameSerializer):
     """ServiceConnection Serializer"""
 
     component = ReadOnlyField()
+
+    def get_component(self, obj: OutpostServiceConnection) -> str:
+        """Get object type so that we know how to edit the object"""
+        # pyright: reportGeneralTypeIssues=false
+        if obj.__class__ == OutpostServiceConnection:
+            return ""
+        return obj.component
 
     class Meta:
 
@@ -55,6 +63,7 @@ class ServiceConnectionStateSerializer(PassiveSerializer):
 class ServiceConnectionViewSet(
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
+    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):
@@ -105,7 +114,7 @@ class DockerServiceConnectionSerializer(ServiceConnectionSerializer):
         ]
 
 
-class DockerServiceConnectionViewSet(ModelViewSet):
+class DockerServiceConnectionViewSet(UsedByMixin, ModelViewSet):
     """DockerServiceConnection Viewset"""
 
     queryset = DockerServiceConnection.objects.all()
@@ -139,7 +148,7 @@ class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
         fields = ServiceConnectionSerializer.Meta.fields + ["kubeconfig"]
 
 
-class KubernetesServiceConnectionViewSet(ModelViewSet):
+class KubernetesServiceConnectionViewSet(UsedByMixin, ModelViewSet):
     """KubernetesServiceConnection Viewset"""
 
     queryset = KubernetesServiceConnection.objects.all()

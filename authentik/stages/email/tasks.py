@@ -9,6 +9,7 @@ from django.core.mail.utils import DNS_NAME
 from django.utils.text import slugify
 from structlog.stdlib import get_logger
 
+from authentik.events.models import Event, EventAction
 from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.root.celery import CELERY_APP
 from authentik.stages.email.models import EmailStage
@@ -24,6 +25,14 @@ def send_mails(stage: EmailStage, *messages: list[EmailMultiAlternatives]):
     lazy_group = group(*tasks)
     promise = lazy_group()
     return promise
+
+
+def get_email_body(email: EmailMultiAlternatives) -> str:
+    """Get the email's body. Will return HTML alt if set, otherwise plain text body"""
+    for alt_content, alt_type in email.alternatives:
+        if alt_type == "text/html":
+            return alt_content
+    return email.body
 
 
 @CELERY_APP.task(
@@ -68,6 +77,14 @@ def send_mail(
 
         LOGGER.debug("Sending mail", to=message_object.to)
         stage.backend.send_messages([message_object])
+        Event.new(
+            EventAction.EMAIL_SENT,
+            message=(f"Email to {', '.join(message_object.to)} sent"),
+            subject=message_object.subject,
+            body=get_email_body(message_object),
+            from_email=message_object.from_email,
+            to_email=message_object.to,
+        ).save()
         self.set_status(
             TaskResult(
                 TaskResultStatus.SUCCESSFUL,

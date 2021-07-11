@@ -26,12 +26,14 @@ class TestUserDenyStage(TestCase):
             designation=FlowDesignation.AUTHENTICATION,
         )
         self.stage = DenyStage.objects.create(name="logout")
-        FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
+        self.binding = FlowStageBinding.objects.create(
+            target=self.flow, stage=self.stage, order=2
+        )
 
     def test_valid_password(self):
         """Test with a valid pending user and backend"""
         plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
         )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
@@ -47,7 +49,11 @@ class TestUserDenyStage(TestCase):
             {
                 "component": "ak-stage-access-denied",
                 "error_message": None,
-                "title": "",
+                "flow_info": {
+                    "background": self.flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": "",
+                },
                 "type": ChallengeTypes.NATIVE.value,
             },
         )

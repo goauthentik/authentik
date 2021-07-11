@@ -26,10 +26,9 @@ class ConfigLoader:
 
     loaded_file = []
 
-    __config = {}
-
     def __init__(self):
         super().__init__()
+        self.__config = {}
         base_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), "../.."))
         for path in SEARCH_PATHS:
             # Check if path is relative, and if so join with base_dir
@@ -62,7 +61,7 @@ class ConfigLoader:
         output.update(kwargs)
         print(dumps(output))
 
-    def update(self, root, updatee):
+    def update(self, root: dict[str, Any], updatee: dict[str, Any]) -> dict[str, Any]:
         """Recursively update dictionary"""
         for key, value in updatee.items():
             if isinstance(value, Mapping):
@@ -73,7 +72,7 @@ class ConfigLoader:
                 root[key] = value
         return root
 
-    def parse_uri(self, value):
+    def parse_uri(self, value: str) -> str:
         """Parse string values which start with a URI"""
         url = urlparse(value)
         if url.scheme == "env":
@@ -99,7 +98,10 @@ class ConfigLoader:
                     raise ImproperlyConfigured from exc
         except PermissionError as exc:
             self._log(
-                "warning", "Permission denied while reading file", path=path, error=exc
+                "warning",
+                "Permission denied while reading file",
+                path=path,
+                error=str(exc),
             )
 
     def update_from_dict(self, update: dict):

@@ -2,6 +2,7 @@
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.backends import ModelBackend
+from django.db import transaction
 from django.db.utils import IntegrityError
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
@@ -23,6 +24,10 @@ LOGGER = get_logger()
 class UserWriteStageView(StageView):
     """Finalise Enrollment flow by creating a user object."""
 
+    def post(self, request: HttpRequest) -> HttpResponse:
+        """Wrapper for post requests"""
+        return self.get(request)
+
     def get(self, request: HttpRequest) -> HttpResponse:
         """Save data in the current flow to the currently pending user. If no user is pending,
         a new user is created."""
@@ -34,7 +39,9 @@ class UserWriteStageView(StageView):
         data = self.executor.plan.context[PLAN_CONTEXT_PROMPT]
         user_created = False
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
-            self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = User()
+            self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = User(
+                is_active=not self.executor.current_stage.create_users_as_inactive
+            )
             self.executor.plan.context[
                 PLAN_CONTEXT_AUTHENTICATION_BACKEND
             ] = class_to_path(ModelBackend)
@@ -86,10 +93,11 @@ class UserWriteStageView(StageView):
             ]
             user.attributes[USER_ATTRIBUTE_SOURCES].append(connection.source.name)
         try:
-            user.save()
+            with transaction.atomic():
+                user.save()
         except IntegrityError as exc:
             LOGGER.warning("Failed to save user", exc=exc)
-            self.executor.stage_invalid()
+            return self.executor.stage_invalid()
         user_write.send(
             sender=self, request=request, user=user, data=data, created=user_created
         )

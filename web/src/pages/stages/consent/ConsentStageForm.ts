@@ -15,7 +15,7 @@ export class ConsentStageForm extends ModelForm<ConsentStage, string> {
         return new StagesApi(DEFAULT_CONFIG).stagesConsentRetrieve({
             stageUuid: pk,
         }).then(stage => {
-            this.showExpiresIn = stage.name === ConsentStageModeEnum.Expiring;
+            this.showExpiresIn = stage.mode === ConsentStageModeEnum.Expiring;
             return stage;
         });
     }

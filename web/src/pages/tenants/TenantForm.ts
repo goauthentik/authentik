@@ -47,8 +47,9 @@ export class TenantForm extends ModelForm<Tenant, string> {
                 ?required=${true}
                 name="domain">
                 <input type="text" value="${first(this.instance?.domain, window.location.host)}" class="pf-c-form-control" required>
+                <p class="pf-c-form__helper-text">${t`Matching is done based on domain suffix, so if you enter domain.tld, foo.domain.tld will still match.`}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="default">
+            <ak-form-element-horizontal name="_default">
                 <div class="pf-c-check">
                     <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?._default, false)}>
                     <label class="pf-c-check__label">
@@ -149,7 +150,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                             <option value="" ?selected=${this.instance?.flowUnenrollment === undefined}>---------</option>
                             ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                                 ordering: "pk",
-                                designation: FlowsInstancesListDesignationEnum.Recovery,
+                                designation: FlowsInstancesListDesignationEnum.Unenrollment,
                             }).then(flows => {
                                 return flows.results.map(flow => {
                                     const selected = this.instance?.flowUnenrollment === flow.pk;

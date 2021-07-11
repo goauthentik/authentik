@@ -9,13 +9,14 @@ import "../../elements/buttons/ActionButton";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
 import { CoreApi, User } from "authentik-api";
-import { DEFAULT_CONFIG } from "../../api/Config";
+import { DEFAULT_CONFIG, tenant } from "../../api/Config";
 import "../../elements/forms/DeleteForm";
 import "./UserActiveForm";
 import "./UserForm";
 import { showMessage } from "../../elements/messages/MessageContainer";
 import { MessageLevel } from "../../elements/messages/Message";
 import { first } from "../../utils";
+import { until } from "lit-html/directives/until";
 
 @customElement("ak-user-list")
 export class UserListPage extends TablePage<User> {
@@ -111,9 +112,14 @@ export class UserListPage extends TablePage<User> {
                         <ak-forms-delete
                             .obj=${item}
                             objectLabel=${t`User`}
+                            .usedBy=${() => {
+                                return new CoreApi(DEFAULT_CONFIG).coreUsersUsedByList({
+                                    id: item.pk
+                                });
+                            }}
                             .delete=${() => {
                                 return new CoreApi(DEFAULT_CONFIG).coreUsersDestroy({
-                                    id: item.pk || 0
+                                    id: item.pk
                                 });
                             }}>
                             <button slot="trigger" class="pf-c-dropdown__menu-item">
@@ -123,27 +129,33 @@ export class UserListPage extends TablePage<User> {
                     </li>
                 </ul>
             </ak-dropdown>
-            <ak-action-button
-                .apiRequest=${() => {
-                    return new CoreApi(DEFAULT_CONFIG).coreUsersRecoveryRetrieve({
-                        id: item.pk || 0,
-                    }).then(rec => {
-                        showMessage({
-                            level: MessageLevel.success,
-                            message: t`Successfully generated recovery link`,
-                            description: rec.link
-                        });
-                    }).catch((ex: Response) => {
-                        ex.json().then(() => {
-                            showMessage({
-                                level: MessageLevel.error,
-                                message: t`No recovery flow is configured.`,
-                            });
-                        });
-                    });
-                }}>
-                ${t`Reset Password`}
-            </ak-action-button>
+            ${until(tenant().then(te => {
+                if (te.flowRecovery) {
+                    return html`
+                        <ak-action-button
+                            .apiRequest=${() => {
+                                return new CoreApi(DEFAULT_CONFIG).coreUsersRecoveryRetrieve({
+                                    id: item.pk || 0,
+                                }).then(rec => {
+                                    showMessage({
+                                        level: MessageLevel.success,
+                                        message: t`Successfully generated recovery link`,
+                                        description: rec.link
+                                    });
+                                }).catch((ex: Response) => {
+                                    ex.json().then(() => {
+                                        showMessage({
+                                            level: MessageLevel.error,
+                                            message: t`No recovery flow is configured.`,
+                                        });
+                                    });
+                                });
+                            }}>
+                            ${t`Reset Password`}
+                        </ak-action-button>`;
+                }
+                return html``;
+            }))}
             <a class="pf-c-button pf-m-tertiary" href="${`/-/impersonation/${item.pk}/`}">
                 ${t`Impersonate`}
             </a>`,

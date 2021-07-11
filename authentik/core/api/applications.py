@@ -11,13 +11,7 @@ from drf_spectacular.utils import (
     inline_serializer,
 )
 from rest_framework.decorators import action
-from rest_framework.fields import (
-    BooleanField,
-    CharField,
-    FileField,
-    IntegerField,
-    ReadOnlyField,
-)
+from rest_framework.fields import BooleanField, CharField, FileField, ReadOnlyField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -29,6 +23,7 @@ from structlog.stdlib import get_logger
 from authentik.admin.api.metrics import CoordinateSerializer, get_events_per_1h
 from authentik.api.decorators import permission_required
 from authentik.core.api.providers import ProviderSerializer
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.models import Application, User
 from authentik.events.models import EventAction
 from authentik.policies.api.exec import PolicyTestResultSerializer
@@ -73,7 +68,7 @@ class ApplicationSerializer(ModelSerializer):
         }
 
 
-class ApplicationViewSet(ModelViewSet):
+class ApplicationViewSet(UsedByMixin, ModelViewSet):
     """Application Viewset"""
 
     queryset = Application.objects.all()
@@ -106,15 +101,19 @@ class ApplicationViewSet(ModelViewSet):
         return applications
 
     @extend_schema(
-        request=inline_serializer(
-            "CheckAccessRequest", fields={"for_user": IntegerField(required=False)}
-        ),
+        parameters=[
+            OpenApiParameter(
+                name="for_user",
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.INT,
+            )
+        ],
         responses={
             200: PolicyTestResultSerializer(),
             404: OpenApiResponse(description="for_user user not found"),
         },
     )
-    @action(detail=True, methods=["POST"])
+    @action(detail=True, methods=["GET"])
     # pylint: disable=unused-argument
     def check_access(self, request: Request, slug: str) -> Response:
         """Check access to a single application by slug"""
@@ -203,7 +202,7 @@ class ApplicationViewSet(ModelViewSet):
         """Set application icon"""
         app: Application = self.get_object()
         icon = request.FILES.get("file", None)
-        clear = request.data.get("clear", False)
+        clear = request.data.get("clear", "false").lower() == "true"
         if clear:
             # .delete() saves the model by default
             app.meta_icon.delete()

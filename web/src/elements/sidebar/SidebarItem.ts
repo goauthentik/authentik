@@ -21,6 +21,13 @@ export class SidebarItem extends LitElement {
                     z-index: 100;
                     box-shadow: none !important;
                 }
+                :host([highlight]) .pf-c-nav__item {
+                    background-color: var(--ak-accent);
+                    margin: 16px;
+                }
+                :host([highlight]) .pf-c-nav__item .pf-c-nav__link  {
+                    padding-left: 0.5rem;
+                }
                 .pf-c-nav__link.pf-m-current::after,
                 .pf-c-nav__link.pf-m-current:hover::after,
                 .pf-c-nav__item.pf-m-current:not(.pf-m-expanded) .pf-c-nav__link::after {
@@ -74,6 +81,12 @@ export class SidebarItem extends LitElement {
 
     @property({ type: Boolean })
     isActive = false;
+
+    @property({ type: Boolean })
+    isAbsoluteLink?: boolean;
+
+    @property({ type: Boolean })
+    highlight?: boolean;
 
     parent?: SidebarItem;
 
@@ -159,9 +172,15 @@ export class SidebarItem extends LitElement {
             </li>`;
         }
         return html`<li class="pf-c-nav__item">
-            <a href="#${this.path}" class="pf-c-nav__link ${this.isActive ? "pf-m-current" : ""}">
-                <slot name="label"></slot>
-            </a>
+            ${this.path ? html`
+                <a href="${this.isAbsoluteLink ? "" : "#"}${this.path}" class="pf-c-nav__link ${this.isActive ? "pf-m-current" : ""}">
+                    <slot name="label"></slot>
+                </a>
+            ` : html`
+                <span class="pf-c-nav__link">
+                    <slot name="label"></slot>
+                </span>
+            `}
         </li>`;
     }
 }

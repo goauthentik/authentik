@@ -97,9 +97,14 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Property Mapping`}
+                .usedBy=${() => {
+                    return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllUsedByList({
+                        pmUuid: item.pk
+                    });
+                }}
                 .delete=${() => {
                     return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllDestroy({
-                        pmUuid: item.pk || ""
+                        pmUuid: item.pk
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">

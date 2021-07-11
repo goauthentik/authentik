@@ -27,10 +27,9 @@ class GeoIPDict(TypedDict):
 class GeoIPReader:
     """Slim wrapper around GeoIP API"""
 
-    __reader: Optional[Reader] = None
-    __last_mtime: float = 0.0
-
     def __init__(self):
+        self.__reader: Optional[Reader] = None
+        self.__last_mtime: float = 0.0
         self.__open()
 
     def __open(self):
@@ -40,9 +39,9 @@ class GeoIPReader:
             return
         try:
             reader = Reader(path)
-            LOGGER.info("Loaded GeoIP database")
             self.__reader = reader
             self.__last_mtime = stat(path).st_mtime
+            LOGGER.info("Loaded GeoIP database", last_write=self.__last_mtime)
         except OSError as exc:
             LOGGER.warning("Failed to load GeoIP database", exc=exc)
 

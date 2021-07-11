@@ -33,6 +33,7 @@ from authentik.flows.planner import (
 from authentik.flows.views import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.policies.utils import delete_none_keys
+from authentik.stages.password import BACKEND_DJANGO
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
@@ -182,6 +183,8 @@ class SourceFlowManager:
     # pylint: disable=unused-argument
     def get_stages_to_append(self, flow: Flow) -> list[Stage]:
         """Hook to override stages which are appended to the flow"""
+        if not self.source.enrollment_flow:
+            return []
         if flow.slug == self.source.enrollment_flow.slug:
             return [
                 in_memory_stage(PostUserEnrollmentStage),
@@ -198,7 +201,7 @@ class SourceFlowManager:
         kwargs.update(
             {
                 # Since we authenticate the user by their token, they have no backend set
-                PLAN_CONTEXT_AUTHENTICATION_BACKEND: "django.contrib.auth.backends.ModelBackend",
+                PLAN_CONTEXT_AUTHENTICATION_BACKEND: BACKEND_DJANGO,
                 PLAN_CONTEXT_SSO: True,
                 PLAN_CONTEXT_SOURCE: self.source,
                 PLAN_CONTEXT_REDIRECT: final_redirect,
@@ -210,7 +213,7 @@ class SourceFlowManager:
         planner = FlowPlanner(flow)
         plan = planner.plan(self.request, kwargs)
         for stage in self.get_stages_to_append(flow):
-            plan.append(stage)
+            plan.append_stage(stage=stage)
         self.request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
             "authentik_core:if-flow",

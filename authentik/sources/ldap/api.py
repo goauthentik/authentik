@@ -10,6 +10,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.admin.api.tasks import TaskSerializer
 from authentik.core.api.propertymappings import PropertyMappingSerializer
 from authentik.core.api.sources import SourceSerializer
+from authentik.core.api.used_by import UsedByMixin
 from authentik.events.monitored_tasks import TaskInfo
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 
@@ -41,7 +42,7 @@ class LDAPSourceSerializer(SourceSerializer):
         extra_kwargs = {"bind_password": {"write_only": True}}
 
 
-class LDAPSourceViewSet(ModelViewSet):
+class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
     """LDAP Source Viewset"""
 
     queryset = LDAPSource.objects.all()
@@ -75,7 +76,7 @@ class LDAPPropertyMappingSerializer(PropertyMappingSerializer):
         ]
 
 
-class LDAPPropertyMappingViewSet(ModelViewSet):
+class LDAPPropertyMappingViewSet(UsedByMixin, ModelViewSet):
     """LDAP PropertyMapping Viewset"""
 
     queryset = LDAPPropertyMapping.objects.all()

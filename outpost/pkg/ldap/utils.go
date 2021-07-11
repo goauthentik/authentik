@@ -7,6 +7,13 @@ import (
 	"goauthentik.io/outpost/api"
 )
 
+func BoolToString(in bool) string {
+	if in {
+		return "true"
+	}
+	return "false"
+}
+
 func AKAttrsToLDAP(attrs interface{}) []*ldap.EntryAttribute {
 	attrList := []*ldap.EntryAttribute{}
 	a := attrs.(*map[string]interface{})
@@ -17,6 +24,8 @@ func AKAttrsToLDAP(attrs interface{}) []*ldap.EntryAttribute {
 			entry.Values = t
 		case string:
 			entry.Values = []string{t}
+		case bool:
+			entry.Values = []string{BoolToString(t)}
 		}
 		attrList = append(attrList, entry)
 	}

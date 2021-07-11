@@ -12,9 +12,8 @@ import { AuthenticatorValidateStage } from "./AuthenticatorValidateStage";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import "../../FormStatic";
-import { FlowURLManager } from "../../../api/legacy";
-import { AuthenticatorValidationChallenge } from "authentik-api/dist/models/AuthenticatorValidationChallenge";
-import { AuthenticatorValidationChallengeResponseRequest, DeviceChallenge } from "authentik-api";
+import { AuthenticatorValidationChallenge, AuthenticatorValidationChallengeResponseRequest, DeviceChallenge } from "authentik-api";
+import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-stage-authenticator-validate-duo")
 export class AuthenticatorValidateStageWebDuo extends BaseStage<AuthenticatorValidationChallenge, AuthenticatorValidationChallengeResponseRequest> {
@@ -49,7 +48,7 @@ export class AuthenticatorValidateStageWebDuo extends BaseStage<AuthenticatorVal
                     userAvatar="${this.challenge.pendingUserAvatar}"
                     user=${this.challenge.pendingUser}>
                     <div slot="link">
-                        <a href="${FlowURLManager.cancel()}">${t`Not you?`}</a>
+                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}">${t`Not you?`}</a>
                     </div>
                 </ak-form-static>
 

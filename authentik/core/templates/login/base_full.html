@@ -8,6 +8,14 @@
 <link rel="stylesheet" type="text/css" href="{% static 'dist/patternfly.min.css' %}?v={{ ak_version }}">
 {% endblock %}
 
+{% block head %}
+<style>
+.pf-c-background-image::before {
+    --ak-flow-background: url("/static/dist/assets/images/flow_background.jpg");
+}
+</style>
+{% endblock %}
+
 {% block body %}
 <div class="pf-c-background-image">
     <svg xmlns="http://www.w3.org/2000/svg" class="pf-c-background-image__filter" width="0" height="0">

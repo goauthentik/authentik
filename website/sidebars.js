@@ -21,10 +21,6 @@ module.exports = {
             ],
         },
         {
-            type: "doc",
-            id: "sources",
-        },
-        {
             type: "category",
             label: "Providers",
             items: ["providers/oauth2", "providers/saml", "providers/proxy"],
@@ -34,11 +30,30 @@ module.exports = {
             label: "Outposts",
             items: [
                 "outposts/outposts",
-                "outposts/proxy",
-                "outposts/ldap",
-                "outposts/upgrading",
-                "outposts/manual-deploy-docker-compose",
-                "outposts/manual-deploy-kubernetes",
+                {
+                    type: "category",
+                    label: "Running and upgrading",
+                    items: [
+                        "outposts/upgrading",
+                        "outposts/manual-deploy-docker-compose",
+                        "outposts/manual-deploy-kubernetes",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Proxy",
+                    items: [
+                        "outposts/proxy/proxy",
+                        "outposts/proxy/forward_auth",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "LDAP",
+                    items: [
+                        "outposts/ldap/ldap",
+                    ],
+                },
             ],
         },
         {
@@ -48,7 +63,17 @@ module.exports = {
                 {
                     type: "category",
                     label: "as Source",
-                    items: ["integrations/sources/active-directory/index"],
+                    items: [
+                        "integrations/sources/index",
+                        "integrations/sources/active-directory/index",
+                        "integrations/sources/discord/index",
+                        "integrations/sources/github/index",
+                        "integrations/sources/google/index",
+                        "integrations/sources/ldap/index",
+                        "integrations/sources/oauth/index",
+                        "integrations/sources/plex/index",
+                        "integrations/sources/saml/index",
+                    ],
                 },
                 {
                     type: "category",
@@ -70,6 +95,7 @@ module.exports = {
                         "integrations/services/ubuntu-landscape/index",
                         "integrations/services/veeam-enterprise-manager/index",
                         "integrations/services/vmware-vcenter/index",
+                        "integrations/services/wekan/index",
                         "integrations/services/wiki-js/index",
                         "integrations/services/zabbix/index",
                     ],

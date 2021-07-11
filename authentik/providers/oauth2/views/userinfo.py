@@ -1,6 +1,7 @@
 """authentik OAuth2 OpenID Userinfo views"""
 from typing import Any, Optional
 
+from deepmerge import always_merger
 from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseBadRequest
 from django.views import View
@@ -78,7 +79,7 @@ class UserInfoView(View):
                 )
                 continue
             LOGGER.debug("updated scope", scope=scope)
-            final_claims.update(value)
+            always_merger.merge(final_claims, value)
         return final_claims
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:

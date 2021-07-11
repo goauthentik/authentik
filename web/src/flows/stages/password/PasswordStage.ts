@@ -12,8 +12,8 @@ import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import { PasswordManagerPrefill } from "../identification/IdentificationStage";
 import "../../FormStatic";
-import { FlowURLManager } from "../../../api/legacy";
 import { PasswordChallenge, PasswordChallengeResponseRequest } from "authentik-api";
+import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-stage-password")
 export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChallengeResponseRequest> {
@@ -31,7 +31,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">
-                    ${this.challenge.title}
+                    ${this.challenge.flowInfo?.title}
                 </h1>
             </header>
             <div class="pf-c-login__main-body">
@@ -41,7 +41,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                         userAvatar="${this.challenge.pendingUserAvatar}"
                         user=${this.challenge.pendingUser}>
                         <div slot="link">
-                            <a href="${FlowURLManager.cancel()}">${t`Not you?`}</a>
+                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}">${t`Not you?`}</a>
                         </div>
                     </ak-form-static>
                     <input name="username" autocomplete="username" type="hidden" value="${this.challenge.pendingUser}">

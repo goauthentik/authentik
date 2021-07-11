@@ -9,6 +9,7 @@ from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.providers.oauth2.generators import generate_client_secret
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.identification.models import IdentificationStage, UserFields
+from authentik.stages.password import BACKEND_DJANGO
 from authentik.stages.password.models import PasswordStage
 
 
@@ -70,7 +71,7 @@ class TestIdentificationStage(TestCase):
     def test_valid_with_password(self):
         """Test with valid email and password in single step"""
         pw_stage = PasswordStage.objects.create(
-            name="password", backends=["django.contrib.auth.backends.ModelBackend"]
+            name="password", backends=[BACKEND_DJANGO]
         )
         self.stage.password_stage = pw_stage
         self.stage.save()
@@ -92,7 +93,7 @@ class TestIdentificationStage(TestCase):
     def test_invalid_with_password(self):
         """Test with valid email and invalid password in single step"""
         pw_stage = PasswordStage.objects.create(
-            name="password", backends=["django.contrib.auth.backends.ModelBackend"]
+            name="password", backends=[BACKEND_DJANGO]
         )
         self.stage.password_stage = pw_stage
         self.stage.save()
@@ -108,7 +109,6 @@ class TestIdentificationStage(TestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
-                "background": self.flow.background_url,
                 "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-identification",
                 "password_fields": True,
@@ -117,6 +117,11 @@ class TestIdentificationStage(TestCase):
                     "non_field_errors": [
                         {"code": "invalid", "string": "Failed to " "authenticate."}
                     ]
+                },
+                "flow_info": {
+                    "background": self.flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": "",
                 },
                 "sources": [
                     {
@@ -129,7 +134,6 @@ class TestIdentificationStage(TestCase):
                         "name": "test",
                     }
                 ],
-                "title": "",
                 "user_fields": ["email"],
             },
         )
@@ -181,7 +185,6 @@ class TestIdentificationStage(TestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
-                "background": flow.background_url,
                 "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-identification",
                 "user_fields": ["email"],
@@ -191,7 +194,11 @@ class TestIdentificationStage(TestCase):
                     kwargs={"flow_slug": "unique-enrollment-string"},
                 ),
                 "primary_action": "Log in",
-                "title": self.flow.title,
+                "flow_info": {
+                    "background": flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": self.flow.title,
+                },
                 "sources": [
                     {
                         "icon_url": "/static/authentik/sources/.svg",
@@ -229,7 +236,6 @@ class TestIdentificationStage(TestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
-                "background": flow.background_url,
                 "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-identification",
                 "user_fields": ["email"],
@@ -239,7 +245,11 @@ class TestIdentificationStage(TestCase):
                     kwargs={"flow_slug": "unique-recovery-string"},
                 ),
                 "primary_action": "Log in",
-                "title": self.flow.title,
+                "flow_info": {
+                    "background": flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": self.flow.title,
+                },
                 "sources": [
                     {
                         "challenge": {

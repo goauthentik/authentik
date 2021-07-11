@@ -21,7 +21,13 @@ from authentik.outposts.models import (
 )
 from authentik.outposts.tasks import outpost_local_connection
 from authentik.providers.proxy.models import ProxyProvider
-from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
+from tests.e2e.utils import (
+    USER,
+    SeleniumTestCase,
+    apply_migration,
+    object_manager,
+    retry,
+)
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -47,7 +53,7 @@ class TestProviderProxy(SeleniumTestCase):
         """Start proxy container based on outpost created"""
         client: DockerClient = from_env()
         container = client.containers.run(
-            image=f"ghcr.io/goauthentik/proxy:{__version__}",
+            image="beryju.org/authentik/outpost-proxy:gh-master",
             detach=True,
             network_mode="host",
             auto_remove=True,
@@ -67,6 +73,11 @@ class TestProviderProxy(SeleniumTestCase):
     @object_manager
     def test_proxy_simple(self):
         """Test simple outpost setup with single provider"""
+        # set additionalHeaders to test later
+        user = USER()
+        user.attributes["additionalHeaders"] = {"X-Foo": "bar"}
+        user.save()
+
         proxy: ProxyProvider = ProxyProvider.objects.create(
             name="proxy_provider",
             authorization_flow=Flow.objects.get(
@@ -106,6 +117,14 @@ class TestProviderProxy(SeleniumTestCase):
 
         full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
         self.assertIn("X-Forwarded-Preferred-Username: akadmin", full_body_text)
+        self.assertIn("X-Foo: bar", full_body_text)
+
+        self.driver.get("http://localhost:4180/akprox/sign_out")
+        sleep(2)
+        full_body_text = self.driver.find_element(
+            By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl"
+        ).text
+        self.assertIn("You've logged out of proxy.", full_body_text)
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")

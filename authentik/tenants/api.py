@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.config import CONFIG
 from authentik.tenants.models import Tenant
@@ -50,13 +51,16 @@ class CurrentTenantSerializer(PassiveSerializer):
     ui_footer_links = ListField(
         child=FooterLinkSerializer(),
         read_only=True,
-        default=CONFIG.y("authentik.footer_links"),
+        default=CONFIG.y("footer_links", []),
     )
 
+    flow_authentication = CharField(source="flow_authentication.slug", required=False)
+    flow_invalidation = CharField(source="flow_invalidation.slug", required=False)
+    flow_recovery = CharField(source="flow_recovery.slug", required=False)
     flow_unenrollment = CharField(source="flow_unenrollment.slug", required=False)
 
 
-class TenantViewSet(ModelViewSet):
+class TenantViewSet(UsedByMixin, ModelViewSet):
     """Tenant Viewset"""
 
     queryset = Tenant.objects.all()
