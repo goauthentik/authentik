@@ -17,7 +17,7 @@ from authentik.flows.challenge import (
     WithUserInfoChallenge,
 )
 from authentik.flows.models import InvalidResponseAction
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
+from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
 from authentik.flows.views import FlowExecutorView
 
 PLAN_CONTEXT_PENDING_USER_IDENTIFIER = "pending_user_identifier"
@@ -102,12 +102,18 @@ class ChallengeStageView(StageView):
             return self.challenge_invalid(challenge)
         return self.challenge_valid(challenge)
 
+    def format_title(self) -> str:
+        """Allow usage of placeholder in flow title."""
+        return self.executor.flow.title % {
+            "app": self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION, "")
+        }
+
     def _get_challenge(self, *args, **kwargs) -> Challenge:
         challenge = self.get_challenge(*args, **kwargs)
         if "flow_info" not in challenge.initial_data:
             flow_info = ContextualFlowInfo(
                 data={
-                    "title": self.executor.flow.title,
+                    "title": self.format_title(),
                     "background": self.executor.flow.background_url,
                     "cancel_url": reverse("authentik_flows:cancel"),
                 }

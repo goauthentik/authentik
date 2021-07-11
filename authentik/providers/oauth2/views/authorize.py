@@ -156,20 +156,23 @@ class OAuthAuthorizationParams:
 
     def check_redirect_uri(self):
         """Redirect URI validation."""
+        allowed_redirect_urls = self.provider.redirect_uris.split()
         if not self.redirect_uri:
             LOGGER.warning("Missing redirect uri.")
-            raise RedirectUriError("", self.provider.redirect_uris.split())
-        if self.redirect_uri.lower() not in [
-            x.lower() for x in self.provider.redirect_uris.split()
-        ]:
+            raise RedirectUriError("", allowed_redirect_urls)
+        if len(allowed_redirect_urls) < 1:
+            LOGGER.warning(
+                "Provider has no allowed redirect_uri set, allowing all.",
+                allow=self.redirect_uri.lower(),
+            )
+            return
+        if self.redirect_uri.lower() not in [x.lower() for x in allowed_redirect_urls]:
             LOGGER.warning(
                 "Invalid redirect uri",
                 redirect_uri=self.redirect_uri,
-                excepted=self.provider.redirect_uris.split(),
+                excepted=allowed_redirect_urls,
             )
-            raise RedirectUriError(
-                self.redirect_uri, self.provider.redirect_uris.split()
-            )
+            raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
         if self.request:
             raise AuthorizeError(
                 self.redirect_uri, "request_not_supported", self.grant_type, self.state

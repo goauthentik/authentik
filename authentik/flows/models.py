@@ -121,6 +121,7 @@ class Flow(SerializerModel, PolicyBindingModel):
         default=None,
         null=True,
         help_text=_("Background shown during execution"),
+        max_length=500,
     )
 
     compatibility_mode = models.BooleanField(

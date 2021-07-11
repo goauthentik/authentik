@@ -67,7 +67,7 @@ class TestAuthorize(OAuthTestCase):
             )
             OAuthAuthorizationParams.from_request(request)
 
-    def test_redirect_uri(self):
+    def test_invalid_redirect_uri(self):
         """test missing/invalid redirect URI"""
         OAuth2Provider.objects.create(
             name="test",
@@ -90,6 +90,28 @@ class TestAuthorize(OAuthTestCase):
                 },
             )
             OAuthAuthorizationParams.from_request(request)
+
+    def test_empty_redirect_uri(self):
+        """test empty redirect URI (configure in provider)"""
+        OAuth2Provider.objects.create(
+            name="test",
+            client_id="test",
+            authorization_flow=Flow.objects.first(),
+        )
+        with self.assertRaises(RedirectUriError):
+            request = self.factory.get(
+                "/", data={"response_type": "code", "client_id": "test"}
+            )
+            OAuthAuthorizationParams.from_request(request)
+        request = self.factory.get(
+            "/",
+            data={
+                "response_type": "code",
+                "client_id": "test",
+                "redirect_uri": "http://localhost",
+            },
+        )
+        OAuthAuthorizationParams.from_request(request)
 
     def test_response_type(self):
         """test response_type"""

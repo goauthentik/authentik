@@ -1,7 +1,7 @@
 """SAML AuthNRequest Parser and dataclass"""
 from base64 import b64decode
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Union
 from urllib.parse import quote_plus
 
 import xmlsec
@@ -54,7 +54,9 @@ class AuthNRequestParser:
     def __init__(self, provider: SAMLProvider):
         self.provider = provider
 
-    def _parse_xml(self, decoded_xml: str, relay_state: Optional[str]) -> AuthNRequest:
+    def _parse_xml(
+        self, decoded_xml: Union[str, bytes], relay_state: Optional[str]
+    ) -> AuthNRequest:
         root = ElementTree.fromstring(decoded_xml)
 
         request_acs_url = root.attrib["AssertionConsumerServiceURL"]
@@ -79,10 +81,12 @@ class AuthNRequestParser:
 
         return auth_n_request
 
-    def parse(self, saml_request: str, relay_state: Optional[str]) -> AuthNRequest:
+    def parse(
+        self, saml_request: str, relay_state: Optional[str] = None
+    ) -> AuthNRequest:
         """Validate and parse raw request with enveloped signautre."""
         try:
-            decoded_xml = b64decode(saml_request.encode()).decode()
+            decoded_xml = b64decode(saml_request.encode())
         except UnicodeDecodeError:
             raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST)
 
@@ -93,8 +97,9 @@ class AuthNRequestParser:
         signature_nodes = root.xpath(
             "/samlp:AuthnRequest/ds:Signature", namespaces=NS_MAP
         )
-        if len(signature_nodes) != 1:
-            raise CannotHandleAssertion(ERROR_SIGNATURE_REQUIRED_BUT_ABSENT)
+        # No signatures, no verifier configured -> decode xml directly
+        if len(signature_nodes) < 1 and not verifier:
+            return self._parse_xml(decoded_xml, relay_state)
 
         signature_node = signature_nodes[0]
 

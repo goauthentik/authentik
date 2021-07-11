@@ -61,5 +61,8 @@ gen-outpost:
 
 gen: gen-build gen-clean gen-web gen-outpost
 
+migrate:
+	python -m lifecycle.migrate
+
 run:
 	go run -v cmd/server/main.go
