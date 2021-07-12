@@ -43,7 +43,7 @@ while True:
 while True:
     try:
         redis = Redis.from_url(
-            f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:6379"
+            f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:{int(CONFIG.y('redis.port'))}"
             f"/{CONFIG.y('redis.ws_db')}"
         )
         redis.ping()
