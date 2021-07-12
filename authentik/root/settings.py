@@ -192,8 +192,8 @@ CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": (
-            f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:{int(CONFIG.y('redis.port'))}"
-            f"/{CONFIG.y('redis.cache_db')}"
+            f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
+            f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.cache_db')}"
         ),
         "TIMEOUT": int(CONFIG.y("redis.cache_timeout", 300)),
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
@@ -252,8 +252,8 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [
-                f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:{int(CONFIG.y('redis.port'))}"
-                f"/{CONFIG.y('redis.ws_db')}"
+                f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
+                f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.ws_db')}"
             ],
         },
     },
