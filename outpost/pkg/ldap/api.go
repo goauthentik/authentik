@@ -73,7 +73,7 @@ func (ls *LDAPServer) StartLDAPServer() error {
 }
 
 func (ls *LDAPServer) StartLDAPTLSServer() error {
-	listen := "0.0.0.0:3390"
+	listen := "0.0.0.0:6636"
 	tlsConfig := &tls.Config{
 		MinVersion:     tls.VersionTLS12,
 		MaxVersion:     tls.VersionTLS12,
