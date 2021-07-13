@@ -53,7 +53,7 @@
         "@rollup/plugin-babel": "^5.3.0",
         "@rollup/plugin-replace": "^2.4.2",
         "@rollup/plugin-typescript": "^8.2.1",
-        "@sentry/browser": "^6.8.0",
+        "@sentry/browser": "^6.9.0",
         "@sentry/tracing": "^6.9.0",
         "@types/chart.js": "^2.9.34",
         "@types/codemirror": "5.60.2",
