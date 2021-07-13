@@ -28,6 +28,11 @@ class LDAPProvider(OutpostModel, Provider):
             "If not set, every user can execute search queries."
         ),
     )
+
+    tls_server_name = models.TextField(
+        default="",
+        blank=True,
+    )
     certificate = models.ForeignKey(
         CertificateKeyPair,
         on_delete=models.SET_NULL,

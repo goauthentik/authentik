@@ -91,6 +91,12 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                         <p class="pf-c-form__helper-text">${t`LDAP DN under which bind requests and search requests can be made.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
+                        label=${t`TLS Server name`}
+                        name="baseDn">
+                        <input type="text" value="${first(this.instance?.tlsServerName, "")}" class="pf-c-form-control">
+                        <p class="pf-c-form__helper-text">${t`Server name for which this provider's certificate is valid for.`}</p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
                         label=${t`Certificate`}
                         name="certificate">
                         <select class="pf-c-form-control">

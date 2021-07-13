@@ -20495,6 +20495,8 @@ components:
           type: string
           format: uuid
           nullable: true
+        tls_server_name:
+          type: string
       required:
       - application_slug
       - bind_flow_slug
@@ -20611,6 +20613,8 @@ components:
           type: string
           format: uuid
           nullable: true
+        tls_server_name:
+          type: string
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -20648,6 +20652,8 @@ components:
           type: string
           format: uuid
           nullable: true
+        tls_server_name:
+          type: string
       required:
       - authorization_flow
       - name
@@ -24988,6 +24994,8 @@ components:
           type: string
           format: uuid
           nullable: true
+        tls_server_name:
+          type: string
     PatchedLDAPSourceRequest:
       type: object
       description: LDAP Source Serializer

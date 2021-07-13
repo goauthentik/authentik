@@ -18,6 +18,7 @@ class LDAPProviderSerializer(ProviderSerializer):
             "base_dn",
             "search_group",
             "certificate",
+            "tls_server_name",
         ]
 
 
@@ -46,6 +47,7 @@ class LDAPOutpostConfigSerializer(ModelSerializer):
             "application_slug",
             "search_group",
             "certificate",
+            "tls_server_name",
         ]
 
 
