@@ -19,7 +19,7 @@
         "postcss": "^8.3.5",
         "rapidoc": "^9.0.0",
         "react": "^17.0.2",
-        "react-before-after-slider": "^1.0.4",
+        "react-before-after-slider-component": "^0.7.4",
         "react-dom": "^17.0.2",
         "react-feather": "^2.0.9",
         "react-toggle": "^4.1.2"
