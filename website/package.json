@@ -12,8 +12,8 @@
         "serve": "docusaurus serve"
     },
     "dependencies": {
-        "@docusaurus/plugin-client-redirects": "*",
-        "@docusaurus/preset-classic": "2.0.0-beta.0",
+        "@docusaurus/plugin-client-redirects": "2.0.0-beta.3",
+        "@docusaurus/preset-classic": "2.0.0-beta.3",
         "@mdx-js/react": "^1.6.22",
         "clsx": "^1.1.1",
         "postcss": "^8.3.5",

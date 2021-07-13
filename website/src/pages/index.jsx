@@ -105,7 +105,7 @@ function Home() {
                                 <div>
                                     <BrowserOnly>
                                         {() => {
-                                            const ReactBeforeSliderComponent = require('react-before-after-slider-component').default;
+                                            const ReactBeforeSliderComponent = require('react-before-after-slider-component');
                                             return <ReactBeforeSliderComponent
                                                 firstImage={{
                                                     id: 1,
@@ -150,7 +150,7 @@ function Home() {
                                 <div>
                                     <BrowserOnly>
                                         {() => {
-                                            const ReactBeforeSliderComponent = require('react-before-after-slider-component').default;
+                                            const ReactBeforeSliderComponent = require('react-before-after-slider-component');
                                             return <ReactBeforeSliderComponent
                                                 firstImage={{
                                                     id: 1,
