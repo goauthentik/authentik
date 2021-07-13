@@ -17,6 +17,7 @@ class LDAPProviderSerializer(ProviderSerializer):
         fields = ProviderSerializer.Meta.fields + [
             "base_dn",
             "search_group",
+            "certificate",
         ]
 
 
@@ -44,6 +45,7 @@ class LDAPOutpostConfigSerializer(ModelSerializer):
             "bind_flow_slug",
             "application_slug",
             "search_group",
+            "certificate",
         ]
 
 

@@ -20402,6 +20402,10 @@ components:
           nullable: true
           description: Users in this group can do search queries. If not set, every
             user can execute search queries.
+        certificate:
+          type: string
+          format: uuid
+          nullable: true
       required:
       - application_slug
       - bind_flow_slug
@@ -20514,6 +20518,10 @@ components:
           nullable: true
           description: Users in this group can do search queries. If not set, every
             user can execute search queries.
+        certificate:
+          type: string
+          format: uuid
+          nullable: true
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -20547,6 +20555,10 @@ components:
           nullable: true
           description: Users in this group can do search queries. If not set, every
             user can execute search queries.
+        certificate:
+          type: string
+          format: uuid
+          nullable: true
       required:
       - authorization_flow
       - name
@@ -24883,6 +24895,10 @@ components:
           nullable: true
           description: Users in this group can do search queries. If not set, every
             user can execute search queries.
+        certificate:
+          type: string
+          format: uuid
+          nullable: true
     PatchedLDAPSourceRequest:
       type: object
       description: LDAP Source Serializer

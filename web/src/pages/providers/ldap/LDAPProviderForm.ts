@@ -1,4 +1,4 @@
-import { FlowsApi, ProvidersApi, LDAPProvider, CoreApi, FlowsInstancesListDesignationEnum } from "authentik-api";
+import { FlowsApi, ProvidersApi, LDAPProvider, CoreApi, FlowsInstancesListDesignationEnum, CryptoApi } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -89,6 +89,21 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                         name="baseDn">
                         <input type="text" value="${first(this.instance?.baseDn, "DC=ldap,DC=goauthentik,DC=io")}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`LDAP DN under which bind requests and search requests can be made.`}</p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Certificate`}
+                        name="certificate">
+                        <select class="pf-c-form-control">
+                            <option value="" ?selected=${this.instance?.certificate === undefined}>---------</option>
+                            ${until(new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
+                                ordering: "pk",
+                                hasKey: true,
+                            }).then(keys => {
+                                return keys.results.map(key => {
+                                    return html`<option value=${ifDefined(key.pk)} ?selected=${this.instance?.certificate === key.pk}>${key.name}</option>`;
+                                });
+                            }), html`<option>${t`Loading...`}</option>`)}
+                        </select>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
