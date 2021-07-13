@@ -96,6 +96,23 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 			Name:   "objectClass",
 			Values: []string{UserObjectClass, "organizationalPerson", "goauthentik.io/ldap/user"},
 		},
+		{
+			Name:   "uidNumber",
+			Values: []string{ pi.GetUidNumber(u) },
+		},
+	}
+
+	// We don't have a way of defining primary groups in authentik, just get the first one from the list.
+	if (len(u.Groups) > 0) {
+		attrs = append(attrs, &ldap.EntryAttribute{
+			Name:   "gidNumber",
+			Values: []string { pi.GetGidNumber(u.Groups[0]) },
+		})
+	} else {
+		attrs = append(attrs, &ldap.EntryAttribute{
+			Name:   "gidNumber",
+			Values: []string{ "" },
+		})
 	}
 
 	attrs = append(attrs, &ldap.EntryAttribute{Name: "memberOf", Values: pi.GroupsForUser(u)})
@@ -128,7 +145,12 @@ func (pi *ProviderInstance) GroupEntry(g api.Group) *ldap.Entry {
 			Name:   "objectClass",
 			Values: []string{GroupObjectClass, "goauthentik.io/ldap/group"},
 		},
+		{
+			Name:   "gidNumber",
+			Values: []string{ pi.GetGidNumber(g) },
+		},
 	}
+
 	attrs = append(attrs, AKAttrsToLDAP(g.Attributes)...)
 
 	dn := pi.GetGroupDN(g)
