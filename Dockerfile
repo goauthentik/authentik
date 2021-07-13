@@ -51,6 +51,7 @@ COPY --from=website-builder /static/build_docs/ /work/website/build_docs/
 
 COPY ./cmd /work/cmd
 COPY ./web/static.go /work/web/static.go
+COPY ./website/static.go /work/website/static.go
 COPY ./internal /work/internal
 COPY ./go.mod /work/go.mod
 COPY ./go.sum /work/go.sum
