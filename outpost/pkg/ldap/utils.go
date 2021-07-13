@@ -6,7 +6,6 @@ import (
 	"bytes"
 	"encoding/hex"
 	"encoding/binary"
-	"os"
 	"strconv"
 
 	"github.com/nmcclain/ldap"
@@ -50,42 +49,12 @@ func (pi *ProviderInstance) GetGroupDN(group api.Group) string {
 	return fmt.Sprintf("cn=%s,%s", group.Name, pi.GroupDN)
 }
 
-func (pi *ProviderInstance) GetUidNumberStart() int32 {
-	if (pi.uidNumberStart == 0) {
-		val, found := os.LookupEnv("LDAP_UID_NUMBER_START")
-
-		if (!found) {
-			pi.uidNumberStart = 2000
-		} else {
-			i, _ := strconv.ParseInt(val, 10, 32)
-			pi.uidNumberStart = int32(i)
-		}
-	}
-
-	return pi.uidNumberStart
-}
-
-func (pi *ProviderInstance) GetGidNumberStart() int32 {
-	if (pi.gidNumberStart == 0) {
-		val, found := os.LookupEnv("LDAP_GID_NUMBER_START")
-
-		if (!found) {
-			pi.gidNumberStart = 2000
-		} else {
-			i, _ := strconv.ParseInt(val, 10, 32)
-			pi.gidNumberStart = int32(i)
-		}
-	}
-
-	return pi.gidNumberStart
-}
-
 func (pi *ProviderInstance) GetUidNumber(user api.User) string {
-	return strconv.FormatInt(int64(pi.GetUidNumberStart() + user.Pk), 10)
+	return strconv.FormatInt(int64(pi.uidStartNumber + user.Pk), 10)
 }
 
 func (pi *ProviderInstance) GetGidNumber(group api.Group) string {
-	return strconv.FormatInt(int64(pi.GetGidNumberStart() + pi.GetRIDForGroup(group.Pk)), 10)
+	return strconv.FormatInt(int64(pi.gidStartNumber + pi.GetRIDForGroup(group.Pk)), 10)
 }
 
 func (pi *ProviderInstance) GetRIDForGroup(uid string) int32 {

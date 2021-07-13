@@ -28,6 +28,22 @@ class LDAPProvider(OutpostModel, Provider):
         ),
     )
 
+    uid_start_number = models.IntegerField(
+        default=2000,
+        help_text=_(
+            "The start for uidNumbers, this number is added to the user.Pk to make sure that the numbers aren't too low for POSIX users. "
+            "Default is 2000 to ensure that we don't collide with local users uidNumber"
+        ),
+    )
+
+    gid_start_number = models.IntegerField(
+        default=2000,
+        help_text=_(
+            "The start for gidNumbers, this number is added to a number generated from the group.Pk to make sure that the numbers aren't too low for POSIX groups. "
+            "Default is 2000 to ensure that we don't collide with local groups gidNumber"
+        ),
+    )
+
     @property
     def launch_url(self) -> Optional[str]:
         """LDAP never has a launch URL"""

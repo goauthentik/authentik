@@ -28,8 +28,9 @@ type ProviderInstance struct {
 	searchAllowedGroups []*strfmt.UUID
 	boundUsersMutex     sync.RWMutex
 	boundUsers          map[string]UserFlags
-	uidNumberStart int32
-	gidNumberStart int32
+
+	uidStartNumber int32
+	gidStartNumber int32
 }
 
 type UserFlags struct {
