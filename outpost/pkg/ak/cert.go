@@ -37,7 +37,7 @@ func GenerateSelfSignedCert() (tls.Certificate, error) {
 		SerialNumber: serialNumber,
 		Subject: pkix.Name{
 			Organization: []string{"authentik"},
-			CommonName:   "authentik Proxy default certificate",
+			CommonName:   "authentik Outpost default certificate",
 		},
 		NotBefore: notBefore,
 		NotAfter:  notAfter,

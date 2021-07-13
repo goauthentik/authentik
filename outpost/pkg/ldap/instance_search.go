@@ -109,7 +109,7 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 
 	attrs = append(attrs, AKAttrsToLDAP(u.Attributes)...)
 
-	dn := fmt.Sprintf("cn=%s,%s", u.Username, pi.UserDN)
+	dn := pi.GetUserDN(u.Username)
 
 	return &ldap.Entry{DN: dn, Attributes: attrs}
 }
@@ -129,6 +129,9 @@ func (pi *ProviderInstance) GroupEntry(g api.Group) *ldap.Entry {
 			Values: []string{GroupObjectClass, "goauthentik.io/ldap/group"},
 		},
 	}
+	attrs = append(attrs, &ldap.EntryAttribute{Name: "member", Values: pi.UsersForGroup(g)})
+	attrs = append(attrs, &ldap.EntryAttribute{Name: "goauthentik.io/ldap/superuser", Values: []string{BoolToString(*g.IsSuperuser)}})
+
 	attrs = append(attrs, AKAttrsToLDAP(g.Attributes)...)
 
 	dn := pi.GetGroupDN(g)
