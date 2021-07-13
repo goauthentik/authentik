@@ -10,7 +10,15 @@ RUN pip install pipenv && \
     pipenv lock -r > requirements.txt && \
     pipenv lock -r --dev-only > requirements-dev.txt
 
-# Stage 2: Build web API
+# Stage 2: Build website
+FROM node as website-builder
+
+COPY ./website /static/
+
+ENV NODE_ENV=production
+RUN cd /static && npm i && npm run build-docs-only
+
+# Stage 3: Build web API
 FROM openapitools/openapi-generator-cli as api-builder
 
 COPY ./schema.yml /local/schema.yml
@@ -21,8 +29,8 @@ RUN	docker-entrypoint.sh generate \
     -o /local/web/api \
     --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
 
-# Stage 3: Build webui
-FROM node as npm-builder
+# Stage 4: Build webui
+FROM node as web-builder
 
 COPY ./web /static/
 COPY --from=api-builder /local/web/api /static/api
@@ -30,15 +38,16 @@ COPY --from=api-builder /local/web/api /static/api
 ENV NODE_ENV=production
 RUN cd /static && npm i && npm run build
 
-# Stage 4: Build go proxy
+# Stage 5: Build go proxy
 FROM golang:1.16.5 AS builder
 
 WORKDIR /work
 
-COPY --from=npm-builder /static/robots.txt /work/web/robots.txt
-COPY --from=npm-builder /static/security.txt /work/web/security.txt
-COPY --from=npm-builder /static/dist/ /work/web/dist/
-COPY --from=npm-builder /static/authentik/ /work/web/authentik/
+COPY --from=web-builder /static/robots.txt /work/web/robots.txt
+COPY --from=web-builder /static/security.txt /work/web/security.txt
+COPY --from=web-builder /static/dist/ /work/web/dist/
+COPY --from=web-builder /static/authentik/ /work/web/authentik/
+COPY --from=website-builder /static/build_docs/ /work/website/build_docs/
 
 COPY ./cmd /work/cmd
 COPY ./web/static.go /work/web/static.go
@@ -48,7 +57,7 @@ COPY ./go.sum /work/go.sum
 
 RUN go build -o /work/authentik ./cmd/server/main.go
 
-# Stage 5: Run
+# Stage 6: Run
 FROM python:3.9-slim-buster
 
 WORKDIR /
