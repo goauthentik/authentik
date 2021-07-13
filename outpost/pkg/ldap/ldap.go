@@ -1,6 +1,7 @@
 package ldap
 
 import (
+	"crypto/tls"
 	"sync"
 
 	"github.com/go-openapi/strfmt"
@@ -25,6 +26,9 @@ type ProviderInstance struct {
 	s        *LDAPServer
 	log      *log.Entry
 
+	tlsServerName *string
+	cert          *tls.Certificate
+
 	searchAllowedGroups []*strfmt.UUID
 	boundUsersMutex     sync.RWMutex
 	boundUsers          map[string]UserFlags
@@ -38,11 +42,11 @@ type UserFlags struct {
 }
 
 type LDAPServer struct {
-	s   *ldap.Server
-	log *log.Entry
-	ac  *ak.APIController
-
-	providers []*ProviderInstance
+	s           *ldap.Server
+	log         *log.Entry
+	ac          *ak.APIController
+	defaultCert *tls.Certificate
+	providers   []*ProviderInstance
 }
 
 func NewServer(ac *ak.APIController) *LDAPServer {
@@ -54,6 +58,11 @@ func NewServer(ac *ak.APIController) *LDAPServer {
 		ac:        ac,
 		providers: []*ProviderInstance{},
 	}
+	defaultCert, err := ak.GenerateSelfSignedCert()
+	if err != nil {
+		log.Warning(err)
+	}
+	ls.defaultCert = &defaultCert
 	s.BindFunc("", ls)
 	s.SearchFunc("", ls)
 	return ls

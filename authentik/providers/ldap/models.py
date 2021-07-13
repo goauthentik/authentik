@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Group, Provider
+from authentik.crypto.models import CertificateKeyPair
 from authentik.outposts.models import OutpostModel
 
 
@@ -26,6 +27,17 @@ class LDAPProvider(OutpostModel, Provider):
             "Users in this group can do search queries. "
             "If not set, every user can execute search queries."
         ),
+    )
+
+    tls_server_name = models.TextField(
+        default="",
+        blank=True,
+    )
+    certificate = models.ForeignKey(
+        CertificateKeyPair,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
 
     @property

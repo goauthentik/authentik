@@ -13,6 +13,7 @@ web:
 
 redis:
   host: localhost
+  port: 6379
   password: ''
   cache_db: 0
   message_queue_db: 1
