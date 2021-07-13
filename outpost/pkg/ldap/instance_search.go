@@ -54,8 +54,18 @@ func (pi *ProviderInstance) Search(bindDN string, searchReq ldap.SearchRequest, 
 			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("API Error: %s", err)
 		}
 		pi.log.WithField("count", len(groups.Results)).Trace("Got results from API")
+
 		for _, g := range groups.Results {
 			entries = append(entries, pi.GroupEntry(g))
+		}
+
+		users, _, err := pi.s.ac.Client.CoreApi.CoreUsersList(context.Background()).Execute()
+		if err != nil {
+			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("API Error: %s", err)
+		}
+
+		for _, u := range users.Results {
+			entries = append(entries, pi.UserAsGroupEntry(u))
 		}
 	case UserObjectClass, "":
 		users, _, err := pi.s.ac.Client.CoreApi.CoreUsersList(context.Background()).Execute()
@@ -100,19 +110,10 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 			Name:   "uidNumber",
 			Values: []string{ pi.GetUidNumber(u) },
 		},
-	}
-
-	// We don't have a way of defining primary groups in authentik, just get the first one from the list.
-	if (len(u.Groups) > 0) {
-		attrs = append(attrs, &ldap.EntryAttribute{
+		{
 			Name:   "gidNumber",
-			Values: []string { pi.GetGidNumber(u.Groups[0]) },
-		})
-	} else {
-		attrs = append(attrs, &ldap.EntryAttribute{
-			Name:   "gidNumber",
-			Values: []string{ "" },
-		})
+			Values: []string{ pi.GetUidNumber(u) },
+		},
 	}
 
 	attrs = append(attrs, &ldap.EntryAttribute{Name: "memberOf", Values: pi.GroupsForUser(u)})
@@ -154,5 +155,34 @@ func (pi *ProviderInstance) GroupEntry(g api.Group) *ldap.Entry {
 	attrs = append(attrs, AKAttrsToLDAP(g.Attributes)...)
 
 	dn := pi.GetGroupDN(g)
+	return &ldap.Entry{DN: dn, Attributes: attrs}
+}
+
+func (pi *ProviderInstance) UserAsGroupEntry(u api.User) *ldap.Entry {
+	dn := fmt.Sprintf("cn=%s,%s", u.Username, pi.GroupDN)
+
+	attrs := []*ldap.EntryAttribute{
+		{
+			Name:   "cn",
+			Values: []string{u.Username},
+		},
+		{
+			Name:   "uid",
+			Values: []string{string(u.Uid)},
+		},
+		{
+			Name:   "objectClass",
+			Values: []string{GroupObjectClass, "goauthentik.io/ldap/group"},
+		},
+		{
+			Name:   "gidNumber",
+			Values: []string{ pi.GetUidNumber(u) },
+		},
+		{
+			Name:   "member",
+			Values: []string{ dn },
+		},
+	}
+
 	return &ldap.Entry{DN: dn, Attributes: attrs}
 }
