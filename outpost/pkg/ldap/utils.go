@@ -40,6 +40,18 @@ func (pi *ProviderInstance) GroupsForUser(user api.User) []string {
 	return groups
 }
 
+func (pi *ProviderInstance) UsersForGroup(group api.Group) []string {
+	users := make([]string, len(group.UsersObj))
+	for i, user := range group.UsersObj {
+		users[i] = pi.GetUserDN(user.Username)
+	}
+	return users
+}
+
+func (pi *ProviderInstance) GetUserDN(user string) string {
+	return fmt.Sprintf("cn=%s,%s", user, pi.UserDN)
+}
+
 func (pi *ProviderInstance) GetGroupDN(group api.Group) string {
 	return fmt.Sprintf("cn=%s,%s", group.Name, pi.GroupDN)
 }

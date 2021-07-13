@@ -19927,11 +19927,100 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+        users_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupMember'
+          readOnly: true
       required:
       - name
       - parent
       - pk
       - users
+      - users_obj
+    GroupMember:
+      type: object
+      description: Stripped down user serializer to show relevant users for groups
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        is_superuser:
+          type: boolean
+          readOnly: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        avatar:
+          type: string
+          readOnly: true
+        attributes:
+          type: object
+          additionalProperties: {}
+        uid:
+          type: string
+          readOnly: true
+      required:
+      - avatar
+      - is_superuser
+      - name
+      - pk
+      - uid
+      - username
+    GroupMemberRequest:
+      type: object
+      description: Stripped down user serializer to show relevant users for groups
+      properties:
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - name
+      - username
     GroupRequest:
       type: object
       description: Group Serializer
