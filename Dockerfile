@@ -47,7 +47,7 @@ COPY --from=web-builder /static/robots.txt /work/web/robots.txt
 COPY --from=web-builder /static/security.txt /work/web/security.txt
 COPY --from=web-builder /static/dist/ /work/web/dist/
 COPY --from=web-builder /static/authentik/ /work/web/authentik/
-COPY --from=website-builder /static/build_docs/ /work/website/build_docs/
+COPY --from=website-builder /static/help/ /work/website/help/
 
 COPY ./cmd /work/cmd
 COPY ./web/static.go /work/web/static.go

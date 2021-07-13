@@ -6,7 +6,7 @@
         "docusaurus": "docusaurus",
         "watch": "docusaurus start",
         "build": "docusaurus build",
-        "build-docs-only": "docusaurus build --config docusaurus.docs-only.js --out-dir build_docs",
+        "build-docs-only": "docusaurus build --config docusaurus.docs-only.js --out-dir help",
         "swizzle": "docusaurus swizzle",
         "deploy": "docusaurus deploy",
         "serve": "docusaurus serve"
