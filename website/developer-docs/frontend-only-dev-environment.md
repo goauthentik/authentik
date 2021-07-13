@@ -5,7 +5,7 @@ title: Frontend-only development environment
 If you want to only make changes on the UI, you don't need a backend running from source. You can user the docker-compose install with a few customizations.
 
 1. Clone the git repo from https://github.com/goauthentik/authentik
-2. In the cloned repository, follow the docker-compose installation instructions [here](../../docs/installation/docker-compose)
+2. In the cloned repository, follow the docker-compose installation instructions [here](/docs/installation/docker-compose)
 3. Add the following entry to your `.env` file:
 
     ```

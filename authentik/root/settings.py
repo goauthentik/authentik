@@ -192,8 +192,8 @@ CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": (
-            f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:6379"
-            f"/{CONFIG.y('redis.cache_db')}"
+            f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
+            f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.cache_db')}"
         ),
         "TIMEOUT": int(CONFIG.y("redis.cache_timeout", 300)),
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
@@ -252,8 +252,8 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [
-                f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:6379"
-                f"/{CONFIG.y('redis.ws_db')}"
+                f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
+                f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.ws_db')}"
             ],
         },
     },
@@ -332,11 +332,11 @@ CELERY_TASK_CREATE_MISSING_QUEUES = True
 CELERY_TASK_DEFAULT_QUEUE = "authentik"
 CELERY_BROKER_URL = (
     f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}"
-    f":6379/{CONFIG.y('redis.message_queue_db')}"
+    f":{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.message_queue_db')}"
 )
 CELERY_RESULT_BACKEND = (
     f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}"
-    f":6379/{CONFIG.y('redis.message_queue_db')}"
+    f":{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.message_queue_db')}"
 )
 
 # Database backup
@@ -364,11 +364,12 @@ if CONFIG.y("postgresql.s3_backup"):
     )
 
 # Sentry integration
+SENTRY_DSN = "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8"
 _ERROR_REPORTING = CONFIG.y_bool("error_reporting.enabled", False)
 if _ERROR_REPORTING:
     # pylint: disable=abstract-class-instantiated
     sentry_init(
-        dsn="https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8",
+        dsn=SENTRY_DSN,
         integrations=[
             DjangoIntegration(transaction_style="function_name"),
             CeleryIntegration(),

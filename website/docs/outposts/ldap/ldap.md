@@ -22,7 +22,7 @@ You can bind using the DN `cn=<username>,ou=users,<base DN>`, or using the follo
 ldapsearch \
   -x \ # Only simple binds are currently supported
   -h *ip* \
-  -p 3389 \
+  -p 389 \
   -D 'cn=*user*,ou=users,DC=ldap,DC=goauthentik,DC=io' \ # Bind user and password
   -w '*password*' \
   -b 'ou=users,DC=ldap,DC=goauthentik,DC=io' \ # The search base
@@ -48,8 +48,15 @@ The following fields are current set for groups:
 
 - `cn`: The group's name
 - `uid`: Unique group identifier
+- `member`: A list of all DNs of the group's members
 - `objectClass`: A list of these strings:
   - "group"
   - "goauthentik.io/ldap/group"
 
 **Additionally**, for both users and groups, any attributes you set are also present as LDAP Attributes.
+
+## SSL
+
+You can also configure SSL for your LDAP Providers by selecting a certificate and a server name in the provider settings.
+
+This enables you to bind on port 636 using LDAPS, StartTLS is not supported.
