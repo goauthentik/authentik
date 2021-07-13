@@ -86,6 +86,9 @@ func (ls *LDAPServer) StartLDAPTLSServer() error {
 	}
 	ls.log.WithField("listen", listen).Info("Starting ldap tls server")
 	err = ls.s.Serve(ln)
+	if err != nil {
+		return err
+	}
 	ls.log.Printf("closing %s", ln.Addr())
 	return ls.s.ListenAndServe(listen)
 }
