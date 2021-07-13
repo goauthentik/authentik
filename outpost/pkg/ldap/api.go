@@ -39,8 +39,8 @@ func (ls *LDAPServer) Refresh() error {
 			s:                   ls,
 			log:                 log.WithField("logger", "authentik.outpost.ldap").WithField("provider", provider.Name),
 			tlsServerName:       provider.TlsServerName,
-			uidStartNumber:		 provider.UidStartNumber,
-			gidStartNumber:		 provider.GidStartNumber,
+			uidStartNumber:		 *provider.UidStartNumber,
+			gidStartNumber:		 *provider.GidStartNumber,
 		}
 		if provider.Certificate.Get() != nil {
 			logger.WithField("provider", provider.Name).Debug("Enabling TLS")
