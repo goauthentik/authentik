@@ -2,10 +2,10 @@ package ldap
 
 import (
 	"fmt"
-	"strings"
 	"math/big"
-	"strconv"
 	"reflect"
+	"strconv"
+	"strings"
 
 	"github.com/nmcclain/ldap"
 	log "github.com/sirupsen/logrus"
@@ -94,7 +94,7 @@ func (pi *ProviderInstance) APIGroupToLDAPGroup(g api.Group) LDAPGroup {
 }
 
 func (pi *ProviderInstance) APIUserToLDAPGroup(u api.User) LDAPGroup {
-	dn := fmt.Sprintf("cn=%s,%s", u.Username, pi.GroupDN)
+	dn := fmt.Sprintf("cn=%s,%s", u.Username, pi.UserDN)
 
 	return LDAPGroup{
 		dn:				dn,
@@ -125,8 +125,8 @@ func (pi *ProviderInstance) GetGidNumber(group api.Group) string {
 }
 
 func (pi *ProviderInstance) GetRIDForGroup(uid string) int32 {
-    var i big.Int
-    i.SetString(strings.Replace(uid, "-", "", -1), 16)
+	var i big.Int
+	i.SetString(strings.Replace(uid, "-", "", -1), 16)
 	intStr := i.String()
 
 	// Get the last 5 characters/digits of the int-version of the UUID
