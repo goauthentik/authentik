@@ -32,6 +32,9 @@ type ProviderInstance struct {
 	searchAllowedGroups []*strfmt.UUID
 	boundUsersMutex     sync.RWMutex
 	boundUsers          map[string]UserFlags
+
+	uidStartNumber int32
+	gidStartNumber int32
 }
 
 type UserFlags struct {
@@ -45,6 +48,17 @@ type LDAPServer struct {
 	ac          *ak.APIController
 	defaultCert *tls.Certificate
 	providers   []*ProviderInstance
+}
+
+type LDAPGroup struct {
+	dn string
+	cn string
+	uid string
+	gidNumber string
+	member []string
+	isSuperuser bool
+	isVirtualGroup bool
+	akAttributes interface{}
 }
 
 func NewServer(ac *ak.APIController) *LDAPServer {

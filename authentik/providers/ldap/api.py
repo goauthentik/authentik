@@ -19,6 +19,8 @@ class LDAPProviderSerializer(ProviderSerializer):
             "search_group",
             "certificate",
             "tls_server_name",
+            "uid_start_number",
+            "gid_start_number",
         ]
 
 
@@ -48,6 +50,8 @@ class LDAPOutpostConfigSerializer(ModelSerializer):
             "search_group",
             "certificate",
             "tls_server_name",
+            "uid_start_number",
+            "gid_start_number",
         ]
 
 

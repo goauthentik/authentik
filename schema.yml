@@ -20497,6 +20497,10 @@ components:
           nullable: true
         tls_server_name:
           type: string
+        uid_start_number:
+          type: integer
+        gid_start_number:
+          type: integer
       required:
       - application_slug
       - bind_flow_slug
@@ -20615,6 +20619,10 @@ components:
           nullable: true
         tls_server_name:
           type: string
+        uid_start_number:
+          type: integer
+        gid_start_number:
+          type: integer
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -20654,6 +20662,10 @@ components:
           nullable: true
         tls_server_name:
           type: string
+        uid_start_number:
+          type: integer
+        gid_start_number:
+          type: integer
       required:
       - authorization_flow
       - name
@@ -24996,6 +25008,10 @@ components:
           nullable: true
         tls_server_name:
           type: string
+        uid_start_number:
+          type: integer
+        gid_start_number:
+          type: integer
     PatchedLDAPSourceRequest:
       type: object
       description: LDAP Source Serializer

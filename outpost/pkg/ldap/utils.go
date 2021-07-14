@@ -2,6 +2,9 @@ package ldap
 
 import (
 	"fmt"
+	"strings"
+	"math/big"
+	"strconv"
 	"reflect"
 
 	"github.com/nmcclain/ldap"
@@ -77,10 +80,61 @@ func (pi *ProviderInstance) UsersForGroup(group api.Group) []string {
 	return users
 }
 
+func (pi *ProviderInstance) APIGroupToLDAPGroup(g api.Group) LDAPGroup {
+	return LDAPGroup{
+		dn:				pi.GetGroupDN(g),
+		cn:				g.Name,
+		uid:			string(g.Pk),
+		gidNumber:		pi.GetGidNumber(g),
+		member:			pi.UsersForGroup(g),
+		isVirtualGroup:	false,
+		isSuperuser:	*g.IsSuperuser,
+		akAttributes:	g.Attributes,
+	}
+}
+
+func (pi *ProviderInstance) APIUserToLDAPGroup(u api.User) LDAPGroup {
+	dn := fmt.Sprintf("cn=%s,%s", u.Username, pi.GroupDN)
+
+	return LDAPGroup{
+		dn:				dn,
+		cn:				u.Username,
+		uid:			u.Uid,
+		gidNumber:		pi.GetUidNumber(u),
+		member:			[]string{dn},
+		isVirtualGroup:	true,
+		isSuperuser:	false,
+		akAttributes:	nil,
+	}
+}
+
 func (pi *ProviderInstance) GetUserDN(user string) string {
 	return fmt.Sprintf("cn=%s,%s", user, pi.UserDN)
 }
 
 func (pi *ProviderInstance) GetGroupDN(group api.Group) string {
 	return fmt.Sprintf("cn=%s,%s", group.Name, pi.GroupDN)
+}
+
+func (pi *ProviderInstance) GetUidNumber(user api.User) string {
+	return strconv.FormatInt(int64(pi.uidStartNumber + user.Pk), 10)
+}
+
+func (pi *ProviderInstance) GetGidNumber(group api.Group) string {
+	return strconv.FormatInt(int64(pi.gidStartNumber + pi.GetRIDForGroup(group.Pk)), 10)
+}
+
+func (pi *ProviderInstance) GetRIDForGroup(uid string) int32 {
+    var i big.Int
+    i.SetString(strings.Replace(uid, "-", "", -1), 16)
+	intStr := i.String()
+
+	// Get the last 5 characters/digits of the int-version of the UUID
+	gid, err := strconv.Atoi(intStr[len(intStr)-5:])
+
+	if err != nil {
+		panic(err)
+	}
+
+	return int32(gid)
 }
