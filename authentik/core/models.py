@@ -37,6 +37,7 @@ LOGGER = get_logger()
 USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
 USER_ATTRIBUTE_SA = "goauthentik.io/user/service-account"
 USER_ATTRIBUTE_SOURCES = "goauthentik.io/user/sources"
+USER_ATTRIBUTE_TOKEN_EXPIRING = "goauthentik.io/user/token-expires"  # nosec
 
 GRAVATAR_URL = "https://secure.gravatar.com"
 DEFAULT_AVATAR = static("dist/assets/images/user_default.png")

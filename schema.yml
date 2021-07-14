@@ -2430,6 +2430,15 @@ paths:
         schema:
           type: string
       - in: query
+        name: expires
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: expiring
+        schema:
+          type: boolean
+      - in: query
         name: identifier
         schema:
           type: string
