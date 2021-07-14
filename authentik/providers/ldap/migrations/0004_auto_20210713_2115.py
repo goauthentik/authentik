@@ -6,18 +6,24 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('authentik_providers_ldap', '0003_auto_20210713_1138'),
+        ("authentik_providers_ldap", "0003_auto_20210713_1138"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='ldapprovider',
-            name='gid_start_number',
-            field=models.IntegerField(default=2000, help_text="The start for gidNumbers, this number is added to a number generated from the group.Pk to make sure that the numbers aren't too low for POSIX groups. Default is 2000 to ensure that we don't collide with local groups gidNumber"),
+            model_name="ldapprovider",
+            name="gid_start_number",
+            field=models.IntegerField(
+                default=2000,
+                help_text="The start for gidNumbers, this number is added to a number generated from the group.Pk to make sure that the numbers aren't too low for POSIX groups. Default is 2000 to ensure that we don't collide with local groups gidNumber",
+            ),
         ),
         migrations.AddField(
-            model_name='ldapprovider',
-            name='uid_start_number',
-            field=models.IntegerField(default=2000, help_text="The start for uidNumbers, this number is added to the user.Pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber"),
+            model_name="ldapprovider",
+            name="uid_start_number",
+            field=models.IntegerField(
+                default=2000,
+                help_text="The start for uidNumbers, this number is added to the user.Pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber",
+            ),
         ),
     ]
