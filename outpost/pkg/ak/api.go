@@ -41,10 +41,11 @@ type APIController struct {
 // NewAPIController initialise new API Controller instance from URL and API token
 func NewAPIController(akURL url.URL, token string) *APIController {
 	config := api.NewConfiguration()
+	config.UserAgent = pkg.UserAgent()
 	config.Host = akURL.Host
 	config.Scheme = akURL.Scheme
 	config.HTTPClient = &http.Client{
-		Transport: SetUserAgent(GetTLSTransport(), pkg.UserAgent()),
+		Transport: GetTLSTransport(),
 	}
 	config.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
 

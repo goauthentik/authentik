@@ -54,9 +54,10 @@ func (pi *ProviderInstance) Bind(username string, bindDN, bindPW string, conn ne
 	config := api.NewConfiguration()
 	config.Host = pi.s.ac.Client.GetConfig().Host
 	config.Scheme = pi.s.ac.Client.GetConfig().Scheme
+	config.UserAgent = pkg.UserAgent()
 	config.HTTPClient = &http.Client{
 		Jar: jar,
-		Transport: newTransport(ak.SetUserAgent(ak.GetTLSTransport(), pkg.UserAgent()), map[string]string{
+		Transport: newTransport(ak.GetTLSTransport(), map[string]string{
 			"X-authentik-remote-ip": host,
 		}),
 	}
