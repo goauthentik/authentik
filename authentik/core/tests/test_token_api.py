@@ -1,5 +1,7 @@
 """Test token API"""
 from django.urls.base import reverse
+from django.utils.timezone import now
+from guardian.shortcuts import get_anonymous_user
 from rest_framework.test import APITestCase
 
 from authentik.core.models import (
@@ -8,6 +10,7 @@ from authentik.core.models import (
     TokenIntents,
     User,
 )
+from authentik.core.tasks import clean_expired_models
 
 
 class TestTokenAPI(APITestCase):
@@ -41,3 +44,11 @@ class TestTokenAPI(APITestCase):
         self.assertEqual(token.user, self.user)
         self.assertEqual(token.intent, TokenIntents.INTENT_API)
         self.assertEqual(token.expiring, False)
+
+    def test_token_expire(self):
+        """Test Token expire task"""
+        token: Token = Token.objects.create(expires=now(), user=get_anonymous_user())
+        key = token.key
+        clean_expired_models.delay().get()
+        token.refresh_from_db()
+        self.assertNotEqual(key, token.key)

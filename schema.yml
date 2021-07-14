@@ -19441,6 +19441,7 @@ components:
       - suspicious_request
       - password_set
       - secret_view
+      - secret_rotate
       - invitation_used
       - authorize_application
       - source_linked

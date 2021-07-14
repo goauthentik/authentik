@@ -381,6 +381,13 @@ class ExpiringModel(models.Model):
     expires = models.DateTimeField(default=default_token_duration)
     expiring = models.BooleanField(default=True)
 
+    def expire_action(self, *args, **kwargs):
+        """Handler which is called when this object is expired. By
+        default the object is deleted. This is less efficient compared
+        to bulk deleting objects, but classes like Token() need to change
+        values instead of being deleted."""
+        return self.delete(*args, **kwargs)
+
     @classmethod
     def filter_not_expired(cls, **kwargs) -> QuerySet:
         """Filer for tokens which are not expired yet or are not expiring,
@@ -424,6 +431,18 @@ class Token(ManagedModel, ExpiringModel):
     )
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="+")
     description = models.TextField(default="", blank=True)
+
+    def expire_action(self, *args, **kwargs):
+        """Handler which is called when this object is expired."""
+        from authentik.events.models import Event, EventAction
+
+        self.key = default_token_key()
+        self.save(*args, **kwargs)
+        Event.new(
+            action=EventAction.SECRET_ROTATE,
+            token=self,
+            message=f"Token {self.identifier}'s secret was rotated.",
+        ).save()
 
     def __str__(self):
         description = f"{self.identifier}"
