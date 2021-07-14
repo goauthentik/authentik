@@ -50,6 +50,17 @@ type LDAPServer struct {
 	providers   []*ProviderInstance
 }
 
+type LDAPGroup struct {
+	dn string
+	cn string
+	uid string
+	gidNumber string
+	member []string
+	isSuperuser bool
+	isVirtualGroup bool
+	akAttributes interface{}
+}
+
 func NewServer(ac *ak.APIController) *LDAPServer {
 	s := ldap.NewServer()
 	s.EnforceLDAP = true

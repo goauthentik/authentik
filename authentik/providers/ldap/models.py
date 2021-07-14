@@ -49,10 +49,10 @@ class LDAPProvider(OutpostModel, Provider):
     )
 
     gid_start_number = models.IntegerField(
-        default=2000,
+        default=4000,
         help_text=_(
             "The start for gidNumbers, this number is added to a number generated from the group.Pk to make sure that the numbers aren't too low for POSIX groups. "
-            "Default is 2000 to ensure that we don't collide with local groups gidNumber"
+            "Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber"
         ),
     )
 

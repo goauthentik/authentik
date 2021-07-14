@@ -3,9 +3,7 @@ package ldap
 import (
 	"fmt"
 	"strings"
-	"bytes"
-	"encoding/hex"
-	"encoding/binary"
+	"math/big"
 	"strconv"
 	"reflect"
 
@@ -82,6 +80,34 @@ func (pi *ProviderInstance) UsersForGroup(group api.Group) []string {
 	return users
 }
 
+func (pi *ProviderInstance) APIGroupToLDAPGroup(g api.Group) LDAPGroup {
+	return LDAPGroup{
+		dn:				pi.GetGroupDN(g),
+		cn:				g.Name,
+		uid:			string(g.Pk),
+		gidNumber:		pi.GetGidNumber(g),
+		member:			pi.UsersForGroup(g),
+		isVirtualGroup:	false,
+		isSuperuser:	*g.IsSuperuser,
+		akAttributes:	g.Attributes,
+	}
+}
+
+func (pi *ProviderInstance) APIUserToLDAPGroup(u api.User) LDAPGroup {
+	dn := fmt.Sprintf("cn=%s,%s", u.Username, pi.GroupDN)
+
+	return LDAPGroup{
+		dn:				dn,
+		cn:				u.Username,
+		uid:			u.Uid,
+		gidNumber:		pi.GetUidNumber(u),
+		member:			[]string{dn},
+		isVirtualGroup:	true,
+		isSuperuser:	false,
+		akAttributes:	nil,
+	}
+}
+
 func (pi *ProviderInstance) GetUserDN(user string) string {
 	return fmt.Sprintf("cn=%s,%s", user, pi.UserDN)
 }
@@ -99,21 +125,16 @@ func (pi *ProviderInstance) GetGidNumber(group api.Group) string {
 }
 
 func (pi *ProviderInstance) GetRIDForGroup(uid string) int32 {
-	data, err := hex.DecodeString(strings.Replace(uid, "-", "", -1))
+    var i big.Int
+    i.SetString(strings.Replace(uid, "-", "", -1), 16)
+	intStr := i.String()
+
+	// Get the last 5 characters/digits of the int-version of the UUID
+	gid, err := strconv.Atoi(intStr[len(intStr)-5:])
 
 	if err != nil {
 		panic(err)
 	}
 
-	dataSize := len(data);
-
-	// Don't want to give too big numbers to gidNumber to ensure easo of use in LXC containers, unlikely that the 3rd to last and last bytes are the same on two groups.
-	// The actual gidNumber isn't very important, just that the group gets the same one each time and that they don't overlap.
-	chunk := []byte{ 0, 0, data[dataSize - 3], data[dataSize - 1] }
-
-	buf := bytes.NewBuffer(chunk)
-	var rid int32
-	binary.Read(buf, binary.BigEndian, &rid)
-
-	return rid
+	return int32(gid)
 }
