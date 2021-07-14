@@ -55,7 +55,7 @@ The following fields are current set for groups:
   - "group"
   - "goauthentik.io/ldap/group"
 
-A virtual group is also created for each user, they have the same fields as groups but have an additional objectClass: `goauthentik.io/ldap/group`.  
+A virtual group is also created for each user, they have the same fields as groups but have an additional objectClass: `goauthentik.io/ldap/virtual-group`.  
 The virtual groups gidNumber is equal to the uidNumber of the user.
 
 **Additionally**, for both users and (non-virtual) groups, any attributes you set are also present as LDAP Attributes.
