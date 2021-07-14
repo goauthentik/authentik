@@ -67,7 +67,7 @@ func AKAttrsToLDAP(attrs interface{}) []*ldap.EntryAttribute {
 func (pi *ProviderInstance) GroupsForUser(user api.User) []string {
 	groups := make([]string, len(user.Groups))
 	for i, group := range user.Groups {
-		groups[i] = pi.GetGroupDN(group)
+		groups[i] = pi.GetGroupDN(group.Name)
 	}
 	return groups
 }
@@ -82,7 +82,7 @@ func (pi *ProviderInstance) UsersForGroup(group api.Group) []string {
 
 func (pi *ProviderInstance) APIGroupToLDAPGroup(g api.Group) LDAPGroup {
 	return LDAPGroup{
-		dn:				pi.GetGroupDN(g),
+		dn:				pi.GetGroupDN(g.Name),
 		cn:				g.Name,
 		uid:			string(g.Pk),
 		gidNumber:		pi.GetGidNumber(g),
@@ -94,14 +94,12 @@ func (pi *ProviderInstance) APIGroupToLDAPGroup(g api.Group) LDAPGroup {
 }
 
 func (pi *ProviderInstance) APIUserToLDAPGroup(u api.User) LDAPGroup {
-	dn := fmt.Sprintf("cn=%s,%s", u.Username, pi.UserDN)
-
 	return LDAPGroup{
-		dn:				dn,
+		dn:				pi.GetGroupDN(u.Username),
 		cn:				u.Username,
 		uid:			u.Uid,
 		gidNumber:		pi.GetUidNumber(u),
-		member:			[]string{dn},
+		member:			[]string{pi.GetUserDN(u.Username)},
 		isVirtualGroup:	true,
 		isSuperuser:	false,
 		akAttributes:	nil,
@@ -112,8 +110,8 @@ func (pi *ProviderInstance) GetUserDN(user string) string {
 	return fmt.Sprintf("cn=%s,%s", user, pi.UserDN)
 }
 
-func (pi *ProviderInstance) GetGroupDN(group api.Group) string {
-	return fmt.Sprintf("cn=%s,%s", group.Name, pi.GroupDN)
+func (pi *ProviderInstance) GetGroupDN(group string) string {
+	return fmt.Sprintf("cn=%s,%s", group, pi.GroupDN)
 }
 
 func (pi *ProviderInstance) GetUidNumber(user api.User) string {
