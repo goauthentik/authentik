@@ -194,6 +194,8 @@ class TestProviderLDAP(SeleniumTestCase):
                             "organizationalPerson",
                             "goauthentik.io/ldap/user",
                         ],
+                        "uidNumber": [str(2000 + outpost_user.pk)],
+                        "gidNumber": [str(2000 + outpost_user.pk)],
                         "memberOf": [],
                         "accountStatus": ["true"],
                         "superuser": ["false"],
@@ -217,6 +219,8 @@ class TestProviderLDAP(SeleniumTestCase):
                             "organizationalPerson",
                             "goauthentik.io/ldap/user",
                         ],
+                        "uidNumber": [str(2000 + USER().pk)],
+                        "gidNumber": [str(2000 + USER().pk)],
                         "memberOf": [
                             "cn=authentik Admins,ou=groups,dc=ldap,dc=goauthentik,dc=io"
                         ],
