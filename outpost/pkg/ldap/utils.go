@@ -3,8 +3,9 @@ package ldap
 import (
 	"fmt"
 	"math/big"
-	"strconv"
 	"reflect"
+	"strconv"
+	"strings"
 
 	"github.com/nmcclain/ldap"
 	log "github.com/sirupsen/logrus"
