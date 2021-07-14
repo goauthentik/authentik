@@ -108,11 +108,11 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 		},
 		{
 			Name:   "uidNumber",
-			Values: []string{ pi.GetUidNumber(u) },
+			Values: []string{pi.GetUidNumber(u)},
 		},
 		{
 			Name:   "gidNumber",
-			Values: []string{ pi.GetUidNumber(u) },
+			Values: []string{pi.GetUidNumber(u)},
 		},
 	}
 
@@ -144,18 +144,18 @@ func (pi *ProviderInstance) GroupEntry(g LDAPGroup) *ldap.Entry {
 		},
 		{
 			Name:   "gidNumber",
-			Values: []string{ g.gidNumber },
+			Values: []string{g.gidNumber},
 		},
 	}
 
-	if (g.isVirtualGroup) {
+	if g.isVirtualGroup {
 		attrs = append(attrs, &ldap.EntryAttribute{
-			Name: "objectClass",
+			Name:   "objectClass",
 			Values: []string{GroupObjectClass, "goauthentik.io/ldap/group", "goauthentik.io/ldap/virtual-group"},
 		})
 	} else {
 		attrs = append(attrs, &ldap.EntryAttribute{
-			Name: "objectClass",
+			Name:   "objectClass",
 			Values: []string{GroupObjectClass, "goauthentik.io/ldap/group"},
 		})
 	}
@@ -163,7 +163,7 @@ func (pi *ProviderInstance) GroupEntry(g LDAPGroup) *ldap.Entry {
 	attrs = append(attrs, &ldap.EntryAttribute{Name: "member", Values: g.member})
 	attrs = append(attrs, &ldap.EntryAttribute{Name: "goauthentik.io/ldap/superuser", Values: []string{BoolToString(g.isSuperuser)}})
 
-	if (g.akAttributes != nil) {
+	if g.akAttributes != nil {
 		attrs = append(attrs, AKAttrsToLDAP(g.akAttributes)...)
 	}
 

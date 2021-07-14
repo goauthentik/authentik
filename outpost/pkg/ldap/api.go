@@ -39,8 +39,8 @@ func (ls *LDAPServer) Refresh() error {
 			s:                   ls,
 			log:                 log.WithField("logger", "authentik.outpost.ldap").WithField("provider", provider.Name),
 			tlsServerName:       provider.TlsServerName,
-			uidStartNumber:		 *provider.UidStartNumber,
-			gidStartNumber:		 *provider.GidStartNumber,
+			uidStartNumber:      *provider.UidStartNumber,
+			gidStartNumber:      *provider.GidStartNumber,
 		}
 		if provider.Certificate.Get() != nil {
 			logger.WithField("provider", provider.Name).Debug("Enabling TLS")
@@ -121,22 +121,4 @@ func (ls *LDAPServer) Start() error {
 	}()
 	wg.Wait()
 	return nil
-}
-
-type transport struct {
-	headers map[string]string
-	inner   http.RoundTripper
-}
-
-func (t *transport) RoundTrip(req *http.Request) (*http.Response, error) {
-	for key, value := range t.headers {
-		req.Header.Add(key, value)
-	}
-	return t.inner.RoundTrip(req)
-}
-func newTransport(inner http.RoundTripper, headers map[string]string) *transport {
-	return &transport{
-		inner:   inner,
-		headers: headers,
-	}
 }

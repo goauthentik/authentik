@@ -51,14 +51,14 @@ type LDAPServer struct {
 }
 
 type LDAPGroup struct {
-	dn string
-	cn string
-	uid string
-	gidNumber string
-	member []string
-	isSuperuser bool
+	dn             string
+	cn             string
+	uid            string
+	gidNumber      string
+	member         []string
+	isSuperuser    bool
 	isVirtualGroup bool
-	akAttributes interface{}
+	akAttributes   interface{}
 }
 
 func NewServer(ac *ak.APIController) *LDAPServer {

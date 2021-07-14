@@ -82,27 +82,27 @@ func (pi *ProviderInstance) UsersForGroup(group api.Group) []string {
 
 func (pi *ProviderInstance) APIGroupToLDAPGroup(g api.Group) LDAPGroup {
 	return LDAPGroup{
-		dn:				pi.GetGroupDN(g.Name),
-		cn:				g.Name,
-		uid:			string(g.Pk),
-		gidNumber:		pi.GetGidNumber(g),
-		member:			pi.UsersForGroup(g),
-		isVirtualGroup:	false,
-		isSuperuser:	*g.IsSuperuser,
-		akAttributes:	g.Attributes,
+		dn:             pi.GetGroupDN(g.Name),
+		cn:             g.Name,
+		uid:            string(g.Pk),
+		gidNumber:      pi.GetGidNumber(g),
+		member:         pi.UsersForGroup(g),
+		isVirtualGroup: false,
+		isSuperuser:    *g.IsSuperuser,
+		akAttributes:   g.Attributes,
 	}
 }
 
 func (pi *ProviderInstance) APIUserToLDAPGroup(u api.User) LDAPGroup {
 	return LDAPGroup{
-		dn:				pi.GetGroupDN(u.Username),
-		cn:				u.Username,
-		uid:			u.Uid,
-		gidNumber:		pi.GetUidNumber(u),
-		member:			[]string{pi.GetUserDN(u.Username)},
-		isVirtualGroup:	true,
-		isSuperuser:	false,
-		akAttributes:	nil,
+		dn:             pi.GetGroupDN(u.Username),
+		cn:             u.Username,
+		uid:            u.Uid,
+		gidNumber:      pi.GetUidNumber(u),
+		member:         []string{pi.GetUserDN(u.Username)},
+		isVirtualGroup: true,
+		isSuperuser:    false,
+		akAttributes:   nil,
 	}
 }
 
@@ -115,11 +115,11 @@ func (pi *ProviderInstance) GetGroupDN(group string) string {
 }
 
 func (pi *ProviderInstance) GetUidNumber(user api.User) string {
-	return strconv.FormatInt(int64(pi.uidStartNumber + user.Pk), 10)
+	return strconv.FormatInt(int64(pi.uidStartNumber+user.Pk), 10)
 }
 
 func (pi *ProviderInstance) GetGidNumber(group api.Group) string {
-	return strconv.FormatInt(int64(pi.gidStartNumber + pi.GetRIDForGroup(group.Pk)), 10)
+	return strconv.FormatInt(int64(pi.gidStartNumber+pi.GetRIDForGroup(group.Pk)), 10)
 }
 
 func (pi *ProviderInstance) GetRIDForGroup(uid string) int32 {
