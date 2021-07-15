@@ -188,9 +188,8 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
-REDIS_PROTOCOL_PREFIX = "redis://"
-if CONFIG.y_bool("redis.tls")):
-    REDIS_PROTOCOL_PREFIX = "rediss://"
+REDIS_PROTOCOL_PREFIX = "rediss://"
+if CONFIG.y_bool("redis.tls", False): REDIS_PROTOCOL_PREFIX = "redis://"
 
 CACHES = {
     "default": {
