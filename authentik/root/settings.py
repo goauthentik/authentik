@@ -188,11 +188,16 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
+REDIS_PROTOCOL_PREFIX = "redis://"
+if CONFIG.y_bool("redis.tls", False):
+    REDIS_PROTOCOL_PREFIX = "rediss://"
+
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": (
-            f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
+            f"{REDIS_PROTOCOL_PREFIX}:"
+            f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
             f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.cache_db')}"
         ),
         "TIMEOUT": int(CONFIG.y("redis.cache_timeout", 300)),
@@ -252,7 +257,8 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [
-                f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
+                f"{REDIS_PROTOCOL_PREFIX}:"
+                f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
                 f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.ws_db')}"
             ],
         },
@@ -331,12 +337,14 @@ CELERY_BEAT_SCHEDULE = {
 CELERY_TASK_CREATE_MISSING_QUEUES = True
 CELERY_TASK_DEFAULT_QUEUE = "authentik"
 CELERY_BROKER_URL = (
-    f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}"
-    f":{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.message_queue_db')}"
+    f"{REDIS_PROTOCOL_PREFIX}:"
+    f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
+    f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.message_queue_db')}"
 )
 CELERY_RESULT_BACKEND = (
-    f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}"
-    f":{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.message_queue_db')}"
+    f"{REDIS_PROTOCOL_PREFIX}:"
+    f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
+    f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.message_queue_db')}"
 )
 
 # Database backup
