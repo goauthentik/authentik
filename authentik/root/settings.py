@@ -189,7 +189,8 @@ REST_FRAMEWORK = {
 }
 
 REDIS_PROTOCOL_PREFIX = "rediss://"
-if CONFIG.y_bool("redis.tls", False): REDIS_PROTOCOL_PREFIX = "redis://"
+if CONFIG.y_bool("redis.tls", False):
+    REDIS_PROTOCOL_PREFIX = "redis://"
 
 CACHES = {
     "default": {
@@ -337,13 +338,13 @@ CELERY_TASK_CREATE_MISSING_QUEUES = True
 CELERY_TASK_DEFAULT_QUEUE = "authentik"
 CELERY_BROKER_URL = (
     f"{REDIS_PROTOCOL_PREFIX}:"
-	f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}"
-    f":{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.message_queue_db')}"
+    f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
+    f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.message_queue_db')}"
 )
 CELERY_RESULT_BACKEND = (
     f"{REDIS_PROTOCOL_PREFIX}:"
-	f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}"
-    f":{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.message_queue_db')}"
+    f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
+    f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.message_queue_db')}"
 )
 
 # Database backup
