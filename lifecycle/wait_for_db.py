@@ -42,11 +42,11 @@ while True:
 
 REDIS_PROTOCOL_PREFIX = "rediss://"
 if CONFIG.y_bool("redis.tls", False):
-	REDIS_PROTOCOL_PREFIX = "redis://"
+    REDIS_PROTOCOL_PREFIX = "redis://"
 while True:
     try:
         redis = Redis.from_url(
-			f"{REDIS_PROTOCOL_PREFIX}:"
+            f"{REDIS_PROTOCOL_PREFIX}:"
             f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
             f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.ws_db')}"
         )
