@@ -40,6 +40,7 @@ if __name__ == "__main__":
         user=CONFIG.y("postgresql.user"),
         password=CONFIG.y("postgresql.password"),
         host=CONFIG.y("postgresql.host"),
+        port=int(CONFIG.y("postgresql.port")),
     )
     curr = conn.cursor()
     # lock an advisory lock to prevent multiple instances from migrating at once
