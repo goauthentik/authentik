@@ -16,6 +16,7 @@ redis:
   port: 6379
   password: ''
   tls: false
+  tls_reqs: "none"
   cache_db: 0
   message_queue_db: 1
   ws_db: 2

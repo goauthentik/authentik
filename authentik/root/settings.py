@@ -189,8 +189,10 @@ REST_FRAMEWORK = {
 }
 
 REDIS_PROTOCOL_PREFIX = "redis://"
+REDIS_CELERY_TLS_REQUIREMENTS = ""
 if CONFIG.y_bool("redis.tls", False):
     REDIS_PROTOCOL_PREFIX = "rediss://"
+    REDIS_CELERY_TLS_REQUIREMENTS = f"?ssl_cert_reqs={CONFIG.y('redis.tls_reqs')}"
 
 CACHES = {
     "default": {
@@ -340,11 +342,13 @@ CELERY_BROKER_URL = (
     f"{REDIS_PROTOCOL_PREFIX}:"
     f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
     f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.message_queue_db')}"
+    f"{REDIS_CELERY_TLS_REQUIREMENTS}"
 )
 CELERY_RESULT_BACKEND = (
     f"{REDIS_PROTOCOL_PREFIX}:"
     f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
     f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.message_queue_db')}"
+    f"{REDIS_CELERY_TLS_REQUIREMENTS}"
 )
 
 # Database backup
