@@ -4,7 +4,7 @@ import (
 	"net/url"
 
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/outpost/api"
+	"goauthentik.io/api"
 )
 
 func (s *Server) Refresh() error {

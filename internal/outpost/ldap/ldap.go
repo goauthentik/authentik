@@ -6,8 +6,8 @@ import (
 
 	"github.com/go-openapi/strfmt"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/outpost/api"
-	"goauthentik.io/outpost/pkg/ak"
+	"goauthentik.io/api"
+	"goauthentik.io/internal/outpost/ak"
 
 	"github.com/nmcclain/ldap"
 )

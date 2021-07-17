@@ -2,19 +2,17 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 	"net/url"
 	"os"
-	"os/signal"
-	"time"
 
 	log "github.com/sirupsen/logrus"
 
-	"goauthentik.io/outpost/pkg/ak"
-	"goauthentik.io/outpost/pkg/ldap"
+	"goauthentik.io/internal/common"
+	"goauthentik.io/internal/outpost/ak"
+	"goauthentik.io/internal/outpost/proxy"
 )
 
-const helpMessage = `authentik ldap
+const helpMessage = `authentik proxy
 
 Required environment variables:
 - AUTHENTIK_HOST: URL to connect to (format "http://authentik.company")
@@ -23,34 +21,32 @@ Required environment variables:
 
 func main() {
 	log.SetLevel(log.DebugLevel)
-	pbURL, found := os.LookupEnv("AUTHENTIK_HOST")
+	akURL, found := os.LookupEnv("AUTHENTIK_HOST")
 	if !found {
 		fmt.Println("env AUTHENTIK_HOST not set!")
 		fmt.Println(helpMessage)
 		os.Exit(1)
 	}
-	pbToken, found := os.LookupEnv("AUTHENTIK_TOKEN")
+	akToken, found := os.LookupEnv("AUTHENTIK_TOKEN")
 	if !found {
 		fmt.Println("env AUTHENTIK_TOKEN not set!")
 		fmt.Println(helpMessage)
 		os.Exit(1)
 	}
 
-	pbURLActual, err := url.Parse(pbURL)
+	akURLActual, err := url.Parse(akURL)
 	if err != nil {
 		fmt.Println(err)
 		fmt.Println(helpMessage)
 		os.Exit(1)
 	}
 
-	rand.Seed(time.Now().UnixNano())
+	ex := common.Init()
+	defer common.Defer()
 
-	ac := ak.NewAPIController(*pbURLActual, pbToken)
+	ac := ak.NewAPIController(*akURLActual, akToken)
 
-	interrupt := make(chan os.Signal, 1)
-	signal.Notify(interrupt, os.Interrupt)
-
-	ac.Server = ldap.NewServer(ac)
+	ac.Server = proxy.NewServer(ac)
 
 	err = ac.Start()
 	if err != nil {
@@ -58,7 +54,7 @@ func main() {
 	}
 
 	for {
-		<-interrupt
+		<-ex
 		ac.Shutdown()
 		os.Exit(0)
 	}

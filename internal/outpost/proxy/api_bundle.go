@@ -14,8 +14,8 @@ import (
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/middleware"
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/validation"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/outpost/api"
-	"goauthentik.io/outpost/pkg/ak"
+	"goauthentik.io/api"
+	"goauthentik.io/internal/outpost/ak"
 )
 
 type providerBundle struct {

@@ -6,15 +6,14 @@ import (
 	"math/rand"
 	"net/http"
 	"net/url"
-	"os"
 	"time"
 
 	"github.com/go-openapi/strfmt"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"github.com/recws-org/recws"
-	"goauthentik.io/outpost/api"
-	"goauthentik.io/outpost/pkg"
+	"goauthentik.io/api"
+	"goauthentik.io/internal/constants"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -41,7 +40,7 @@ type APIController struct {
 // NewAPIController initialise new API Controller instance from URL and API token
 func NewAPIController(akURL url.URL, token string) *APIController {
 	config := api.NewConfiguration()
-	config.UserAgent = pkg.UserAgent()
+	config.UserAgent = constants.OutpostUserAgent()
 	config.Host = akURL.Host
 	config.Scheme = akURL.Scheme
 	config.HTTPClient = &http.Client{
@@ -60,7 +59,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 
 	if err != nil {
 		log.WithError(err).Error("Failed to fetch configuration")
-		os.Exit(1)
+		return nil
 	}
 	outpost := outposts.Results[0]
 	doGlobalSetup(outpost.Config)

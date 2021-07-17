@@ -27,7 +27,7 @@ stages:
               script: make gen-outpost
           - task: PublishPipelineArtifact@1
             inputs:
-              targetPath: 'outpost/api/'
+              targetPath: 'api/'
               artifact: 'go_api_client'
               publishLocation: 'pipeline'
   - stage: lint
@@ -43,7 +43,7 @@ stages:
             inputs:
               buildType: 'current'
               artifactName: 'go_api_client'
-              path: "outpost/api/"
+              path: "api/"
           - task: CmdLine@2
             inputs:
               script: |
@@ -53,7 +53,6 @@ stages:
                   -w /app \
                   golangci/golangci-lint:v1.39.0 \
                   golangci-lint run -v --timeout 200s
-              workingDirectory: 'outpost/'
   - stage: build_docker
     jobs:
       - job: proxy_build_docker
@@ -73,7 +72,7 @@ stages:
               containerRegistry: 'beryjuorg-harbor'
               repository: 'authentik/outpost-proxy'
               command: 'build'
-              Dockerfile: 'outpost/proxy.Dockerfile'
+              Dockerfile: 'proxy.Dockerfile'
               buildContext: '$(Build.SourcesDirectory)'
               tags: |
                 gh-$(branchName)
@@ -106,7 +105,7 @@ stages:
               containerRegistry: 'beryjuorg-harbor'
               repository: 'authentik/outpost-ldap'
               command: 'build'
-              Dockerfile: 'outpost/ldap.Dockerfile'
+              Dockerfile: 'ldap.Dockerfile'
               buildContext: '$(Build.SourcesDirectory)'
               tags: |
                 gh-$(branchName)

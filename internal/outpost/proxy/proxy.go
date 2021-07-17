@@ -21,7 +21,7 @@ import (
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/sessions"
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/upstream"
 	"github.com/oauth2-proxy/oauth2-proxy/providers"
-	"goauthentik.io/outpost/api"
+	"goauthentik.io/api"
 
 	log "github.com/sirupsen/logrus"
 )

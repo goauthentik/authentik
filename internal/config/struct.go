@@ -2,6 +2,7 @@ package config
 
 type Config struct {
 	Debug          bool                 `yaml:"debug"`
+	SecretKey      string               `yaml:"secret_key"`
 	Web            WebConfig            `yaml:"web"`
 	Paths          PathsConfig          `yaml:"paths"`
 	LogLevel       string               `yaml:"log_level"`

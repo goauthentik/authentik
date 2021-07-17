@@ -9,19 +9,19 @@ RUN	docker-entrypoint.sh generate \
     --git-user-id api \
     -i /local/schema.yml \
     -g go \
-    -o /local/outpost/api \
+    -o /local/api \
     --additional-properties=packageName=api,enumClassPrefix=true,useOneOfDiscriminatorLookup=true && \
-    rm -f /local/outpost/api/go.mod /local/outpost/api/go.sum
+    rm -f /local/api/go.mod /local/api/go.sum
 
 # Stage 2: Build
 FROM golang:1.16.6 AS builder
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
-WORKDIR /go/src/goauthentik.io/outpost
+WORKDIR /go/src/goauthentik.io
 
-COPY ./outpost .
-COPY --from=api-builder /local/outpost/api api
+COPY . .
+COPY --from=api-builder /local/api api
 
 RUN go build -o /go/proxy ./cmd/proxy
 

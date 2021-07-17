@@ -9,7 +9,7 @@ import (
 
 	"github.com/nmcclain/ldap"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/outpost/api"
+	"goauthentik.io/api"
 )
 
 func BoolToString(in bool) string {

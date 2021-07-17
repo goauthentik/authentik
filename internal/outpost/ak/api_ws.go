@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/gorilla/websocket"
 	"github.com/recws-org/recws"
-	"goauthentik.io/outpost/pkg"
+	"goauthentik.io/internal/constants"
 )
 
 func (ac *APIController) initWS(akURL url.URL, outpostUUID strfmt.UUID) {
@@ -23,7 +23,7 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID strfmt.UUID) {
 
 	header := http.Header{
 		"Authorization": []string{authHeader},
-		"User-Agent":    []string{pkg.UserAgent()},
+		"User-Agent":    []string{constants.OutpostUserAgent()},
 	}
 
 	value, set := os.LookupEnv("AUTHENTIK_INSECURE")
@@ -46,8 +46,8 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID strfmt.UUID) {
 	msg := websocketMessage{
 		Instruction: WebsocketInstructionHello,
 		Args: map[string]interface{}{
-			"version":   pkg.VERSION,
-			"buildHash": pkg.BUILD(),
+			"version":   constants.VERSION,
+			"buildHash": constants.BUILD(),
 			"uuid":      ac.instanceUUID.String(),
 		},
 	}
@@ -101,8 +101,8 @@ func (ac *APIController) startWSHealth() {
 		aliveMsg := websocketMessage{
 			Instruction: WebsocketInstructionHello,
 			Args: map[string]interface{}{
-				"version":   pkg.VERSION,
-				"buildHash": pkg.BUILD(),
+				"version":   constants.VERSION,
+				"buildHash": constants.BUILD(),
 				"uuid":      ac.instanceUUID.String(),
 			},
 		}

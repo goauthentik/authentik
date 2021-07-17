@@ -13,9 +13,9 @@ import (
 
 	goldap "github.com/go-ldap/ldap/v3"
 	"github.com/nmcclain/ldap"
-	"goauthentik.io/outpost/api"
-	"goauthentik.io/outpost/pkg"
-	"goauthentik.io/outpost/pkg/ak"
+	"goauthentik.io/api"
+	"goauthentik.io/internal/constants"
+	"goauthentik.io/internal/outpost/ak"
 )
 
 const ContextUserKey = "ak_user"
@@ -54,7 +54,7 @@ func (pi *ProviderInstance) Bind(username string, bindDN, bindPW string, conn ne
 	config := api.NewConfiguration()
 	config.Host = pi.s.ac.Client.GetConfig().Host
 	config.Scheme = pi.s.ac.Client.GetConfig().Scheme
-	config.UserAgent = pkg.UserAgent()
+	config.UserAgent = constants.OutpostUserAgent()
 	config.HTTPClient = &http.Client{
 		Jar:       jar,
 		Transport: ak.GetTLSTransport(),

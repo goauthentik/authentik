@@ -79,7 +79,7 @@ jobs:
             beryju/authentik-proxy:latest,
             ghcr.io/goauthentik/proxy:2021.6.4,
             ghcr.io/goauthentik/proxy:latest
-          file: outpost/proxy.Dockerfile
+          file: proxy.Dockerfile
           platforms: linux/amd64,linux/arm64
       - name: Building Docker Image (stable)
         if: ${{ github.event_name == 'release' && !contains('2021.6.4', 'rc') }}
@@ -121,7 +121,7 @@ jobs:
             beryju/authentik-ldap:latest,
             ghcr.io/goauthentik/ldap:2021.6.4,
             ghcr.io/goauthentik/ldap:latest
-          file: outpost/ldap.Dockerfile
+          file: ldap.Dockerfile
           platforms: linux/amd64,linux/arm64
       - name: Building Docker Image (stable)
         if: ${{ github.event_name == 'release' && !contains('2021.6.4', 'rc') }}

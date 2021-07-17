@@ -10,7 +10,8 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/outpost/pkg/ak"
+	"goauthentik.io/internal/crypto"
+	"goauthentik.io/internal/outpost/ak"
 )
 
 // Server represents an HTTP server
@@ -25,7 +26,7 @@ type Server struct {
 
 // NewServer initialise a new HTTP Server
 func NewServer(ac *ak.APIController) *Server {
-	defaultCert, err := ak.GenerateSelfSignedCert()
+	defaultCert, err := crypto.GenerateSelfSignedCert()
 	if err != nil {
 		log.Warning(err)
 	}
