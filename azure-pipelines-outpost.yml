@@ -47,6 +47,8 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
+                mkdir -p web/dist
+                mkdir -p website/help
                 docker run \
                   --rm \
                   -v $(pwd):/app \

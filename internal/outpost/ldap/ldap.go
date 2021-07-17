@@ -7,6 +7,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api"
+	"goauthentik.io/internal/crypto"
 	"goauthentik.io/internal/outpost/ak"
 
 	"github.com/nmcclain/ldap"
@@ -70,7 +71,7 @@ func NewServer(ac *ak.APIController) *LDAPServer {
 		ac:        ac,
 		providers: []*ProviderInstance{},
 	}
-	defaultCert, err := ak.GenerateSelfSignedCert()
+	defaultCert, err := crypto.GenerateSelfSignedCert()
 	if err != nil {
 		log.Warning(err)
 	}
