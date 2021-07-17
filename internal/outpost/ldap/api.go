@@ -37,7 +37,7 @@ func (ls *LDAPServer) Refresh() error {
 			boundUsersMutex:     sync.RWMutex{},
 			boundUsers:          make(map[string]UserFlags),
 			s:                   ls,
-			log:                 log.WithField("logger", "authentik.outpost.ldap").WithField("provider", provider.Name),
+			log:                 logger,
 			tlsServerName:       provider.TlsServerName,
 			uidStartNumber:      *provider.UidStartNumber,
 			gidStartNumber:      *provider.GidStartNumber,
