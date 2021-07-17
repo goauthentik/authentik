@@ -132,11 +132,54 @@ jobs:
           docker pull ghcr.io/goauthentik/ldap:latest
           docker tag ghcr.io/goauthentik/ldap:latest ghcr.io/goauthentik/ldap:stable
           docker push ghcr.io/goauthentik/ldap:stable
+  build-radius:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "^1.15"
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1.2.0
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Docker Login Registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Building Docker Image
+        uses: docker/build-push-action@v2
+        with:
+          push: ${{ github.event_name == 'release' }}
+          tags: |
+            beryju/authentik-radius:2021.6.4,
+            beryju/authentik-radius:latest,
+            ghcr.io/goauthentik/radius:2021.6.4,
+            ghcr.io/goauthentik/radius:latest
+          file: radius.Dockerfile
+          platforms: linux/amd64,linux/arm64
+      - name: Building Docker Image (stable)
+        if: ${{ github.event_name == 'release' && !contains('2021.6.4', 'rc') }}
+        run: |
+          docker pull beryju/authentik-radius:latest
+          docker tag beryju/authentik-radius:latest beryju/authentik-radius:stable
+          docker push beryju/authentik-radius:stable
+          docker pull ghcr.io/goauthentik/radius:latest
+          docker tag ghcr.io/goauthentik/radius:latest ghcr.io/goauthentik/radius:stable
+          docker push ghcr.io/goauthentik/radius:stable
   test-release:
     needs:
       - build-server
       - build-proxy
       - build-ldap
+      - build-radius
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

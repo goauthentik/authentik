@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
@@ -67,6 +68,15 @@ type ChallengeInt interface {
 	GetComponent() string
 	GetType() api.ChallengeChoices
 	GetResponseErrors() map[string][]api.ErrorDetail
+}
+
+func (fe *FlowExecutor) DelegateClientIP(a net.Addr) {
+	host, _, err := net.SplitHostPort(a.String())
+	if err != nil {
+		fe.log.WithError(err).Warning("Failed to get remote IP")
+		return
+	}
+	fe.api.GetConfig().AddDefaultHeader("X-authentik-remote-ip", host)
 }
 
 func (fe *FlowExecutor) CheckApplicationAccess(appSlug string) (bool, error) {

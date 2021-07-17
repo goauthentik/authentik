@@ -1,5 +1,4 @@
 """Radius Provider"""
-from authentik.providers.oauth2.generators import generate_client_secret
 from typing import Optional, Type
 
 from django.db import models
@@ -9,6 +8,7 @@ from rest_framework.serializers import Serializer
 from authentik.core.models import Provider
 from authentik.crypto.models import CertificateKeyPair
 from authentik.outposts.models import OutpostModel
+from authentik.providers.oauth2.generators import generate_client_secret
 
 
 class RadiusProvider(OutpostModel, Provider):
@@ -16,9 +16,7 @@ class RadiusProvider(OutpostModel, Provider):
 
     shared_secret = models.TextField(
         default=generate_client_secret,
-        help_text=_(
-            "Shared secret between clients and server to hash packets."
-        ),
+        help_text=_("Shared secret between clients and server to hash packets."),
     )
 
     client_networks = models.TextField(

@@ -34,14 +34,8 @@ func (pi *ProviderInstance) getUsername(dn string) (string, error) {
 }
 
 func (pi *ProviderInstance) Bind(username string, bindDN, bindPW string, conn net.Conn) (ldap.LDAPResultCode, error) {
-	host, _, err := net.SplitHostPort(conn.RemoteAddr().String())
-	if err != nil {
-		pi.log.WithError(err).Warning("Failed to get remote IP")
-		return ldap.LDAPResultOperationsError, nil
-	}
-
 	fe := outpost.NewFlowExecutor(pi.flowSlug, pi.s.ac.Client.GetConfig())
-	fe.ApiClient().GetConfig().AddDefaultHeader("X-authentik-remote-ip", host)
+	fe.DelegateClientIP(conn.RemoteAddr())
 	fe.Params.Add("goauthentik.io/outpost/ldap", "true")
 
 	fe.Answers[outpost.StageIdentification] = username

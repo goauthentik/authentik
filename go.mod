@@ -47,4 +47,5 @@ require (
 	gopkg.in/ini.v1 v1.62.0 // indirect
 	gopkg.in/square/go-jose.v2 v2.5.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0
+	layeh.com/radius v0.0.0-20201203135236-838e26d0c9be // indirect
 )
