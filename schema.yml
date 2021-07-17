@@ -2430,6 +2430,15 @@ paths:
         schema:
           type: string
       - in: query
+        name: expires
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: expiring
+        schema:
+          type: boolean
+      - in: query
         name: identifier
         schema:
           type: string
@@ -19432,6 +19441,7 @@ components:
       - suspicious_request
       - password_set
       - secret_view
+      - secret_rotate
       - invitation_used
       - authorize_application
       - source_linked
@@ -19927,11 +19937,100 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+        users_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupMember'
+          readOnly: true
       required:
       - name
       - parent
       - pk
       - users
+      - users_obj
+    GroupMember:
+      type: object
+      description: Stripped down user serializer to show relevant users for groups
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        is_superuser:
+          type: boolean
+          readOnly: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        avatar:
+          type: string
+          readOnly: true
+        attributes:
+          type: object
+          additionalProperties: {}
+        uid:
+          type: string
+          readOnly: true
+      required:
+      - avatar
+      - is_superuser
+      - name
+      - pk
+      - uid
+      - username
+    GroupMemberRequest:
+      type: object
+      description: Stripped down user serializer to show relevant users for groups
+      properties:
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - name
+      - username
     GroupRequest:
       type: object
       description: Group Serializer
@@ -20402,6 +20501,27 @@ components:
           nullable: true
           description: Users in this group can do search queries. If not set, every
             user can execute search queries.
+        certificate:
+          type: string
+          format: uuid
+          nullable: true
+        tls_server_name:
+          type: string
+        uid_start_number:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The start for uidNumbers, this number is added to the user.Pk
+            to make sure that the numbers aren't too low for POSIX users. Default
+            is 2000 to ensure that we don't collide with local users uidNumber
+        gid_start_number:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The start for gidNumbers, this number is added to a number
+            generated from the group.Pk to make sure that the numbers aren't too low
+            for POSIX groups. Default is 4000 to ensure that we don't collide with
+            local groups or users primary groups gidNumber
       required:
       - application_slug
       - bind_flow_slug
@@ -20514,6 +20634,27 @@ components:
           nullable: true
           description: Users in this group can do search queries. If not set, every
             user can execute search queries.
+        certificate:
+          type: string
+          format: uuid
+          nullable: true
+        tls_server_name:
+          type: string
+        uid_start_number:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The start for uidNumbers, this number is added to the user.Pk
+            to make sure that the numbers aren't too low for POSIX users. Default
+            is 2000 to ensure that we don't collide with local users uidNumber
+        gid_start_number:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The start for gidNumbers, this number is added to a number
+            generated from the group.Pk to make sure that the numbers aren't too low
+            for POSIX groups. Default is 4000 to ensure that we don't collide with
+            local groups or users primary groups gidNumber
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -20547,6 +20688,27 @@ components:
           nullable: true
           description: Users in this group can do search queries. If not set, every
             user can execute search queries.
+        certificate:
+          type: string
+          format: uuid
+          nullable: true
+        tls_server_name:
+          type: string
+        uid_start_number:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The start for uidNumbers, this number is added to the user.Pk
+            to make sure that the numbers aren't too low for POSIX users. Default
+            is 2000 to ensure that we don't collide with local users uidNumber
+        gid_start_number:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The start for gidNumbers, this number is added to a number
+            generated from the group.Pk to make sure that the numbers aren't too low
+            for POSIX groups. Default is 4000 to ensure that we don't collide with
+            local groups or users primary groups gidNumber
       required:
       - authorization_flow
       - name
@@ -24899,6 +25061,27 @@ components:
           nullable: true
           description: Users in this group can do search queries. If not set, every
             user can execute search queries.
+        certificate:
+          type: string
+          format: uuid
+          nullable: true
+        tls_server_name:
+          type: string
+        uid_start_number:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The start for uidNumbers, this number is added to the user.Pk
+            to make sure that the numbers aren't too low for POSIX users. Default
+            is 2000 to ensure that we don't collide with local users uidNumber
+        gid_start_number:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The start for gidNumbers, this number is added to a number
+            generated from the group.Pk to make sure that the numbers aren't too low
+            for POSIX groups. Default is 4000 to ensure that we don't collide with
+            local groups or users primary groups gidNumber
     PatchedLDAPSourceRequest:
       type: object
       description: LDAP Source Serializer

@@ -54,12 +54,12 @@ func (pi *ProviderInstance) Bind(username string, bindDN, bindPW string, conn ne
 	config := api.NewConfiguration()
 	config.Host = pi.s.ac.Client.GetConfig().Host
 	config.Scheme = pi.s.ac.Client.GetConfig().Scheme
+	config.UserAgent = constants.OutpostUserAgent()
 	config.HTTPClient = &http.Client{
-		Jar: jar,
-		Transport: newTransport(ak.SetUserAgent(ak.GetTLSTransport(), constants.OutpostUserAgent()), map[string]string{
-			"X-authentik-remote-ip": host,
-		}),
+		Jar:       jar,
+		Transport: ak.GetTLSTransport(),
 	}
+	config.AddDefaultHeader("X-authentik-remote-ip", host)
 	// create the API client, with the transport
 	apiClient := api.NewAPIClient(config)
 

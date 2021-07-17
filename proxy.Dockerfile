@@ -14,7 +14,7 @@ RUN	docker-entrypoint.sh generate \
     rm -f /local/api/go.mod /local/api/go.sum
 
 # Stage 2: Build
-FROM golang:1.16.5 AS builder
+FROM golang:1.16.6 AS builder
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 

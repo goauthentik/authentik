@@ -12,8 +12,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"github.com/recws-org/recws"
-	"goauthentik.io/internal/constants"
 	"goauthentik.io/api"
+	"goauthentik.io/internal/constants"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -40,10 +40,11 @@ type APIController struct {
 // NewAPIController initialise new API Controller instance from URL and API token
 func NewAPIController(akURL url.URL, token string) *APIController {
 	config := api.NewConfiguration()
+	config.UserAgent = constants.OutpostUserAgent()
 	config.Host = akURL.Host
 	config.Scheme = akURL.Scheme
 	config.HTTPClient = &http.Client{
-		Transport: SetUserAgent(GetTLSTransport(), constants.OutpostUserAgent()),
+		Transport: GetTLSTransport(),
 	}
 	config.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
 

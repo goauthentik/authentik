@@ -17,6 +17,10 @@ class LDAPProviderSerializer(ProviderSerializer):
         fields = ProviderSerializer.Meta.fields + [
             "base_dn",
             "search_group",
+            "certificate",
+            "tls_server_name",
+            "uid_start_number",
+            "gid_start_number",
         ]
 
 
@@ -44,6 +48,10 @@ class LDAPOutpostConfigSerializer(ModelSerializer):
             "bind_flow_slug",
             "application_slug",
             "search_group",
+            "certificate",
+            "tls_server_name",
+            "uid_start_number",
+            "gid_start_number",
         ]
 
 

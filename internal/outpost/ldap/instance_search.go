@@ -54,8 +54,18 @@ func (pi *ProviderInstance) Search(bindDN string, searchReq ldap.SearchRequest, 
 			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("API Error: %s", err)
 		}
 		pi.log.WithField("count", len(groups.Results)).Trace("Got results from API")
+
 		for _, g := range groups.Results {
-			entries = append(entries, pi.GroupEntry(g))
+			entries = append(entries, pi.GroupEntry(pi.APIGroupToLDAPGroup(g)))
+		}
+
+		users, _, err := pi.s.ac.Client.CoreApi.CoreUsersList(context.Background()).Execute()
+		if err != nil {
+			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("API Error: %s", err)
+		}
+
+		for _, u := range users.Results {
+			entries = append(entries, pi.GroupEntry(pi.APIUserToLDAPGroup(u)))
 		}
 	case UserObjectClass, "":
 		users, _, err := pi.s.ac.Client.CoreApi.CoreUsersList(context.Background()).Execute()
@@ -96,6 +106,14 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 			Name:   "objectClass",
 			Values: []string{UserObjectClass, "organizationalPerson", "goauthentik.io/ldap/user"},
 		},
+		{
+			Name:   "uidNumber",
+			Values: []string{pi.GetUidNumber(u)},
+		},
+		{
+			Name:   "gidNumber",
+			Values: []string{pi.GetUidNumber(u)},
+		},
 	}
 
 	attrs = append(attrs, &ldap.EntryAttribute{Name: "memberOf", Values: pi.GroupsForUser(u)})
@@ -109,28 +127,45 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 
 	attrs = append(attrs, AKAttrsToLDAP(u.Attributes)...)
 
-	dn := fmt.Sprintf("cn=%s,%s", u.Username, pi.UserDN)
+	dn := pi.GetUserDN(u.Username)
 
 	return &ldap.Entry{DN: dn, Attributes: attrs}
 }
 
-func (pi *ProviderInstance) GroupEntry(g api.Group) *ldap.Entry {
+func (pi *ProviderInstance) GroupEntry(g LDAPGroup) *ldap.Entry {
 	attrs := []*ldap.EntryAttribute{
 		{
 			Name:   "cn",
-			Values: []string{g.Name},
+			Values: []string{g.cn},
 		},
 		{
 			Name:   "uid",
-			Values: []string{string(g.Pk)},
+			Values: []string{g.uid},
 		},
 		{
-			Name:   "objectClass",
-			Values: []string{GroupObjectClass, "goauthentik.io/ldap/group"},
+			Name:   "gidNumber",
+			Values: []string{g.gidNumber},
 		},
 	}
-	attrs = append(attrs, AKAttrsToLDAP(g.Attributes)...)
 
-	dn := pi.GetGroupDN(g)
-	return &ldap.Entry{DN: dn, Attributes: attrs}
+	if g.isVirtualGroup {
+		attrs = append(attrs, &ldap.EntryAttribute{
+			Name:   "objectClass",
+			Values: []string{GroupObjectClass, "goauthentik.io/ldap/group", "goauthentik.io/ldap/virtual-group"},
+		})
+	} else {
+		attrs = append(attrs, &ldap.EntryAttribute{
+			Name:   "objectClass",
+			Values: []string{GroupObjectClass, "goauthentik.io/ldap/group"},
+		})
+	}
+
+	attrs = append(attrs, &ldap.EntryAttribute{Name: "member", Values: g.member})
+	attrs = append(attrs, &ldap.EntryAttribute{Name: "goauthentik.io/ldap/superuser", Values: []string{BoolToString(g.isSuperuser)}})
+
+	if g.akAttributes != nil {
+		attrs = append(attrs, AKAttrsToLDAP(g.akAttributes)...)
+	}
+
+	return &ldap.Entry{DN: g.dn, Attributes: attrs}
 }

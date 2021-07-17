@@ -46,7 +46,7 @@ func main() {
 	for {
 		go attemptStartBackend(g, ex)
 		ws.Start()
-		go attemptProxyStart(u, ex)
+		// go attemptProxyStart(u, ex)
 
 		<-ex
 		log.WithField("logger", "authentik").Debug("shutting down webserver")

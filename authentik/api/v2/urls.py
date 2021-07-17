@@ -1,5 +1,6 @@
 """api v2 urls"""
 from django.urls import path
+from django.views.decorators.csrf import csrf_exempt
 from drf_spectacular.views import SpectacularAPIView
 from rest_framework import routers
 
@@ -10,6 +11,7 @@ from authentik.admin.api.tasks import TaskViewSet
 from authentik.admin.api.version import VersionView
 from authentik.admin.api.workers import WorkerView
 from authentik.api.v2.config import ConfigView
+from authentik.api.v2.sentry import SentryTunnelView
 from authentik.api.views import APIBrowserView
 from authentik.core.api.applications import ApplicationViewSet
 from authentik.core.api.authenticated_sessions import AuthenticatedSessionViewSet
@@ -235,6 +237,7 @@ urlpatterns = (
             FlowExecutorView.as_view(),
             name="flow-executor",
         ),
+        path("sentry/", csrf_exempt(SentryTunnelView.as_view()), name="sentry"),
         path("schema/", SpectacularAPIView.as_view(), name="schema"),
     ]
 )

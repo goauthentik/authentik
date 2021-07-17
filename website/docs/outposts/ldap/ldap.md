@@ -22,7 +22,7 @@ You can bind using the DN `cn=<username>,ou=users,<base DN>`, or using the follo
 ldapsearch \
   -x \ # Only simple binds are currently supported
   -h *ip* \
-  -p 3389 \
+  -p 389 \
   -D 'cn=*user*,ou=users,DC=ldap,DC=goauthentik,DC=io' \ # Bind user and password
   -w '*password*' \
   -b 'ou=users,DC=ldap,DC=goauthentik,DC=io' \ # The search base
@@ -33,6 +33,7 @@ The following fields are currently sent for users:
 
 - `cn`: User's username
 - `uid`: Unique user identifier
+- `uidNumber`: A unique numeric identifier for the user
 - `name`: User's name
 - `displayName`: User's name
 - `mail`: User's email address
@@ -48,8 +49,19 @@ The following fields are current set for groups:
 
 - `cn`: The group's name
 - `uid`: Unique group identifier
+- `gidNumber`: A unique numeric identifier for the group
+- `member`: A list of all DNs of the groups members
 - `objectClass`: A list of these strings:
   - "group"
   - "goauthentik.io/ldap/group"
 
-**Additionally**, for both users and groups, any attributes you set are also present as LDAP Attributes.
+A virtual group is also created for each user, they have the same fields as groups but have an additional objectClass: `goauthentik.io/ldap/virtual-group`.  
+The virtual groups gidNumber is equal to the uidNumber of the user.
+
+**Additionally**, for both users and (non-virtual) groups, any attributes you set are also present as LDAP Attributes.
+
+## SSL
+
+You can also configure SSL for your LDAP Providers by selecting a certificate and a server name in the provider settings.
+
+This enables you to bind on port 636 using LDAPS, StartTLS is not supported.

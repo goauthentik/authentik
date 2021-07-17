@@ -1,7 +1,6 @@
 package proxy
 
 import (
-	"context"
 	"crypto/tls"
 	"net"
 	"net/http"
@@ -16,6 +15,7 @@ import (
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/validation"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api"
+	"goauthentik.io/internal/outpost/ak"
 )
 
 type providerBundle struct {
@@ -90,23 +90,12 @@ func (pb *providerBundle) prepareOpts(provider api.ProxyOutpostConfig) *options.
 
 	if provider.Certificate.Get() != nil {
 		pb.log.WithField("provider", provider.Name).Debug("Enabling TLS")
-		cert, _, err := pb.s.ak.Client.CryptoApi.CryptoCertificatekeypairsViewCertificateRetrieve(context.Background(), *provider.Certificate.Get()).Execute()
+		cert, err := ak.ParseCertificate(*provider.Certificate.Get(), pb.s.ak.Client.CryptoApi)
 		if err != nil {
 			pb.log.WithField("provider", provider.Name).WithError(err).Warning("Failed to fetch certificate")
 			return providerOpts
 		}
-		key, _, err := pb.s.ak.Client.CryptoApi.CryptoCertificatekeypairsViewPrivateKeyRetrieve(context.Background(), *provider.Certificate.Get()).Execute()
-		if err != nil {
-			pb.log.WithField("provider", provider.Name).WithError(err).Warning("Failed to fetch private key")
-			return providerOpts
-		}
-
-		x509cert, err := tls.X509KeyPair([]byte(cert.Data), []byte(key.Data))
-		if err != nil {
-			pb.log.WithField("provider", provider.Name).WithError(err).Warning("Failed to parse certificate")
-			return providerOpts
-		}
-		pb.cert = &x509cert
+		pb.cert = cert
 		pb.log.WithField("provider", provider.Name).Debug("Loaded certificates")
 	}
 	return providerOpts

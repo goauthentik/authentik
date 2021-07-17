@@ -47,6 +47,7 @@ xmlsec = "*"
 duo-client = "*"
 ua-parser = "*"
 deepmerge = "*"
+colorama = "*"
 
 [requires]
 python_version = "3.9"
