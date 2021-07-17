@@ -14,7 +14,7 @@ import { first, randomString } from "../../../utils";
 export class RadiusProviderFormPage extends ModelForm<RadiusProvider, number> {
 
     loadInstance(pk: number): Promise<RadiusProvider> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersLdapRetrieve({
+        return new ProvidersApi(DEFAULT_CONFIG).providersRadiusRetrieve({
             id: pk,
         });
     }
@@ -86,21 +86,6 @@ export class RadiusProviderFormPage extends ModelForm<RadiusProvider, number> {
                             CIDR will match before a looser one. Clients connecting from a non-specified CIDR
                             will be dropped.`}
                         </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`Certificate`}
-                        name="certificate">
-                        <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.certificate === undefined}>---------</option>
-                            ${until(new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
-                                ordering: "pk",
-                                hasKey: true,
-                            }).then(keys => {
-                                return keys.results.map(key => {
-                                    return html`<option value=${ifDefined(key.pk)} ?selected=${this.instance?.certificate === key.pk}>${key.name}</option>`;
-                                });
-                            }), html`<option>${t`Loading...`}</option>`)}
-                        </select>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

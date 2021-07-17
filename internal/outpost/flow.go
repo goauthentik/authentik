@@ -96,6 +96,7 @@ func (fe *FlowExecutor) getAnswer(stage StageComponent) string {
 	if v, o := fe.Answers[stage]; o {
 		return v
 	}
+	fe.log.WithField("stage", string(stage)).Warning("no answer for stage")
 	return ""
 }
 

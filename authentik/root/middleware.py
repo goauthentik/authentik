@@ -23,6 +23,11 @@ class SessionMiddleware(UpstreamSessionMiddleware):
             return True
         host, _, _ = request.get_host().partition(":")
         if host == "localhost" and settings.DEBUG:
+            # Since go does not consider localhost with http a secure origin
+            # we can't set the secure flag.
+            user_agent = request.META.get("HTTP_USER_AGENT", "")
+            if user_agent.startswith("authentik-outpost@"):
+                return False
             return True
         return False
 
