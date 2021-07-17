@@ -266,6 +266,7 @@ msgstr ""
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
+#: src/pages/providers/radius/RadiusProviderViewPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "Assigned to application"
 msgstr ""
@@ -301,6 +302,7 @@ msgstr ""
 msgid "Authentication"
 msgstr ""
 
+#: src/pages/providers/radius/RadiusProviderForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
@@ -481,6 +483,7 @@ msgstr ""
 #: src/pages/crypto/CertificateKeyPairForm.ts
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/radius/RadiusProviderForm.ts
 msgid "Certificate"
 msgstr ""
 
@@ -529,6 +532,7 @@ msgstr ""
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
+#: src/pages/providers/radius/RadiusProviderViewPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
@@ -630,6 +634,11 @@ msgstr ""
 #: src/pages/events/EventListPage.ts
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 msgid "Client IP"
+msgstr ""
+
+#: src/pages/providers/radius/RadiusProviderForm.ts
+#: src/pages/providers/radius/RadiusProviderViewPage.ts
+msgid "Client Networks"
 msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
@@ -1234,6 +1243,7 @@ msgstr ""
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
+#: src/pages/providers/radius/RadiusProviderViewPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
 #: src/pages/sources/SourcesListPage.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
@@ -1596,6 +1606,7 @@ msgid "Flow used by an authenticated user to configure this Stage. If empty, use
 msgstr ""
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
+#: src/pages/providers/radius/RadiusProviderForm.ts
 msgid "Flow used for users to authenticate. Currently only identification and password stages are supported."
 msgstr ""
 
@@ -2025,6 +2036,13 @@ msgstr ""
 msgid "Link users on unique identifier"
 msgstr ""
 
+#: src/pages/providers/radius/RadiusProviderForm.ts
+msgid ""
+"List of CIDRs (comma-seperated) that clients can connect from. A more specific\n"
+"CIDR will match before a looser one. Clients connecting from a non-specified CIDR\n"
+"will be dropped."
+msgstr ""
+
 #: src/pages/sources/plex/PlexSourceForm.ts
 msgid "Load servers"
 msgstr ""
@@ -2082,6 +2100,8 @@ msgstr ""
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/radius/RadiusProviderForm.ts
+#: src/pages/providers/radius/RadiusProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -2286,6 +2306,8 @@ msgstr ""
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
+#: src/pages/providers/radius/RadiusProviderForm.ts
+#: src/pages/providers/radius/RadiusProviderViewPage.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderImportForm.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
@@ -2618,6 +2640,7 @@ msgstr ""
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
+#: src/pages/providers/radius/RadiusProviderViewPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
@@ -2813,6 +2836,7 @@ msgstr ""
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/radius/RadiusProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
@@ -2908,6 +2932,10 @@ msgstr ""
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "RSA-SHA512"
+msgstr ""
+
+#: src/pages/outposts/OutpostForm.ts
+msgid "Radius (Technical preview)"
 msgstr ""
 
 #: src/pages/flows/StageBindingForm.ts
@@ -3539,6 +3567,7 @@ msgstr ""
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/radius/RadiusProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Successfully created provider."
 msgstr ""
@@ -3683,6 +3712,7 @@ msgstr ""
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/radius/RadiusProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Successfully updated provider."
 msgstr ""
@@ -4132,6 +4162,7 @@ msgstr ""
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
+#: src/pages/providers/radius/RadiusProviderViewPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
 #: src/pages/sources/SourcesListPage.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
@@ -4212,6 +4243,10 @@ msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Update Proxy Provider"
+msgstr ""
+
+#: src/pages/providers/radius/RadiusProviderViewPage.ts
+msgid "Update Radius Provider"
 msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderViewPage.ts

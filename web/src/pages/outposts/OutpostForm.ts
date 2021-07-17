@@ -47,30 +47,29 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     };
 
     renderProviders(): Promise<TemplateResult[]> {
+        let providers;
         switch (this.type) {
             case OutpostTypeEnum.Proxy:
-                return new ProvidersApi(DEFAULT_CONFIG).providersProxyList({
+                providers =  new ProvidersApi(DEFAULT_CONFIG).providersProxyList({
                     ordering: "pk"
-                }).then(providers => {
-                    return providers.results.map(provider => {
-                        const selected = Array.from(this.instance?.providers || []).some(sp => {
-                            return sp == provider.pk;
-                        });
-                        return html`<option value=${ifDefined(provider.pk)} ?selected=${selected}>${provider.verboseName} ${provider.name}</option>`;
-                    });
                 });
             case OutpostTypeEnum.Ldap:
-                return new ProvidersApi(DEFAULT_CONFIG).providersLdapList({
+                providers =  new ProvidersApi(DEFAULT_CONFIG).providersLdapList({
                     ordering: "pk"
-                }).then(providers => {
-                    return providers.results.map(provider => {
-                        const selected = Array.from(this.instance?.providers || []).some(sp => {
-                            return sp == provider.pk;
-                        });
-                        return html`<option value=${ifDefined(provider.pk)} ?selected=${selected}>${provider.verboseName} ${provider.name}</option>`;
-                    });
+                });
+            case OutpostTypeEnum.Radius:
+                providers =  new ProvidersApi(DEFAULT_CONFIG).providersRadiusList({
+                    ordering: "pk"
                 });
         }
+        return providers.then(providers => {
+            return providers.results.map(provider => {
+                const selected = Array.from(this.instance?.providers || []).some(sp => {
+                    return sp == provider.pk;
+                });
+                return html`<option value=${ifDefined(provider.pk)} ?selected=${selected}>${provider.verboseName} ${provider.name}</option>`;
+            });
+        });;
     }
 
     renderForm(): TemplateResult {
@@ -91,6 +90,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 }}>
                     <option value=${OutpostTypeEnum.Proxy} ?selected=${this.instance?.type === OutpostTypeEnum.Proxy}>${t`Proxy`}</option>
                     <option value=${OutpostTypeEnum.Ldap} ?selected=${this.instance?.type === OutpostTypeEnum.Ldap}>${t`LDAP (Technical preview)`}</option>
+                    <option value=${OutpostTypeEnum.Radius} ?selected=${this.instance?.type === OutpostTypeEnum.Radius}>${t`Radius (Technical preview)`}</option>
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
