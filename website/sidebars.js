@@ -23,7 +23,7 @@ module.exports = {
         {
             type: "category",
             label: "Providers",
-            items: ["providers/oauth2", "providers/saml", "providers/proxy"],
+            items: ["providers/oauth2", "providers/saml"],
         },
         {
             type: "category",
@@ -52,6 +52,13 @@ module.exports = {
                     label: "LDAP",
                     items: [
                         "outposts/ldap/ldap",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Radius",
+                    items: [
+                        "outposts/radius/radius",
                     ],
                 },
             ],
