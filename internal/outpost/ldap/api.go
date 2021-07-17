@@ -11,7 +11,7 @@ import (
 
 	"github.com/go-openapi/strfmt"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/outpost/pkg/ak"
+	"goauthentik.io/internal/outpost/ak"
 )
 
 func (ls *LDAPServer) Refresh() error {
