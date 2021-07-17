@@ -37,7 +37,7 @@ func main() {
 	ex := common.Init()
 	defer common.Defer()
 
-	u, _ := url.Parse("http://localhost:8000")
+	// u, _ := url.Parse("http://localhost:8000")
 
 	g := gounicorn.NewGoUnicorn()
 	ws := web.NewWebServer()

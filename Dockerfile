@@ -19,7 +19,7 @@ ENV NODE_ENV=production
 RUN cd /static && npm i && npm run build-docs-only
 
 # Stage 3: Build web API
-FROM openapitools/openapi-generator-cli as api-builder
+FROM openapitools/openapi-generator-cli as web-api-builder
 
 COPY ./schema.yml /local/schema.yml
 
