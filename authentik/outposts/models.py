@@ -88,6 +88,7 @@ class OutpostType(models.TextChoices):
 
     PROXY = "proxy"
     LDAP = "ldap"
+    RADIUS = "radius"
 
 
 def default_outpost_config(host: Optional[str] = None):

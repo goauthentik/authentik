@@ -60,6 +60,10 @@ from authentik.providers.proxy.api import (
     ProxyOutpostConfigViewSet,
     ProxyProviderViewSet,
 )
+from authentik.providers.radius.api import (
+    RadiusOutpostConfigViewSet,
+    RadiusProviderViewSet,
+)
 from authentik.providers.saml.api import SAMLPropertyMappingViewSet, SAMLProviderViewSet
 from authentik.sources.ldap.api import LDAPPropertyMappingViewSet, LDAPSourceViewSet
 from authentik.sources.oauth.api.source import OAuthSourceViewSet
@@ -127,6 +131,7 @@ router.register(
 )
 router.register("outposts/proxy", ProxyOutpostConfigViewSet)
 router.register("outposts/ldap", LDAPOutpostConfigViewSet)
+router.register("outposts/radius", RadiusOutpostConfigViewSet)
 
 router.register("flows/instances", FlowViewSet)
 router.register("flows/bindings", FlowStageBindingViewSet)
@@ -161,6 +166,7 @@ router.register("providers/ldap", LDAPProviderViewSet)
 router.register("providers/proxy", ProxyProviderViewSet)
 router.register("providers/oauth2", OAuth2ProviderViewSet)
 router.register("providers/saml", SAMLProviderViewSet)
+router.register("providers/radius", RadiusProviderViewSet)
 
 router.register("oauth2/authorization_codes", AuthorizationCodeViewSet)
 router.register("oauth2/refresh_tokens", RefreshTokenViewSet)

@@ -6113,6 +6113,78 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/outposts/radius/:
+    get:
+      operationId: outposts_radius_list
+      description: RadiusProvider Viewset
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRadiusOutpostConfigList'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/outposts/radius/{id}/:
+    get:
+      operationId: outposts_radius_retrieve
+      description: RadiusProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Radius Provider.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RadiusOutpostConfig'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/outposts/service_connections/all/:
     get:
       operationId: outposts_service_connections_all_list
@@ -10885,6 +10957,235 @@ paths:
         schema:
           type: integer
         description: A unique integer value identifying this Proxy Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/providers/radius/:
+    get:
+      operationId: providers_radius_list
+      description: RadiusProvider Viewset
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - providers
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRadiusProviderList'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    post:
+      operationId: providers_radius_create
+      description: RadiusProvider Viewset
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RadiusProviderRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RadiusProviderRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RadiusProviderRequest'
+        required: true
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RadiusProvider'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/providers/radius/{id}/:
+    get:
+      operationId: providers_radius_retrieve
+      description: RadiusProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Radius Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RadiusProvider'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    put:
+      operationId: providers_radius_update
+      description: RadiusProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Radius Provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RadiusProviderRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RadiusProviderRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RadiusProviderRequest'
+        required: true
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RadiusProvider'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    patch:
+      operationId: providers_radius_partial_update
+      description: RadiusProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Radius Provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRadiusProviderRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRadiusProviderRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRadiusProviderRequest'
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RadiusProvider'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    delete:
+      operationId: providers_radius_destroy
+      description: RadiusProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Radius Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/providers/radius/{id}/used_by/:
+    get:
+      operationId: providers_radius_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Radius Provider.
         required: true
       tags:
       - providers
@@ -17748,9 +18049,10 @@ components:
       - authentik.policies.hibp
       - authentik.policies.password
       - authentik.policies.reputation
-      - authentik.providers.proxy
       - authentik.providers.ldap
       - authentik.providers.oauth2
+      - authentik.providers.proxy
+      - authentik.providers.radius
       - authentik.providers.saml
       - authentik.recovery
       - authentik.sources.ldap
@@ -21643,6 +21945,7 @@ components:
       enum:
       - proxy
       - ldap
+      - radius
       type: string
     PaginatedApplicationList:
       type: object
@@ -23426,6 +23729,76 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProxyProvider'
+      required:
+      - pagination
+      - results
+    PaginatedRadiusOutpostConfigList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RadiusOutpostConfig'
+      required:
+      - pagination
+      - results
+    PaginatedRadiusProviderList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RadiusProvider'
       required:
       - pagination
       - results
@@ -25623,6 +25996,30 @@ components:
             Exclusive with internal_host.
         cookie_domain:
           type: string
+    PatchedRadiusProviderRequest:
+      type: object
+      description: RadiusProvider Serializer
+      properties:
+        name:
+          type: string
+        authorization_flow:
+          type: string
+          format: uuid
+          description: Flow used when authorizing this provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        client_networks:
+          type: string
+          description: List of CIDRs (comma-seperated) that clients can connect from.
+            A more specific CIDR will match before a looser one. Clients connecting
+            from a non-specified CIDR will be dropped.
+        certificate:
+          type: string
+          format: uuid
+          nullable: true
     PatchedReputationPolicyRequest:
       type: object
       description: Reputation Policy Serializer
@@ -26850,6 +27247,115 @@ components:
       required:
       - authorization_flow
       - external_host
+      - name
+    RadiusOutpostConfig:
+      type: object
+      description: RadiusProvider Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+        application_slug:
+          type: string
+        auth_flow_slug:
+          type: string
+        client_networks:
+          type: string
+          description: List of CIDRs (comma-seperated) that clients can connect from.
+            A more specific CIDR will match before a looser one. Clients connecting
+            from a non-specified CIDR will be dropped.
+        certificate:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - application_slug
+      - auth_flow_slug
+      - name
+      - pk
+    RadiusProvider:
+      type: object
+      description: RadiusProvider Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+        authorization_flow:
+          type: string
+          format: uuid
+          description: Flow used when authorizing this provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        component:
+          type: string
+          readOnly: true
+        assigned_application_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_application_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
+        verbose_name:
+          type: string
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          readOnly: true
+        client_networks:
+          type: string
+          description: List of CIDRs (comma-seperated) that clients can connect from.
+            A more specific CIDR will match before a looser one. Clients connecting
+            from a non-specified CIDR will be dropped.
+        certificate:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - assigned_application_name
+      - assigned_application_slug
+      - authorization_flow
+      - component
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    RadiusProviderRequest:
+      type: object
+      description: RadiusProvider Serializer
+      properties:
+        name:
+          type: string
+        authorization_flow:
+          type: string
+          format: uuid
+          description: Flow used when authorizing this provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        client_networks:
+          type: string
+          description: List of CIDRs (comma-seperated) that clients can connect from.
+            A more specific CIDR will match before a looser one. Clients connecting
+            from a non-specified CIDR will be dropped.
+        certificate:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - authorization_flow
       - name
     RedirectChallenge:
       type: object
