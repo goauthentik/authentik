@@ -36,21 +36,23 @@ type RadiusServer struct {
 }
 
 func NewServer(ac *ak.APIController) *RadiusServer {
-	server := radius.PacketServer{}
-
 	rs := &RadiusServer{
-		s:         server,
 		log:       log.WithField("logger", "authentik.outpost.radius"),
 		ac:        ac,
 		providers: []*ProviderInstance{},
 	}
+
+	server := radius.PacketServer{
+		Handler:      rs,
+		SecretSource: rs,
+	}
+
 	defaultCert, err := crypto.GenerateSelfSignedCert()
 	if err != nil {
 		log.Warning(err)
 	}
 	rs.defaultCert = &defaultCert
-	server.Handler = rs
-	server.SecretSource = rs
+	rs.s = server
 	return rs
 }
 
@@ -61,10 +63,18 @@ type cpp struct {
 
 func (rs *RadiusServer) RADIUSSecret(ctx context.Context, remoteAddr net.Addr) ([]byte, error) {
 	matchedPrefixes := []cpp{}
+
+	host, _, err := net.SplitHostPort(remoteAddr.String())
+	if err != nil {
+		rs.log.WithError(err).Warning("Failed to get remote IP")
+		return nil, err
+	}
+	ip := net.ParseIP(host)
+
 	// Check all networks we have and remember all matching prefixes
 	for _, p := range rs.providers {
 		for _, cidr := range p.ClientNetworks {
-			if cidr.Contains(net.IP(remoteAddr.String())) {
+			if cidr.Contains(ip) {
 				matchedPrefixes = append(matchedPrefixes, cpp{
 					c: cidr,
 					p: p,
@@ -73,6 +83,7 @@ func (rs *RadiusServer) RADIUSSecret(ctx context.Context, remoteAddr net.Addr) (
 		}
 	}
 	if len(matchedPrefixes) < 1 {
+		rs.log.WithField("ip", ip.String()).Warning("No matching prefixes found")
 		return []byte{}, nil
 	}
 	// Sort matched cidrs by prefix length
@@ -82,6 +93,7 @@ func (rs *RadiusServer) RADIUSSecret(ctx context.Context, remoteAddr net.Addr) (
 		return bi < bj
 	})
 	candidate := matchedPrefixes[0]
-	rs.log.WithField("ip", remoteAddr.String()).WithField("cidr", candidate.c.String()).Debug("Matched CIDR")
+	rs.log.WithField("ip", ip.String()).WithField("cidr", candidate.c.String()).Debug("Matched CIDR")
+	rs.log.Debug(string(candidate.p.SharedSecret))
 	return candidate.p.SharedSecret, nil
 }

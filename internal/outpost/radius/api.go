@@ -15,7 +15,7 @@ import (
 
 func parseCIDRs(raw string) []*net.IPNet {
 	parts := strings.Split(raw, ",")
-	cidrs := make([]*net.IPNet, 0, len(parts))
+	cidrs := make([]*net.IPNet, len(parts))
 	for i, p := range parts {
 		_, ipnet, err := net.ParseCIDR(p)
 		if err != nil {
