@@ -3,6 +3,7 @@ package gounicorn
 import (
 	"os"
 	"os/exec"
+	"syscall"
 
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/config"
@@ -12,6 +13,7 @@ type GoUnicorn struct {
 	log     *log.Entry
 	p       *exec.Cmd
 	started bool
+	killed  bool
 }
 
 func NewGoUnicorn() *GoUnicorn {
@@ -19,6 +21,7 @@ func NewGoUnicorn() *GoUnicorn {
 	g := &GoUnicorn{
 		log:     logger,
 		started: false,
+		killed:  false,
 	}
 	g.initCmd()
 	return g
@@ -33,14 +36,21 @@ func (g *GoUnicorn) initCmd() {
 	}
 	g.log.WithField("args", args).WithField("cmd", command).Debug("Starting gunicorn")
 	g.p = exec.Command(command, args...)
-	g.p.Env = append(os.Environ(),
-		"WORKERS=2",
-	)
+	g.p.Env = os.Environ()
+	// Don't pass ctrl-c to child
+	// since we handle it ourselves
+	g.p.SysProcAttr = &syscall.SysProcAttr{
+		Setpgid: true,
+	}
 	g.p.Stdout = os.Stdout
 	g.p.Stderr = os.Stderr
 }
 
 func (g *GoUnicorn) Start() error {
+	if g.killed {
+		g.log.Info("Not restarting gunicorn since we're killed")
+		return nil
+	}
 	if g.started {
 		g.initCmd()
 	}
@@ -49,5 +59,6 @@ func (g *GoUnicorn) Start() error {
 }
 
 func (g *GoUnicorn) Kill() error {
+	g.killed = true
 	return g.p.Process.Kill()
 }

@@ -50,7 +50,7 @@ func main() {
 
 		<-ex
 		log.WithField("logger", "authentik").Debug("shutting down webserver")
-		ws.Shutdown()
+		go ws.Shutdown()
 		log.WithField("logger", "authentik").Debug("killing gunicorn")
 		g.Kill()
 	}
