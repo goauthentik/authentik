@@ -8,7 +8,7 @@ import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
-import { first } from "../../../utils";
+import { first, randomString } from "../../../utils";
 
 @customElement("ak-provider-radius-form")
 export class RadiusProviderFormPage extends ModelForm<RadiusProvider, number> {
@@ -63,6 +63,12 @@ export class RadiusProviderFormPage extends ModelForm<RadiusProvider, number> {
                     }), html`<option>${t`Loading...`}</option>`)}
                 </select>
                 <p class="pf-c-form__helper-text">${t`Flow used for users to authenticate. Currently only identification and password stages are supported.`}</p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${t`Shared secret`}
+                ?required=${true}
+                name="sharedSecret">
+                <input type="text" value="${first(this.instance?.sharedSecret, randomString(128))}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>

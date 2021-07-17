@@ -17,6 +17,9 @@ class RadiusProviderSerializer(ProviderSerializer):
         fields = ProviderSerializer.Meta.fields + [
             "client_networks",
             "certificate",
+            # Shared secret is not a write-only field, as
+            # an admin might have to view it
+            "shared_secret",
         ]
 
 
@@ -44,6 +47,7 @@ class RadiusOutpostConfigSerializer(ModelSerializer):
             "auth_flow_slug",
             "client_networks",
             "certificate",
+            "shared_secret",
         ]
 
 

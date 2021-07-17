@@ -26020,6 +26020,9 @@ components:
           type: string
           format: uuid
           nullable: true
+        shared_secret:
+          type: string
+          description: Shared secret between clients and server to hash packets.
     PatchedReputationPolicyRequest:
       type: object
       description: Reputation Policy Serializer
@@ -27271,6 +27274,9 @@ components:
           type: string
           format: uuid
           nullable: true
+        shared_secret:
+          type: string
+          description: Shared secret between clients and server to hash packets.
       required:
       - application_slug
       - auth_flow_slug
@@ -27321,6 +27327,9 @@ components:
           type: string
           format: uuid
           nullable: true
+        shared_secret:
+          type: string
+          description: Shared secret between clients and server to hash packets.
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -27354,6 +27363,9 @@ components:
           type: string
           format: uuid
           nullable: true
+        shared_secret:
+          type: string
+          description: Shared secret between clients and server to hash packets.
       required:
       - authorization_flow
       - name
