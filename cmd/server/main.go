@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"net/url"
-	"os"
 	"time"
 
 	"github.com/getsentry/sentry-go"
@@ -16,6 +15,8 @@ import (
 	"goauthentik.io/internal/outpost/proxy"
 	"goauthentik.io/internal/web"
 )
+
+var running = true
 
 func main() {
 	log.SetLevel(log.DebugLevel)
@@ -44,31 +45,30 @@ func main() {
 	defer g.Kill()
 	defer ws.Shutdown()
 	for {
-		go attemptStartBackend(g, ex)
+		go attemptStartBackend(g)
 		ws.Start()
-		// go attemptProxyStart(u, ex)
+		// go attemptProxyStart(u)
 
 		<-ex
-		log.WithField("logger", "authentik").Debug("shutting down webserver")
+		running = false
+		log.WithField("logger", "authentik").Info("shutting down webserver")
 		go ws.Shutdown()
-		log.WithField("logger", "authentik").Debug("killing gunicorn")
+		log.WithField("logger", "authentik").Info("killing gunicorn")
 		g.Kill()
 	}
 }
 
-func attemptStartBackend(g *gounicorn.GoUnicorn, exitSignal chan os.Signal) error {
+func attemptStartBackend(g *gounicorn.GoUnicorn) error {
 	for {
 		err := g.Start()
-		select {
-		case <-exitSignal:
+		if !running {
 			return nil
-		default:
-			log.WithField("logger", "authentik.g").WithError(err).Warning("gunicorn process died, restarting")
 		}
+		log.WithField("logger", "authentik.g").WithError(err).Warning("gunicorn process died, restarting")
 	}
 }
 
-func attemptProxyStart(u *url.URL, exitSignal chan os.Signal) error {
+func attemptProxyStart(u *url.URL) error {
 	maxTries := 100
 	attempt := 0
 	for {
@@ -93,12 +93,9 @@ func attemptProxyStart(u *url.URL, exitSignal chan os.Signal) error {
 			}
 			continue
 		}
-		select {
-		case <-exitSignal:
+		if !running {
 			ac.Shutdown()
 			return nil
-		default:
-			break
 		}
 	}
 	return nil

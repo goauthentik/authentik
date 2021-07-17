@@ -48,7 +48,7 @@ func (g *GoUnicorn) initCmd() {
 
 func (g *GoUnicorn) Start() error {
 	if g.killed {
-		g.log.Info("Not restarting gunicorn since we're killed")
+		g.log.Debug("Not restarting gunicorn since we're killed")
 		return nil
 	}
 	if g.started {
