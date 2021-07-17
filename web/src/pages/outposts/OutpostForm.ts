@@ -53,14 +53,17 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 providers =  new ProvidersApi(DEFAULT_CONFIG).providersProxyList({
                     ordering: "pk"
                 });
+                break;
             case OutpostTypeEnum.Ldap:
                 providers =  new ProvidersApi(DEFAULT_CONFIG).providersLdapList({
                     ordering: "pk"
                 });
+                break;
             case OutpostTypeEnum.Radius:
                 providers =  new ProvidersApi(DEFAULT_CONFIG).providersRadiusList({
                     ordering: "pk"
                 });
+                break;
         }
         return providers.then(providers => {
             return providers.results.map(provider => {
@@ -69,7 +72,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 });
                 return html`<option value=${ifDefined(provider.pk)} ?selected=${selected}>${provider.verboseName} ${provider.name}</option>`;
             });
-        });;
+        });
     }
 
     renderForm(): TemplateResult {
