@@ -62,6 +62,7 @@ class EventAction(models.TextChoices):
     PASSWORD_SET = "password_set"  # noqa # nosec
 
     SECRET_VIEW = "secret_view"  # noqa # nosec
+    SECRET_ROTATE = "secret_rotate"  # noqa # nosec
 
     INVITE_USED = "invitation_used"
 

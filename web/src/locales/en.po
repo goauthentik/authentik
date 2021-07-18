@@ -487,6 +487,7 @@ msgid "Case insensitive matching"
 msgstr "Case insensitive matching"
 
 #: src/pages/crypto/CertificateKeyPairForm.ts
+#: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Certificate"
 msgstr "Certificate"
@@ -1674,6 +1675,10 @@ msgstr "From"
 msgid "From address"
 msgstr "From address"
 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "GID start number"
+msgstr "GID start number"
+
 #: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "General system status"
 msgstr "General system status"
@@ -2082,6 +2087,7 @@ msgstr "Loading"
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/pages/property-mappings/PropertyMappingTestForm.ts
+#: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
@@ -3233,6 +3239,10 @@ msgstr "Separator: Static Separator Line"
 msgid "Server URI"
 msgstr "Server URI"
 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Server name for which this provider's certificate is valid for."
+msgstr "Server name for which this provider's certificate is valid for."
+
 #: src/flows/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage.ts
 msgid "Server validation of credential failed: {err}"
 msgstr "Server validation of credential failed: {err}"
@@ -3802,6 +3812,10 @@ msgstr "System Tasks"
 msgid "TLS Authentication Certificate"
 msgstr "TLS Authentication Certificate"
 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "TLS Server name"
+msgstr "TLS Server name"
+
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 msgid "TLS Verification Certificate"
 msgstr "TLS Verification Certificate"
@@ -3887,6 +3901,14 @@ msgstr ""
 #: src/pages/policies/dummy/DummyPolicyForm.ts
 msgid "The policy takes a random time to execute. This controls the minimum time it will take."
 msgstr "The policy takes a random time to execute. This controls the minimum time it will take."
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "The start for gidNumbers, this number is added to a number generated from the group.Pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber"
+msgstr "The start for gidNumbers, this number is added to a number generated from the group.Pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber"
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "The start for uidNumbers, this number is added to the user.Pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber"
+msgstr "The start for uidNumbers, this number is added to the user.Pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber"
 
 #: src/pages/flows/BoundStagesList.ts
 msgid "These bindings control if this stage will be applied to the flow."
@@ -4045,6 +4067,10 @@ msgstr "UI settings"
 #: src/pages/events/EventInfo.ts
 msgid "UID"
 msgstr "UID"
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "UID start number"
+msgstr "UID start number"
 
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts

@@ -5,7 +5,6 @@ import (
 	"errors"
 	"net"
 	"net/http"
-	"sync"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -48,18 +47,13 @@ func NewWebServer() *WebServer {
 	return ws
 }
 
-func (ws *WebServer) Run() {
-	wg := sync.WaitGroup{}
-	wg.Add(2)
-	go func() {
-		defer wg.Done()
-		ws.listenPlain()
-	}()
-	go func() {
-		defer wg.Done()
-		ws.listenTLS()
-	}()
-	wg.Done()
+func (ws *WebServer) Start() {
+	go ws.listenPlain()
+	go ws.listenTLS()
+}
+
+func (ws *WebServer) Shutdown() {
+	ws.stop <- struct{}{}
 }
 
 func (ws *WebServer) listenPlain() {
@@ -72,7 +66,11 @@ func (ws *WebServer) listenPlain() {
 	ws.serve(ln)
 
 	ws.log.WithField("addr", config.G.Web.Listen).Info("Running")
-	http.ListenAndServe(config.G.Web.Listen, ws.m)
+	err = http.ListenAndServe(config.G.Web.Listen, ws.m)
+	if err != nil && !errors.Is(err, http.ErrServerClosed) {
+		ws.log.Errorf("ERROR: http.Serve() - %s", err)
+	}
+	return
 }
 
 func (ws *WebServer) serve(listener net.Listener) {

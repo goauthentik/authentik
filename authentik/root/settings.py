@@ -188,12 +188,19 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
+REDIS_PROTOCOL_PREFIX = "redis://"
+REDIS_CELERY_TLS_REQUIREMENTS = ""
+if CONFIG.y_bool("redis.tls", False):
+    REDIS_PROTOCOL_PREFIX = "rediss://"
+    REDIS_CELERY_TLS_REQUIREMENTS = f"?ssl_cert_reqs={CONFIG.y('redis.tls_reqs')}"
+
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": (
-            f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:6379"
-            f"/{CONFIG.y('redis.cache_db')}"
+            f"{REDIS_PROTOCOL_PREFIX}:"
+            f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
+            f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.cache_db')}"
         ),
         "TIMEOUT": int(CONFIG.y("redis.cache_timeout", 300)),
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
@@ -252,8 +259,9 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [
-                f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:6379"
-                f"/{CONFIG.y('redis.ws_db')}"
+                f"{REDIS_PROTOCOL_PREFIX}:"
+                f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
+                f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.ws_db')}"
             ],
         },
     },
@@ -331,12 +339,16 @@ CELERY_BEAT_SCHEDULE = {
 CELERY_TASK_CREATE_MISSING_QUEUES = True
 CELERY_TASK_DEFAULT_QUEUE = "authentik"
 CELERY_BROKER_URL = (
-    f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}"
-    f":6379/{CONFIG.y('redis.message_queue_db')}"
+    f"{REDIS_PROTOCOL_PREFIX}:"
+    f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
+    f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.message_queue_db')}"
+    f"{REDIS_CELERY_TLS_REQUIREMENTS}"
 )
 CELERY_RESULT_BACKEND = (
-    f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}"
-    f":6379/{CONFIG.y('redis.message_queue_db')}"
+    f"{REDIS_PROTOCOL_PREFIX}:"
+    f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
+    f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.message_queue_db')}"
+    f"{REDIS_CELERY_TLS_REQUIREMENTS}"
 )
 
 # Database backup
@@ -364,11 +376,12 @@ if CONFIG.y("postgresql.s3_backup"):
     )
 
 # Sentry integration
+SENTRY_DSN = "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8"
 _ERROR_REPORTING = CONFIG.y_bool("error_reporting.enabled", False)
 if _ERROR_REPORTING:
     # pylint: disable=abstract-class-instantiated
     sentry_init(
-        dsn="https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8",
+        dsn=SENTRY_DSN,
         integrations=[
             DjangoIntegration(transaction_style="function_name"),
             CeleryIntegration(),

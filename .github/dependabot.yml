@@ -9,7 +9,7 @@ updates:
   assignees:
   - BeryJu
 - package-ecosystem: gomod
-  directory: "/outpost"
+  directory: "/"
   schedule:
     interval: daily
     time: "04:00"
@@ -42,14 +42,6 @@ updates:
   - BeryJu
 - package-ecosystem: docker
   directory: "/"
-  schedule:
-    interval: daily
-    time: "04:00"
-  open-pull-requests-limit: 10
-  assignees:
-  - BeryJu
-- package-ecosystem: docker
-  directory: "/outpost"
   schedule:
     interval: daily
     time: "04:00"

@@ -47,9 +47,8 @@ export class UserTokenForm extends ModelForm<Token, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Description`}
-                ?required=${true}
                 name="description">
-                <input type="text" value="${ifDefined(this.instance?.description)}" class="pf-c-form-control" required>
+                <input type="text" value="${ifDefined(this.instance?.description)}" class="pf-c-form-control">
             </ak-form-element-horizontal>
         </form>`;
     }

@@ -1,4 +1,4 @@
-import { FlowsApi, ProvidersApi, LDAPProvider, CoreApi, FlowsInstancesListDesignationEnum } from "authentik-api";
+import { FlowsApi, ProvidersApi, LDAPProvider, CoreApi, FlowsInstancesListDesignationEnum, CryptoApi } from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -89,6 +89,41 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                         name="baseDn">
                         <input type="text" value="${first(this.instance?.baseDn, "DC=ldap,DC=goauthentik,DC=io")}" class="pf-c-form-control" required>
                         <p class="pf-c-form__helper-text">${t`LDAP DN under which bind requests and search requests can be made.`}</p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`TLS Server name`}
+                        name="tlsServerName">
+                        <input type="text" value="${first(this.instance?.tlsServerName, "")}" class="pf-c-form-control">
+                        <p class="pf-c-form__helper-text">${t`Server name for which this provider's certificate is valid for.`}</p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Certificate`}
+                        name="certificate">
+                        <select class="pf-c-form-control">
+                            <option value="" ?selected=${this.instance?.certificate === undefined}>---------</option>
+                            ${until(new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
+                                ordering: "pk",
+                                hasKey: true,
+                            }).then(keys => {
+                                return keys.results.map(key => {
+                                    return html`<option value=${ifDefined(key.pk)} ?selected=${this.instance?.certificate === key.pk}>${key.name}</option>`;
+                                });
+                            }), html`<option>${t`Loading...`}</option>`)}
+                        </select>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`UID start number`}
+                        ?required=${true}
+                        name="uidStartNumber">
+                        <input type="number" value="${first(this.instance?.uidStartNumber, 2000)}" class="pf-c-form-control" required>
+                        <p class="pf-c-form__helper-text">${t`The start for uidNumbers, this number is added to the user.Pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber`}</p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`GID start number`}
+                        ?required=${true}
+                        name="gidStartNumber">
+                        <input type="number" value="${first(this.instance?.gidStartNumber, 4000)}" class="pf-c-form-control" required>
+                        <p class="pf-c-form__helper-text">${t`The start for gidNumbers, this number is added to a number generated from the group.Pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber`}</p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
