@@ -5,10 +5,12 @@ import (
 	"net/http"
 
 	sentryhttp "github.com/getsentry/sentry-go/http"
+	log "github.com/sirupsen/logrus"
 )
 
 func recoveryMiddleware() func(next http.Handler) http.Handler {
 	sentryHandler := sentryhttp.New(sentryhttp.Options{})
+	l := log.WithField("logger", "authentik.sentry")
 	return func(next http.Handler) http.Handler {
 		sentryHandler.Handle(next)
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -20,6 +22,7 @@ func recoveryMiddleware() func(next http.Handler) http.Handler {
 				}
 				err := re.(error)
 				if err != nil {
+					l.WithError(err).Warning("global panic handler")
 					jsonBody, _ := json.Marshal(struct {
 						Successful bool
 						Error      string
@@ -30,7 +33,10 @@ func recoveryMiddleware() func(next http.Handler) http.Handler {
 
 					w.Header().Set("Content-Type", "application/json")
 					w.WriteHeader(http.StatusInternalServerError)
-					w.Write(jsonBody)
+					_, err := w.Write(jsonBody)
+					if err != nil {
+						l.WithError(err).Warning("Failed to write sentry error body")
+					}
 				}
 			}()
 		})

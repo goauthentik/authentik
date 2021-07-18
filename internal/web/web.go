@@ -66,7 +66,11 @@ func (ws *WebServer) listenPlain() {
 	ws.serve(ln)
 
 	ws.log.WithField("addr", config.G.Web.Listen).Info("Running")
-	http.ListenAndServe(config.G.Web.Listen, ws.m)
+	err = http.ListenAndServe(config.G.Web.Listen, ws.m)
+	if err != nil && !errors.Is(err, http.ErrServerClosed) {
+		ws.log.Errorf("ERROR: http.Serve() - %s", err)
+	}
+	return
 }
 
 func (ws *WebServer) serve(listener net.Listener) {

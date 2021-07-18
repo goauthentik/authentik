@@ -29,12 +29,18 @@ func (ws *WebServer) configureStatic() {
 	ws.lh.Path("/robots.txt").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		rw.Header()["Content-Type"] = []string{"text/plain"}
 		rw.WriteHeader(200)
-		rw.Write(staticWeb.RobotsTxt)
+		_, err := rw.Write(staticWeb.RobotsTxt)
+		if err != nil {
+			ws.log.WithError(err).Warning("failed to write response")
+		}
 	})
 	ws.lh.Path("/.well-known/security.txt").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		rw.Header()["Content-Type"] = []string{"text/plain"}
 		rw.WriteHeader(200)
-		rw.Write(staticWeb.SecurityTxt)
+		_, err := rw.Write(staticWeb.SecurityTxt)
+		if err != nil {
+			ws.log.WithError(err).Warning("failed to write response")
+		}
 	})
 }
 

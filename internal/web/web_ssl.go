@@ -23,6 +23,7 @@ func (ws *WebServer) listenTLS() {
 	ln, err := net.Listen("tcp", config.G.Web.ListenTLS)
 	if err != nil {
 		ws.log.WithError(err).Fatalf("failed to listen")
+		return
 	}
 	ws.log.WithField("addr", config.G.Web.ListenTLS).Info("Running")
 
