@@ -14,7 +14,7 @@ from ldap3 import (
     Connection,
     Server,
 )
-from ldap3.core.exceptions import LDAPInsufficientAccessRightsResult
+from ldap3.core.exceptions import LDAPInvalidCredentialsResult
 
 from authentik.core.models import Application, Group, User
 from authentik.events.models import Event, EventAction
@@ -131,7 +131,7 @@ class TestProviderLDAP(SeleniumTestCase):
             user=f"cn={USER().username},ou=users,DC=ldap,DC=goauthentik,DC=io",
             password=USER().username + "fqwerwqer",
         )
-        with self.assertRaises(LDAPInsufficientAccessRightsResult):
+        with self.assertRaises(LDAPInvalidCredentialsResult):
             _connection.bind()
         anon = get_anonymous_user()
         self.assertTrue(
