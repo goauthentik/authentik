@@ -70,7 +70,6 @@ func (ws *WebServer) listenPlain() {
 	if err != nil && !errors.Is(err, http.ErrServerClosed) {
 		ws.log.Errorf("ERROR: http.Serve() - %s", err)
 	}
-	return
 }
 
 func (ws *WebServer) serve(listener net.Listener) {
