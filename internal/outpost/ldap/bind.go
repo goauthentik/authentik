@@ -8,8 +8,8 @@ import (
 )
 
 func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LDAPResultCode, error) {
-	ls.log.WithField("bindDN", bindDN).Info("bind")
 	bindDN = strings.ToLower(bindDN)
+	ls.log.WithField("bindDN", bindDN).Info("bind")
 	for _, instance := range ls.providers {
 		username, err := instance.getUsername(bindDN)
 		if err == nil {
