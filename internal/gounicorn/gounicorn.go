@@ -58,7 +58,10 @@ func (g *GoUnicorn) Start() error {
 	return g.p.Run()
 }
 
-func (g *GoUnicorn) Kill() error {
+func (g *GoUnicorn) Kill() {
 	g.killed = true
-	return g.p.Process.Kill()
+	err := g.p.Process.Kill()
+	if err != nil {
+		g.log.WithError(err).Warning("failed to kill gunicorn")
+	}
 }
