@@ -17,7 +17,7 @@ import { CurrentTenant } from "authentik-api";
 import { DefaultTenant } from "../elements/sidebar/SidebarBrand";
 import { tenant } from "../api/Config";
 import { configureSentry } from "../api/Sentry";
-import { ROUTES } from "../routes_user";
+import { ROUTES } from "../routesUser";
 import "../elements/router/RouterOutlet";
 import { until } from "lit-html/directives/until";
 import { me } from "../api/Users";

@@ -5,14 +5,6 @@ import { AKResponse } from "../api/Client";
 import { DEFAULT_CONFIG } from "../api/Config";
 import { loading } from "../utils";
 
-import "@carbon/ibmdotcom-web-components/es/components/card-section-images/card-section-images";
-import "@carbon/ibmdotcom-web-components/es/components/card/card-eyebrow";
-import "@carbon/ibmdotcom-web-components/es/components/card/card-heading";
-import "@carbon/ibmdotcom-web-components/es/components/card/card-footer";
-import "@carbon/ibmdotcom-web-components/es/components/card-group/card-group";
-import "@carbon/ibmdotcom-web-components/es/components/card-group/card-group-item";
-import "@carbon/ibmdotcom-web-components/es/components/content-block/content-block-heading";
-
 @customElement("ak-library")
 export class LibraryPage extends LitElement {
 
@@ -21,20 +13,6 @@ export class LibraryPage extends LitElement {
 
     static get styles(): CSSResult[] {
         return [css`
-            dds-card-heading {
-                margin-bottom: 2rem;
-            }
-            dds-card-heading.icon {
-                display: flex;
-            }
-            dds-card-heading img {
-                max-height: 48px;
-            }
-            @media (min-width: 66rem) {
-                dds-card-group {
-                    grid-template-columns: repeat(6, 1fr);
-                }
-            }
         `];
     }
 
