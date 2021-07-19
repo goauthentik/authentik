@@ -49,6 +49,7 @@ stages:
               script: |
                 mkdir -p web/dist
                 mkdir -p website/help
+                touch web/dist/test website/help/test
                 docker run \
                   --rm \
                   -v $(pwd):/app \

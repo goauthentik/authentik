@@ -3,7 +3,6 @@ package gounicorn
 import (
 	"os"
 	"os/exec"
-	"syscall"
 
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/config"
@@ -37,11 +36,6 @@ func (g *GoUnicorn) initCmd() {
 	g.log.WithField("args", args).WithField("cmd", command).Debug("Starting gunicorn")
 	g.p = exec.Command(command, args...)
 	g.p.Env = os.Environ()
-	// Don't pass ctrl-c to child
-	// since we handle it ourselves
-	g.p.SysProcAttr = &syscall.SysProcAttr{
-		Setpgid: true,
-	}
 	g.p.Stdout = os.Stdout
 	g.p.Stderr = os.Stderr
 }
@@ -58,7 +52,10 @@ func (g *GoUnicorn) Start() error {
 	return g.p.Run()
 }
 
-func (g *GoUnicorn) Kill() error {
+func (g *GoUnicorn) Kill() {
 	g.killed = true
-	return g.p.Process.Kill()
+	err := g.p.Process.Kill()
+	if err != nil {
+		g.log.WithError(err).Warning("failed to kill gunicorn")
+	}
 }

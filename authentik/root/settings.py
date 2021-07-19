@@ -417,9 +417,8 @@ MEDIA_URL = "/media/"
 
 TEST = False
 TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
-
-LOG_LEVEL = CONFIG.y("log_level").upper() if not TEST else "DEBUG"
-
+# We can't check TEST here as its set later by the test runner
+LOG_LEVEL = CONFIG.y("log_level").upper() if "TF_BUILD" not in os.environ else "DEBUG"
 
 structlog.configure_once(
     processors=[
