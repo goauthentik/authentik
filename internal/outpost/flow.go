@@ -4,10 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
 	"strconv"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api"
@@ -24,6 +26,11 @@ const (
 	StageAccessDenied          = StageComponent("ak-stage-access-denied")
 )
 
+const (
+	HeaderAuthentikRemoteIP     = "X-authentik-remote-ip"
+	HeaderAuthentikOutpostToken = "X-authentik-outpost-token"
+)
+
 type FlowExecutor struct {
 	Params  url.Values
 	Answers map[StageComponent]string
@@ -31,6 +38,7 @@ type FlowExecutor struct {
 	api      *api.APIClient
 	flowSlug string
 	log      *log.Entry
+	token    string
 }
 
 func NewFlowExecutor(flowSlug string, refConfig *api.Configuration) *FlowExecutor {
@@ -56,6 +64,7 @@ func NewFlowExecutor(flowSlug string, refConfig *api.Configuration) *FlowExecuto
 		api:      apiClient,
 		flowSlug: flowSlug,
 		log:      l,
+		token:    strings.Split(refConfig.DefaultHeader["Authorization"], " ")[1],
 	}
 }
 
@@ -67,6 +76,16 @@ type ChallengeInt interface {
 	GetComponent() string
 	GetType() api.ChallengeChoices
 	GetResponseErrors() map[string][]api.ErrorDetail
+}
+
+func (fe *FlowExecutor) DelegateClientIP(a net.Addr) {
+	host, _, err := net.SplitHostPort(a.String())
+	if err != nil {
+		fe.log.WithError(err).Warning("Failed to get remote IP")
+		return
+	}
+	fe.api.GetConfig().AddDefaultHeader(HeaderAuthentikRemoteIP, host)
+	fe.api.GetConfig().AddDefaultHeader(HeaderAuthentikOutpostToken, fe.token)
 }
 
 func (fe *FlowExecutor) CheckApplicationAccess(appSlug string) (bool, error) {

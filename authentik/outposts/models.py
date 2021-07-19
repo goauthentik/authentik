@@ -28,12 +28,18 @@ from structlog.stdlib import get_logger
 from urllib3.exceptions import HTTPError
 
 from authentik import ENV_GIT_HASH_KEY, __version__
-from authentik.core.models import USER_ATTRIBUTE_SA, Provider, Token, TokenIntents, User
+from authentik.core.models import (
+    USER_ATTRIBUTE_CAN_OVERRIDE_IP,
+    USER_ATTRIBUTE_SA,
+    Provider,
+    Token,
+    TokenIntents,
+    User,
+)
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey
 from authentik.lib.sentry import SentryIgnoredException
-from authentik.lib.utils.http import USER_ATTRIBUTE_CAN_OVERRIDE_IP
 from authentik.managed.models import ManagedModel
 from authentik.outposts.controllers.k8s.utils import get_namespace
 from authentik.outposts.docker_tls import DockerInlineTLS
