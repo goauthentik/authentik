@@ -48,12 +48,12 @@ func (pi *ProviderInstance) Bind(username string, bindDN, bindPW string, conn ne
 	fe.Answers[outpost.StagePassword] = bindPW
 
 	passed, err := fe.Execute()
+	if !passed {
+		return ldap.LDAPResultInvalidCredentials, nil
+	}
 	if err != nil {
 		pi.log.WithField("bindDN", bindDN).WithError(err).Warning("failed to execute flow")
 		return ldap.LDAPResultOperationsError, nil
-	}
-	if !passed {
-		return ldap.LDAPResultInvalidCredentials, nil
 	}
 	access, err := fe.CheckApplicationAccess(pi.appSlug)
 	if !access {
