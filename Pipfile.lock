@@ -636,14 +636,14 @@
         },
         "ldap3": {
             "hashes": [
-                "sha256:18c3ee656a6775b9b0d60f7c6c5b094d878d1d90fc03d56731039f0a4b546a91",
-                "sha256:4139c91f0eef9782df7b77c8cbc6243086affcb6a8a249b768a9658438e5da59",
-                "sha256:8c949edbad2be8a03e719ba48bd6779f327ec156929562814b3e84ab56889c8c",
-                "sha256:afc6fc0d01f02af82cd7bfabd3bbfd5dc96a6ae91e97db0a2dab8a0f1b436056",
-                "sha256:c1df41d89459be6f304e0ceec4b00fdea533dbbcd83c802b1272dcdb94620b57"
+                "sha256:2bc966556fc4d4fa9f445a1c31dc484ee81d44a51ab0e2d0fd05b62cac75daa6",
+                "sha256:5630d1383e09ba94839e253e013f1aa1a2cf7a547628ba1265cb7b9a844b5687",
+                "sha256:5869596fc4948797020d3f03b7939da938778a0f9e2009f7a072ccf92b8e8d70",
+                "sha256:5ab7febc00689181375de40c396dcad4f2659cd260fc5e94c508b6d77c17e9d5",
+                "sha256:f3e7fc4718e3f09dda568b57100095e0ce58633bcabbed8667ce3f8fbaa4229f"
             ],
             "index": "pypi",
-            "version": "==2.9"
+            "version": "==2.9.1"
         },
         "lxml": {
             "hashes": [
@@ -1653,10 +1653,10 @@
         },
         "pathspec": {
             "hashes": [
-                "sha256:86379d6b86d75816baba717e64b1a3a3469deb93bb76d613c9ce79edc5cb68fd",
-                "sha256:aa0cb481c4041bf52ffa7b0d8fa6cd3e88a2ca4879c533c9153882ee2556790d"
+                "sha256:7d15c4ddb0b5c802d161efc417ec1a2558ea2653c2e8ad9c19098201dc1c993a",
+                "sha256:e564499435a2673d586f6b2130bb5b95f04a3ba06f81b8f895b651a3c76aabb1"
             ],
-            "version": "==0.8.1"
+            "version": "==0.9.0"
         },
         "pbr": {
             "hashes": [
