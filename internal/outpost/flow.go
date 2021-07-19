@@ -41,8 +41,8 @@ type FlowExecutor struct {
 	token    string
 }
 
-func NewFlowExecutor(flowSlug string, refConfig *api.Configuration) *FlowExecutor {
-	l := log.WithField("flow", flowSlug)
+func NewFlowExecutor(flowSlug string, refConfig *api.Configuration, logFields log.Fields) *FlowExecutor {
+	l := log.WithField("flow", flowSlug).WithFields(logFields)
 	jar, err := cookiejar.New(nil)
 	if err != nil {
 		l.WithError(err).Warning("Failed to create cookiejar")
@@ -97,7 +97,7 @@ func (fe *FlowExecutor) CheckApplicationAccess(appSlug string) (bool, error) {
 	if err != nil {
 		return false, fmt.Errorf("failed to check access: %w", err)
 	}
-	fe.log.Info("User has access")
+	fe.log.Debug("User has access")
 	return true, nil
 }
 

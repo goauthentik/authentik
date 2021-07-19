@@ -4,50 +4,48 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"net"
 	"strings"
 
 	"github.com/nmcclain/ldap"
 	"goauthentik.io/api"
 )
 
-func (pi *ProviderInstance) SearchMe(user api.User, searchReq ldap.SearchRequest, conn net.Conn) (ldap.ServerSearchResult, error) {
+func (pi *ProviderInstance) SearchMe(user api.User) (ldap.ServerSearchResult, error) {
 	entries := make([]*ldap.Entry, 1)
 	entries[0] = pi.UserEntry(user)
 	return ldap.ServerSearchResult{Entries: entries, Referrals: []string{}, Controls: []ldap.Control{}, ResultCode: ldap.LDAPResultSuccess}, nil
 }
 
-func (pi *ProviderInstance) Search(bindDN string, searchReq ldap.SearchRequest, conn net.Conn) (ldap.ServerSearchResult, error) {
-	bindDN = strings.ToLower(bindDN)
+func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, error) {
 	baseDN := strings.ToLower("," + pi.BaseDN)
 
 	entries := []*ldap.Entry{}
-	filterEntity, err := ldap.GetFilterObjectClass(searchReq.Filter)
+	filterEntity, err := ldap.GetFilterObjectClass(req.Filter)
 	if err != nil {
-		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: error parsing filter: %s", searchReq.Filter)
+		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: error parsing filter: %s", req.Filter)
 	}
-	if len(bindDN) < 1 {
-		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: Anonymous BindDN not allowed %s", bindDN)
+	if len(req.BindDN) < 1 {
+		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: Anonymous BindDN not allowed %s", req.BindDN)
 	}
-	if !strings.HasSuffix(bindDN, baseDN) {
-		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: BindDN %s not in our BaseDN %s", bindDN, pi.BaseDN)
+	if !strings.HasSuffix(req.BindDN, baseDN) {
+		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: BindDN %s not in our BaseDN %s", req.BindDN, pi.BaseDN)
 	}
 
 	pi.boundUsersMutex.RLock()
 	defer pi.boundUsersMutex.RUnlock()
-	flags, ok := pi.boundUsers[bindDN]
+	flags, ok := pi.boundUsers[req.BindDN]
 	if !ok {
 		pi.log.Debug("User info not cached")
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, errors.New("access denied")
 	}
 	if !flags.CanSearch {
 		pi.log.Debug("User can't search, showing info about user")
-		return pi.SearchMe(flags.UserInfo, searchReq, conn)
+		return pi.SearchMe(flags.UserInfo)
 	}
 
 	switch filterEntity {
 	default:
-		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: unhandled filter type: %s [%s]", filterEntity, searchReq.Filter)
+		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: unhandled filter type: %s [%s]", filterEntity, req.Filter)
 	case GroupObjectClass:
 		groups, _, err := pi.s.ac.Client.CoreApi.CoreGroupsList(context.Background()).Execute()
 		if err != nil {
@@ -76,7 +74,7 @@ func (pi *ProviderInstance) Search(bindDN string, searchReq ldap.SearchRequest, 
 			entries = append(entries, pi.UserEntry(u))
 		}
 	}
-	pi.log.WithField("filter", searchReq.Filter).Debug("Search OK")
+	pi.log.WithField("filter", req.Filter).Debug("Search OK")
 	return ldap.ServerSearchResult{Entries: entries, Referrals: []string{}, Controls: []ldap.Control{}, ResultCode: ldap.LDAPResultSuccess}, nil
 }
 
