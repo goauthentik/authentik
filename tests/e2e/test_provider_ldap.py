@@ -121,6 +121,32 @@ class TestProviderLDAP(SeleniumTestCase):
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
     @object_manager
+    def test_ldap_bind_success_ssl(self):
+        """Test simple bind with ssl"""
+        self._prepare()
+        server = Server("ldaps://localhost:6636", get_info=ALL)
+        _connection = Connection(
+            server,
+            raise_exceptions=True,
+            user=f"cn={USER().username},ou=users,DC=ldap,DC=goauthentik,DC=io",
+            password=USER().username,
+        )
+        _connection.bind()
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.LOGIN,
+                user={
+                    "pk": USER().pk,
+                    "email": USER().email,
+                    "username": USER().username,
+                },
+            )
+        )
+
+    @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @object_manager
     def test_ldap_bind_fail(self):
         """Test simple bind (failed)"""
         self._prepare()
