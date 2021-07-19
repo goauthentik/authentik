@@ -238,6 +238,7 @@ func (p *OAuthProxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	if req.URL.Path != p.AuthOnlyPath && strings.HasPrefix(req.URL.Path, p.ProxyPrefix) {
 		prepareNoCache(rw)
 	}
+	rw.Header().Set("Server", "authentik-outpost")
 
 	switch path := req.URL.Path; {
 	case path == p.RobotsPath:
@@ -410,6 +411,8 @@ func (p *OAuthProxy) getAuthenticatedSession(rw http.ResponseWriter, req *http.R
 
 // addHeadersForProxying adds the appropriate headers the request / response for proxying
 func (p *OAuthProxy) addHeadersForProxying(rw http.ResponseWriter, req *http.Request, session *sessionsapi.SessionState) {
+	// req is the request that is forwarded to the upstream server
+	// rw is the response writer that goes back to the client
 	req.Header["X-Forwarded-User"] = []string{session.User}
 	if session.Email != "" {
 		req.Header["X-Forwarded-Email"] = []string{session.Email}
