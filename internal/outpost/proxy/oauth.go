@@ -10,7 +10,6 @@ import (
 
 	sessionsapi "github.com/oauth2-proxy/oauth2-proxy/pkg/apis/sessions"
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/encryption"
-	"github.com/oauth2-proxy/oauth2-proxy/pkg/ip"
 )
 
 // GetRedirectURI returns the redirectURL that the upstream OAuth Provider will
@@ -165,8 +164,6 @@ func (p *OAuthProxy) OAuthStart(rw http.ResponseWriter, req *http.Request) {
 // OAuthCallback is the OAuth2 authentication flow callback that finishes the
 // OAuth2 authentication flow
 func (p *OAuthProxy) OAuthCallback(rw http.ResponseWriter, req *http.Request) {
-	remoteAddr := ip.GetClientString(p.realClientIPParser, req, true)
-
 	// finish the oauth cycle
 	err := req.ParseForm()
 	if err != nil {
@@ -218,7 +215,7 @@ func (p *OAuthProxy) OAuthCallback(rw http.ResponseWriter, req *http.Request) {
 		p.logger.WithField("user", session.Email).WithField("status", "AuthFailure").Infof("Authenticated via OAuth2: %s", session)
 		err := p.SaveSession(rw, req, session)
 		if err != nil {
-			p.logger.Printf("Error saving session state for %s: %v", remoteAddr, err)
+			p.logger.Printf("Error saving session state for client %v", err)
 			p.ErrorPage(rw, http.StatusInternalServerError, "Internal Server Error", err.Error())
 			return
 		}

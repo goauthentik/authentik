@@ -14,7 +14,6 @@ import (
 
 	"github.com/coreos/go-oidc"
 	"github.com/justinas/alice"
-	ipapi "github.com/oauth2-proxy/oauth2-proxy/pkg/apis/ip"
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/apis/options"
 	sessionsapi "github.com/oauth2-proxy/oauth2-proxy/pkg/apis/sessions"
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/middleware"
@@ -91,7 +90,6 @@ type OAuthProxy struct {
 	extraJwtBearerVerifiers []*oidc.IDTokenVerifier
 	compiledRegex           []*regexp.Regexp
 	templates               *template.Template
-	realClientIPParser      ipapi.RealClientIPParser
 
 	sessionChain alice.Chain
 
@@ -160,7 +158,6 @@ func NewOAuthProxy(opts *options.Options, provider api.ProxyOutpostConfig, c *ht
 		mainJwtBearerVerifier:   opts.GetOIDCVerifier(),
 		extraJwtBearerVerifiers: opts.GetJWTBearerVerifiers(),
 		compiledRegex:           opts.GetCompiledRegex(),
-		realClientIPParser:      opts.GetRealClientIPParser(),
 		SetXAuthRequest:         opts.SetXAuthRequest,
 		SetBasicAuth:            opts.SetBasicAuth,
 		PassUserHeaders:         opts.PassUserHeaders,
