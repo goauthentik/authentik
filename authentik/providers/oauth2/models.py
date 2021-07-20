@@ -338,7 +338,7 @@ class AuthorizationCode(ExpiringModel, BaseGrantModel):
     """OAuth2 Authorization Code"""
 
     code = models.CharField(max_length=255, unique=True, verbose_name=_("Code"))
-    nonce = models.TextField(blank=True, default="", verbose_name=_("Nonce"))
+    nonce = models.TextField(null=True, default=None, verbose_name=_("Nonce"))
     is_open_id = models.BooleanField(
         default=False, verbose_name=_("Is Authentication?")
     )
