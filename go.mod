@@ -29,6 +29,7 @@ require (
 	github.com/nmcclain/ldap v0.0.0-20191021200707-3b3b69a7e9e3
 	github.com/oauth2-proxy/oauth2-proxy v0.0.0-20200831161845-e4e5580852dc
 	github.com/pelletier/go-toml v1.9.1 // indirect
+	github.com/pires/go-proxyproto v0.6.0 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/pquerna/cachecontrol v0.0.0-20201205024021-ac21108117ac // indirect
 	github.com/recws-org/recws v1.3.1

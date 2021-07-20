@@ -4,6 +4,8 @@ import (
 	"crypto/tls"
 	"net"
 	"sync"
+
+	"github.com/pires/go-proxyproto"
 )
 
 // ServeHTTP constructs a net.Listener and starts handling HTTP requests
@@ -13,8 +15,11 @@ func (s *Server) ServeHTTP() {
 	if err != nil {
 		s.logger.Fatalf("FATAL: listen (%s) failed - %s", listenAddress, err)
 	}
+	proxyListener := &proxyproto.Listener{Listener: listener}
+	defer proxyListener.Close()
+
 	s.logger.Printf("listening on %s", listener.Addr())
-	s.serve(listener)
+	s.serve(proxyListener)
 	s.logger.Printf("closing %s", listener.Addr())
 }
 
@@ -46,7 +51,10 @@ func (s *Server) ServeHTTPS() {
 	}
 	s.logger.Printf("listening on %s", ln.Addr())
 
-	tlsListener := tls.NewListener(tcpKeepAliveListener{ln.(*net.TCPListener)}, config)
+	proxyListener := &proxyproto.Listener{Listener: tcpKeepAliveListener{ln.(*net.TCPListener)}}
+	defer proxyListener.Close()
+
+	tlsListener := tls.NewListener(proxyListener, config)
 	s.serve(tlsListener)
 	s.logger.Printf("closing %s", tlsListener.Addr())
 }

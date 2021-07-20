@@ -5,11 +5,13 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"net"
 	"net/http"
 	"strings"
 	"sync"
 
 	"github.com/go-openapi/strfmt"
+	"github.com/pires/go-proxyproto"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/ak"
 )
@@ -70,7 +72,20 @@ func (ls *LDAPServer) StartHTTPServer() error {
 
 func (ls *LDAPServer) StartLDAPServer() error {
 	listen := "0.0.0.0:3389"
+
+	ln, err := net.Listen("tcp", listen)
+	if err != nil {
+		ls.log.Fatalf("FATAL: listen (%s) failed - %s", listen, err)
+	}
+	proxyListener := &proxyproto.Listener{Listener: ln}
+	defer proxyListener.Close()
+
 	ls.log.WithField("listen", listen).Info("Starting ldap server")
+	err = ls.s.Serve(proxyListener)
+	if err != nil {
+		return err
+	}
+	ls.log.Printf("closing %s", ln.Addr())
 	return ls.s.ListenAndServe(listen)
 }
 
@@ -86,8 +101,11 @@ func (ls *LDAPServer) StartLDAPTLSServer() error {
 	if err != nil {
 		ls.log.Fatalf("FATAL: listen (%s) failed - %s", listen, err)
 	}
+	proxyListener := &proxyproto.Listener{Listener: ln}
+	defer proxyListener.Close()
+
 	ls.log.WithField("listen", listen).Info("Starting ldap tls server")
-	err = ls.s.Serve(ln)
+	err = ls.s.Serve(proxyListener)
 	if err != nil {
 		return err
 	}
