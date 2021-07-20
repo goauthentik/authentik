@@ -192,6 +192,10 @@ class OAuthAuthorizationParams:
 
     def check_nonce(self):
         """Nonce parameter validation."""
+        # https://openid.net/specs/openid-connect-core-1_0.html#ImplicitIDTValidation
+        # Nonce is only required for Implicit flows
+        if self.grant_type != GrantTypes.IMPLICIT:
+            return
         if not self.nonce:
             self.nonce = self.state
             LOGGER.warning("Using state as nonce for OpenID Request")
