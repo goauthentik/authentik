@@ -158,6 +158,7 @@ class OAuth2Provider(Provider):
     )
     redirect_uris = models.TextField(
         default="",
+        blank=True,
         verbose_name=_("Redirect URIs"),
         help_text=_("Enter each URI on a new line."),
     )

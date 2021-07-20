@@ -109,6 +109,7 @@ class Migration(migrations.Migration):
                     "redirect_uris",
                     models.TextField(
                         default="",
+                        blank=True,
                         help_text="Enter each URI on a new line.",
                         verbose_name="Redirect URIs",
                     ),

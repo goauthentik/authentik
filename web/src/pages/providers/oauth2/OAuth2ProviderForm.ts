@@ -111,9 +111,8 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Redirect URIs/Origins`}
-                        ?required=${true}
                         name="redirectUris">
-                        <textarea class="pf-c-form-control" required>${this.instance?.redirectUris}</textarea>
+                        <textarea class="pf-c-form-control">${this.instance?.redirectUris}</textarea>
                         <p class="pf-c-form__helper-text">
                             ${t`Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows.`}
                         </p>
