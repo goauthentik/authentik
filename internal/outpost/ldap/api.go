@@ -97,15 +97,18 @@ func (ls *LDAPServer) StartLDAPTLSServer() error {
 		GetCertificate: ls.getCertificates,
 	}
 
-	ln, err := tls.Listen("tcp", listen, tlsConfig)
+	ln, err := net.Listen("tcp", listen)
 	if err != nil {
 		ls.log.Fatalf("FATAL: listen (%s) failed - %s", listen, err)
 	}
+
 	proxyListener := &proxyproto.Listener{Listener: ln}
 	defer proxyListener.Close()
 
+	tln := tls.NewListener(proxyListener, tlsConfig)
+
 	ls.log.WithField("listen", listen).Info("Starting ldap tls server")
-	err = ls.s.Serve(proxyListener)
+	err = ls.s.Serve(tln)
 	if err != nil {
 		return err
 	}
