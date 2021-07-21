@@ -491,8 +491,8 @@ class PropertyMapping(SerializerModel, ManagedModel):
         evaluator.set_context(user, request, self, **kwargs)
         try:
             return evaluator.evaluate(self.expression)
-        except (ValueError, SyntaxError) as exc:
-            raise PropertyMappingExpressionException from exc
+        except Exception as exc:
+            raise PropertyMappingExpressionException(str(exc)) from exc
 
     def __str__(self):
         return f"Property Mapping {self.name}"
