@@ -42,7 +42,9 @@ export class PolicyStatusChart extends AKChart<PolicyMetrics> {
         })).pagination.count;
         this.centerText = count.toString();
         return {
-            count: count - cached - unbound,
+            // If we have more cache than total policies, only show that
+            // otherwise show count without unbound
+            count: cached >= count ? cached : count - unbound,
             cached: cached,
             unbound: unbound,
         };
