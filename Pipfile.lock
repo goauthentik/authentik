@@ -122,19 +122,19 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:d3299d6f64cd6bd57b11e6b9c23310bbcfb6a604660201809b2ba2277bd91a93",
-                "sha256:d3f7a8cba655de000e46660d314abb867faf8648686e8c979121c674f98bfcc2"
+                "sha256:13e60f88d13161df951d6e52bd483cdbe1a36a31f818746289d8ba0879465710",
+                "sha256:3be2f259b279d69495433e3288db3670817fdb1813cfde92abf867bba3ad8148"
             ],
             "index": "pypi",
-            "version": "==1.18.2"
+            "version": "==1.18.3"
         },
         "botocore": {
             "hashes": [
-                "sha256:dc74f2c1a6582f053b95a14949945390b1b6bb9cff2ec1a6f25235831ebbe31f",
-                "sha256:f78d2a9cb8a2385b8b4de93f2b901e404ecee663ee2d290ae00d682e216af196"
+                "sha256:0b6f378c9efbc72eee61aba1e16cab90bde53a37bd2d861f6435552fd7030adf",
+                "sha256:285ab9459cdd49d4a9322692c6e13772b97af723a03c0eed519b589446491a5b"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==1.21.2"
+            "version": "==1.21.3"
         },
         "cachetools": {
             "hashes": [
@@ -485,11 +485,11 @@
         },
         "google-auth": {
             "hashes": [
-                "sha256:9bd25d835c01ca3dd9045ea0b50f036e3fe3868ee2c5a9773a661925bbdf46ca",
-                "sha256:a756a33978fac611e4f00b69715b80e35467c30cc6262132d29d33a0e398ac55"
+                "sha256:036dd68c1e8baa422b6b61619b8e02793da2e20f55e69514612de6c080468755",
+                "sha256:7665c04f2df13cc938dc7d9066cddb1f8af62b038bc8b2306848c1b23121865f"
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'",
-            "version": "==1.33.0"
+            "version": "==1.33.1"
         },
         "gunicorn": {
             "hashes": [
@@ -1598,7 +1598,7 @@
                 "sha256:eed17b53c3e7912425579853d078a0832820f023191561fcee9d7cae424e0813",
                 "sha256:f65ce5bd4cbc6abdfbe29afc2f0245538ab358c14590912df638033f157d555e"
             ],
-            "markers": "python_version < '4' and python_full_version >= '3.6.1'",
+            "markers": "python_version < '4.0' and python_full_version >= '3.6.1'",
             "version": "==5.9.2"
         },
         "lazy-object-proxy": {
