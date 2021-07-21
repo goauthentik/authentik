@@ -5,6 +5,7 @@ from django.db.models.query import QuerySet
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.events.models import Event, EventAction
 from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 
@@ -83,6 +84,11 @@ class BaseLDAPSynchronizer:
                 else:
                     properties[object_field] = self._flatten(value)
             except PropertyMappingExpressionException as exc:
+                Event.new(
+                    EventAction.CONFIGURATION_ERROR,
+                    message=f"Failed to evaluate property-mapping: {str(exc)}",
+                    mapping=mapping,
+                ).save()
                 self._logger.warning(
                     "Mapping failed to evaluate", exc=exc, mapping=mapping
                 )

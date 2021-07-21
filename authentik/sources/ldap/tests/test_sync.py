@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.test import TestCase
 
 from authentik.core.models import Group, User
+from authentik.events.models import Event, EventAction
 from authentik.managed.manager import ObjectManager
 from authentik.providers.oauth2.generators import generate_client_secret
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
@@ -30,6 +31,33 @@ class LDAPSyncTests(TestCase):
             additional_user_dn="ou=users",
             additional_group_dn="ou=groups",
         )
+
+    def test_sync_error(self):
+        """Test user sync"""
+        self.source.property_mappings.set(
+            LDAPPropertyMapping.objects.filter(
+                Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/ms")
+            )
+        )
+        mapping = LDAPPropertyMapping.objects.create(
+            name="name",
+            object_field="name",
+            expression="q",
+        )
+        self.source.property_mappings.set([mapping])
+        self.source.save()
+        connection = PropertyMock(return_value=mock_ad_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync.sync()
+            self.assertFalse(User.objects.filter(username="user0_sn").exists())
+            self.assertFalse(User.objects.filter(username="user1_sn").exists())
+        events = Event.objects.filter(
+            action=EventAction.CONFIGURATION_ERROR,
+            context__message="Failed to evaluate property-mapping: name 'q' is not defined"
+        )
+        self.assertTrue(events.exists())
 
     def test_sync_users_ad(self):
         """Test user sync"""
