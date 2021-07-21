@@ -9,6 +9,7 @@ from lxml.etree import Element, SubElement  # nosec
 from structlog.stdlib import get_logger
 
 from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.events.models import Event, EventAction
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.request_parser import AuthNRequest
@@ -99,7 +100,11 @@ class AssertionProcessor:
                 attribute_statement.append(attribute)
 
             except PropertyMappingExpressionException as exc:
-                LOGGER.warning(str(exc))
+                Event.new(
+                    EventAction.CONFIGURATION_ERROR,
+                    message=f"Failed to evaluate property-mapping: {str(exc)}",
+                    mapping=mapping,
+                ).from_http(self.http_request)
                 continue
         return attribute_statement
 
@@ -161,7 +166,11 @@ class AssertionProcessor:
                     name_id.text = value
                 return name_id
             except PropertyMappingExpressionException as exc:
-                LOGGER.warning(str(exc))
+                Event.new(
+                    EventAction.CONFIGURATION_ERROR,
+                    message=f"Failed to evaluate property-mapping: {str(exc)}",
+                    mapping=self.provider.name_id_mapping,
+                ).from_http(self.http_request)
                 return name_id
         if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_EMAIL:
             name_id.text = self.http_request.user.email
