@@ -15,8 +15,6 @@ RUN	docker-entrypoint.sh generate \
 
 # Stage 2: Build
 FROM golang:1.16.6 AS builder
-ARG GIT_BUILD_HASH
-ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
 WORKDIR /go/src/goauthentik.io
 
@@ -27,6 +25,9 @@ RUN go build -o /go/ldap ./cmd/ldap
 
 # Stage 3: Run
 FROM gcr.io/distroless/base-debian10:debug
+
+ARG GIT_BUILD_HASH
+ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
 COPY --from=builder /go/ldap /
 
