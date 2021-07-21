@@ -13,7 +13,6 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/pires/go-proxyproto"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/internal/outpost/ak"
 )
 
 func (ls *LDAPServer) Refresh() error {
@@ -45,14 +44,12 @@ func (ls *LDAPServer) Refresh() error {
 			gidStartNumber:      *provider.GidStartNumber,
 		}
 		if provider.Certificate.Get() != nil {
-			logger.WithField("provider", provider.Name).Debug("Enabling TLS")
-			cert, err := ak.ParseCertificate(*provider.Certificate.Get(), ls.ac.Client.CryptoApi)
+			kp := provider.Certificate.Get()
+			err := ls.cs.AddKeypair(*kp)
 			if err != nil {
-				logger.WithField("provider", provider.Name).WithError(err).Warning("Failed to fetch certificate")
-			} else {
-				providers[idx].cert = cert
-				logger.WithField("provider", provider.Name).Debug("Loaded certificates")
+				ls.log.WithError(err).Warning("Failed to initially fetch certificate")
 			}
+			providers[idx].cert = ls.cs.Get(*kp)
 		}
 	}
 	ls.providers = providers

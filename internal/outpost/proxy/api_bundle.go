@@ -15,7 +15,6 @@ import (
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/validation"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api"
-	"goauthentik.io/internal/outpost/ak"
 )
 
 type providerBundle struct {
@@ -89,14 +88,12 @@ func (pb *providerBundle) prepareOpts(provider api.ProxyOutpostConfig) *options.
 	}
 
 	if provider.Certificate.Get() != nil {
-		pb.log.WithField("provider", provider.Name).Debug("Enabling TLS")
-		cert, err := ak.ParseCertificate(*provider.Certificate.Get(), pb.s.ak.Client.CryptoApi)
+		kp := provider.Certificate.Get()
+		err := pb.s.cs.AddKeypair(*kp)
 		if err != nil {
-			pb.log.WithField("provider", provider.Name).WithError(err).Warning("Failed to fetch certificate")
-			return providerOpts
+			pb.log.WithError(err).Warning("Failed to initially fetch certificate")
 		}
-		pb.cert = cert
-		pb.log.WithField("provider", provider.Name).Debug("Loaded certificates")
+		pb.cert = pb.s.cs.Get(*kp)
 	}
 	return providerOpts
 }

@@ -21,6 +21,7 @@ type Server struct {
 	stop        chan struct{} // channel for waiting shutdown
 	logger      *log.Entry
 	ak          *ak.APIController
+	cs          *ak.CryptoStore
 	defaultCert tls.Certificate
 }
 
@@ -35,6 +36,7 @@ func NewServer(ac *ak.APIController) *Server {
 		logger:      log.WithField("logger", "authentik.outpost.proxy-http-server"),
 		defaultCert: defaultCert,
 		ak:          ac,
+		cs:          ak.NewCryptoStore(ac.Client.CryptoApi),
 	}
 }
 

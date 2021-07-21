@@ -1,8 +1,6 @@
 package ak
 
 import (
-	"context"
-	"crypto/tls"
 	"net/http"
 	"os"
 	"strings"
@@ -11,7 +9,6 @@ import (
 	"github.com/getsentry/sentry-go"
 	httptransport "github.com/go-openapi/runtime/client"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api"
 	"goauthentik.io/internal/constants"
 )
 
@@ -68,22 +65,4 @@ func GetTLSTransport() http.RoundTripper {
 		panic(err)
 	}
 	return tlsTransport
-}
-
-// ParseCertificate Load certificate from Keyepair UUID and parse it into a go Certificate
-func ParseCertificate(kpUuid string, cryptoApi *api.CryptoApiService) (*tls.Certificate, error) {
-	cert, _, err := cryptoApi.CryptoCertificatekeypairsViewCertificateRetrieve(context.Background(), kpUuid).Execute()
-	if err != nil {
-		return nil, err
-	}
-	key, _, err := cryptoApi.CryptoCertificatekeypairsViewPrivateKeyRetrieve(context.Background(), kpUuid).Execute()
-	if err != nil {
-		return nil, err
-	}
-
-	x509cert, err := tls.X509KeyPair([]byte(cert.Data), []byte(key.Data))
-	if err != nil {
-		return nil, err
-	}
-	return &x509cert, nil
 }
