@@ -7,6 +7,8 @@ from django.http.response import HttpResponseBadRequest
 from django.views import View
 from structlog.stdlib import get_logger
 
+from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.events.models import Event, EventAction
 from authentik.providers.oauth2.constants import (
     SCOPE_GITHUB_ORG_READ,
     SCOPE_GITHUB_USER,
@@ -63,12 +65,20 @@ class UserInfoView(View):
         for scope in ScopeMapping.objects.filter(
             provider=token.provider, scope_name__in=scopes_from_client
         ).order_by("scope_name"):
-            value = scope.evaluate(
-                user=token.user,
-                request=self.request,
-                provider=token.provider,
-                token=token,
-            )
+            value = None
+            try:
+                value = scope.evaluate(
+                    user=token.user,
+                    request=self.request,
+                    provider=token.provider,
+                    token=token,
+                )
+            except PropertyMappingExpressionException as exc:
+                Event.new(
+                    EventAction.CONFIGURATION_ERROR,
+                    message=f"Failed to evaluate property-mapping: {str(exc)}",
+                    mapping=scope,
+                ).from_http(self.request)
             if value is None:
                 continue
             if not isinstance(value, dict):
