@@ -735,7 +735,7 @@ msgstr "Connect"
 msgid "Connected."
 msgstr "Connected."
 
-#: src/elements/messages/MessageContainer.ts
+#: src/common/ws.ts
 msgid "Connection error, reconnecting..."
 msgstr "Connection error, reconnecting..."
 

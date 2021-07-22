@@ -23,6 +23,15 @@ export class NotificationDrawer extends LitElement {
     static get styles(): CSSResult[] {
         return [PFBase, PFButton, PFNotificationDrawer, PFContent, PFDropdown, AKGlobal].concat(
             css`
+                .pf-c-notification-drawer__header {
+                    height: 114px;
+                    align-items: center;
+                }
+                .pf-c-notification-drawer__header-action,
+                .pf-c-notification-drawer__header-action-close,
+                .pf-c-notification-drawer__header-action-close > .pf-c-button.pf-m-plain {
+                    height: 100%;
+                }
                 .pf-c-notification-drawer__list-item-description {
                     white-space: pre-wrap;
                 }
@@ -95,12 +104,14 @@ export class NotificationDrawer extends LitElement {
         return html`<div class="pf-c-drawer__body pf-m-no-padding">
             <div class="pf-c-notification-drawer">
                 <div class="pf-c-notification-drawer__header">
-                    <h1 class="pf-c-notification-drawer__header-title">
-                        ${t`Notifications`}
-                    </h1>
-                    <span class="pf-c-notification-drawer__header-status">
-                        ${t`${this.unread} unread`}
-                    </span>
+                    <div class="text">
+                        <h1 class="pf-c-notification-drawer__header-title">
+                            ${t`Notifications`}
+                        </h1>
+                        <span>
+                            ${t`${this.unread} unread`}
+                        </span>
+                    </div>
                     <div class="pf-c-notification-drawer__header-action">
                         <div class="pf-c-notification-drawer__header-action-close">
                             <button

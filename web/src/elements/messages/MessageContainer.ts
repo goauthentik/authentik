@@ -33,7 +33,7 @@ export class MessageContainer extends LitElement {
     constructor() {
         super();
         this.addEventListener(EVENT_WS_MESSAGE, ((e: CustomEvent<WSMessage>) => {
-            if (e.detail.type !== WS_MSG_TYPE_MESSAGE) return;
+            if (e.detail.message_type !== WS_MSG_TYPE_MESSAGE) return;
             this.addMessage(e.detail as unknown as APIMessage);
         }) as EventListener);
     }

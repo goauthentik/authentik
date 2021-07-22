@@ -4,8 +4,10 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import AKGlobal from "../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import { EVENT_SIDEBAR_TOGGLE, TITLE_DEFAULT } from "../constants";
-import { tenant } from "../api/Config";
+import { EVENT_NOTIFICATION_TOGGLE, EVENT_SIDEBAR_TOGGLE, TITLE_DEFAULT } from "../constants";
+import { DEFAULT_CONFIG, tenant } from "../api/Config";
+import { until } from "lit-html/directives/until";
+import { EventsApi } from "../../api/dist";
 
 @customElement("ak-page-header")
 export class PageHeader extends LitElement {
@@ -44,18 +46,25 @@ export class PageHeader extends LitElement {
                 flex-direction: row;
                 min-height: 114px;
             }
-            button.pf-c-button.pf-m-plain.sidebar-trigger {
+            .pf-c-button.pf-m-plain {
                 background-color: var(--pf-c-page__main-section--m-light--BackgroundColor);
                 border-radius: 0px;
             }
             .pf-c-page__main-section {
-                width: 100%;
+                flex-grow: 1;
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
             }
             img.pf-icon {
                 max-height: 24px;
+            }
+            .sidebar-trigger,
+            .notification-trigger {
+                font-size: 24px;
+            }
+            .notification-trigger.has-notifications {
+                color: #2B9AF3;
             }
         `];
     }
@@ -92,7 +101,26 @@ export class PageHeader extends LitElement {
                 ${this.description ?
                     html`<p>${this.description}</p>` : html``}
             </div>
-        </section>`;
+        </section>
+        ${until(new EventsApi(DEFAULT_CONFIG).eventsNotificationsList({
+            seen: false,
+            ordering: "-created",
+            pageSize: 1,
+        }).then(r => {
+            return html`
+                <button
+                    class="notification-trigger pf-c-button pf-m-plain ${r.pagination.count > 0 ? "has-notifications" : ""}"
+                    @click=${() => {
+                        this.dispatchEvent(
+                            new CustomEvent(EVENT_NOTIFICATION_TOGGLE, {
+                                bubbles: true,
+                                composed: true,
+                            })
+                        );
+                    }}>
+                    <i class="fas fa-bell"></i>
+                </button>`;
+        }))}`;
     }
 
 }

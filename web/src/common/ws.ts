@@ -4,7 +4,7 @@ import { MessageLevel } from "../elements/messages/Message";
 import { showMessage } from "../elements/messages/MessageContainer";
 
 export interface WSMessage {
-    type: string;
+    message_type: string;
 }
 
 export class WebsocketClient {
