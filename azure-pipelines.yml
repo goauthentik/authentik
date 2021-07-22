@@ -393,6 +393,13 @@ stages:
           - task: CmdLine@2
             inputs:
               script: bash <(curl -s https://codecov.io/bash)
+          - task: CmdLine@2
+            inputs:
+              script: |
+                npm install -g @zeus-ci/cli
+                npx zeus job update -b $BUILD_BUILDID -j $BUILD_BUILDNUMBER -r $BUILD_SOURCEVERSION
+                npx zeus upload -b $BUILD_BUILDID -j $BUILD_BUILDNUMBER -t "application/x-cobertura+xml" coverage.xml
+                npx zeus job update --status=passed -b $BUILD_BUILDID -j $BUILD_BUILDNUMBER -r $BUILD_SOURCEVERSION
   - stage: Build
     jobs:
       - job: build_server
