@@ -1,9 +1,10 @@
-import { t } from "@lingui/macro";
 import { LitElement, html, customElement, TemplateResult, property, CSSResult, css } from "lit-element";
 import "./Message";
-import { APIMessage, MessageLevel } from "./Message";
+import { APIMessage } from "./Message";
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { EVENT_WS_MESSAGE, WS_MSG_TYPE_MESSAGE } from "../../constants";
+import { WSMessage } from "../../common/ws";
 
 export function showMessage(message: APIMessage): void {
     const container = document.querySelector<MessageContainer>("ak-message-container");
@@ -20,9 +21,6 @@ export class MessageContainer extends LitElement {
     @property({attribute: false})
     messages: APIMessage[] = [];
 
-    messageSocket?: WebSocket;
-    retryDelay = 200;
-
     static get styles(): CSSResult[] {
         return [PFBase, PFAlertGroup, css`
             /* Fix spacing between messages */
@@ -34,11 +32,10 @@ export class MessageContainer extends LitElement {
 
     constructor() {
         super();
-        try {
-            this.connect();
-        } catch (error) {
-            console.warn(`authentik/messages: failed to connect to ws ${error}`);
-        }
+        this.addEventListener(EVENT_WS_MESSAGE, ((e: CustomEvent<WSMessage>) => {
+            if (e.detail.type !== WS_MSG_TYPE_MESSAGE) return;
+            this.addMessage(e.detail as unknown as APIMessage);
+        }) as EventListener);
     }
 
     // add a new message, but only if the message isn't currently shown.
@@ -47,40 +44,6 @@ export class MessageContainer extends LitElement {
         if (matchingMessages.length < 1) {
             this.messages.push(message);
         }
-    }
-
-    connect(): void {
-        if (navigator.webdriver) return;
-        const wsUrl = `${window.location.protocol.replace("http", "ws")}//${
-            window.location.host
-        }/ws/client/`;
-        this.messageSocket = new WebSocket(wsUrl);
-        this.messageSocket.addEventListener("open", () => {
-            console.debug(`authentik/messages: connected to ${wsUrl}`);
-            this.retryDelay = 200;
-        });
-        this.messageSocket.addEventListener("close", (e) => {
-            console.debug(`authentik/messages: closed ws connection: ${e}`);
-            if (this.retryDelay > 3000) {
-                showMessage({
-                    level: MessageLevel.error,
-                    message: t`Connection error, reconnecting...`
-                });
-            }
-            setTimeout(() => {
-                console.debug(`authentik/messages: reconnecting ws in ${this.retryDelay}ms`);
-                this.connect();
-            }, this.retryDelay);
-            this.retryDelay = this.retryDelay * 2;
-        });
-        this.messageSocket.addEventListener("message", (e) => {
-            const data = JSON.parse(e.data);
-            this.addMessage(data);
-            this.requestUpdate();
-        });
-        this.messageSocket.addEventListener("error", () => {
-            this.retryDelay = this.retryDelay * 2;
-        });
     }
 
     render(): TemplateResult {

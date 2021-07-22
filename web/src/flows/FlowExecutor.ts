@@ -33,6 +33,7 @@ import { until } from "lit-html/directives/until";
 import { PFSize } from "../elements/Spinner";
 import { TITLE_DEFAULT } from "../constants";
 import { configureSentry } from "../api/Sentry";
+import { WebsocketClient } from "../common/ws";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement implements StageHost {
@@ -47,6 +48,8 @@ export class FlowExecutor extends LitElement implements StageHost {
 
     @property({ attribute: false })
     tenant?: CurrentTenant;
+
+    ws: WebsocketClient;
 
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFButton, PFTitle, PFList, PFBackgroundImage, AKGlobal].concat(css`
@@ -75,6 +78,8 @@ export class FlowExecutor extends LitElement implements StageHost {
 
     constructor() {
         super();
+        this.ws = new WebsocketClient();
+        this.ws.connect();
         this.flowSlug = window.location.pathname.split("/")[3];
     }
 

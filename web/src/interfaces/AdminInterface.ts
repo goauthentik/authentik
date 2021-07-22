@@ -18,6 +18,7 @@ import { until } from "lit-html/directives/until";
 import { EVENT_NOTIFICATION_TOGGLE, EVENT_SIDEBAR_TOGGLE, VERSION } from "../constants";
 import { AdminApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../api/Config";
+import { WebsocketClient } from "../common/ws";
 
 
 @customElement("ak-interface-admin")
@@ -29,6 +30,8 @@ export class AdminInterface extends LitElement {
     @property({type: Boolean})
     notificationOpen = false;
 
+    ws: WebsocketClient;
+
     static get styles(): CSSResult[] {
         return [PFBase, PFPage, PFButton, PFDrawer, css`
             .pf-c-page__main, .pf-c-drawer__content, .pf-c-page__drawer {
@@ -39,6 +42,8 @@ export class AdminInterface extends LitElement {
 
     constructor() {
         super();
+        this.ws = new WebsocketClient();
+        this.ws.connect();
         this.sidebarOpen = window.innerWidth >= 1280;
         window.addEventListener("resize", () => {
             this.sidebarOpen = window.innerWidth >= 1280;
