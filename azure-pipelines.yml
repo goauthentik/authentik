@@ -14,9 +14,13 @@ resources:
   - repo: self
 
 variables:
-  POSTGRES_DB: authentik
-  POSTGRES_USER: authentik
-  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+  - name: POSTGRES_DB
+    value: authentik
+  - name: POSTGRES_USER
+    value: authentik
+  - name: POSTGRES_PASSWORD
+    value: "EK-5jnKfjrGRm<77"
+  - group: coverage
 
 stages:
   - stage: Lint_and_test
