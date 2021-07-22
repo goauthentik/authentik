@@ -428,6 +428,10 @@ func (p *OAuthProxy) addHeadersForProxying(rw http.ResponseWriter, req *http.Req
 	if err != nil {
 		log.WithError(err).Warning("Failed to parse IDToken")
 	}
+	// Set groups in header
+	groups := strings.Join(claims.Groups, "|")
+	req.Header["X-Auth-Groups"] = []string{groups}
+
 	userAttributes := claims.Proxy.UserAttributes
 	// Attempt to set basic auth based on user's attributes
 	if p.SetBasicAuth {
@@ -461,6 +465,7 @@ func (p *OAuthProxy) addHeadersForProxying(rw http.ResponseWriter, req *http.Req
 func (p *OAuthProxy) stripAuthHeaders(req *http.Request) {
 	if p.PassUserHeaders {
 		req.Header.Del("X-Forwarded-User")
+		req.Header.Del("X-Auth-Groups")
 		req.Header.Del("X-Forwarded-Email")
 		req.Header.Del("X-Forwarded-Preferred-Username")
 	}

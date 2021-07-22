@@ -113,6 +113,7 @@ class TraefikMiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware])
                     authResponseHeaders=[
                         "Set-Cookie",
                         "X-Auth-Username",
+                        "X-Auth-Groups",
                         "X-Forwarded-Email",
                         "X-Forwarded-Preferred-Username",
                         "X-Forwarded-User",

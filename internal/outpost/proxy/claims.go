@@ -10,6 +10,7 @@ type Claims struct {
 	Proxy struct {
 		UserAttributes map[string]interface{} `json:"user_attributes"`
 	} `json:"ak_proxy"`
+	Groups []string `json:"groups"`
 }
 
 func (c *Claims) FromIDToken(idToken string) error {
