@@ -12,7 +12,7 @@ src_paths = ["authentik", "tests", "lifecycle"]
 force_to_top = "*"
 
 [tool.coverage.run]
-source = ["authentik"]
+source = ["."]
 relative_files = true
 omit = [
   "*/asgi.py",
@@ -20,6 +20,7 @@ omit = [
   "*/migrations/*",
   "*/apps.py",
   "website/",
+  "BaseEvalautor"
 ]
 
 [tool.coverage.report]
