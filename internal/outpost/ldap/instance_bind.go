@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/getsentry/sentry-go"
 	goldap "github.com/go-ldap/ldap/v3"
 	"github.com/nmcclain/ldap"
 	log "github.com/sirupsen/logrus"
@@ -34,7 +35,7 @@ func (pi *ProviderInstance) getUsername(dn string) (string, error) {
 }
 
 func (pi *ProviderInstance) Bind(username string, req BindRequest) (ldap.LDAPResultCode, error) {
-	fe := outpost.NewFlowExecutor(pi.flowSlug, pi.s.ac.Client.GetConfig(), log.Fields{
+	fe := outpost.NewFlowExecutor(req.ctx, pi.flowSlug, pi.s.ac.Client.GetConfig(), log.Fields{
 		"bindDN":    req.BindDN,
 		"client":    req.conn.RemoteAddr().String(),
 		"requestId": req.id,
@@ -53,6 +54,7 @@ func (pi *ProviderInstance) Bind(username string, req BindRequest) (ldap.LDAPRes
 		req.log.WithError(err).Warning("failed to execute flow")
 		return ldap.LDAPResultOperationsError, nil
 	}
+
 	access, err := fe.CheckApplicationAccess(pi.appSlug)
 	if !access {
 		req.log.Info("Access denied for user")
@@ -63,6 +65,7 @@ func (pi *ProviderInstance) Bind(username string, req BindRequest) (ldap.LDAPRes
 		return ldap.LDAPResultOperationsError, nil
 	}
 	req.log.Info("User has access")
+	uisp := sentry.StartSpan(req.ctx, "authentik.providers.ldap.bind.user_info")
 	// Get user info to store in context
 	userInfo, _, err := fe.ApiClient().CoreApi.CoreUsersMeRetrieve(context.Background()).Execute()
 	if err != nil {
@@ -78,7 +81,7 @@ func (pi *ProviderInstance) Bind(username string, req BindRequest) (ldap.LDAPRes
 	if pi.boundUsers[req.BindDN].CanSearch {
 		req.log.WithField("group", cs).Info("Allowed access to search")
 	}
-
+	uisp.Finish()
 	defer pi.boundUsersMutex.Unlock()
 	pi.delayDeleteUserInfo(username)
 	return ldap.LDAPResultSuccess, nil

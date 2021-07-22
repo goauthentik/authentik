@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/nmcclain/ldap"
 	"goauthentik.io/api"
 )
@@ -17,6 +18,7 @@ func (pi *ProviderInstance) SearchMe(user api.User) (ldap.ServerSearchResult, er
 }
 
 func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, error) {
+	accsp := sentry.StartSpan(req.ctx, "authentik.providers.ldap.search.check_access")
 	baseDN := strings.ToLower("," + pi.BaseDN)
 
 	entries := []*ldap.Entry{}
@@ -42,12 +44,15 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 		pi.log.Debug("User can't search, showing info about user")
 		return pi.SearchMe(flags.UserInfo)
 	}
+	accsp.Finish()
 
 	switch filterEntity {
 	default:
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: unhandled filter type: %s [%s]", filterEntity, req.Filter)
 	case GroupObjectClass:
+		gapisp := sentry.StartSpan(req.ctx, "authentik.providers.ldap.search.api_group")
 		groups, _, err := pi.s.ac.Client.CoreApi.CoreGroupsList(context.Background()).Execute()
+		gapisp.Finish()
 		if err != nil {
 			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("API Error: %s", err)
 		}
@@ -66,7 +71,10 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 			entries = append(entries, pi.GroupEntry(pi.APIUserToLDAPGroup(u)))
 		}
 	case UserObjectClass, "":
+		uapisp := sentry.StartSpan(req.ctx, "authentik.providers.ldap.search.api_user")
 		users, _, err := pi.s.ac.Client.CoreApi.CoreUsersList(context.Background()).Execute()
+		uapisp.Finish()
+
 		if err != nil {
 			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("API Error: %s", err)
 		}

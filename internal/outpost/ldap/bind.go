@@ -1,9 +1,11 @@
 package ldap
 
 import (
+	"context"
 	"net"
 	"strings"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/google/uuid"
 	"github.com/nmcclain/ldap"
 	log "github.com/sirupsen/logrus"
@@ -15,9 +17,15 @@ type BindRequest struct {
 	id     string
 	conn   net.Conn
 	log    *log.Entry
+	ctx    context.Context
 }
 
 func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LDAPResultCode, error) {
+	span := sentry.StartSpan(context.TODO(), "authentik.providers.ldap.bind",
+		sentry.TransactionName("authentik.providers.ldap.bind"))
+	span.SetTag("user", bindDN)
+	defer span.Finish()
+
 	bindDN = strings.ToLower(bindDN)
 	rid := uuid.New().String()
 	req := BindRequest{
@@ -26,6 +34,7 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 		conn:   conn,
 		log:    ls.log.WithField("bindDN", bindDN).WithField("requestId", rid).WithField("client", conn.RemoteAddr().String()),
 		id:     rid,
+		ctx:    span.Context(),
 	}
 	req.log.Info("Bind request")
 	for _, instance := range ls.providers {

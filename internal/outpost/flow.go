@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/getsentry/sentry-go"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api"
 	"goauthentik.io/internal/constants"
@@ -34,14 +35,19 @@ const (
 type FlowExecutor struct {
 	Params  url.Values
 	Answers map[StageComponent]string
+	Context context.Context
 
 	api      *api.APIClient
 	flowSlug string
 	log      *log.Entry
 	token    string
+
+	sp *sentry.Span
 }
 
-func NewFlowExecutor(flowSlug string, refConfig *api.Configuration, logFields log.Fields) *FlowExecutor {
+func NewFlowExecutor(ctx context.Context, flowSlug string, refConfig *api.Configuration, logFields log.Fields) *FlowExecutor {
+	rsp := sentry.StartSpan(ctx, "authentik.outposts.flow_executor")
+
 	l := log.WithField("flow", flowSlug).WithFields(logFields)
 	jar, err := cookiejar.New(nil)
 	if err != nil {
@@ -61,10 +67,12 @@ func NewFlowExecutor(flowSlug string, refConfig *api.Configuration, logFields lo
 	return &FlowExecutor{
 		Params:   url.Values{},
 		Answers:  make(map[StageComponent]string),
+		Context:  rsp.Context(),
 		api:      apiClient,
 		flowSlug: flowSlug,
 		log:      l,
 		token:    strings.Split(refConfig.DefaultHeader["Authorization"], " ")[1],
+		sp:       rsp,
 	}
 }
 
@@ -89,6 +97,8 @@ func (fe *FlowExecutor) DelegateClientIP(a net.Addr) {
 }
 
 func (fe *FlowExecutor) CheckApplicationAccess(appSlug string) (bool, error) {
+	acsp := sentry.StartSpan(fe.Context, "authentik.outposts.flow_executor.check_access")
+	defer acsp.Finish()
 	p, _, err := fe.api.CoreApi.CoreApplicationsCheckAccessRetrieve(context.Background(), appSlug).Execute()
 	if !p.Passing {
 		fe.log.Info("Access denied for user")
@@ -113,6 +123,9 @@ func (fe *FlowExecutor) Execute() (bool, error) {
 }
 
 func (fe *FlowExecutor) solveFlowChallenge(depth int) (bool, error) {
+	defer fe.sp.Finish()
+
+	gcsp := sentry.StartSpan(fe.Context, "authentik.outposts.flow_executor.get_challenge")
 	req := fe.api.FlowsApi.FlowsExecutorGet(context.Background(), fe.flowSlug).Query(fe.Params.Encode())
 	challenge, _, err := req.Execute()
 	if err != nil {
@@ -120,6 +133,10 @@ func (fe *FlowExecutor) solveFlowChallenge(depth int) (bool, error) {
 	}
 	ch := challenge.GetActualInstance().(ChallengeInt)
 	fe.log.WithField("component", ch.GetComponent()).WithField("type", ch.GetType()).Debug("Got challenge")
+	gcsp.SetTag("ak_challenge", string(ch.GetType()))
+	gcsp.SetTag("ak_component", ch.GetComponent())
+	gcsp.Finish()
+
 	responseReq := fe.api.FlowsApi.FlowsExecutorSolve(context.Background(), fe.flowSlug).Query(fe.Params.Encode())
 	switch ch.GetComponent() {
 	case string(StageIdentification):
@@ -150,9 +167,15 @@ func (fe *FlowExecutor) solveFlowChallenge(depth int) (bool, error) {
 	default:
 		return false, fmt.Errorf("unsupported challenge type %s", ch.GetComponent())
 	}
+
+	scsp := sentry.StartSpan(fe.Context, "authentik.outposts.flow_executor.solve_challenge")
 	response, _, err := responseReq.Execute()
 	ch = response.GetActualInstance().(ChallengeInt)
 	fe.log.WithField("component", ch.GetComponent()).WithField("type", ch.GetType()).Debug("Got response")
+	scsp.SetTag("ak_challenge", string(ch.GetType()))
+	scsp.SetTag("ak_component", ch.GetComponent())
+	scsp.Finish()
+
 	switch ch.GetComponent() {
 	case string(StageAccessDenied):
 		return false, errors.New("got ak-stage-access-denied")
