@@ -344,12 +344,13 @@ class Outpost(ManagedModel):
         users = User.objects.filter(username=self.user_identifier)
         if not users.exists():
             user: User = User.objects.create(username=self.user_identifier)
-            user.attributes[USER_ATTRIBUTE_SA] = True
-            user.attributes[USER_ATTRIBUTE_CAN_OVERRIDE_IP] = True
             user.set_unusable_password()
             user.save()
         else:
             user = users.first()
+        user.attributes[USER_ATTRIBUTE_SA] = True
+        user.attributes[USER_ATTRIBUTE_CAN_OVERRIDE_IP] = True
+        user.save()
         # To ensure the user only has the correct permissions, we delete all of them and re-add
         # the ones the user needs
         with transaction.atomic():
