@@ -128,7 +128,14 @@ class UsersFilter(FilterSet):
 
     class Meta:
         model = User
-        fields = ["username", "name", "is_active", "is_superuser", "attributes"]
+        fields = [
+            "username",
+            "email",
+            "name",
+            "is_active",
+            "is_superuser",
+            "attributes",
+        ]
 
 
 class UserViewSet(UsedByMixin, ModelViewSet):
@@ -136,7 +143,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
 
     queryset = User.objects.none()
     serializer_class = UserSerializer
-    search_fields = ["username", "name", "is_active"]
+    search_fields = ["username", "name", "is_active", "email"]
     filterset_class = UsersFilter
 
     def get_queryset(self):  # pragma: no cover

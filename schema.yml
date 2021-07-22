@@ -2844,6 +2844,10 @@ paths:
           type: string
         description: Attributes
       - in: query
+        name: email
+        schema:
+          type: string
+      - in: query
         name: is_active
         schema:
           type: boolean
