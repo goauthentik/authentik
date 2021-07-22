@@ -23,7 +23,7 @@ type BindRequest struct {
 func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LDAPResultCode, error) {
 	span := sentry.StartSpan(context.TODO(), "authentik.providers.ldap.bind",
 		sentry.TransactionName("authentik.providers.ldap.bind"))
-	span.SetTag("user", bindDN)
+	span.SetTag("user.username", bindDN)
 	defer span.Finish()
 
 	bindDN = strings.ToLower(bindDN)

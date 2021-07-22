@@ -99,7 +99,7 @@ func (fe *FlowExecutor) DelegateClientIP(a net.Addr) {
 func (fe *FlowExecutor) CheckApplicationAccess(appSlug string) (bool, error) {
 	acsp := sentry.StartSpan(fe.Context, "authentik.outposts.flow_executor.check_access")
 	defer acsp.Finish()
-	p, _, err := fe.api.CoreApi.CoreApplicationsCheckAccessRetrieve(context.Background(), appSlug).Execute()
+	p, _, err := fe.api.CoreApi.CoreApplicationsCheckAccessRetrieve(acsp.Context(), appSlug).Execute()
 	if !p.Passing {
 		fe.log.Info("Access denied for user")
 		return false, nil
@@ -125,8 +125,9 @@ func (fe *FlowExecutor) Execute() (bool, error) {
 func (fe *FlowExecutor) solveFlowChallenge(depth int) (bool, error) {
 	defer fe.sp.Finish()
 
+	// Get challenge
 	gcsp := sentry.StartSpan(fe.Context, "authentik.outposts.flow_executor.get_challenge")
-	req := fe.api.FlowsApi.FlowsExecutorGet(context.Background(), fe.flowSlug).Query(fe.Params.Encode())
+	req := fe.api.FlowsApi.FlowsExecutorGet(gcsp.Context(), fe.flowSlug).Query(fe.Params.Encode())
 	challenge, _, err := req.Execute()
 	if err != nil {
 		return false, errors.New("failed to get challenge")
@@ -137,7 +138,9 @@ func (fe *FlowExecutor) solveFlowChallenge(depth int) (bool, error) {
 	gcsp.SetTag("ak_component", ch.GetComponent())
 	gcsp.Finish()
 
-	responseReq := fe.api.FlowsApi.FlowsExecutorSolve(context.Background(), fe.flowSlug).Query(fe.Params.Encode())
+	// Resole challenge
+	scsp := sentry.StartSpan(fe.Context, "authentik.outposts.flow_executor.solve_challenge")
+	responseReq := fe.api.FlowsApi.FlowsExecutorSolve(scsp.Context(), fe.flowSlug).Query(fe.Params.Encode())
 	switch ch.GetComponent() {
 	case string(StageIdentification):
 		responseReq = responseReq.FlowChallengeResponseRequest(api.IdentificationChallengeResponseRequestAsFlowChallengeResponseRequest(api.NewIdentificationChallengeResponseRequest(fe.getAnswer(StageIdentification))))
@@ -168,7 +171,6 @@ func (fe *FlowExecutor) solveFlowChallenge(depth int) (bool, error) {
 		return false, fmt.Errorf("unsupported challenge type %s", ch.GetComponent())
 	}
 
-	scsp := sentry.StartSpan(fe.Context, "authentik.outposts.flow_executor.solve_challenge")
 	response, _, err := responseReq.Execute()
 	ch = response.GetActualInstance().(ChallengeInt)
 	fe.log.WithField("component", ch.GetComponent()).WithField("type", ch.GetType()).Debug("Got response")

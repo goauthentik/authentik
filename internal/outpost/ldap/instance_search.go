@@ -1,7 +1,6 @@
 package ldap
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"strings"
@@ -34,8 +33,8 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 	}
 
 	pi.boundUsersMutex.RLock()
-	defer pi.boundUsersMutex.RUnlock()
 	flags, ok := pi.boundUsers[req.BindDN]
+	pi.boundUsersMutex.RUnlock()
 	if !ok {
 		pi.log.Debug("User info not cached")
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, errors.New("access denied")
@@ -51,7 +50,7 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: unhandled filter type: %s [%s]", filterEntity, req.Filter)
 	case GroupObjectClass:
 		gapisp := sentry.StartSpan(req.ctx, "authentik.providers.ldap.search.api_group")
-		groups, _, err := pi.s.ac.Client.CoreApi.CoreGroupsList(context.Background()).Execute()
+		groups, _, err := parseFilterForGroup(pi.s.ac.Client.CoreApi.CoreGroupsList(gapisp.Context()), req.Filter).Execute()
 		gapisp.Finish()
 		if err != nil {
 			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("API Error: %s", err)
@@ -62,7 +61,9 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 			entries = append(entries, pi.GroupEntry(pi.APIGroupToLDAPGroup(g)))
 		}
 
-		users, _, err := pi.s.ac.Client.CoreApi.CoreUsersList(context.Background()).Execute()
+		uapisp := sentry.StartSpan(req.ctx, "authentik.providers.ldap.search.api_user")
+		users, _, err := parseFilterForUser(pi.s.ac.Client.CoreApi.CoreUsersList(uapisp.Context()), req.Filter).Execute()
+		uapisp.Finish()
 		if err != nil {
 			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("API Error: %s", err)
 		}
@@ -72,7 +73,7 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 		}
 	case UserObjectClass, "":
 		uapisp := sentry.StartSpan(req.ctx, "authentik.providers.ldap.search.api_user")
-		users, _, err := pi.s.ac.Client.CoreApi.CoreUsersList(context.Background()).Execute()
+		users, _, err := parseFilterForUser(pi.s.ac.Client.CoreApi.CoreUsersList(uapisp.Context()), req.Filter).Execute()
 		uapisp.Finish()
 
 		if err != nil {
