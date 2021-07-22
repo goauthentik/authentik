@@ -23,7 +23,19 @@ module.exports = {
         {
             type: "category",
             label: "Providers",
-            items: ["providers/oauth2", "providers/saml", "providers/proxy"],
+            items: [
+                "providers/oauth2",
+                "providers/saml",
+                {
+                    type: "category",
+                    label: "Proxy",
+                    items: [
+                        "providers/proxy/proxy",
+                        "providers/proxy/forward_auth",
+                    ],
+                },
+                "providers/ldap",
+            ],
         },
         {
             type: "category",
@@ -37,21 +49,6 @@ module.exports = {
                         "outposts/upgrading",
                         "outposts/manual-deploy-docker-compose",
                         "outposts/manual-deploy-kubernetes",
-                    ],
-                },
-                {
-                    type: "category",
-                    label: "Proxy",
-                    items: [
-                        "outposts/proxy/proxy",
-                        "outposts/proxy/forward_auth",
-                    ],
-                },
-                {
-                    type: "category",
-                    label: "LDAP",
-                    items: [
-                        "outposts/ldap/ldap",
                     ],
                 },
             ],

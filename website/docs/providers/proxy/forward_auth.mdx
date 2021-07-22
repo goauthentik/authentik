@@ -117,7 +117,7 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/auth-url: https://*external host that you configured in authentik*/akprox/auth?nginx
     nginx.ingress.kubernetes.io/auth-signin: https://*external host that you configured in authentik*/akprox/start?rd=$escaped_request_uri
-    nginx.ingress.kubernetes.io/auth-response-headers: X-Auth-Username,X-Forwarded-Email,X-Forwarded-Preferred-Username,X-Forwarded-User
+    nginx.ingress.kubernetes.io/auth-response-headers: X-Auth-Username,X-Forwarded-Email,X-Forwarded-Preferred-Username,X-Forwarded-User,X-Auth-Groups
     nginx.ingress.kubernetes.io/auth-snippet: |
        proxy_set_header X-Forwarded-Host $http_host;
 ```
@@ -145,6 +145,7 @@ http:
         authResponseHeaders:
           - Set-Cookie
           - X-Auth-Username
+          - X-Auth-Groups
           - X-Forwarded-Email
           - X-Forwarded-Preferred-Username
           - X-Forwarded-User
@@ -211,7 +212,7 @@ services:
       traefik.http.routers.authentik.tls: true
       traefik.http.middlewares.authentik.forwardauth.address: http://authentik_proxy:4180/akprox/auth?traefik
       traefik.http.middlewares.authentik.forwardauth.trustForwardHeader: true
-      traefik.http.middlewares.authentik.forwardauth.authResponseHeaders: Set-Cookie,X-Auth-Username,X-Forwarded-Email,X-Forwarded-Preferred-Username,X-Forwarded-User
+      traefik.http.middlewares.authentik.forwardauth.authResponseHeaders: Set-Cookie,X-Auth-Username,X-Auth-Groups,X-Forwarded-Email,X-Forwarded-Preferred-Username,X-Forwarded-User
     restart: unless-stopped
 
   whoami:
@@ -241,6 +242,7 @@ spec:
     authResponseHeaders:
       - Set-Cookie
       - X-Auth-Username
+      - X-Auth-Groups
       - X-Forwarded-Email
       - X-Forwarded-Preferred-Username
       - X-Forwarded-User
