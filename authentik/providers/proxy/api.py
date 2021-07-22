@@ -90,12 +90,6 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
     """Proxy provider serializer for outposts"""
 
     oidc_configuration = SerializerMethodField()
-    forward_auth_mode = SerializerMethodField()
-
-    def get_forward_auth_mode(self, instance: ProxyProvider) -> bool:
-        """Legacy field for 2021.5 outposts"""
-        # TODO: remove in 2021.7
-        return instance.mode in [ProxyMode.FORWARD_SINGLE, ProxyMode.FORWARD_DOMAIN]
 
     class Meta:
 
@@ -117,8 +111,6 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
             "basic_auth_user_attribute",
             "mode",
             "cookie_domain",
-            # Legacy field, remove in 2021.7
-            "forward_auth_mode",
         ]
 
     @extend_schema_field(OpenIDConnectConfigurationSerializer)

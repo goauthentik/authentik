@@ -26694,13 +26694,8 @@ components:
             Exclusive with internal_host.
         cookie_domain:
           type: string
-        forward_auth_mode:
-          type: boolean
-          readOnly: true
-          deprecated: true
       required:
       - external_host
-      - forward_auth_mode
       - name
       - oidc_configuration
       - pk
