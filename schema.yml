@@ -1933,6 +1933,24 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: members_by_pk
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
+      - in: query
+        name: members_by_username
+        schema:
+          type: array
+          items:
+            type: string
+        description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+          only.
+        explode: true
+        style: form
+      - in: query
         name: name
         schema:
           type: string
