@@ -6,7 +6,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import { EVENT_NOTIFICATION_TOGGLE, EVENT_SIDEBAR_TOGGLE, TITLE_DEFAULT } from "../constants";
 import { DEFAULT_CONFIG, tenant } from "../api/Config";
-import { until } from "lit-html/directives/until";
 import { EventsApi } from "../../api/dist";
 
 @customElement("ak-page-header")
@@ -17,6 +16,9 @@ export class PageHeader extends LitElement {
 
     @property({type: Boolean})
     iconImage = false
+
+    @property({type: Boolean})
+    hasNotifications = false;
 
     @property()
     set header(value: string) {
@@ -79,6 +81,16 @@ export class PageHeader extends LitElement {
         return html``;
     }
 
+    firstUpdated(): void {
+        new EventsApi(DEFAULT_CONFIG).eventsNotificationsList({
+            seen: false,
+            ordering: "-created",
+            pageSize: 1,
+        }).then(r => {
+            this.hasNotifications = r.pagination.count > 0;
+        });
+    }
+
     render(): TemplateResult {
         return html`<button
             class="sidebar-trigger pf-c-button pf-m-plain"
@@ -102,25 +114,18 @@ export class PageHeader extends LitElement {
                     html`<p>${this.description}</p>` : html``}
             </div>
         </section>
-        ${until(new EventsApi(DEFAULT_CONFIG).eventsNotificationsList({
-            seen: false,
-            ordering: "-created",
-            pageSize: 1,
-        }).then(r => {
-            return html`
-                <button
-                    class="notification-trigger pf-c-button pf-m-plain ${r.pagination.count > 0 ? "has-notifications" : ""}"
-                    @click=${() => {
-                        this.dispatchEvent(
-                            new CustomEvent(EVENT_NOTIFICATION_TOGGLE, {
-                                bubbles: true,
-                                composed: true,
-                            })
-                        );
-                    }}>
-                    <i class="fas fa-bell"></i>
-                </button>`;
-        }))}`;
+        <button
+            class="notification-trigger pf-c-button pf-m-plain ${this.hasNotifications ? "has-notifications" : ""}"
+            @click=${() => {
+                this.dispatchEvent(
+                    new CustomEvent(EVENT_NOTIFICATION_TOGGLE, {
+                        bubbles: true,
+                        composed: true,
+                    })
+                );
+            }}>
+            <i class="fas fa-bell"></i>
+        </button>`;
     }
 
 }
