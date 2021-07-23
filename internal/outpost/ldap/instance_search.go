@@ -46,6 +46,11 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 	}
 	accsp.Finish()
 
+	parsedFilter, err := ldap.CompileFilter(req.Filter)
+	if err != nil {
+		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: error parsing filter: %s", req.Filter)
+	}
+
 	switch filterEntity {
 	default:
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: unhandled filter type: %s [%s]", filterEntity, req.Filter)
@@ -59,7 +64,7 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 		go func() {
 			defer wg.Done()
 			gapisp := sentry.StartSpan(req.ctx, "authentik.providers.ldap.search.api_group")
-			groups, _, err := parseFilterForGroup(pi.s.ac.Client.CoreApi.CoreGroupsList(gapisp.Context()), req.Filter).Execute()
+			groups, _, err := parseFilterForGroup(pi.s.ac.Client.CoreApi.CoreGroupsList(gapisp.Context()), parsedFilter).Execute()
 			gapisp.Finish()
 			if err != nil {
 				req.log.WithError(err).Warning("failed to get groups")
@@ -75,7 +80,7 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 		go func() {
 			defer wg.Done()
 			uapisp := sentry.StartSpan(req.ctx, "authentik.providers.ldap.search.api_user")
-			users, _, err := parseFilterForUser(pi.s.ac.Client.CoreApi.CoreUsersList(uapisp.Context()), req.Filter).Execute()
+			users, _, err := parseFilterForUser(pi.s.ac.Client.CoreApi.CoreUsersList(uapisp.Context()), parsedFilter).Execute()
 			uapisp.Finish()
 			if err != nil {
 				req.log.WithError(err).Warning("failed to get groups")
@@ -90,7 +95,7 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 		entries = append(gEntries, uEntries...)
 	case UserObjectClass, "":
 		uapisp := sentry.StartSpan(req.ctx, "authentik.providers.ldap.search.api_user")
-		users, _, err := parseFilterForUser(pi.s.ac.Client.CoreApi.CoreUsersList(uapisp.Context()), req.Filter).Execute()
+		users, _, err := parseFilterForUser(pi.s.ac.Client.CoreApi.CoreUsersList(uapisp.Context()), parsedFilter).Execute()
 		uapisp.Finish()
 
 		if err != nil {

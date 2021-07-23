@@ -6,17 +6,13 @@ import (
 	"goauthentik.io/api"
 )
 
-func parseFilterForGroup(req api.ApiCoreGroupsListRequest, filter string) api.ApiCoreGroupsListRequest {
-	f, err := ldap.CompileFilter(filter)
-	if err != nil {
-		return req
-	}
+func parseFilterForGroup(req api.ApiCoreGroupsListRequest, f *ber.Packet) api.ApiCoreGroupsListRequest {
 	switch f.Tag {
 	case ldap.FilterEqualityMatch:
 		return parseFilterForGroupSingle(req, f)
 	case ldap.FilterAnd:
 		for _, child := range f.Children {
-			req = parseFilterForGroupSingle(req, child)
+			req = parseFilterForGroup(req, child)
 		}
 		return req
 	}
@@ -24,10 +20,30 @@ func parseFilterForGroup(req api.ApiCoreGroupsListRequest, filter string) api.Ap
 }
 
 func parseFilterForGroupSingle(req api.ApiCoreGroupsListRequest, f *ber.Packet) api.ApiCoreGroupsListRequest {
-	v := f.Children[1].Value.(string)
-	switch f.Children[0].Value.(string) {
-	case "cn":
-		return req.Name(v)
+	// We can only handle key = value pairs here
+	if len(f.Children) < 2 {
+		return req
+	}
+	k := f.Children[0].Value
+	// Ensure key is string
+	if _, ok := k.(string); !ok {
+		return req
+	}
+	v := f.Children[1].Value
+	// Null values are ignored
+	if v == nil {
+		return req
+	}
+	// Switch on type of the value, then check the key
+	switch vv := v.(type) {
+	case string:
+		switch k {
+		case "cn":
+			return req.Name(vv)
+		}
+	// TODO: Support int
+	default:
+		return req
 	}
 	return req
 }
