@@ -105,7 +105,6 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 			entries = append(entries, pi.UserEntry(u))
 		}
 	}
-	req.log.WithField("filter", req.Filter).WithField("results", len(entries)).Debug("Search OK")
 	return ldap.ServerSearchResult{Entries: entries, Referrals: []string{}, Controls: []ldap.Control{}, ResultCode: ldap.LDAPResultSuccess}, nil
 }
 

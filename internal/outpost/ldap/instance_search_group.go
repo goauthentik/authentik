@@ -1,6 +1,7 @@
 package ldap
 
 import (
+	goldap "github.com/go-ldap/ldap/v3"
 	ber "github.com/nmcclain/asn1-ber"
 	"github.com/nmcclain/ldap"
 	"goauthentik.io/api"
@@ -40,6 +41,13 @@ func parseFilterForGroupSingle(req api.ApiCoreGroupsListRequest, f *ber.Packet) 
 		switch k {
 		case "cn":
 			return req.Name(vv)
+		case "member":
+			userDN, err := goldap.ParseDN(vv)
+			if err != nil {
+				return req
+			}
+			username := userDN.RDNs[0].Attributes[0].Value
+			return req.MembersByUsername([]string{username})
 		}
 	// TODO: Support int
 	default:

@@ -28,8 +28,6 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 	span.SetTag("ak_filter", searchReq.Filter)
 	span.SetTag("ak_base_dn", searchReq.BaseDN)
 
-	defer span.Finish()
-
 	bindDN = strings.ToLower(bindDN)
 	rid := uuid.New().String()
 	req := SearchRequest{
@@ -40,7 +38,11 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 		id:            rid,
 		ctx:           span.Context(),
 	}
-	req.log.Info("Search request")
+
+	defer func() {
+		span.Finish()
+		req.log.WithField("took-ms", span.EndTime.Sub(span.StartTime).Milliseconds()).Info("Search request")
+	}()
 
 	defer func() {
 		err := recover()
