@@ -9,6 +9,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
+import AKGlobal from "../authentik.css";
 
 import "../elements/router/RouterOutlet";
 import "../elements/messages/MessageContainer";
@@ -33,7 +34,7 @@ export class AdminInterface extends LitElement {
     ws: WebsocketClient;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFButton, PFDrawer, css`
+        return [PFBase, PFPage, PFButton, PFDrawer, AKGlobal, css`
             .pf-c-page__main, .pf-c-drawer__content, .pf-c-page__drawer {
                 z-index: auto !important;
             }

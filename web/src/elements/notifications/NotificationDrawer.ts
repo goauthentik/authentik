@@ -64,7 +64,7 @@ export class NotificationDrawer extends LitElement {
         default:
             break;
         }
-        return html`<li class="pf-c-notification-drawer__list-item pf-m-read">
+        return html`<li class="pf-c-notification-drawer__list-item">
             <div class="pf-c-notification-drawer__list-item-header">
                 <span class="pf-c-notification-drawer__list-item-header-icon ${level}">
                     <i class="fas fa-info-circle" aria-hidden="true"></i>

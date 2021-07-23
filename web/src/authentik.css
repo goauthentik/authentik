@@ -7,6 +7,7 @@
     --ak-dark-background: #18191a;
     --ak-dark-background-darker: #000000;
     --ak-dark-background-light: #1c1e21;
+    --ak-dark-background-light-ish: #212427;
     --ak-dark-background-lighter: #2b2e33;
 }
 
@@ -303,11 +304,18 @@ body {
         color: var(--ak-dark-foreground);
     }
     /* notifications */
+    .pf-c-drawer__panel {
+        background-color: var(--ak-dark-background);
+    }
     .pf-c-notification-drawer {
         --pf-c-notification-drawer--BackgroundColor: var(--ak-dark-background);
     }
     .pf-c-notification-drawer__header {
         background-color: var(--ak-dark-background-lighter);
+        color: var(--ak-dark-foreground);
+    }
+    .pf-c-notification-drawer__list-item {
+        background-color: var(--ak-dark-background-light-ish);
         color: var(--ak-dark-foreground);
     }
     /* data list */
