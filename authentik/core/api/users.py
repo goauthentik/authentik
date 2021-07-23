@@ -213,6 +213,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         return queryset
 
     def filter_queryset(self, queryset):
-        if self.request.user.has_perm("authentik_core.view_group"):
+        if self.request.user.has_perm("authentik_core.view_user"):
             return self._filter_queryset_for_list(queryset)
         return super().filter_queryset(queryset)
