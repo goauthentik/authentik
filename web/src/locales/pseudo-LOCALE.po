@@ -208,6 +208,10 @@ msgstr ""
 msgid "Application Icon"
 msgstr ""
 
+#: src/pages/events/utils.ts
+msgid "Application authorized"
+msgstr ""
+
 #: src/flows/stages/consent/ConsentStage.ts
 msgid "Application requires following permissions:"
 msgstr ""
@@ -668,6 +672,10 @@ msgstr ""
 
 #: src/pages/outposts/OutpostForm.ts
 msgid "Configuration"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "Configuration error"
 msgstr ""
 
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
@@ -1291,6 +1299,10 @@ msgstr ""
 msgid "Email info:"
 msgstr ""
 
+#: src/pages/events/utils.ts
+msgid "Email sent"
+msgstr ""
+
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Email: Text field with Email type."
 msgstr ""
@@ -1497,6 +1509,10 @@ msgstr ""
 msgid "Failed attempts before cancel"
 msgstr ""
 
+#: src/pages/events/utils.ts
+msgid "Failed login"
+msgstr ""
+
 #: src/pages/admin-overview/charts/LDAPSyncStatusChart.ts
 msgid "Failed sources"
 msgstr ""
@@ -1664,6 +1680,10 @@ msgstr ""
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "GID start number"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "General system exception"
 msgstr ""
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
@@ -1849,6 +1869,14 @@ msgstr ""
 msgid "Impersonate"
 msgstr ""
 
+#: src/pages/events/utils.ts
+msgid "Impersonation ended"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "Impersonation started"
+msgstr ""
+
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/flows/FlowListPage.ts
 msgid "Import"
@@ -1908,6 +1936,10 @@ msgstr ""
 
 #: src/pages/stages/invitation/InvitationListPage.ts
 msgid "Invitation"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "Invitation used"
 msgstr ""
 
 #: src/interfaces/AdminInterface.ts
@@ -2128,6 +2160,10 @@ msgstr ""
 msgid "Log the currently pending user in."
 msgstr ""
 
+#: src/pages/events/utils.ts
+msgid "Login"
+msgstr ""
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Login password is synced from LDAP into authentik automatically. Enable this option only to write password changes in authentik back to LDAP."
 msgstr ""
@@ -2147,6 +2183,10 @@ msgstr ""
 
 #: src/pages/tenants/TenantForm.ts
 msgid "Logo"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "Logout"
 msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
@@ -2237,6 +2277,18 @@ msgstr ""
 
 #: src/pages/events/EventInfo.ts
 msgid "Model Name"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "Model created"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "Model deleted"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "Model updated"
 msgstr ""
 
 #: src/interfaces/AdminInterface.ts
@@ -2657,6 +2709,10 @@ msgstr ""
 msgid "Password field"
 msgstr ""
 
+#: src/pages/events/utils.ts
+msgid "Password set"
+msgstr ""
+
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Password stage"
 msgstr ""
@@ -2720,6 +2776,14 @@ msgstr ""
 #: src/pages/flows/FlowForm.ts
 #: src/pages/flows/StageBindingForm.ts
 msgid "Policy engine mode"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "Policy exception"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "Policy execution"
 msgstr ""
 
 #: src/pages/policies/BoundPoliciesList.ts
@@ -2788,6 +2852,10 @@ msgstr ""
 
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 msgid "Property Mapping"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "Property Mapping exception"
 msgstr ""
 
 #: src/interfaces/AdminInterface.ts
@@ -3136,6 +3204,14 @@ msgstr ""
 msgid "Secret key"
 msgstr ""
 
+#: src/pages/events/utils.ts
+msgid "Secret was rotation"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "Secret was viewed"
+msgstr ""
+
 #: src/pages/events/EventInfo.ts
 msgid "Secret:"
 msgstr ""
@@ -3339,6 +3415,10 @@ msgstr ""
 
 #: src/pages/sources/SourcesListPage.ts
 msgid "Source"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "Source linked"
 msgstr ""
 
 #: src/pages/user-settings/settings/SourceSettingsOAuth.ts
@@ -3760,6 +3840,10 @@ msgstr ""
 msgid "Superusers"
 msgstr ""
 
+#: src/pages/events/utils.ts
+msgid "Suspicious request"
+msgstr ""
+
 #: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Symbol charset"
 msgstr ""
@@ -3787,6 +3871,14 @@ msgstr ""
 #: src/interfaces/AdminInterface.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "System Tasks"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "System task exception"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "System task execution"
 msgstr ""
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
@@ -4240,6 +4332,10 @@ msgstr ""
 msgid "Update User"
 msgstr ""
 
+#: src/pages/events/utils.ts
+msgid "Update available"
+msgstr ""
+
 #: src/pages/user-settings/UserDetailsPage.ts
 msgid "Update details"
 msgstr ""
@@ -4358,6 +4454,10 @@ msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "User password writeback"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "User was written to"
 msgstr ""
 
 #: src/pages/policies/BoundPoliciesList.ts

@@ -8,6 +8,7 @@ import { PAGE_SIZE } from "../../constants";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
 import "./EventInfo";
+import { ActionToLabel } from "./utils";
 
 @customElement("ak-event-list")
 export class EventListPage extends TablePage<Event> {
@@ -51,7 +52,7 @@ export class EventListPage extends TablePage<Event> {
 
     row(item: EventWithContext): TemplateResult[] {
         return [
-            html`<div>${item.action}</div>
+            html`<div>${ActionToLabel(item.action)}</div>
             <small>${item.app}</small>`,
             item.user?.username ?
                 html`<a href="#/identity/users/${item.user.pk}">

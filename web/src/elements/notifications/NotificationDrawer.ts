@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { EventsApi, Notification } from "authentik-api";
+import { EventActions, EventsApi, Notification } from "authentik-api";
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -10,6 +10,7 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import AKGlobal from "../../authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import { EVENT_NOTIFICATION_TOGGLE } from "../../constants";
+import { ActionToLabel } from "../../pages/events/utils";
 
 @customElement("ak-notification-drawer")
 export class NotificationDrawer extends LitElement {
@@ -70,7 +71,7 @@ export class NotificationDrawer extends LitElement {
                     <i class="fas fa-info-circle" aria-hidden="true"></i>
                 </span>
                 <h2 class="pf-c-notification-drawer__list-item-header-title">
-                    ${item.event?.action}
+                    ${ActionToLabel(item.event?.action)}
                 </h2>
             </div>
             <div class="pf-c-notification-drawer__list-item-action">
