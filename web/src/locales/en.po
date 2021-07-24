@@ -1230,6 +1230,10 @@ msgstr "Duo activation"
 msgid "Duo push-notifications"
 msgstr "Duo push-notifications"
 
+#: src/pages/tenants/TenantForm.ts
+msgid "Duration after which events will be deleted from the database."
+msgstr "Duration after which events will be deleted from the database."
+
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Each provider has a different issuer, based on the application slug."
 msgstr "Each provider has a different issuer, based on the application slug."
@@ -1407,6 +1411,10 @@ msgstr "Event Log"
 #: src/pages/events/EventInfoPage.ts
 msgid "Event info"
 msgstr "Event info"
+
+#: src/pages/tenants/TenantForm.ts
+msgid "Event retention"
+msgstr "Event retention"
 
 #: src/pages/events/EventInfoPage.ts
 msgid "Event {0}"
@@ -1665,6 +1673,10 @@ msgstr "Forgot username or password?"
 #: src/elements/forms/ModalForm.ts
 msgid "Form didn't return a promise for submitting"
 msgstr "Form didn't return a promise for submitting"
+
+#: src/pages/tenants/TenantForm.ts
+msgid "Format: \"weeks=3;days=2;hours=3,seconds=2\"."
+msgstr "Format: \"weeks=3;days=2;hours=3,seconds=2\"."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Forward auth (domain level)"
@@ -2642,6 +2654,10 @@ msgstr "Optionally set this to your parent domain, if you want authentication an
 #: src/pages/stages/prompt/PromptListPage.ts
 msgid "Order"
 msgstr "Order"
+
+#: src/pages/tenants/TenantForm.ts
+msgid "Other global settings"
+msgstr "Other global settings"
 
 #: src/pages/admin-overview/charts/OutpostStatusChart.ts
 msgid "Outdated outposts"
@@ -4658,6 +4674,10 @@ msgstr "When selected, incoming assertion's Signatures will be validated against
 #: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
 msgstr "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
+
+#: src/pages/tenants/TenantForm.ts
+msgid "When using an external logging solution for archiving, this can be set to \"minutes=5\"."
+msgstr "When using an external logging solution for archiving, this can be set to \"minutes=5\"."
 
 #: src/flows/FlowExecutor.ts
 msgid "Whoops!"

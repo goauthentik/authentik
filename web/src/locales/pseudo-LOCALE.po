@@ -1222,6 +1222,10 @@ msgstr ""
 msgid "Duo push-notifications"
 msgstr ""
 
+#: src/pages/tenants/TenantForm.ts
+msgid "Duration after which events will be deleted from the database."
+msgstr ""
+
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Each provider has a different issuer, based on the application slug."
 msgstr ""
@@ -1398,6 +1402,10 @@ msgstr ""
 
 #: src/pages/events/EventInfoPage.ts
 msgid "Event info"
+msgstr ""
+
+#: src/pages/tenants/TenantForm.ts
+msgid "Event retention"
 msgstr ""
 
 #: src/pages/events/EventInfoPage.ts
@@ -1656,6 +1664,10 @@ msgstr ""
 
 #: src/elements/forms/ModalForm.ts
 msgid "Form didn't return a promise for submitting"
+msgstr ""
+
+#: src/pages/tenants/TenantForm.ts
+msgid "Format: \"weeks=3;days=2;hours=3,seconds=2\"."
 msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
@@ -2633,6 +2645,10 @@ msgstr ""
 #: src/pages/stages/prompt/PromptForm.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 msgid "Order"
+msgstr ""
+
+#: src/pages/tenants/TenantForm.ts
+msgid "Other global settings"
 msgstr ""
 
 #: src/pages/admin-overview/charts/OutpostStatusChart.ts
@@ -4642,6 +4658,10 @@ msgstr ""
 #: src/pages/policies/password/PasswordPolicyForm.ts
 #: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
+msgstr ""
+
+#: src/pages/tenants/TenantForm.ts
+msgid "When using an external logging solution for archiving, this can be set to \"minutes=5\"."
 msgstr ""
 
 #: src/flows/FlowExecutor.ts

@@ -25902,6 +25902,9 @@ components:
           type: string
           format: uuid
           nullable: true
+        event_retention:
+          type: string
+          description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
     PatchedTokenRequest:
       type: object
       description: Token Serializer
@@ -27977,6 +27980,9 @@ components:
           type: string
           format: uuid
           nullable: true
+        event_retention:
+          type: string
+          description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
       required:
       - domain
       - tenant_uuid
@@ -28012,6 +28018,9 @@ components:
           type: string
           format: uuid
           nullable: true
+        event_retention:
+          type: string
+          description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
       required:
       - domain
     Token:

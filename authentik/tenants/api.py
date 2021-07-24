@@ -38,6 +38,7 @@ class TenantSerializer(ModelSerializer):
             "flow_invalidation",
             "flow_recovery",
             "flow_unenrollment",
+            "event_retention",
         ]
 
 

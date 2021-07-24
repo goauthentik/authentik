@@ -162,6 +162,26 @@ export class TenantForm extends ModelForm<Tenant, string> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
+            <ak-form-group>
+                <span slot="header">
+                    ${t`Other global settings`}
+                </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${t`Event retention`}
+                        ?required=${true}
+                        name="eventRetention">
+                        <input type="text" value="${first(this.instance?.eventRetention, "days=365")}" class="pf-c-form-control" required>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Duration after which events will be deleted from the database.`}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`When using an external logging solution for archiving, this can be set to "minutes=5".`}
+                        </p>
+                        <p class="pf-c-form__helper-text">${t`Format: "weeks=3;days=2;hours=3,seconds=2".`}</p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
         </form>`;
     }
 
