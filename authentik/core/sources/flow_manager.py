@@ -141,11 +141,11 @@ class SourceFlowManager:
             self._logger.info("denying source because user exists", user=user)
             return Action.DENY, None
         # Should never get here as default enroll case is returned above.
-        return Action.DENY, None
+        return Action.DENY, None  # pragma: no cover
 
     def update_connection(
         self, connection: UserSourceConnection, **kwargs
-    ) -> UserSourceConnection:
+    ) -> UserSourceConnection:  # pragma: no cover
         """Optionally make changes to the connection after it is looked up/created."""
         return connection
 
@@ -178,7 +178,7 @@ class SourceFlowManager:
                 % {"source": self.source.name}
             ),
         )
-        return redirect("/")
+        return redirect(reverse("authentik_core:root-redirect"))
 
     # pylint: disable=unused-argument
     def get_stages_to_append(self, flow: Flow) -> list[Stage]:
