@@ -8,7 +8,7 @@ import { until } from "lit-html/directives/until";
 import "../../elements/forms/HorizontalFormElement";
 
 @customElement("ak-application-check-access-form")
-export class ApplicationCheckAccessForm extends Form<number> {
+export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
 
     @property({attribute: false})
     application!: Application;
@@ -23,13 +23,18 @@ export class ApplicationCheckAccessForm extends Form<number> {
         return t`Successfully sent test-request.`;
     }
 
-    send = (data: number): Promise<PolicyTestResult> => {
-        this.request = data;
+    send = (data: { forUser: number }): Promise<PolicyTestResult> => {
+        this.request = data.forUser;
         return new CoreApi(DEFAULT_CONFIG).coreApplicationsCheckAccessRetrieve({
             slug: this.application?.slug,
-            forUser: data,
+            forUser: data.forUser,
         }).then(result => this.result = result);
     };
+
+    resetForm(): void {
+        super.resetForm();
+        this.result = undefined;
+    }
 
     renderResult(): TemplateResult {
         return html`
