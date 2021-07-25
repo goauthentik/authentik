@@ -114,23 +114,23 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, methods=["GET"])
-    # pylint: disable=unused-argument
     def check_access(self, request: Request, slug: str) -> Response:
         """Check access to a single application by slug"""
         # Don't use self.get_object as that checks for view_application permission
         # which the user might not have, even if they have access
         application = get_object_or_404(Application, slug=slug)
         # If the current user is superuser, they can set `for_user`
-        for_user = self.request.user
-        if self.request.user.is_superuser and "for_user" in request.data:
-            for_user = get_object_or_404(User, pk=request.data.get("for_user"))
-        engine = PolicyEngine(application, for_user, self.request)
+        for_user = request.user
+        if request.user.is_superuser and "for_user" in request.query_params:
+            for_user = get_object_or_404(User, pk=request.query_params.get("for_user"))
+        engine = PolicyEngine(application, for_user, request)
+        engine.use_cache = False
         engine.build()
         result = engine.result
         response = PolicyTestResultSerializer(PolicyResult(False))
         if result.passing:
             response = PolicyTestResultSerializer(PolicyResult(True))
-        if self.request.user.is_superuser:
+        if request.user.is_superuser:
             response = PolicyTestResultSerializer(result)
         return Response(response.data)
 
