@@ -178,6 +178,9 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         <p class="pf-c-form__helper-text">
                             ${t`When using an external logging solution for archiving, this can be set to "minutes=5".`}
                         </p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`This setting only affects new Events, as the expiration is saved per-event.`}
+                        </p>
                         <p class="pf-c-form__helper-text">${t`Format: "weeks=3;days=2;hours=3,seconds=2".`}</p>
                     </ak-form-element-horizontal>
                 </div>
