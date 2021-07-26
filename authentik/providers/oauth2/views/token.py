@@ -126,7 +126,15 @@ class TokenParams:
             LOGGER.warning("Missing authorization code")
             raise TokenError("invalid_grant")
 
-        if self.redirect_uri not in self.provider.redirect_uris.split():
+        allowed_redirect_urls = self.provider.redirect_uris.split()
+        if len(allowed_redirect_urls) < 1:
+            LOGGER.warning(
+                "Provider has no allowed redirect_uri set, allowing all.",
+                allow=self.redirect_uri.lower(),
+            )
+        elif self.redirect_uri.lower() not in [
+            x.lower() for x in allowed_redirect_urls
+        ]:
             LOGGER.warning(
                 "Invalid redirect uri",
                 uri=self.redirect_uri,
