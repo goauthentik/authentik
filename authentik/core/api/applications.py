@@ -145,18 +145,20 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
     )
     def list(self, request: Request) -> Response:
         """Custom list method that checks Policy based access instead of guardian"""
-        self.request.session.pop(USER_LOGIN_AUTHENTICATED, None)
-        queryset = self._filter_queryset_for_list(self.get_queryset())
-        self.paginate_queryset(queryset)
-
         should_cache = request.GET.get("search", "") == ""
 
         superuser_full_list = (
             str(request.GET.get("superuser_full_list", "false")).lower() == "true"
         )
         if superuser_full_list and request.user.is_superuser:
-            serializer = self.get_serializer(queryset, many=True)
-            return self.get_paginated_response(serializer.data)
+            return super().list(request)
+
+        # To prevent the user from having to double login when prompt is set to login
+        # and the user has just signed it. This session variable is set in the UserLoginStage
+        # and is (quite hackily) removed from the session in applications's API's List method
+        self.request.session.pop(USER_LOGIN_AUTHENTICATED, None)
+        queryset = self._filter_queryset_for_list(self.get_queryset())
+        self.paginate_queryset(queryset)
 
         allowed_applications = []
         if not should_cache:
