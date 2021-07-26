@@ -9,6 +9,7 @@ import "./cards/AdminStatusCard";
 import "./cards/BackupStatusCard";
 import "./cards/VersionStatusCard";
 import "./cards/WorkerStatusCard";
+import "./cards/SystemStatusCard";
 
 import "./charts/FlowStatusChart";
 import "./charts/LDAPSyncStatusChart";
@@ -92,13 +93,17 @@ export class AdminOverviewPage extends LitElement {
                     <ak-admin-status-version icon="pf-icon pf-icon-bundle" header=${t`Version`} headerLink="https://github.com/goauthentik/authentik/releases">
                     </ak-admin-status-version>
                 </div>
-                <div class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-4-col-on-xl card-container">
+                <div class="pf-l-grid__item pf-m-6-col pf-m-2-col-on-md pf-m-2-col-on-xl card-container">
                     <ak-admin-status-card-backup icon="fa fa-database" header=${t`Backup status`} headerLink="#/administration/system-tasks">
                     </ak-admin-status-card-backup>
                 </div>
-                <div class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-4-col-on-xl card-container">
+                <div class="pf-l-grid__item pf-m-6-col pf-m-3-col-on-md pf-m-3-col-on-xl card-container">
                     <ak-admin-status-card-workers icon="pf-icon pf-icon-server" header=${t`Workers`}>
                     </ak-admin-status-card-workers>
+                </div>
+                <div class="pf-l-grid__item pf-m-6-col pf-m-3-col-on-md pf-m-3-col-on-xl card-container">
+                    <ak-admin-status-system icon="pf-icon pf-icon-server" header=${t`System status`}>
+                    </ak-admin-status-system>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col row-divider">
                     <hr>

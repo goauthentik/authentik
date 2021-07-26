@@ -1416,6 +1416,10 @@ msgstr ""
 msgid "Events"
 msgstr ""
 
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
+msgid "Everything is ok."
+msgstr ""
+
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
@@ -1763,6 +1767,10 @@ msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "HTTP-Basic Username Key"
+msgstr ""
+
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
+msgid "HTTPS is not detected correctly"
 msgstr ""
 
 #: src/pages/outposts/OutpostListPage.ts
@@ -3312,6 +3320,10 @@ msgstr ""
 msgid "Server URI"
 msgstr ""
 
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
+msgid "Server and client are further than 5 seconds apart."
+msgstr ""
+
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Server name for which this provider's certificate is valid for."
 msgstr ""
@@ -3887,6 +3899,10 @@ msgstr ""
 #: src/interfaces/AdminInterface.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "System Tasks"
+msgstr ""
+
+#: src/pages/admin-overview/AdminOverviewPage.ts
+msgid "System status"
 msgstr ""
 
 #: src/pages/events/utils.ts
@@ -4597,6 +4613,8 @@ msgstr ""
 msgid "Wait (min)"
 msgstr ""
 
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
 #: src/pages/events/RuleForm.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Warning"

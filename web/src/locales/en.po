@@ -1424,6 +1424,10 @@ msgstr "Event {0}"
 msgid "Events"
 msgstr "Events"
 
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
+msgid "Everything is ok."
+msgstr "Everything is ok."
+
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
@@ -1772,6 +1776,10 @@ msgstr "HTTP-Basic Password Key"
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "HTTP-Basic Username Key"
 msgstr "HTTP-Basic Username Key"
+
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
+msgid "HTTPS is not detected correctly"
+msgstr "HTTPS is not detected correctly"
 
 #: src/pages/outposts/OutpostListPage.ts
 msgid "Health and Version"
@@ -3320,6 +3328,10 @@ msgstr "Separator: Static Separator Line"
 msgid "Server URI"
 msgstr "Server URI"
 
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
+msgid "Server and client are further than 5 seconds apart."
+msgstr "Server and client are further than 5 seconds apart."
+
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Server name for which this provider's certificate is valid for."
 msgstr "Server name for which this provider's certificate is valid for."
@@ -3896,6 +3908,10 @@ msgstr "System Overview"
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "System Tasks"
 msgstr "System Tasks"
+
+#: src/pages/admin-overview/AdminOverviewPage.ts
+msgid "System status"
+msgstr "System status"
 
 #: src/pages/events/utils.ts
 msgid "System task exception"
@@ -4612,6 +4628,8 @@ msgstr "Wait (max)"
 msgid "Wait (min)"
 msgstr "Wait (min)"
 
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
 #: src/pages/events/RuleForm.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Warning"
