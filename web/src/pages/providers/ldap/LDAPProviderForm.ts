@@ -2,7 +2,7 @@ import { FlowsApi, ProvidersApi, LDAPProvider, CoreApi, FlowsInstancesListDesign
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
-import { DEFAULT_CONFIG } from "../../../api/Config";
+import { DEFAULT_CONFIG, tenant } from "../../../api/Config";
 import { ModelForm } from "../../../elements/forms/ModelForm";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
@@ -53,12 +53,18 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                 ?required=${true}
                 name="authorizationFlow">
                 <select class="pf-c-form-control">
-                    ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
-                        ordering: "pk",
-                        designation: FlowsInstancesListDesignationEnum.Authentication,
-                    }).then(flows => {
-                        return flows.results.map(flow => {
-                            return html`<option value=${ifDefined(flow.pk)} ?selected=${this.instance?.authorizationFlow === flow.pk}>${flow.name} (${flow.slug})</option>`;
+                    ${until(tenant().then(t => {
+                        new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
+                            ordering: "pk",
+                            designation: FlowsInstancesListDesignationEnum.Authentication,
+                        }).then(flows => {
+                            return flows.results.map(flow => {
+                                let selected = flow.pk === t.flowAuthentication;
+                                if (this.instance?.authorizationFlow === flow.pk) {
+                                    selected = true;
+                                }
+                                return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
+                            });
                         });
                     }), html`<option>${t`Loading...`}</option>`)}
                 </select>
