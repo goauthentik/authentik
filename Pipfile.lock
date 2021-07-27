@@ -446,11 +446,11 @@
         },
         "drf-spectacular": {
             "hashes": [
-                "sha256:6ffbfde7d96a4a2febd19182cc405217e1e86a50280fc739402291c93d1a32b7",
-                "sha256:77593024bb899f69227abedcf87def7851a11c9978f781aa4b385a10f67a38b7"
+                "sha256:f080128c42183fcaed6b9e8e5afcd2e5cd68426b1f80bfc85938f25e62db7fe5",
+                "sha256:fb19aa69fcfcd37b0c9dfb9989c0671e1bb47af332ca2171378c7f840263788c"
             ],
             "index": "pypi",
-            "version": "==0.17.2"
+            "version": "==0.17.3"
         },
         "duo-client": {
             "hashes": [
