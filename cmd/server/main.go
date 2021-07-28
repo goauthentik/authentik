@@ -29,6 +29,7 @@ func main() {
 	if err != nil {
 		log.WithError(err).Debug("failed to local config")
 	}
+	config.FromEnv()
 	config.ConfigureLogger()
 
 	if config.G.ErrorReporting.Enabled {
@@ -96,7 +97,7 @@ func attemptProxyStart(u *url.URL) error {
 		log.WithField("logger", "authentik").Debug("attempting to start outpost")
 		if err != nil {
 			attempt += 1
-			time.Sleep(5 * time.Second)
+			time.Sleep(15 * time.Second)
 			if attempt > maxTries {
 				break
 			}

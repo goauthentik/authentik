@@ -2,7 +2,6 @@ package config
 
 import (
 	"io/ioutil"
-	"os"
 
 	"github.com/imdario/mergo"
 	"github.com/pkg/errors"
@@ -35,9 +34,8 @@ func LoadConfig(path string) error {
 	if err != nil {
 		return errors.Wrap(err, "Failed to load config file")
 	}
-	rawExpanded := os.ExpandEnv(string(raw))
 	nc := Config{}
-	err = yaml.Unmarshal([]byte(rawExpanded), &nc)
+	err = yaml.Unmarshal(raw, &nc)
 	if err != nil {
 		return errors.Wrap(err, "Failed to parse YAML")
 	}
