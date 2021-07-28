@@ -80,6 +80,20 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 
 // Start Starts all handlers, non-blocking
 func (a *APIController) Start() error {
+	err := a.StartBackgorundTasks()
+	if err != nil {
+		return err
+	}
+	go func() {
+		err := a.Server.Start()
+		if err != nil {
+			panic(err)
+		}
+	}()
+	return nil
+}
+
+func (a *APIController) StartBackgorundTasks() error {
 	err := a.Server.Refresh()
 	if err != nil {
 		return errors.Wrap(err, "failed to run initial refresh")
@@ -95,12 +109,6 @@ func (a *APIController) Start() error {
 	go func() {
 		a.logger.Debug("Starting Interval updater...")
 		a.startIntervalUpdater()
-	}()
-	go func() {
-		err := a.Server.Start()
-		if err != nil {
-			panic(err)
-		}
 	}()
 	return nil
 }

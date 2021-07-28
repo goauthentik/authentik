@@ -57,7 +57,7 @@ func main() {
 	for {
 		go attemptStartBackend(g)
 		ws.Start()
-		go attemptProxyStart(u)
+		go attemptProxyStart(ws, u)
 
 		<-ex
 		running = false
@@ -78,9 +78,11 @@ func attemptStartBackend(g *gounicorn.GoUnicorn) {
 	}
 }
 
-func attemptProxyStart(u *url.URL) error {
+func attemptProxyStart(ws *web.WebServer, u *url.URL) error {
 	maxTries := 100
 	attempt := 0
+	// Sleep to wait for the app server to start
+	time.Sleep(30 * time.Second)
 	for {
 		log.WithField("logger", "authentik").Debug("attempting to init outpost")
 		ac := ak.NewAPIController(*u, config.G.SecretKey)
@@ -93,10 +95,10 @@ func attemptProxyStart(u *url.URL) error {
 			continue
 		}
 		srv := proxy.NewServer(ac)
-		srv.Listen = "127.0.0.1:%d"
+		ws.ProxyServer = srv
 		ac.Server = srv
-		err := ac.Start()
 		log.WithField("logger", "authentik").Debug("attempting to start outpost")
+		err := ac.StartBackgorundTasks()
 		if err != nil {
 			attempt += 1
 			time.Sleep(15 * time.Second)
@@ -104,10 +106,8 @@ func attemptProxyStart(u *url.URL) error {
 				break
 			}
 			continue
-		}
-		if !running {
-			ac.Shutdown()
-			return nil
+		} else {
+			select {}
 		}
 	}
 	return nil

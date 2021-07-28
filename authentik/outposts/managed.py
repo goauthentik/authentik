@@ -14,7 +14,6 @@ class OutpostManager(ObjectManager):
                 Outpost,
                 MANAGED_OUTPOST,
                 name="authentik Bundeled Outpost",
-                object_field="name",
                 type=OutpostType.PROXY,
             ),
         ]

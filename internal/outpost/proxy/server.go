@@ -14,6 +14,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/crypto"
 	"goauthentik.io/internal/outpost/ak"
+	"goauthentik.io/internal/utils/web"
 )
 
 // Server represents an HTTP server
@@ -59,12 +60,12 @@ func (s *Server) ServeHTTP() {
 	s.logger.Printf("closing %s", listener.Addr())
 }
 
-func (s *Server) handler(w http.ResponseWriter, r *http.Request) {
+func (s *Server) Handler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/akprox/ping" {
 		w.WriteHeader(204)
 		return
 	}
-	host := getHost(r)
+	host := web.GetHost(r)
 	handler, ok := s.Handlers[host]
 	if !ok {
 		// If we only have one handler, host name switching doesn't matter
@@ -87,7 +88,7 @@ func (s *Server) handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) serve(listener net.Listener) {
-	srv := &http.Server{Handler: http.HandlerFunc(s.handler)}
+	srv := &http.Server{Handler: http.HandlerFunc(s.Handler)}
 
 	// See https://golang.org/pkg/net/http/#Server.Shutdown
 	idleConnsClosed := make(chan struct{})

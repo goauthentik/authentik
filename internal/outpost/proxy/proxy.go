@@ -21,6 +21,7 @@ import (
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/upstream"
 	"github.com/oauth2-proxy/oauth2-proxy/providers"
 	"goauthentik.io/api"
+	"goauthentik.io/internal/utils/web"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -308,7 +309,7 @@ func (p *OAuthProxy) AuthenticateOnly(rw http.ResponseWriter, req *http.Request)
 				// Optional suffix, which is appended to the URL
 				suffix := ""
 				if p.mode == api.PROXYMODE_FORWARD_SINGLE {
-					host = getHost(req)
+					host = web.GetHost(req)
 				} else if p.mode == api.PROXYMODE_FORWARD_DOMAIN {
 					host = p.ExternalHost
 					// set the ?rd flag to the current URL we have, since we redirect

@@ -17,6 +17,6 @@ func Init() chan os.Signal {
 }
 
 func Defer() {
-	defer sentry.Flush(time.Second * 5)
-	defer sentry.Recover()
+	sentry.Flush(time.Second * 5)
+	sentry.Recover()
 }
