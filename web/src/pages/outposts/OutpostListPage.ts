@@ -53,7 +53,7 @@ export class OutpostListPage extends TablePage<Outpost> {
     order = "name";
 
     row(item: Outpost): TemplateResult[] {
-        if (item.managed === "goauthentik.io/outposts/inbuilt") {
+        if (item.managed === "goauthentik.io/outposts/embedded") {
             return this.rowInbuilt(item);
         }
         return [
