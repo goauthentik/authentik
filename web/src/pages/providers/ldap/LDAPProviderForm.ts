@@ -54,7 +54,7 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                 name="authorizationFlow">
                 <select class="pf-c-form-control">
                     ${until(tenant().then(t => {
-                        new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
+                        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                             ordering: "pk",
                             designation: FlowsInstancesListDesignationEnum.Authentication,
                         }).then(flows => {
