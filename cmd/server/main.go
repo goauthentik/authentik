@@ -92,7 +92,9 @@ func attemptProxyStart(u *url.URL) error {
 			}
 			continue
 		}
-		ac.Server = proxy.NewServer(ac)
+		srv := proxy.NewServer(ac)
+		srv.Listen = "127.0.0.1:%d"
+		ac.Server = srv
 		err := ac.Start()
 		log.WithField("logger", "authentik").Debug("attempting to start outpost")
 		if err != nil {

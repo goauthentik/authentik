@@ -2,26 +2,12 @@ package proxy
 
 import (
 	"crypto/tls"
+	"fmt"
 	"net"
 	"sync"
 
 	"github.com/pires/go-proxyproto"
 )
-
-// ServeHTTP constructs a net.Listener and starts handling HTTP requests
-func (s *Server) ServeHTTP() {
-	listenAddress := "0.0.0.0:4180"
-	listener, err := net.Listen("tcp", listenAddress)
-	if err != nil {
-		s.logger.Fatalf("FATAL: listen (%s) failed - %s", listenAddress, err)
-	}
-	proxyListener := &proxyproto.Listener{Listener: listener}
-	defer proxyListener.Close()
-
-	s.logger.Printf("listening on %s", listener.Addr())
-	s.serve(proxyListener)
-	s.logger.Printf("closing %s", listener.Addr())
-}
 
 func (s *Server) getCertificates(info *tls.ClientHelloInfo) (*tls.Certificate, error) {
 	handler, ok := s.Handlers[info.ServerName]
@@ -38,7 +24,7 @@ func (s *Server) getCertificates(info *tls.ClientHelloInfo) (*tls.Certificate, e
 
 // ServeHTTPS constructs a net.Listener and starts handling HTTPS requests
 func (s *Server) ServeHTTPS() {
-	listenAddress := "0.0.0.0:4443"
+	listenAddress := fmt.Sprintf(s.Listen, 4443)
 	config := &tls.Config{
 		MinVersion:     tls.VersionTLS12,
 		MaxVersion:     tls.VersionTLS12,

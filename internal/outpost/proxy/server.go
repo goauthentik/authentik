@@ -4,11 +4,13 @@ import (
 	"context"
 	"crypto/tls"
 	"errors"
+	"fmt"
 	"net"
 	"net/http"
 	"strings"
 	"time"
 
+	"github.com/pires/go-proxyproto"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/crypto"
 	"goauthentik.io/internal/outpost/ak"
@@ -17,6 +19,7 @@ import (
 // Server represents an HTTP server
 type Server struct {
 	Handlers map[string]*providerBundle
+	Listen   string
 
 	stop        chan struct{} // channel for waiting shutdown
 	logger      *log.Entry
@@ -33,11 +36,27 @@ func NewServer(ac *ak.APIController) *Server {
 	}
 	return &Server{
 		Handlers:    make(map[string]*providerBundle),
+		Listen:      "0.0.0.0:%d",
 		logger:      log.WithField("logger", "authentik.outpost.proxy-http-server"),
 		defaultCert: defaultCert,
 		ak:          ac,
 		cs:          ak.NewCryptoStore(ac.Client.CryptoApi),
 	}
+}
+
+// ServeHTTP constructs a net.Listener and starts handling HTTP requests
+func (s *Server) ServeHTTP() {
+	listenAddress := fmt.Sprintf(s.Listen, 4180)
+	listener, err := net.Listen("tcp", listenAddress)
+	if err != nil {
+		s.logger.Fatalf("FATAL: listen (%s) failed - %s", listenAddress, err)
+	}
+	proxyListener := &proxyproto.Listener{Listener: listener}
+	defer proxyListener.Close()
+
+	s.logger.Printf("listening on %s", listener.Addr())
+	s.serve(proxyListener)
+	s.logger.Printf("closing %s", listener.Addr())
 }
 
 func (s *Server) handler(w http.ResponseWriter, r *http.Request) {
