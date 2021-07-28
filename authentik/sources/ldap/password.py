@@ -105,15 +105,17 @@ class LDAPPasswordChanger:
         if len(user_attributes["sAMAccountName"]) >= 3:
             if password.lower() in user_attributes["sAMAccountName"].lower():
                 return False
-        display_name_tokens = split(
-            RE_DISPLAYNAME_SEPARATORS, user_attributes["displayName"]
-        )
-        for token in display_name_tokens:
-            # Ignore tokens under 3 chars
-            if len(token) < 3:
-                continue
-            if token.lower() in password.lower():
-                return False
+        # No display name set, can't check any further
+        if len(user_attributes["displayName"]) < 1:
+            return True
+        for display_name in user_attributes["displayName"]:
+            display_name_tokens = split(RE_DISPLAYNAME_SEPARATORS, display_name)
+            for token in display_name_tokens:
+                # Ignore tokens under 3 chars
+                if len(token) < 3:
+                    continue
+                if token.lower() in password.lower():
+                    return False
         return True
 
     def ad_password_complexity(
