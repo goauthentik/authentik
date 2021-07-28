@@ -60,12 +60,12 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
         expected_hosts.sort()
         expected_hosts_tls.sort()
 
-        have_hosts = [rule.host for rule in reference.spec.rules]
+        have_hosts = [rule.host for rule in current.spec.rules]
         have_hosts.sort()
 
         have_hosts_tls = []
-        for tls_config in reference.spec.tls:
-            if tls_config:
+        for tls_config in current.spec.tls:
+            if tls_config and tls_config.hosts:
                 have_hosts_tls += tls_config.hosts
         have_hosts_tls.sort()
 
