@@ -110,6 +110,19 @@ export class OutpostListPage extends TablePage<Outpost> {
             })}</ul>`,
             html`-`,
             html`<ak-outpost-health ?showVersion=${false} outpostId=${ifDefined(item.pk)}></ak-outpost-health>`,
+            html`<ak-forms-modal>
+                <span slot="submit">
+                    ${t`Update`}
+                </span>
+                <span slot="header">
+                    ${t`Update Outpost`}
+                </span>
+                <ak-outpost-form slot="form" .instancePk=${item.pk}>
+                </ak-outpost-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
+                    ${t`Edit`}
+                </button>
+            </ak-forms-modal>`,
         ];
     }
 
