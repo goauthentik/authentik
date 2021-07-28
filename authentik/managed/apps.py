@@ -13,4 +13,4 @@ class AuthentikManagedConfig(AppConfig):
         from authentik.managed.tasks import managed_reconcile
 
         # pyright: reportGeneralTypeIssues=false
-        managed_reconcile()  # pylint: disable=no-value-for-parameter
+        managed_reconcile.delay()  # pylint: disable=no-value-for-parameter
