@@ -33,15 +33,7 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
                         }
                     }
                     if (hint.originalException instanceof Response) {
-                        const response = hint.originalException as Response;
-                        // We only care about server errors
-                        if (response.status < 500) {
-                            return null;
-                        }
-                        // Need to clone the response, otherwise the .text() and .json() can't be re-used
-                        const resCopy = response.clone();
-                        const body = await resCopy.json();
-                        event.message = `${response.status} ${response.url}: ${JSON.stringify(body)}`
+                        return null;
                     }
                     if (event.exception) {
                         me().then(user => {
