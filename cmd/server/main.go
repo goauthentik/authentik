@@ -78,7 +78,7 @@ func attemptStartBackend(g *gounicorn.GoUnicorn) {
 	}
 }
 
-func attemptProxyStart(ws *web.WebServer, u *url.URL) error {
+func attemptProxyStart(ws *web.WebServer, u *url.URL) {
 	maxTries := 100
 	attempt := 0
 	// Sleep to wait for the app server to start
@@ -110,5 +110,4 @@ func attemptProxyStart(ws *web.WebServer, u *url.URL) error {
 			select {}
 		}
 	}
-	return nil
 }

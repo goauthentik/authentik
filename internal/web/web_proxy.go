@@ -1,6 +1,7 @@
 package web
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -25,7 +26,13 @@ func (ws *WebServer) configureProxy() {
 	rp := &httputil.ReverseProxy{Director: director}
 	rp.ErrorHandler = ws.proxyErrorHandler
 	rp.ModifyResponse = ws.proxyModifyResponse
-	ws.m.PathPrefix("/akprox").HandlerFunc(ws.ProxyServer.Handler)
+	ws.m.PathPrefix("/akprox").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+		if ws.ProxyServer != nil {
+			ws.ProxyServer.Handler(rw, r)
+			return
+		}
+		ws.proxyErrorHandler(rw, r, fmt.Errorf("proxy not running"))
+	})
 	ws.m.PathPrefix("/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		host := web.GetHost(r)
 		if ws.ProxyServer != nil {
@@ -37,7 +44,6 @@ func (ws *WebServer) configureProxy() {
 		}
 		ws.log.WithField("host", host).Trace("routing to application server")
 		rp.ServeHTTP(rw, r)
-		return
 	})
 }
 

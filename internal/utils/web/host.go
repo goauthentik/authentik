@@ -1,7 +1,6 @@
 package web
 
 import (
-	"net"
 	"net/http"
 )
 
@@ -12,9 +11,5 @@ func GetHost(req *http.Request) string {
 	if req.Header.Get(xForwardedHost) != "" {
 		host = req.Header.Get(xForwardedHost)
 	}
-	hostOnly, _, err := net.SplitHostPort(host)
-	if err != nil {
-		return host
-	}
-	return hostOnly
+	return host
 }
