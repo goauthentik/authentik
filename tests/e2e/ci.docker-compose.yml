@@ -6,8 +6,3 @@ services:
     volumes:
       - /dev/shm:/dev/shm
     network_mode: host
-  firefox:
-    image: selenium/standalone-firefox:3.141.59-20210713
-    volumes:
-      - /dev/shm:/dev/shm
-    network_mode: host
