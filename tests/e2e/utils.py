@@ -21,7 +21,6 @@ from selenium.common.exceptions import (
     WebDriverException,
 )
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
@@ -33,6 +32,8 @@ from authentik.core.models import User
 from authentik.managed.manager import ObjectManager
 
 RETRIES = int(environ.get("RETRIES", "5"))
+BROWSER_NAME = environ.get("BROWSER", "chrome")
+
 
 # pylint: disable=invalid-name
 def USER() -> User:  # noqa
@@ -88,7 +89,11 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     def _get_driver(self) -> WebDriver:
         return webdriver.Remote(
             command_executor="http://localhost:4444/wd/hub",
-            desired_capabilities=DesiredCapabilities.CHROME,
+            desired_capabilities={
+                "browserName": BROWSER_NAME,
+                "version": "",
+                "platform": "ANY",
+            }
         )
 
     def tearDown(self):
