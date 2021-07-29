@@ -21,7 +21,6 @@ from selenium.common.exceptions import (
     WebDriverException,
 )
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
@@ -88,7 +87,6 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     def _get_driver(self) -> WebDriver:
         return webdriver.Remote(
             command_executor="http://localhost:4444/wd/hub",
-            desired_capabilities=DesiredCapabilities.CHROME,
         )
 
     def tearDown(self):
