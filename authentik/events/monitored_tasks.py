@@ -114,7 +114,7 @@ class MonitoredTask(Task):
     # For tasks that should only be listed if they failed, set this to False
     save_on_success: bool
 
-    _result: TaskResult
+    _result: Optional[TaskResult]
 
     _uid: Optional[str]
 
@@ -122,7 +122,7 @@ class MonitoredTask(Task):
         super().__init__(*args, **kwargs)
         self.save_on_success = True
         self._uid = None
-        self._result = TaskResult(status=TaskResultStatus.ERROR, messages=[])
+        self._result = None
         self.result_timeout_hours = 6
         self.start = default_timer()
 
@@ -140,7 +140,7 @@ class MonitoredTask(Task):
     ):
         if not self._result.uid:
             self._result.uid = self._uid
-        if self.save_on_success:
+        if self.save_on_success and self._result:
             TaskInfo(
                 task_name=self.__name__,
                 task_description=self.__doc__,
