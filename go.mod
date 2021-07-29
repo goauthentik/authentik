@@ -3,6 +3,7 @@ module goauthentik.io
 go 1.16
 
 require (
+	github.com/Netflix/go-env v0.0.0-20210215222557-e437a7e7f9fb // indirect
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/getsentry/sentry-go v0.11.0

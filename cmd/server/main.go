@@ -29,7 +29,10 @@ func main() {
 	if err != nil {
 		log.WithError(err).Debug("failed to local config")
 	}
-	config.FromEnv()
+	err = config.FromEnv()
+	if err != nil {
+		log.WithError(err).Debug("failed to environment variables")
+	}
 	config.ConfigureLogger()
 
 	if config.G.ErrorReporting.Enabled {

@@ -3,6 +3,7 @@ package config
 import (
 	"io/ioutil"
 
+	env "github.com/Netflix/go-env"
 	"github.com/imdario/mergo"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -43,6 +44,19 @@ func LoadConfig(path string) error {
 		return errors.Wrap(err, "failed to overlay config")
 	}
 	log.WithField("path", path).Debug("Loaded config")
+	return nil
+}
+
+func FromEnv() error {
+	nc := Config{}
+	_, err := env.UnmarshalFromEnviron(&nc)
+	if err != nil {
+		return errors.Wrap(err, "failed to load environment variables")
+	}
+	if err := mergo.Merge(&G, nc, mergo.WithOverride); err != nil {
+		return errors.Wrap(err, "failed to overlay config")
+	}
+	log.Debug("Loaded config from environment")
 	return nil
 }
 
