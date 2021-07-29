@@ -1,12 +1,14 @@
 """Test API Authentication"""
 from base64 import b64encode
 
+from django.conf import settings
 from django.test import TestCase
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.exceptions import AuthenticationFailed
 
 from authentik.api.authentication import bearer_auth
-from authentik.core.models import Token, TokenIntents
+from authentik.core.models import USER_ATTRIBUTE_SA, Token, TokenIntents
+from authentik.outposts.managed import OutpostManager
 
 
 class TestAPIAuth(TestCase):
@@ -47,3 +49,12 @@ class TestAPIAuth(TestCase):
         with self.assertRaises(AuthenticationFailed):
             auth = b64encode(":abc".encode()).decode()
             self.assertIsNone(bearer_auth(f"Basic :{auth}".encode()))
+
+    def test_managed_outpost(self):
+        """Test managed outpost"""
+        with self.assertRaises(AuthenticationFailed):
+            user = bearer_auth(f"Bearer {settings.SECRET_KEY}".encode())
+
+        OutpostManager().run()
+        user = bearer_auth(f"Bearer {settings.SECRET_KEY}".encode())
+        self.assertEqual(user.attributes[USER_ATTRIBUTE_SA], True)
