@@ -30,7 +30,7 @@ class JWKSView(View):
 
         response_data = {}
 
-        if provider.jwt_alg == JWTAlgorithms.RS256:
+        if provider.jwt_alg == JWTAlgorithms.RS256 and provider.rsa_key:
             public_key: RSAPublicKey = provider.rsa_key.private_key.public_key()
             public_numbers = public_key.public_numbers()
             response_data["keys"] = [
