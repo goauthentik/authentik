@@ -17,6 +17,9 @@ export class OutpostHealthElement extends LitElement {
     @property({attribute: false})
     outpostHealth?: OutpostHealth[];
 
+    @property({attribute: false})
+    showVersion = true;
+
     static get styles(): CSSResult[] {
         return [PFBase, AKGlobal];
     }
@@ -56,12 +59,13 @@ export class OutpostHealthElement extends LitElement {
                     <li role="cell">
                         <ak-label color=${PFColor.Green} text=${t`Last seen: ${h.lastSeen?.toLocaleTimeString()}`}></ak-label>
                     </li>
-                    <li role="cell">
+                    ${this.showVersion ?
+                    html`<li role="cell">
                         ${h.versionOutdated ?
                         html`<ak-label color=${PFColor.Red}
                             text=${t`${h.version}, should be ${h.versionShould}`}></ak-label>` :
                         html`<ak-label color=${PFColor.Green} text=${t`Version: ${h.version || ""}`}></ak-label>`}
-                    </li>
+                    </li>` : html``}
                 </ul>
             </li>`;
         })}</ul>`;

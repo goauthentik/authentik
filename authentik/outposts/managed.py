@@ -2,6 +2,8 @@
 from authentik.managed.manager import EnsureExists, ObjectManager
 from authentik.outposts.models import Outpost, OutpostType
 
+MANAGED_OUTPOST = "goauthentik.io/outposts/embedded"
+
 
 class OutpostManager(ObjectManager):
     """Outpost managed objects"""
@@ -10,9 +12,8 @@ class OutpostManager(ObjectManager):
         return [
             EnsureExists(
                 Outpost,
-                "goauthentik.io/outposts/inbuilt",
-                name="authentik Bundeled Outpost",
-                object_field="name",
+                MANAGED_OUTPOST,
+                name="authentik Embedded Outpost",
                 type=OutpostType.PROXY,
             ),
         ]

@@ -48,6 +48,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
 
     def setUp(self):
         super().setUp()
+        self.maxDiff = None
         self.wait_timeout = 60
         self.driver = self._get_driver()
         self.driver.maximize_window()

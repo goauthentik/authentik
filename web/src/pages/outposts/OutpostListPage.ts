@@ -53,6 +53,9 @@ export class OutpostListPage extends TablePage<Outpost> {
     order = "name";
 
     row(item: Outpost): TemplateResult[] {
+        if (item.managed === "goauthentik.io/outposts/embedded") {
+            return this.rowInbuilt(item);
+        }
         return [
             html`${item.name}`,
             html`<ul>${item.providersObj?.map((p) => {
@@ -96,6 +99,30 @@ export class OutpostListPage extends TablePage<Outpost> {
                     ${t`View Deployment Info`}
                 </button>
             </ak-outpost-deployment-modal>`,
+        ];
+    }
+
+    rowInbuilt(item: Outpost): TemplateResult[] {
+        return [
+            html`${item.name}`,
+            html`<ul>${item.providersObj?.map((p) => {
+                return html`<li><a href="#/core/providers/${p.pk}">${p.name}</a></li>`;
+            })}</ul>`,
+            html`-`,
+            html`<ak-outpost-health ?showVersion=${false} outpostId=${ifDefined(item.pk)}></ak-outpost-health>`,
+            html`<ak-forms-modal>
+                <span slot="submit">
+                    ${t`Update`}
+                </span>
+                <span slot="header">
+                    ${t`Update Outpost`}
+                </span>
+                <ak-outpost-form slot="form" .instancePk=${item.pk}>
+                </ak-outpost-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
+                    ${t`Edit`}
+                </button>
+            </ak-forms-modal>`,
         ];
     }
 

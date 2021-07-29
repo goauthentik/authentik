@@ -19,6 +19,7 @@ from ldap3.core.exceptions import LDAPInvalidCredentialsResult
 from authentik.core.models import Application, Group, User
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
+from authentik.outposts.managed import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost, OutpostType
 from authentik.providers.ldap.models import LDAPProvider
 from tests.e2e.utils import (
@@ -193,6 +194,9 @@ class TestProviderLDAP(SeleniumTestCase):
                 },
             )
         )
+
+        embedded_account = Outpost.objects.filter(managed=MANAGED_OUTPOST).first().user
+
         _connection.search(
             "ou=users,dc=ldap,dc=goauthentik,dc=io",
             "(objectClass=user)",
@@ -222,6 +226,31 @@ class TestProviderLDAP(SeleniumTestCase):
                         ],
                         "uidNumber": [str(2000 + outpost_user.pk)],
                         "gidNumber": [str(2000 + outpost_user.pk)],
+                        "memberOf": [],
+                        "accountStatus": ["true"],
+                        "superuser": ["false"],
+                        "goauthentik.io/ldap/active": ["true"],
+                        "goauthentik.io/ldap/superuser": ["false"],
+                        "goauthentik.io/user/override-ips": ["true"],
+                        "goauthentik.io/user/service-account": ["true"],
+                    },
+                    "type": "searchResEntry",
+                },
+                {
+                    "dn": f"cn={embedded_account.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
+                    "attributes": {
+                        "cn": [embedded_account.username],
+                        "uid": [embedded_account.uid],
+                        "name": [""],
+                        "displayName": [""],
+                        "mail": [""],
+                        "objectClass": [
+                            "user",
+                            "organizationalPerson",
+                            "goauthentik.io/ldap/user",
+                        ],
+                        "uidNumber": [str(2000 + embedded_account.pk)],
+                        "gidNumber": [str(2000 + embedded_account.pk)],
                         "memberOf": [],
                         "accountStatus": ["true"],
                         "superuser": ["false"],
