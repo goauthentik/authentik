@@ -67,10 +67,15 @@ class EmailStageView(ChallengeStageView):
             "user": pending_user,
             "identifier": f"ak-email-stage-{current_stage.name}-{pending_user}",
         }
-        tokens = Token.filter_not_expired(**token_filters)
+        # Don't check for validity here, we only care if the token exists
+        tokens = Token.objects.filter(**token_filters)
         if not tokens.exists():
             return Token.objects.create(expires=now() + valid_delta, **token_filters)
-        return tokens.first()
+        token = tokens.first()
+        # Check if token is expired and rotate key if so
+        if token.is_expired:
+            token.expire_action()
+        return token
 
     def send_email(self):
         """Helper function that sends the actual email. Implies that you've
