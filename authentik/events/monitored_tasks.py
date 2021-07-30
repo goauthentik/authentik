@@ -138,25 +138,30 @@ class MonitoredTask(Task):
     def after_return(
         self, status, retval, task_id, args: list[Any], kwargs: dict[str, Any], einfo
     ):
-        if not self._result.uid:
-            self._result.uid = self._uid
-        if self.save_on_success and self._result:
-            TaskInfo(
-                task_name=self.__name__,
-                task_description=self.__doc__,
-                start_timestamp=self.start,
-                finish_timestamp=default_timer(),
-                finish_time=datetime.now(),
-                result=self._result,
-                task_call_module=self.__module__,
-                task_call_func=self.__name__,
-                task_call_args=args,
-                task_call_kwargs=kwargs,
-            ).save(self.result_timeout_hours)
+        if self._result:
+            if not self._result.uid:
+                self._result.uid = self._uid
+            if self.save_on_success:
+                TaskInfo(
+                    task_name=self.__name__,
+                    task_description=self.__doc__,
+                    start_timestamp=self.start,
+                    finish_timestamp=default_timer(),
+                    finish_time=datetime.now(),
+                    result=self._result,
+                    task_call_module=self.__module__,
+                    task_call_func=self.__name__,
+                    task_call_args=args,
+                    task_call_kwargs=kwargs,
+                ).save(self.result_timeout_hours)
         return super().after_return(status, retval, task_id, args, kwargs, einfo=einfo)
 
     # pylint: disable=too-many-arguments
     def on_failure(self, exc, task_id, args, kwargs, einfo):
+        if not self._result:
+            self._result = TaskResult(
+                status=TaskResultStatus.ERROR, messages=[str(exc)]
+            )
         if not self._result.uid:
             self._result.uid = self._uid
         TaskInfo(
