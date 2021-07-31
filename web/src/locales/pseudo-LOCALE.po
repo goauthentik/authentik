@@ -1239,6 +1239,7 @@ msgstr ""
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/outposts/OutpostListPage.ts
+#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
@@ -1922,6 +1923,11 @@ msgstr ""
 msgid "Include claims in id_token"
 msgstr ""
 
+#: src/pages/outposts/OutpostForm.ts
+#: src/pages/outposts/OutpostListPage.ts
+msgid "Integration"
+msgstr ""
+
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "Integration key"
 msgstr ""
@@ -2463,6 +2469,11 @@ msgstr ""
 
 #: src/elements/forms/ModalForm.ts
 msgid "No form found"
+msgstr ""
+
+#: src/pages/outposts/OutpostListPage.ts
+#: src/pages/outposts/OutpostListPage.ts
+msgid "No integration active"
 msgstr ""
 
 #: src/elements/events/ObjectChangelog.ts
@@ -3287,8 +3298,12 @@ msgstr ""
 msgid "Selected policies are executed when the stage is submitted to validate the data."
 msgstr ""
 
+#: 
+#~ msgid "Selecting a service-connection enables the management of the outpost by authentik."
+#~ msgstr ""
+
 #: src/pages/outposts/OutpostForm.ts
-msgid "Selecting a service-connection enables the management of the outpost by authentik."
+msgid "Selecting an integration enables the management of the outpost by authentik."
 msgstr ""
 
 #: src/pages/stages/password/PasswordStageForm.ts
@@ -3340,10 +3355,10 @@ msgstr ""
 msgid "Service Provider Binding"
 msgstr ""
 
-#: src/pages/outposts/OutpostForm.ts
-#: src/pages/outposts/OutpostListPage.ts
-msgid "Service connection"
-msgstr ""
+#: 
+#: 
+#~ msgid "Service connection"
+#~ msgstr ""
 
 #: src/elements/user/SessionList.ts
 msgid "Session"
@@ -4227,9 +4242,9 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: src/pages/outposts/OutpostListPage.ts
-msgid "Unmanaged"
-msgstr ""
+#: 
+#~ msgid "Unmanaged"
+#~ msgstr ""
 
 #: src/pages/admin-overview/charts/LDAPSyncStatusChart.ts
 msgid "Unsynced sources"
@@ -4248,6 +4263,7 @@ msgstr ""
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
@@ -4326,6 +4342,7 @@ msgstr ""
 msgid "Update OAuth2 Provider"
 msgstr ""
 
+#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/OutpostListPage.ts
 msgid "Update Outpost"
 msgstr ""

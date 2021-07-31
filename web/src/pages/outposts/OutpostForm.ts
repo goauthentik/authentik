@@ -94,7 +94,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Service connection`}
+                label=${t`Integration`}
                 name="serviceConnection">
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.instance?.serviceConnection === undefined}>---------</option>
@@ -112,7 +112,9 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         });
                     }), html`<option>${t`Loading...`}</option>`)}
                 </select>
-                <p class="pf-c-form__helper-text">${t`Selecting a service-connection enables the management of the outpost by authentik.`}</p>
+                <p class="pf-c-form__helper-text">
+                    ${t`Selecting an integration enables the management of the outpost by authentik.`}
+                </p>
                 <p class="pf-c-form__helper-text">
                     See <a target="_blank" href="https://goauthentik.io/docs/outposts/outposts">documentation</a>.
                 </p>

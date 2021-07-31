@@ -1247,6 +1247,7 @@ msgstr "Each provider has a different issuer, based on the application slug."
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/outposts/OutpostListPage.ts
+#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
@@ -1930,6 +1931,11 @@ msgstr "Include User claims from scopes in the id_token, for applications that d
 msgid "Include claims in id_token"
 msgstr "Include claims in id_token"
 
+#: src/pages/outposts/OutpostForm.ts
+#: src/pages/outposts/OutpostListPage.ts
+msgid "Integration"
+msgstr "Integration"
+
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "Integration key"
 msgstr "Integration key"
@@ -2472,6 +2478,11 @@ msgstr "No additional data available."
 #: src/elements/forms/ModalForm.ts
 msgid "No form found"
 msgstr "No form found"
+
+#: src/pages/outposts/OutpostListPage.ts
+#: src/pages/outposts/OutpostListPage.ts
+msgid "No integration active"
+msgstr "No integration active"
 
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
@@ -3295,9 +3306,13 @@ msgstr "Select which transports should be used to notify the user. If none are s
 msgid "Selected policies are executed when the stage is submitted to validate the data."
 msgstr "Selected policies are executed when the stage is submitted to validate the data."
 
+#: 
+#~ msgid "Selecting a service-connection enables the management of the outpost by authentik."
+#~ msgstr "Selecting a service-connection enables the management of the outpost by authentik."
+
 #: src/pages/outposts/OutpostForm.ts
-msgid "Selecting a service-connection enables the management of the outpost by authentik."
-msgstr "Selecting a service-connection enables the management of the outpost by authentik."
+msgid "Selecting an integration enables the management of the outpost by authentik."
+msgstr "Selecting an integration enables the management of the outpost by authentik."
 
 #: src/pages/stages/password/PasswordStageForm.ts
 msgid "Selection of backends to test the password against."
@@ -3348,10 +3363,10 @@ msgstr "Service Connections"
 msgid "Service Provider Binding"
 msgstr "Service Provider Binding"
 
-#: src/pages/outposts/OutpostForm.ts
-#: src/pages/outposts/OutpostListPage.ts
-msgid "Service connection"
-msgstr "Service connection"
+#: 
+#: 
+#~ msgid "Service connection"
+#~ msgstr "Service connection"
 
 #: src/elements/user/SessionList.ts
 msgid "Session"
@@ -4242,9 +4257,9 @@ msgstr "Unhealthy outposts"
 msgid "Unknown"
 msgstr "Unknown"
 
-#: src/pages/outposts/OutpostListPage.ts
-msgid "Unmanaged"
-msgstr "Unmanaged"
+#: 
+#~ msgid "Unmanaged"
+#~ msgstr "Unmanaged"
 
 #: src/pages/admin-overview/charts/LDAPSyncStatusChart.ts
 msgid "Unsynced sources"
@@ -4263,6 +4278,7 @@ msgstr "Up-to-date!"
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
@@ -4341,6 +4357,7 @@ msgstr "Update OAuth Source"
 msgid "Update OAuth2 Provider"
 msgstr "Update OAuth2 Provider"
 
+#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/OutpostListPage.ts
 msgid "Update Outpost"
 msgstr "Update Outpost"
