@@ -109,7 +109,7 @@ export class OutpostListPage extends TablePage<Outpost> {
                 return html`<li><a href="#/core/providers/${p.pk}">${p.name}</a></li>`;
             })}</ul>`,
             html`${item.serviceConnectionObj?.name || t`No integration active`}`,
-            html`<ak-outpost-health ?showVersion=${false} outpostId=${ifDefined(item.pk)}></ak-outpost-health>`,
+            html`<ak-outpost-health .showVersion=${false} outpostId=${ifDefined(item.pk)}></ak-outpost-health>`,
             html`<ak-forms-modal>
                 <span slot="submit">
                     ${t`Update`}
