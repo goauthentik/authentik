@@ -116,7 +116,7 @@ func (ac *APIController) startWSHealth() {
 
 func (ac *APIController) startIntervalUpdater() {
 	logger := ac.logger.WithField("loop", "interval-updater")
-	ticker := time.NewTicker(time.Second * 150)
+	ticker := time.NewTicker(5 * time.Minute)
 	for ; true; <-ticker.C {
 		err := ac.Server.Refresh()
 		if err != nil {
