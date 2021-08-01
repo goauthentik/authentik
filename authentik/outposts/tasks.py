@@ -28,6 +28,7 @@ from authentik.outposts.models import (
     OutpostServiceConnection,
     OutpostState,
     OutpostType,
+    ServiceConnectionInvalid,
 )
 from authentik.providers.ldap.controllers.docker import LDAPDockerController
 from authentik.providers.ldap.controllers.kubernetes import LDAPKubernetesController
@@ -114,7 +115,7 @@ def outpost_controller(
         for log in logs:
             LOGGER.debug(log)
         LOGGER.debug("-----------------Outpost Controller logs end-------------------")
-    except ControllerException as exc:
+    except (ControllerException, ServiceConnectionInvalid) as exc:
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
     else:
         self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, logs))
