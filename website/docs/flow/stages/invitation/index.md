@@ -9,3 +9,5 @@ If the option `Continue Flow without Invitation` is enabled, this stage will con
 To check if a user has used an invitation within a policy, you can check `request.context.invitation_in_effect`.
 
 To use an invitation, use the URL `https://authentik.tld/if/flow/your-enrollment-flow/?token=invitation-token`.
+
+You can also prompt the user for an invite by using the [*Prompt stage*](../prompt/index.md) by using a field with a field key of `token`.
