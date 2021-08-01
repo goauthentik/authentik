@@ -26,7 +26,7 @@ from sentry_sdk import capture_exception
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import USER_ATTRIBUTE_DEBUG
-from authentik.events.models import cleanse_dict
+from authentik.events.models import Event, EventAction, cleanse_dict
 from authentik.flows.challenge import (
     AccessDeniedChallenge,
     Challenge,
@@ -52,6 +52,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
 from authentik.tenants.models import Tenant
@@ -203,6 +204,18 @@ class FlowExecutorView(APIView):
         except InvalidStageError as exc:
             return self.stage_invalid(str(exc))
 
+    def handle_exception(self, exc: Exception) -> HttpResponse:
+        """Handle exception in stage execution"""
+        if settings.DEBUG or settings.TEST:
+            raise exc
+        capture_exception(exc)
+        self._logger.warning(exc)
+        Event.new(
+            action=EventAction.SYSTEM_EXCEPTION,
+            message=exception_to_string(exc),
+        ).from_http(self.request)
+        return to_stage_response(self.request, FlowErrorResponse(self.request, exc))
+
     @extend_schema(
         responses={
             200: PolymorphicProxySerializer(
@@ -237,11 +250,7 @@ class FlowExecutorView(APIView):
             stage_response = self.current_stage_view.get(request, *args, **kwargs)
             return to_stage_response(request, stage_response)
         except Exception as exc:  # pylint: disable=broad-except
-            if settings.DEBUG or settings.TEST:
-                raise exc
-            capture_exception(exc)
-            self._logger.warning(exc)
-            return to_stage_response(request, FlowErrorResponse(request, exc))
+            return self.handle_exception(exc)
 
     @extend_schema(
         responses={
@@ -278,11 +287,7 @@ class FlowExecutorView(APIView):
             stage_response = self.current_stage_view.post(request, *args, **kwargs)
             return to_stage_response(request, stage_response)
         except Exception as exc:  # pylint: disable=broad-except
-            if settings.DEBUG or settings.TEST:
-                raise exc
-            capture_exception(exc)
-            self._logger.warning(exc)
-            return to_stage_response(request, FlowErrorResponse(request, exc))
+            return self.handle_exception(exc)
 
     def _initiate_plan(self) -> FlowPlan:
         planner = FlowPlanner(self.flow)
