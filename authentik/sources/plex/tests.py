@@ -1,10 +1,13 @@
 """plex Source tests"""
 from django.test import TestCase
+from requests.exceptions import RequestException
 from requests_mock import Mocker
 
+from authentik.events.models import Event, EventAction
 from authentik.providers.oauth2.generators import generate_client_secret
 from authentik.sources.plex.models import PlexSource
 from authentik.sources.plex.plex import PlexAuth
+from authentik.sources.plex.tasks import check_plex_token_all
 
 USER_INFO_RESPONSE = {
     "id": 1234123419,
@@ -62,3 +65,18 @@ class TestPlexSource(TestCase):
         with Mocker() as mocker:
             mocker.get("https://plex.tv/api/v2/resources", json=RESOURCES_RESPONSE)
             self.assertTrue(api.check_server_overlap())
+
+    def test_check_task(self):
+        """Test token check task"""
+        with Mocker() as mocker:
+            mocker.get("https://plex.tv/api/v2/user", json=USER_INFO_RESPONSE)
+            check_plex_token_all()
+            self.assertFalse(
+                Event.objects.filter(action=EventAction.CONFIGURATION_ERROR).exists()
+            )
+        with Mocker() as mocker:
+            mocker.get("https://plex.tv/api/v2/user", exc=RequestException())
+            check_plex_token_all()
+            self.assertTrue(
+                Event.objects.filter(action=EventAction.CONFIGURATION_ERROR).exists()
+            )
