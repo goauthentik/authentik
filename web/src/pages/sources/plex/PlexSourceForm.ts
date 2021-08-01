@@ -85,7 +85,13 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                     ${t`Load servers`}
                 </button>`;
         }
-        return html`<ak-form-element-horizontal name="allowFriends">
+        return html`
+            <button class="pf-c-button pf-m-secondary" type="button" @click=${() => {
+                this.doAuth();
+            }}>
+                    ${t`Re-authenticate with plex`}
+            </button>
+            <ak-form-element-horizontal name="allowFriends">
                 <div class="pf-c-check">
                     <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.allowFriends, true)}>
                     <label class="pf-c-check__label">
