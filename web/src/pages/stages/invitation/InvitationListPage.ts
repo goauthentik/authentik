@@ -8,6 +8,7 @@ import "../../../elements/buttons/SpinnerButton";
 import "../../../elements/forms/DeleteForm";
 import "../../../elements/forms/ModalForm";
 import "./InvitationForm";
+import "./InvitationListLink";
 import { TableColumn } from "../../../elements/table/Table";
 import { PAGE_SIZE } from "../../../constants";
 import { Invitation, StagesApi } from "authentik-api";
@@ -15,6 +16,8 @@ import { DEFAULT_CONFIG } from "../../../api/Config";
 
 @customElement("ak-stage-invitation-list")
 export class InvitationListPage extends TablePage<Invitation> {
+    expandable = true;
+
     searchEnabled(): boolean {
         return true;
     }
@@ -73,6 +76,18 @@ export class InvitationListPage extends TablePage<Invitation> {
                 </button>
             </ak-forms-delete>`,
         ];
+    }
+
+    renderExpanded(item: Invitation): TemplateResult {
+        return html`
+        <td role="cell" colspan="3">
+            <div class="pf-c-table__expandable-row-content">
+                <ak-stage-invitation-list-link invitation=${item.pk}></ak-stage-invitation-list-link>
+            </div>
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>`;
     }
 
     renderToolbar(): TemplateResult {
