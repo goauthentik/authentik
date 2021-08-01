@@ -2078,6 +2078,10 @@ msgstr ""
 msgid "Link to a user with identical username address. Can have security implications when a username is used with another source."
 msgstr ""
 
+#: src/pages/stages/invitation/InvitationListLink.ts
+msgid "Link to use the invitation."
+msgstr ""
+
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
 msgid "Link users on unique identifier"
@@ -2166,6 +2170,7 @@ msgstr ""
 #: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
+#: src/pages/stages/invitation/InvitationListLink.ts
 #: src/pages/stages/password/PasswordStageForm.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
@@ -3264,6 +3269,10 @@ msgstr ""
 
 #: src/elements/table/Table.ts
 msgid "Select all rows"
+msgstr ""
+
+#: src/pages/stages/invitation/InvitationListLink.ts
+msgid "Select an enrollment flow"
 msgstr ""
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
