@@ -3007,6 +3007,10 @@ msgstr ""
 msgid "RSA-SHA512"
 msgstr ""
 
+#: src/pages/sources/plex/PlexSourceForm.ts
+msgid "Re-authenticate with plex"
+msgstr ""
+
 #: src/pages/flows/StageBindingForm.ts
 msgid "Re-evaluate policies"
 msgstr ""
