@@ -322,14 +322,15 @@ class FlowExecutorView(APIView):
         """User Successfully passed all stages"""
         # Since this is wrapped by the ExecutorShell, the next argument is saved in the session
         # extract the next param before cancel as that cleans it
-        next_param = None
-        if self.plan:
-            next_param = self.plan.context.get(PLAN_CONTEXT_REDIRECT)
-        if not next_param:
-            next_param = self.request.session.get(SESSION_KEY_GET, {}).get(
-                NEXT_ARG_NAME, "authentik_core:root-redirect"
-            )
         self.cancel()
+        if self.plan and PLAN_CONTEXT_REDIRECT in self.plan.context:
+            # The context `redirect` variable can only be set by
+            # an expression policy or authentik itself, so we don't
+            # check if its an absolute URL or a relative one
+            return redirect(self.plan.context.get(PLAN_CONTEXT_REDIRECT))
+        next_param = self.request.session.get(SESSION_KEY_GET, {}).get(
+            NEXT_ARG_NAME, "authentik_core:root-redirect"
+        )
         return to_stage_response(self.request, redirect_with_qs(next_param))
 
     def stage_ok(self) -> HttpResponse:
