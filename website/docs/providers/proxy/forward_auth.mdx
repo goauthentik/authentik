@@ -80,6 +80,9 @@ server {
         proxy_set_header    Host $host;
         add_header          Set-Cookie $auth_cookie;
         auth_request_set    $auth_cookie $upstream_http_set_cookie;
+        # Increase buffer size for large headers
+        proxy_buffers       8 16k;
+        proxy_buffer_size   16k;
     }
 
     # Special location for when the /auth endpoint returns a 401,
