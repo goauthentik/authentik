@@ -156,11 +156,13 @@ class TestUserLoginStage(TestCase):
             base_url = reverse(
                 "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
             )
-            response = self.client.get(base_url)
+            response = self.client.get(base_url, follow=True)
 
         session = self.client.session
         plan: FlowPlan = session[SESSION_KEY_PLAN]
-        self.assertEqual(plan.context[PLAN_CONTEXT_PROMPT], data)
+        self.assertEqual(
+            plan.context[PLAN_CONTEXT_PROMPT], data | plan.context[PLAN_CONTEXT_PROMPT]
+        )
 
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
