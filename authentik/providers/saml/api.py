@@ -2,7 +2,8 @@
 from xml.etree.ElementTree import ParseError  # nosec
 
 from defusedxml.ElementTree import fromstring
-from django.http.response import HttpResponse
+from django.http.response import Http404, HttpResponse
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
@@ -114,7 +115,11 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
     # pylint: disable=invalid-name, unused-argument
     def metadata(self, request: Request, pk: int) -> Response:
         """Return metadata as XML string"""
-        provider = self.get_object()
+        # We don't use self.get_object() on purpose as this view is un-authenticated
+        try:
+            provider = get_object_or_404(SAMLProvider, pk=pk)
+        except ValueError:
+            raise Http404
         try:
             metadata = MetadataProcessor(provider, request).build_entity_descriptor()
             if "download" in request._request.GET:
