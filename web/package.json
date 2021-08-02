@@ -52,7 +52,7 @@
         "@polymer/paper-input": "^3.2.1",
         "@rollup/plugin-babel": "^5.3.0",
         "@rollup/plugin-replace": "^3.0.0",
-        "@rollup/plugin-typescript": "^8.2.4",
+        "@rollup/plugin-typescript": "^8.2.5",
         "@sentry/browser": "^6.10.0",
         "@sentry/tracing": "^6.10.0",
         "@types/chart.js": "^2.9.34",
