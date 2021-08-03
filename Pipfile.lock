@@ -130,11 +130,11 @@
         },
         "botocore": {
             "hashes": [
-                "sha256:601f820ed340a85ed62d91b4eaeb768b9ff0529add75a074592fb7c51db7bd00",
-                "sha256:b5e9128a259fc0fe5a8c2b717f5d7e8a1321321981b5d5679939e12d4142c0f3"
+                "sha256:7b205f96bf0e2e1017301339e4fba9fd6dfdf54680196eb43e60e60581d7d5cb",
+                "sha256:8710d03b9de3e3d94ed410f3e83809ca02050b091100d68c22ff7bf986f29fb6"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==1.21.11"
+            "version": "==1.21.12"
         },
         "cachetools": {
             "hashes": [
@@ -354,11 +354,11 @@
         },
         "django": {
             "hashes": [
-                "sha256:3da05fea54fdec2315b54a563d5b59f3b4e2b1e69c3a5841dda35019c01855cd",
-                "sha256:c58b5f19c5ae0afe6d75cbdd7df561e6eb929339985dbbda2565e1cabb19a62e"
+                "sha256:7f92413529aa0e291f3be78ab19be31aefb1e1c9a52cd59e130f505f27a51f13",
+                "sha256:f27f8544c9d4c383bbe007c57e3235918e258364577373d4920e9162837be022"
             ],
             "index": "pypi",
-            "version": "==3.2.5"
+            "version": "==3.2.6"
         },
         "django-dbbackup": {
             "git": "https://github.com/django-dbbackup/django-dbbackup.git",
