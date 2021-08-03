@@ -23,10 +23,10 @@ import { PFColor } from "../../elements/Label";
 @customElement("ak-outpost-service-connection-list")
 export class OutpostServiceConnectionListPage extends TablePage<ServiceConnection> {
     pageTitle(): string {
-        return "Outpost Service-Connections";
+        return "Outpost integrations";
     }
     pageDescription(): string | undefined {
-        return "Outpost Service-Connections define how authentik connects to external platforms to manage and deploy Outposts.";
+        return "Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.";
     }
     pageIcon(): string {
         return "pf-icon pf-icon-integration";
@@ -96,7 +96,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                 </ak-forms-modal>
                 <ak-forms-delete
                     .obj=${item}
-                    objectLabel=${t`Outpost Service-connection`}
+                    objectLabel=${t`Outpost integration`}
                     .usedBy=${() => {
                         return new OutpostsApi(
                             DEFAULT_CONFIG,

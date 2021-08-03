@@ -182,8 +182,8 @@ export class AdminInterface extends LitElement {
                 <ak-sidebar-item path="/outpost/outposts">
                     <span slot="label">${t`Outposts`}</span>
                 </ak-sidebar-item>
-                <ak-sidebar-item path="/outpost/service-connections">
-                    <span slot="label">${t`Service Connections`}</span>
+                <ak-sidebar-item path="/outpost/integrations">
+                    <span slot="label">${t`Integrations`}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
             <ak-sidebar-item .condition=${superUserCondition}>

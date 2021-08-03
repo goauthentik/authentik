@@ -19,9 +19,9 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated service-connection.`;
+            return t`Successfully updated integration.`;
         } else {
-            return t`Successfully created service-connection.`;
+            return t`Successfully created integration.`;
         }
     }
 

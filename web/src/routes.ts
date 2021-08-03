@@ -105,7 +105,7 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/events/rules$"), html`<ak-event-rule-list></ak-event-rule-list>`),
     new Route(new RegExp("^/outpost/outposts$"), html`<ak-outpost-list></ak-outpost-list>`),
     new Route(
-        new RegExp("^/outpost/service-connections$"),
+        new RegExp("^/outpost/integrations$"),
         html`<ak-outpost-service-connection-list></ak-outpost-service-connection-list>`,
     ),
     new Route(
