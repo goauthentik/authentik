@@ -47,9 +47,7 @@ if __name__ == "__main__":
     LOGGER.info("waiting to acquire database lock")
     curr.execute("SELECT pg_advisory_lock(%s)", (ADV_LOCK_UID,))
     try:
-        for migration in (
-            Path(__file__).parent.absolute().glob("system_migrations/*.py")
-        ):
+        for migration in Path(__file__).parent.absolute().glob("system_migrations/*.py"):
             spec = spec_from_file_location("lifecycle.system_migrations", migration)
             mod = module_from_spec(spec)
             # pyright: reportGeneralTypeIssues=false

@@ -38,13 +38,7 @@ from authentik.flows.challenge import (
     WithUserInfoChallenge,
 )
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
-from authentik.flows.models import (
-    ConfigurableStage,
-    Flow,
-    FlowDesignation,
-    FlowStageBinding,
-    Stage,
-)
+from authentik.flows.models import ConfigurableStage, Flow, FlowDesignation, FlowStageBinding, Stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
     PLAN_CONTEXT_REDIRECT,
@@ -155,9 +149,7 @@ class FlowExecutorView(APIView):
             try:
                 self.plan = self._initiate_plan()
             except FlowNonApplicableException as exc:
-                self._logger.warning(
-                    "f(exec): Flow not applicable to current user", exc=exc
-                )
+                self._logger.warning("f(exec): Flow not applicable to current user", exc=exc)
                 return to_stage_response(self.request, self.handle_invalid_flow(exc))
             except EmptyFlowException as exc:
                 self._logger.warning("f(exec): Flow is empty", exc=exc)
@@ -174,9 +166,7 @@ class FlowExecutorView(APIView):
             # in which case we just delete the plan and invalidate everything
             next_binding = self.plan.next(self.request)
         except Exception as exc:  # pylint: disable=broad-except
-            self._logger.warning(
-                "f(exec): found incompatible flow plan, invalidating run", exc=exc
-            )
+            self._logger.warning("f(exec): found incompatible flow plan, invalidating run", exc=exc)
             keys = cache.keys("flow_*")
             cache.delete_many(keys)
             return self.stage_invalid()
@@ -314,9 +304,7 @@ class FlowExecutorView(APIView):
         self.request.session[SESSION_KEY_PLAN] = plan
         kwargs = self.kwargs
         kwargs.update({"flow_slug": self.flow.slug})
-        return redirect_with_qs(
-            "authentik_api:flow-executor", self.request.GET, **kwargs
-        )
+        return redirect_with_qs("authentik_api:flow-executor", self.request.GET, **kwargs)
 
     def _flow_done(self) -> HttpResponse:
         """User Successfully passed all stages"""
@@ -350,9 +338,7 @@ class FlowExecutorView(APIView):
             )
             kwargs = self.kwargs
             kwargs.update({"flow_slug": self.flow.slug})
-            return redirect_with_qs(
-                "authentik_api:flow-executor", self.request.GET, **kwargs
-            )
+            return redirect_with_qs("authentik_api:flow-executor", self.request.GET, **kwargs)
         # User passed all stages
         self._logger.debug(
             "f(exec): User passed all stages",
@@ -408,18 +394,13 @@ class FlowErrorResponse(TemplateResponse):
         super().__init__(request=request, template="flows/error.html")
         self.error = error
 
-    def resolve_context(
-        self, context: Optional[dict[str, Any]]
-    ) -> Optional[dict[str, Any]]:
+    def resolve_context(self, context: Optional[dict[str, Any]]) -> Optional[dict[str, Any]]:
         if not context:
             context = {}
         context["error"] = self.error
         if self._request.user and self._request.user.is_authenticated:
-            if (
-                self._request.user.is_superuser
-                or self._request.user.group_attributes().get(
-                    USER_ATTRIBUTE_DEBUG, False
-                )
+            if self._request.user.is_superuser or self._request.user.group_attributes().get(
+                USER_ATTRIBUTE_DEBUG, False
             ):
                 context["tb"] = "".join(format_tb(self.error.__traceback__))
         return context
@@ -464,9 +445,7 @@ class ToDefaultFlow(View):
                     flow_slug=flow.slug,
                 )
                 del self.request.session[SESSION_KEY_PLAN]
-        return redirect_with_qs(
-            "authentik_core:if-flow", request.GET, flow_slug=flow.slug
-        )
+        return redirect_with_qs("authentik_core:if-flow", request.GET, flow_slug=flow.slug)
 
 
 def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpResponse:

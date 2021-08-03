@@ -46,18 +46,13 @@ class SAMLProvider(Provider):
             )
         ),
     )
-    issuer = models.TextField(
-        help_text=_("Also known as EntityID"), default="authentik"
-    )
+    issuer = models.TextField(help_text=_("Also known as EntityID"), default="authentik")
     sp_binding = models.TextField(
         choices=SAMLBindings.choices,
         default=SAMLBindings.REDIRECT,
         verbose_name=_("Service Provider Binding"),
         help_text=_(
-            (
-                "This determines how authentik sends the "
-                "response back to the Service Provider."
-            )
+            ("This determines how authentik sends the " "response back to the Service Provider.")
         ),
     )
 
@@ -150,9 +145,7 @@ class SAMLProvider(Provider):
         default=None,
         null=True,
         blank=True,
-        help_text=_(
-            "Keypair used to sign outgoing Responses going to the Service Provider."
-        ),
+        help_text=_("Keypair used to sign outgoing Responses going to the Service Provider."),
         on_delete=models.SET_NULL,
         verbose_name=_("Signing Keypair"),
     )

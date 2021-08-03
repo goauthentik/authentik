@@ -1,4 +1,5 @@
 [tool.black]
+line-length = 100
 target-version = ['py38']
 exclude = 'node_modules'
 
@@ -7,7 +8,7 @@ multi_line_output = 3
 include_trailing_comma = true
 force_grid_wrap = 0
 use_parentheses = true
-line_length = 88
+line_length = 100
 src_paths = ["authentik", "tests", "lifecycle"]
 force_to_top = "*"
 

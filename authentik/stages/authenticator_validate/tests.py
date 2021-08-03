@@ -13,14 +13,9 @@ from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import Flow, FlowStageBinding, NotConfiguredAction
 from authentik.flows.tests.test_planner import dummy_get_response
-from authentik.providers.oauth2.generators import (
-    generate_client_id,
-    generate_client_secret,
-)
+from authentik.providers.oauth2.generators import generate_client_id, generate_client_secret
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
-from authentik.stages.authenticator_validate.api import (
-    AuthenticatorValidateStageSerializer,
-)
+from authentik.stages.authenticator_validate.api import AuthenticatorValidateStageSerializer
 from authentik.stages.authenticator_validate.challenge import (
     get_challenge_for_device,
     validate_challenge_code,
@@ -95,9 +90,7 @@ class AuthenticatorValidateStageTests(TestCase):
     def test_device_challenge_totp(self):
         """Test device challenge"""
         request = self.request_factory.get("/")
-        totp_device = TOTPDevice.objects.create(
-            user=self.user, confirmed=True, digits=6
-        )
+        totp_device = TOTPDevice.objects.create(user=self.user, confirmed=True, digits=6)
         self.assertEqual(get_challenge_for_device(request, totp_device), {})
         with self.assertRaises(ValidationError):
             validate_challenge_code("1234", request, self.user)

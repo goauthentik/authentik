@@ -70,9 +70,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "confirmed",
-                    models.BooleanField(
-                        default=True, help_text="Is this device ready for use?"
-                    ),
+                    models.BooleanField(default=True, help_text="Is this device ready for use?"),
                 ),
                 ("duo_user_id", models.TextField()),
                 (

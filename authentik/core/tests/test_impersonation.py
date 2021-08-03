@@ -46,9 +46,7 @@ class TestImpersonation(TestCase):
         self.client.force_login(self.other_user)
 
         self.client.get(
-            reverse(
-                "authentik_core:impersonate-init", kwargs={"user_id": self.akadmin.pk}
-            )
+            reverse("authentik_core:impersonate-init", kwargs={"user_id": self.akadmin.pk})
         )
 
         response = self.client.get(reverse("authentik_api:user-me"))

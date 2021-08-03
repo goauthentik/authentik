@@ -6,11 +6,7 @@ from uuid import UUID
 from django.db.models import Q
 
 from authentik.flows.models import Flow, FlowStageBinding, Stage
-from authentik.flows.transfer.common import (
-    DataclassEncoder,
-    FlowBundle,
-    FlowBundleEntry,
-)
+from authentik.flows.transfer.common import DataclassEncoder, FlowBundle, FlowBundleEntry
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.stages.prompt.models import PromptStage
 
@@ -37,9 +33,7 @@ class FlowExporter:
 
     def walk_stages(self) -> Iterator[FlowBundleEntry]:
         """Convert all stages attached to self.flow into FlowBundleEntry objects"""
-        stages = (
-            Stage.objects.filter(flow=self.flow).select_related().select_subclasses()
-        )
+        stages = Stage.objects.filter(flow=self.flow).select_related().select_subclasses()
         for stage in stages:
             if isinstance(stage, PromptStage):
                 pass
@@ -56,9 +50,7 @@ class FlowExporter:
         a direct foreign key to a policy."""
         # Special case for PromptStage as that has a direct M2M to policy, we have to ensure
         # all policies referenced in there we also include here
-        prompt_stages = PromptStage.objects.filter(flow=self.flow).values_list(
-            "pk", flat=True
-        )
+        prompt_stages = PromptStage.objects.filter(flow=self.flow).values_list("pk", flat=True)
         query = Q(bindings__in=self.pbm_uuids) | Q(promptstage__in=prompt_stages)
         policies = Policy.objects.filter(query).select_related()
         for policy in policies:
@@ -67,9 +59,7 @@ class FlowExporter:
     def walk_policy_bindings(self) -> Iterator[FlowBundleEntry]:
         """Walk over all policybindings relative to us. This is run at the end of the export, as
         we are sure all objects exist now."""
-        bindings = PolicyBinding.objects.filter(
-            target__in=self.pbm_uuids
-        ).select_related()
+        bindings = PolicyBinding.objects.filter(target__in=self.pbm_uuids).select_related()
         for binding in bindings:
             yield FlowBundleEntry.from_model(binding, "policy", "target", "order")
 

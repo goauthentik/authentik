@@ -49,9 +49,7 @@ class PolicyBindingModel(models.Model):
 class PolicyBinding(SerializerModel):
     """Relationship between a Policy and a PolicyBindingModel."""
 
-    policy_binding_uuid = models.UUIDField(
-        primary_key=True, editable=False, default=uuid4
-    )
+    policy_binding_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     enabled = models.BooleanField(default=True)
 
@@ -81,9 +79,7 @@ class PolicyBinding(SerializerModel):
         blank=True,
     )
 
-    target = InheritanceForeignKey(
-        PolicyBindingModel, on_delete=models.CASCADE, related_name="+"
-    )
+    target = InheritanceForeignKey(PolicyBindingModel, on_delete=models.CASCADE, related_name="+")
     negate = models.BooleanField(
         default=False,
         help_text=_("Negates the outcome of the policy. Messages are unaffected."),

@@ -15,11 +15,7 @@ from django.urls import reverse
 from docker import DockerClient, from_env
 from docker.models.containers import Container
 from selenium import webdriver
-from selenium.common.exceptions import (
-    NoSuchElementException,
-    TimeoutException,
-    WebDriverException,
-)
+from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
@@ -94,16 +90,12 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     def tearDown(self):
         if "TF_BUILD" in environ:
             makedirs("selenium_screenshots/", exist_ok=True)
-            screenshot_file = (
-                f"selenium_screenshots/{self.__class__.__name__}_{time()}.png"
-            )
+            screenshot_file = f"selenium_screenshots/{self.__class__.__name__}_{time()}.png"
             self.driver.save_screenshot(screenshot_file)
             self.logger.warning("Saved screenshot", file=screenshot_file)
         self.logger.debug("--------browser logs")
         for line in self.driver.get_log("browser"):
-            self.logger.debug(
-                line["message"], source=line["source"], level=line["level"]
-            )
+            self.logger.debug(line["message"], source=line["source"], level=line["level"])
         self.logger.debug("--------end browser logs")
         if self.container:
             self.output_container_logs()
@@ -126,43 +118,33 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         """same as self.url() but show URL in shell"""
         return f"{self.live_server_url}/if/admin/#{view}"
 
-    def get_shadow_root(
-        self, selector: str, container: Optional[WebElement] = None
-    ) -> WebElement:
+    def get_shadow_root(self, selector: str, container: Optional[WebElement] = None) -> WebElement:
         """Get shadow root element's inner shadowRoot"""
         if not container:
             container = self.driver
         shadow_root = container.find_element(By.CSS_SELECTOR, selector)
-        element = self.driver.execute_script(
-            "return arguments[0].shadowRoot", shadow_root
-        )
+        element = self.driver.execute_script("return arguments[0].shadowRoot", shadow_root)
         return element
 
     def login(self):
         """Do entire login flow and check user afterwards"""
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        identification_stage = self.get_shadow_root(
-            "ak-stage-identification", flow_executor
-        )
+        identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
 
-        identification_stage.find_element(
-            By.CSS_SELECTOR, "input[name=uidField]"
-        ).click()
-        identification_stage.find_element(
-            By.CSS_SELECTOR, "input[name=uidField]"
-        ).send_keys(USER().username)
-        identification_stage.find_element(
-            By.CSS_SELECTOR, "input[name=uidField]"
-        ).send_keys(Keys.ENTER)
+        identification_stage.find_element(By.CSS_SELECTOR, "input[name=uidField]").click()
+        identification_stage.find_element(By.CSS_SELECTOR, "input[name=uidField]").send_keys(
+            USER().username
+        )
+        identification_stage.find_element(By.CSS_SELECTOR, "input[name=uidField]").send_keys(
+            Keys.ENTER
+        )
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
         password_stage = self.get_shadow_root("ak-stage-password", flow_executor)
         password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(
             USER().username
         )
-        password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(
-            Keys.ENTER
-        )
+        password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(Keys.ENTER)
         sleep(1)
 
     def assert_user(self, expected_user: User):

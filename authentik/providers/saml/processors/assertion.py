@@ -47,9 +47,7 @@ class AssertionProcessor:
     _valid_not_before: str
     _valid_not_on_or_after: str
 
-    def __init__(
-        self, provider: SAMLProvider, request: HttpRequest, auth_n_request: AuthNRequest
-    ):
+    def __init__(self, provider: SAMLProvider, request: HttpRequest, auth_n_request: AuthNRequest):
         self.provider = provider
         self.http_request = request
         self.auth_n_request = auth_n_request
@@ -120,9 +118,7 @@ class AssertionProcessor:
         auth_n_statement.attrib["AuthnInstant"] = self._valid_not_before
         auth_n_statement.attrib["SessionIndex"] = self._assertion_id
 
-        auth_n_context = SubElement(
-            auth_n_statement, f"{{{NS_SAML_ASSERTION}}}AuthnContext"
-        )
+        auth_n_context = SubElement(auth_n_statement, f"{{{NS_SAML_ASSERTION}}}AuthnContext")
         auth_n_context_class_ref = SubElement(
             auth_n_context, f"{{{NS_SAML_ASSERTION}}}AuthnContextClassRef"
         )
@@ -140,9 +136,7 @@ class AssertionProcessor:
             audience_restriction = SubElement(
                 conditions, f"{{{NS_SAML_ASSERTION}}}AudienceRestriction"
             )
-            audience = SubElement(
-                audience_restriction, f"{{{NS_SAML_ASSERTION}}}Audience"
-            )
+            audience = SubElement(audience_restriction, f"{{{NS_SAML_ASSERTION}}}Audience")
             audience.text = self.provider.audience
         return conditions
 
@@ -205,9 +199,7 @@ class AssertionProcessor:
         subject = Element(f"{{{NS_SAML_ASSERTION}}}Subject")
         subject.append(self.get_name_id())
 
-        subject_confirmation = SubElement(
-            subject, f"{{{NS_SAML_ASSERTION}}}SubjectConfirmation"
-        )
+        subject_confirmation = SubElement(subject, f"{{{NS_SAML_ASSERTION}}}SubjectConfirmation")
         subject_confirmation.attrib["Method"] = "urn:oasis:names:tc:SAML:2.0:cm:bearer"
 
         subject_confirmation_data = SubElement(
@@ -274,9 +266,7 @@ class AssertionProcessor:
             )
             assertion = root_response.xpath("//saml:Assertion", namespaces=NS_MAP)[0]
             xmlsec.tree.add_ids(assertion, ["ID"])
-            signature_node = xmlsec.tree.find_node(
-                assertion, xmlsec.constants.NodeSignature
-            )
+            signature_node = xmlsec.tree.find_node(assertion, xmlsec.constants.NodeSignature)
             ref = xmlsec.template.add_reference(
                 signature_node,
                 digest_algorithm_transform,

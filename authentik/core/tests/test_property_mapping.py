@@ -16,9 +16,7 @@ class TestPropertyMappings(TestCase):
 
     def test_expression(self):
         """Test expression"""
-        mapping = PropertyMapping.objects.create(
-            name="test", expression="return 'test'"
-        )
+        mapping = PropertyMapping.objects.create(name="test", expression="return 'test'")
         self.assertEqual(mapping.evaluate(None, None), "test")
 
     def test_expression_syntax(self):

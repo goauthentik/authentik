@@ -6,14 +6,7 @@ from unittest.case import skipUnless
 from docker.client import DockerClient, from_env
 from docker.models.containers import Container
 from guardian.shortcuts import get_anonymous_user
-from ldap3 import (
-    ALL,
-    ALL_ATTRIBUTES,
-    ALL_OPERATIONAL_ATTRIBUTES,
-    SUBTREE,
-    Connection,
-    Server,
-)
+from ldap3 import ALL, ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE, Connection, Server
 from ldap3.core.exceptions import LDAPInvalidCredentialsResult
 
 from authentik.core.models import Application, Group, User
@@ -22,13 +15,7 @@ from authentik.flows.models import Flow
 from authentik.outposts.managed import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost, OutpostType
 from authentik.providers.ldap.models import LDAPProvider
-from tests.e2e.utils import (
-    USER,
-    SeleniumTestCase,
-    apply_migration,
-    object_manager,
-    retry,
-)
+from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, object_manager, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -276,9 +263,7 @@ class TestProviderLDAP(SeleniumTestCase):
                         ],
                         "uidNumber": [str(2000 + USER().pk)],
                         "gidNumber": [str(2000 + USER().pk)],
-                        "memberOf": [
-                            "cn=authentik Admins,ou=groups,dc=ldap,dc=goauthentik,dc=io"
-                        ],
+                        "memberOf": ["cn=authentik Admins,ou=groups,dc=ldap,dc=goauthentik,dc=io"],
                         "accountStatus": ["true"],
                         "superuser": ["true"],
                         "goauthentik.io/ldap/active": ["true"],

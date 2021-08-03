@@ -27,9 +27,7 @@ class InvitationStageView(StageView):
         """Get token from saved get-arguments or prompt_data"""
         if INVITATION_TOKEN_KEY in self.request.session.get(SESSION_KEY_GET, {}):
             return self.request.session[SESSION_KEY_GET][INVITATION_TOKEN_KEY]
-        if INVITATION_TOKEN_KEY in self.executor.plan.context.get(
-            PLAN_CONTEXT_PROMPT, {}
-        ):
+        if INVITATION_TOKEN_KEY in self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {}):
             return self.executor.plan.context[PLAN_CONTEXT_PROMPT][INVITATION_TOKEN_KEY]
         return None
 
@@ -48,9 +46,7 @@ class InvitationStageView(StageView):
         self.executor.plan.context[INVITATION] = invite
 
         context = {}
-        always_merger.merge(
-            context, self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {})
-        )
+        always_merger.merge(context, self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {}))
         always_merger.merge(context, invite.fixed_data)
         self.executor.plan.context[PLAN_CONTEXT_PROMPT] = context
 

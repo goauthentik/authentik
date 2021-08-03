@@ -26,9 +26,7 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
         group_count = 0
         for group in groups:
             attributes = group.get("attributes", {})
-            group_dn = self._flatten(
-                self._flatten(group.get("entryDN", group.get("dn")))
-            )
+            group_dn = self._flatten(self._flatten(group.get("entryDN", group.get("dn"))))
             if self._source.object_uniqueness_field not in attributes:
                 self._logger.warning(
                     "Cannot find uniqueness Field in attributes",

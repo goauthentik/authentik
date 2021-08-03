@@ -17,9 +17,7 @@ class WorkerView(APIView):
 
     permission_classes = [IsAdminUser]
 
-    @extend_schema(
-        responses=inline_serializer("Workers", fields={"count": IntegerField()})
-    )
+    @extend_schema(responses=inline_serializer("Workers", fields={"count": IntegerField()}))
     def get(self, request: Request) -> Response:
         """Get currently connected worker count."""
         count = len(CELERY_APP.control.ping(timeout=0.5))

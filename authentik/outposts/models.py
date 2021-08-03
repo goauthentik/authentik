@@ -64,9 +64,7 @@ class OutpostConfig:
 
     log_level: str = CONFIG.y("log_level")
     error_reporting_enabled: bool = CONFIG.y_bool("error_reporting.enabled")
-    error_reporting_environment: str = CONFIG.y(
-        "error_reporting.environment", "customer"
-    )
+    error_reporting_environment: str = CONFIG.y("error_reporting.environment", "customer")
 
     object_naming_template: str = field(default="ak-outpost-%(name)s")
     kubernetes_replicas: int = field(default=1)
@@ -264,9 +262,7 @@ class KubernetesServiceConnection(OutpostServiceConnection):
             client = self.client()
             api_instance = VersionApi(client)
             version: VersionInfo = api_instance.get_code()
-            return OutpostServiceConnectionState(
-                version=version.git_version, healthy=True
-            )
+            return OutpostServiceConnectionState(version=version.git_version, healthy=True)
         except (OpenApiException, HTTPError, ServiceConnectionInvalid):
             return OutpostServiceConnectionState(version="", healthy=False)
 
@@ -360,8 +356,7 @@ class Outpost(ManagedModel):
                 if isinstance(model_or_perm, models.Model):
                     model_or_perm: models.Model
                     code_name = (
-                        f"{model_or_perm._meta.app_label}."
-                        f"view_{model_or_perm._meta.model_name}"
+                        f"{model_or_perm._meta.app_label}." f"view_{model_or_perm._meta.model_name}"
                     )
                     assign_perm(code_name, user, model_or_perm)
                 else:
@@ -417,9 +412,7 @@ class Outpost(ManagedModel):
             self,
             "authentik_events.add_event",
         ]
-        for provider in (
-            Provider.objects.filter(outpost=self).select_related().select_subclasses()
-        ):
+        for provider in Provider.objects.filter(outpost=self).select_related().select_subclasses():
             if isinstance(provider, OutpostModel):
                 objects.extend(provider.get_required_objects())
             else:

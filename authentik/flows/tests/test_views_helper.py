@@ -21,9 +21,7 @@ class TestHelperView(TestCase):
         response = self.client.get(
             reverse("authentik_flows:default-invalidation"),
         )
-        expected_url = reverse(
-            "authentik_core:if-flow", kwargs={"flow_slug": flow.slug}
-        )
+        expected_url = reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, expected_url)
 
@@ -40,8 +38,6 @@ class TestHelperView(TestCase):
         response = self.client.get(
             reverse("authentik_flows:default-invalidation"),
         )
-        expected_url = reverse(
-            "authentik_core:if-flow", kwargs={"flow_slug": flow.slug}
-        )
+        expected_url = reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, expected_url)

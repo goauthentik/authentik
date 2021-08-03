@@ -21,9 +21,7 @@ class TestCaptchaStage(TestCase):
 
     def setUp(self):
         super().setUp()
-        self.user = User.objects.create_user(
-            username="unittest", email="test@beryju.org"
-        )
+        self.user = User.objects.create_user(username="unittest", email="test@beryju.org")
         self.client = Client()
 
         self.flow = Flow.objects.create(
@@ -36,22 +34,16 @@ class TestCaptchaStage(TestCase):
             public_key=RECAPTCHA_PUBLIC_KEY,
             private_key=RECAPTCHA_PRIVATE_KEY,
         )
-        self.binding = FlowStageBinding.objects.create(
-            target=self.flow, stage=self.stage, order=2
-        )
+        self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     def test_valid(self):
         """Test valid captcha"""
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
         response = self.client.post(
-            reverse(
-                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            ),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             {"token": "PASSED"},
         )
         self.assertEqual(response.status_code, 200)

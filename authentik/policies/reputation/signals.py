@@ -7,10 +7,7 @@ from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import get_client_ip
-from authentik.policies.reputation.models import (
-    CACHE_KEY_IP_PREFIX,
-    CACHE_KEY_USER_PREFIX,
-)
+from authentik.policies.reputation.models import CACHE_KEY_IP_PREFIX, CACHE_KEY_USER_PREFIX
 from authentik.stages.identification.signals import identification_failed
 
 LOGGER = get_logger()

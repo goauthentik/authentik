@@ -9,12 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import (
-    CharField,
-    FileField,
-    ReadOnlyField,
-    SerializerMethodField,
-)
+from rest_framework.fields import CharField, FileField, ReadOnlyField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny
 from rest_framework.relations import SlugRelatedField
@@ -33,9 +28,7 @@ from authentik.core.models import Provider
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.metadata import MetadataProcessor
-from authentik.providers.saml.processors.metadata_parser import (
-    ServiceProviderMetadataParser,
-)
+from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
 
 LOGGER = get_logger()
 
@@ -48,8 +41,7 @@ class SAMLProviderSerializer(ProviderSerializer):
     def get_metadata_download_url(self, instance: SAMLProvider) -> str:
         """Get metadata download URL"""
         return (
-            reverse("authentik_api:samlprovider-metadata", kwargs={"pk": instance.pk})
-            + "?download"
+            reverse("authentik_api:samlprovider-metadata", kwargs={"pk": instance.pk}) + "?download"
         )
 
     class Meta:

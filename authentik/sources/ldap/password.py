@@ -118,9 +118,7 @@ class LDAPPasswordChanger:
                     return False
         return True
 
-    def ad_password_complexity(
-        self, password: str, user: Optional[User] = None
-    ) -> bool:
+    def ad_password_complexity(self, password: str, user: Optional[User] = None) -> bool:
         """Check if password matches Active direcotry password policies
 
         https://docs.microsoft.com/en-us/windows/security/threat-protection/
@@ -160,7 +158,5 @@ class LDAPPasswordChanger:
                 must=required,
             )
             return False
-        LOGGER.debug(
-            "Password matched categories", has=matched_categories, must=required
-        )
+        LOGGER.debug("Password matched categories", has=matched_categories, must=required)
         return True

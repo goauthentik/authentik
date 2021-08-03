@@ -38,9 +38,7 @@ def progress_bar(
 
     def print_progress_bar(iteration):
         """Progress Bar Printing Function"""
-        percent = ("{0:." + str(decimals) + "f}").format(
-            100 * (iteration / float(total))
-        )
+        percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
         filledLength = int(length * iteration // total)
         bar = fill * filledLength + "-" * (length - filledLength)
         print(f"\r{prefix} |{bar}| {percent}% {suffix}", end=print_end)
@@ -78,9 +76,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="event",
             name="expires",
-            field=models.DateTimeField(
-                default=authentik.events.models.default_event_duration
-            ),
+            field=models.DateTimeField(default=authentik.events.models.default_event_duration),
         ),
         migrations.AddField(
             model_name="event",

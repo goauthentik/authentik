@@ -71,12 +71,8 @@ class TestPlexSource(TestCase):
         with Mocker() as mocker:
             mocker.get("https://plex.tv/api/v2/user", json=USER_INFO_RESPONSE)
             check_plex_token_all()
-            self.assertFalse(
-                Event.objects.filter(action=EventAction.CONFIGURATION_ERROR).exists()
-            )
+            self.assertFalse(Event.objects.filter(action=EventAction.CONFIGURATION_ERROR).exists())
         with Mocker() as mocker:
             mocker.get("https://plex.tv/api/v2/user", exc=RequestException())
             check_plex_token_all()
-            self.assertTrue(
-                Event.objects.filter(action=EventAction.CONFIGURATION_ERROR).exists()
-            )
+            self.assertTrue(Event.objects.filter(action=EventAction.CONFIGURATION_ERROR).exists())

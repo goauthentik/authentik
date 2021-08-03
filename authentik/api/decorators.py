@@ -7,9 +7,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 
-def permission_required(
-    perm: Optional[str] = None, other_perms: Optional[list[str]] = None
-):
+def permission_required(perm: Optional[str] = None, other_perms: Optional[list[str]] = None):
     """Check permissions for a single custom action"""
 
     def wrapper_outter(func: Callable):

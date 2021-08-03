@@ -42,9 +42,7 @@ def get_template_choices():
         for template in template_dir.glob("**/*.html"):
             path = str(template)
             if not access(path, R_OK):
-                LOGGER.warning(
-                    "Custom template file is not readable, check permissions", path=path
-                )
+                LOGGER.warning("Custom template file is not readable, check permissions", path=path)
                 continue
             rel_path = template.relative_to(template_dir)
             static_choices.append((str(rel_path), f"Custom Template: {rel_path}"))

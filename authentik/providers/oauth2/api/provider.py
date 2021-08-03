@@ -22,13 +22,8 @@ class OAuth2ProviderSerializer(ProviderSerializer):
 
     def validate_jwt_alg(self, value):
         """Ensure that when RS256 is selected, a certificate-key-pair is selected"""
-        if (
-            self.initial_data.get("rsa_key", None) is None
-            and value == JWTAlgorithms.RS256
-        ):
-            raise ValidationError(
-                _("RS256 requires a Certificate-Key-Pair to be selected.")
-            )
+        if self.initial_data.get("rsa_key", None) is None and value == JWTAlgorithms.RS256:
+            raise ValidationError(_("RS256 requires a Certificate-Key-Pair to be selected."))
         return value
 
     class Meta:

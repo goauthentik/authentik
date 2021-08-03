@@ -29,12 +29,8 @@ class AuditMiddleware:
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
         # Connect signal for automatic logging
-        if hasattr(request, "user") and getattr(
-            request.user, "is_authenticated", False
-        ):
-            post_save_handler = partial(
-                self.post_save_handler, user=request.user, request=request
-            )
+        if hasattr(request, "user") and getattr(request.user, "is_authenticated", False):
+            post_save_handler = partial(self.post_save_handler, user=request.user, request=request)
             pre_delete_handler = partial(
                 self.pre_delete_handler, user=request.user, request=request
             )
@@ -94,13 +90,9 @@ class AuditMiddleware:
 
     @staticmethod
     # pylint: disable=unused-argument
-    def pre_delete_handler(
-        user: User, request: HttpRequest, sender, instance: Model, **_
-    ):
+    def pre_delete_handler(user: User, request: HttpRequest, sender, instance: Model, **_):
         """Signal handler for all object's pre_delete"""
-        if isinstance(
-            instance, (Event, Notification, UserObjectPermission)
-        ):  # pragma: no cover
+        if isinstance(instance, (Event, Notification, UserObjectPermission)):  # pragma: no cover
             return
 
         EventNewThread(

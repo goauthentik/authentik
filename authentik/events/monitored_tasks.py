@@ -135,9 +135,7 @@ class MonitoredTask(Task):
         self._result = result
 
     # pylint: disable=too-many-arguments
-    def after_return(
-        self, status, retval, task_id, args: list[Any], kwargs: dict[str, Any], einfo
-    ):
+    def after_return(self, status, retval, task_id, args: list[Any], kwargs: dict[str, Any], einfo):
         if self._result:
             if not self._result.uid:
                 self._result.uid = self._uid
@@ -159,9 +157,7 @@ class MonitoredTask(Task):
     # pylint: disable=too-many-arguments
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         if not self._result:
-            self._result = TaskResult(
-                status=TaskResultStatus.ERROR, messages=[str(exc)]
-            )
+            self._result = TaskResult(status=TaskResultStatus.ERROR, messages=[str(exc)])
         if not self._result.uid:
             self._result.uid = self._uid
         TaskInfo(
@@ -179,8 +175,7 @@ class MonitoredTask(Task):
         Event.new(
             EventAction.SYSTEM_TASK_EXCEPTION,
             message=(
-                f"Task {self.__name__} encountered an error: "
-                "\n".join(self._result.messages)
+                f"Task {self.__name__} encountered an error: " "\n".join(self._result.messages)
             ),
         ).save()
         return super().on_failure(exc, task_id, args, kwargs, einfo=einfo)

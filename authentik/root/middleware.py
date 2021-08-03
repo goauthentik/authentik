@@ -4,9 +4,7 @@ import time
 from django.conf import settings
 from django.contrib.sessions.backends.base import UpdateError
 from django.contrib.sessions.exceptions import SessionInterrupted
-from django.contrib.sessions.middleware import (
-    SessionMiddleware as UpstreamSessionMiddleware,
-)
+from django.contrib.sessions.middleware import SessionMiddleware as UpstreamSessionMiddleware
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse
 from django.utils.cache import patch_vary_headers
@@ -31,9 +29,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
             return True
         return False
 
-    def process_response(
-        self, request: HttpRequest, response: HttpResponse
-    ) -> HttpResponse:
+    def process_response(self, request: HttpRequest, response: HttpResponse) -> HttpResponse:
         """
         If request.session was modified, or if the configuration is to save the
         session every time, save the changes and set a session cookie or delete

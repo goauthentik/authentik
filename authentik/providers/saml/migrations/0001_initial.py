@@ -66,9 +66,7 @@ class Migration(migrations.Migration):
                     models.TextField(
                         default="minutes=-5",
                         help_text="Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3).",
-                        validators=[
-                            authentik.lib.utils.time.timedelta_string_validator
-                        ],
+                        validators=[authentik.lib.utils.time.timedelta_string_validator],
                     ),
                 ),
                 (
@@ -76,9 +74,7 @@ class Migration(migrations.Migration):
                     models.TextField(
                         default="minutes=5",
                         help_text="Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).",
-                        validators=[
-                            authentik.lib.utils.time.timedelta_string_validator
-                        ],
+                        validators=[authentik.lib.utils.time.timedelta_string_validator],
                     ),
                 ),
                 (
@@ -86,9 +82,7 @@ class Migration(migrations.Migration):
                     models.TextField(
                         default="minutes=86400",
                         help_text="Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).",
-                        validators=[
-                            authentik.lib.utils.time.timedelta_string_validator
-                        ],
+                        validators=[authentik.lib.utils.time.timedelta_string_validator],
                     ),
                 ),
                 (

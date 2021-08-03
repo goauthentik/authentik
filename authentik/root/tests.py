@@ -20,9 +20,7 @@ class TestRoot(TestCase):
 
     def test_monitoring_ok(self):
         """Test monitoring with credentials"""
-        creds = "Basic " + b64encode(f"monitor:{settings.SECRET_KEY}".encode()).decode(
-            "utf-8"
-        )
+        creds = "Basic " + b64encode(f"monitor:{settings.SECRET_KEY}".encode()).decode("utf-8")
         auth_headers = {"HTTP_AUTHORIZATION": creds}
         response = self.client.get(reverse("metrics"), **auth_headers)
         self.assertEqual(response.status_code, 200)

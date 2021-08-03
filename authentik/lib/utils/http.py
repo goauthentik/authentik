@@ -29,16 +29,9 @@ def _get_outpost_override_ip(request: HttpRequest) -> Optional[str]:
     """Get the actual remote IP when set by an outpost. Only
     allowed when the request is authenticated, by a user with USER_ATTRIBUTE_CAN_OVERRIDE_IP set
     to outpost"""
-    from authentik.core.models import (
-        USER_ATTRIBUTE_CAN_OVERRIDE_IP,
-        Token,
-        TokenIntents,
-    )
+    from authentik.core.models import USER_ATTRIBUTE_CAN_OVERRIDE_IP, Token, TokenIntents
 
-    if (
-        OUTPOST_REMOTE_IP_HEADER not in request.META
-        or OUTPOST_TOKEN_HEADER not in request.META
-    ):
+    if OUTPOST_REMOTE_IP_HEADER not in request.META or OUTPOST_TOKEN_HEADER not in request.META:
         return None
     fake_ip = request.META[OUTPOST_REMOTE_IP_HEADER]
     tokens = Token.filter_not_expired(

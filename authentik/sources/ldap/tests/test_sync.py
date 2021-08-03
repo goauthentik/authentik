@@ -101,9 +101,7 @@ class LDAPSyncTests(TestCase):
             )
         )
         self.source.property_mappings_group.set(
-            LDAPPropertyMapping.objects.filter(
-                managed="goauthentik.io/sources/ldap/default-name"
-            )
+            LDAPPropertyMapping.objects.filter(managed="goauthentik.io/sources/ldap/default-name")
         )
         self.source.save()
         connection = PropertyMock(return_value=mock_ad_connection(LDAP_PASSWORD))
@@ -126,9 +124,7 @@ class LDAPSyncTests(TestCase):
             )
         )
         self.source.property_mappings_group.set(
-            LDAPPropertyMapping.objects.filter(
-                managed="goauthentik.io/sources/ldap/openldap-cn"
-            )
+            LDAPPropertyMapping.objects.filter(managed="goauthentik.io/sources/ldap/openldap-cn")
         )
         self.source.save()
         connection = PropertyMock(return_value=mock_slapd_connection(LDAP_PASSWORD))

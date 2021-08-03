@@ -15,9 +15,7 @@ class TestEventMatcherPolicy(TestCase):
         event = Event.new(EventAction.LOGIN)
         request = PolicyRequest(get_anonymous_user())
         request.context["event"] = event
-        policy: EventMatcherPolicy = EventMatcherPolicy.objects.create(
-            action=EventAction.LOGIN
-        )
+        policy: EventMatcherPolicy = EventMatcherPolicy.objects.create(action=EventAction.LOGIN)
         response = policy.passes(request)
         self.assertTrue(response.passing)
         self.assertTupleEqual(response.messages, ("Action matched.",))
@@ -28,9 +26,7 @@ class TestEventMatcherPolicy(TestCase):
         event.client_ip = "1.2.3.4"
         request = PolicyRequest(get_anonymous_user())
         request.context["event"] = event
-        policy: EventMatcherPolicy = EventMatcherPolicy.objects.create(
-            client_ip="1.2.3.4"
-        )
+        policy: EventMatcherPolicy = EventMatcherPolicy.objects.create(client_ip="1.2.3.4")
         response = policy.passes(request)
         self.assertTrue(response.passing)
         self.assertTupleEqual(response.messages, ("Client IP matched.",))
@@ -52,17 +48,13 @@ class TestEventMatcherPolicy(TestCase):
         event.client_ip = "1.2.3.4"
         request = PolicyRequest(get_anonymous_user())
         request.context["event"] = event
-        policy: EventMatcherPolicy = EventMatcherPolicy.objects.create(
-            client_ip="1.2.3.5"
-        )
+        policy: EventMatcherPolicy = EventMatcherPolicy.objects.create(client_ip="1.2.3.5")
         response = policy.passes(request)
         self.assertFalse(response.passing)
 
     def test_invalid(self):
         """Test passing event"""
         request = PolicyRequest(get_anonymous_user())
-        policy: EventMatcherPolicy = EventMatcherPolicy.objects.create(
-            client_ip="1.2.3.4"
-        )
+        policy: EventMatcherPolicy = EventMatcherPolicy.objects.create(client_ip="1.2.3.4")
         response = policy.passes(request)
         self.assertFalse(response.passing)

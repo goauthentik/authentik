@@ -33,9 +33,7 @@ class AuthentikStageEmailConfig(AppConfig):
             try:
                 get_template(stage.template)
             except TemplateDoesNotExist:
-                LOGGER.warning(
-                    "Stage template does not exist, resetting", path=stage.template
-                )
+                LOGGER.warning("Stage template does not exist, resetting", path=stage.template)
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
                     stage=stage,

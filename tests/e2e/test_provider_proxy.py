@@ -13,21 +13,10 @@ from selenium.webdriver.common.by import By
 from authentik import __version__
 from authentik.core.models import Application
 from authentik.flows.models import Flow
-from authentik.outposts.models import (
-    DockerServiceConnection,
-    Outpost,
-    OutpostConfig,
-    OutpostType,
-)
+from authentik.outposts.models import DockerServiceConnection, Outpost, OutpostConfig, OutpostType
 from authentik.outposts.tasks import outpost_local_connection
 from authentik.providers.proxy.models import ProxyProvider
-from tests.e2e.utils import (
-    USER,
-    SeleniumTestCase,
-    apply_migration,
-    object_manager,
-    retry,
-)
+from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, object_manager, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -121,9 +110,7 @@ class TestProviderProxy(SeleniumTestCase):
 
         self.driver.get("http://localhost:4180/akprox/sign_out")
         sleep(2)
-        full_body_text = self.driver.find_element(
-            By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl"
-        ).text
+        full_body_text = self.driver.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
         self.assertIn("You've logged out of proxy.", full_body_text)
 
 
@@ -159,9 +146,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
             name="proxy_outpost",
             type=OutpostType.PROXY,
             service_connection=service_connection,
-            _config=asdict(
-                OutpostConfig(authentik_host=self.live_server_url, log_level="debug")
-            ),
+            _config=asdict(OutpostConfig(authentik_host=self.live_server_url, log_level="debug")),
         )
         outpost.providers.add(proxy)
         outpost.save()

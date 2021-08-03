@@ -21,11 +21,7 @@ from authentik.providers.oauth2.models import (
     OAuth2Provider,
     RefreshToken,
 )
-from authentik.providers.oauth2.utils import (
-    TokenResponse,
-    cors_allow,
-    extract_client_auth,
-)
+from authentik.providers.oauth2.utils import TokenResponse, cors_allow, extract_client_auth
 
 LOGGER = get_logger()
 
@@ -132,9 +128,7 @@ class TokenParams:
                 "Provider has no allowed redirect_uri set, allowing all.",
                 allow=self.redirect_uri.lower(),
             )
-        elif self.redirect_uri.lower() not in [
-            x.lower() for x in allowed_redirect_urls
-        ]:
+        elif self.redirect_uri.lower() not in [x.lower() for x in allowed_redirect_urls]:
             LOGGER.warning(
                 "Invalid redirect uri",
                 uri=self.redirect_uri,
@@ -148,10 +142,7 @@ class TokenParams:
             LOGGER.warning("Code does not exist", code=raw_code)
             raise TokenError("invalid_grant")
 
-        if (
-            self.authorization_code.provider != self.provider
-            or self.authorization_code.is_expired
-        ):
+        if self.authorization_code.provider != self.provider or self.authorization_code.is_expired:
             LOGGER.warning("Invalid code: invalid client or code has expired")
             raise TokenError("invalid_grant")
 
@@ -159,9 +150,7 @@ class TokenParams:
         if self.code_verifier:
             if self.authorization_code.code_challenge_method == "S256":
                 new_code_challenge = (
-                    urlsafe_b64encode(
-                        sha256(self.code_verifier.encode("ascii")).digest()
-                    )
+                    urlsafe_b64encode(sha256(self.code_verifier.encode("ascii")).digest())
                     .decode("utf-8")
                     .replace("=", "")
                 )
@@ -197,16 +186,12 @@ class TokenView(View):
             try:
                 self.provider = OAuth2Provider.objects.get(client_id=client_id)
             except OAuth2Provider.DoesNotExist:
-                LOGGER.warning(
-                    "OAuth2Provider does not exist", client_id=self.client_id
-                )
+                LOGGER.warning("OAuth2Provider does not exist", client_id=self.client_id)
                 raise TokenError("invalid_client")
 
             if not self.provider:
                 raise ValueError
-            self.params = TokenParams.parse(
-                request, self.provider, client_id, client_secret
-            )
+            self.params = TokenParams.parse(request, self.provider, client_id, client_secret)
 
             if self.params.grant_type == GRANT_TYPE_AUTHORIZATION_CODE:
                 return TokenResponse(self.create_code_response())
@@ -247,9 +232,7 @@ class TokenView(View):
             "refresh_token": refresh_token.refresh_token,
             "token_type": "bearer",
             "expires_in": int(
-                timedelta_from_string(
-                    self.params.provider.token_validity
-                ).total_seconds()
+                timedelta_from_string(self.params.provider.token_validity).total_seconds()
             ),
             "id_token": refresh_token.provider.encode(refresh_token.id_token.to_dict()),
         }
@@ -257,9 +240,7 @@ class TokenView(View):
     def create_refresh_response(self) -> dict[str, Any]:
         """See https://tools.ietf.org/html/rfc6749#section-6"""
 
-        unauthorized_scopes = set(self.params.scope) - set(
-            self.params.refresh_token.scope
-        )
+        unauthorized_scopes = set(self.params.scope) - set(self.params.refresh_token.scope)
         if unauthorized_scopes:
             raise TokenError("invalid_scope")
 
@@ -291,9 +272,7 @@ class TokenView(View):
             "refresh_token": refresh_token.refresh_token,
             "token_type": "bearer",
             "expires_in": int(
-                timedelta_from_string(
-                    refresh_token.provider.token_validity
-                ).total_seconds()
+                timedelta_from_string(refresh_token.provider.token_validity).total_seconds()
             ),
             "id_token": self.params.provider.encode(refresh_token.id_token.to_dict()),
         }

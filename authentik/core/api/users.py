@@ -26,10 +26,7 @@ from authentik.api.decorators import permission_required
 from authentik.core.api.groups import GroupSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import LinkSerializer, PassiveSerializer, is_dict
-from authentik.core.middleware import (
-    SESSION_IMPERSONATE_ORIGINAL_USER,
-    SESSION_IMPERSONATE_USER,
-)
+from authentik.core.middleware import SESSION_IMPERSONATE_ORIGINAL_USER, SESSION_IMPERSONATE_USER
 from authentik.core.models import Token, TokenIntents, User
 from authentik.events.models import EventAction
 from authentik.tenants.models import Tenant
@@ -87,17 +84,13 @@ class UserMetricsSerializer(PassiveSerializer):
     def get_logins_failed_per_1h(self, _):
         """Get failed logins per hour for the last 24 hours"""
         user = self.context["user"]
-        return get_events_per_1h(
-            action=EventAction.LOGIN_FAILED, context__username=user.username
-        )
+        return get_events_per_1h(action=EventAction.LOGIN_FAILED, context__username=user.username)
 
     @extend_schema_field(CoordinateSerializer(many=True))
     def get_authorizations_per_1h(self, _):
         """Get failed logins per hour for the last 24 hours"""
         user = self.context["user"]
-        return get_events_per_1h(
-            action=EventAction.AUTHORIZE_APPLICATION, user__pk=user.pk
-        )
+        return get_events_per_1h(action=EventAction.AUTHORIZE_APPLICATION, user__pk=user.pk)
 
 
 class UsersFilter(FilterSet):
@@ -154,9 +147,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     # pylint: disable=invalid-name
     def me(self, request: Request) -> Response:
         """Get information about current user"""
-        serializer = SessionUserSerializer(
-            data={"user": UserSerializer(request.user).data}
-        )
+        serializer = SessionUserSerializer(data={"user": UserSerializer(request.user).data})
         if SESSION_IMPERSONATE_USER in request._request.session:
             serializer.initial_data["original"] = UserSerializer(
                 request._request.session[SESSION_IMPERSONATE_ORIGINAL_USER]

@@ -16,17 +16,13 @@ class TestAPIAuth(TestCase):
 
     def test_valid_basic(self):
         """Test valid token"""
-        token = Token.objects.create(
-            intent=TokenIntents.INTENT_API, user=get_anonymous_user()
-        )
+        token = Token.objects.create(intent=TokenIntents.INTENT_API, user=get_anonymous_user())
         auth = b64encode(f":{token.key}".encode()).decode()
         self.assertEqual(bearer_auth(f"Basic {auth}".encode()), token.user)
 
     def test_valid_bearer(self):
         """Test valid token"""
-        token = Token.objects.create(
-            intent=TokenIntents.INTENT_API, user=get_anonymous_user()
-        )
+        token = Token.objects.create(intent=TokenIntents.INTENT_API, user=get_anonymous_user())
         self.assertEqual(bearer_auth(f"Bearer {token.key}".encode()), token.user)
 
     def test_invalid_type(self):

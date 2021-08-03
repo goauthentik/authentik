@@ -21,10 +21,7 @@ from authentik.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
-from authentik.sources.saml.processors.request import (
-    SESSION_REQUEST_ID,
-    RequestProcessor,
-)
+from authentik.sources.saml.processors.request import SESSION_REQUEST_ID, RequestProcessor
 from authentik.sources.saml.processors.response import ResponseProcessor
 
 POST_REQUEST = (
@@ -54,9 +51,7 @@ REDIRECT_SIGNATURE = (
     "jVvPdh96AhBFj2HCuGZhP0CGotafTciu6YlsiwUpuBkIYgZmNWYa3FR9LS4Q=="
 )
 REDIRECT_SIG_ALG = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
-REDIRECT_RELAY_STATE = (
-    "ss:mem:7a054b4af44f34f89dd2d973f383c250b6b076e7f06cfa8276008a6504eaf3c7"
-)
+REDIRECT_RELAY_STATE = "ss:mem:7a054b4af44f34f89dd2d973f383c250b6b076e7f06cfa8276008a6504eaf3c7"
 REDIRECT_CERT = """-----BEGIN CERTIFICATE-----
 MIIDCDCCAfCgAwIBAgIRAM5s+bhOHk4ChSpPkGSh0NswDQYJKoZIhvcNAQELBQAw
 KzEpMCcGA1UEAwwgcGFzc2Jvb2sgU2VsZi1zaWduZWQgQ2VydGlmaWNhdGUwHhcN
@@ -97,9 +92,7 @@ class TestAuthNRequest(TestCase):
         self.source = SAMLSource.objects.create(
             slug="provider",
             issuer="authentik",
-            pre_authentication_flow=Flow.objects.get(
-                slug="default-source-pre-authentication"
-            ),
+            pre_authentication_flow=Flow.objects.get(slug="default-source-pre-authentication"),
             signing_kp=cert,
         )
         self.factory = RequestFactory()
@@ -283,9 +276,7 @@ class TestAuthNRequest(TestCase):
         request = request_proc.build_auth_n()
 
         # Create invalid PropertyMapping
-        scope = SAMLPropertyMapping.objects.create(
-            name="test", saml_name="test", expression="q"
-        )
+        scope = SAMLPropertyMapping.objects.create(name="test", saml_name="test", expression="q")
         self.provider.property_mappings.add(scope)
 
         # To get an assertion we need a parsed request (parsed by provider)

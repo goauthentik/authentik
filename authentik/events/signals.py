@@ -2,11 +2,7 @@
 from threading import Thread
 from typing import Any, Optional
 
-from django.contrib.auth.signals import (
-    user_logged_in,
-    user_logged_out,
-    user_login_failed,
-)
+from django.contrib.auth.signals import user_logged_in, user_logged_out, user_login_failed
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.http import HttpRequest
@@ -30,9 +26,7 @@ class EventNewThread(Thread):
     kwargs: dict[str, Any]
     user: Optional[User] = None
 
-    def __init__(
-        self, action: str, request: HttpRequest, user: Optional[User] = None, **kwargs
-    ):
+    def __init__(self, action: str, request: HttpRequest, user: Optional[User] = None, **kwargs):
         super().__init__()
         self.action = action
         self.request = request
@@ -68,9 +62,7 @@ def on_user_logged_out(sender, request: HttpRequest, user: User, **_):
 
 @receiver(user_write)
 # pylint: disable=unused-argument
-def on_user_write(
-    sender, request: HttpRequest, user: User, data: dict[str, Any], **kwargs
-):
+def on_user_write(sender, request: HttpRequest, user: User, data: dict[str, Any], **kwargs):
     """Log User write"""
     thread = EventNewThread(EventAction.USER_WRITE, request, **data)
     thread.kwargs["created"] = kwargs.get("created", False)
@@ -80,9 +72,7 @@ def on_user_write(
 
 @receiver(user_login_failed)
 # pylint: disable=unused-argument
-def on_user_login_failed(
-    sender, credentials: dict[str, str], request: HttpRequest, **_
-):
+def on_user_login_failed(sender, credentials: dict[str, str], request: HttpRequest, **_):
     """Failed Login"""
     thread = EventNewThread(EventAction.LOGIN_FAILED, request, **credentials)
     thread.run()

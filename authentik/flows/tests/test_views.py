@@ -11,12 +11,7 @@ from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
-from authentik.flows.models import (
-    Flow,
-    FlowDesignation,
-    FlowStageBinding,
-    InvalidResponseAction,
-)
+from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, InvalidResponseAction
 from authentik.flows.planner import FlowPlan, FlowPlanner
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageView
 from authentik.flows.views import NEXT_ARG_NAME, SESSION_KEY_PLAN, FlowExecutorView
@@ -61,9 +56,7 @@ class TestFlowExecutor(TestCase):
         )
         stage = DummyStage.objects.create(name="dummy")
         binding = FlowStageBinding(target=flow, stage=stage, order=0)
-        plan = FlowPlan(
-            flow_pk=flow.pk.hex + "a", bindings=[binding], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=flow.pk.hex + "a", bindings=[binding], markers=[StageMarker()])
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -163,9 +156,7 @@ class TestFlowExecutor(TestCase):
             target=flow, stage=DummyStage.objects.create(name="dummy2"), order=1
         )
 
-        exec_url = reverse(
-            "authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}
-        )
+        exec_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
         # First Request, start planning, renders form
         response = self.client.get(exec_url)
         self.assertEqual(response.status_code, 200)
@@ -209,13 +200,9 @@ class TestFlowExecutor(TestCase):
         PolicyBinding.objects.create(policy=false_policy, target=binding2, order=0)
 
         # Here we patch the dummy policy to evaluate to true so the stage is included
-        with patch(
-            "authentik.policies.dummy.models.DummyPolicy.passes", POLICY_RETURN_TRUE
-        ):
+        with patch("authentik.policies.dummy.models.DummyPolicy.passes", POLICY_RETURN_TRUE):
 
-            exec_url = reverse(
-                "authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}
-            )
+            exec_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
             # First request, run the planner
             response = self.client.get(exec_url)
             self.assertEqual(response.status_code, 200)
@@ -263,13 +250,9 @@ class TestFlowExecutor(TestCase):
         PolicyBinding.objects.create(policy=false_policy, target=binding2, order=0)
 
         # Here we patch the dummy policy to evaluate to true so the stage is included
-        with patch(
-            "authentik.policies.dummy.models.DummyPolicy.passes", POLICY_RETURN_TRUE
-        ):
+        with patch("authentik.policies.dummy.models.DummyPolicy.passes", POLICY_RETURN_TRUE):
 
-            exec_url = reverse(
-                "authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}
-            )
+            exec_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
             # First request, run the planner
             response = self.client.get(exec_url)
 
@@ -334,13 +317,9 @@ class TestFlowExecutor(TestCase):
         PolicyBinding.objects.create(policy=true_policy, target=binding2, order=0)
 
         # Here we patch the dummy policy to evaluate to true so the stage is included
-        with patch(
-            "authentik.policies.dummy.models.DummyPolicy.passes", POLICY_RETURN_TRUE
-        ):
+        with patch("authentik.policies.dummy.models.DummyPolicy.passes", POLICY_RETURN_TRUE):
 
-            exec_url = reverse(
-                "authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}
-            )
+            exec_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
             # First request, run the planner
             response = self.client.get(exec_url)
 
@@ -422,13 +401,9 @@ class TestFlowExecutor(TestCase):
         PolicyBinding.objects.create(policy=false_policy, target=binding3, order=0)
 
         # Here we patch the dummy policy to evaluate to true so the stage is included
-        with patch(
-            "authentik.policies.dummy.models.DummyPolicy.passes", POLICY_RETURN_TRUE
-        ):
+        with patch("authentik.policies.dummy.models.DummyPolicy.passes", POLICY_RETURN_TRUE):
 
-            exec_url = reverse(
-                "authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}
-            )
+            exec_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
             # First request, run the planner
             response = self.client.get(exec_url)
             self.assertEqual(response.status_code, 200)
@@ -511,9 +486,7 @@ class TestFlowExecutor(TestCase):
         )
         request.user = user
         planner = FlowPlanner(flow)
-        plan = planner.plan(
-            request, default_context={PLAN_CONTEXT_PENDING_USER_IDENTIFIER: ident}
-        )
+        plan = planner.plan(request, default_context={PLAN_CONTEXT_PENDING_USER_IDENTIFIER: ident})
 
         executor = FlowExecutorView()
         executor.plan = plan
@@ -542,9 +515,7 @@ class TestFlowExecutor(TestCase):
             evaluate_on_plan=False,
             re_evaluate_policies=True,
         )
-        PolicyBinding.objects.create(
-            policy=reputation_policy, target=deny_binding, order=0
-        )
+        PolicyBinding.objects.create(policy=reputation_policy, target=deny_binding, order=0)
 
         # Stage 1 is an identification stage
         ident_stage = IdentificationStage.objects.create(
@@ -557,9 +528,7 @@ class TestFlowExecutor(TestCase):
             order=1,
             invalid_response_action=InvalidResponseAction.RESTART_WITH_CONTEXT,
         )
-        exec_url = reverse(
-            "authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}
-        )
+        exec_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
         # First request, run the planner
         response = self.client.get(exec_url)
         self.assertEqual(response.status_code, 200)
@@ -579,9 +548,7 @@ class TestFlowExecutor(TestCase):
                 "user_fields": [UserFields.E_MAIL],
             },
         )
-        response = self.client.post(
-            exec_url, {"uid_field": "invalid-string"}, follow=True
-        )
+        response = self.client.post(exec_url, {"uid_field": "invalid-string"}, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),

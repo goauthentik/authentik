@@ -11,16 +11,8 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
-from authentik.core.models import (
-    Source,
-    SourceUserMatchingModes,
-    User,
-    UserSourceConnection,
-)
-from authentik.core.sources.stage import (
-    PLAN_CONTEXT_SOURCES_CONNECTION,
-    PostUserEnrollmentStage,
-)
+from authentik.core.models import Source, SourceUserMatchingModes, User, UserSourceConnection
+from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION, PostUserEnrollmentStage
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow, Stage, in_memory_stage
 from authentik.flows.planner import (
@@ -76,9 +68,7 @@ class SourceFlowManager:
     # pylint: disable=too-many-return-statements
     def get_action(self, **kwargs) -> tuple[Action, Optional[UserSourceConnection]]:
         """decide which action should be taken"""
-        new_connection = self.connection_type(
-            source=self.source, identifier=self.identifier
-        )
+        new_connection = self.connection_type(source=self.source, identifier=self.identifier)
         # When request is authenticated, always link
         if self.request.user.is_authenticated:
             new_connection.user = self.request.user
@@ -113,9 +103,7 @@ class SourceFlowManager:
             SourceUserMatchingModes.USERNAME_DENY,
         ]:
             if not self.enroll_info.get("username", None):
-                self._logger.warning(
-                    "Refusing to use none username", source=self.source
-                )
+                self._logger.warning("Refusing to use none username", source=self.source)
                 return Action.DENY, None
             query = Q(username__exact=self.enroll_info.get("username", None))
         self._logger.debug("trying to link with existing user", query=query)
@@ -229,10 +217,7 @@ class SourceFlowManager:
         """Login user and redirect."""
         messages.success(
             self.request,
-            _(
-                "Successfully authenticated with %(source)s!"
-                % {"source": self.source.name}
-            ),
+            _("Successfully authenticated with %(source)s!" % {"source": self.source.name}),
         )
         flow_kwargs = {PLAN_CONTEXT_PENDING_USER: connection.user}
         return self._handle_login_flow(self.source.authentication_flow, **flow_kwargs)
@@ -270,10 +255,7 @@ class SourceFlowManager:
         """User was not authenticated and previous request was not authenticated."""
         messages.success(
             self.request,
-            _(
-                "Successfully authenticated with %(source)s!"
-                % {"source": self.source.name}
-            ),
+            _("Successfully authenticated with %(source)s!" % {"source": self.source.name}),
         )
 
         # We run the Flow planner here so we can pass the Pending user in the context

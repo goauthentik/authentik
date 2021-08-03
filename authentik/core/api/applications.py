@@ -147,9 +147,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         """Custom list method that checks Policy based access instead of guardian"""
         should_cache = request.GET.get("search", "") == ""
 
-        superuser_full_list = (
-            str(request.GET.get("superuser_full_list", "false")).lower() == "true"
-        )
+        superuser_full_list = str(request.GET.get("superuser_full_list", "false")).lower() == "true"
         if superuser_full_list and request.user.is_superuser:
             return super().list(request)
 
@@ -240,9 +238,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         app.save()
         return Response({})
 
-    @permission_required(
-        "authentik_core.view_application", ["authentik_events.view_event"]
-    )
+    @permission_required("authentik_core.view_application", ["authentik_events.view_event"])
     @extend_schema(responses={200: CoordinateSerializer(many=True)})
     @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=unused-argument

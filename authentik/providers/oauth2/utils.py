@@ -133,9 +133,7 @@ def protected_resource_view(scopes: list[str]):
                     raise BearerTokenError("invalid_token")
 
                 try:
-                    token: RefreshToken = RefreshToken.objects.get(
-                        access_token=access_token
-                    )
+                    token: RefreshToken = RefreshToken.objects.get(access_token=access_token)
                 except RefreshToken.DoesNotExist:
                     LOGGER.debug("Token does not exist", access_token=access_token)
                     raise BearerTokenError("invalid_token")

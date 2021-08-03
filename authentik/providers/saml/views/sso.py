@@ -12,11 +12,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import in_memory_stage
-from authentik.flows.planner import (
-    PLAN_CONTEXT_APPLICATION,
-    PLAN_CONTEXT_SSO,
-    FlowPlanner,
-)
+from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
 from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.lib.views import bad_request_message
@@ -45,9 +41,7 @@ class SAMLSSOView(PolicyAccessView):
     Calls get/post handler."""
 
     def resolve_provider_application(self):
-        self.application = get_object_or_404(
-            Application, slug=self.kwargs["application_slug"]
-        )
+        self.application = get_object_or_404(Application, slug=self.kwargs["application_slug"])
         self.provider: SAMLProvider = get_object_or_404(
             SAMLProvider, pk=self.application.provider_id
         )
@@ -72,9 +66,7 @@ class SAMLSSOView(PolicyAccessView):
             {
                 PLAN_CONTEXT_SSO: True,
                 PLAN_CONTEXT_APPLICATION: self.application,
-                PLAN_CONTEXT_CONSENT_HEADER: _(
-                    "You're about to sign into %(application)s."
-                )
+                PLAN_CONTEXT_CONSENT_HEADER: _("You're about to sign into %(application)s.")
                 % {"application": self.application.name},
                 PLAN_CONTEXT_CONSENT_PERMISSIONS: [],
             },
@@ -100,9 +92,7 @@ class SAMLSSOBindingRedirectView(SAMLSSOView):
         """Handle REDIRECT bindings"""
         if REQUEST_KEY_SAML_REQUEST not in self.request.GET:
             LOGGER.info("handle_saml_request: SAML payload missing")
-            return bad_request_message(
-                self.request, "The SAML request payload is missing."
-            )
+            return bad_request_message(self.request, "The SAML request payload is missing.")
 
         try:
             auth_n_request = AuthNRequestParser(self.provider).parse_detached(
@@ -132,9 +122,7 @@ class SAMLSSOBindingPOSTView(SAMLSSOView):
         """Handle POST bindings"""
         if REQUEST_KEY_SAML_REQUEST not in self.request.POST:
             LOGGER.info("check_saml_request: SAML payload missing")
-            return bad_request_message(
-                self.request, "The SAML request payload is missing."
-            )
+            return bad_request_message(self.request, "The SAML request payload is missing.")
 
         try:
             auth_n_request = AuthNRequestParser(self.provider).parse(
@@ -153,8 +141,6 @@ class SAMLSSOBindingInitView(SAMLSSOView):
 
     def check_saml_request(self) -> Optional[HttpRequest]:
         """Create SAML Response from scratch"""
-        LOGGER.debug(
-            "handle_saml_no_request: No SAML Request, using IdP-initiated flow."
-        )
+        LOGGER.debug("handle_saml_no_request: No SAML Request, using IdP-initiated flow.")
         auth_n_request = AuthNRequestParser(self.provider).idp_initiated()
         self.request.session[SESSION_KEY_AUTH_N_REQUEST] = auth_n_request

@@ -30,9 +30,7 @@ class TestJWKS(OAuthTestCase):
         )
         app = Application.objects.create(name="test", slug="test", provider=provider)
         response = self.client.get(
-            reverse(
-                "authentik_providers_oauth2:jwks", kwargs={"application_slug": app.slug}
-            )
+            reverse("authentik_providers_oauth2:jwks", kwargs={"application_slug": app.slug})
         )
         body = json.loads(force_str(response.content))
         self.assertEqual(len(body["keys"]), 1)
@@ -47,8 +45,6 @@ class TestJWKS(OAuthTestCase):
         )
         app = Application.objects.create(name="test", slug="test", provider=provider)
         response = self.client.get(
-            reverse(
-                "authentik_providers_oauth2:jwks", kwargs={"application_slug": app.slug}
-            )
+            reverse("authentik_providers_oauth2:jwks", kwargs={"application_slug": app.slug})
         )
         self.assertJSONEqual(force_str(response.content), {})

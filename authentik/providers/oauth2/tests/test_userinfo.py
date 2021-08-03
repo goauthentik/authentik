@@ -10,16 +10,8 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
 from authentik.managed.manager import ObjectManager
-from authentik.providers.oauth2.generators import (
-    generate_client_id,
-    generate_client_secret,
-)
-from authentik.providers.oauth2.models import (
-    IDToken,
-    OAuth2Provider,
-    RefreshToken,
-    ScopeMapping,
-)
+from authentik.providers.oauth2.generators import generate_client_id, generate_client_secret
+from authentik.providers.oauth2.models import IDToken, OAuth2Provider, RefreshToken, ScopeMapping
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 
 
@@ -78,9 +70,7 @@ class TestUserinfo(OAuthTestCase):
 
     def test_userinfo_invalid_scope(self):
         """test user info with a broken scope"""
-        scope = ScopeMapping.objects.create(
-            name="test", scope_name="openid", expression="q"
-        )
+        scope = ScopeMapping.objects.create(name="test", scope_name="openid", expression="q")
         self.provider.property_mappings.add(scope)
 
         res = self.client.get(

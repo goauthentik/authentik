@@ -24,9 +24,7 @@ class Tenant(models.Model):
 
     branding_title = models.TextField(default="authentik")
 
-    branding_logo = models.TextField(
-        default="/static/dist/assets/icons/icon_left_brand.svg"
-    )
+    branding_logo = models.TextField(default="/static/dist/assets/icons/icon_left_brand.svg")
     branding_favicon = models.TextField(default="/static/dist/assets/icons/icon.png")
 
     flow_authentication = models.ForeignKey(

@@ -11,16 +11,12 @@ def notify_configuration_error(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
     db_alias = schema_editor.connection.alias
     Group = apps.get_model("authentik_core", "Group")
     PolicyBinding = apps.get_model("authentik_policies", "PolicyBinding")
-    EventMatcherPolicy = apps.get_model(
-        "authentik_policies_event_matcher", "EventMatcherPolicy"
-    )
+    EventMatcherPolicy = apps.get_model("authentik_policies_event_matcher", "EventMatcherPolicy")
     NotificationRule = apps.get_model("authentik_events", "NotificationRule")
     NotificationTransport = apps.get_model("authentik_events", "NotificationTransport")
 
     admin_group = (
-        Group.objects.using(db_alias)
-        .filter(name="authentik Admins", is_superuser=True)
-        .first()
+        Group.objects.using(db_alias).filter(name="authentik Admins", is_superuser=True).first()
     )
 
     policy, _ = EventMatcherPolicy.objects.using(db_alias).update_or_create(
@@ -32,9 +28,7 @@ def notify_configuration_error(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
         defaults={"group": admin_group, "severity": NotificationSeverity.ALERT},
     )
     trigger.transports.set(
-        NotificationTransport.objects.using(db_alias).filter(
-            name="default-email-transport"
-        )
+        NotificationTransport.objects.using(db_alias).filter(name="default-email-transport")
     )
     trigger.save()
     PolicyBinding.objects.using(db_alias).update_or_create(
@@ -50,16 +44,12 @@ def notify_update(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     db_alias = schema_editor.connection.alias
     Group = apps.get_model("authentik_core", "Group")
     PolicyBinding = apps.get_model("authentik_policies", "PolicyBinding")
-    EventMatcherPolicy = apps.get_model(
-        "authentik_policies_event_matcher", "EventMatcherPolicy"
-    )
+    EventMatcherPolicy = apps.get_model("authentik_policies_event_matcher", "EventMatcherPolicy")
     NotificationRule = apps.get_model("authentik_events", "NotificationRule")
     NotificationTransport = apps.get_model("authentik_events", "NotificationTransport")
 
     admin_group = (
-        Group.objects.using(db_alias)
-        .filter(name="authentik Admins", is_superuser=True)
-        .first()
+        Group.objects.using(db_alias).filter(name="authentik Admins", is_superuser=True).first()
     )
 
     policy, _ = EventMatcherPolicy.objects.using(db_alias).update_or_create(
@@ -71,9 +61,7 @@ def notify_update(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         defaults={"group": admin_group, "severity": NotificationSeverity.ALERT},
     )
     trigger.transports.set(
-        NotificationTransport.objects.using(db_alias).filter(
-            name="default-email-transport"
-        )
+        NotificationTransport.objects.using(db_alias).filter(name="default-email-transport")
     )
     trigger.save()
     PolicyBinding.objects.using(db_alias).update_or_create(
@@ -89,16 +77,12 @@ def notify_exception(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     db_alias = schema_editor.connection.alias
     Group = apps.get_model("authentik_core", "Group")
     PolicyBinding = apps.get_model("authentik_policies", "PolicyBinding")
-    EventMatcherPolicy = apps.get_model(
-        "authentik_policies_event_matcher", "EventMatcherPolicy"
-    )
+    EventMatcherPolicy = apps.get_model("authentik_policies_event_matcher", "EventMatcherPolicy")
     NotificationRule = apps.get_model("authentik_events", "NotificationRule")
     NotificationTransport = apps.get_model("authentik_events", "NotificationTransport")
 
     admin_group = (
-        Group.objects.using(db_alias)
-        .filter(name="authentik Admins", is_superuser=True)
-        .first()
+        Group.objects.using(db_alias).filter(name="authentik Admins", is_superuser=True).first()
     )
 
     policy_policy_exc, _ = EventMatcherPolicy.objects.using(db_alias).update_or_create(
@@ -114,9 +98,7 @@ def notify_exception(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         defaults={"group": admin_group, "severity": NotificationSeverity.ALERT},
     )
     trigger.transports.set(
-        NotificationTransport.objects.using(db_alias).filter(
-            name="default-email-transport"
-        )
+        NotificationTransport.objects.using(db_alias).filter(name="default-email-transport")
     )
     trigger.save()
     PolicyBinding.objects.using(db_alias).update_or_create(

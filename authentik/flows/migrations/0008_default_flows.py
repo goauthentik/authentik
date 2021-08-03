@@ -9,21 +9,15 @@ from authentik.stages.identification.models import UserFields
 from authentik.stages.password import BACKEND_DJANGO, BACKEND_LDAP
 
 
-def create_default_authentication_flow(
-    apps: Apps, schema_editor: BaseDatabaseSchemaEditor
-):
+def create_default_authentication_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     Flow = apps.get_model("authentik_flows", "Flow")
     FlowStageBinding = apps.get_model("authentik_flows", "FlowStageBinding")
     PasswordStage = apps.get_model("authentik_stages_password", "PasswordStage")
     UserLoginStage = apps.get_model("authentik_stages_user_login", "UserLoginStage")
-    IdentificationStage = apps.get_model(
-        "authentik_stages_identification", "IdentificationStage"
-    )
+    IdentificationStage = apps.get_model("authentik_stages_identification", "IdentificationStage")
     db_alias = schema_editor.connection.alias
 
-    identification_stage, _ = IdentificationStage.objects.using(
-        db_alias
-    ).update_or_create(
+    identification_stage, _ = IdentificationStage.objects.using(db_alias).update_or_create(
         name="default-authentication-identification",
         defaults={
             "user_fields": [UserFields.E_MAIL, UserFields.USERNAME],
@@ -69,17 +63,13 @@ def create_default_authentication_flow(
     )
 
 
-def create_default_invalidation_flow(
-    apps: Apps, schema_editor: BaseDatabaseSchemaEditor
-):
+def create_default_invalidation_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     Flow = apps.get_model("authentik_flows", "Flow")
     FlowStageBinding = apps.get_model("authentik_flows", "FlowStageBinding")
     UserLogoutStage = apps.get_model("authentik_stages_user_logout", "UserLogoutStage")
     db_alias = schema_editor.connection.alias
 
-    UserLogoutStage.objects.using(db_alias).update_or_create(
-        name="default-invalidation-logout"
-    )
+    UserLogoutStage.objects.using(db_alias).update_or_create(name="default-invalidation-logout")
 
     flow, _ = Flow.objects.using(db_alias).update_or_create(
         slug="default-invalidation-flow",

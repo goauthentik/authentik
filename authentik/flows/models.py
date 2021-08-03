@@ -138,9 +138,7 @@ class Flow(SerializerModel, PolicyBindingModel):
         it is returned as-is"""
         if not self.background:
             return "/static/dist/assets/images/flow_background.jpg"
-        if self.background.name.startswith("http") or self.background.name.startswith(
-            "/static"
-        ):
+        if self.background.name.startswith("http") or self.background.name.startswith("/static"):
             return self.background.name
         return self.background.url
 
@@ -165,9 +163,7 @@ class Flow(SerializerModel, PolicyBindingModel):
             if result.passing:
                 LOGGER.debug("with_policy: flow passing", flow=flow)
                 return flow
-            LOGGER.warning(
-                "with_policy: flow not passing", flow=flow, messages=result.messages
-            )
+            LOGGER.warning("with_policy: flow not passing", flow=flow, messages=result.messages)
         LOGGER.debug("with_policy: no flow found", filters=flow_filter)
         return None
 

@@ -132,9 +132,7 @@ class OAuthAuthorizationParams:
             scope=query_dict.get("scope", "").split(),
             state=state,
             nonce=query_dict.get("nonce"),
-            prompt=ALLOWED_PROMPT_PARAMS.intersection(
-                set(query_dict.get("prompt", "").split())
-            ),
+            prompt=ALLOWED_PROMPT_PARAMS.intersection(set(query_dict.get("prompt", "").split())),
             request=query_dict.get("request", None),
             max_age=int(max_age) if max_age else None,
             code_challenge=query_dict.get("code_challenge"),
@@ -143,9 +141,7 @@ class OAuthAuthorizationParams:
 
     def __post_init__(self):
         try:
-            self.provider: OAuth2Provider = OAuth2Provider.objects.get(
-                client_id=self.client_id
-            )
+            self.provider: OAuth2Provider = OAuth2Provider.objects.get(client_id=self.client_id)
         except OAuth2Provider.DoesNotExist:
             LOGGER.warning("Invalid client identifier", client_id=self.client_id)
             raise ClientIdError(client_id=self.client_id)
@@ -182,13 +178,10 @@ class OAuthAuthorizationParams:
         """Ensure openid scope is set in Hybrid flows, or when requesting an id_token"""
         if SCOPE_OPENID not in self.scope and (
             self.grant_type == GrantTypes.HYBRID
-            or self.response_type
-            in [ResponseTypes.ID_TOKEN, ResponseTypes.ID_TOKEN_TOKEN]
+            or self.response_type in [ResponseTypes.ID_TOKEN, ResponseTypes.ID_TOKEN_TOKEN]
         ):
             LOGGER.warning("Missing 'openid' scope.")
-            raise AuthorizeError(
-                self.redirect_uri, "invalid_scope", self.grant_type, self.state
-            )
+            raise AuthorizeError(self.redirect_uri, "invalid_scope", self.grant_type, self.state)
 
     def check_nonce(self):
         """Nonce parameter validation."""
@@ -226,9 +219,7 @@ class OAuthAuthorizationParams:
             code.code_challenge = self.code_challenge
             code.code_challenge_method = self.code_challenge_method
 
-        code.expires_at = timezone.now() + timedelta_from_string(
-            self.provider.access_code_validity
-        )
+        code.expires_at = timezone.now() + timedelta_from_string(self.provider.access_code_validity)
         code.scope = self.scope
         code.nonce = self.nonce
         code.is_open_id = SCOPE_OPENID in self.scope
@@ -253,12 +244,8 @@ class OAuthFulfillmentStage(StageView):
         if PLAN_CONTEXT_PARAMS not in self.executor.plan.context:
             LOGGER.warning("Got to fulfillment stage with no pending context")
             return HttpResponseBadRequest()
-        self.params: OAuthAuthorizationParams = self.executor.plan.context.pop(
-            PLAN_CONTEXT_PARAMS
-        )
-        application: Application = self.executor.plan.context.pop(
-            PLAN_CONTEXT_APPLICATION
-        )
+        self.params: OAuthAuthorizationParams = self.executor.plan.context.pop(PLAN_CONTEXT_PARAMS)
+        application: Application = self.executor.plan.context.pop(PLAN_CONTEXT_APPLICATION)
         self.provider = get_object_or_404(OAuth2Provider, pk=application.provider_id)
         try:
             # At this point we don't need to check permissions anymore
@@ -303,9 +290,7 @@ class OAuthFulfillmentStage(StageView):
 
             if self.params.grant_type == GrantTypes.AUTHORIZATION_CODE:
                 query_params["code"] = code.code
-                query_params["state"] = [
-                    str(self.params.state) if self.params.state else ""
-                ]
+                query_params["state"] = [str(self.params.state) if self.params.state else ""]
 
                 uri = uri._replace(query=urlencode(query_params, doseq=True))
                 return urlunsplit(uri)
@@ -433,9 +418,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
         if self.params.max_age:
             current_age: timedelta = (
                 timezone.now()
-                - Event.objects.filter(
-                    action=EventAction.LOGIN, user=get_user(self.request.user)
-                )
+                - Event.objects.filter(action=EventAction.LOGIN, user=get_user(self.request.user))
                 .latest("created")
                 .created
             )
@@ -465,9 +448,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 # OAuth2 related params
                 PLAN_CONTEXT_PARAMS: self.params,
                 # Consent related params
-                PLAN_CONTEXT_CONSENT_HEADER: _(
-                    "You're about to sign into %(application)s."
-                )
+                PLAN_CONTEXT_CONSENT_HEADER: _("You're about to sign into %(application)s.")
                 % {"application": self.application.name},
                 PLAN_CONTEXT_CONSENT_PERMISSIONS: scope_descriptions,
             },

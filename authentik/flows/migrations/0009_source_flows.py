@@ -15,16 +15,12 @@ PROMPT_POLICY_EXPRESSION = """# Check if we've not been given a username by the 
 return 'username' not in context.get('prompt_data', {})"""
 
 
-def create_default_source_enrollment_flow(
-    apps: Apps, schema_editor: BaseDatabaseSchemaEditor
-):
+def create_default_source_enrollment_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     Flow = apps.get_model("authentik_flows", "Flow")
     FlowStageBinding = apps.get_model("authentik_flows", "FlowStageBinding")
     PolicyBinding = apps.get_model("authentik_policies", "PolicyBinding")
 
-    ExpressionPolicy = apps.get_model(
-        "authentik_policies_expression", "ExpressionPolicy"
-    )
+    ExpressionPolicy = apps.get_model("authentik_policies_expression", "ExpressionPolicy")
 
     PromptStage = apps.get_model("authentik_stages_prompt", "PromptStage")
     Prompt = apps.get_model("authentik_stages_prompt", "Prompt")
@@ -99,16 +95,12 @@ def create_default_source_enrollment_flow(
     )
 
 
-def create_default_source_authentication_flow(
-    apps: Apps, schema_editor: BaseDatabaseSchemaEditor
-):
+def create_default_source_authentication_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     Flow = apps.get_model("authentik_flows", "Flow")
     FlowStageBinding = apps.get_model("authentik_flows", "FlowStageBinding")
     PolicyBinding = apps.get_model("authentik_policies", "PolicyBinding")
 
-    ExpressionPolicy = apps.get_model(
-        "authentik_policies_expression", "ExpressionPolicy"
-    )
+    ExpressionPolicy = apps.get_model("authentik_policies_expression", "ExpressionPolicy")
 
     UserLoginStage = apps.get_model("authentik_stages_user_login", "UserLoginStage")
 

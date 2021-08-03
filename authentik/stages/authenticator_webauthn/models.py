@@ -18,17 +18,13 @@ class AuthenticateWebAuthnStage(ConfigurableStage, Stage):
 
     @property
     def serializer(self) -> BaseSerializer:
-        from authentik.stages.authenticator_webauthn.api import (
-            AuthenticateWebAuthnStageSerializer,
-        )
+        from authentik.stages.authenticator_webauthn.api import AuthenticateWebAuthnStageSerializer
 
         return AuthenticateWebAuthnStageSerializer
 
     @property
     def type(self) -> Type[View]:
-        from authentik.stages.authenticator_webauthn.stage import (
-            AuthenticatorWebAuthnStageView,
-        )
+        from authentik.stages.authenticator_webauthn.stage import AuthenticatorWebAuthnStageView
 
         return AuthenticatorWebAuthnStageView
 

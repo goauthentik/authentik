@@ -70,9 +70,7 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
         serializer.save(
             user=self.request.user,
             intent=TokenIntents.INTENT_API,
-            expiring=self.request.user.attributes.get(
-                USER_ATTRIBUTE_TOKEN_EXPIRING, True
-            ),
+            expiring=self.request.user.attributes.get(USER_ATTRIBUTE_TOKEN_EXPIRING, True),
         )
 
     @permission_required("authentik_core.view_token_key")
@@ -89,7 +87,5 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
         token: Token = self.get_object()
         if token.is_expired:
             raise Http404
-        Event.new(EventAction.SECRET_VIEW, secret=token).from_http(  # noqa # nosec
-            request
-        )
+        Event.new(EventAction.SECRET_VIEW, secret=token).from_http(request)  # noqa # nosec
         return Response(TokenViewSerializer({"key": token.key}).data)

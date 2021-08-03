@@ -26,9 +26,7 @@ def check_plex_token(self: MonitoredTask, source_slug: int):
     auth = PlexAuth(source, source.plex_token)
     try:
         auth.get_user_info()
-        self.set_status(
-            TaskResult(TaskResultStatus.SUCCESSFUL, ["Plex token is valid."])
-        )
+        self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, ["Plex token is valid."]))
     except RequestException as exc:
         self.set_status(
             TaskResult(

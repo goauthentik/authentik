@@ -6,10 +6,7 @@ from dacite import from_dict
 from kubernetes.client import ApiextensionsV1Api, CustomObjectsApi
 
 from authentik.outposts.controllers.base import FIELD_MANAGER
-from authentik.outposts.controllers.k8s.base import (
-    KubernetesObjectReconciler,
-    NeedsUpdate,
-)
+from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler, NeedsUpdate
 from authentik.providers.proxy.models import ProxyMode, ProxyProvider
 
 if TYPE_CHECKING:

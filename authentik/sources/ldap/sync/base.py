@@ -50,9 +50,7 @@ class BaseLDAPSynchronizer:
 
     def build_user_properties(self, user_dn: str, **kwargs) -> dict[str, Any]:
         """Build attributes for User object based on property mappings."""
-        return self._build_object_properties(
-            user_dn, self._source.property_mappings, **kwargs
-        )
+        return self._build_object_properties(user_dn, self._source.property_mappings, **kwargs)
 
     def build_group_properties(self, group_dn: str, **kwargs) -> dict[str, Any]:
         """Build attributes for Group object based on property mappings."""
@@ -69,18 +67,14 @@ class BaseLDAPSynchronizer:
                 continue
             mapping: LDAPPropertyMapping
             try:
-                value = mapping.evaluate(
-                    user=None, request=None, ldap=kwargs, dn=object_dn
-                )
+                value = mapping.evaluate(user=None, request=None, ldap=kwargs, dn=object_dn)
                 if value is None:
                     continue
                 object_field = mapping.object_field
                 if object_field.startswith("attributes."):
                     # Because returning a list might desired, we can't
                     # rely on self._flatten here. Instead, just save the result as-is
-                    properties["attributes"][
-                        object_field.replace("attributes.", "")
-                    ] = value
+                    properties["attributes"][object_field.replace("attributes.", "")] = value
                 else:
                     properties[object_field] = self._flatten(value)
             except PropertyMappingExpressionException as exc:
@@ -89,9 +83,7 @@ class BaseLDAPSynchronizer:
                     message=f"Failed to evaluate property-mapping: {str(exc)}",
                     mapping=mapping,
                 ).save()
-                self._logger.warning(
-                    "Mapping failed to evaluate", exc=exc, mapping=mapping
-                )
+                self._logger.warning("Mapping failed to evaluate", exc=exc, mapping=mapping)
                 continue
         if self._source.object_uniqueness_field in kwargs:
             properties["attributes"][LDAP_UNIQUENESS] = self._flatten(

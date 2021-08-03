@@ -3,20 +3,14 @@ from typing import Any
 
 from django.db.models import Model
 from rest_framework.fields import CharField, IntegerField
-from rest_framework.serializers import (
-    Serializer,
-    SerializerMethodField,
-    ValidationError,
-)
+from rest_framework.serializers import Serializer, SerializerMethodField, ValidationError
 
 
 def is_dict(value: Any):
     """Ensure a value is a dictionary, useful for JSONFields"""
     if isinstance(value, dict):
         return
-    raise ValidationError(
-        "Value must be a dictionary, and not have any duplicate keys."
-    )
+    raise ValidationError("Value must be a dictionary, and not have any duplicate keys.")
 
 
 class PassiveSerializer(Serializer):
@@ -25,9 +19,7 @@ class PassiveSerializer(Serializer):
     def create(self, validated_data: dict) -> Model:  # pragma: no cover
         return Model()
 
-    def update(
-        self, instance: Model, validated_data: dict
-    ) -> Model:  # pragma: no cover
+    def update(self, instance: Model, validated_data: dict) -> Model:  # pragma: no cover
         return Model()
 
     class Meta:

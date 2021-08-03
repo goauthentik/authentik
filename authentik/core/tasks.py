@@ -27,9 +27,7 @@ def clean_expired_models(self: MonitoredTask):
     for cls in ExpiringModel.__subclasses__():
         cls: ExpiringModel
         objects = (
-            cls.objects.all()
-            .exclude(expiring=False)
-            .exclude(expiring=True, expires__gt=now())
+            cls.objects.all().exclude(expiring=False).exclude(expiring=True, expires__gt=now())
         )
         for obj in objects:
             obj.expire_action()

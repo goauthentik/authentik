@@ -20,9 +20,7 @@ class TestConsentStage(TestCase):
 
     def setUp(self):
         super().setUp()
-        self.user = User.objects.create_user(
-            username="unittest", email="test@beryju.org"
-        )
+        self.user = User.objects.create_user(username="unittest", email="test@beryju.org")
         self.application = Application.objects.create(
             name="test-application",
             slug="test-application",
@@ -36,14 +34,10 @@ class TestConsentStage(TestCase):
             slug="test-consent",
             designation=FlowDesignation.AUTHENTICATION,
         )
-        stage = ConsentStage.objects.create(
-            name="consent", mode=ConsentMode.ALWAYS_REQUIRE
-        )
+        stage = ConsentStage.objects.create(name="consent", mode=ConsentMode.ALWAYS_REQUIRE)
         binding = FlowStageBinding.objects.create(target=flow, stage=stage, order=2)
 
-        plan = FlowPlan(
-            flow_pk=flow.pk.hex, bindings=[binding], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=flow.pk.hex, bindings=[binding], markers=[StageMarker()])
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -96,9 +90,7 @@ class TestConsentStage(TestCase):
             },
         )
         self.assertTrue(
-            UserConsent.objects.filter(
-                user=self.user, application=self.application
-            ).exists()
+            UserConsent.objects.filter(user=self.user, application=self.application).exists()
         )
 
     def test_expire(self):
@@ -137,14 +129,10 @@ class TestConsentStage(TestCase):
             },
         )
         self.assertTrue(
-            UserConsent.objects.filter(
-                user=self.user, application=self.application
-            ).exists()
+            UserConsent.objects.filter(user=self.user, application=self.application).exists()
         )
         sleep(1)
         clean_expired_models.delay().get()
         self.assertFalse(
-            UserConsent.objects.filter(
-                user=self.user, application=self.application
-            ).exists()
+            UserConsent.objects.filter(user=self.user, application=self.application).exists()
         )

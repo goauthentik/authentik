@@ -99,9 +99,7 @@ class EmailStageView(ChallengeStageView):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         # Check if the user came back from the email link to verify
         if QS_KEY_TOKEN in request.session.get(SESSION_KEY_GET, {}):
-            token = get_object_or_404(
-                Token, key=request.session[SESSION_KEY_GET][QS_KEY_TOKEN]
-            )
+            token = get_object_or_404(Token, key=request.session[SESSION_KEY_GET][QS_KEY_TOKEN])
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = token.user
             token.delete()
             messages.success(request, _("Successfully verified Email."))

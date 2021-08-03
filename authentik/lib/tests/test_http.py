@@ -1,17 +1,8 @@
 """Test HTTP Helpers"""
 from django.test import RequestFactory, TestCase
 
-from authentik.core.models import (
-    USER_ATTRIBUTE_CAN_OVERRIDE_IP,
-    Token,
-    TokenIntents,
-    User,
-)
-from authentik.lib.utils.http import (
-    OUTPOST_REMOTE_IP_HEADER,
-    OUTPOST_TOKEN_HEADER,
-    get_client_ip,
-)
+from authentik.core.models import USER_ATTRIBUTE_CAN_OVERRIDE_IP, Token, TokenIntents, User
+from authentik.lib.utils.http import OUTPOST_REMOTE_IP_HEADER, OUTPOST_TOKEN_HEADER, get_client_ip
 
 
 class TestHTTP(TestCase):

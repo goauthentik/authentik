@@ -110,10 +110,7 @@ class ResponseProcessor:
             seen_ids.append(self._root.attrib["ID"])
             cache.set(CACHE_SEEN_REQUEST_ID % self._source.pk, seen_ids)
             return
-        if (
-            SESSION_REQUEST_ID not in request.session
-            or "InResponseTo" not in self._root.attrib
-        ):
+        if SESSION_REQUEST_ID not in request.session or "InResponseTo" not in self._root.attrib:
             raise MismatchedRequestID(
                 "Missing InResponseTo and IdP-initiated Logins are not allowed"
             )
@@ -129,9 +126,7 @@ class ResponseProcessor:
         name_id = self._get_name_id().text
         user: User = User.objects.create(
             username=name_id,
-            attributes={
-                "saml": {"source": self._source.pk.hex, "delete_on_logout": True}
-            },
+            attributes={"saml": {"source": self._source.pk.hex, "delete_on_logout": True}},
         )
         LOGGER.debug("Created temporary user for NameID Transient", username=name_id)
         user.set_unusable_password()
@@ -214,9 +209,7 @@ class ResponseProcessor:
             **{PLAN_CONTEXT_PROMPT: delete_none_keys(name_id_filter)},
         )
 
-    def _flow_response(
-        self, request: HttpRequest, flow: Flow, **kwargs
-    ) -> HttpResponse:
+    def _flow_response(self, request: HttpRequest, flow: Flow, **kwargs) -> HttpResponse:
         kwargs[PLAN_CONTEXT_SSO] = True
         kwargs[PLAN_CONTEXT_SOURCE] = self._source
         request.session[SESSION_KEY_PLAN] = FlowPlanner(flow).plan(request, kwargs)

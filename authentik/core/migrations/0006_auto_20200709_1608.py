@@ -13,8 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="source",
             name="slug",
-            field=models.SlugField(
-                help_text="Internal source name, used in URLs.", unique=True
-            ),
+            field=models.SlugField(help_text="Internal source name, used in URLs.", unique=True),
         ),
     ]

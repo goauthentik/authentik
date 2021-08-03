@@ -42,9 +42,9 @@ class UserWriteStageView(StageView):
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = User(
                 is_active=not self.executor.current_stage.create_users_as_inactive
             )
-            self.executor.plan.context[
-                PLAN_CONTEXT_AUTHENTICATION_BACKEND
-            ] = class_to_path(ModelBackend)
+            self.executor.plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = class_to_path(
+                ModelBackend
+            )
             LOGGER.debug(
                 "Created new user",
                 flow_slug=self.executor.flow.slug,
@@ -98,9 +98,7 @@ class UserWriteStageView(StageView):
         except IntegrityError as exc:
             LOGGER.warning("Failed to save user", exc=exc)
             return self.executor.stage_invalid()
-        user_write.send(
-            sender=self, request=request, user=user, data=data, created=user_created
-        )
+        user_write.send(sender=self, request=request, user=user, data=data, created=user_created)
         # Check if the password has been updated, and update the session auth hash
         if should_update_seesion:
             update_session_auth_hash(self.request, user)

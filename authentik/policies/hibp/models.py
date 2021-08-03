@@ -19,9 +19,7 @@ class HaveIBeenPwendPolicy(Policy):
 
     password_field = models.TextField(
         default="password",
-        help_text=_(
-            "Field key to check, field keys defined in Prompt stages are available."
-        ),
+        help_text=_("Field key to check, field keys defined in Prompt stages are available."),
     )
 
     allowed_count = models.IntegerField(default=0)
@@ -59,9 +57,7 @@ class HaveIBeenPwendPolicy(Policy):
                 final_count = int(count)
         LOGGER.debug("got hibp result", count=final_count, hash=pw_hash[:5])
         if final_count > self.allowed_count:
-            message = _(
-                "Password exists on %(count)d online lists." % {"count": final_count}
-            )
+            message = _("Password exists on %(count)d online lists." % {"count": final_count})
             return PolicyResult(False, message)
         return PolicyResult(True)
 

@@ -45,9 +45,7 @@ def get_email_body(email: EmailMultiAlternatives) -> str:
     retry_backoff=True,
     base=MonitoredTask,
 )
-def send_mail(
-    self: MonitoredTask, message: dict[Any, Any], email_stage_pk: Optional[int] = None
-):
+def send_mail(self: MonitoredTask, message: dict[Any, Any], email_stage_pk: Optional[int] = None):
     """Send Email for Email Stage. Retries are scheduled automatically."""
     self.save_on_success = False
     message_id = make_msgid(domain=DNS_NAME)

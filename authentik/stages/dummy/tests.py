@@ -39,9 +39,7 @@ class TestDummyStage(TestCase):
 
     def test_post(self):
         """Test with valid email, check that URL redirects back to itself"""
-        url = reverse(
-            "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
-        )
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.post(url, {})
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(

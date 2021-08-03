@@ -7,15 +7,8 @@ from authentik.core.models import Application, User
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import Flow
-from authentik.providers.oauth2.errors import (
-    AuthorizeError,
-    ClientIdError,
-    RedirectUriError,
-)
-from authentik.providers.oauth2.generators import (
-    generate_client_id,
-    generate_client_secret,
-)
+from authentik.providers.oauth2.errors import AuthorizeError, ClientIdError, RedirectUriError
+from authentik.providers.oauth2.generators import generate_client_id, generate_client_secret
 from authentik.providers.oauth2.models import (
     AuthorizationCode,
     GrantTypes,
@@ -42,9 +35,7 @@ class TestAuthorize(OAuthTestCase):
     def test_invalid_client_id(self):
         """Test invalid client ID"""
         with self.assertRaises(ClientIdError):
-            request = self.factory.get(
-                "/", data={"response_type": "code", "client_id": "invalid"}
-            )
+            request = self.factory.get("/", data={"response_type": "code", "client_id": "invalid"})
             OAuthAuthorizationParams.from_request(request)
 
     def test_request(self):
@@ -76,9 +67,7 @@ class TestAuthorize(OAuthTestCase):
             redirect_uris="http://local.invalid",
         )
         with self.assertRaises(RedirectUriError):
-            request = self.factory.get(
-                "/", data={"response_type": "code", "client_id": "test"}
-            )
+            request = self.factory.get("/", data={"response_type": "code", "client_id": "test"})
             OAuthAuthorizationParams.from_request(request)
         with self.assertRaises(RedirectUriError):
             request = self.factory.get(
@@ -99,9 +88,7 @@ class TestAuthorize(OAuthTestCase):
             authorization_flow=Flow.objects.first(),
         )
         with self.assertRaises(RedirectUriError):
-            request = self.factory.get(
-                "/", data={"response_type": "code", "client_id": "test"}
-            )
+            request = self.factory.get("/", data={"response_type": "code", "client_id": "test"})
             OAuthAuthorizationParams.from_request(request)
         request = self.factory.get(
             "/",

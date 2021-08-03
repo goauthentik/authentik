@@ -9,11 +9,7 @@ from yaml import safe_dump
 
 from authentik import __version__
 from authentik.outposts.controllers.base import BaseController, ControllerException
-from authentik.outposts.models import (
-    DockerServiceConnection,
-    Outpost,
-    ServiceConnectionInvalid,
-)
+from authentik.outposts.models import DockerServiceConnection, Outpost, ServiceConnectionInvalid
 
 
 class DockerController(BaseController):
@@ -37,9 +33,7 @@ class DockerController(BaseController):
     def _get_env(self) -> dict[str, str]:
         return {
             "AUTHENTIK_HOST": self.outpost.config.authentik_host.lower(),
-            "AUTHENTIK_INSECURE": str(
-                self.outpost.config.authentik_host_insecure
-            ).lower(),
+            "AUTHENTIK_INSECURE": str(self.outpost.config.authentik_host_insecure).lower(),
             "AUTHENTIK_TOKEN": self.outpost.token.key,
         }
 
@@ -141,9 +135,7 @@ class DockerController(BaseController):
                 .lower()
                 != "unless-stopped"
             ):
-                self.logger.info(
-                    "Container has mis-matched restart policy, re-creating..."
-                )
+                self.logger.info("Container has mis-matched restart policy, re-creating...")
                 self.down()
                 return self.up()
             # Check that container is healthy
@@ -157,9 +149,7 @@ class DockerController(BaseController):
                 if has_been_created:
                     # Since we've just created the container, give it some time to start.
                     # If its still not up by then, restart it
-                    self.logger.info(
-                        "Container is unhealthy and new, giving it time to boot."
-                    )
+                    self.logger.info("Container is unhealthy and new, giving it time to boot.")
                     sleep(60)
                 self.logger.info("Container is unhealthy, restarting...")
                 container.restart()
@@ -198,9 +188,7 @@ class DockerController(BaseController):
                     "ports": ports,
                     "environment": {
                         "AUTHENTIK_HOST": self.outpost.config.authentik_host,
-                        "AUTHENTIK_INSECURE": str(
-                            self.outpost.config.authentik_host_insecure
-                        ),
+                        "AUTHENTIK_INSECURE": str(self.outpost.config.authentik_host_insecure),
                         "AUTHENTIK_TOKEN": self.outpost.token.key,
                     },
                     "labels": self._get_labels(),

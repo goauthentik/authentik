@@ -81,9 +81,7 @@ class AuthNRequestParser:
 
         return auth_n_request
 
-    def parse(
-        self, saml_request: str, relay_state: Optional[str] = None
-    ) -> AuthNRequest:
+    def parse(self, saml_request: str, relay_state: Optional[str] = None) -> AuthNRequest:
         """Validate and parse raw request with enveloped signautre."""
         try:
             decoded_xml = b64decode(saml_request.encode())
@@ -94,9 +92,7 @@ class AuthNRequestParser:
 
         root = etree.fromstring(decoded_xml)  # nosec
         xmlsec.tree.add_ids(root, ["ID"])
-        signature_nodes = root.xpath(
-            "/samlp:AuthnRequest/ds:Signature", namespaces=NS_MAP
-        )
+        signature_nodes = root.xpath("/samlp:AuthnRequest/ds:Signature", namespaces=NS_MAP)
         # No signatures, no verifier configured -> decode xml directly
         if len(signature_nodes) < 1 and not verifier:
             return self._parse_xml(decoded_xml, relay_state)

@@ -22,17 +22,11 @@ from authentik.flows.challenge import (
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
-from authentik.stages.authenticator_webauthn.utils import (
-    generate_challenge,
-    get_origin,
-    get_rp_id,
-)
+from authentik.stages.authenticator_webauthn.utils import generate_challenge, get_origin, get_rp_id
 
 LOGGER = get_logger()
 
-SESSION_KEY_WEBAUTHN_AUTHENTICATED = (
-    "authentik_stages_authenticator_webauthn_authenticated"
-)
+SESSION_KEY_WEBAUTHN_AUTHENTICATED = "authentik_stages_authenticator_webauthn_authenticated"
 
 
 class AuthenticatorWebAuthnChallenge(WithUserInfoChallenge):
@@ -89,9 +83,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
         if credential_id_exists:
             raise ValidationError("Credential ID already exists.")
 
-        webauthn_credential.credential_id = str(
-            webauthn_credential.credential_id, "utf-8"
-        )
+        webauthn_credential.credential_id = str(webauthn_credential.credential_id, "utf-8")
         webauthn_credential.public_key = str(webauthn_credential.public_key, "utf-8")
 
         return webauthn_credential
@@ -145,12 +137,8 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
             return self.executor.stage_ok()
         return super().get(request, *args, **kwargs)
 
-    def get_response_instance(
-        self, data: QueryDict
-    ) -> AuthenticatorWebAuthnChallengeResponse:
-        response: AuthenticatorWebAuthnChallengeResponse = (
-            super().get_response_instance(data)
-        )
+    def get_response_instance(self, data: QueryDict) -> AuthenticatorWebAuthnChallengeResponse:
+        response: AuthenticatorWebAuthnChallengeResponse = super().get_response_instance(data)
         response.request = self.request
         response.user = self.get_pending_user()
         return response
@@ -170,7 +158,5 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
                 rp_id=get_rp_id(self.request),
             )
         else:
-            return self.executor.stage_invalid(
-                "Device with Credential ID already exists."
-            )
+            return self.executor.stage_invalid("Device with Credential ID already exists.")
         return self.executor.stage_ok()
