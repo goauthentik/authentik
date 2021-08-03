@@ -60,7 +60,7 @@
         "@types/grecaptcha": "^3.0.3",
         "@typescript-eslint/eslint-plugin": "^4.28.5",
         "@typescript-eslint/parser": "^4.28.5",
-        "@webcomponents/webcomponentsjs": "^2.5.0",
+        "@webcomponents/webcomponentsjs": "^2.6.0",
         "authentik-api": "file:api",
         "babel-plugin-macros": "^3.1.0",
         "base64-js": "^1.5.1",
