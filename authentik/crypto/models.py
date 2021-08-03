@@ -79,8 +79,8 @@ class CertificateKeyPair(CreatedUpdatedModel):
     def kid(self):
         """Get Key ID used for JWKS"""
         return "{0}".format(
-            md5(self.key_data.encode("utf-8")).hexdigest() if self.key_data else ""
-        )  # nosec
+            md5(self.key_data.encode("utf-8")).hexdigest() if self.key_data else ""  # nosec
+        )
 
     def __str__(self) -> str:
         return f"Certificate-Key Pair {self.name}"

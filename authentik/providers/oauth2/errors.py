@@ -204,7 +204,7 @@ class BearerTokenError(OAuth2Error):
             401,
         ),
         "insufficient_scope": (
-            "The request requires higher privileges than provided by " "the access token",
+            "The request requires higher privileges than provided by the access token",
             403,
         ),
     }
