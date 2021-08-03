@@ -58,7 +58,7 @@
         "@types/chart.js": "^2.9.34",
         "@types/codemirror": "5.60.2",
         "@types/grecaptcha": "^3.0.3",
-        "@typescript-eslint/eslint-plugin": "^4.28.5",
+        "@typescript-eslint/eslint-plugin": "^4.29.0",
         "@typescript-eslint/parser": "^4.28.5",
         "@webcomponents/webcomponentsjs": "^2.5.0",
         "authentik-api": "file:api",
