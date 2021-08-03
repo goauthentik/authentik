@@ -134,10 +134,18 @@ class ServiceProviderMetadataParser:
         # For now we'll only look at the first descriptor.
         # Even if multiple descriptors exist, we can only configure one
         descriptor = sp_sso_descriptors[0]
-        auth_n_request_signed = (
-            descriptor.attrib["AuthnRequestsSigned"].lower() == "true"
-        )
-        assertion_signed = descriptor.attrib["WantAssertionsSigned"].lower() == "true"
+
+        auth_n_request_signed = False
+        if "AuthnRequestsSigned" in descriptor.attrib:
+            auth_n_request_signed = (
+                descriptor.attrib["AuthnRequestsSigned"].lower() == "true"
+            )
+
+        assertion_signed = False
+        if "WantAssertionsSigned" in descriptor.attrib:
+            assertion_signed = (
+                descriptor.attrib["WantAssertionsSigned"].lower() == "true"
+            )
 
         acs_services = descriptor.findall(
             f"{{{NS_SAML_METADATA}}}AssertionConsumerService"
