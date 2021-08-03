@@ -163,7 +163,7 @@ class AssertionProcessor:
                     provider=self.provider,
                 )
                 if value is not None:
-                    name_id.text = value
+                    name_id.text = str(value)
                 return name_id
             except PropertyMappingExpressionException as exc:
                 Event.new(
