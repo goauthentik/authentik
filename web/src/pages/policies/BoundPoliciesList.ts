@@ -25,7 +25,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     @property()
     target?: string;
 
-    @property({type: Boolean})
+    @property({ type: Boolean })
     policyOnly = false;
 
     apiEndpoint(page: number): Promise<AKResponse<PolicyBinding>> {
@@ -61,52 +61,32 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
 
     getObjectEditButton(item: PolicyBinding): TemplateResult {
         if (item.policy) {
-            return html`
-            <ak-forms-modal>
-                <span slot="submit">
-                    ${t`Update`}
-                </span>
-                <span slot="header">
-                    ${t`Update ${item.policyObj?.name}`}
-                </span>
+            return html` <ak-forms-modal>
+                <span slot="submit"> ${t`Update`} </span>
+                <span slot="header"> ${t`Update ${item.policyObj?.name}`} </span>
                 <ak-proxy-form
                     slot="form"
                     .args=${{
-                        "instancePk": item.policyObj?.pk
+                        instancePk: item.policyObj?.pk,
                     }}
-                    type=${ifDefined(item.policyObj?.component)}>
+                    type=${ifDefined(item.policyObj?.component)}
+                >
                 </ak-proxy-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${t`Edit Policy`}
-                </button>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Edit Policy`}</button>
             </ak-forms-modal>`;
         } else if (item.group) {
             return html`<ak-forms-modal>
-                <span slot="submit">
-                    ${t`Update`}
-                </span>
-                <span slot="header">
-                    ${t`Update Group`}
-                </span>
-                <ak-group-form slot="form" .instancePk=${item.groupObj?.pk}>
-                </ak-group-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${t`Edit Group`}
-                </button>
+                <span slot="submit"> ${t`Update`} </span>
+                <span slot="header"> ${t`Update Group`} </span>
+                <ak-group-form slot="form" .instancePk=${item.groupObj?.pk}> </ak-group-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Edit Group`}</button>
             </ak-forms-modal>`;
         } else if (item.user) {
             return html`<ak-forms-modal>
-                <span slot="submit">
-                    ${t`Update`}
-                </span>
-                <span slot="header">
-                    ${t`Update User`}
-                </span>
-                <ak-user-form slot="form" .instancePk=${item.userObj?.pk}>
-                </ak-user-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${t`Edit User`}
-                </button>
+                <span slot="submit"> ${t`Update`} </span>
+                <span slot="header"> ${t`Update User`} </span>
+                <ak-user-form slot="form" .instancePk=${item.userObj?.pk}> </ak-user-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Edit User`}</button>
             </ak-forms-modal>`;
         } else {
             return html``;
@@ -119,55 +99,57 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             html`${item.enabled ? t`Yes` : t`No`}`,
             html`${item.order}`,
             html`${item.timeout}`,
-            html`
-            ${this.getObjectEditButton(item)}
-            <ak-forms-modal size=${PFSize.Medium}>
-                <span slot="submit">
-                    ${t`Update`}
-                </span>
-                <span slot="header">
-                    ${t`Update Binding`}
-                </span>
-                <ak-policy-binding-form slot="form" .instancePk=${item.pk} targetPk=${ifDefined(this.target)} ?policyOnly=${this.policyOnly}>
-                </ak-policy-binding-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${t`Edit Binding`}
-                </button>
-            </ak-forms-modal>
-            <ak-forms-delete
-                .obj=${item}
-                objectLabel=${t`Policy binding`}
-                .usedBy=${() => {
-                    return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsUsedByList({
-                        policyBindingUuid: item.pk
-                    });
-                }}
-                .delete=${() => {
-                    return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsDestroy({
-                        policyBindingUuid: item.pk,
-                    });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete Binding`}
-                </button>
-            </ak-forms-delete>`,
+            html` ${this.getObjectEditButton(item)}
+                <ak-forms-modal size=${PFSize.Medium}>
+                    <span slot="submit"> ${t`Update`} </span>
+                    <span slot="header"> ${t`Update Binding`} </span>
+                    <ak-policy-binding-form
+                        slot="form"
+                        .instancePk=${item.pk}
+                        targetPk=${ifDefined(this.target)}
+                        ?policyOnly=${this.policyOnly}
+                    >
+                    </ak-policy-binding-form>
+                    <button slot="trigger" class="pf-c-button pf-m-secondary">
+                        ${t`Edit Binding`}
+                    </button>
+                </ak-forms-modal>
+                <ak-forms-delete
+                    .obj=${item}
+                    objectLabel=${t`Policy binding`}
+                    .usedBy=${() => {
+                        return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsUsedByList({
+                            policyBindingUuid: item.pk,
+                        });
+                    }}
+                    .delete=${() => {
+                        return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsDestroy({
+                            policyBindingUuid: item.pk,
+                        });
+                    }}
+                >
+                    <button slot="trigger" class="pf-c-button pf-m-danger">
+                        ${t`Delete Binding`}
+                    </button>
+                </ak-forms-delete>`,
         ];
     }
 
     renderEmpty(): TemplateResult {
-        return super.renderEmpty(html`<ak-empty-state header=${t`No Policies bound.`} icon="pf-icon-module">
-            <div slot="body">
-                ${t`No policies are currently bound to this object.`}
-            </div>
+        return super.renderEmpty(html`<ak-empty-state
+            header=${t`No Policies bound.`}
+            icon="pf-icon-module"
+        >
+            <div slot="body">${t`No policies are currently bound to this object.`}</div>
             <div slot="primary">
                 <ak-forms-modal size=${PFSize.Medium}>
-                    <span slot="submit">
-                        ${t`Create`}
-                    </span>
-                    <span slot="header">
-                        ${t`Create Binding`}
-                    </span>
-                    <ak-policy-binding-form slot="form" targetPk=${ifDefined(this.target)} ?policyOnly=${this.policyOnly}>
+                    <span slot="submit"> ${t`Create`} </span>
+                    <span slot="header"> ${t`Create Binding`} </span>
+                    <ak-policy-binding-form
+                        slot="form"
+                        targetPk=${ifDefined(this.target)}
+                        ?policyOnly=${this.policyOnly}
+                    >
                     </ak-policy-binding-form>
                     <button slot="trigger" class="pf-c-button pf-m-primary">
                         ${t`Create Binding`}
@@ -178,50 +160,46 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     }
 
     renderToolbar(): TemplateResult {
-        return html`
-        <ak-forms-modal size=${PFSize.Medium}>
-            <span slot="submit">
-                ${t`Create`}
-            </span>
-            <span slot="header">
-                ${t`Create Binding`}
-            </span>
-            <ak-policy-binding-form slot="form" targetPk=${ifDefined(this.target)} ?policyOnly=${this.policyOnly}>
-            </ak-policy-binding-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${t`Create Binding`}
-            </button>
-        </ak-forms-modal>
-        <ak-dropdown class="pf-c-dropdown">
-            <button class="pf-m-secondary pf-c-button pf-c-dropdown__toggle" type="button">
-                <span class="pf-c-dropdown__toggle-text">${t`Create Policy`}</span>
-                <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
-            </button>
-            <ul class="pf-c-dropdown__menu" hidden>
-                ${until(new PoliciesApi(DEFAULT_CONFIG).policiesAllTypesList().then((types) => {
-                    return types.map((type) => {
-                        return html`<li>
-                            <ak-forms-modal>
-                                <span slot="submit">
-                                    ${t`Create`}
-                                </span>
-                                <span slot="header">
-                                    ${t`Create ${type.name}`}
-                                </span>
-                                <ak-proxy-form
-                                    slot="form"
-                                    type=${type.component}>
-                                </ak-proxy-form>
-                                <button slot="trigger" class="pf-c-dropdown__menu-item">
-                                    ${type.name}<br>
-                                    <small>${type.description}</small>
-                                </button>
-                            </ak-forms-modal>
-                        </li>`;
-                    });
-                }), html`<ak-spinner></ak-spinner>`)}
-            </ul>
-        </ak-dropdown>
-        ${super.renderToolbar()}`;
+        return html` <ak-forms-modal size=${PFSize.Medium}>
+                <span slot="submit"> ${t`Create`} </span>
+                <span slot="header"> ${t`Create Binding`} </span>
+                <ak-policy-binding-form
+                    slot="form"
+                    targetPk=${ifDefined(this.target)}
+                    ?policyOnly=${this.policyOnly}
+                >
+                </ak-policy-binding-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${t`Create Binding`}
+                </button>
+            </ak-forms-modal>
+            <ak-dropdown class="pf-c-dropdown">
+                <button class="pf-m-secondary pf-c-button pf-c-dropdown__toggle" type="button">
+                    <span class="pf-c-dropdown__toggle-text">${t`Create Policy`}</span>
+                    <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
+                </button>
+                <ul class="pf-c-dropdown__menu" hidden>
+                    ${until(
+                        new PoliciesApi(DEFAULT_CONFIG).policiesAllTypesList().then((types) => {
+                            return types.map((type) => {
+                                return html`<li>
+                                    <ak-forms-modal>
+                                        <span slot="submit"> ${t`Create`} </span>
+                                        <span slot="header"> ${t`Create ${type.name}`} </span>
+                                        <ak-proxy-form slot="form" type=${type.component}>
+                                        </ak-proxy-form>
+                                        <button slot="trigger" class="pf-c-dropdown__menu-item">
+                                            ${type.name}<br />
+                                            <small>${type.description}</small>
+                                        </button>
+                                    </ak-forms-modal>
+                                </li>`;
+                            });
+                        }),
+                        html`<ak-spinner></ak-spinner>`,
+                    )}
+                </ul>
+            </ak-dropdown>
+            ${super.renderToolbar()}`;
     }
 }

@@ -35,10 +35,7 @@ export class UserTokenList extends Table<Token> {
     }
 
     columns(): TableColumn[] {
-        return [
-            new TableColumn(t`Identifier`, "identifier"),
-            new TableColumn(""),
-        ];
+        return [new TableColumn(t`Identifier`, "identifier"), new TableColumn("")];
     }
 
     static get styles(): CSSResult[] {
@@ -47,92 +44,82 @@ export class UserTokenList extends Table<Token> {
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-forms-modal>
-            <span slot="submit">
-                ${t`Create`}
-            </span>
-            <span slot="header">
-                ${t`Create Token`}
-            </span>
-            <ak-user-token-form slot="form">
-            </ak-user-token-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${t`Create`}
-            </button>
-        </ak-forms-modal>
-        ${super.renderToolbar()}
+            <ak-forms-modal>
+                <span slot="submit"> ${t`Create`} </span>
+                <span slot="header"> ${t`Create Token`} </span>
+                <ak-user-token-form slot="form"> </ak-user-token-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+            </ak-forms-modal>
+            ${super.renderToolbar()}
         `;
     }
 
     renderExpanded(item: Token): TemplateResult {
-        return html`
-        <td role="cell" colspan="3">
-            <div class="pf-c-table__expandable-row-content">
-                <dl class="pf-c-description-list pf-m-horizontal">
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${t`User`}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">${item.user?.username}</div>
-                        </dd>
-                    </div>
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${t`Expiring`}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">${item.expiring ? t`Yes` : t`No`}</div>
-                        </dd>
-                    </div>
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${t`Expiring`}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">${item.expiring ? item.expires?.toLocaleString() : "-"}</div>
-                        </dd>
-                    </div>
-                </dl>
-            </div>
-        </td>
-        <td></td>`;
+        return html` <td role="cell" colspan="3">
+                <div class="pf-c-table__expandable-row-content">
+                    <dl class="pf-c-description-list pf-m-horizontal">
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text">${t`User`}</span>
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">
+                                    ${item.user?.username}
+                                </div>
+                            </dd>
+                        </div>
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text">${t`Expiring`}</span>
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">
+                                    ${item.expiring ? t`Yes` : t`No`}
+                                </div>
+                            </dd>
+                        </div>
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text">${t`Expiring`}</span>
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">
+                                    ${item.expiring ? item.expires?.toLocaleString() : "-"}
+                                </div>
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+            </td>
+            <td></td>`;
     }
 
     row(item: Token): TemplateResult[] {
         return [
             html`${item.identifier}`,
             html`
-            <ak-forms-modal>
-                <span slot="submit">
-                    ${t`Update`}
-                </span>
-                <span slot="header">
-                    ${t`Update Token`}
-                </span>
-                <ak-user-token-form slot="form" .instancePk=${item.identifier}>
-                </ak-user-token-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${t`Edit`}
-                </button>
-            </ak-forms-modal>
-            <ak-forms-delete
-                .obj=${item}
-                objectLabel=${t`Token`}
-                .delete=${() => {
-                    return new CoreApi(DEFAULT_CONFIG).coreTokensDestroy({
-                        identifier: item.identifier
-                    });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete`}
-                </button>
-            </ak-forms-delete>
-            <ak-token-copy-button identifier="${item.identifier}">
-                ${t`Copy Key`}
-            </ak-token-copy-button>
+                <ak-forms-modal>
+                    <span slot="submit"> ${t`Update`} </span>
+                    <span slot="header"> ${t`Update Token`} </span>
+                    <ak-user-token-form slot="form" .instancePk=${item.identifier}>
+                    </ak-user-token-form>
+                    <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Edit`}</button>
+                </ak-forms-modal>
+                <ak-forms-delete
+                    .obj=${item}
+                    objectLabel=${t`Token`}
+                    .delete=${() => {
+                        return new CoreApi(DEFAULT_CONFIG).coreTokensDestroy({
+                            identifier: item.identifier,
+                        });
+                    }}
+                >
+                    <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
+                </ak-forms-delete>
+                <ak-token-copy-button identifier="${item.identifier}">
+                    ${t`Copy Key`}
+                </ak-token-copy-button>
             `,
         ];
     }
-
 }

@@ -14,7 +14,6 @@ interface PolicyMetrics {
 
 @customElement("ak-admin-status-chart-policy")
 export class PolicyStatusChart extends AKChart<PolicyMetrics> {
-
     getChartType(): string {
         return "doughnut";
     }
@@ -33,13 +32,17 @@ export class PolicyStatusChart extends AKChart<PolicyMetrics> {
     async apiRequest(): Promise<PolicyMetrics> {
         const api = new PoliciesApi(DEFAULT_CONFIG);
         const cached = (await api.policiesAllCacheInfoRetrieve()).count || 0;
-        const count = (await api.policiesAllList({
-            pageSize: 1
-        })).pagination.count;
-        const unbound = (await api.policiesAllList({
-            bindingsIsnull: true,
-            promptstageIsnull: true,
-        })).pagination.count;
+        const count = (
+            await api.policiesAllList({
+                pageSize: 1,
+            })
+        ).pagination.count;
+        const unbound = (
+            await api.policiesAllList({
+                bindingsIsnull: true,
+                promptstageIsnull: true,
+            })
+        ).pagination.count;
         this.centerText = count.toString();
         return {
             // If we have more cache than total policies, only show that
@@ -52,27 +55,14 @@ export class PolicyStatusChart extends AKChart<PolicyMetrics> {
 
     getChartData(data: PolicyMetrics): ChartData {
         return {
-            labels: [
-                t`Total policies`,
-                t`Cached policies`,
-                t`Unbound policies`,
-            ],
+            labels: [t`Total policies`, t`Cached policies`, t`Unbound policies`],
             datasets: [
                 {
-                    backgroundColor: [
-                        "#2b9af3",
-                        "#3e8635",
-                        "#f0ab00",
-                    ],
+                    backgroundColor: ["#2b9af3", "#3e8635", "#f0ab00"],
                     spanGaps: true,
-                    data: [
-                        data.count,
-                        data.cached,
-                        data.unbound
-                    ],
+                    data: [data.count, data.cached, data.unbound],
                 },
-            ]
+            ],
         };
     }
-
 }

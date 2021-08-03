@@ -57,55 +57,47 @@ export class InvitationListPage extends TablePage<Invitation> {
             html`${item.pk}`,
             html`${item.createdBy?.username}`,
             html`${item.expires?.toLocaleString() || "-"}`,
-            html`
-            <ak-forms-delete
+            html` <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Invitation`}
                 .usedBy=${() => {
                     return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsUsedByList({
-                        inviteUuid: item.pk
+                        inviteUuid: item.pk,
                     });
                 }}
                 .delete=${() => {
                     return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsDestroy({
-                        inviteUuid: item.pk
+                        inviteUuid: item.pk,
                     });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete`}
-                </button>
+                }}
+            >
+                <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
             </ak-forms-delete>`,
         ];
     }
 
     renderExpanded(item: Invitation): TemplateResult {
-        return html`
-        <td role="cell" colspan="3">
-            <div class="pf-c-table__expandable-row-content">
-                <ak-stage-invitation-list-link invitation=${item.pk}></ak-stage-invitation-list-link>
-            </div>
-        </td>
-        <td></td>
-        <td></td>
-        <td></td>`;
+        return html` <td role="cell" colspan="3">
+                <div class="pf-c-table__expandable-row-content">
+                    <ak-stage-invitation-list-link
+                        invitation=${item.pk}
+                    ></ak-stage-invitation-list-link>
+                </div>
+            </td>
+            <td></td>
+            <td></td>
+            <td></td>`;
     }
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-forms-modal>
-            <span slot="submit">
-                ${t`Create`}
-            </span>
-            <span slot="header">
-                ${t`Create Invitation`}
-            </span>
-            <ak-invitation-form slot="form">
-            </ak-invitation-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${t`Create`}
-            </button>
-        </ak-forms-modal>
-        ${super.renderToolbar()}
+            <ak-forms-modal>
+                <span slot="submit"> ${t`Create`} </span>
+                <span slot="header"> ${t`Create Invitation`} </span>
+                <ak-invitation-form slot="form"> </ak-invitation-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+            </ak-forms-modal>
+            ${super.renderToolbar()}
         `;
     }
 }

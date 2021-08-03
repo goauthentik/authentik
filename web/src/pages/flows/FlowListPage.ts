@@ -61,101 +61,79 @@ export class FlowListPage extends TablePage<Flow> {
             html`${item.designation}`,
             html`${Array.from(item.stages || []).length}`,
             html`${Array.from(item.policies || []).length}`,
-            html`
-            <ak-forms-modal>
-                <span slot="submit">
-                    ${t`Update`}
-                </span>
-                <span slot="header">
-                    ${t`Update Flow`}
-                </span>
-                <ak-flow-form slot="form" .instancePk=${item.slug}>
-                </ak-flow-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${t`Edit`}
+            html` <ak-forms-modal>
+                    <span slot="submit"> ${t`Update`} </span>
+                    <span slot="header"> ${t`Update Flow`} </span>
+                    <ak-flow-form slot="form" .instancePk=${item.slug}> </ak-flow-form>
+                    <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Edit`}</button>
+                </ak-forms-modal>
+                <ak-forms-delete
+                    .obj=${item}
+                    objectLabel=${t`Flow`}
+                    .usedBy=${() => {
+                        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesUsedByList({
+                            slug: item.slug,
+                        });
+                    }}
+                    .delete=${() => {
+                        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesDestroy({
+                            slug: item.slug,
+                        });
+                    }}
+                >
+                    <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
+                </ak-forms-delete>
+                <button
+                    class="pf-c-button pf-m-secondary"
+                    @click=${() => {
+                        new FlowsApi(DEFAULT_CONFIG)
+                            .flowsInstancesExecuteRetrieve({
+                                slug: item.slug,
+                            })
+                            .then((link) => {
+                                window.location.assign(
+                                    `${link.link}?next=/%23${window.location.href}`,
+                                );
+                            });
+                    }}
+                >
+                    ${t`Execute`}
                 </button>
-            </ak-forms-modal>
-            <ak-forms-delete
-                .obj=${item}
-                objectLabel=${t`Flow`}
-                .usedBy=${() => {
-                    return new FlowsApi(DEFAULT_CONFIG).flowsInstancesUsedByList({
-                        slug: item.slug
-                    });
-                }}
-                .delete=${() => {
-                    return new FlowsApi(DEFAULT_CONFIG).flowsInstancesDestroy({
-                        slug: item.slug
-                    });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete`}
-                </button>
-            </ak-forms-delete>
-            <button
-                class="pf-c-button pf-m-secondary"
-                @click=${() => {
-                    new FlowsApi(DEFAULT_CONFIG).flowsInstancesExecuteRetrieve({
-                        slug: item.slug
-                    }).then(link => {
-                        window.location.assign(`${link.link}?next=/%23${window.location.href}`);
-                    });
-                }}>
-                ${t`Execute`}
-            </button>
-            <a class="pf-c-button pf-m-secondary" href=${item.exportUrl}>
-                ${t`Export`}
-            </a>`,
+                <a class="pf-c-button pf-m-secondary" href=${item.exportUrl}> ${t`Export`} </a>`,
         ];
     }
 
     renderToolbar(): TemplateResult {
-        return html`
-        <ak-forms-modal>
-            <span slot="submit">
-                ${t`Create`}
-            </span>
-            <span slot="header">
-                ${t`Create Flow`}
-            </span>
-            <ak-flow-form slot="form">
-            </ak-flow-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${t`Create`}
-            </button>
-        </ak-forms-modal>
-        <ak-forms-modal>
-            <span slot="submit">
-                ${t`Import`}
-            </span>
-            <span slot="header">
-                ${t`Import Flow`}
-            </span>
-            <ak-flow-import-form slot="form">
-            </ak-flow-import-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${t`Import`}
-            </button>
-        </ak-forms-modal>
-        ${super.renderToolbar()}
-        <ak-forms-confirm
-            successMessage=${t`Successfully cleared flow cache`}
-            errorMessage=${t`Failed to delete flow cache`}
-            action=${t`Clear cache`}
-            .onConfirm=${() => {
-                return new FlowsApi(DEFAULT_CONFIG).flowsInstancesCacheClearCreate();
-            }}>
-            <span slot="header">
-                ${t`Clear Flow cache`}
-            </span>
-            <p slot="body">
-                ${t`Are you sure you want to clear the flow cache?
+        return html` <ak-forms-modal>
+                <span slot="submit"> ${t`Create`} </span>
+                <span slot="header"> ${t`Create Flow`} </span>
+                <ak-flow-form slot="form"> </ak-flow-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+            </ak-forms-modal>
+            <ak-forms-modal>
+                <span slot="submit"> ${t`Import`} </span>
+                <span slot="header"> ${t`Import Flow`} </span>
+                <ak-flow-import-form slot="form"> </ak-flow-import-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Import`}</button>
+            </ak-forms-modal>
+            ${super.renderToolbar()}
+            <ak-forms-confirm
+                successMessage=${t`Successfully cleared flow cache`}
+                errorMessage=${t`Failed to delete flow cache`}
+                action=${t`Clear cache`}
+                .onConfirm=${() => {
+                    return new FlowsApi(DEFAULT_CONFIG).flowsInstancesCacheClearCreate();
+                }}
+            >
+                <span slot="header"> ${t`Clear Flow cache`} </span>
+                <p slot="body">
+                    ${t`Are you sure you want to clear the flow cache?
                     This will cause all flows to be re-evaluated on their next usage.`}
-            </p>
-            <button slot="trigger" class="pf-c-button pf-m-secondary" type="button">
-                ${t`Clear cache`}
-            </button>
-            <div slot="modal"></div>
-        </ak-forms-confirm>`;
+                </p>
+                <button slot="trigger" class="pf-c-button pf-m-secondary" type="button">
+                    ${t`Clear cache`}
+                </button>
+                <div slot="modal"></div>
+            </ak-forms-confirm>`;
     }
 }

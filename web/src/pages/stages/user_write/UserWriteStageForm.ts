@@ -11,7 +11,6 @@ import { first } from "../../../utils";
 
 @customElement("ak-stage-user-write-form")
 export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
-
     loadInstance(pk: string): Promise<UserWriteStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesUserWriteRetrieve({
             stageUuid: pk,
@@ -30,11 +29,11 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesUserWriteUpdate({
                 stageUuid: this.instance.pk || "",
-                userWriteStageRequest: data
+                userWriteStageRequest: data,
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesUserWriteCreate({
-                userWriteStageRequest: data
+                userWriteStageRequest: data,
             });
         }
     };
@@ -45,29 +44,34 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                 ${t`Write any data from the flow's context's 'prompt_data' to the currently pending user. If no user
                 is pending, a new user is created, and data is written to them.`}
             </div>
-            <ak-form-element-horizontal
-                label=${t`Name`}
-                ?required=${true}
-                name="name">
-                <input type="text" value="${ifDefined(this.instance?.name || "")}" class="pf-c-form-control" required>
+            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.name || "")}"
+                    class="pf-c-form-control"
+                    required
+                />
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header">
-                    ${t`Stage-specific settings`}
-                </span>
+                <span slot="header"> ${t`Stage-specific settings`} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="createUsersAsInactive">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.createUsersAsInactive, true)}>
+                            <input
+                                type="checkbox"
+                                class="pf-c-check__input"
+                                ?checked=${first(this.instance?.createUsersAsInactive, true)}
+                            />
                             <label class="pf-c-check__label">
                                 ${t`Create users as inactive`}
                             </label>
                         </div>
-                        <p class="pf-c-form__helper-text">${t`Mark newly created users as inactive.`}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Mark newly created users as inactive.`}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
         </form>`;
     }
-
 }

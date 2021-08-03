@@ -1,5 +1,13 @@
 import { t } from "@lingui/macro";
-import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import {
+    css,
+    CSSResult,
+    customElement,
+    html,
+    LitElement,
+    property,
+    TemplateResult,
+} from "lit-element";
 import { EventsApi, Notification } from "authentik-api";
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -14,11 +22,10 @@ import { ActionToLabel } from "../../pages/events/utils";
 
 @customElement("ak-notification-drawer")
 export class NotificationDrawer extends LitElement {
-
-    @property({attribute: false})
+    @property({ attribute: false })
     notifications?: AKResponse<Notification>;
 
-    @property({type: Number})
+    @property({ type: Number })
     unread = 0;
 
     static get styles(): CSSResult[] {
@@ -36,34 +43,36 @@ export class NotificationDrawer extends LitElement {
                 .pf-c-notification-drawer__list-item-description {
                     white-space: pre-wrap;
                 }
-            `
+            `,
         );
     }
 
     firstUpdated(): void {
-        new EventsApi(DEFAULT_CONFIG).eventsNotificationsList({
-            seen: false,
-            ordering: "-created",
-        }).then(r => {
-            this.notifications = r;
-            this.unread = r.results.length;
-        });
+        new EventsApi(DEFAULT_CONFIG)
+            .eventsNotificationsList({
+                seen: false,
+                ordering: "-created",
+            })
+            .then((r) => {
+                this.notifications = r;
+                this.unread = r.results.length;
+            });
     }
 
     renderItem(item: Notification): TemplateResult {
         let level = "";
         switch (item.severity) {
-        case "notice":
-            level = "pf-m-info";
-            break;
-        case "warning":
-            level = "pf-m-warning";
-            break;
-        case "alert":
-            level = "pf-m-danger";
-            break;
-        default:
-            break;
+            case "notice":
+                level = "pf-m-info";
+                break;
+            case "warning":
+                level = "pf-m-warning";
+                break;
+            case "alert":
+                level = "pf-m-danger";
+                break;
+            default:
+                break;
         }
         return html`<li class="pf-c-notification-drawer__list-item">
             <div class="pf-c-notification-drawer__list-item-header">
@@ -75,26 +84,38 @@ export class NotificationDrawer extends LitElement {
                 </h2>
             </div>
             <div class="pf-c-notification-drawer__list-item-action">
-                ${item.event && html`
-                    <a class="pf-c-dropdown__toggle pf-m-plain" href="#/events/log/${item.event?.pk}">
+                ${item.event &&
+                html`
+                    <a
+                        class="pf-c-dropdown__toggle pf-m-plain"
+                        href="#/events/log/${item.event?.pk}"
+                    >
                         <i class="fas fas fa-share-square"></i>
                     </a>
                 `}
-                <button class="pf-c-dropdown__toggle pf-m-plain" type="button" @click=${() => {
-                    new EventsApi(DEFAULT_CONFIG).eventsNotificationsPartialUpdate({
-                        uuid: item.pk || "",
-                        patchedNotificationRequest: {
-                            seen: true,
-                        }
-                    }).then(() => {
-                        this.firstUpdated();
-                    });
-                }}>
+                <button
+                    class="pf-c-dropdown__toggle pf-m-plain"
+                    type="button"
+                    @click=${() => {
+                        new EventsApi(DEFAULT_CONFIG)
+                            .eventsNotificationsPartialUpdate({
+                                uuid: item.pk || "",
+                                patchedNotificationRequest: {
+                                    seen: true,
+                                },
+                            })
+                            .then(() => {
+                                this.firstUpdated();
+                            });
+                    }}
+                >
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <p class="pf-c-notification-drawer__list-item-description">${item.body}</p>
-            <small class="pf-c-notification-drawer__list-item-timestamp">${item.created?.toLocaleString()}</small>
+            <small class="pf-c-notification-drawer__list-item-timestamp"
+                >${item.created?.toLocaleString()}</small
+            >
         </li>`;
     }
 
@@ -106,12 +127,8 @@ export class NotificationDrawer extends LitElement {
             <div class="pf-c-notification-drawer">
                 <div class="pf-c-notification-drawer__header">
                     <div class="text">
-                        <h1 class="pf-c-notification-drawer__header-title">
-                            ${t`Notifications`}
-                        </h1>
-                        <span>
-                            ${t`${this.unread} unread`}
-                        </span>
+                        <h1 class="pf-c-notification-drawer__header-title">${t`Notifications`}</h1>
+                        <span> ${t`${this.unread} unread`} </span>
                     </div>
                     <div class="pf-c-notification-drawer__header-action">
                         <div class="pf-c-notification-drawer__header-action-close">
@@ -121,12 +138,13 @@ export class NotificationDrawer extends LitElement {
                                         new CustomEvent(EVENT_NOTIFICATION_TOGGLE, {
                                             bubbles: true,
                                             composed: true,
-                                        })
+                                        }),
                                     );
                                 }}
                                 class="pf-c-button pf-m-plain"
                                 type="button"
-                                aria-label="Close">
+                                aria-label="Close"
+                            >
                                 <i class="fas fa-times" aria-hidden="true"></i>
                             </button>
                         </div>
@@ -134,11 +152,10 @@ export class NotificationDrawer extends LitElement {
                 </div>
                 <div class="pf-c-notification-drawer__body">
                     <ul class="pf-c-notification-drawer__list">
-                        ${this.notifications.results.map(n => this.renderItem(n))}
+                        ${this.notifications.results.map((n) => this.renderItem(n))}
                     </ul>
                 </div>
             </div>
         </div>`;
     }
-
 }

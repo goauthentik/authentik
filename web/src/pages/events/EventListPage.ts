@@ -53,15 +53,15 @@ export class EventListPage extends TablePage<Event> {
     row(item: EventWithContext): TemplateResult[] {
         return [
             html`<div>${ActionToLabel(item.action)}</div>
-            <small>${item.app}</small>`,
-            item.user?.username ?
-                html`<a href="#/identity/users/${item.user.pk}">
-                    ${item.user?.username}
-                </a>
-                ${item.user.on_behalf_of ? html`<small>
-                    ${t`On behalf of ${item.user.on_behalf_of.username}`}
-                </small>` : html``}` :
-                html`-`,
+                <small>${item.app}</small>`,
+            item.user?.username
+                ? html`<a href="#/identity/users/${item.user.pk}"> ${item.user?.username} </a>
+                      ${item.user.on_behalf_of
+                          ? html`<small>
+                                ${t`On behalf of ${item.user.on_behalf_of.username}`}
+                            </small>`
+                          : html``}`
+                : html`-`,
             html`<span>${item.created?.toLocaleString()}</span>`,
             html`<span>${item.clientIp || "-"}</span>`,
             html`<span>${item.tenant?.name || "-"}</span>`,
@@ -72,15 +72,13 @@ export class EventListPage extends TablePage<Event> {
     }
 
     renderExpanded(item: Event): TemplateResult {
-        return html`
-        <td role="cell" colspan="3">
-            <div class="pf-c-table__expandable-row-content">
-                <ak-event-info .event=${item as EventWithContext}></ak-event-info>
-            </div>
-        </td>
-        <td></td>
-        <td></td>
-        <td></td>`;
+        return html` <td role="cell" colspan="3">
+                <div class="pf-c-table__expandable-row-content">
+                    <ak-event-info .event=${item as EventWithContext}></ak-event-info>
+                </div>
+            </td>
+            <td></td>
+            <td></td>
+            <td></td>`;
     }
-
 }

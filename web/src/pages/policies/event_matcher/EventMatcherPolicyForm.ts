@@ -12,7 +12,6 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-policy-event-matcher-form")
 export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string> {
-
     loadInstance(pk: string): Promise<EventMatcherPolicy> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherRetrieve({
             policyUuid: pk,
@@ -31,11 +30,11 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherUpdate({
                 policyUuid: this.instance.pk || "",
-                eventMatcherPolicyRequest: data
+                eventMatcherPolicyRequest: data,
             });
         } else {
             return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherCreate({
-                eventMatcherPolicyRequest: data
+                eventMatcherPolicyRequest: data,
             });
         }
     };
@@ -45,63 +44,91 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
             <div class="form-help-text">
                 ${t`Matches an event against a set of criteria. If any of the configured values match, the policy passes.`}
             </div>
-            <ak-form-element-horizontal
-                label=${t`Name`}
-                ?required=${true}
-                name="name">
-                <input type="text" value="${ifDefined(this.instance?.name || "")}" class="pf-c-form-control" required>
+            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.name || "")}"
+                    class="pf-c-form-control"
+                    required
+                />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="executionLogging">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.executionLogging, false)}>
-                    <label class="pf-c-check__label">
-                        ${t`Execution logging`}
-                    </label>
+                    <input
+                        type="checkbox"
+                        class="pf-c-check__input"
+                        ?checked=${first(this.instance?.executionLogging, false)}
+                    />
+                    <label class="pf-c-check__label"> ${t`Execution logging`} </label>
                 </div>
                 <p class="pf-c-form__helper-text">
                     ${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header">
-                    ${t`Policy-specific settings`}
-                </span>
+                <span slot="header"> ${t`Policy-specific settings`} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${t`Action`}
-                        name="action">
+                    <ak-form-element-horizontal label=${t`Action`} name="action">
                         <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.action === undefined}>---------</option>
-                            ${until(new EventsApi(DEFAULT_CONFIG).eventsEventsActionsList().then(actions => {
-                                return actions.map(action => {
-                                    return html`<option value=${action.component} ?selected=${this.instance?.action === action.component}>${action.name}</option>`;
-                                });
-                            }), html`<option>${t`Loading...`}</option>`)}
+                            <option value="" ?selected=${this.instance?.action === undefined}>
+                                ---------
+                            </option>
+                            ${until(
+                                new EventsApi(DEFAULT_CONFIG)
+                                    .eventsEventsActionsList()
+                                    .then((actions) => {
+                                        return actions.map((action) => {
+                                            return html`<option
+                                                value=${action.component}
+                                                ?selected=${this.instance?.action ===
+                                                action.component}
+                                            >
+                                                ${action.name}
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
                         </select>
-                        <p class="pf-c-form__helper-text">${t`Match created events with this action type. When left empty, all action types will be matched.`}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Match created events with this action type. When left empty, all action types will be matched.`}
+                        </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`Client IP`}
-                        name="clientIp">
-                        <input type="text" value="${ifDefined(this.instance?.clientIp || "")}" class="pf-c-form-control">
-                        <p class="pf-c-form__helper-text">${t`Matches Event's Client IP (strict matching, for network matching use an Expression Policy.`}</p>
+                    <ak-form-element-horizontal label=${t`Client IP`} name="clientIp">
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.clientIp || "")}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`Matches Event's Client IP (strict matching, for network matching use an Expression Policy.`}
+                        </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`App`}
-                        name="app">
+                    <ak-form-element-horizontal label=${t`App`} name="app">
                         <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.app === undefined}>---------</option>
-                            ${until(new AdminApi(DEFAULT_CONFIG).adminAppsList().then(apps => {
-                                return apps.map(app => {
-                                    return html`<option value=${app.name} ?selected=${this.instance?.app === app.name}>${app.label}</option>`;
-                                });
-                            }), html`<option>${t`Loading...`}</option>`)}
+                            <option value="" ?selected=${this.instance?.app === undefined}>
+                                ---------
+                            </option>
+                            ${until(
+                                new AdminApi(DEFAULT_CONFIG).adminAppsList().then((apps) => {
+                                    return apps.map((app) => {
+                                        return html`<option
+                                            value=${app.name}
+                                            ?selected=${this.instance?.app === app.name}
+                                        >
+                                            ${app.label}
+                                        </option>`;
+                                    });
+                                }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
                         </select>
-                        <p class="pf-c-form__helper-text">${t`Match events created by selected application. When left empty, all applications are matched.`}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Match events created by selected application. When left empty, all applications are matched.`}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
         </form>`;
     }
-
 }

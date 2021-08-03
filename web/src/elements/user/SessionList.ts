@@ -10,7 +10,6 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-user-session-list")
 export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
-
     @property()
     targetUser!: string;
 
@@ -41,8 +40,7 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
             html`${item.userAgent.userAgent?.family}`,
             html`${item.userAgent.os?.family}`,
             html`${item.expires?.toLocaleString()}`,
-            html`
-            <ak-forms-delete
+            html` <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Session`}
                 .usedBy=${() => {
@@ -54,12 +52,10 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
                     return new CoreApi(DEFAULT_CONFIG).coreAuthenticatedSessionsDestroy({
                         uuid: item.uuid || "",
                     });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete Session`}
-                </button>
+                }}
+            >
+                <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete Session`}</button>
             </ak-forms-delete>`,
         ];
     }
-
 }

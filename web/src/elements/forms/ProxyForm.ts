@@ -3,14 +3,13 @@ import { Form } from "./Form";
 
 @customElement("ak-proxy-form")
 export class ProxyForm extends Form<unknown> {
-
     @property()
     type!: string;
 
-    @property({attribute: false})
+    @property({ attribute: false })
     args: Record<string, unknown> = {};
 
-    @property({attribute: false})
+    @property({ attribute: false })
     typeMap: Record<string, string> = {};
 
     submit(ev: Event): Promise<unknown> | undefined {
@@ -43,5 +42,4 @@ export class ProxyForm extends Form<unknown> {
         }
         return html`${el}`;
     }
-
 }

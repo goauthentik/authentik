@@ -36,25 +36,22 @@ export class UserConsentList extends Table<UserConsent> {
         return [
             html`${item.application.name}`,
             html`${item.expires?.toLocaleString()}`,
-            html`
-            <ak-forms-delete
+            html` <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Consent`}
                 .usedBy=${() => {
                     return new CoreApi(DEFAULT_CONFIG).coreUserConsentUsedByList({
-                        id: item.pk
+                        id: item.pk,
                     });
                 }}
                 .delete=${() => {
                     return new CoreApi(DEFAULT_CONFIG).coreUserConsentDestroy({
                         id: item.pk,
                     });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete Consent`}
-                </button>
+                }}
+            >
+                <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete Consent`}</button>
             </ak-forms-delete>`,
         ];
     }
-
 }

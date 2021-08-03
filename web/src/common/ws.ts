@@ -8,7 +8,6 @@ export interface WSMessage {
 }
 
 export class WebsocketClient {
-
     messageSocket?: WebSocket;
     retryDelay = 200;
 
@@ -22,8 +21,9 @@ export class WebsocketClient {
 
     connect(): void {
         if (navigator.webdriver) return;
-        const wsUrl = `${window.location.protocol.replace("http", "ws")}//${window.location.host
-            }/ws/client/`;
+        const wsUrl = `${window.location.protocol.replace("http", "ws")}//${
+            window.location.host
+        }/ws/client/`;
         this.messageSocket = new WebSocket(wsUrl);
         this.messageSocket.addEventListener("open", () => {
             console.debug(`authentik/ws: connected to ${wsUrl}`);
@@ -34,7 +34,7 @@ export class WebsocketClient {
             if (this.retryDelay > 3000) {
                 showMessage({
                     level: MessageLevel.error,
-                    message: t`Connection error, reconnecting...`
+                    message: t`Connection error, reconnecting...`,
                 });
             }
             setTimeout(() => {
@@ -50,12 +50,11 @@ export class WebsocketClient {
                     bubbles: true,
                     composed: true,
                     detail: data as WSMessage,
-                })
+                }),
             );
         });
         this.messageSocket.addEventListener("error", () => {
             this.retryDelay = this.retryDelay * 2;
         });
     }
-
 }

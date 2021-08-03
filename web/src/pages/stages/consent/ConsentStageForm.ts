@@ -10,17 +10,18 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-stage-consent-form")
 export class ConsentStageForm extends ModelForm<ConsentStage, string> {
-
     loadInstance(pk: string): Promise<ConsentStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesConsentRetrieve({
-            stageUuid: pk,
-        }).then(stage => {
-            this.showExpiresIn = stage.mode === ConsentStageModeEnum.Expiring;
-            return stage;
-        });
+        return new StagesApi(DEFAULT_CONFIG)
+            .stagesConsentRetrieve({
+                stageUuid: pk,
+            })
+            .then((stage) => {
+                this.showExpiresIn = stage.mode === ConsentStageModeEnum.Expiring;
+                return stage;
+            });
     }
 
-    @property({type: Boolean})
+    @property({ type: Boolean })
     showExpiresIn = false;
 
     getSuccessMessage(): string {
@@ -35,11 +36,11 @@ export class ConsentStageForm extends ModelForm<ConsentStage, string> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesConsentUpdate({
                 stageUuid: this.instance.pk || "",
-                consentStageRequest: data
+                consentStageRequest: data,
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesConsentCreate({
-                consentStageRequest: data
+                consentStageRequest: data,
             });
         }
     };
@@ -49,36 +50,49 @@ export class ConsentStageForm extends ModelForm<ConsentStage, string> {
             <div class="form-help-text">
                 ${t`Prompt for the user's consent. The consent can either be permanent or expire in a defined amount of time.`}
             </div>
-            <ak-form-element-horizontal
-                label=${t`Name`}
-                ?required=${true}
-                name="name">
-                <input type="text" value="${ifDefined(this.instance?.name || "")}" class="pf-c-form-control" required>
+            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.name || "")}"
+                    class="pf-c-form-control"
+                    required
+                />
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header">
-                    ${t`Stage-specific settings`}
-                </span>
+                <span slot="header"> ${t`Stage-specific settings`} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${t`Mode`}
-                        ?required=${true}
-                        name="mode">
-                        <select class="pf-c-form-control" @change=${(ev: Event) => {
-                            const target = ev.target as HTMLSelectElement;
-                            if (target.selectedOptions[0].value === ConsentStageModeEnum.Expiring) {
-                                this.showExpiresIn = true;
-                            } else {
-                                this.showExpiresIn = false;
-                            }
-                        }}>
-                            <option value=${ConsentStageModeEnum.AlwaysRequire} ?selected=${this.instance?.mode === ConsentStageModeEnum.AlwaysRequire}>
+                    <ak-form-element-horizontal label=${t`Mode`} ?required=${true} name="mode">
+                        <select
+                            class="pf-c-form-control"
+                            @change=${(ev: Event) => {
+                                const target = ev.target as HTMLSelectElement;
+                                if (
+                                    target.selectedOptions[0].value ===
+                                    ConsentStageModeEnum.Expiring
+                                ) {
+                                    this.showExpiresIn = true;
+                                } else {
+                                    this.showExpiresIn = false;
+                                }
+                            }}
+                        >
+                            <option
+                                value=${ConsentStageModeEnum.AlwaysRequire}
+                                ?selected=${this.instance?.mode ===
+                                ConsentStageModeEnum.AlwaysRequire}
+                            >
                                 ${t`Always require consent`}
                             </option>
-                            <option value=${ConsentStageModeEnum.Permanent} ?selected=${this.instance?.mode === ConsentStageModeEnum.Permanent}>
+                            <option
+                                value=${ConsentStageModeEnum.Permanent}
+                                ?selected=${this.instance?.mode === ConsentStageModeEnum.Permanent}
+                            >
                                 ${t`Consent given last indefinitely`}
                             </option>
-                            <option value=${ConsentStageModeEnum.Expiring} ?selected=${this.instance?.mode === ConsentStageModeEnum.Expiring}>
+                            <option
+                                value=${ConsentStageModeEnum.Expiring}
+                                ?selected=${this.instance?.mode === ConsentStageModeEnum.Expiring}
+                            >
                                 ${t`Consent expires.`}
                             </option>
                         </select>
@@ -87,13 +101,20 @@ export class ConsentStageForm extends ModelForm<ConsentStage, string> {
                         ?hidden=${!this.showExpiresIn}
                         label=${t`Consent expires in`}
                         ?required=${true}
-                        name="consentExpireIn">
-                        <input type="text" value="${ifDefined(this.instance?.consentExpireIn || "weeks=4")}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${t`Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).`}</p>
+                        name="consentExpireIn"
+                    >
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.consentExpireIn || "weeks=4")}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).`}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
         </form>`;
     }
-
 }

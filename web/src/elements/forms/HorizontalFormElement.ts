@@ -8,17 +8,24 @@ import { t } from "@lingui/macro";
 
 @customElement("ak-form-element-horizontal")
 export class HorizontalFormElement extends LitElement {
-
     static get styles(): CSSResult[] {
-        return [PFBase, PFForm, PFFormControl, AKGlobal, css`
-            .pf-c-form__group {
-                display: grid;
-                grid-template-columns: var(--pf-c-form--m-horizontal__group-label--md--GridColumnWidth) var(--pf-c-form--m-horizontal__group-control--md--GridColumnWidth);
-            }
-            .pf-c-form__group-label {
-                padding-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
-            }
-        `];
+        return [
+            PFBase,
+            PFForm,
+            PFFormControl,
+            AKGlobal,
+            css`
+                .pf-c-form__group {
+                    display: grid;
+                    grid-template-columns:
+                        var(--pf-c-form--m-horizontal__group-label--md--GridColumnWidth)
+                        var(--pf-c-form--m-horizontal__group-control--md--GridColumnWidth);
+                }
+                .pf-c-form__group-label {
+                    padding-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
+                }
+            `,
+        ];
     }
 
     @property()
@@ -43,7 +50,7 @@ export class HorizontalFormElement extends LitElement {
     name = "";
 
     updated(): void {
-        this.querySelectorAll<HTMLInputElement>("input[autofocus]").forEach(input => {
+        this.querySelectorAll<HTMLInputElement>("input[autofocus]").forEach((input) => {
             input.focus();
         });
         this.querySelectorAll("*").forEach((input) => {
@@ -59,7 +66,7 @@ export class HorizontalFormElement extends LitElement {
                     return;
             }
             if (this.writeOnly && !this.writeOnlyActivated) {
-                const i = (input as HTMLInputElement);
+                const i = input as HTMLInputElement;
                 i.setAttribute("hidden", "true");
                 const handler = () => {
                     i.removeAttribute("hidden");
@@ -76,24 +83,36 @@ export class HorizontalFormElement extends LitElement {
             <div class="pf-c-form__group-label">
                 <label class="pf-c-form__label">
                     <span class="pf-c-form__label-text">${this.label}</span>
-                    ${this.required ? html`<span class="pf-c-form__label-required" aria-hidden="true">*</span>` : html``}
+                    ${this.required
+                        ? html`<span class="pf-c-form__label-required" aria-hidden="true">*</span>`
+                        : html``}
                 </label>
             </div>
             <div class="pf-c-form__group-control">
-                ${this.writeOnly && !this.writeOnlyActivated ?
-                    html`<div class="pf-c-form__horizontal-group">
-                        <input class="pf-c-form-control" type="password" disabled value="**************">
-                    </div>` :
-                    html``}
+                ${this.writeOnly && !this.writeOnlyActivated
+                    ? html`<div class="pf-c-form__horizontal-group">
+                          <input
+                              class="pf-c-form-control"
+                              type="password"
+                              disabled
+                              value="**************"
+                          />
+                      </div>`
+                    : html``}
                 <slot class="pf-c-form__horizontal-group"></slot>
                 <div class="pf-c-form__horizontal-group">
-                    ${this.writeOnly ? html`<p class="pf-c-form__helper-text" aria-live="polite">${
-                        t`Click to change value`
-                    }</p>` : html``}
-                    ${this.invalid ? html`<p class="pf-c-form__helper-text pf-m-error" aria-live="polite">${this.errorMessage}</p>` : html``}
+                    ${this.writeOnly
+                        ? html`<p class="pf-c-form__helper-text" aria-live="polite">
+                              ${t`Click to change value`}
+                          </p>`
+                        : html``}
+                    ${this.invalid
+                        ? html`<p class="pf-c-form__helper-text pf-m-error" aria-live="polite">
+                              ${this.errorMessage}
+                          </p>`
+                        : html``}
                 </div>
             </div>
         </div>`;
     }
-
 }

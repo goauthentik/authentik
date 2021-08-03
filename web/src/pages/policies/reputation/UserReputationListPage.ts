@@ -51,25 +51,22 @@ export class UserReputationListPage extends TablePage<UserReputation> {
         return [
             html`${item.username}`,
             html`${item.score}`,
-            html`
-            <ak-forms-delete
+            html` <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`User Reputation`}
                 .usedBy=${() => {
                     return new PoliciesApi(DEFAULT_CONFIG).policiesReputationUsersUsedByList({
-                        id: item.pk
+                        id: item.pk,
                     });
                 }}
                 .delete=${() => {
                     return new PoliciesApi(DEFAULT_CONFIG).policiesReputationUsersDestroy({
                         id: item.pk,
                     });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete`}
-                </button>
+                }}
+            >
+                <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
             </ak-forms-delete>`,
         ];
     }
-
 }

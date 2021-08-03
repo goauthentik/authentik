@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-        <link rel="stylesheet" type="text/css" href="/static/dist/patternfly-base.css">
-        <link rel="stylesheet" type="text/css" href="/static/dist/page.css">
-        <link rel="stylesheet" type="text/css" href="/static/dist/empty-state.css">
-        <link rel="stylesheet" type="text/css" href="/static/dist/spinner.css">
-        <link rel="stylesheet" type="text/css" href="/static/dist/authentik.css">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+        <link rel="stylesheet" type="text/css" href="/static/dist/patternfly-base.css" />
+        <link rel="stylesheet" type="text/css" href="/static/dist/page.css" />
+        <link rel="stylesheet" type="text/css" href="/static/dist/empty-state.css" />
+        <link rel="stylesheet" type="text/css" href="/static/dist/spinner.css" />
+        <link rel="stylesheet" type="text/css" href="/static/dist/authentik.css" />
         <script src="/static/dist/poly.js" type="module"></script>
-        <script>window["polymerSkipLoadingFontRoboto"] = true;</script>
+        <script>
+            window["polymerSkipLoadingFontRoboto"] = true;
+        </script>
         <script src="/static/dist/AdminInterface.js" type="module"></script>
         <title>authentik</title>
     </head>
@@ -17,9 +19,13 @@
         <ak-message-container></ak-message-container>
         <ak-interface-admin>
             <section class="ak-static-page pf-c-page__main-section pf-m-no-padding-mobile pf-m-xl">
-                <div class="pf-c-empty-state" style="height: 100vh;">
+                <div class="pf-c-empty-state" style="height: 100vh">
                     <div class="pf-c-empty-state__content">
-                        <span class="pf-c-spinner pf-m-xl pf-c-empty-state__icon" role="progressbar" aria-valuetext="Loading...">
+                        <span
+                            class="pf-c-spinner pf-m-xl pf-c-empty-state__icon"
+                            role="progressbar"
+                            aria-valuetext="Loading..."
+                        >
                             <span class="pf-c-spinner__clipper"></span>
                             <span class="pf-c-spinner__lead-ball"></span>
                             <span class="pf-c-spinner__tail-ball"></span>

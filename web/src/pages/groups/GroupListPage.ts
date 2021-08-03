@@ -55,56 +55,40 @@ export class GroupListPage extends TablePage<Group> {
             html`${item.parent || "-"}`,
             html`${Array.from(item.users || []).length}`,
             html`${item.isSuperuser ? t`Yes` : t`No`}`,
-            html`
-            <ak-forms-modal>
-                <span slot="submit">
-                    ${t`Update`}
-                </span>
-                <span slot="header">
-                    ${t`Update Group`}
-                </span>
-                <ak-group-form slot="form" .instancePk=${item.pk}>
-                </ak-group-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${t`Edit`}
-                </button>
-            </ak-forms-modal>
-            <ak-forms-delete
-                .obj=${item}
-                objectLabel=${t`Group`}
-                .usedBy=${() => {
-                    return new CoreApi(DEFAULT_CONFIG).coreGroupsUsedByList({
-                        groupUuid: item.pk
-                    });
-                }}
-                .delete=${() => {
-                    return new CoreApi(DEFAULT_CONFIG).coreGroupsDestroy({
-                        groupUuid: item.pk
-                    });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete`}
-                </button>
-            </ak-forms-delete>`,
+            html` <ak-forms-modal>
+                    <span slot="submit"> ${t`Update`} </span>
+                    <span slot="header"> ${t`Update Group`} </span>
+                    <ak-group-form slot="form" .instancePk=${item.pk}> </ak-group-form>
+                    <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Edit`}</button>
+                </ak-forms-modal>
+                <ak-forms-delete
+                    .obj=${item}
+                    objectLabel=${t`Group`}
+                    .usedBy=${() => {
+                        return new CoreApi(DEFAULT_CONFIG).coreGroupsUsedByList({
+                            groupUuid: item.pk,
+                        });
+                    }}
+                    .delete=${() => {
+                        return new CoreApi(DEFAULT_CONFIG).coreGroupsDestroy({
+                            groupUuid: item.pk,
+                        });
+                    }}
+                >
+                    <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
+                </ak-forms-delete>`,
         ];
     }
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-forms-modal>
-            <span slot="submit">
-                ${t`Create`}
-            </span>
-            <span slot="header">
-                ${t`Create Group`}
-            </span>
-            <ak-group-form slot="form">
-            </ak-group-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${t`Create`}
-            </button>
-        </ak-forms-modal>
-        ${super.renderToolbar()}
+            <ak-forms-modal>
+                <span slot="submit"> ${t`Create`} </span>
+                <span slot="header"> ${t`Create Group`} </span>
+                <ak-group-form slot="form"> </ak-group-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+            </ak-forms-modal>
+            ${super.renderToolbar()}
         `;
     }
 }

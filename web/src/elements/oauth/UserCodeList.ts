@@ -35,30 +35,27 @@ export class UserOAuthCodeList extends Table<ExpiringBaseGrantModel> {
 
     row(item: ExpiringBaseGrantModel): TemplateResult[] {
         return [
-            html`<a href="#/core/providers/${item.provider?.pk}">
-                ${item.provider?.name}
-            </a>`,
+            html`<a href="#/core/providers/${item.provider?.pk}"> ${item.provider?.name} </a>`,
             html`${item.expires?.toLocaleString()}`,
             html`${item.scope.join(", ")}`,
-            html`
-            <ak-forms-delete
+            html` <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`Authorization Code`}
                 .usedBy=${() => {
                     return new Oauth2Api(DEFAULT_CONFIG).oauth2AuthorizationCodesUsedByList({
-                        id: item.pk
+                        id: item.pk,
                     });
                 }}
                 .delete=${() => {
                     return new Oauth2Api(DEFAULT_CONFIG).oauth2AuthorizationCodesDestroy({
                         id: item.pk,
                     });
-                }}>
+                }}
+            >
                 <button slot="trigger" class="pf-c-button pf-m-danger">
                     ${t`Delete Authorization Code`}
                 </button>
             </ak-forms-delete>`,
         ];
     }
-
 }

@@ -23,40 +23,54 @@ export const DEFAULT_HEADERS = {
 };
 
 export function popupCenterScreen(url: string, title: string, w: number, h: number): Window | null {
-    const top = (screen.height - h) / 4, left = (screen.width - w) / 2;
-    const popup = window.open(url, title, `scrollbars=yes,width=${w},height=${h},top=${top},left=${left}`);
+    const top = (screen.height - h) / 4,
+        left = (screen.width - w) / 2;
+    const popup = window.open(
+        url,
+        title,
+        `scrollbars=yes,width=${w},height=${h},top=${top},left=${left}`,
+    );
     return popup;
 }
 
 export class PlexAPIClient {
-
     token: string;
 
     constructor(token: string) {
         this.token = token;
     }
 
-    static async getPin(clientIdentifier: string): Promise<{ authUrl: string, pin: PlexPinResponse }> {
-        const headers = { ...DEFAULT_HEADERS, ...{
-            "X-Plex-Client-Identifier": clientIdentifier
-        }};
+    static async getPin(
+        clientIdentifier: string,
+    ): Promise<{ authUrl: string; pin: PlexPinResponse }> {
+        const headers = {
+            ...DEFAULT_HEADERS,
+            ...{
+                "X-Plex-Client-Identifier": clientIdentifier,
+            },
+        };
         const pinResponse = await fetch("https://plex.tv/api/v2/pins.json?strong=true", {
             method: "POST",
-            headers: headers
+            headers: headers,
         });
         const pin: PlexPinResponse = await pinResponse.json();
         return {
-            authUrl: `https://app.plex.tv/auth#!?clientID=${encodeURIComponent(clientIdentifier)}&code=${pin.code}`,
-            pin: pin
+            authUrl: `https://app.plex.tv/auth#!?clientID=${encodeURIComponent(
+                clientIdentifier,
+            )}&code=${pin.code}`,
+            pin: pin,
         };
     }
 
     static async pinStatus(clientIdentifier: string, id: number): Promise<string | undefined> {
-        const headers = { ...DEFAULT_HEADERS, ...{
-            "X-Plex-Client-Identifier": clientIdentifier
-        }};
+        const headers = {
+            ...DEFAULT_HEADERS,
+            ...{
+                "X-Plex-Client-Identifier": clientIdentifier,
+            },
+        };
         const pinResponse = await fetch(`https://plex.tv/api/v2/pins/${id}`, {
-            headers: headers
+            headers: headers,
         });
         const pin: PlexPinResponse = await pinResponse.json();
         return pin.authToken || "";
@@ -65,7 +79,7 @@ export class PlexAPIClient {
     static async pinPoll(clientIdentifier: string, id: number): Promise<string> {
         const executePoll = async (
             resolve: (authToken: string) => void,
-            reject: (e: Error) => void
+            reject: (e: Error) => void,
         ) => {
             try {
                 const response = await PlexAPIClient.pinStatus(clientIdentifier, id);
@@ -84,13 +98,15 @@ export class PlexAPIClient {
     }
 
     async getServers(): Promise<PlexResource[]> {
-        const resourcesResponse = await fetch(`https://plex.tv/api/v2/resources?X-Plex-Token=${this.token}&X-Plex-Client-Identifier=authentik`, {
-            headers: DEFAULT_HEADERS
-        });
+        const resourcesResponse = await fetch(
+            `https://plex.tv/api/v2/resources?X-Plex-Token=${this.token}&X-Plex-Client-Identifier=authentik`,
+            {
+                headers: DEFAULT_HEADERS,
+            },
+        );
         const resources: PlexResource[] = await resourcesResponse.json();
-        return resources.filter(r => {
+        return resources.filter((r) => {
             return r.provides.toLowerCase().includes("server") && r.owned;
         });
     }
-
 }

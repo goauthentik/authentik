@@ -49,6 +49,28 @@ stages:
               command: 'custom'
               workingDir: 'web/'
               customCommand: 'run lint'
+      - job: prettier
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '16.x'
+            displayName: 'Install Node.js'
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'current'
+              artifactName: 'ts_api_client'
+              path: "web/api/"
+          - task: Npm@1
+            inputs:
+              command: 'install'
+              workingDir: 'web/'
+          - task: Npm@1
+            inputs:
+              command: 'custom'
+              workingDir: 'web/'
+              customCommand: 'run prettier-check'
       - job: lit_analyse
         pool:
           vmImage: 'ubuntu-latest'

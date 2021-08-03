@@ -47,11 +47,7 @@ export class SourceListPage extends TablePage<Source> {
     }
 
     columns(): TableColumn[] {
-        return [
-            new TableColumn(t`Name`, "name"),
-            new TableColumn(t`Type`),
-            new TableColumn(""),
-        ];
+        return [new TableColumn(t`Name`, "name"), new TableColumn(t`Type`), new TableColumn("")];
     }
 
     row(item: Source): TemplateResult[] {
@@ -64,42 +60,35 @@ export class SourceListPage extends TablePage<Source> {
                 ${item.enabled ? html`` : html`<small>${t`Disabled`}</small>`}
             </a>`,
             html`${item.verboseName}`,
-            html`
-            <ak-forms-modal>
-                <span slot="submit">
-                    ${t`Update`}
-                </span>
-                <span slot="header">
-                    ${t`Update ${item.verboseName}`}
-                </span>
-                <ak-proxy-form
-                    slot="form"
-                    .args=${{
-                        "instancePk": item.slug
+            html` <ak-forms-modal>
+                    <span slot="submit"> ${t`Update`} </span>
+                    <span slot="header"> ${t`Update ${item.verboseName}`} </span>
+                    <ak-proxy-form
+                        slot="form"
+                        .args=${{
+                            instancePk: item.slug,
+                        }}
+                        type=${ifDefined(item.component)}
+                    >
+                    </ak-proxy-form>
+                    <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Edit`}</button>
+                </ak-forms-modal>
+                <ak-forms-delete
+                    .obj=${item}
+                    objectLabel=${t`Source`}
+                    .usedBy=${() => {
+                        return new SourcesApi(DEFAULT_CONFIG).sourcesAllUsedByList({
+                            slug: item.slug,
+                        });
                     }}
-                    type=${ifDefined(item.component)}>
-                </ak-proxy-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${t`Edit`}
-                </button>
-            </ak-forms-modal>
-            <ak-forms-delete
-                .obj=${item}
-                objectLabel=${t`Source`}
-                .usedBy=${() => {
-                    return new SourcesApi(DEFAULT_CONFIG).sourcesAllUsedByList({
-                        slug: item.slug
-                    });
-                }}
-                .delete=${() => {
-                    return new SourcesApi(DEFAULT_CONFIG).sourcesAllDestroy({
-                        slug: item.slug
-                    });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete`}
-                </button>
-            </ak-forms-delete>`,
+                    .delete=${() => {
+                        return new SourcesApi(DEFAULT_CONFIG).sourcesAllDestroy({
+                            slug: item.slug,
+                        });
+                    }}
+                >
+                    <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
+                </ak-forms-delete>`,
         ];
     }
 
@@ -115,41 +104,39 @@ export class SourceListPage extends TablePage<Source> {
     }
 
     renderToolbar(): TemplateResult {
-        return html`
-        <ak-dropdown class="pf-c-dropdown">
-            <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
-                <span class="pf-c-dropdown__toggle-text">${t`Create`}</span>
-                <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
-            </button>
-            <ul class="pf-c-dropdown__menu" hidden>
-                ${until(new SourcesApi(DEFAULT_CONFIG).sourcesAllTypesList().then((types) => {
-                    return types.map((type) => {
-                        return html`<li>
-                            <ak-forms-modal>
-                                <span slot="submit">
-                                    ${t`Create`}
-                                </span>
-                                <span slot="header">
-                                    ${t`Create ${type.name}`}
-                                </span>
-                                <ak-proxy-form
-                                    slot="form"
-                                    .args=${{
-                                        "modelName": type.modelName
-                                    }}
-                                    type=${type.component}>
-                                </ak-proxy-form>
-                                <button slot="trigger" class="pf-c-dropdown__menu-item">
-                                    ${type.name}<br>
-                                    <small>${type.description}</small>
-                                </button>
-                            </ak-forms-modal>
-                        </li>`;
-                    });
-                }), html`<ak-spinner></ak-spinner>`)}
-            </ul>
-        </ak-dropdown>
-        ${super.renderToolbar()}`;
+        return html` <ak-dropdown class="pf-c-dropdown">
+                <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
+                    <span class="pf-c-dropdown__toggle-text">${t`Create`}</span>
+                    <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
+                </button>
+                <ul class="pf-c-dropdown__menu" hidden>
+                    ${until(
+                        new SourcesApi(DEFAULT_CONFIG).sourcesAllTypesList().then((types) => {
+                            return types.map((type) => {
+                                return html`<li>
+                                    <ak-forms-modal>
+                                        <span slot="submit"> ${t`Create`} </span>
+                                        <span slot="header"> ${t`Create ${type.name}`} </span>
+                                        <ak-proxy-form
+                                            slot="form"
+                                            .args=${{
+                                                modelName: type.modelName,
+                                            }}
+                                            type=${type.component}
+                                        >
+                                        </ak-proxy-form>
+                                        <button slot="trigger" class="pf-c-dropdown__menu-item">
+                                            ${type.name}<br />
+                                            <small>${type.description}</small>
+                                        </button>
+                                    </ak-forms-modal>
+                                </li>`;
+                            });
+                        }),
+                        html`<ak-spinner></ak-spinner>`,
+                    )}
+                </ul>
+            </ak-dropdown>
+            ${super.renderToolbar()}`;
     }
-
 }

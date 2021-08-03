@@ -12,9 +12,8 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 
 @customElement("ak-stage-invitation-list-link")
 export class InvitationListLink extends LitElement {
-
     @property()
-    invitation?: string
+    invitation?: string;
 
     @property()
     selectedFlow?: string;
@@ -35,33 +34,52 @@ export class InvitationListLink extends LitElement {
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
-                        <select class="pf-c-form-control" @change=${(ev: Event) => {
-                            const current = (ev.target as HTMLInputElement).value;
-                            this.selectedFlow = current;
-                        }}>
-                            ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
-                                ordering: "pk",
-                                designation: FlowsInstancesListDesignationEnum.Enrollment,
-                            }).then(flows => {
-                                return flows.results.map(flow => {
-                                    return html`<option value=${flow.slug} ?selected=${flow.slug === this.selectedFlow}>${flow.slug}</option>`;
-                                });
-                            }), html`<option>${t`Loading...`}</option>`)}
+                        <select
+                            class="pf-c-form-control"
+                            @change=${(ev: Event) => {
+                                const current = (ev.target as HTMLInputElement).value;
+                                this.selectedFlow = current;
+                            }}
+                        >
+                            ${until(
+                                new FlowsApi(DEFAULT_CONFIG)
+                                    .flowsInstancesList({
+                                        ordering: "pk",
+                                        designation: FlowsInstancesListDesignationEnum.Enrollment,
+                                    })
+                                    .then((flows) => {
+                                        return flows.results.map((flow) => {
+                                            return html`<option
+                                                value=${flow.slug}
+                                                ?selected=${flow.slug === this.selectedFlow}
+                                            >
+                                                ${flow.slug}
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
                         </select>
                     </div>
                 </dd>
             </div>
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${t`Link to use the invitation.`}</span>
+                    <span class="pf-c-description-list__text"
+                        >${t`Link to use the invitation.`}</span
+                    >
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
-                        <input class="pf-c-form-control" readonly type="text" value=${this.renderLink()} />
+                        <input
+                            class="pf-c-form-control"
+                            readonly
+                            type="text"
+                            value=${this.renderLink()}
+                        />
                     </div>
                 </dd>
             </div>
         </dl>`;
     }
-
 }

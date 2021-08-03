@@ -1,4 +1,12 @@
-import { LitElement, html, customElement, TemplateResult, property, CSSResult, css } from "lit-element";
+import {
+    LitElement,
+    html,
+    customElement,
+    TemplateResult,
+    property,
+    CSSResult,
+    css,
+} from "lit-element";
 import "./Message";
 import { APIMessage } from "./Message";
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
@@ -17,17 +25,20 @@ export function showMessage(message: APIMessage): void {
 
 @customElement("ak-message-container")
 export class MessageContainer extends LitElement {
-
-    @property({attribute: false})
+    @property({ attribute: false })
     messages: APIMessage[] = [];
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFAlertGroup, css`
-            /* Fix spacing between messages */
-            ak-message {
-                display: block;
-            }
-        `];
+        return [
+            PFBase,
+            PFAlertGroup,
+            css`
+                /* Fix spacing between messages */
+                ak-message {
+                    display: block;
+                }
+            `,
+        ];
     }
 
     constructor() {
@@ -40,7 +51,7 @@ export class MessageContainer extends LitElement {
 
     // add a new message, but only if the message isn't currently shown.
     addMessage(message: APIMessage): void {
-        const matchingMessages = this.messages.filter(m => m.message == message.message);
+        const matchingMessages = this.messages.filter((m) => m.message == message.message);
         if (matchingMessages.length < 1) {
             this.messages.push(message);
         }
@@ -54,9 +65,10 @@ export class MessageContainer extends LitElement {
                     .onRemove=${(m: APIMessage) => {
                         this.messages = this.messages.filter((v) => v !== m);
                         this.requestUpdate();
-                    }}>
-                    </ak-message>`;
-                })}
+                    }}
+                >
+                </ak-message>`;
+            })}
         </ul>`;
     }
 }

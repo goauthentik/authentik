@@ -1,8 +1,5 @@
 {
-    "presets": [
-        "@babel/env",
-        "@babel/typescript"
-    ],
+    "presets": ["@babel/env", "@babel/typescript"],
     "plugins": [
         ["@babel/plugin-proposal-private-methods", { "loose": true }],
         [

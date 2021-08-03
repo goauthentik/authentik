@@ -62,11 +62,7 @@ export class StageListPage extends TablePage<Stage> {
     }
 
     columns(): TableColumn[] {
-        return [
-            new TableColumn(t`Name`, "name"),
-            new TableColumn(t`Flows`),
-            new TableColumn(""),
-        ];
+        return [new TableColumn(t`Name`, "name"), new TableColumn(t`Flows`), new TableColumn("")];
     }
 
     row(item: Stage): TemplateResult[] {
@@ -80,78 +76,66 @@ export class StageListPage extends TablePage<Stage> {
                     <code>${flow.slug}</code>
                 </a>`;
             })}`,
-            html`
-            <ak-forms-modal>
-                <span slot="submit">
-                    ${t`Update`}
-                </span>
-                <span slot="header">
-                    ${t`Update ${item.verboseName}`}
-                </span>
-                <ak-proxy-form
-                    slot="form"
-                    .args=${{
-                        "instancePk": item.pk
+            html` <ak-forms-modal>
+                    <span slot="submit"> ${t`Update`} </span>
+                    <span slot="header"> ${t`Update ${item.verboseName}`} </span>
+                    <ak-proxy-form
+                        slot="form"
+                        .args=${{
+                            instancePk: item.pk,
+                        }}
+                        type=${ifDefined(item.component)}
+                    >
+                    </ak-proxy-form>
+                    <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Edit`}</button>
+                </ak-forms-modal>
+                <ak-forms-delete
+                    .obj=${item}
+                    objectLabel=${item.verboseName || ""}
+                    .usedBy=${() => {
+                        return new StagesApi(DEFAULT_CONFIG).stagesAllUsedByList({
+                            stageUuid: item.pk,
+                        });
                     }}
-                    type=${ifDefined(item.component)}>
-                </ak-proxy-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${t`Edit`}
-                </button>
-            </ak-forms-modal>
-            <ak-forms-delete
-                .obj=${item}
-                objectLabel=${item.verboseName || ""}
-                .usedBy=${() => {
-                    return new StagesApi(DEFAULT_CONFIG).stagesAllUsedByList({
-                        stageUuid: item.pk
-                    });
-                }}
-                .delete=${() => {
-                    return new StagesApi(DEFAULT_CONFIG).stagesAllDestroy({
-                        stageUuid: item.pk
-                    });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete`}
-                </button>
-            </ak-forms-delete>`,
+                    .delete=${() => {
+                        return new StagesApi(DEFAULT_CONFIG).stagesAllDestroy({
+                            stageUuid: item.pk,
+                        });
+                    }}
+                >
+                    <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
+                </ak-forms-delete>`,
         ];
     }
 
     renderToolbar(): TemplateResult {
-        return html`
-        <ak-dropdown class="pf-c-dropdown">
-            <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
-                <span class="pf-c-dropdown__toggle-text">${t`Create`}</span>
-                <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
-            </button>
-            <ul class="pf-c-dropdown__menu" hidden>
-                ${until(new StagesApi(DEFAULT_CONFIG).stagesAllTypesList().then((types) => {
-                    return types.map((type) => {
-                        return html`<li>
-                            <ak-forms-modal>
-                                <span slot="submit">
-                                    ${t`Create`}
-                                </span>
-                                <span slot="header">
-                                    ${t`Create ${type.name}`}
-                                </span>
-                                <ak-proxy-form
-                                    slot="form"
-                                    type=${type.component}>
-                                </ak-proxy-form>
-                                <button slot="trigger" class="pf-c-dropdown__menu-item">
-                                    ${type.name}<br>
-                                    <small>${type.description}</small>
-                                </button>
-                            </ak-forms-modal>
-                        </li>`;
-                    });
-                }), html`<ak-spinner></ak-spinner>`)}
-            </ul>
-        </ak-dropdown>
-        ${super.renderToolbar()}`;
+        return html` <ak-dropdown class="pf-c-dropdown">
+                <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
+                    <span class="pf-c-dropdown__toggle-text">${t`Create`}</span>
+                    <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
+                </button>
+                <ul class="pf-c-dropdown__menu" hidden>
+                    ${until(
+                        new StagesApi(DEFAULT_CONFIG).stagesAllTypesList().then((types) => {
+                            return types.map((type) => {
+                                return html`<li>
+                                    <ak-forms-modal>
+                                        <span slot="submit"> ${t`Create`} </span>
+                                        <span slot="header"> ${t`Create ${type.name}`} </span>
+                                        <ak-proxy-form slot="form" type=${type.component}>
+                                        </ak-proxy-form>
+                                        <button slot="trigger" class="pf-c-dropdown__menu-item">
+                                            ${type.name}<br />
+                                            <small>${type.description}</small>
+                                        </button>
+                                    </ak-forms-modal>
+                                </li>`;
+                            });
+                        }),
+                        html`<ak-spinner></ak-spinner>`,
+                    )}
+                </ul>
+            </ak-dropdown>
+            ${super.renderToolbar()}`;
     }
-
 }

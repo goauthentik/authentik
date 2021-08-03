@@ -8,7 +8,9 @@
         "build": "lingui compile && rollup -c ./rollup.config.js",
         "watch": "lingui compile && rollup -c -w",
         "lint": "eslint . --max-warnings 0 --fix",
-        "lit-analyse": "lit-analyzer src"
+        "lit-analyse": "lit-analyzer src",
+        "prettier-check": "prettier --check .",
+        "prettier": "prettier --write ."
     },
     "lingui": {
         "sourceLocale": "en",
@@ -76,6 +78,7 @@
         "lit-element": "^2.5.1",
         "lit-html": "^1.4.1",
         "moment": "^2.29.1",
+        "prettier": "^2.3.2",
         "rapidoc": "^9.0.0",
         "rollup": "^2.55.1",
         "rollup-plugin-commonjs": "^10.1.0",

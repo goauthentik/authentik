@@ -60,56 +60,40 @@ export class PromptListPage extends TablePage<Prompt> {
             html`${item.promptstageSet?.map((stage) => {
                 return html`<li>${stage.name}</li>`;
             })}`,
-            html`
-            <ak-forms-modal>
-                <span slot="submit">
-                    ${t`Update`}
-                </span>
-                <span slot="header">
-                    ${t`Update Prompt`}
-                </span>
-                <ak-prompt-form slot="form" .instancePk=${item.pk}>
-                </ak-prompt-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${t`Edit`}
-                </button>
-            </ak-forms-modal>
-            <ak-forms-delete
-                .obj=${item}
-                objectLabel=${t`Prompt`}
-                .usedBy=${() => {
-                    return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsUsedByList({
-                        promptUuid: item.pk
-                    });
-                }}
-                .delete=${() => {
-                    return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsDestroy({
-                        promptUuid: item.pk
-                    });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete`}
-                </button>
-            </ak-forms-delete>`,
+            html` <ak-forms-modal>
+                    <span slot="submit"> ${t`Update`} </span>
+                    <span slot="header"> ${t`Update Prompt`} </span>
+                    <ak-prompt-form slot="form" .instancePk=${item.pk}> </ak-prompt-form>
+                    <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Edit`}</button>
+                </ak-forms-modal>
+                <ak-forms-delete
+                    .obj=${item}
+                    objectLabel=${t`Prompt`}
+                    .usedBy=${() => {
+                        return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsUsedByList({
+                            promptUuid: item.pk,
+                        });
+                    }}
+                    .delete=${() => {
+                        return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsDestroy({
+                            promptUuid: item.pk,
+                        });
+                    }}
+                >
+                    <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
+                </ak-forms-delete>`,
         ];
     }
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-forms-modal>
-            <span slot="submit">
-                ${t`Create`}
-            </span>
-            <span slot="header">
-                ${t`Create Prompt`}
-            </span>
-            <ak-prompt-form slot="form">
-            </ak-prompt-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${t`Create`}
-            </button>
-        </ak-forms-modal>
-        ${super.renderToolbar()}
+            <ak-forms-modal>
+                <span slot="submit"> ${t`Create`} </span>
+                <span slot="header"> ${t`Create Prompt`} </span>
+                <ak-prompt-form slot="form"> </ak-prompt-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+            </ak-forms-modal>
+            ${super.renderToolbar()}
         `;
     }
 }

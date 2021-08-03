@@ -6,7 +6,6 @@ import { AdminStatusCard, AdminStatus } from "./AdminStatusCard";
 
 @customElement("ak-admin-status-system")
 export class SystemStatusCard extends AdminStatusCard<System> {
-
     now?: Date;
 
     header = "OK";
@@ -35,12 +34,11 @@ export class SystemStatusCard extends AdminStatusCard<System> {
         }
         return Promise.resolve<AdminStatus>({
             icon: "fa fa-check-circle pf-m-success",
-            message: t`Everything is ok.`
+            message: t`Everything is ok.`,
         });
     }
 
     renderValue(): TemplateResult {
         return html`${this.header}`;
     }
-
 }

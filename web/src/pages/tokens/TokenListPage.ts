@@ -55,28 +55,26 @@ export class TokenListPage extends TablePage<Token> {
             html`${item.expiring ? t`Yes` : t`No`}`,
             html`${item.expiring ? item.expires?.toLocaleString() : "-"}`,
             html`
-            <ak-forms-delete
-                .obj=${item}
-                objectLabel=${t`Token`}
-                .usedBy=${() => {
-                    return new CoreApi(DEFAULT_CONFIG).coreTokensUsedByList({
-                        identifier: item.identifier
-                    });
-                }}
-                .delete=${() => {
-                    return new CoreApi(DEFAULT_CONFIG).coreTokensDestroy({
-                        identifier: item.identifier
-                    });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete`}
-                </button>
-            </ak-forms-delete>
-            <ak-token-copy-button identifier="${item.identifier}">
-                ${t`Copy Key`}
-            </ak-token-copy-button>
+                <ak-forms-delete
+                    .obj=${item}
+                    objectLabel=${t`Token`}
+                    .usedBy=${() => {
+                        return new CoreApi(DEFAULT_CONFIG).coreTokensUsedByList({
+                            identifier: item.identifier,
+                        });
+                    }}
+                    .delete=${() => {
+                        return new CoreApi(DEFAULT_CONFIG).coreTokensDestroy({
+                            identifier: item.identifier,
+                        });
+                    }}
+                >
+                    <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
+                </ak-forms-delete>
+                <ak-token-copy-button identifier="${item.identifier}">
+                    ${t`Copy Key`}
+                </ak-token-copy-button>
             `,
         ];
     }
-
 }

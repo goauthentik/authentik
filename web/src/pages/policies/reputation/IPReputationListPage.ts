@@ -51,25 +51,22 @@ export class IPReputationListPage extends TablePage<IPReputation> {
         return [
             html`${item.ip}`,
             html`${item.score}`,
-            html`
-            <ak-forms-delete
+            html` <ak-forms-delete
                 .obj=${item}
                 objectLabel=${t`IP Reputation`}
                 .usedBy=${() => {
                     return new PoliciesApi(DEFAULT_CONFIG).policiesReputationIpsUsedByList({
-                        id: item.pk
+                        id: item.pk,
                     });
                 }}
                 .delete=${() => {
                     return new PoliciesApi(DEFAULT_CONFIG).policiesReputationIpsDestroy({
                         id: item.pk,
                     });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete`}
-                </button>
+                }}
+            >
+                <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
             </ak-forms-delete>`,
         ];
     }
-
 }
