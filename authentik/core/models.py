@@ -519,3 +519,8 @@ class AuthenticatedSession(ExpiringModel):
             last_user_agent=request.META.get("HTTP_USER_AGENT", ""),
             expires=request.session.get_expiry_date(),
         )
+
+    class Meta:
+
+        verbose_name = _("Authenticated Session")
+        verbose_name_plural = _("Authenticated Sessions")
