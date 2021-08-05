@@ -173,30 +173,30 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         ${t`Link users on unique identifier`}
                     </option>
                     <option
-                        value=${UserMatchingModeEnum.UsernameLink}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.UsernameLink}
-                    >
-                        ${t`Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses`}
-                    </option>
-                    <option
-                        value=${UserMatchingModeEnum.UsernameDeny}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.UsernameDeny}
-                    >
-                        ${t`Use the user's email address, but deny enrollment when the email address already exists.`}
-                    </option>
-                    <option
                         value=${UserMatchingModeEnum.EmailLink}
                         ?selected=${this.instance?.userMatchingMode ===
                         UserMatchingModeEnum.EmailLink}
                     >
-                        ${t`Link to a user with identical username address. Can have security implications when a username is used with another source.`}
+                        ${t`Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses`}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.EmailDeny}
                         ?selected=${this.instance?.userMatchingMode ===
                         UserMatchingModeEnum.EmailDeny}
+                    >
+                        ${t`Use the user's email address, but deny enrollment when the email address already exists.`}
+                    </option>
+                    <option
+                        value=${UserMatchingModeEnum.UsernameLink}
+                        ?selected=${this.instance?.userMatchingMode ===
+                        UserMatchingModeEnum.UsernameLink}
+                    >
+                        ${t`Link to a user with identical username address. Can have security implications when a username is used with another source.`}
+                    </option>
+                    <option
+                        value=${UserMatchingModeEnum.UsernameDeny}
+                        ?selected=${this.instance?.userMatchingMode ===
+                        UserMatchingModeEnum.UsernameDeny}
                     >
                         ${t`Use the user's username, but deny enrollment when the username already exists.`}
                     </option>
