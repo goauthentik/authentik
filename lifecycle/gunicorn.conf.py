@@ -51,7 +51,7 @@ logconfig_dict = {
 if SERVICE_HOST_ENV_NAME in os.environ:
     workers = 2
 else:
-    default_workers = max(cpu_count() * 0.25, 1) + 1 # Minimum of 2 workers
+    default_workers = max(cpu_count() * 0.25, 1) + 1  # Minimum of 2 workers
     workers = int(os.environ.get("WORKERS", default_workers))
 threads = 4
 

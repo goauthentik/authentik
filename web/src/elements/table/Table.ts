@@ -117,6 +117,9 @@ export abstract class Table<T> extends LitElement {
     @property({ type: Boolean })
     checkbox = false;
 
+    @property({ type: Boolean })
+    checkboxChip = false;
+
     @property({ attribute: false })
     selectedElements: T[] = [];
 
@@ -310,7 +313,7 @@ export abstract class Table<T> extends LitElement {
     }
 
     renderTable(): TemplateResult {
-        return html` ${this.checkbox
+        return html` ${this.checkbox && this.checkboxChip
                 ? html`<ak-chip-group>
                       ${this.selectedElements.map((el) => {
                           return html`<ak-chip>${this.renderSelectedChip(el)}</ak-chip>`;
