@@ -52,7 +52,11 @@ export class PolicyListPage extends TablePage<Policy> {
     }
 
     columns(): TableColumn[] {
-        return [new TableColumn(t`Name`, "name"), new TableColumn(t`Type`), new TableColumn("")];
+        return [
+            new TableColumn(t`Name`, "name"),
+            new TableColumn(t`Type`),
+            new TableColumn(t`Actions`),
+        ];
     }
 
     row(item: Policy): TemplateResult[] {
@@ -77,31 +81,48 @@ export class PolicyListPage extends TablePage<Policy> {
                         type=${ifDefined(item.component)}
                     >
                     </ak-proxy-form>
-                    <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Edit`}</button>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                    </button>
                 </ak-forms-modal>
                 <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
                     <span slot="submit"> ${t`Test`} </span>
                     <span slot="header"> ${t`Test Policy`} </span>
                     <ak-policy-test-form slot="form" .policy=${item}> </ak-policy-test-form>
-                    <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Test`}</button>
-                </ak-forms-modal>
-                <ak-forms-delete
-                    .obj=${item}
-                    objectLabel=${t`Policy`}
-                    .usedBy=${() => {
-                        return new PoliciesApi(DEFAULT_CONFIG).policiesAllUsedByList({
-                            policyUuid: item.pk,
-                        });
-                    }}
-                    .delete=${() => {
-                        return new PoliciesApi(DEFAULT_CONFIG).policiesAllDestroy({
-                            policyUuid: item.pk,
-                        });
-                    }}
-                >
-                    <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
-                </ak-forms-delete>`,
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <i class="fas fa-vial" aria-hidden="true"></i>
+                    </button>
+                </ak-forms-modal>`,
         ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        // TODO: bulk delete
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`Policy`}
+            .usedBy=${() => {
+                return new PoliciesApi(DEFAULT_CONFIG).policiesAllUsedByList({
+                    policyUuid: item.pk,
+                });
+            }}
+            .delete=${() => {
+                return new PoliciesApi(DEFAULT_CONFIG).policiesAllDestroy({
+                    policyUuid: item.pk,
+                });
+            }}
+        >
+            <button
+                ?disabled=${disabled}
+                slot="trigger"
+                type="button"
+                class="pf-c-button pf-m-danger ${disabled && "pf-m-disabled"}"
+            >
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete>`;
     }
 
     renderToolbar(): TemplateResult {

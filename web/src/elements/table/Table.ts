@@ -279,6 +279,10 @@ export abstract class Table<T> extends LitElement {
         </button>`;
     }
 
+    renderToolbarSelected(): TemplateResult {
+        return html``;
+    }
+
     renderToolbarAfter(): TemplateResult {
         return html``;
     }
@@ -322,7 +326,7 @@ export abstract class Table<T> extends LitElement {
                 : html``}
             <div class="pf-c-toolbar">
                 <div class="pf-c-toolbar__content">
-                    ${this.renderSearch()}
+                    ${this.renderToolbarSelected()} &nbsp; ${this.renderSearch()}
                     <div class="pf-c-toolbar__bulk-select">${this.renderToolbar()}</div>
                     ${this.renderToolbarAfter()}
                     <ak-table-pagination

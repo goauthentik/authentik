@@ -47,7 +47,7 @@ export class PromptListPage extends TablePage<Prompt> {
             new TableColumn(t`Type`, "type"),
             new TableColumn(t`Order`, "order"),
             new TableColumn(t`Stages`),
-            new TableColumn(""),
+            new TableColumn("Actions"),
         ];
     }
 

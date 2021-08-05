@@ -44,7 +44,7 @@ export class TokenListPage extends TablePage<Token> {
             new TableColumn(t`User`, "user"),
             new TableColumn(t`Expires?`, "expiring"),
             new TableColumn(t`Expiry date`, "expires"),
-            new TableColumn(""),
+            new TableColumn("Actions"),
         ];
     }
 

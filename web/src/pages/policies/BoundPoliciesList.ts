@@ -43,7 +43,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             new TableColumn(t`Enabled`, "enabled"),
             new TableColumn(t`Order`, "order"),
             new TableColumn(t`Timeout`, "timeout"),
-            new TableColumn(""),
+            new TableColumn("Actions"),
         ];
     }
 

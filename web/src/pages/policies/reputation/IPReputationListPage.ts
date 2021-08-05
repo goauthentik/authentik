@@ -43,7 +43,7 @@ export class IPReputationListPage extends TablePage<IPReputation> {
         return [
             new TableColumn(t`IP`, "ip"),
             new TableColumn(t`Score`, "score"),
-            new TableColumn(""),
+            new TableColumn("Actions"),
         ];
     }
 

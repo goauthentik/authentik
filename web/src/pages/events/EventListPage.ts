@@ -46,7 +46,7 @@ export class EventListPage extends TablePage<Event> {
             new TableColumn(t`Creation Date`, "created"),
             new TableColumn(t`Client IP`, "client_ip"),
             new TableColumn(t`Tenant`, "tenant_name"),
-            new TableColumn(""),
+            new TableColumn("Actions"),
         ];
     }
 

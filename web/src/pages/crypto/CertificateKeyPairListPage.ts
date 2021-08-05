@@ -53,7 +53,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             new TableColumn(t`Name`, "name"),
             new TableColumn(t`Private key available?`),
             new TableColumn(t`Expiry date`),
-            new TableColumn(""),
+            new TableColumn("Actions"),
         ];
     }
 

@@ -54,7 +54,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         return [
             new TableColumn(t`Name`, "name"),
             new TableColumn(t`Type`, "type"),
-            new TableColumn(""),
+            new TableColumn("Actions"),
         ];
     }
 

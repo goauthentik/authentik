@@ -43,7 +43,7 @@ export class UserReputationListPage extends TablePage<UserReputation> {
         return [
             new TableColumn(t`Username`, "username"),
             new TableColumn(t`Score`, "score"),
-            new TableColumn(""),
+            new TableColumn("Actions"),
         ];
     }
 

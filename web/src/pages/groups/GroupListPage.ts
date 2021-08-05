@@ -45,7 +45,7 @@ export class GroupListPage extends TablePage<Group> {
             new TableColumn(t`Parent`, "parent"),
             new TableColumn(t`Members`),
             new TableColumn(t`Superuser privileges?`),
-            new TableColumn(""),
+            new TableColumn("Actions"),
         ];
     }
 

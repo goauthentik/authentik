@@ -30,7 +30,7 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
             new TableColumn(t`Browser`, "user_agent"),
             new TableColumn(t`Device`, "user_agent"),
             new TableColumn(t`Expires`, "expires"),
-            new TableColumn(""),
+            new TableColumn("Actions"),
         ];
     }
 

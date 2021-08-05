@@ -29,7 +29,7 @@ export class UserOAuthCodeList extends Table<ExpiringBaseGrantModel> {
             new TableColumn(t`Provider`, "provider"),
             new TableColumn(t`Expires`, "expires"),
             new TableColumn(t`Scopes`, "scope"),
-            new TableColumn(""),
+            new TableColumn("Actions"),
         ];
     }
 

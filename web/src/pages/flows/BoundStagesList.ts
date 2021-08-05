@@ -38,7 +38,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
             new TableColumn(t`Order`),
             new TableColumn(t`Name`),
             new TableColumn(t`Type`),
-            new TableColumn(""),
+            new TableColumn("Actions"),
         ];
     }
 

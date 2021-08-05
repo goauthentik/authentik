@@ -45,7 +45,7 @@ export class OutpostListPage extends TablePage<Outpost> {
             new TableColumn(t`Providers`),
             new TableColumn(t`Integration`, "service_connection__name"),
             new TableColumn(t`Health and Version`),
-            new TableColumn(""),
+            new TableColumn("Actions"),
         ];
     }
 

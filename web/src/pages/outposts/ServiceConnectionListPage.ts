@@ -50,7 +50,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
             new TableColumn(t`Type`),
             new TableColumn(t`Local`, "local"),
             new TableColumn(t`State`),
-            new TableColumn(""),
+            new TableColumn("Actions"),
         ];
     }
 

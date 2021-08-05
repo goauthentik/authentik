@@ -28,7 +28,7 @@ export class UserConsentList extends Table<UserConsent> {
         return [
             new TableColumn(t`Application`, "application"),
             new TableColumn(t`Expires`, "expires"),
-            new TableColumn(""),
+            new TableColumn("Actions"),
         ];
     }
 

@@ -48,7 +48,7 @@ export class InvitationListPage extends TablePage<Invitation> {
             new TableColumn(t`ID`, "pk"),
             new TableColumn(t`Created by`, "created_by"),
             new TableColumn(t`Expiry`),
-            new TableColumn(""),
+            new TableColumn("Actions"),
         ];
     }
 

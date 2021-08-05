@@ -37,7 +37,7 @@ export class UserOAuthRefreshList extends Table<RefreshTokenModel> {
             new TableColumn(t`Revoked?`, "revoked"),
             new TableColumn(t`Expires`, "expires"),
             new TableColumn(t`Scopes`, "scope"),
-            new TableColumn(""),
+            new TableColumn("Actions"),
         ];
     }
 

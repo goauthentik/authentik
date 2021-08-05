@@ -48,7 +48,7 @@ export class FlowListPage extends TablePage<Flow> {
             new TableColumn(t`Designation`, "designation"),
             new TableColumn(t`Stages`),
             new TableColumn(t`Policies`),
-            new TableColumn(""),
+            new TableColumn("Actions"),
         ];
     }
 

@@ -43,7 +43,7 @@ export class TenantListPage extends TablePage<Tenant> {
         return [
             new TableColumn(t`Domain`, "domain"),
             new TableColumn(t`Default?`, "default"),
-            new TableColumn(""),
+            new TableColumn("Actions"),
         ];
     }
 

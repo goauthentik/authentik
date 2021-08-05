@@ -62,7 +62,7 @@ export class ApplicationListPage extends TablePage<Application> {
             new TableColumn(t`Slug`, "slug"),
             new TableColumn(t`Provider`),
             new TableColumn(t`Provider Type`),
-            new TableColumn(""),
+            new TableColumn("Actions"),
         ];
     }
 

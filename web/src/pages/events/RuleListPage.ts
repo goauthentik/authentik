@@ -47,7 +47,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
             new TableColumn(t`Name`, "name"),
             new TableColumn(t`Severity`, "severity"),
             new TableColumn(t`Sent to group`, "group"),
-            new TableColumn(""),
+            new TableColumn("Actions"),
         ];
     }
 
