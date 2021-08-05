@@ -78,9 +78,9 @@ docker-compose pull
 docker-compose up -d
 ```
 
-The compose file statically references the latest version available at the time of downloading, which can be overridden with the `SERVER_TAG` environment variable.
+The compose file statically references the latest version available at the time of downloading the compose file, which can be overridden with the `SERVER_TAG` environment variable.
 
-authentik will then be reachable HTTPS on port 443. You can optionally configure the packaged traefik to use Let's Encrypt certificates for TLS Encryption.
+authentik will then be reachable on port 9000 (HTTP) and port 9443 (HTTPS).
 
 To start the initial setup, navigate to `https://<your server>/if/flow/initial-setup/`. There you will be prompted to set a password for the akadmin user.
 
