@@ -79,6 +79,7 @@ module.exports = {
                         "integrations/services/apache-guacamole/index",
                         "integrations/services/aws/index",
                         "integrations/services/awx-tower/index",
+                        "integrations/services/bookstack/index",
                         "integrations/services/gitlab/index",
                         "integrations/services/grafana/index",
                         "integrations/services/harbor/index",
