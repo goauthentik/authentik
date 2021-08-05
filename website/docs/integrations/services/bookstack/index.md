@@ -32,6 +32,7 @@ In authentik, under _Providers_, create a _SAML Provider_ with these settings:
 - Issuer: https://authentik.company
 - Service Provider Binding: Post
 - Audience: https://book.company/saml2/metadata
+
 **Advanced protocol settings**
 - Signing Certificate:  Choose your certificate or the default authentik Self-signed Certificate
 All other options as default.
