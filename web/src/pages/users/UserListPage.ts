@@ -58,7 +58,7 @@ export class UserListPage extends TablePage<User> {
             new TableColumn(t`Name`, "username"),
             new TableColumn(t`Active`, "active"),
             new TableColumn(t`Last login`, "last_login"),
-            new TableColumn("Actions"),
+            new TableColumn(t`Actions`),
         ];
     }
 

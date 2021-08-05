@@ -21,6 +21,7 @@ export class UserTokenList extends Table<Token> {
     }
 
     expandable = true;
+    checkbox = true;
 
     @property()
     order = "expires";
@@ -94,6 +95,24 @@ export class UserTokenList extends Table<Token> {
             <td></td>`;
     }
 
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`Token`}
+            .delete=${() => {
+                return new CoreApi(DEFAULT_CONFIG).coreTokensDestroy({
+                    identifier: item.identifier,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete>`;
+    }
+
     row(item: Token): TemplateResult[] {
         return [
             html`${item.identifier}`,
@@ -103,19 +122,10 @@ export class UserTokenList extends Table<Token> {
                     <span slot="header"> ${t`Update Token`} </span>
                     <ak-user-token-form slot="form" .instancePk=${item.identifier}>
                     </ak-user-token-form>
-                    <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Edit`}</button>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <i class="fas fa-edit"></i>
+                    </button>
                 </ak-forms-modal>
-                <ak-forms-delete
-                    .obj=${item}
-                    objectLabel=${t`Token`}
-                    .delete=${() => {
-                        return new CoreApi(DEFAULT_CONFIG).coreTokensDestroy({
-                            identifier: item.identifier,
-                        });
-                    }}
-                >
-                    <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
-                </ak-forms-delete>
                 <ak-token-copy-button identifier="${item.identifier}">
                     ${t`Copy Key`}
                 </ak-token-copy-button>

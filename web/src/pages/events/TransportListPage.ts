@@ -28,6 +28,8 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         return "pf-icon pf-icon-export";
     }
 
+    checkbox = true;
+
     @property()
     order = "name";
 
@@ -44,8 +46,31 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         return [
             new TableColumn(t`Name`, "name"),
             new TableColumn(t`Mode`, "mode"),
-            new TableColumn("Actions"),
+            new TableColumn(t`Actions`),
         ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`Notifications Transport`}
+            .usedBy=${() => {
+                return new EventsApi(DEFAULT_CONFIG).eventsTransportsUsedByList({
+                    uuid: item.pk,
+                });
+            }}
+            .delete=${() => {
+                return new EventsApi(DEFAULT_CONFIG).eventsTransportsDestroy({
+                    uuid: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete>`;
     }
 
     row(item: NotificationTransport): TemplateResult[] {
@@ -66,24 +91,10 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                     <span slot="header"> ${t`Update Notification Transport`} </span>
                     <ak-event-transport-form slot="form" .instancePk=${item.pk}>
                     </ak-event-transport-form>
-                    <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Edit`}</button>
-                </ak-forms-modal>
-                <ak-forms-delete
-                    .obj=${item}
-                    objectLabel=${t`Notifications Transport`}
-                    .usedBy=${() => {
-                        return new EventsApi(DEFAULT_CONFIG).eventsTransportsUsedByList({
-                            uuid: item.pk,
-                        });
-                    }}
-                    .delete=${() => {
-                        return new EventsApi(DEFAULT_CONFIG).eventsTransportsDestroy({
-                            uuid: item.pk,
-                        });
-                    }}
-                >
-                    <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
-                </ak-forms-delete>`,
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </ak-forms-modal>`,
         ];
     }
 

@@ -22,6 +22,7 @@ export class UserOAuthCodeList extends Table<ExpiringBaseGrantModel> {
         });
     }
 
+    checkbox = true;
     order = "-expires";
 
     columns(): TableColumn[] {
@@ -29,8 +30,30 @@ export class UserOAuthCodeList extends Table<ExpiringBaseGrantModel> {
             new TableColumn(t`Provider`, "provider"),
             new TableColumn(t`Expires`, "expires"),
             new TableColumn(t`Scopes`, "scope"),
-            new TableColumn("Actions"),
         ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`Authorization Code`}
+            .usedBy=${() => {
+                return new Oauth2Api(DEFAULT_CONFIG).oauth2AuthorizationCodesUsedByList({
+                    id: item.pk,
+                });
+            }}
+            .delete=${() => {
+                return new Oauth2Api(DEFAULT_CONFIG).oauth2AuthorizationCodesDestroy({
+                    id: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete>`;
     }
 
     row(item: ExpiringBaseGrantModel): TemplateResult[] {
@@ -38,24 +61,6 @@ export class UserOAuthCodeList extends Table<ExpiringBaseGrantModel> {
             html`<a href="#/core/providers/${item.provider?.pk}"> ${item.provider?.name} </a>`,
             html`${item.expires?.toLocaleString()}`,
             html`${item.scope.join(", ")}`,
-            html` <ak-forms-delete
-                .obj=${item}
-                objectLabel=${t`Authorization Code`}
-                .usedBy=${() => {
-                    return new Oauth2Api(DEFAULT_CONFIG).oauth2AuthorizationCodesUsedByList({
-                        id: item.pk,
-                    });
-                }}
-                .delete=${() => {
-                    return new Oauth2Api(DEFAULT_CONFIG).oauth2AuthorizationCodesDestroy({
-                        id: item.pk,
-                    });
-                }}
-            >
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete Authorization Code`}
-                </button>
-            </ak-forms-delete>`,
         ];
     }
 }

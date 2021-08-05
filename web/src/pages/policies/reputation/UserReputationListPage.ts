@@ -27,6 +27,8 @@ export class UserReputationListPage extends TablePage<UserReputation> {
         return "fa fa-ban";
     }
 
+    checkbox = true;
+
     @property()
     order = "username";
 
@@ -40,33 +42,33 @@ export class UserReputationListPage extends TablePage<UserReputation> {
     }
 
     columns(): TableColumn[] {
-        return [
-            new TableColumn(t`Username`, "username"),
-            new TableColumn(t`Score`, "score"),
-            new TableColumn("Actions"),
-        ];
+        return [new TableColumn(t`Username`, "username"), new TableColumn(t`Score`, "score")];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`User Reputation`}
+            .usedBy=${() => {
+                return new PoliciesApi(DEFAULT_CONFIG).policiesReputationUsersUsedByList({
+                    id: item.pk,
+                });
+            }}
+            .delete=${() => {
+                return new PoliciesApi(DEFAULT_CONFIG).policiesReputationUsersDestroy({
+                    id: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete>`;
     }
 
     row(item: UserReputation): TemplateResult[] {
-        return [
-            html`${item.username}`,
-            html`${item.score}`,
-            html` <ak-forms-delete
-                .obj=${item}
-                objectLabel=${t`User Reputation`}
-                .usedBy=${() => {
-                    return new PoliciesApi(DEFAULT_CONFIG).policiesReputationUsersUsedByList({
-                        id: item.pk,
-                    });
-                }}
-                .delete=${() => {
-                    return new PoliciesApi(DEFAULT_CONFIG).policiesReputationUsersDestroy({
-                        id: item.pk,
-                    });
-                }}
-            >
-                <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
-            </ak-forms-delete>`,
-        ];
+        return [html`${item.username}`, html`${item.score}`];
     }
 }

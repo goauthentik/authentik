@@ -27,6 +27,8 @@ export class TenantListPage extends TablePage<Tenant> {
         return "pf-icon pf-icon-tenant";
     }
 
+    checkbox = true;
+
     @property()
     order = "domain";
 
@@ -43,8 +45,31 @@ export class TenantListPage extends TablePage<Tenant> {
         return [
             new TableColumn(t`Domain`, "domain"),
             new TableColumn(t`Default?`, "default"),
-            new TableColumn("Actions"),
+            new TableColumn(t`Actions`),
         ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`Tenant`}
+            .usedBy=${() => {
+                return new CoreApi(DEFAULT_CONFIG).coreTenantsUsedByList({
+                    tenantUuid: item.tenantUuid,
+                });
+            }}
+            .delete=${() => {
+                return new CoreApi(DEFAULT_CONFIG).coreTenantsDestroy({
+                    tenantUuid: item.tenantUuid,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete>`;
     }
 
     row(item: Tenant): TemplateResult[] {
@@ -52,27 +77,13 @@ export class TenantListPage extends TablePage<Tenant> {
             html`${item.domain}`,
             html`${item._default ? t`Yes` : t`No`}`,
             html` <ak-forms-modal>
-                    <span slot="submit"> ${t`Update`} </span>
-                    <span slot="header"> ${t`Update Tenant`} </span>
-                    <ak-tenant-form slot="form" .instancePk=${item.tenantUuid}> </ak-tenant-form>
-                    <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Edit`}</button>
-                </ak-forms-modal>
-                <ak-forms-delete
-                    .obj=${item}
-                    objectLabel=${t`Tenant`}
-                    .usedBy=${() => {
-                        return new CoreApi(DEFAULT_CONFIG).coreTenantsUsedByList({
-                            tenantUuid: item.tenantUuid,
-                        });
-                    }}
-                    .delete=${() => {
-                        return new CoreApi(DEFAULT_CONFIG).coreTenantsDestroy({
-                            tenantUuid: item.tenantUuid,
-                        });
-                    }}
-                >
-                    <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
-                </ak-forms-delete>`,
+                <span slot="submit"> ${t`Update`} </span>
+                <span slot="header"> ${t`Update Tenant`} </span>
+                <ak-tenant-form slot="form" .instancePk=${item.tenantUuid}> </ak-tenant-form>
+                <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </ak-forms-modal>`,
         ];
     }
 

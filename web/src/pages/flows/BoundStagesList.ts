@@ -20,6 +20,7 @@ import { ifDefined } from "lit-html/directives/if-defined";
 @customElement("ak-bound-stages-list")
 export class BoundStagesList extends Table<FlowStageBinding> {
     expandable = true;
+    checkbox = true;
 
     @property()
     target?: string;
@@ -38,8 +39,31 @@ export class BoundStagesList extends Table<FlowStageBinding> {
             new TableColumn(t`Order`),
             new TableColumn(t`Name`),
             new TableColumn(t`Type`),
-            new TableColumn("Actions"),
+            new TableColumn(t`Actions`),
         ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`Stage binding`}
+            .usedBy=${() => {
+                return new FlowsApi(DEFAULT_CONFIG).flowsBindingsUsedByList({
+                    fsbUuid: item.pk,
+                });
+            }}
+            .delete=${() => {
+                return new FlowsApi(DEFAULT_CONFIG).flowsBindingsDestroy({
+                    fsbUuid: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete Binding`}
+            </button>
+        </ak-forms-delete>`;
     }
 
     row(item: FlowStageBinding): TemplateResult[] {
@@ -70,25 +94,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                     <button slot="trigger" class="pf-c-button pf-m-secondary">
                         ${t`Edit Binding`}
                     </button>
-                </ak-forms-modal>
-                <ak-forms-delete
-                    .obj=${item}
-                    objectLabel=${t`Stage binding`}
-                    .usedBy=${() => {
-                        return new FlowsApi(DEFAULT_CONFIG).flowsBindingsUsedByList({
-                            fsbUuid: item.pk,
-                        });
-                    }}
-                    .delete=${() => {
-                        return new FlowsApi(DEFAULT_CONFIG).flowsBindingsDestroy({
-                            fsbUuid: item.pk,
-                        });
-                    }}
-                >
-                    <button slot="trigger" class="pf-c-button pf-m-danger">
-                        ${t`Delete Binding`}
-                    </button>
-                </ak-forms-delete>`,
+                </ak-forms-modal>`,
         ];
     }
 

@@ -28,6 +28,8 @@ export class ApplicationListPage extends TablePage<Application> {
         return "pf-icon pf-icon-applications";
     }
 
+    checkbox = true;
+
     @property()
     order = "name";
 
@@ -62,8 +64,31 @@ export class ApplicationListPage extends TablePage<Application> {
             new TableColumn(t`Slug`, "slug"),
             new TableColumn(t`Provider`),
             new TableColumn(t`Provider Type`),
-            new TableColumn("Actions"),
+            new TableColumn(t`Actions`),
         ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`Application`}
+            .usedBy=${() => {
+                return new CoreApi(DEFAULT_CONFIG).coreApplicationsUsedByList({
+                    slug: item.slug,
+                });
+            }}
+            .delete=${() => {
+                return new CoreApi(DEFAULT_CONFIG).coreApplicationsDestroy({
+                    slug: item.slug,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete>`;
     }
 
     row(item: Application): TemplateResult[] {
@@ -91,7 +116,9 @@ export class ApplicationListPage extends TablePage<Application> {
                     <span slot="header"> ${t`Update Application`} </span>
                     <ak-application-form slot="form" .instancePk=${item.slug}>
                     </ak-application-form>
-                    <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Edit`}</button>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <i class="fas fa-edit"></i>
+                    </button>
                 </ak-forms-modal>
                 ${item.launchUrl
                     ? html`<a
@@ -99,25 +126,9 @@ export class ApplicationListPage extends TablePage<Application> {
                           target="_blank"
                           class="pf-c-button pf-m-secondary"
                       >
-                          ${t`Open application`}
+                          <i class="fas fas fa-share-square"></i>
                       </a>`
-                    : html``}
-                <ak-forms-delete
-                    .obj=${item}
-                    objectLabel=${t`Application`}
-                    .usedBy=${() => {
-                        return new CoreApi(DEFAULT_CONFIG).coreApplicationsUsedByList({
-                            slug: item.slug,
-                        });
-                    }}
-                    .delete=${() => {
-                        return new CoreApi(DEFAULT_CONFIG).coreApplicationsDestroy({
-                            slug: item.slug,
-                        });
-                    }}
-                >
-                    <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
-                </ak-forms-delete>`,
+                    : html``}`,
         ];
     }
 

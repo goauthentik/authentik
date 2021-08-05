@@ -29,6 +29,8 @@ export class FlowListPage extends TablePage<Flow> {
         return "pf-icon pf-icon-process-automation";
     }
 
+    checkbox = true;
+
     @property()
     order = "slug";
 
@@ -48,8 +50,31 @@ export class FlowListPage extends TablePage<Flow> {
             new TableColumn(t`Designation`, "designation"),
             new TableColumn(t`Stages`),
             new TableColumn(t`Policies`),
-            new TableColumn("Actions"),
+            new TableColumn(t`Actions`),
         ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`Flow`}
+            .usedBy=${() => {
+                return new FlowsApi(DEFAULT_CONFIG).flowsInstancesUsedByList({
+                    slug: item.slug,
+                });
+            }}
+            .delete=${() => {
+                return new FlowsApi(DEFAULT_CONFIG).flowsInstancesDestroy({
+                    slug: item.slug,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete>`;
     }
 
     row(item: Flow): TemplateResult[] {
@@ -65,26 +90,12 @@ export class FlowListPage extends TablePage<Flow> {
                     <span slot="submit"> ${t`Update`} </span>
                     <span slot="header"> ${t`Update Flow`} </span>
                     <ak-flow-form slot="form" .instancePk=${item.slug}> </ak-flow-form>
-                    <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Edit`}</button>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <i class="fas fa-edit"></i>
+                    </button>
                 </ak-forms-modal>
-                <ak-forms-delete
-                    .obj=${item}
-                    objectLabel=${t`Flow`}
-                    .usedBy=${() => {
-                        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesUsedByList({
-                            slug: item.slug,
-                        });
-                    }}
-                    .delete=${() => {
-                        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesDestroy({
-                            slug: item.slug,
-                        });
-                    }}
-                >
-                    <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
-                </ak-forms-delete>
                 <button
-                    class="pf-c-button pf-m-secondary"
+                    class="pf-c-button pf-m-plain"
                     @click=${() => {
                         new FlowsApi(DEFAULT_CONFIG)
                             .flowsInstancesExecuteRetrieve({
@@ -97,9 +108,11 @@ export class FlowListPage extends TablePage<Flow> {
                             });
                     }}
                 >
-                    ${t`Execute`}
+                    <i class="fas fa-play"></i>
                 </button>
-                <a class="pf-c-button pf-m-secondary" href=${item.exportUrl}> ${t`Export`} </a>`,
+                <a class="pf-c-button pf-m-plain" href=${item.exportUrl}>
+                    <i class="fas fa-download"></i>
+                </a>`,
         ];
     }
 

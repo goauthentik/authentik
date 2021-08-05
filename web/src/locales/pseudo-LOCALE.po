@@ -94,6 +94,30 @@ msgstr ""
 msgid "Action"
 msgstr ""
 
+#: src/pages/applications/ApplicationListPage.ts
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+#: src/pages/events/EventListPage.ts
+#: src/pages/events/RuleListPage.ts
+#: src/pages/events/TransportListPage.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/groups/GroupListPage.ts
+#: src/pages/outposts/OutpostListPage.ts
+#: src/pages/outposts/ServiceConnectionListPage.ts
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/PolicyListPage.ts
+#: src/pages/policies/reputation/IPReputationListPage.ts
+#: src/pages/property-mappings/PropertyMappingListPage.ts
+#: src/pages/providers/ProviderListPage.ts
+#: src/pages/stages/StageListPage.ts
+#: src/pages/stages/prompt/PromptListPage.ts
+#: src/pages/system-tasks/SystemTaskListPage.ts
+#: src/pages/tenants/TenantListPage.ts
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/UserListPage.ts
+msgid "Actions"
+msgstr ""
+
 #: src/pages/groups/MemberSelectModal.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
@@ -1025,6 +1049,8 @@ msgid "Define how notifications are sent to users, like Email or Webhook."
 msgstr ""
 
 #: src/elements/forms/DeleteForm.ts
+#: src/elements/oauth/UserCodeList.ts
+#: src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/events/RuleListPage.ts
@@ -1050,9 +1076,9 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: src/elements/oauth/UserCodeList.ts
-msgid "Delete Authorization Code"
-msgstr ""
+#: 
+#~ msgid "Delete Authorization Code"
+#~ msgstr ""
 
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
@@ -1063,9 +1089,9 @@ msgstr ""
 msgid "Delete Consent"
 msgstr ""
 
-#: src/elements/oauth/UserRefreshList.ts
-msgid "Delete Refresh Code"
-msgstr ""
+#: 
+#~ msgid "Delete Refresh Code"
+#~ msgstr ""
 
 #: src/elements/user/SessionList.ts
 msgid "Delete Session"
@@ -1230,33 +1256,16 @@ msgstr ""
 msgid "Each provider has a different issuer, based on the application slug."
 msgstr ""
 
-#: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
-#: src/pages/crypto/CertificateKeyPairListPage.ts
-#: src/pages/events/RuleListPage.ts
-#: src/pages/events/TransportListPage.ts
-#: src/pages/flows/FlowListPage.ts
-#: src/pages/groups/GroupListPage.ts
-#: src/pages/outposts/OutpostListPage.ts
-#: src/pages/outposts/OutpostListPage.ts
-#: src/pages/outposts/ServiceConnectionListPage.ts
-#: src/pages/policies/PolicyListPage.ts
-#: src/pages/property-mappings/PropertyMappingListPage.ts
-#: src/pages/providers/ProviderListPage.ts
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
-#: src/pages/sources/SourcesListPage.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 #: src/pages/sources/plex/PlexSourceViewPage.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
-#: src/pages/stages/StageListPage.ts
-#: src/pages/stages/prompt/PromptListPage.ts
-#: src/pages/tenants/TenantListPage.ts
-#: src/pages/user-settings/tokens/UserTokenList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Edit"
@@ -1930,6 +1939,10 @@ msgstr ""
 
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "Integration key"
+msgstr ""
+
+#: src/interfaces/AdminInterface.ts
+msgid "Integrations"
 msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
@@ -2610,9 +2623,9 @@ msgstr ""
 msgid "Only send notification once, for example when sending a webhook into a chat channel."
 msgstr ""
 
-#: src/pages/applications/ApplicationListPage.ts
-msgid "Open application"
-msgstr ""
+#: 
+#~ msgid "Open application"
+#~ msgstr ""
 
 #: src/pages/events/EventInfo.ts
 msgid "Open issue on GitHub..."
@@ -2687,8 +2700,12 @@ msgstr ""
 msgid "Outpost Deployment Info"
 msgstr ""
 
+#: 
+#~ msgid "Outpost Service-connection"
+#~ msgstr ""
+
 #: src/pages/outposts/ServiceConnectionListPage.ts
-msgid "Outpost Service-connection"
+msgid "Outpost integration"
 msgstr ""
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
@@ -3360,9 +3377,9 @@ msgstr ""
 msgid "Server validation of credential failed: {err}"
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts
-msgid "Service Connections"
-msgstr ""
+#: 
+#~ msgid "Service Connections"
+#~ msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Service Provider Binding"
@@ -3644,6 +3661,11 @@ msgstr ""
 msgid "Successfully created group."
 msgstr ""
 
+#: src/pages/outposts/ServiceConnectionDockerForm.ts
+#: src/pages/outposts/ServiceConnectionKubernetesForm.ts
+msgid "Successfully created integration."
+msgstr ""
+
 #: src/pages/stages/invitation/InvitationForm.ts
 msgid "Successfully created invitation."
 msgstr ""
@@ -3683,10 +3705,10 @@ msgstr ""
 msgid "Successfully created rule."
 msgstr ""
 
-#: src/pages/outposts/ServiceConnectionDockerForm.ts
-#: src/pages/outposts/ServiceConnectionKubernetesForm.ts
-msgid "Successfully created service-connection."
-msgstr ""
+#: 
+#: 
+#~ msgid "Successfully created service-connection."
+#~ msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
@@ -3788,6 +3810,11 @@ msgstr ""
 msgid "Successfully updated group."
 msgstr ""
 
+#: src/pages/outposts/ServiceConnectionDockerForm.ts
+#: src/pages/outposts/ServiceConnectionKubernetesForm.ts
+msgid "Successfully updated integration."
+msgstr ""
+
 #: src/pages/stages/invitation/InvitationForm.ts
 msgid "Successfully updated invitation."
 msgstr ""
@@ -3827,10 +3854,10 @@ msgstr ""
 msgid "Successfully updated rule."
 msgstr ""
 
-#: src/pages/outposts/ServiceConnectionDockerForm.ts
-#: src/pages/outposts/ServiceConnectionKubernetesForm.ts
-msgid "Successfully updated service-connection."
-msgstr ""
+#: 
+#: 
+#~ msgid "Successfully updated service-connection."
+#~ msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
@@ -3985,7 +4012,6 @@ msgstr ""
 
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/events/TransportListPage.ts
-#: src/pages/policies/PolicyListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts

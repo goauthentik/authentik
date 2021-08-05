@@ -273,7 +273,7 @@ export abstract class Table<T> extends LitElement {
                     }),
                 );
             }}
-            class="pf-c-button pf-m-primary"
+            class="pf-c-button pf-m-secondary"
         >
             ${t`Refresh`}
         </button>`;
@@ -292,19 +292,18 @@ export abstract class Table<T> extends LitElement {
             return html``;
         }
         return html`<ak-table-search
-                value=${ifDefined(this.search)}
-                .onSearch=${(value: string) => {
-                    this.search = value;
-                    this.dispatchEvent(
-                        new CustomEvent(EVENT_REFRESH, {
-                            bubbles: true,
-                            composed: true,
-                        }),
-                    );
-                }}
-            >
-            </ak-table-search
-            >&nbsp;`;
+            value=${ifDefined(this.search)}
+            .onSearch=${(value: string) => {
+                this.search = value;
+                this.dispatchEvent(
+                    new CustomEvent(EVENT_REFRESH, {
+                        bubbles: true,
+                        composed: true,
+                    }),
+                );
+            }}
+        >
+        </ak-table-search>`;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -326,9 +325,10 @@ export abstract class Table<T> extends LitElement {
                 : html``}
             <div class="pf-c-toolbar">
                 <div class="pf-c-toolbar__content">
-                    ${this.renderToolbarSelected()} &nbsp; ${this.renderSearch()}
+                    <div class="pf-m-search-filter">${this.renderSearch()}</div>
                     <div class="pf-c-toolbar__bulk-select">${this.renderToolbar()}</div>
-                    ${this.renderToolbarAfter()}
+                    <div class="pf-c-toolbar__group">${this.renderToolbarAfter()}</div>
+                    <div class="pf-c-toolbar__group">${this.renderToolbarSelected()}</div>
                     <ak-table-pagination
                         class="pf-c-toolbar__item pf-m-pagination"
                         .pages=${this.data?.pagination}

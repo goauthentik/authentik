@@ -34,6 +34,8 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         return "pf-icon pf-icon-blueprint";
     }
 
+    checkbox = true;
+
     @property()
     order = "name";
 
@@ -54,8 +56,31 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         return [
             new TableColumn(t`Name`, "name"),
             new TableColumn(t`Type`, "type"),
-            new TableColumn("Actions"),
+            new TableColumn(t`Actions`),
         ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html` <ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`Property Mapping`}
+            .usedBy=${() => {
+                return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllUsedByList({
+                    pmUuid: item.pk,
+                });
+            }}
+            .delete=${() => {
+                return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllDestroy({
+                    pmUuid: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete>`;
     }
 
     row(item: PropertyMapping): TemplateResult[] {
@@ -73,7 +98,9 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                         type=${ifDefined(item.component)}
                     >
                     </ak-proxy-form>
-                    <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Edit`}</button>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <i class="fas fa-edit"></i>
+                    </button>
                 </ak-forms-modal>
                 <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
                     <span slot="submit"> ${t`Test`} </span>
@@ -81,25 +108,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                     <ak-property-mapping-test-form slot="form" .mapping=${item}>
                     </ak-property-mapping-test-form>
                     <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Test`}</button>
-                </ak-forms-modal>
-                <ak-forms-delete
-                    .obj=${item}
-                    objectLabel=${t`Property Mapping`}
-                    .usedBy=${() => {
-                        return new PropertymappingsApi(
-                            DEFAULT_CONFIG,
-                        ).propertymappingsAllUsedByList({
-                            pmUuid: item.pk,
-                        });
-                    }}
-                    .delete=${() => {
-                        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllDestroy({
-                            pmUuid: item.pk,
-                        });
-                    }}
-                >
-                    <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
-                </ak-forms-delete>`,
+                </ak-forms-modal>`,
         ];
     }
 

@@ -49,6 +49,8 @@ export class StageListPage extends TablePage<Stage> {
         return true;
     }
 
+    checkbox = true;
+
     @property()
     order = "name";
 
@@ -62,7 +64,34 @@ export class StageListPage extends TablePage<Stage> {
     }
 
     columns(): TableColumn[] {
-        return [new TableColumn(t`Name`, "name"), new TableColumn(t`Flows`), new TableColumn("")];
+        return [
+            new TableColumn(t`Name`, "name"),
+            new TableColumn(t`Flows`),
+            new TableColumn(t`Actions`),
+        ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${item?.verboseName}
+            .usedBy=${() => {
+                return new StagesApi(DEFAULT_CONFIG).stagesAllUsedByList({
+                    stageUuid: item.pk,
+                });
+            }}
+            .delete=${() => {
+                return new StagesApi(DEFAULT_CONFIG).stagesAllDestroy({
+                    stageUuid: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete>`;
     }
 
     row(item: Stage): TemplateResult[] {
@@ -77,34 +106,20 @@ export class StageListPage extends TablePage<Stage> {
                 </a>`;
             })}`,
             html` <ak-forms-modal>
-                    <span slot="submit"> ${t`Update`} </span>
-                    <span slot="header"> ${t`Update ${item.verboseName}`} </span>
-                    <ak-proxy-form
-                        slot="form"
-                        .args=${{
-                            instancePk: item.pk,
-                        }}
-                        type=${ifDefined(item.component)}
-                    >
-                    </ak-proxy-form>
-                    <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Edit`}</button>
-                </ak-forms-modal>
-                <ak-forms-delete
-                    .obj=${item}
-                    objectLabel=${item.verboseName || ""}
-                    .usedBy=${() => {
-                        return new StagesApi(DEFAULT_CONFIG).stagesAllUsedByList({
-                            stageUuid: item.pk,
-                        });
+                <span slot="submit"> ${t`Update`} </span>
+                <span slot="header"> ${t`Update ${item.verboseName}`} </span>
+                <ak-proxy-form
+                    slot="form"
+                    .args=${{
+                        instancePk: item.pk,
                     }}
-                    .delete=${() => {
-                        return new StagesApi(DEFAULT_CONFIG).stagesAllDestroy({
-                            stageUuid: item.pk,
-                        });
-                    }}
+                    type=${ifDefined(item.component)}
                 >
-                    <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
-                </ak-forms-delete>`,
+                </ak-proxy-form>
+                <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </ak-forms-modal>`,
         ];
     }
 

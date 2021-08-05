@@ -29,6 +29,7 @@ export class UserOAuthRefreshList extends Table<RefreshTokenModel> {
         });
     }
 
+    checkbox = true;
     order = "-expires";
 
     columns(): TableColumn[] {
@@ -37,7 +38,6 @@ export class UserOAuthRefreshList extends Table<RefreshTokenModel> {
             new TableColumn(t`Revoked?`, "revoked"),
             new TableColumn(t`Expires`, "expires"),
             new TableColumn(t`Scopes`, "scope"),
-            new TableColumn("Actions"),
         ];
     }
 
@@ -53,8 +53,30 @@ export class UserOAuthRefreshList extends Table<RefreshTokenModel> {
                 </div>
             </td>
             <td></td>
-            <td></td>
             <td></td>`;
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`Refresh Code`}
+            .usedBy=${() => {
+                return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensUsedByList({
+                    id: item.pk,
+                });
+            }}
+            .delete=${() => {
+                return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensDestroy({
+                    id: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete>`;
     }
 
     row(item: RefreshTokenModel): TemplateResult[] {
@@ -63,24 +85,6 @@ export class UserOAuthRefreshList extends Table<RefreshTokenModel> {
             html`${item.revoked ? t`Yes` : t`No`}`,
             html`${item.expires?.toLocaleString()}`,
             html`${item.scope.join(", ")}`,
-            html` <ak-forms-delete
-                .obj=${item}
-                objectLabel=${t`Refresh Code`}
-                .usedBy=${() => {
-                    return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensUsedByList({
-                        id: item.pk,
-                    });
-                }}
-                .delete=${() => {
-                    return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensDestroy({
-                        id: item.pk,
-                    });
-                }}
-            >
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete Refresh Code`}
-                </button>
-            </ak-forms-delete>`,
         ];
     }
 }

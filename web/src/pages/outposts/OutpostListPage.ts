@@ -45,9 +45,11 @@ export class OutpostListPage extends TablePage<Outpost> {
             new TableColumn(t`Providers`),
             new TableColumn(t`Integration`, "service_connection__name"),
             new TableColumn(t`Health and Version`),
-            new TableColumn("Actions"),
+            new TableColumn(t`Actions`),
         ];
     }
+
+    checkbox = true;
 
     @property()
     order = "name";
@@ -71,30 +73,39 @@ export class OutpostListPage extends TablePage<Outpost> {
                     <span slot="submit"> ${t`Update`} </span>
                     <span slot="header"> ${t`Update Outpost`} </span>
                     <ak-outpost-form slot="form" .instancePk=${item.pk}> </ak-outpost-form>
-                    <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Edit`}</button>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <i class="fas fa-edit"></i>
+                    </button>
                 </ak-forms-modal>
-                <ak-forms-delete
-                    .obj=${item}
-                    objectLabel=${t`Outpost`}
-                    .usedBy=${() => {
-                        return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesUsedByList({
-                            uuid: item.pk,
-                        });
-                    }}
-                    .delete=${() => {
-                        return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesDestroy({
-                            uuid: item.pk,
-                        });
-                    }}
-                >
-                    <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
-                </ak-forms-delete>
                 <ak-outpost-deployment-modal .outpost=${item} size=${PFSize.Medium}>
                     <button slot="trigger" class="pf-c-button pf-m-tertiary">
                         ${t`View Deployment Info`}
                     </button>
                 </ak-outpost-deployment-modal>`,
         ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`Outpost`}
+            .usedBy=${() => {
+                return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesUsedByList({
+                    uuid: item.pk,
+                });
+            }}
+            .delete=${() => {
+                return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesDestroy({
+                    uuid: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete>`;
     }
 
     rowInbuilt(item: Outpost): TemplateResult[] {
@@ -116,7 +127,9 @@ export class OutpostListPage extends TablePage<Outpost> {
                 <span slot="submit"> ${t`Update`} </span>
                 <span slot="header"> ${t`Update Outpost`} </span>
                 <ak-outpost-form slot="form" .instancePk=${item.pk}> </ak-outpost-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Edit`}</button>
+                <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <i class="fas fa-edit"></i>
+                </button>
             </ak-forms-modal>`,
         ];
     }

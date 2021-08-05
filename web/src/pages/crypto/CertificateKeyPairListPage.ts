@@ -18,6 +18,7 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 @customElement("ak-crypto-certificate-list")
 export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     expandable = true;
+    checkbox = true;
 
     searchEnabled(): boolean {
         return true;
@@ -53,8 +54,31 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             new TableColumn(t`Name`, "name"),
             new TableColumn(t`Private key available?`),
             new TableColumn(t`Expiry date`),
-            new TableColumn("Actions"),
+            new TableColumn(t`Actions`),
         ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`Certificate-Key Pair`}
+            .usedBy=${() => {
+                return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsUsedByList({
+                    kpUuid: item.pk,
+                });
+            }}
+            .delete=${() => {
+                return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsDestroy({
+                    kpUuid: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete>`;
     }
 
     row(item: CertificateKeyPair): TemplateResult[] {
@@ -63,28 +87,14 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             html`${item.privateKeyAvailable ? t`Yes` : t`No`}`,
             html`${item.certExpiry?.toLocaleString()}`,
             html` <ak-forms-modal>
-                    <span slot="submit"> ${t`Update`} </span>
-                    <span slot="header"> ${t`Update Certificate-Key Pair`} </span>
-                    <ak-crypto-certificate-form slot="form" .instancePk=${item.pk}>
-                    </ak-crypto-certificate-form>
-                    <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Edit`}</button>
-                </ak-forms-modal>
-                <ak-forms-delete
-                    .obj=${item}
-                    objectLabel=${t`Certificate-Key Pair`}
-                    .usedBy=${() => {
-                        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsUsedByList({
-                            kpUuid: item.pk,
-                        });
-                    }}
-                    .delete=${() => {
-                        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsDestroy({
-                            kpUuid: item.pk,
-                        });
-                    }}
-                >
-                    <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
-                </ak-forms-delete>`,
+                <span slot="submit"> ${t`Update`} </span>
+                <span slot="header"> ${t`Update Certificate-Key Pair`} </span>
+                <ak-crypto-certificate-form slot="form" .instancePk=${item.pk}>
+                </ak-crypto-certificate-form>
+                <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </ak-forms-modal>`,
         ];
     }
 

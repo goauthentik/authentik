@@ -35,6 +35,8 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
         return true;
     }
 
+    checkbox = true;
+
     apiEndpoint(page: number): Promise<AKResponse<ServiceConnection>> {
         return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllList({
             ordering: this.order,
@@ -50,7 +52,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
             new TableColumn(t`Type`),
             new TableColumn(t`Local`, "local"),
             new TableColumn(t`State`),
-            new TableColumn("Actions"),
+            new TableColumn(t`Actions`),
         ];
     }
 
@@ -82,39 +84,44 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                 html`<ak-spinner></ak-spinner>`,
             )}`,
             html` <ak-forms-modal>
-                    <span slot="submit"> ${t`Update`} </span>
-                    <span slot="header"> ${t`Update ${item.verboseName}`} </span>
-                    <ak-proxy-form
-                        slot="form"
-                        .args=${{
-                            instancePk: item.pk,
-                        }}
-                        type=${ifDefined(item.component)}
-                    >
-                    </ak-proxy-form>
-                    <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Edit`}</button>
-                </ak-forms-modal>
-                <ak-forms-delete
-                    .obj=${item}
-                    objectLabel=${t`Outpost integration`}
-                    .usedBy=${() => {
-                        return new OutpostsApi(
-                            DEFAULT_CONFIG,
-                        ).outpostsServiceConnectionsAllUsedByList({
-                            uuid: item.pk,
-                        });
+                <span slot="submit"> ${t`Update`} </span>
+                <span slot="header"> ${t`Update ${item.verboseName}`} </span>
+                <ak-proxy-form
+                    slot="form"
+                    .args=${{
+                        instancePk: item.pk,
                     }}
-                    .delete=${() => {
-                        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllDestroy(
-                            {
-                                uuid: item.pk,
-                            },
-                        );
-                    }}
+                    type=${ifDefined(item.component)}
                 >
-                    <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
-                </ak-forms-delete>`,
+                </ak-proxy-form>
+                <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </ak-forms-modal>`,
         ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`Outpost integration`}
+            .usedBy=${() => {
+                return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllUsedByList({
+                    uuid: item.pk,
+                });
+            }}
+            .delete=${() => {
+                return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllDestroy({
+                    uuid: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete>`;
     }
 
     renderToolbar(): TemplateResult {

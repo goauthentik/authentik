@@ -94,6 +94,30 @@ msgstr "Access token URL"
 msgid "Action"
 msgstr "Action"
 
+#: src/pages/applications/ApplicationListPage.ts
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+#: src/pages/events/EventListPage.ts
+#: src/pages/events/RuleListPage.ts
+#: src/pages/events/TransportListPage.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/groups/GroupListPage.ts
+#: src/pages/outposts/OutpostListPage.ts
+#: src/pages/outposts/ServiceConnectionListPage.ts
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/PolicyListPage.ts
+#: src/pages/policies/reputation/IPReputationListPage.ts
+#: src/pages/property-mappings/PropertyMappingListPage.ts
+#: src/pages/providers/ProviderListPage.ts
+#: src/pages/stages/StageListPage.ts
+#: src/pages/stages/prompt/PromptListPage.ts
+#: src/pages/system-tasks/SystemTaskListPage.ts
+#: src/pages/tenants/TenantListPage.ts
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/UserListPage.ts
+msgid "Actions"
+msgstr "Actions"
+
 #: src/pages/groups/MemberSelectModal.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
@@ -1031,6 +1055,8 @@ msgid "Define how notifications are sent to users, like Email or Webhook."
 msgstr "Define how notifications are sent to users, like Email or Webhook."
 
 #: src/elements/forms/DeleteForm.ts
+#: src/elements/oauth/UserCodeList.ts
+#: src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/events/RuleListPage.ts
@@ -1056,9 +1082,9 @@ msgstr "Define how notifications are sent to users, like Email or Webhook."
 msgid "Delete"
 msgstr "Delete"
 
-#: src/elements/oauth/UserCodeList.ts
-msgid "Delete Authorization Code"
-msgstr "Delete Authorization Code"
+#: 
+#~ msgid "Delete Authorization Code"
+#~ msgstr "Delete Authorization Code"
 
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
@@ -1069,9 +1095,9 @@ msgstr "Delete Binding"
 msgid "Delete Consent"
 msgstr "Delete Consent"
 
-#: src/elements/oauth/UserRefreshList.ts
-msgid "Delete Refresh Code"
-msgstr "Delete Refresh Code"
+#: 
+#~ msgid "Delete Refresh Code"
+#~ msgstr "Delete Refresh Code"
 
 #: src/elements/user/SessionList.ts
 msgid "Delete Session"
@@ -1238,33 +1264,16 @@ msgstr "Duration after which events will be deleted from the database."
 msgid "Each provider has a different issuer, based on the application slug."
 msgstr "Each provider has a different issuer, based on the application slug."
 
-#: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
-#: src/pages/crypto/CertificateKeyPairListPage.ts
-#: src/pages/events/RuleListPage.ts
-#: src/pages/events/TransportListPage.ts
-#: src/pages/flows/FlowListPage.ts
-#: src/pages/groups/GroupListPage.ts
-#: src/pages/outposts/OutpostListPage.ts
-#: src/pages/outposts/OutpostListPage.ts
-#: src/pages/outposts/ServiceConnectionListPage.ts
-#: src/pages/policies/PolicyListPage.ts
-#: src/pages/property-mappings/PropertyMappingListPage.ts
-#: src/pages/providers/ProviderListPage.ts
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
-#: src/pages/sources/SourcesListPage.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 #: src/pages/sources/plex/PlexSourceViewPage.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
-#: src/pages/stages/StageListPage.ts
-#: src/pages/stages/prompt/PromptListPage.ts
-#: src/pages/tenants/TenantListPage.ts
-#: src/pages/user-settings/tokens/UserTokenList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Edit"
@@ -1939,6 +1948,10 @@ msgstr "Integration"
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "Integration key"
 msgstr "Integration key"
+
+#: src/interfaces/AdminInterface.ts
+msgid "Integrations"
+msgstr "Integrations"
 
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Internal Host"
@@ -2618,9 +2631,9 @@ msgstr "Only fail the policy, don't invalidate user's password."
 msgid "Only send notification once, for example when sending a webhook into a chat channel."
 msgstr "Only send notification once, for example when sending a webhook into a chat channel."
 
-#: src/pages/applications/ApplicationListPage.ts
-msgid "Open application"
-msgstr "Open application"
+#: 
+#~ msgid "Open application"
+#~ msgstr "Open application"
 
 #: src/pages/events/EventInfo.ts
 msgid "Open issue on GitHub..."
@@ -2695,9 +2708,13 @@ msgstr "Outpost"
 msgid "Outpost Deployment Info"
 msgstr "Outpost Deployment Info"
 
+#: 
+#~ msgid "Outpost Service-connection"
+#~ msgstr "Outpost Service-connection"
+
 #: src/pages/outposts/ServiceConnectionListPage.ts
-msgid "Outpost Service-connection"
-msgstr "Outpost Service-connection"
+msgid "Outpost integration"
+msgstr "Outpost integration"
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "Outpost status"
@@ -3368,9 +3385,9 @@ msgstr "Server name for which this provider's certificate is valid for."
 msgid "Server validation of credential failed: {err}"
 msgstr "Server validation of credential failed: {err}"
 
-#: src/interfaces/AdminInterface.ts
-msgid "Service Connections"
-msgstr "Service Connections"
+#: 
+#~ msgid "Service Connections"
+#~ msgstr "Service Connections"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Service Provider Binding"
@@ -3652,6 +3669,11 @@ msgstr "Successfully created flow."
 msgid "Successfully created group."
 msgstr "Successfully created group."
 
+#: src/pages/outposts/ServiceConnectionDockerForm.ts
+#: src/pages/outposts/ServiceConnectionKubernetesForm.ts
+msgid "Successfully created integration."
+msgstr "Successfully created integration."
+
 #: src/pages/stages/invitation/InvitationForm.ts
 msgid "Successfully created invitation."
 msgstr "Successfully created invitation."
@@ -3691,10 +3713,10 @@ msgstr "Successfully created provider."
 msgid "Successfully created rule."
 msgstr "Successfully created rule."
 
-#: src/pages/outposts/ServiceConnectionDockerForm.ts
-#: src/pages/outposts/ServiceConnectionKubernetesForm.ts
-msgid "Successfully created service-connection."
-msgstr "Successfully created service-connection."
+#: 
+#: 
+#~ msgid "Successfully created service-connection."
+#~ msgstr "Successfully created service-connection."
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
@@ -3796,6 +3818,11 @@ msgstr "Successfully updated flow."
 msgid "Successfully updated group."
 msgstr "Successfully updated group."
 
+#: src/pages/outposts/ServiceConnectionDockerForm.ts
+#: src/pages/outposts/ServiceConnectionKubernetesForm.ts
+msgid "Successfully updated integration."
+msgstr "Successfully updated integration."
+
 #: src/pages/stages/invitation/InvitationForm.ts
 msgid "Successfully updated invitation."
 msgstr "Successfully updated invitation."
@@ -3835,10 +3862,10 @@ msgstr "Successfully updated provider."
 msgid "Successfully updated rule."
 msgstr "Successfully updated rule."
 
-#: src/pages/outposts/ServiceConnectionDockerForm.ts
-#: src/pages/outposts/ServiceConnectionKubernetesForm.ts
-msgid "Successfully updated service-connection."
-msgstr "Successfully updated service-connection."
+#: 
+#: 
+#~ msgid "Successfully updated service-connection."
+#~ msgstr "Successfully updated service-connection."
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
@@ -3993,7 +4020,6 @@ msgstr "Tenants"
 
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/events/TransportListPage.ts
-#: src/pages/policies/PolicyListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts

@@ -35,6 +35,8 @@ export class ProviderListPage extends TablePage<Provider> {
         return "pf-icon pf-icon-integration";
     }
 
+    checkbox = true;
+
     @property()
     order = "name";
 
@@ -52,8 +54,31 @@ export class ProviderListPage extends TablePage<Provider> {
             new TableColumn(t`Name`, "name"),
             new TableColumn(t`Application`),
             new TableColumn(t`Type`),
-            new TableColumn("Actions"),
+            new TableColumn(t`Actions`),
         ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`Provider`}
+            .usedBy=${() => {
+                return new ProvidersApi(DEFAULT_CONFIG).providersAllUsedByList({
+                    id: item.pk,
+                });
+            }}
+            .delete=${() => {
+                return new ProvidersApi(DEFAULT_CONFIG).providersAllDestroy({
+                    id: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete>`;
     }
 
     row(item: Provider): TemplateResult[] {
@@ -69,34 +94,20 @@ export class ProviderListPage extends TablePage<Provider> {
                       ${t`Warning: Provider not assigned to any application.`}`,
             html`${item.verboseName}`,
             html` <ak-forms-modal>
-                    <span slot="submit"> ${t`Update`} </span>
-                    <span slot="header"> ${t`Update ${item.verboseName}`} </span>
-                    <ak-proxy-form
-                        slot="form"
-                        .args=${{
-                            instancePk: item.pk,
-                        }}
-                        type=${ifDefined(item.component)}
-                    >
-                    </ak-proxy-form>
-                    <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Edit`}</button>
-                </ak-forms-modal>
-                <ak-forms-delete
-                    .obj=${item}
-                    objectLabel=${t`Provider`}
-                    .usedBy=${() => {
-                        return new ProvidersApi(DEFAULT_CONFIG).providersAllUsedByList({
-                            id: item.pk,
-                        });
+                <span slot="submit"> ${t`Update`} </span>
+                <span slot="header"> ${t`Update ${item.verboseName}`} </span>
+                <ak-proxy-form
+                    slot="form"
+                    .args=${{
+                        instancePk: item.pk,
                     }}
-                    .delete=${() => {
-                        return new ProvidersApi(DEFAULT_CONFIG).providersAllDestroy({
-                            id: item.pk,
-                        });
-                    }}
+                    type=${ifDefined(item.component)}
                 >
-                    <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
-                </ak-forms-delete>`,
+                </ak-proxy-form>
+                <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </ak-forms-modal>`,
         ];
     }
 

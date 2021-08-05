@@ -34,6 +34,8 @@ export class SourceListPage extends TablePage<Source> {
         return true;
     }
 
+    checkbox = true;
+
     @property()
     order = "name";
 
@@ -50,6 +52,29 @@ export class SourceListPage extends TablePage<Source> {
         return [new TableColumn(t`Name`, "name"), new TableColumn(t`Type`), new TableColumn("")];
     }
 
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`Source`}
+            .usedBy=${() => {
+                return new SourcesApi(DEFAULT_CONFIG).sourcesAllUsedByList({
+                    slug: item.slug,
+                });
+            }}
+            .delete=${() => {
+                return new SourcesApi(DEFAULT_CONFIG).sourcesAllDestroy({
+                    slug: item.slug,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete>`;
+    }
+
     row(item: Source): TemplateResult[] {
         if (item.component === "") {
             return this.rowInbuilt(item);
@@ -61,34 +86,20 @@ export class SourceListPage extends TablePage<Source> {
             </a>`,
             html`${item.verboseName}`,
             html` <ak-forms-modal>
-                    <span slot="submit"> ${t`Update`} </span>
-                    <span slot="header"> ${t`Update ${item.verboseName}`} </span>
-                    <ak-proxy-form
-                        slot="form"
-                        .args=${{
-                            instancePk: item.slug,
-                        }}
-                        type=${ifDefined(item.component)}
-                    >
-                    </ak-proxy-form>
-                    <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Edit`}</button>
-                </ak-forms-modal>
-                <ak-forms-delete
-                    .obj=${item}
-                    objectLabel=${t`Source`}
-                    .usedBy=${() => {
-                        return new SourcesApi(DEFAULT_CONFIG).sourcesAllUsedByList({
-                            slug: item.slug,
-                        });
+                <span slot="submit"> ${t`Update`} </span>
+                <span slot="header"> ${t`Update ${item.verboseName}`} </span>
+                <ak-proxy-form
+                    slot="form"
+                    .args=${{
+                        instancePk: item.slug,
                     }}
-                    .delete=${() => {
-                        return new SourcesApi(DEFAULT_CONFIG).sourcesAllDestroy({
-                            slug: item.slug,
-                        });
-                    }}
+                    type=${ifDefined(item.component)}
                 >
-                    <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
-                </ak-forms-delete>`,
+                </ak-proxy-form>
+                <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </ak-forms-modal>`,
         ];
     }
 

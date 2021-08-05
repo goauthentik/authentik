@@ -28,6 +28,8 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     @property({ type: Boolean })
     policyOnly = false;
 
+    checkbox = true;
+
     apiEndpoint(page: number): Promise<AKResponse<PolicyBinding>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsList({
             target: this.target || "",
@@ -43,7 +45,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             new TableColumn(t`Enabled`, "enabled"),
             new TableColumn(t`Order`, "order"),
             new TableColumn(t`Timeout`, "timeout"),
-            new TableColumn("Actions"),
+            new TableColumn(t`Actions`),
         ];
     }
 
@@ -93,6 +95,29 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         }
     }
 
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`Policy binding`}
+            .usedBy=${() => {
+                return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsUsedByList({
+                    policyBindingUuid: item.pk,
+                });
+            }}
+            .delete=${() => {
+                return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsDestroy({
+                    policyBindingUuid: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete Binding`}
+            </button>
+        </ak-forms-delete>`;
+    }
+
     row(item: PolicyBinding): TemplateResult[] {
         return [
             html`${this.getPolicyUserGroupRow(item)}`,
@@ -113,25 +138,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                     <button slot="trigger" class="pf-c-button pf-m-secondary">
                         ${t`Edit Binding`}
                     </button>
-                </ak-forms-modal>
-                <ak-forms-delete
-                    .obj=${item}
-                    objectLabel=${t`Policy binding`}
-                    .usedBy=${() => {
-                        return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsUsedByList({
-                            policyBindingUuid: item.pk,
-                        });
-                    }}
-                    .delete=${() => {
-                        return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsDestroy({
-                            policyBindingUuid: item.pk,
-                        });
-                    }}
-                >
-                    <button slot="trigger" class="pf-c-button pf-m-danger">
-                        ${t`Delete Binding`}
-                    </button>
-                </ak-forms-delete>`,
+                </ak-forms-modal>`,
         ];
     }
 

@@ -31,6 +31,8 @@ export class InvitationListPage extends TablePage<Invitation> {
         return "pf-icon pf-icon-migration";
     }
 
+    checkbox = true;
+
     @property()
     order = "expires";
 
@@ -48,8 +50,30 @@ export class InvitationListPage extends TablePage<Invitation> {
             new TableColumn(t`ID`, "pk"),
             new TableColumn(t`Created by`, "created_by"),
             new TableColumn(t`Expiry`),
-            new TableColumn("Actions"),
         ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`Invitation`}
+            .usedBy=${() => {
+                return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsUsedByList({
+                    inviteUuid: item.pk,
+                });
+            }}
+            .delete=${() => {
+                return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsDestroy({
+                    inviteUuid: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete>`;
     }
 
     row(item: Invitation): TemplateResult[] {
@@ -57,22 +81,6 @@ export class InvitationListPage extends TablePage<Invitation> {
             html`${item.pk}`,
             html`${item.createdBy?.username}`,
             html`${item.expires?.toLocaleString() || "-"}`,
-            html` <ak-forms-delete
-                .obj=${item}
-                objectLabel=${t`Invitation`}
-                .usedBy=${() => {
-                    return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsUsedByList({
-                        inviteUuid: item.pk,
-                    });
-                }}
-                .delete=${() => {
-                    return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsDestroy({
-                        inviteUuid: item.pk,
-                    });
-                }}
-            >
-                <button slot="trigger" class="pf-c-button pf-m-danger">${t`Delete`}</button>
-            </ak-forms-delete>`,
         ];
     }
 

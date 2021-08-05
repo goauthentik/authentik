@@ -39,6 +39,8 @@ export class PolicyListPage extends TablePage<Policy> {
         return "pf-icon pf-icon-infrastructure";
     }
 
+    checkbox = true;
+
     @property()
     order = "name";
 
@@ -97,7 +99,6 @@ export class PolicyListPage extends TablePage<Policy> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        // TODO: bulk delete
         const disabled = this.selectedElements.length !== 1;
         const item = this.selectedElements[0];
         return html`<ak-forms-delete
