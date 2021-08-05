@@ -75,7 +75,7 @@ func (pi *ProviderInstance) Bind(username string, req BindRequest) (ldap.LDAPRes
 	pi.boundUsersMutex.Lock()
 	cs := pi.SearchAccessCheck(userInfo.User)
 	pi.boundUsers[req.BindDN] = UserFlags{
-		UserInfo:  userInfo.User,
+		UserPk:    userInfo.User.Pk,
 		CanSearch: cs != nil,
 	}
 	if pi.boundUsers[req.BindDN].CanSearch {
@@ -88,7 +88,7 @@ func (pi *ProviderInstance) Bind(username string, req BindRequest) (ldap.LDAPRes
 }
 
 // SearchAccessCheck Check if the current user is allowed to search
-func (pi *ProviderInstance) SearchAccessCheck(user api.User) *string {
+func (pi *ProviderInstance) SearchAccessCheck(user api.UserSelf) *string {
 	for _, group := range user.Groups {
 		for _, allowedGroup := range pi.searchAllowedGroups {
 			pi.log.WithField("userGroup", group.Pk).WithField("allowedGroup", allowedGroup).Trace("Checking search access")

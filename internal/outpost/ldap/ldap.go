@@ -39,7 +39,8 @@ type ProviderInstance struct {
 }
 
 type UserFlags struct {
-	UserInfo  api.User
+	UserInfo  *api.User
+	UserPk    int32
 	CanSearch bool
 }
 

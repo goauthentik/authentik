@@ -11,9 +11,17 @@ import (
 	"goauthentik.io/api"
 )
 
-func (pi *ProviderInstance) SearchMe(user api.User) (ldap.ServerSearchResult, error) {
+func (pi *ProviderInstance) SearchMe(req SearchRequest, f UserFlags) (ldap.ServerSearchResult, error) {
+	if f.UserInfo == nil {
+		u, _, err := pi.s.ac.Client.CoreApi.CoreUsersRetrieve(req.ctx, f.UserInfo.Pk).Execute()
+		if err != nil {
+			req.log.WithError(err).Warning("Failed to get user info")
+			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Failed to get userinfo")
+		}
+		f.UserInfo = &u
+	}
 	entries := make([]*ldap.Entry, 1)
-	entries[0] = pi.UserEntry(user)
+	entries[0] = pi.UserEntry(*f.UserInfo)
 	return ldap.ServerSearchResult{Entries: entries, Referrals: []string{}, Controls: []ldap.Control{}, ResultCode: ldap.LDAPResultSuccess}, nil
 }
 
@@ -42,7 +50,7 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 	}
 	if !flags.CanSearch {
 		pi.log.Debug("User can't search, showing info about user")
-		return pi.SearchMe(flags.UserInfo)
+		return pi.SearchMe(req, flags)
 	}
 	accsp.Finish()
 
