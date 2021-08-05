@@ -1103,7 +1103,7 @@ msgstr "Delete Consent"
 msgid "Delete Session"
 msgstr "Delete Session"
 
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 msgid "Delete account"
 msgstr "Delete account"
 
@@ -1307,7 +1307,7 @@ msgstr "Either no applications are defined, or you don't have access to any."
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/pages/events/TransportForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Email"
@@ -1444,7 +1444,6 @@ msgstr "Everything is ok."
 msgid "Exception"
 msgstr "Exception"
 
-#: src/pages/flows/FlowListPage.ts
 #: src/pages/flows/FlowViewPage.ts
 msgid "Execute"
 msgstr "Execute"
@@ -1497,7 +1496,6 @@ msgstr "Expiry date"
 msgid "Explicit Consent"
 msgstr "Explicit Consent"
 
-#: src/pages/flows/FlowListPage.ts
 #: src/pages/flows/FlowViewPage.ts
 msgid "Export"
 msgstr "Export"
@@ -2132,7 +2130,7 @@ msgstr "Load servers"
 #: src/flows/stages/prompt/PromptStage.ts
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 #: src/utils.ts
 msgid "Loading"
 msgstr "Loading"
@@ -2421,7 +2419,7 @@ msgstr "My Applications"
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 #: src/pages/stages/user_logout/UserLogoutStageForm.ts
 #: src/pages/stages/user_write/UserWriteStageForm.ts
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
@@ -3146,7 +3144,7 @@ msgstr "Request token URL"
 msgid "Required"
 msgstr "Required"
 
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/users/UserForm.ts
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
@@ -3802,7 +3800,7 @@ msgstr "Successfully updated binding."
 msgid "Successfully updated certificate-key pair."
 msgstr "Successfully updated certificate-key pair."
 
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 msgid "Successfully updated details."
 msgstr "Successfully updated details."
 
@@ -4339,7 +4337,7 @@ msgstr "Up-to-date!"
 #: src/pages/stages/StageListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/tenants/TenantListPage.ts
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
@@ -4443,7 +4441,7 @@ msgstr "Update User"
 msgid "Update available"
 msgstr "Update available"
 
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSettingsPage.ts
 msgid "Update details"
 msgstr "Update details"
 
@@ -4576,7 +4574,7 @@ msgstr "User {0}"
 msgid "User's avatar"
 msgstr "User's avatar"
 
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/users/UserForm.ts
 msgid "User's display name."
 msgstr "User's display name."
@@ -4596,7 +4594,7 @@ msgstr "Userinfo URL"
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/pages/policies/reputation/UserReputationListPage.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Username"
