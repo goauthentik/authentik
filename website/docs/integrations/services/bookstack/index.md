@@ -75,9 +75,11 @@ SAML2_IDP_ENTITYID=METADATAURL
 SAML2_AUTOLOAD_METADATA=true
 
 ```
-::note
+
+:::note
 Bookstack Reference link: https://www.bookstackapp.com/docs/admin/saml2-auth/
 :::
+
 ### Step 3
 
 In authentik, create an application which uses this provider. Optionally apply access restrictions to the application using policy bindings.
