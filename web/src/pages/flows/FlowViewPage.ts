@@ -25,10 +25,12 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import AKGlobal from "../../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-flow-view")
 export class FlowViewPage extends LitElement {
+
     @property()
     set flowSlug(value: string) {
         new FlowsApi(DEFAULT_CONFIG)
@@ -44,7 +46,7 @@ export class FlowViewPage extends LitElement {
     flow!: Flow;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFButton, PFCard, PFContent, PFGallery, AKGlobal].concat(
+        return [PFBase, PFPage, PFDescriptionList, PFButton, PFCard, PFContent, PFGrid, AKGlobal].concat(
             css`
                 img.pf-icon {
                     max-height: 24px;
@@ -72,8 +74,8 @@ export class FlowViewPage extends LitElement {
                     data-tab-title="${t`Flow Overview`}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
-                    <div class="pf-l-gallery pf-m-gutter">
-                        <div class="pf-c-card pf-l-gallery__item">
+                    <div class="pf-l-grid pf-m-gutter">
+                        <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-1-col-on-2xl">
                             <div class="pf-c-card__title">${t`Related`}</div>
                             <div class="pf-c-card__body">
                                 <dl class="pf-c-description-list">
@@ -122,8 +124,7 @@ export class FlowViewPage extends LitElement {
                             </div>
                         </div>
                         <div
-                            class="pf-c-card pf-l-gallery__item"
-                            style="grid-column-end: span 4;grid-row-end: span 2;"
+                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-10-col-on-xl pf-m-11-col-on-2xl"
                         >
                             <div class="pf-c-card">
                                 <div class="pf-c-card__body">

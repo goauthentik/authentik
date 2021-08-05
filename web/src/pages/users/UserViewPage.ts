@@ -3,7 +3,7 @@ import { CSSResult, customElement, html, LitElement, property, TemplateResult } 
 
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
@@ -57,7 +57,7 @@ export class UserViewPage extends LitElement {
             PFFlex,
             PFButton,
             PFDisplay,
-            PFGallery,
+            PFGrid,
             PFContent,
             PFCard,
             PFDescriptionList,
@@ -94,8 +94,8 @@ export class UserViewPage extends LitElement {
                 data-tab-title="${t`Overview`}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
-                <div class="pf-l-gallery pf-m-gutter">
-                    <div class="pf-c-card pf-l-gallery__item">
+                <div class="pf-l-grid pf-m-gutter">
+                    <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-1-col-on-2xl">
                         <div class="pf-c-card__title">${t`User Info`}</div>
                         <div class="pf-c-card__body">
                             <dl class="pf-c-description-list">
@@ -211,9 +211,9 @@ export class UserViewPage extends LitElement {
                         </div>
                     </div>
                     <div
-                        class="pf-c-card pf-l-gallery__item"
-                        style="grid-column-end: span 4;grid-row-end: span 2;"
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-10-col-on-xl pf-m-11-col-on-2xl"
                     >
+                        <div class="pf-c-card__title">${t`Actions over the last 24 hours`}</div>
                         <div class="pf-c-card__body">
                             <ak-charts-user userId=${this.user.pk || 0}> </ak-charts-user>
                         </div>
