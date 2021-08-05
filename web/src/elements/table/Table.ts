@@ -209,7 +209,7 @@ export abstract class Table<T> extends LitElement {
                         ? html`<td class="pf-c-table__check" role="cell">
                               <input
                                   type="checkbox"
-                                  ?checked=${this.selectedElements.indexOf(item) >= 0}
+                                  .checked=${this.selectedElements.indexOf(item) >= 0}
                                   @input=${(ev: InputEvent) => {
                                       if ((ev.target as HTMLInputElement).checked) {
                                           // Add item to selected
