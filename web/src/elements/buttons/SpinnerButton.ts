@@ -16,7 +16,6 @@ import { ERROR_CLASS, PRIMARY_CLASS, PROGRESS_CLASS, SUCCESS_CLASS } from "../..
 
 @customElement("ak-spinner-button")
 export class SpinnerButton extends LitElement {
-
     @property({ type: Boolean })
     isRunning = false;
 

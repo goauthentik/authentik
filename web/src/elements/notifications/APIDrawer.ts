@@ -1,5 +1,13 @@
 import { Middleware, ResponseContext } from "authentik-api";
-import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import {
+    css,
+    CSSResult,
+    customElement,
+    html,
+    LitElement,
+    property,
+    TemplateResult,
+} from "lit-element";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
@@ -16,7 +24,6 @@ export interface RequestInfo {
 }
 
 export class APIMiddleware implements Middleware {
-
     post?(context: ResponseContext): Promise<Response | void> {
         const request: RequestInfo = {
             method: (context.init.method || "GET").toUpperCase(),
@@ -32,31 +39,37 @@ export class APIMiddleware implements Middleware {
         );
         return Promise.resolve(context.response);
     }
-
 }
 
 @customElement("ak-api-drawer")
 export class APIDrawer extends LitElement {
-
-    @property({attribute: false})
+    @property({ attribute: false })
     requests: RequestInfo[] = [];
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFNotificationDrawer, PFButton, PFContent, PFDropdown, AKGlobal, css`
-            .pf-c-notification-drawer__header {
-                height: 114px;
-                align-items: center;
-            }
-            .pf-c-notification-drawer__header-action,
-            .pf-c-notification-drawer__header-action-close,
-            .pf-c-notification-drawer__header-action-close > .pf-c-button.pf-m-plain {
-                height: 100%;
-            }
-            .pf-c-notification-drawer__list-item-description {
-                white-space: pre-wrap;
-                font-family: monospace;
-            }
-        `];
+        return [
+            PFBase,
+            PFNotificationDrawer,
+            PFButton,
+            PFContent,
+            PFDropdown,
+            AKGlobal,
+            css`
+                .pf-c-notification-drawer__header {
+                    height: 114px;
+                    align-items: center;
+                }
+                .pf-c-notification-drawer__header-action,
+                .pf-c-notification-drawer__header-action-close,
+                .pf-c-notification-drawer__header-action-close > .pf-c-button.pf-m-plain {
+                    height: 100%;
+                }
+                .pf-c-notification-drawer__list-item-description {
+                    white-space: pre-wrap;
+                    font-family: monospace;
+                }
+            `,
+        ];
     }
 
     constructor() {
@@ -73,9 +86,13 @@ export class APIDrawer extends LitElement {
     renderItem(item: RequestInfo): TemplateResult {
         return html`<li class="pf-c-notification-drawer__list-item pf-m-read">
             <div class="pf-c-notification-drawer__list-item-header">
-                <h2 class="pf-c-notification-drawer__list-item-header-title">${item.method}: ${item.status}</h2>
+                <h2 class="pf-c-notification-drawer__list-item-header-title">
+                    ${item.method}: ${item.status}
+                </h2>
             </div>
-            <a class="pf-c-notification-drawer__list-item-description" href=${item.path}>${item.path}</a>
+            <a class="pf-c-notification-drawer__list-item-description" href=${item.path}
+                >${item.path}</a
+            >
         </li>`;
     }
 

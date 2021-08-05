@@ -5,7 +5,6 @@ import { MessageLevel } from "../messages/Message";
 
 @customElement("ak-action-button")
 export class ActionButton extends SpinnerButton {
-
     @property({ attribute: false })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     apiRequest: () => Promise<any> = () => {

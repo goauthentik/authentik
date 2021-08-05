@@ -18,7 +18,10 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterModelOptions(
-            name='authenticatedsession',
-            options={'verbose_name': 'Authenticated Session', 'verbose_name_plural': 'Authenticated Sessions'},
+            name="authenticatedsession",
+            options={
+                "verbose_name": "Authenticated Session",
+                "verbose_name_plural": "Authenticated Sessions",
+            },
         ),
     ]

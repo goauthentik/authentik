@@ -105,13 +105,13 @@ export class RuleListPage extends TablePage<NotificationRule> {
 
     renderExpanded(item: NotificationRule): TemplateResult {
         return html` <td role="cell" colspan="4">
-                <div class="pf-c-table__expandable-row-content">
-                    <p>
-                        ${t`These bindings control upon which events this rule triggers. Bindings to
+            <div class="pf-c-table__expandable-row-content">
+                <p>
+                    ${t`These bindings control upon which events this rule triggers. Bindings to
                 groups/users are checked against the user of the event.`}
-                    </p>
-                    <ak-bound-policies-list .target=${item.pk}> </ak-bound-policies-list>
-                </div>
-            </td>`;
+                </p>
+                <ak-bound-policies-list .target=${item.pk}> </ak-bound-policies-list>
+            </div>
+        </td>`;
     }
 }

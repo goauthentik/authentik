@@ -12,7 +12,12 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import AKGlobal from "../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE, EVENT_SIDEBAR_TOGGLE, TITLE_DEFAULT } from "../constants";
+import {
+    EVENT_API_DRAWER_TOGGLE,
+    EVENT_NOTIFICATION_DRAWER_TOGGLE,
+    EVENT_SIDEBAR_TOGGLE,
+    TITLE_DEFAULT,
+} from "../constants";
 import { DEFAULT_CONFIG, tenant } from "../api/Config";
 import { EventsApi } from "../../api/dist";
 
@@ -154,7 +159,6 @@ export class PageHeader extends LitElement {
                 }}
             >
                 <i class="fas fa-bell"></i>
-            </button>
-        `;
+            </button> `;
     }
 }

@@ -24,7 +24,12 @@ import "../elements/messages/MessageContainer";
 import "../elements/notifications/NotificationDrawer";
 import "../elements/sidebar/Sidebar";
 import { until } from "lit-html/directives/until";
-import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE, EVENT_SIDEBAR_TOGGLE, VERSION } from "../constants";
+import {
+    EVENT_API_DRAWER_TOGGLE,
+    EVENT_NOTIFICATION_DRAWER_TOGGLE,
+    EVENT_SIDEBAR_TOGGLE,
+    VERSION,
+} from "../constants";
 import { AdminApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../api/Config";
 import { WebsocketClient } from "../common/ws";
@@ -106,8 +111,16 @@ export class AdminInterface extends LitElement {
                                 </main>
                             </div>
                         </div>
-                        ${this.notificationOpen ? html`<ak-notification-drawer class="pf-c-drawer__panel pf-m-width-33"></ak-notification-drawer>` : html``}
-                        ${this.apiDrawerOpen ? html`<ak-api-drawer class="pf-c-drawer__panel pf-m-width-33"></ak-api-drawer>` : html``}
+                        ${this.notificationOpen
+                            ? html`<ak-notification-drawer
+                                  class="pf-c-drawer__panel pf-m-width-33"
+                              ></ak-notification-drawer>`
+                            : html``}
+                        ${this.apiDrawerOpen
+                            ? html`<ak-api-drawer
+                                  class="pf-c-drawer__panel pf-m-width-33"
+                              ></ak-api-drawer>`
+                            : html``}
                     </div>
                 </div>
             </div>

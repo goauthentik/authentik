@@ -30,7 +30,6 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 
 @customElement("ak-flow-view")
 export class FlowViewPage extends LitElement {
-
     @property()
     set flowSlug(value: string) {
         new FlowsApi(DEFAULT_CONFIG)
@@ -46,7 +45,16 @@ export class FlowViewPage extends LitElement {
     flow!: Flow;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFDescriptionList, PFButton, PFCard, PFContent, PFGrid, AKGlobal].concat(
+        return [
+            PFBase,
+            PFPage,
+            PFDescriptionList,
+            PFButton,
+            PFCard,
+            PFContent,
+            PFGrid,
+            AKGlobal,
+        ].concat(
             css`
                 img.pf-icon {
                     max-height: 24px;
@@ -75,7 +83,9 @@ export class FlowViewPage extends LitElement {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-l-grid pf-m-gutter">
-                        <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-1-col-on-2xl">
+                        <div
+                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-1-col-on-2xl"
+                        >
                             <div class="pf-c-card__title">${t`Related`}</div>
                             <div class="pf-c-card__body">
                                 <dl class="pf-c-description-list">

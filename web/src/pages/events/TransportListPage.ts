@@ -89,10 +89,10 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                 <ak-action-button
                     class="pf-m-plain"
                     .apiRequest=${() => {
-                    return new EventsApi(DEFAULT_CONFIG).eventsTransportsTestCreate({
-                        uuid: item.pk || "",
-                    });
-                }}
+                        return new EventsApi(DEFAULT_CONFIG).eventsTransportsTestCreate({
+                            uuid: item.pk || "",
+                        });
+                    }}
                 >
                     <i class="fas fa-vial" aria-hidden="true"></i>
                 </ak-action-button>`,
