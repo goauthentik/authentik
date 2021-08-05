@@ -93,6 +93,11 @@ body {
     color: var(--pf-global--Color--100);
 }
 
+/* Fix alignment issues with images in tables */
+.pf-c-table tbody > tr > * {
+    vertical-align: middle;
+}
+
 @media (prefers-color-scheme: dark) {
     :root {
         --pf-global--Color--100: var(--ak-dark-foreground);
