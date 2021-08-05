@@ -16,11 +16,6 @@ from authentik.crypto.models import CertificateKeyPair
 class CertificateBuilder:
     """Build self-signed certificates"""
 
-    __public_key = None
-    __private_key = None
-    __builder = None
-    __certificate = None
-
     common_name: str
 
     def __init__(self):
@@ -51,9 +46,7 @@ class CertificateBuilder:
             public_exponent=65537, key_size=2048, backend=default_backend()
         )
         self.__public_key = self.__private_key.public_key()
-        alt_names: list[x509.GeneralName] = [
-            x509.DNSName(x) for x in subject_alt_names or []
-        ]
+        alt_names: list[x509.GeneralName] = [x509.DNSName(x) for x in subject_alt_names or []]
         self.__builder = (
             x509.CertificateBuilder()
             .subject_name(
@@ -64,9 +57,7 @@ class CertificateBuilder:
                             self.common_name,
                         ),
                         x509.NameAttribute(NameOID.ORGANIZATION_NAME, "authentik"),
-                        x509.NameAttribute(
-                            NameOID.ORGANIZATIONAL_UNIT_NAME, "Self-signed"
-                        ),
+                        x509.NameAttribute(NameOID.ORGANIZATIONAL_UNIT_NAME, "Self-signed"),
                     ]
                 )
             )
@@ -82,9 +73,7 @@ class CertificateBuilder:
             )
             .add_extension(x509.SubjectAlternativeName(alt_names), critical=True)
             .not_valid_before(datetime.datetime.today() - one_day)
-            .not_valid_after(
-                datetime.datetime.today() + datetime.timedelta(days=validity_days)
-            )
+            .not_valid_after(datetime.datetime.today() + datetime.timedelta(days=validity_days))
             .serial_number(int(uuid.uuid4()))
             .public_key(self.__public_key)
         )

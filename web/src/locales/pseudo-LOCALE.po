@@ -13,4563 +13,4842 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "(Format: hours=-1;minutes=-2;seconds=-3)."
 msgstr ""
 
-#: 
+#: src/pages/policies/BoundPoliciesList.ts
 msgid "-"
 msgstr ""
 
-#: 
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "6 digits, widely compatible"
 msgstr ""
 
-#: 
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "8 digits, not compatible with apps like Google Authenticator"
 msgstr ""
 
-#: 
+#: src/interfaces/AdminInterface.ts
 msgid "A newer version of the frontend is available."
 msgstr ""
 
-#: 
+#: src/pages/policies/dummy/DummyPolicyForm.ts
 msgid "A policy used for testing. Always returns the same result as specified below after waiting a random duration."
 msgstr ""
 
-#: 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "ACS URL"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/applications/ApplicationForm.ts
+#: src/pages/flows/FlowForm.ts
 msgid "ALL, all policies must match to grant access."
 msgstr ""
 
-#: 
+#: src/pages/flows/StageBindingForm.ts
 msgid "ALL, all policies must match to include this stage access."
 msgstr ""
 
-#: 
-#: 
+#: src/pages/applications/ApplicationForm.ts
+#: src/pages/flows/FlowForm.ts
 msgid "ANY, any policy must match to grant access."
 msgstr ""
 
-#: 
+#: src/pages/flows/StageBindingForm.ts
 msgid "ANY, any policy must match to include this stage access."
 msgstr ""
 
-#: 
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "API Hostname"
 msgstr ""
 
-#: 
+#: src/elements/notifications/APIDrawer.ts
 msgid "API Requests"
 msgstr ""
 
-#: 
+#: src/elements/messages/Middleware.ts
 msgid "API request failed"
 msgstr ""
 
-#: 
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts
 msgid "Access Key"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Access code validity"
 msgstr ""
 
-#: 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
 msgid "Access token URL"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/elements/events/ObjectChangelog.ts
+#: src/elements/events/UserEvents.ts
+#: src/pages/events/EventListPage.ts
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 msgid "Action"
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/pages/applications/ApplicationListPage.ts
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+#: src/pages/events/EventListPage.ts
+#: src/pages/events/RuleListPage.ts
+#: src/pages/events/TransportListPage.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/groups/GroupListPage.ts
+#: src/pages/outposts/OutpostListPage.ts
+#: src/pages/outposts/ServiceConnectionListPage.ts
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/PolicyListPage.ts
+#: src/pages/policies/reputation/IPReputationListPage.ts
+#: src/pages/property-mappings/PropertyMappingListPage.ts
+#: src/pages/providers/ProviderListPage.ts
+#: src/pages/stages/StageListPage.ts
+#: src/pages/stages/prompt/PromptListPage.ts
+#: src/pages/system-tasks/SystemTaskListPage.ts
+#: src/pages/tenants/TenantListPage.ts
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/UserListPage.ts
+msgid "Actions"
+msgstr ""
+
+#: src/pages/groups/MemberSelectModal.ts
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Active"
 msgstr ""
 
-#: 
+#: src/pages/groups/MemberSelectModal.ts
 msgid "Add"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Addition Group DN"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Addition User DN"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Additional group DN, prepended to the Base DN."
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Additional user DN, prepended to the Base DN."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Advanced protocol settings"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/policies/password/PasswordPolicyForm.ts
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Advanced settings"
 msgstr ""
 
-#: 
+#: src/pages/events/EventInfo.ts
 msgid "Affected model:"
 msgstr ""
 
-#: 
+#: src/pages/events/RuleForm.ts
 msgid "Alert"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Algorithm used to sign the JWT Tokens."
 msgstr ""
 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Allow IDP-initiated logins"
 msgstr ""
 
-#: 
+#: src/pages/sources/plex/PlexSourceForm.ts
 msgid "Allow friends to authenticate via Plex, even if you don't share any servers"
 msgstr ""
 
-#: 
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 msgid "Allow up to N occurrences in the HIBP database."
 msgstr ""
 
-#: 
+#: src/pages/policies/PolicyListPage.ts
 msgid "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages."
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Allowed Redirect URIs"
 msgstr ""
 
-#: 
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 msgid "Allowed count"
 msgstr ""
 
-#: 
+#: src/pages/sources/plex/PlexSourceForm.ts
 msgid "Allowed servers"
 msgstr ""
 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done."
 msgstr ""
 
-#: 
+#: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid "Allows/denys requests based on the users and/or the IPs reputation."
 msgstr ""
 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Also known as Entity ID. Defaults the Metadata URL."
 msgstr ""
 
-#: 
+#: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 msgid "Alternatively, if your current device has Duo installed, click on this link:"
 msgstr ""
 
-#: 
+#: src/pages/stages/consent/ConsentStageForm.ts
 msgid "Always require consent"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/events/EventInfo.ts
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 msgid "App"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/elements/user/UserConsentList.ts
+#: src/pages/admin-overview/TopApplicationsTable.ts
+#: src/pages/applications/ApplicationListPage.ts
+#: src/pages/providers/ProviderListPage.ts
 msgid "Application"
 msgstr ""
 
-#: 
+#: src/pages/applications/ApplicationListPage.ts
 msgid "Application Icon"
 msgstr ""
 
-#: 
+#: src/pages/events/utils.ts
+msgid "Application authorized"
+msgstr ""
+
+#: src/flows/stages/consent/ConsentStage.ts
 msgid "Application requires following permissions:"
 msgstr ""
 
-#: 
+#: src/pages/applications/ApplicationForm.ts
 msgid "Application's display Name."
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/interfaces/AdminInterface.ts
+#: src/pages/LibraryPage.ts
+#: src/pages/applications/ApplicationListPage.ts
 msgid "Applications"
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "Apps with most usage"
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowListPage.ts
 msgid ""
 "Are you sure you want to clear the flow cache?\n"
 "This will cause all flows to be re-evaluated on their next usage."
 msgstr ""
 
-#: 
+#: src/pages/policies/PolicyListPage.ts
 msgid ""
 "Are you sure you want to clear the policy cache?\n"
 "This will cause all policies to be re-evaluated on their next usage."
 msgstr ""
 
-#: 
+#: src/elements/forms/DeleteForm.ts
 msgid "Are you sure you want to delete {0} {objName} ?"
 msgstr ""
 
-#: 
+#: src/pages/users/UserActiveForm.ts
 msgid "Are you sure you want to update {0} \"{1}\"?"
 msgstr ""
 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Assertion valid not before"
 msgstr ""
 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Assertion valid not on or after"
 msgstr ""
 
-#: 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn.ts
 msgid "Assertions is empty"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/providers/ProviderListPage.ts
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "Assigned to application"
 msgstr ""
 
-#: 
+#: src/pages/policies/PolicyListPage.ts
 msgid "Assigned to {0} objects."
 msgstr ""
 
-#: 
+#: src/pages/events/EventInfo.ts
 msgid "Attempted to log in as {0}"
 msgstr ""
 
-#: 
+#: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 msgid "Attribute name used for SAML Assertions. Can be a URN OID, a schema reference, or a any other string. If this property mapping is used for NameID Property, this field is discarded."
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/pages/groups/GroupForm.ts
+#: src/pages/stages/invitation/InvitationForm.ts
+#: src/pages/users/UserForm.ts
 msgid "Attributes"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "Audience"
 msgstr ""
 
-#: 
+#: src/flows/sources/plex/PlexLoginInit.ts
 msgid "Authenticating with Plex..."
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowForm.ts
 msgid "Authentication"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
+#: src/pages/tenants/TenantForm.ts
 msgid "Authentication flow"
 msgstr ""
 
-#: 
-#: 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
 msgid "Authenticator"
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowForm.ts
 msgid "Authorization"
 msgstr ""
 
-#: 
+#: src/elements/oauth/UserCodeList.ts
 msgid "Authorization Code"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts
 msgid "Authorization URL"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/providers/saml/SAMLProviderImportForm.ts
 msgid "Authorization flow"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 msgid "Authorize URL"
 msgstr ""
 
-#: 
+#: src/pages/events/EventInfo.ts
 msgid "Authorized application:"
 msgstr ""
 
-#: 
+#: src/pages/stages/password/PasswordStageForm.ts
 msgid "Backends"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/FlowForm.ts
 msgid "Background"
 msgstr ""
 
-#: 
+#: src/flows/FlowExecutor.ts
 msgid "Background image"
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/FlowImportForm.ts
 msgid "Background shown during execution."
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/cards/BackupStatusCard.ts
 msgid "Backup finished with errors."
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/cards/BackupStatusCard.ts
 msgid "Backup finished with warnings/backup not supported."
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "Backup status"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts
 msgid "Base DN"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Based on the Hashed User ID"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Based on the User's Email. This is recommended over the UPN method."
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains."
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Based on the username"
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Basic-Auth"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Bind CN"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Bind Password"
 msgstr ""
 
-#: 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Bind flow"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/BoundStagesList.ts
 msgid "Bind stage"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/events/EventInfo.ts
+#: src/pages/events/EventInfo.ts
 msgid "Binding"
 msgstr ""
 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Binding Type"
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantForm.ts
 msgid "Branding settings"
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantForm.ts
 msgid "Branding shown in page title and several other places."
 msgstr ""
 
-#: 
+#: src/elements/user/SessionList.ts
 msgid "Browser"
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/cards/VersionStatusCard.ts
 msgid "Build hash: {0}"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourcesListPage.ts
 msgid "Built-in"
 msgstr ""
 
-#: 
+#: src/pages/outposts/ServiceConnectionDockerForm.ts
 msgid "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/charts/FlowStatusChart.ts
 msgid "Cached flows"
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/charts/PolicyStatusChart.ts
 msgid "Cached policies"
 msgstr ""
 
-#: 
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts
 msgid "Callback URL"
 msgstr ""
 
-#: 
+#: src/pages/outposts/ServiceConnectionDockerForm.ts
 msgid "Can be in the format of 'unix://' when connecting to a local docker daemon, or 'https://:2376' when connecting to a remote system."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/elements/forms/ConfirmationForm.ts
+#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/ModalForm.ts
+#: src/pages/groups/MemberSelectModal.ts
+#: src/pages/users/UserActiveForm.ts
 msgid "Cancel"
 msgstr ""
 
-#: 
+#: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Case insensitive matching"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/crypto/CertificateKeyPairForm.ts
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Certificate"
 msgstr ""
 
-#: 
-msgid "Certificate Fingerprint"
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+msgid "Certificate Fingerprint (SHA1)"
 msgstr ""
 
-#: 
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+msgid "Certificate Fingerprint (SHA256)"
+msgstr ""
+
+#: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Certificate Subjet"
 msgstr ""
 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Certificate used to sign outgoing Responses going to the Service Provider."
 msgstr ""
 
-#: 
+#: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Certificate-Key Pair"
 msgstr ""
 
-#: 
+#: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Certificate-Key Pairs"
 msgstr ""
 
-#: 
+#: src/pages/outposts/ServiceConnectionDockerForm.ts
 msgid "Certificate/Key used for authentication. Can be left empty for no authentication."
 msgstr ""
 
-#: 
+#: src/interfaces/AdminInterface.ts
 msgid "Certificates"
 msgstr ""
 
-#: 
+#: src/pages/user-settings/settings/UserSettingsPassword.ts
 msgid "Change password"
 msgstr ""
 
-#: 
+#: src/pages/user-settings/settings/UserSettingsPassword.ts
 msgid "Change your password"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/applications/ApplicationViewPage.ts
+#: src/pages/flows/FlowViewPage.ts
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts
+#: src/pages/sources/plex/PlexSourceViewPage.ts
+#: src/pages/sources/saml/SAMLSourceViewPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Changelog"
 msgstr ""
 
-#: 
+#: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Characters which are considered as symbols."
 msgstr ""
 
-#: 
+#: src/pages/applications/ApplicationViewPage.ts
 msgid "Check"
 msgstr ""
 
-#: 
+#: src/pages/applications/ApplicationViewPage.ts
 msgid "Check Application access"
 msgstr ""
 
-#: 
+#: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid "Check IP"
 msgstr ""
 
-#: 
+#: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid "Check Username"
 msgstr ""
 
-#: 
+#: src/pages/applications/ApplicationViewPage.ts
 msgid "Check access"
 msgstr ""
 
-#: 
+#: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 msgid "Check status"
 msgstr ""
 
-#: 
+#: src/flows/stages/email/EmailStage.ts
 msgid "Check your Emails for a password reset link."
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptForm.ts
 msgid "Checkbox"
 msgstr ""
 
-#: 
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 msgid ""
 "Checks a value from the policy request against the Have I been Pwned API, and denys the request based upon that.\n"
 "Note that only a part of the hash of the password is sent, the full comparison is done clientside."
 msgstr ""
 
-#: 
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts
 msgid "Checks if the request's user's password has been changed in the last x days, and denys based on settings."
 msgstr ""
 
-#: 
+#: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Checks the value from the policy request against several rules, mostly used to ensure password strength."
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowListPage.ts
 msgid "Clear Flow cache"
 msgstr ""
 
-#: 
+#: src/pages/policies/PolicyListPage.ts
 msgid "Clear Policy cache"
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowForm.ts
 msgid "Clear background image"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/policies/PolicyListPage.ts
+#: src/pages/policies/PolicyListPage.ts
 msgid "Clear cache"
 msgstr ""
 
-#: 
+#: src/pages/applications/ApplicationForm.ts
 msgid "Clear icon"
 msgstr ""
 
-#: 
+#: src/elements/forms/HorizontalFormElement.ts
 msgid "Click to change value"
 msgstr ""
 
-#: 
+#: src/pages/outposts/OutpostDeploymentModal.ts
 msgid "Click to copy token"
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
 msgid "Client ID"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/elements/events/ObjectChangelog.ts
+#: src/elements/events/UserEvents.ts
+#: src/pages/events/EventListPage.ts
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 msgid "Client IP"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Client Secret"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 msgid "Client type"
 msgstr ""
 
-#: 
+#: src/pages/outposts/OutpostDeploymentModal.ts
 msgid "Close"
 msgstr ""
 
-#: 
-#: 
+#: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
 msgid "Code"
 msgstr ""
 
-#: 
+#: src/pages/crypto/CertificateGenerateForm.ts
 msgid "Common Name"
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowForm.ts
 msgid "Compatibility mode"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Confidential"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable."
 msgstr ""
 
-#: 
+#: src/pages/outposts/OutpostForm.ts
 msgid "Configuration"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/events/utils.ts
+msgid "Configuration error"
+msgstr ""
+
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
+#: src/pages/stages/password/PasswordStageForm.ts
 msgid "Configuration flow"
 msgstr ""
 
-#: 
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Configuration stage"
 msgstr ""
 
-#: 
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
 msgid "Configure WebAuthn"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure how long access codes are valid for."
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure how long refresh tokens and their id_tokens are valid for."
 msgstr ""
 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected."
 msgstr ""
 
-#: 
+#: src/pages/flows/StageBindingForm.ts
+msgid "Configure how the flow executor should handle an invalid response to a challenge."
+msgstr ""
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr ""
 
-#: 
+#: src/pages/user-settings/UserSettingsPage.ts
 msgid "Configure settings relevant to your user profile."
 msgstr ""
 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Configure the maximum allowed time drift for an asseration."
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantListPage.ts
 msgid "Configure visual settings and defaults for different domains."
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
 msgstr ""
 
-#: 
+#: src/pages/user-settings/settings/SourceSettingsOAuth.ts
 msgid "Connect"
 msgstr ""
 
-#: 
+#: src/pages/user-settings/settings/SourceSettingsOAuth.ts
 msgid "Connected."
 msgstr ""
 
-#: 
+#: src/common/ws.ts
 msgid "Connection error, reconnecting..."
 msgstr ""
 
-#: 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+#: src/pages/stages/email/EmailStageForm.ts
 msgid "Connection settings"
 msgstr ""
 
-#: 
+#: src/elements/user/UserConsentList.ts
 msgid "Consent"
 msgstr ""
 
-#: 
+#: src/pages/stages/consent/ConsentStageForm.ts
 msgid "Consent expires in"
 msgstr ""
 
-#: 
+#: src/pages/stages/consent/ConsentStageForm.ts
 msgid "Consent expires."
 msgstr ""
 
-#: 
+#: src/pages/stages/consent/ConsentStageForm.ts
 msgid "Consent given last indefinitely"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Consider Objects matching this filter to be Groups."
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Consider Objects matching this filter to be Users."
 msgstr ""
 
-#: 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
 msgid "Consumer key"
 msgstr ""
 
-#: 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
 msgid "Consumer secret"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/events/EventInfo.ts
+#: src/pages/events/EventInfo.ts
+#: src/pages/events/EventInfo.ts
+#: src/pages/policies/PolicyTestForm.ts
+#: src/pages/property-mappings/PropertyMappingTestForm.ts
 msgid "Context"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
+#: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageDuo.ts
+#: src/flows/stages/autosubmit/AutosubmitStage.ts
+#: src/flows/stages/consent/ConsentStage.ts
+#: src/flows/stages/dummy/DummyStage.ts
+#: src/flows/stages/password/PasswordStage.ts
+#: src/flows/stages/prompt/PromptStage.ts
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Continue"
 msgstr ""
 
-#: 
+#: src/pages/stages/invitation/InvitationStageForm.ts
 msgid "Continue flow without invitation"
 msgstr ""
 
-#: 
+#: src/pages/property-mappings/PropertyMappingListPage.ts
 msgid "Control how authentik exposes and interprets information."
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Cookie domain"
 msgstr ""
 
-#: 
+#: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 msgid "Copy"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/user-settings/tokens/UserTokenList.ts
 msgid "Copy Key"
 msgstr ""
 
-#: 
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "Copy download URL"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/ApplicationListPage.ts
+#: src/pages/applications/ApplicationListPage.ts
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+#: src/pages/events/RuleListPage.ts
+#: src/pages/events/RuleListPage.ts
+#: src/pages/events/TransportListPage.ts
+#: src/pages/events/TransportListPage.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/GroupListPage.ts
+#: src/pages/outposts/OutpostListPage.ts
+#: src/pages/outposts/OutpostListPage.ts
+#: src/pages/outposts/ServiceConnectionListPage.ts
+#: src/pages/outposts/ServiceConnectionListPage.ts
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/PolicyListPage.ts
+#: src/pages/policies/PolicyListPage.ts
+#: src/pages/property-mappings/PropertyMappingListPage.ts
+#: src/pages/property-mappings/PropertyMappingListPage.ts
+#: src/pages/providers/ProviderListPage.ts
+#: src/pages/providers/ProviderListPage.ts
+#: src/pages/providers/RelatedApplicationButton.ts
+#: src/pages/providers/RelatedApplicationButton.ts
+#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourcesListPage.ts
+#: src/pages/stages/StageListPage.ts
+#: src/pages/stages/StageListPage.ts
+#: src/pages/stages/invitation/InvitationListPage.ts
+#: src/pages/stages/invitation/InvitationListPage.ts
+#: src/pages/stages/prompt/PromptListPage.ts
+#: src/pages/stages/prompt/PromptListPage.ts
+#: src/pages/stages/prompt/PromptStageForm.ts
+#: src/pages/stages/prompt/PromptStageForm.ts
+#: src/pages/tenants/TenantListPage.ts
+#: src/pages/tenants/TenantListPage.ts
+#: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserListPage.ts
 msgid "Create"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/applications/ApplicationListPage.ts
+#: src/pages/providers/RelatedApplicationButton.ts
 msgid "Create Application"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/BoundPoliciesList.ts
 msgid "Create Binding"
 msgstr ""
 
-#: 
+#: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Create Certificate-Key Pair"
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowListPage.ts
 msgid "Create Flow"
 msgstr ""
 
-#: 
+#: src/pages/groups/GroupListPage.ts
 msgid "Create Group"
 msgstr ""
 
-#: 
+#: src/pages/stages/invitation/InvitationListPage.ts
 msgid "Create Invitation"
 msgstr ""
 
-#: 
+#: src/pages/stages/invitation/InvitationListPage.ts
 msgid "Create Invitation Links to enroll Users, and optionally force specific attributes of their account."
 msgstr ""
 
-#: 
+#: src/pages/events/RuleListPage.ts
 msgid "Create Notification Rule"
 msgstr ""
 
-#: 
+#: src/pages/events/TransportListPage.ts
 msgid "Create Notification Transport"
 msgstr ""
 
-#: 
+#: src/pages/outposts/OutpostListPage.ts
 msgid "Create Outpost"
 msgstr ""
 
-#: 
+#: src/pages/policies/BoundPoliciesList.ts
 msgid "Create Policy"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/stages/prompt/PromptListPage.ts
+#: src/pages/stages/prompt/PromptStageForm.ts
 msgid "Create Prompt"
 msgstr ""
 
-#: 
+#: src/pages/flows/BoundStagesList.ts
 msgid "Create Stage"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/BoundStagesList.ts
 msgid "Create Stage binding"
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantListPage.ts
 msgid "Create Tenant"
 msgstr ""
 
-#: 
+#: src/pages/user-settings/tokens/UserTokenList.ts
 msgid "Create Token"
 msgstr ""
 
-#: 
+#: src/pages/users/UserListPage.ts
 msgid "Create User"
 msgstr ""
 
-#: 
+#: src/pages/applications/ApplicationForm.ts
 msgid "Create provider"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/stages/user_write/UserWriteStageForm.ts
+msgid "Create users as inactive"
+msgstr ""
+
+#: src/pages/applications/ApplicationForm.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/outposts/ServiceConnectionListPage.ts
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/PolicyListPage.ts
+#: src/pages/property-mappings/PropertyMappingListPage.ts
+#: src/pages/providers/ProviderListPage.ts
+#: src/pages/sources/SourcesListPage.ts
+#: src/pages/stages/StageListPage.ts
 msgid "Create {0}"
 msgstr ""
 
-#: 
+#: src/pages/stages/invitation/InvitationListPage.ts
 msgid "Created by"
 msgstr ""
 
-#: 
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
 msgid "Created {0}"
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/elements/events/ObjectChangelog.ts
+#: src/elements/events/UserEvents.ts
+#: src/pages/events/EventListPage.ts
 msgid "Creation Date"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/applications/ApplicationForm.ts
+#: src/pages/flows/FlowForm.ts
 msgid "Currently set to:"
 msgstr ""
 
-#: 
+#: src/interfaces/AdminInterface.ts
 msgid "Customisation"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "DSA-SHA1"
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptForm.ts
 msgid "Date"
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptForm.ts
 msgid "Date Time"
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowForm.ts
 msgid "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantForm.ts
 msgid "Default"
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantForm.ts
 msgid "Default flows"
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantListPage.ts
 msgid "Default?"
 msgstr ""
 
-#: 
+#: src/pages/events/TransportListPage.ts
 msgid "Define how notifications are sent to users, like Email or Webhook."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/elements/forms/DeleteForm.ts
+#: src/elements/oauth/UserCodeList.ts
+#: src/elements/oauth/UserRefreshList.ts
+#: src/pages/applications/ApplicationListPage.ts
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+#: src/pages/events/RuleListPage.ts
+#: src/pages/events/TransportListPage.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/groups/GroupListPage.ts
+#: src/pages/outposts/OutpostListPage.ts
+#: src/pages/outposts/ServiceConnectionListPage.ts
+#: src/pages/policies/PolicyListPage.ts
+#: src/pages/policies/reputation/IPReputationListPage.ts
+#: src/pages/policies/reputation/UserReputationListPage.ts
+#: src/pages/property-mappings/PropertyMappingListPage.ts
+#: src/pages/providers/ProviderListPage.ts
+#: src/pages/sources/SourcesListPage.ts
+#: src/pages/stages/StageListPage.ts
+#: src/pages/stages/invitation/InvitationListPage.ts
+#: src/pages/stages/prompt/PromptListPage.ts
+#: src/pages/tenants/TenantListPage.ts
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
+#: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/pages/users/UserListPage.ts
 msgid "Delete"
 msgstr ""
 
 #: 
-msgid "Delete Authorization Code"
-msgstr ""
+#~ msgid "Delete Authorization Code"
+#~ msgstr ""
 
-#: 
-#: 
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/policies/BoundPoliciesList.ts
 msgid "Delete Binding"
 msgstr ""
 
-#: 
+#: src/elements/user/UserConsentList.ts
 msgid "Delete Consent"
 msgstr ""
 
 #: 
-msgid "Delete Refresh Code"
-msgstr ""
+#~ msgid "Delete Refresh Code"
+#~ msgstr ""
 
-#: 
+#: src/elements/user/SessionList.ts
 msgid "Delete Session"
 msgstr ""
 
-#: 
+#: src/pages/user-settings/UserDetailsPage.ts
 msgid "Delete account"
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowForm.ts
 msgid "Delete currently set background image."
 msgstr ""
 
-#: 
+#: src/pages/applications/ApplicationForm.ts
 msgid "Delete currently set icon."
 msgstr ""
 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Delete temporary users after"
 msgstr ""
 
-#: 
+#: src/pages/stages/user_delete/UserDeleteStageForm.ts
 msgid ""
 "Delete the currently pending user. CAUTION, this stage does not ask for\n"
 "confirmation. Use a consent stage to ensure the user is aware of their actions."
 msgstr ""
 
-#: 
+#: src/elements/forms/DeleteForm.ts
 msgid "Delete {0}"
 msgstr ""
 
-#: 
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Deny the user access"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/applications/ApplicationForm.ts
+#: src/pages/property-mappings/PropertyMappingScopeForm.ts
+#: src/pages/system-tasks/SystemTaskListPage.ts
+#: src/pages/user-settings/tokens/UserTokenForm.ts
 msgid "Description"
 msgstr ""
 
-#: 
+#: src/pages/property-mappings/PropertyMappingScopeForm.ts
 msgid "Description shown to the user when consenting. If left empty, the user won't be informed."
 msgstr ""
 
-#: 
+#: src/pages/users/UserForm.ts
 msgid "Designates whether this user should be treated as active. Unselect this instead of deleting accounts."
 msgstr ""
 
-#: 
-#: 
+#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/FlowListPage.ts
 msgid "Designation"
 msgstr ""
 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Determines how authentik sends the response back to the Service Provider."
 msgstr ""
 
-#: 
+#: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed."
 msgstr ""
 
-#: 
+#: src/elements/user/SessionList.ts
 msgid "Device"
 msgstr ""
 
-#: 
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Device classes"
 msgstr ""
 
-#: 
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Device classes which can be used to authenticate."
 msgstr ""
 
-#: 
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
 msgid "Device name"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Digest algorithm"
 msgstr ""
 
-#: 
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "Digits"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserListPage.ts
 msgid "Disable"
 msgstr ""
 
-#: 
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
 msgid "Disable Duo authenticator"
 msgstr ""
 
-#: 
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts
 msgid "Disable Static Tokens"
 msgstr ""
 
-#: 
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts
 msgid "Disable Time-based OTP"
 msgstr ""
 
-#: 
+#: src/pages/sources/SourcesListPage.ts
 msgid "Disabled"
 msgstr ""
 
-#: 
+#: src/pages/user-settings/settings/SourceSettingsOAuth.ts
 msgid "Disconnect"
 msgstr ""
 
-#: 
+#: src/pages/outposts/ServiceConnectionDockerForm.ts
 msgid "Docker URL"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/tenants/TenantForm.ts
+#: src/pages/tenants/TenantListPage.ts
 msgid "Domain"
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+#: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "Download"
 msgstr ""
 
-#: 
+#: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Download Certificate"
 msgstr ""
 
-#: 
+#: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Download Private key"
 msgstr ""
 
-#: 
+#: src/pages/stages/dummy/DummyStageForm.ts
 msgid "Dummy stage used for testing. Shows a simple continue button and always passes."
 msgstr ""
 
-#: 
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
 msgid "Duo"
 msgstr ""
 
-#: 
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Duo Authenticators"
 msgstr ""
 
-#: 
+#: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 msgid "Duo activation"
 msgstr ""
 
-#: 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Duo push-notifications"
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantForm.ts
+msgid "Duration after which events will be deleted from the database."
+msgstr ""
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Each provider has a different issuer, based on the application slug."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/applications/ApplicationViewPage.ts
+#: src/pages/applications/ApplicationViewPage.ts
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts
+#: src/pages/sources/plex/PlexSourceViewPage.ts
+#: src/pages/sources/saml/SAMLSourceViewPage.ts
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Edit"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/policies/BoundPoliciesList.ts
 msgid "Edit Binding"
 msgstr ""
 
-#: 
+#: src/pages/policies/BoundPoliciesList.ts
 msgid "Edit Group"
 msgstr ""
 
-#: 
+#: src/pages/policies/BoundPoliciesList.ts
 msgid "Edit Policy"
 msgstr ""
 
-#: 
+#: src/pages/flows/BoundStagesList.ts
 msgid "Edit Stage"
 msgstr ""
 
-#: 
+#: src/pages/policies/BoundPoliciesList.ts
 msgid "Edit User"
 msgstr ""
 
-#: 
+#: src/pages/LibraryPage.ts
 msgid "Either no applications are defined, or you don't have access to any."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/flows/stages/identification/IdentificationStage.ts
+#: src/pages/events/TransportForm.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
+#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/users/UserForm.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Email"
 msgstr ""
 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Email address"
 msgstr ""
 
-#: 
+#: src/pages/events/EventInfo.ts
 msgid "Email info:"
 msgstr ""
 
-#: 
+#: src/pages/events/utils.ts
+msgid "Email sent"
+msgstr ""
+
+#: src/pages/stages/prompt/PromptForm.ts
 msgid "Email: Text field with Email type."
 msgstr ""
 
-#: 
-#: 
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserListPage.ts
 msgid "Enable"
 msgstr ""
 
-#: 
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
 msgid "Enable Duo authenticator"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Enable StartTLS"
 msgstr ""
 
-#: 
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts
 msgid "Enable Static Tokens"
 msgstr ""
 
-#: 
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts
 msgid "Enable TOTP"
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowForm.ts
 msgid "Enable compatibility mode, increases compatibility with password managers on mobile devices."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/PolicyBindingForm.ts
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Enabled"
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowForm.ts
 msgid "Enrollment"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Enrollment flow"
 msgstr ""
 
-#: 
+#: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Error"
 msgstr ""
 
-#: 
+#: src/flows/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage.ts
 msgid "Error creating credential: {err}"
 msgstr ""
 
-#: 
+#: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Error message"
 msgstr ""
 
-#: 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn.ts
 msgid "Error when creating credential: {err}"
 msgstr ""
 
-#: 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn.ts
 msgid "Error when validating assertion on server: {err}"
 msgstr ""
 
-#: 
+#: src/pages/user-settings/UserSettingsPage.ts
 msgid "Error: unsupported source settings: {0}"
 msgstr ""
 
-#: 
+#: src/pages/user-settings/UserSettingsPage.ts
 msgid "Error: unsupported stage settings: {0}"
 msgstr ""
 
-#: 
+#: src/pages/flows/StageBindingForm.ts
 msgid "Evaluate on plan"
 msgstr ""
 
-#: 
+#: src/pages/flows/StageBindingForm.ts
 msgid "Evaluate policies before the Stage is present to the user."
 msgstr ""
 
-#: 
-msgid "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with this option disabled, policies are **not** evaluated."
+#: src/pages/flows/StageBindingForm.ts
+msgid "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with both options disabled, policies are **not** evaluated."
 msgstr ""
 
-#: 
+#: src/pages/events/EventListPage.ts
 msgid "Event Log"
 msgstr ""
 
-#: 
+#: src/pages/events/EventInfoPage.ts
 msgid "Event info"
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantForm.ts
+msgid "Event retention"
+msgstr ""
+
+#: src/pages/events/EventInfoPage.ts
 msgid "Event {0}"
 msgstr ""
 
-#: 
+#: src/interfaces/AdminInterface.ts
 msgid "Events"
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
+msgid "Everything is ok."
+msgstr ""
+
+#: src/pages/events/EventInfo.ts
+#: src/pages/events/EventInfo.ts
+#: src/pages/events/EventInfo.ts
 msgid "Exception"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/flows/FlowViewPage.ts
 msgid "Execute"
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowViewPage.ts
 msgid "Execute flow"
 msgstr ""
 
-#: 
+#: src/pages/policies/expression/ExpressionPolicyForm.ts
 msgid "Executes the python snippet to determine whether to allow or deny a request."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/policies/dummy/DummyPolicyForm.ts
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts
+#: src/pages/policies/expression/ExpressionPolicyForm.ts
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts
+#: src/pages/policies/password/PasswordPolicyForm.ts
+#: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid "Execution logging"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/elements/oauth/UserCodeList.ts
+#: src/elements/oauth/UserRefreshList.ts
+#: src/elements/user/SessionList.ts
+#: src/elements/user/UserConsentList.ts
+#: src/pages/stages/invitation/InvitationForm.ts
 msgid "Expires"
 msgstr ""
 
-#: 
+#: src/pages/tokens/TokenListPage.ts
 msgid "Expires?"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/pages/user-settings/tokens/UserTokenList.ts
 msgid "Expiring"
 msgstr ""
 
-#: 
+#: src/pages/stages/invitation/InvitationListPage.ts
 msgid "Expiry"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+#: src/pages/tokens/TokenListPage.ts
 msgid "Expiry date"
 msgstr ""
 
-#: 
+#: src/pages/users/UserViewPage.ts
 msgid "Explicit Consent"
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/flows/FlowViewPage.ts
 msgid "Export"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/flows/FlowViewPage.ts
+msgid "Export flow"
+msgstr ""
+
+#: src/pages/events/EventInfo.ts
+#: src/pages/policies/expression/ExpressionPolicyForm.ts
+#: src/pages/property-mappings/PropertyMappingLDAPForm.ts
+#: src/pages/property-mappings/PropertyMappingSAMLForm.ts
+#: src/pages/property-mappings/PropertyMappingScopeForm.ts
 msgid "Expression"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/policies/expression/ExpressionPolicyForm.ts
+#: src/pages/property-mappings/PropertyMappingLDAPForm.ts
+#: src/pages/property-mappings/PropertyMappingSAMLForm.ts
+#: src/pages/property-mappings/PropertyMappingScopeForm.ts
 msgid "Expression using Python."
 msgstr ""
 
-#: 
+#: src/pages/applications/ApplicationListPage.ts
 msgid "External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access."
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "External Host"
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "External host"
 msgstr ""
 
-#: 
+#: src/pages/stages/password/PasswordStageForm.ts
 msgid "Failed attempts before cancel"
 msgstr ""
 
-#: 
+#: src/pages/events/utils.ts
+msgid "Failed login"
+msgstr ""
+
+#: src/pages/admin-overview/charts/LDAPSyncStatusChart.ts
 msgid "Failed sources"
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowListPage.ts
 msgid "Failed to delete flow cache"
 msgstr ""
 
-#: 
+#: src/pages/policies/PolicyListPage.ts
 msgid "Failed to delete policy cache"
 msgstr ""
 
-#: 
+#: src/elements/forms/DeleteForm.ts
 msgid "Failed to delete {0}: {1}"
 msgstr ""
 
-#: 
+#: src/pages/users/UserActiveForm.ts
 msgid "Failed to update {0}: {1}"
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantForm.ts
 msgid "Favicon"
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptListPage.ts
 msgid "Field"
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptForm.ts
 msgid "Field Key"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts
+#: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Field key to check, field keys defined in Prompt stages are available."
 msgstr ""
 
-#: 
+#: src/pages/property-mappings/PropertyMappingLDAPForm.ts
 msgid "Field of the user object this value is written to."
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Field which contains a unique Identifier."
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Field which contains members of a group."
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptStageForm.ts
 msgid "Fields"
 msgstr ""
 
-#: 
+#: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources."
 msgstr ""
 
-#: 
-#: 
+#: src/pages/flows/FlowImportForm.ts
+#: src/pages/flows/FlowListPage.ts
 msgid "Flow"
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowViewPage.ts
 msgid "Flow Overview"
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Flow settings"
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Flow to use when authenticating existing users."
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Flow to use when enrolling new users."
 msgstr ""
 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Flow used before authentication."
 msgstr ""
 
-#: 
+#: src/pages/stages/password/PasswordStageForm.ts
 msgid "Flow used by an authenticated user to configure their password. If empty, user will not be able to configure change their password."
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
 msgstr ""
 
-#: 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Flow used for users to authenticate. Currently only identification and password stages are supported."
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantForm.ts
 msgid "Flow used to authenticate users. If left empty, the first applicable flow sorted by the slug is used."
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantForm.ts
 msgid "Flow used to logout. If left empty, the first applicable flow sorted by the slug is used."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/providers/saml/SAMLProviderImportForm.ts
 msgid "Flow used when authorizing this provider."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/interfaces/AdminInterface.ts
+#: src/interfaces/AdminInterface.ts
+#: src/pages/admin-overview/AdminOverviewPage.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/stages/StageListPage.ts
 msgid "Flows"
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowListPage.ts
 msgid "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them."
 msgstr ""
 
-#: 
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Force the user to configure an authenticator"
 msgstr ""
 
-#: 
+#: src/flows/stages/password/PasswordStage.ts
 msgid "Forgot password?"
 msgstr ""
 
-#: 
+#: src/flows/stages/identification/IdentificationStage.ts
 msgid "Forgot username or password?"
 msgstr ""
 
-#: 
+#: src/elements/forms/ModalForm.ts
 msgid "Form didn't return a promise for submitting"
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantForm.ts
+msgid "Format: \"weeks=3;days=2;hours=3,seconds=2\"."
+msgstr ""
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Forward auth (domain level)"
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Forward auth (single application)"
 msgstr ""
 
-#: 
+#: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 msgid "Friendly Name"
 msgstr ""
 
-#: 
+#: src/pages/events/EventInfo.ts
 msgid "From"
 msgstr ""
 
-#: 
+#: src/pages/stages/email/EmailStageForm.ts
 msgid "From address"
 msgstr ""
 
-#: 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "GID start number"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "General system exception"
+msgstr ""
+
+#: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "General system status"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+#: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Generate"
 msgstr ""
 
-#: 
+#: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Generate Certificate-Key Pair"
 msgstr ""
 
-#: 
+#: src/elements/table/TablePagination.ts
 msgid "Go to next page"
 msgstr ""
 
-#: 
+#: src/elements/table/TablePagination.ts
 msgid "Go to previous page"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/events/RuleForm.ts
+#: src/pages/groups/GroupListPage.ts
+#: src/pages/policies/PolicyBindingForm.ts
+#: src/pages/policies/PolicyBindingForm.ts
+#: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Group"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Group Property Mappings"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Group membership field"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Group object filter"
 msgstr ""
 
-#: 
+#: src/pages/groups/GroupListPage.ts
 msgid "Group users together and give them permissions based on the membership."
 msgstr ""
 
-#: 
+#: src/pages/policies/BoundPoliciesList.ts
 msgid "Group {0}"
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/interfaces/AdminInterface.ts
+#: src/pages/admin-overview/AdminOverviewPage.ts
+#: src/pages/groups/GroupListPage.ts
 msgid "Groups"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "HS256 (Symmetric Encryption)"
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "HTTP-Basic Password Key"
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "HTTP-Basic Username Key"
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
+msgid "HTTPS is not detected correctly"
+msgstr ""
+
+#: src/pages/outposts/OutpostListPage.ts
 msgid "Health and Version"
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/charts/OutpostStatusChart.ts
 msgid "Healthy outposts"
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/charts/LDAPSyncStatusChart.ts
 msgid "Healthy sources"
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptForm.ts
 msgid "Hidden: Hidden field, can be used to insert data into form."
 msgstr ""
 
-#: 
+#: src/pages/property-mappings/PropertyMappingListPage.ts
 msgid "Hide managed mappings"
 msgstr ""
 
-#: 
+#: src/pages/users/UserListPage.ts
 msgid "Hide service-accounts"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/events/RuleForm.ts
+#: src/pages/groups/GroupForm.ts
+#: src/pages/outposts/OutpostForm.ts
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
+#: src/pages/stages/password/PasswordStageForm.ts
+#: src/pages/stages/prompt/PromptStageForm.ts
+#: src/pages/stages/prompt/PromptStageForm.ts
 msgid "Hold control/command to select multiple items."
 msgstr ""
 
-#: 
+#: src/pages/stages/password/PasswordStageForm.ts
 msgid "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage."
 msgstr ""
 
-#: 
+#: src/pages/stages/invitation/InvitationListPage.ts
 msgid "ID"
 msgstr ""
 
-#: 
+#: src/elements/oauth/UserRefreshList.ts
 msgid "ID Token"
 msgstr ""
 
-#: 
+#: src/pages/policies/reputation/IPReputationListPage.ts
 msgid "IP"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/policies/reputation/IPReputationListPage.ts
+#: src/pages/policies/reputation/IPReputationListPage.ts
 msgid "IP Reputation"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/ApplicationForm.ts
 msgid "Icon"
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantForm.ts
 msgid "Icon shown in sidebar/header and flow executor."
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantForm.ts
 msgid "Icon shown in the browser tab."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/system-tasks/SystemTaskListPage.ts
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/user-settings/tokens/UserTokenForm.ts
+#: src/pages/user-settings/tokens/UserTokenList.ts
 msgid "Identifier"
 msgstr ""
 
-#: 
+#: src/interfaces/AdminInterface.ts
 msgid "Identity & Cryptography"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/outposts/ServiceConnectionDockerForm.ts
+#: src/pages/outposts/ServiceConnectionKubernetesForm.ts
 msgid "If enabled, use the local connection. Required Docker socket/Kubernetes Integration."
 msgstr ""
 
-#: 
+#: src/pages/applications/ApplicationForm.ts
 msgid "If left empty, authentik will try to extract the launch URL based on the selected provider."
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+msgid "If no explicit redirect URIs are specified, any redirect URI is allowed."
+msgstr ""
+
+#: src/pages/tenants/TenantForm.ts
 msgid "If set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown."
 msgstr ""
 
-#: 
+#: src/pages/stages/invitation/InvitationStageForm.ts
 msgid "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given."
 msgstr ""
 
-#: 
+#: src/pages/outposts/OutpostDeploymentModal.ts
 msgid "If your authentik Instance is using a self-signed certificate, set this value."
 msgstr ""
 
-#: 
+#: src/pages/users/UserListPage.ts
 msgid "Impersonate"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/events/utils.ts
+msgid "Impersonation ended"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "Impersonation started"
+msgstr ""
+
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/flows/FlowListPage.ts
 msgid "Import"
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowListPage.ts
 msgid "Import Flow"
 msgstr ""
 
-#: 
+#: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Import certificates of external providers or create certificates to sign requests with."
 msgstr ""
 
-#: 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "In case you can't access any other method."
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Include claims in id_token"
 msgstr ""
 
-#: 
+#: src/pages/outposts/OutpostForm.ts
+#: src/pages/outposts/OutpostListPage.ts
+msgid "Integration"
+msgstr ""
+
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "Integration key"
 msgstr ""
 
-#: 
+#: src/interfaces/AdminInterface.ts
+msgid "Integrations"
+msgstr ""
+
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Internal Host"
 msgstr ""
 
-#: 
+#: src/pages/applications/ApplicationForm.ts
 msgid "Internal application name, used in URLs."
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Internal host"
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Internal host SSL Validation"
 msgstr ""
 
-#: 
+#: src/pages/flows/StageBindingForm.ts
+msgid "Invalid response action"
+msgstr ""
+
+#: src/pages/flows/FlowForm.ts
 msgid "Invalidation"
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantForm.ts
 msgid "Invalidation flow"
 msgstr ""
 
-#: 
+#: src/pages/stages/invitation/InvitationListPage.ts
 msgid "Invitation"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/events/utils.ts
+msgid "Invitation used"
+msgstr ""
+
+#: src/interfaces/AdminInterface.ts
+#: src/pages/stages/invitation/InvitationListPage.ts
 msgid "Invitations"
 msgstr ""
 
-#: 
+#: src/pages/users/UserForm.ts
 msgid "Is active"
 msgstr ""
 
-#: 
+#: src/pages/groups/GroupForm.ts
 msgid "Is superuser"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
+#: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "Issuer"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Issuer mode"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "JWT Algorithm"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
 msgstr ""
 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Keypair which is used to sign outgoing requests. Leave empty to disable signing."
 msgstr ""
 
-#: 
+#: src/pages/outposts/ServiceConnectionKubernetesForm.ts
 msgid "Kubeconfig"
 msgstr ""
 
-#: 
+#: src/pages/outposts/OutpostForm.ts
 msgid "LDAP (Technical preview)"
 msgstr ""
 
-#: 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "LDAP DN under which bind requests and search requests can be made."
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "LDAP Sync status"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/stages/prompt/PromptForm.ts
+#: src/pages/stages/prompt/PromptListPage.ts
 msgid "Label"
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptForm.ts
 msgid "Label shown next to/above the prompt."
 msgstr ""
 
-#: 
+#: src/elements/user/SessionList.ts
 msgid "Last IP"
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/pages/groups/MemberSelectModal.ts
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Last login"
 msgstr ""
 
-#: 
+#: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Last run"
 msgstr ""
 
-#: 
+#: src/pages/outposts/OutpostHealth.ts
 msgid "Last seen: {0}"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts
 msgid "Last sync: {0}"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/applications/ApplicationViewPage.ts
+#: src/pages/applications/ApplicationViewPage.ts
 msgid "Launch"
 msgstr ""
 
-#: 
+#: src/pages/applications/ApplicationForm.ts
 msgid "Launch URL"
 msgstr ""
 
-#: 
+#: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Let the user identify themselves with their username or Email address."
 msgstr ""
 
-#: 
+#: src/interfaces/AdminInterface.ts
 msgid "Library"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
 msgid "Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
 msgid "Link to a user with identical username address. Can have security implications when a username is used with another source."
 msgstr ""
 
-#: 
-#: 
+#: src/pages/stages/invitation/InvitationListLink.ts
+msgid "Link to use the invitation."
+msgstr ""
+
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
 msgid "Link users on unique identifier"
 msgstr ""
 
-#: 
+#: src/pages/sources/plex/PlexSourceForm.ts
 msgid "Load servers"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/elements/table/Table.ts
+#: src/flows/FlowExecutor.ts
+#: src/flows/FlowExecutor.ts
+#: src/flows/access_denied/FlowAccessDenied.ts
+#: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
+#: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
+#: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageDuo.ts
+#: src/flows/stages/autosubmit/AutosubmitStage.ts
+#: src/flows/stages/captcha/CaptchaStage.ts
+#: src/flows/stages/consent/ConsentStage.ts
+#: src/flows/stages/dummy/DummyStage.ts
+#: src/flows/stages/email/EmailStage.ts
+#: src/flows/stages/identification/IdentificationStage.ts
+#: src/flows/stages/password/PasswordStage.ts
+#: src/flows/stages/prompt/PromptStage.ts
+#: src/pages/applications/ApplicationViewPage.ts
+#: src/pages/applications/ApplicationViewPage.ts
+#: src/pages/user-settings/UserDetailsPage.ts
+#: src/utils.ts
 msgid "Loading"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/elements/Spinner.ts
+#: src/pages/applications/ApplicationCheckAccessForm.ts
+#: src/pages/applications/ApplicationForm.ts
+#: src/pages/events/RuleForm.ts
+#: src/pages/events/RuleForm.ts
+#: src/pages/flows/StageBindingForm.ts
+#: src/pages/flows/StageBindingForm.ts
+#: src/pages/groups/GroupForm.ts
+#: src/pages/groups/GroupForm.ts
+#: src/pages/outposts/OutpostForm.ts
+#: src/pages/outposts/OutpostForm.ts
+#: src/pages/outposts/ServiceConnectionDockerForm.ts
+#: src/pages/outposts/ServiceConnectionDockerForm.ts
+#: src/pages/policies/PolicyBindingForm.ts
+#: src/pages/policies/PolicyBindingForm.ts
+#: src/pages/policies/PolicyBindingForm.ts
+#: src/pages/policies/PolicyTestForm.ts
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
+#: src/pages/property-mappings/PropertyMappingTestForm.ts
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/providers/saml/SAMLProviderImportForm.ts
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+#: src/pages/stages/email/EmailStageForm.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
+#: src/pages/stages/invitation/InvitationListLink.ts
+#: src/pages/stages/password/PasswordStageForm.ts
+#: src/pages/stages/prompt/PromptStageForm.ts
+#: src/pages/stages/prompt/PromptStageForm.ts
+#: src/pages/tenants/TenantForm.ts
+#: src/pages/tenants/TenantForm.ts
+#: src/pages/tenants/TenantForm.ts
+#: src/pages/tenants/TenantForm.ts
 msgid "Loading..."
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/pages/outposts/ServiceConnectionDockerForm.ts
+#: src/pages/outposts/ServiceConnectionKubernetesForm.ts
+#: src/pages/outposts/ServiceConnectionListPage.ts
 msgid "Local"
 msgstr ""
 
-#: 
+#: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "Log the currently pending user in."
 msgstr ""
 
-#: 
+#: src/pages/events/utils.ts
+msgid "Login"
+msgstr ""
+
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Login password is synced from LDAP into authentik automatically. Enable this option only to write password changes in authentik back to LDAP."
 msgstr ""
 
-#: 
+#: src/flows/stages/identification/IdentificationStage.ts
 msgid "Login to continue to {0}."
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/TopApplicationsTable.ts
 msgid "Logins"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/admin-overview/AdminOverviewPage.ts
+#: src/pages/applications/ApplicationViewPage.ts
 msgid "Logins over the last 24 hours"
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantForm.ts
 msgid "Logo"
 msgstr ""
 
-#: 
+#: src/pages/events/utils.ts
+msgid "Logout"
+msgstr ""
+
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 msgid "Logout URL"
 msgstr ""
 
-#: 
+#: src/interfaces/AdminInterface.ts
 msgid "Logs"
 msgstr ""
 
-#: 
+#: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Long-running operations which authentik executes in the background."
 msgstr ""
 
-#: 
+#: src/pages/stages/user_write/UserWriteStageForm.ts
+msgid "Mark newly created users as inactive."
+msgstr ""
+
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 msgid "Match created events with this action type. When left empty, all action types will be matched."
 msgstr ""
 
-#: 
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 msgid "Match events created by selected application. When left empty, all applications are matched."
 msgstr ""
 
-#: 
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 msgid "Matches Event's Client IP (strict matching, for network matching use an Expression Policy."
 msgstr ""
 
-#: 
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 msgid "Matches an event against a set of criteria. If any of the configured values match, the policy passes."
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantForm.ts
 msgid "Matching is done based on domain suffix, so if you enter domain.tld, foo.domain.tld will still match."
 msgstr ""
 
-#: 
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts
 msgid "Maximum age (in days)"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/groups/GroupForm.ts
+#: src/pages/groups/GroupListPage.ts
 msgid "Members"
 msgstr ""
 
-#: 
+#: src/pages/events/EventInfo.ts
 msgid "Message"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/applications/ApplicationCheckAccessForm.ts
+#: src/pages/events/EventInfo.ts
+#: src/pages/policies/PolicyTestForm.ts
+#: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Messages"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/pages/providers/saml/SAMLProviderImportForm.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+#: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "Metadata"
 msgstr ""
 
-#: 
+#: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Minimum amount of Lowercase Characters"
 msgstr ""
 
-#: 
+#: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Minimum amount of Symbols Characters"
 msgstr ""
 
-#: 
+#: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Minimum amount of Uppercase Characters"
 msgstr ""
 
-#: 
+#: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Minimum length"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/events/TransportForm.ts
+#: src/pages/events/TransportListPage.ts
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+#: src/pages/stages/consent/ConsentStageForm.ts
 msgid "Mode"
 msgstr ""
 
-#: 
+#: src/pages/events/EventInfo.ts
 msgid "Model Name"
 msgstr ""
 
-#: 
+#: src/pages/events/utils.ts
+msgid "Model created"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "Model deleted"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "Model updated"
+msgstr ""
+
+#: src/interfaces/AdminInterface.ts
 msgid "Monitor"
 msgstr ""
 
-#: 
+#: src/pages/LibraryPage.ts
 msgid "My Applications"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/ApplicationListPage.ts
+#: src/pages/crypto/CertificateKeyPairForm.ts
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+#: src/pages/events/EventInfo.ts
+#: src/pages/events/RuleForm.ts
+#: src/pages/events/RuleListPage.ts
+#: src/pages/events/TransportForm.ts
+#: src/pages/events/TransportListPage.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/groups/GroupForm.ts
+#: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/MemberSelectModal.ts
+#: src/pages/outposts/OutpostForm.ts
+#: src/pages/outposts/OutpostListPage.ts
+#: src/pages/outposts/ServiceConnectionDockerForm.ts
+#: src/pages/outposts/ServiceConnectionKubernetesForm.ts
+#: src/pages/outposts/ServiceConnectionListPage.ts
+#: src/pages/policies/PolicyListPage.ts
+#: src/pages/policies/dummy/DummyPolicyForm.ts
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts
+#: src/pages/policies/expression/ExpressionPolicyForm.ts
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts
+#: src/pages/policies/password/PasswordPolicyForm.ts
+#: src/pages/policies/reputation/ReputationPolicyForm.ts
+#: src/pages/property-mappings/PropertyMappingLDAPForm.ts
+#: src/pages/property-mappings/PropertyMappingListPage.ts
+#: src/pages/property-mappings/PropertyMappingSAMLForm.ts
+#: src/pages/property-mappings/PropertyMappingScopeForm.ts
+#: src/pages/providers/ProviderListPage.ts
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/providers/saml/SAMLProviderImportForm.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
+#: src/pages/sources/plex/PlexSourceViewPage.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
+#: src/pages/sources/saml/SAMLSourceViewPage.ts
+#: src/pages/stages/StageListPage.ts
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+#: src/pages/stages/captcha/CaptchaStageForm.ts
+#: src/pages/stages/consent/ConsentStageForm.ts
+#: src/pages/stages/deny/DenyStageForm.ts
+#: src/pages/stages/dummy/DummyStageForm.ts
+#: src/pages/stages/email/EmailStageForm.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
+#: src/pages/stages/invitation/InvitationStageForm.ts
+#: src/pages/stages/password/PasswordStageForm.ts
+#: src/pages/stages/prompt/PromptStageForm.ts
+#: src/pages/stages/user_delete/UserDeleteStageForm.ts
+#: src/pages/stages/user_login/UserLoginStageForm.ts
+#: src/pages/stages/user_logout/UserLogoutStageForm.ts
+#: src/pages/stages/user_write/UserWriteStageForm.ts
+#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/users/UserForm.ts
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Name"
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptForm.ts
 msgid "Name of the form field, also used to store the value."
 msgstr ""
 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "NameID Policy"
 msgstr ""
 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "NameID Property Mapping"
 msgstr ""
 
-#: 
+#: src/flows/stages/identification/IdentificationStage.ts
 msgid "Need an account?"
 msgstr ""
 
-#: 
+#: src/pages/policies/PolicyBindingForm.ts
 msgid "Negate result"
 msgstr ""
 
-#: 
+#: src/pages/policies/PolicyBindingForm.ts
 msgid "Negates the outcome of the binding. Messages are unaffected."
 msgstr ""
 
-#: 
+#: src/pages/events/EventInfo.ts
 msgid "New version available!"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/elements/oauth/UserRefreshList.ts
+#: src/pages/applications/ApplicationCheckAccessForm.ts
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+#: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/MemberSelectModal.ts
+#: src/pages/outposts/ServiceConnectionListPage.ts
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/PolicyTestForm.ts
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+#: src/pages/tenants/TenantListPage.ts
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/pages/users/UserListPage.ts
 msgid "No"
 msgstr ""
 
-#: 
+#: src/pages/LibraryPage.ts
 msgid "No Applications available."
 msgstr ""
 
-#: 
-#: 
+#: src/elements/events/ObjectChangelog.ts
+#: src/elements/events/UserEvents.ts
 msgid "No Events found."
 msgstr ""
 
-#: 
+#: src/pages/policies/BoundPoliciesList.ts
 msgid "No Policies bound."
 msgstr ""
 
-#: 
+#: src/pages/flows/BoundStagesList.ts
 msgid "No Stages bound"
 msgstr ""
 
-#: 
+#: src/pages/events/EventInfo.ts
 msgid "No additional data available."
 msgstr ""
 
-#: 
+#: src/elements/forms/ModalForm.ts
 msgid "No form found"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/outposts/OutpostListPage.ts
+#: src/pages/outposts/OutpostListPage.ts
+msgid "No integration active"
+msgstr ""
+
+#: src/elements/events/ObjectChangelog.ts
+#: src/elements/events/UserEvents.ts
 msgid "No matching events could be found."
 msgstr ""
 
-#: 
+#: src/elements/table/Table.ts
 msgid "No objects found."
 msgstr ""
 
-#: 
+#: src/pages/policies/BoundPoliciesList.ts
 msgid "No policies are currently bound to this object."
 msgstr ""
 
-#: 
+#: src/pages/users/UserListPage.ts
 msgid "No recovery flow is configured."
 msgstr ""
 
-#: 
+#: src/pages/flows/BoundStagesList.ts
 msgid "No stages are currently bound to this flow."
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/cards/WorkerStatusCard.ts
 msgid "No workers connected. Background tasks will not run."
 msgstr ""
 
-#: 
+#: src/pages/events/RuleListPage.ts
 msgid "None (rule disabled)"
 msgstr ""
 
-#: 
+#: src/pages/outposts/OutpostHealth.ts
 msgid "Not available"
 msgstr ""
 
-#: 
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Not configured action"
 msgstr ""
 
-#: 
+#: src/pages/user-settings/settings/SourceSettingsOAuth.ts
 msgid "Not connected."
 msgstr ""
 
-#: 
+#: src/elements/router/Router404.ts
 msgid "Not found"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts
 msgid "Not synced yet."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
+#: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
+#: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageDuo.ts
+#: src/flows/stages/captcha/CaptchaStage.ts
+#: src/flows/stages/consent/ConsentStage.ts
+#: src/flows/stages/password/PasswordStage.ts
 msgid "Not you?"
 msgstr ""
 
-#: 
+#: src/pages/events/RuleForm.ts
 msgid "Notice"
 msgstr ""
 
-#: 
-#: 
+#: src/interfaces/AdminInterface.ts
+#: src/pages/events/RuleListPage.ts
 msgid "Notification Rules"
 msgstr ""
 
-#: 
-#: 
+#: src/interfaces/AdminInterface.ts
+#: src/pages/events/TransportListPage.ts
 msgid "Notification Transports"
 msgstr ""
 
-#: 
+#: src/pages/events/RuleListPage.ts
 msgid "Notification rule"
 msgstr ""
 
-#: 
+#: src/elements/notifications/NotificationDrawer.ts
 msgid "Notifications"
 msgstr ""
 
-#: 
+#: src/pages/events/TransportListPage.ts
 msgid "Notifications Transport"
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptForm.ts
 msgid "Number"
 msgstr ""
 
-#: 
+#: src/pages/users/UserViewPage.ts
 msgid "OAuth Authorization Codes"
 msgstr ""
 
-#: 
+#: src/pages/users/UserViewPage.ts
 msgid "OAuth Refresh Codes"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/events/EventInfo.ts
+#: src/pages/events/EventInfo.ts
 msgid "Object"
 msgstr ""
 
-#: 
+#: src/pages/property-mappings/PropertyMappingLDAPForm.ts
 msgid "Object field"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Object uniqueness field"
 msgstr ""
 
-#: 
+#: src/pages/stages/consent/ConsentStageForm.ts
 msgid "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/elements/events/ObjectChangelog.ts
+#: src/elements/events/UserEvents.ts
+#: src/pages/events/EventListPage.ts
 msgid "On behalf of {0}"
 msgstr ""
 
-#: 
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts
 msgid "Only fail the policy, don't invalidate user's password."
 msgstr ""
 
-#: 
+#: src/pages/events/TransportForm.ts
 msgid "Only send notification once, for example when sending a webhook into a chat channel."
 msgstr ""
 
 #: 
-msgid "Open application"
-msgstr ""
+#~ msgid "Open application"
+#~ msgstr ""
 
-#: 
+#: src/pages/events/EventInfo.ts
 msgid "Open issue on GitHub..."
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 msgid "OpenID Configuration Issuer"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 msgid "OpenID Configuration URL"
 msgstr ""
 
-#: 
+#: src/pages/crypto/CertificateKeyPairForm.ts
 msgid "Optional Private Key. If this is set, you can use this keypair for encryption."
 msgstr ""
 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Optional URL if the IDP supports Single-Logout."
 msgstr ""
 
-#: 
+#: src/pages/stages/invitation/InvitationForm.ts
 msgid "Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON."
 msgstr ""
 
-#: 
+#: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Optional enrollment flow, which is linked at the bottom of the page."
 msgstr ""
 
-#: 
+#: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Optional recovery flow, which is linked at the bottom of the page."
 msgstr ""
 
-#: 
+#: src/pages/crypto/CertificateGenerateForm.ts
 msgid "Optional, comma-separated SubjectAlt Names."
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptForm.ts
 msgid "Optionally pre-fill the input value"
 msgstr ""
 
-#: 
+#: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 msgid "Optionally set the 'FriendlyName' value of the Assertion attribute."
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/StageBindingForm.ts
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/PolicyBindingForm.ts
+#: src/pages/stages/prompt/PromptForm.ts
+#: src/pages/stages/prompt/PromptListPage.ts
 msgid "Order"
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantForm.ts
+msgid "Other global settings"
+msgstr ""
+
+#: src/pages/admin-overview/charts/OutpostStatusChart.ts
 msgid "Outdated outposts"
 msgstr ""
 
-#: 
+#: src/pages/outposts/OutpostListPage.ts
 msgid "Outpost"
 msgstr ""
 
-#: 
+#: src/pages/outposts/OutpostDeploymentModal.ts
 msgid "Outpost Deployment Info"
 msgstr ""
 
 #: 
-msgid "Outpost Service-connection"
+#~ msgid "Outpost Service-connection"
+#~ msgstr ""
+
+#: src/pages/outposts/ServiceConnectionListPage.ts
+msgid "Outpost integration"
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "Outpost status"
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/interfaces/AdminInterface.ts
+#: src/interfaces/AdminInterface.ts
+#: src/pages/outposts/OutpostListPage.ts
 msgid "Outposts"
 msgstr ""
 
-#: 
+#: src/pages/outposts/OutpostListPage.ts
 msgid "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/interfaces/AdminInterface.ts
+#: src/pages/applications/ApplicationViewPage.ts
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts
+#: src/pages/sources/plex/PlexSourceViewPage.ts
+#: src/pages/sources/saml/SAMLSourceViewPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Overview"
 msgstr ""
 
-#: 
+#: src/pages/crypto/CertificateKeyPairForm.ts
 msgid "PEM-encoded Certificate data."
 msgstr ""
 
-#: 
-#: 
+#: src/pages/groups/GroupForm.ts
+#: src/pages/groups/GroupListPage.ts
 msgid "Parent"
 msgstr ""
 
-#: 
+#: src/pages/policies/dummy/DummyPolicyForm.ts
 msgid "Pass policy?"
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/pages/applications/ApplicationCheckAccessForm.ts
+#: src/pages/events/EventInfo.ts
+#: src/pages/policies/PolicyTestForm.ts
 msgid "Passing"
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/flows/stages/identification/IdentificationStage.ts
+#: src/flows/stages/identification/IdentificationStage.ts
+#: src/flows/stages/password/PasswordStage.ts
 msgid "Password"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts
+#: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Password field"
 msgstr ""
 
-#: 
+#: src/pages/events/utils.ts
+msgid "Password set"
+msgstr ""
+
+#: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Password stage"
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptForm.ts
 msgid "Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical."
 msgstr ""
 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Persistent"
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptForm.ts
 msgid "Placeholder"
 msgstr ""
 
-#: 
-#: 
+#: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
 msgid "Please enter your TOTP Code"
 msgstr ""
 
-#: 
+#: src/flows/stages/password/PasswordStage.ts
 msgid "Please enter your password"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/interfaces/AdminInterface.ts
+#: src/pages/admin-overview/AdminOverviewPage.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/policies/PolicyListPage.ts
 msgid "Policies"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/policies/PolicyBindingForm.ts
+#: src/pages/policies/PolicyBindingForm.ts
+#: src/pages/policies/PolicyBindingForm.ts
+#: src/pages/policies/PolicyListPage.ts
 msgid "Policy"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/applications/ApplicationViewPage.ts
+#: src/pages/flows/FlowViewPage.ts
 msgid "Policy / Group / User Bindings"
 msgstr ""
 
-#: 
+#: src/pages/policies/BoundPoliciesList.ts
 msgid "Policy / User / Group"
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts
+#: src/pages/sources/plex/PlexSourceViewPage.ts
+#: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "Policy Bindings"
 msgstr ""
 
-#: 
+#: src/pages/policies/BoundPoliciesList.ts
 msgid "Policy binding"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/ApplicationViewPage.ts
+#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/StageBindingForm.ts
 msgid "Policy engine mode"
 msgstr ""
 
-#: 
+#: src/pages/events/utils.ts
+msgid "Policy exception"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "Policy execution"
+msgstr ""
+
+#: src/pages/policies/BoundPoliciesList.ts
 msgid "Policy {0}"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/policies/dummy/DummyPolicyForm.ts
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts
+#: src/pages/policies/expression/ExpressionPolicyForm.ts
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts
+#: src/pages/policies/password/PasswordPolicyForm.ts
+#: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid "Policy-specific settings"
 msgstr ""
 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Post"
 msgstr ""
 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Post binding"
 msgstr ""
 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Post binding (auto-submit)"
 msgstr ""
 
-#: 
+#: src/flows/FlowExecutor.ts
 msgid "Powered by authentik"
 msgstr ""
 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Pre-authentication flow"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/crypto/CertificateKeyPairForm.ts
+#: src/pages/stages/captcha/CaptchaStageForm.ts
 msgid "Private Key"
 msgstr ""
 
-#: 
+#: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Private key available?"
 msgstr ""
 
-#: 
+#: src/pages/stages/captcha/CaptchaStageForm.ts
 msgid "Private key, acquired from https://www.google.com/recaptcha/intro/v3.html."
 msgstr ""
 
-#: 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
 msgid "Profile URL"
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptListPage.ts
 msgid "Prompt"
 msgstr ""
 
-#: 
+#: src/pages/stages/consent/ConsentStageForm.ts
 msgid "Prompt for the user's consent. The consent can either be permanent or expire in a defined amount of time."
 msgstr ""
 
-#: 
-#: 
+#: src/interfaces/AdminInterface.ts
+#: src/pages/stages/prompt/PromptListPage.ts
 msgid "Prompts"
 msgstr ""
 
-#: 
+#: src/pages/property-mappings/PropertyMappingListPage.ts
 msgid "Property Mapping"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/events/utils.ts
+msgid "Property Mapping exception"
+msgstr ""
+
+#: src/interfaces/AdminInterface.ts
+#: src/pages/property-mappings/PropertyMappingListPage.ts
 msgid "Property Mappings"
 msgstr ""
 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Property mappings"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Property mappings used to group creation."
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Property mappings used to user creation."
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Protocol Settings"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Protocol settings"
 msgstr ""
 
-#: 
+#: src/pages/providers/ProviderListPage.ts
 msgid "Provide support for protocols like SAML and OAuth to assigned applications."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/elements/oauth/UserCodeList.ts
+#: src/elements/oauth/UserRefreshList.ts
+#: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/ApplicationListPage.ts
+#: src/pages/applications/ApplicationViewPage.ts
+#: src/pages/providers/ProviderListPage.ts
 msgid "Provider"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/applications/ApplicationListPage.ts
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts
 msgid "Provider Type"
 msgstr ""
 
-#: 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
 msgid "Provider type"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/interfaces/AdminInterface.ts
+#: src/pages/outposts/OutpostForm.ts
+#: src/pages/outposts/OutpostListPage.ts
+#: src/pages/providers/ProviderListPage.ts
 msgid "Providers"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/outposts/OutpostForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Proxy"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Public"
 msgstr ""
 
-#: 
+#: src/pages/stages/captcha/CaptchaStageForm.ts
 msgid "Public Key"
 msgstr ""
 
-#: 
+#: src/pages/stages/captcha/CaptchaStageForm.ts
 msgid "Public key, acquired from https://www.google.com/recaptcha/intro/v3.html."
 msgstr ""
 
-#: 
+#: src/pages/applications/ApplicationForm.ts
 msgid "Publisher"
 msgstr ""
 
-#: 
+#: src/pages/flows/StageBindingForm.ts
+msgid "RESTART restarts the flow from the beginning, while keeping the flow context."
+msgstr ""
+
+#: src/pages/flows/StageBindingForm.ts
+msgid "RESTART restarts the flow from the beginning."
+msgstr ""
+
+#: src/pages/flows/StageBindingForm.ts
+msgid "RETRY returns the error message and a similar challenge to the executor."
+msgstr ""
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "RS256 (Asymmetric Encryption)"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "RSA Key"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "RSA-SHA1"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "RSA-SHA256"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "RSA-SHA384"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "RSA-SHA512"
 msgstr ""
 
-#: 
+#: src/pages/sources/plex/PlexSourceForm.ts
+msgid "Re-authenticate with plex"
+msgstr ""
+
+#: src/pages/flows/StageBindingForm.ts
 msgid "Re-evaluate policies"
 msgstr ""
 
-#: 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Receive a push notification on your phone to prove your identity."
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowForm.ts
 msgid "Recovery"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/stages/identification/IdentificationStageForm.ts
+#: src/pages/tenants/TenantForm.ts
 msgid "Recovery flow"
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantForm.ts
 msgid "Recovery flow. If left empty, the first applicable flow sorted by the slug is used."
 msgstr ""
 
-#: 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Recovery keys"
 msgstr ""
 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Redirect"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 msgid "Redirect URIs"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Redirect URIs/Origins"
 msgstr ""
 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Redirect binding"
 msgstr ""
 
-#: 
+#: src/elements/table/Table.ts
 msgid "Refresh"
 msgstr ""
 
-#: 
+#: src/elements/oauth/UserRefreshList.ts
 msgid "Refresh Code"
 msgstr ""
 
-#: 
+#: src/flows/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage.ts
 msgid "Register device"
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression."
 msgstr ""
 
-#: 
-#: 
+#: src/pages/applications/ApplicationViewPage.ts
+#: src/pages/flows/FlowViewPage.ts
 msgid "Related"
 msgstr ""
 
-#: 
+#: src/pages/stages/user_logout/UserLogoutStageForm.ts
 msgid "Remove the user from the current session."
 msgstr ""
 
-#: 
+#: src/pages/policies/reputation/IPReputationListPage.ts
 msgid "Reputation for IPs. Scores are decreased for each failed login and increased for each successful login."
 msgstr ""
 
-#: 
+#: src/pages/policies/reputation/UserReputationListPage.ts
 msgid "Reputation for usernames. Scores are decreased for each failed login and increased for each successful login."
 msgstr ""
 
-#: 
+#: src/interfaces/AdminInterface.ts
 msgid "Reputation policy - IPs"
 msgstr ""
 
-#: 
+#: src/interfaces/AdminInterface.ts
 msgid "Reputation policy - Users"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/events/EventInfo.ts
+#: src/pages/events/EventInfo.ts
 msgid "Request"
 msgstr ""
 
-#: 
+#: src/flows/access_denied/FlowAccessDenied.ts
 msgid "Request has been denied."
 msgstr ""
 
-#: 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
 msgid "Request token URL"
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptForm.ts
 msgid "Required"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/users/UserForm.ts
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr ""
 
-#: 
-#: 
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Reset Password"
 msgstr ""
 
-#: 
+#: src/interfaces/AdminInterface.ts
 msgid "Resources"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/events/EventInfo.ts
+#: src/pages/property-mappings/PropertyMappingTestForm.ts
 msgid "Result"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts
+#: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Retry Task"
 msgstr ""
 
-#: 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn.ts
 msgid "Retry authentication"
 msgstr ""
 
-#: 
+#: src/flows/FlowExecutor.ts
 msgid "Return"
 msgstr ""
 
-#: 
+#: src/elements/router/Router404.ts
 msgid "Return home"
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageDuo.ts
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn.ts
 msgid "Return to device picker"
 msgstr ""
 
-#: 
+#: src/elements/oauth/UserRefreshList.ts
+msgid "Revoked?"
+msgstr ""
+
+#: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 msgid "SAML Attribute Name"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "SHA1"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "SHA256"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "SHA384"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "SHA512"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
+#: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "SLO URL"
 msgstr ""
 
-#: 
+#: src/pages/stages/email/EmailStageForm.ts
 msgid "SMTP Host"
 msgstr ""
 
-#: 
+#: src/pages/stages/email/EmailStageForm.ts
 msgid "SMTP Password"
 msgstr ""
 
-#: 
+#: src/pages/stages/email/EmailStageForm.ts
 msgid "SMTP Port"
 msgstr ""
 
-#: 
+#: src/pages/stages/email/EmailStageForm.ts
 msgid "SMTP Username"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
+#: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "SSO URL"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Same identifier is used for all providers"
 msgstr ""
 
-#: 
+#: src/pages/property-mappings/PropertyMappingScopeForm.ts
 msgid "Scope name"
 msgstr ""
 
-#: 
+#: src/pages/property-mappings/PropertyMappingScopeForm.ts
 msgid "Scope which the client can specify to access these properties."
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/elements/oauth/UserCodeList.ts
+#: src/elements/oauth/UserRefreshList.ts
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Scopes"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/policies/reputation/IPReputationListPage.ts
+#: src/pages/policies/reputation/UserReputationListPage.ts
 msgid "Score"
 msgstr ""
 
-#: 
+#: src/elements/table/TableSearch.ts
 msgid "Search..."
 msgstr ""
 
-#: 
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "Secret key"
 msgstr ""
 
-#: 
+#: src/pages/events/utils.ts
+msgid "Secret was rotation"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "Secret was viewed"
+msgstr ""
+
+#: src/pages/events/EventInfo.ts
 msgid "Secret:"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/policies/expression/ExpressionPolicyForm.ts
+#: src/pages/property-mappings/PropertyMappingLDAPForm.ts
+#: src/pages/property-mappings/PropertyMappingSAMLForm.ts
+#: src/pages/property-mappings/PropertyMappingScopeForm.ts
 msgid "See documentation for a list of all variables."
 msgstr ""
 
-#: 
+#: src/pages/applications/ApplicationForm.ts
 msgid "Select a provider that this application should use. Alternatively, create a new provider."
 msgstr ""
 
-#: 
+#: src/elements/table/Table.ts
 msgid "Select all rows"
 msgstr ""
 
-#: 
+#: src/pages/stages/invitation/InvitationListLink.ts
+msgid "Select an enrollment flow"
+msgstr ""
+
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Select an identification method."
 msgstr ""
 
-#: 
+#: src/flows/stages/identification/IdentificationStage.ts
 msgid "Select one of the sources below to login."
 msgstr ""
 
-#: 
+#: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP."
 msgstr ""
 
-#: 
+#: src/pages/groups/MemberSelectModal.ts
 msgid "Select users to add"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Select which scopes can be used by the client. The client stil has to specify the scope to access the data."
 msgstr ""
 
-#: 
+#: src/pages/sources/plex/PlexSourceForm.ts
 msgid "Select which server a user has to be a member of to be allowed to authenticate."
 msgstr ""
 
-#: 
+#: src/pages/events/RuleForm.ts
 msgid "Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI."
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptStageForm.ts
 msgid "Selected policies are executed when the stage is submitted to validate the data."
 msgstr ""
 
 #: 
-msgid "Selecting a service-connection enables the management of the outpost by authentik."
+#~ msgid "Selecting a service-connection enables the management of the outpost by authentik."
+#~ msgstr ""
+
+#: src/pages/outposts/OutpostForm.ts
+msgid "Selecting an integration enables the management of the outpost by authentik."
 msgstr ""
 
-#: 
+#: src/pages/stages/password/PasswordStageForm.ts
 msgid "Selection of backends to test the password against."
 msgstr ""
 
-#: 
+#: src/flows/stages/email/EmailStage.ts
 msgid "Send Email again."
 msgstr ""
 
-#: 
+#: src/pages/events/RuleListPage.ts
 msgid "Send notifications whenever a specific Event is created and matched by policies."
 msgstr ""
 
-#: 
+#: src/pages/events/TransportForm.ts
 msgid "Send once"
 msgstr ""
 
-#: 
+#: src/pages/events/RuleListPage.ts
 msgid "Sent to group"
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptForm.ts
 msgid "Separator: Static Separator Line"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts
 msgid "Server URI"
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
+msgid "Server and client are further than 5 seconds apart."
+msgstr ""
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Server name for which this provider's certificate is valid for."
+msgstr ""
+
+#: src/flows/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage.ts
 msgid "Server validation of credential failed: {err}"
 msgstr ""
 
 #: 
-msgid "Service Connections"
-msgstr ""
+#~ msgid "Service Connections"
+#~ msgstr ""
 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Service Provider Binding"
 msgstr ""
 
 #: 
 #: 
-msgid "Service connection"
-msgstr ""
+#~ msgid "Service connection"
+#~ msgstr ""
 
-#: 
+#: src/elements/user/SessionList.ts
 msgid "Session"
 msgstr ""
 
-#: 
+#: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "Session duration"
 msgstr ""
 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Session valid not on or after"
 msgstr ""
 
-#: 
+#: src/pages/users/UserViewPage.ts
 msgid "Sessions"
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Set HTTP-Basic Authentication"
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Set a custom HTTP-Basic Authentication header based on values from authentik."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/groups/GroupForm.ts
+#: src/pages/outposts/OutpostForm.ts
+#: src/pages/outposts/ServiceConnectionKubernetesForm.ts
+#: src/pages/policies/PolicyTestForm.ts
+#: src/pages/users/UserForm.ts
 msgid "Set custom attributes using YAML or JSON."
 msgstr ""
 
-#: 
-#: 
+#: src/pages/events/RuleForm.ts
+#: src/pages/events/RuleListPage.ts
 msgid "Severity"
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptStageForm.ts
 msgid "Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable."
 msgstr ""
 
-#: 
+#: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Show matched user"
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowForm.ts
 msgid "Shown as the Title in Flow pages."
 msgstr ""
 
-#: 
+#: src/flows/stages/identification/IdentificationStage.ts
 msgid "Sign up."
 msgstr ""
 
-#: 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Signature algorithm"
 msgstr ""
 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Signing Certificate"
 msgstr ""
 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Signing keypair"
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptListPage.ts
 msgid "Single Prompts that can be used for Prompt Stages."
 msgstr ""
 
-#: 
+#: src/pages/stages/invitation/InvitationForm.ts
 msgid "Single use"
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Skip path regex"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/ApplicationListPage.ts
+#: src/pages/flows/FlowForm.ts
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Slug"
 msgstr ""
 
-#: 
+#: src/flows/FlowExecutor.ts
 msgid "Something went wrong! Please try again later."
 msgstr ""
 
-#: 
+#: src/pages/sources/SourcesListPage.ts
 msgid "Source"
 msgstr ""
 
-#: 
+#: src/pages/events/utils.ts
+msgid "Source linked"
+msgstr ""
+
+#: src/pages/user-settings/settings/SourceSettingsOAuth.ts
 msgid "Source {0}"
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/interfaces/AdminInterface.ts
+#: src/pages/sources/SourcesListPage.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Sources"
 msgstr ""
 
-#: 
+#: src/pages/sources/SourcesListPage.ts
 msgid "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
 msgstr ""
 
-#: 
+#: src/pages/flows/StageBindingForm.ts
 msgid "Stage"
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowViewPage.ts
 msgid "Stage Bindings"
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowForm.ts
 msgid "Stage Configuration"
 msgstr ""
 
-#: 
+#: src/pages/flows/BoundStagesList.ts
 msgid "Stage binding"
 msgstr ""
 
-#: 
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
 msgstr ""
 
-#: 
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator)."
 msgstr ""
 
-#: 
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
 msgid "Stage used to configure a WebAutnn authenticator (i.e. Yubikey, FaceID/Windows Hello)."
 msgstr ""
 
-#: 
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "Stage used to configure a duo-based authenticator. This stage should be used for configuration flows."
 msgstr ""
 
-#: 
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 msgid "Stage used to configure a static authenticator (i.e. static tokens). This stage should be used for configuration flows."
 msgstr ""
 
-#: 
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Stage used to validate any authenticator. This stage should be used during authentication or authorization flows."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+#: src/pages/stages/captcha/CaptchaStageForm.ts
+#: src/pages/stages/consent/ConsentStageForm.ts
+#: src/pages/stages/email/EmailStageForm.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
+#: src/pages/stages/invitation/InvitationStageForm.ts
+#: src/pages/stages/password/PasswordStageForm.ts
+#: src/pages/stages/prompt/PromptStageForm.ts
+#: src/pages/stages/user_login/UserLoginStageForm.ts
+#: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Stage-specific settings"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/interfaces/AdminInterface.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/stages/StageListPage.ts
+#: src/pages/stages/prompt/PromptListPage.ts
 msgid "Stages"
 msgstr ""
 
-#: 
+#: src/pages/stages/StageListPage.ts
 msgid "Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow."
 msgstr ""
 
-#: 
+#: src/pages/outposts/ServiceConnectionListPage.ts
 msgid "State"
 msgstr ""
 
-#: 
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Static Tokens"
 msgstr ""
 
-#: 
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts
 msgid "Static tokens"
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptForm.ts
 msgid "Static: Static value, displayed as-is."
 msgstr ""
 
-#: 
+#: src/pages/stages/deny/DenyStageForm.ts
 msgid "Statically deny the flow. To use this stage effectively, disable *Evaluate on plan* on the respective binding."
 msgstr ""
 
-#: 
+#: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Status"
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts
 msgid "Status: Disabled"
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts
 msgid "Status: Enabled"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/events/EventInfo.ts
+#: src/pages/stages/email/EmailStageForm.ts
 msgid "Subject"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Subject mode"
 msgstr ""
 
-#: 
+#: src/pages/crypto/CertificateGenerateForm.ts
 msgid "Subject-alt name"
 msgstr ""
 
-#: 
+#: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Successful"
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowListPage.ts
 msgid "Successfully cleared flow cache"
 msgstr ""
 
-#: 
+#: src/pages/policies/PolicyListPage.ts
 msgid "Successfully cleared policy cache"
 msgstr ""
 
-#: 
+#: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 msgid "Successfully copied TOTP Config."
 msgstr ""
 
-#: 
+#: src/pages/applications/ApplicationForm.ts
 msgid "Successfully created application."
 msgstr ""
 
-#: 
-#: 
+#: src/pages/flows/StageBindingForm.ts
+#: src/pages/policies/PolicyBindingForm.ts
 msgid "Successfully created binding."
 msgstr ""
 
-#: 
+#: src/pages/crypto/CertificateKeyPairForm.ts
 msgid "Successfully created certificate-key pair."
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowForm.ts
 msgid "Successfully created flow."
 msgstr ""
 
-#: 
+#: src/pages/groups/GroupForm.ts
 msgid "Successfully created group."
 msgstr ""
 
-#: 
+#: src/pages/outposts/ServiceConnectionDockerForm.ts
+#: src/pages/outposts/ServiceConnectionKubernetesForm.ts
+msgid "Successfully created integration."
+msgstr ""
+
+#: src/pages/stages/invitation/InvitationForm.ts
 msgid "Successfully created invitation."
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/pages/property-mappings/PropertyMappingLDAPForm.ts
+#: src/pages/property-mappings/PropertyMappingSAMLForm.ts
+#: src/pages/property-mappings/PropertyMappingScopeForm.ts
 msgid "Successfully created mapping."
 msgstr ""
 
-#: 
+#: src/pages/outposts/OutpostForm.ts
 msgid "Successfully created outpost."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/policies/dummy/DummyPolicyForm.ts
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts
+#: src/pages/policies/expression/ExpressionPolicyForm.ts
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts
+#: src/pages/policies/password/PasswordPolicyForm.ts
+#: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid "Successfully created policy."
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptForm.ts
 msgid "Successfully created prompt."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Successfully created provider."
 msgstr ""
 
-#: 
+#: src/pages/events/RuleForm.ts
 msgid "Successfully created rule."
 msgstr ""
 
 #: 
 #: 
-msgid "Successfully created service-connection."
-msgstr ""
+#~ msgid "Successfully created service-connection."
+#~ msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Successfully created source."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+#: src/pages/stages/captcha/CaptchaStageForm.ts
+#: src/pages/stages/consent/ConsentStageForm.ts
+#: src/pages/stages/deny/DenyStageForm.ts
+#: src/pages/stages/dummy/DummyStageForm.ts
+#: src/pages/stages/email/EmailStageForm.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
+#: src/pages/stages/invitation/InvitationStageForm.ts
+#: src/pages/stages/password/PasswordStageForm.ts
+#: src/pages/stages/prompt/PromptStageForm.ts
+#: src/pages/stages/user_delete/UserDeleteStageForm.ts
+#: src/pages/stages/user_login/UserLoginStageForm.ts
+#: src/pages/stages/user_logout/UserLogoutStageForm.ts
+#: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Successfully created stage."
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantForm.ts
 msgid "Successfully created tenant."
 msgstr ""
 
-#: 
+#: src/pages/user-settings/tokens/UserTokenForm.ts
 msgid "Successfully created token."
 msgstr ""
 
-#: 
+#: src/pages/events/TransportForm.ts
 msgid "Successfully created transport."
 msgstr ""
 
-#: 
+#: src/pages/users/UserForm.ts
 msgid "Successfully created user."
 msgstr ""
 
-#: 
+#: src/elements/forms/DeleteForm.ts
 msgid "Successfully deleted {0} {1}"
 msgstr ""
 
-#: 
+#: src/pages/crypto/CertificateGenerateForm.ts
 msgid "Successfully generated certificate-key pair."
 msgstr ""
 
-#: 
-#: 
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Successfully generated recovery link"
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowImportForm.ts
 msgid "Successfully imported flow."
 msgstr ""
 
-#: 
+#: src/pages/providers/saml/SAMLProviderImportForm.ts
 msgid "Successfully imported provider."
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/pages/applications/ApplicationCheckAccessForm.ts
+#: src/pages/policies/PolicyTestForm.ts
+#: src/pages/property-mappings/PropertyMappingTestForm.ts
 msgid "Successfully sent test-request."
 msgstr ""
 
-#: 
+#: src/pages/applications/ApplicationForm.ts
 msgid "Successfully updated application."
 msgstr ""
 
-#: 
-#: 
+#: src/pages/flows/StageBindingForm.ts
+#: src/pages/policies/PolicyBindingForm.ts
 msgid "Successfully updated binding."
 msgstr ""
 
-#: 
+#: src/pages/crypto/CertificateKeyPairForm.ts
 msgid "Successfully updated certificate-key pair."
 msgstr ""
 
-#: 
+#: src/pages/user-settings/UserDetailsPage.ts
 msgid "Successfully updated details."
 msgstr ""
 
-#: 
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
 msgid "Successfully updated device."
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowForm.ts
 msgid "Successfully updated flow."
 msgstr ""
 
-#: 
+#: src/pages/groups/GroupForm.ts
 msgid "Successfully updated group."
 msgstr ""
 
-#: 
+#: src/pages/outposts/ServiceConnectionDockerForm.ts
+#: src/pages/outposts/ServiceConnectionKubernetesForm.ts
+msgid "Successfully updated integration."
+msgstr ""
+
+#: src/pages/stages/invitation/InvitationForm.ts
 msgid "Successfully updated invitation."
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/pages/property-mappings/PropertyMappingLDAPForm.ts
+#: src/pages/property-mappings/PropertyMappingSAMLForm.ts
+#: src/pages/property-mappings/PropertyMappingScopeForm.ts
 msgid "Successfully updated mapping."
 msgstr ""
 
-#: 
+#: src/pages/outposts/OutpostForm.ts
 msgid "Successfully updated outpost."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/policies/dummy/DummyPolicyForm.ts
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts
+#: src/pages/policies/expression/ExpressionPolicyForm.ts
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts
+#: src/pages/policies/password/PasswordPolicyForm.ts
+#: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid "Successfully updated policy."
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptForm.ts
 msgid "Successfully updated prompt."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Successfully updated provider."
 msgstr ""
 
-#: 
+#: src/pages/events/RuleForm.ts
 msgid "Successfully updated rule."
 msgstr ""
 
 #: 
 #: 
-msgid "Successfully updated service-connection."
-msgstr ""
+#~ msgid "Successfully updated service-connection."
+#~ msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Successfully updated source."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
+#: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+#: src/pages/stages/captcha/CaptchaStageForm.ts
+#: src/pages/stages/consent/ConsentStageForm.ts
+#: src/pages/stages/deny/DenyStageForm.ts
+#: src/pages/stages/dummy/DummyStageForm.ts
+#: src/pages/stages/email/EmailStageForm.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
+#: src/pages/stages/invitation/InvitationStageForm.ts
+#: src/pages/stages/password/PasswordStageForm.ts
+#: src/pages/stages/prompt/PromptStageForm.ts
+#: src/pages/stages/user_delete/UserDeleteStageForm.ts
+#: src/pages/stages/user_login/UserLoginStageForm.ts
+#: src/pages/stages/user_logout/UserLogoutStageForm.ts
+#: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Successfully updated stage."
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantForm.ts
 msgid "Successfully updated tenant."
 msgstr ""
 
-#: 
+#: src/pages/user-settings/tokens/UserTokenForm.ts
 msgid "Successfully updated token."
 msgstr ""
 
-#: 
+#: src/pages/events/TransportForm.ts
 msgid "Successfully updated transport."
 msgstr ""
 
-#: 
+#: src/pages/users/UserForm.ts
 msgid "Successfully updated user."
 msgstr ""
 
-#: 
+#: src/pages/users/UserActiveForm.ts
 msgid "Successfully updated {0} {1}"
 msgstr ""
 
-#: 
+#: src/pages/users/UserViewPage.ts
 msgid "Superuser"
 msgstr ""
 
-#: 
+#: src/pages/groups/GroupListPage.ts
 msgid "Superuser privileges?"
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/charts/GroupCountStatusChart.ts
 msgid "Superuser-groups"
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/charts/UserCountStatusChart.ts
 msgid "Superusers"
 msgstr ""
 
-#: 
+#: src/pages/events/utils.ts
+msgid "Suspicious request"
+msgstr ""
+
+#: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Symbol charset"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts
 msgid "Sync"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Sync groups"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts
 msgid "Sync status"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Sync users"
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "System Overview"
 msgstr ""
 
-#: 
-#: 
+#: src/interfaces/AdminInterface.ts
+#: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "System Tasks"
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/AdminOverviewPage.ts
+msgid "System status"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "System task exception"
+msgstr ""
+
+#: src/pages/events/utils.ts
+msgid "System task execution"
+msgstr ""
+
+#: src/pages/outposts/ServiceConnectionDockerForm.ts
 msgid "TLS Authentication Certificate"
 msgstr ""
 
-#: 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "TLS Server name"
+msgstr ""
+
+#: src/pages/outposts/ServiceConnectionDockerForm.ts
 msgid "TLS Verification Certificate"
 msgstr ""
 
-#: 
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "TOTP Authenticators"
 msgstr ""
 
-#: 
+#: src/pages/flows/StageBindingForm.ts
 msgid "Target"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts
 msgid "Task finished with errors"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts
 msgid "Task finished with warnings"
 msgstr ""
 
-#: 
+#: src/pages/stages/email/EmailStageForm.ts
 msgid "Template"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/events/EventListPage.ts
+#: src/pages/tenants/TenantListPage.ts
 msgid "Tenant"
 msgstr ""
 
-#: 
-#: 
+#: src/interfaces/AdminInterface.ts
+#: src/pages/tenants/TenantListPage.ts
 msgid "Tenants"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/applications/ApplicationViewPage.ts
+#: src/pages/events/TransportListPage.ts
+#: src/pages/policies/PolicyListPage.ts
+#: src/pages/property-mappings/PropertyMappingListPage.ts
+#: src/pages/property-mappings/PropertyMappingListPage.ts
 msgid "Test"
 msgstr ""
 
-#: 
+#: src/pages/policies/PolicyListPage.ts
 msgid "Test Policy"
 msgstr ""
 
-#: 
+#: src/pages/property-mappings/PropertyMappingListPage.ts
 msgid "Test Property Mapping"
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptForm.ts
 msgid "Text: Simple Text input"
 msgstr ""
 
-#: 
+#: src/elements/router/Router404.ts
 msgid "The URL \"{0}\" was not found."
 msgstr ""
 
-#: 
-#: 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "The external URL you'll access the application at. Include any non-standard port."
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "The external URL you'll authenticate at. Can be the same domain as authentik."
 msgstr ""
 
-#: 
+#: src/elements/forms/DeleteForm.ts
 msgid "The following objects use {objName}"
 msgstr ""
 
-#: 
+#: src/pages/policies/reputation/ReputationPolicyForm.ts
+msgid ""
+"The policy passes when the reputation score is above the threshold, and\n"
+"doesn't pass when either or both of the selected options are equal or less than the\n"
+"threshold."
+msgstr ""
+
+#: src/pages/policies/dummy/DummyPolicyForm.ts
 msgid "The policy takes a random time to execute. This controls the minimum time it will take."
 msgstr ""
 
-#: 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "The start for gidNumbers, this number is added to a number generated from the group.Pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber"
+msgstr ""
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "The start for uidNumbers, this number is added to the user.Pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber"
+msgstr ""
+
+#: src/pages/flows/BoundStagesList.ts
 msgid "These bindings control if this stage will be applied to the flow."
 msgstr ""
 
-#: 
+#: src/pages/events/RuleListPage.ts
 msgid ""
 "These bindings control upon which events this rule triggers. Bindings to\n"
 "groups/users are checked against the user of the event."
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowViewPage.ts
 msgid "These bindings control which users can access this flow."
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts
+#: src/pages/sources/plex/PlexSourceViewPage.ts
+#: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid ""
 "These bindings control which users can access this source.\n"
 "You can only use policies here as access is checked before the user is authenticated."
 msgstr ""
 
-#: 
+#: src/pages/applications/ApplicationViewPage.ts
 msgid "These policies control which users can access this application."
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "This provider will behave like a transparent reverse-proxy, except requests must be authenticated. If your upstream application uses HTTPS, make sure to connect to the outpost using HTTPS as well."
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantForm.ts
+msgid "This setting only affects new Events, as the expiration is saved per-event."
+msgstr ""
+
+#: src/pages/stages/invitation/InvitationStageForm.ts
 msgid "This stage can be included in enrollment flows to accept invitations."
 msgstr ""
 
-#: 
+#: src/pages/stages/captcha/CaptchaStageForm.ts
 msgid "This stage checks the user's current session against the Google reCaptcha service."
 msgstr ""
 
-#: 
+#: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid "Threshold"
 msgstr ""
 
-#: 
+#: src/pages/stages/email/EmailStageForm.ts
 msgid "Time in minutes the token sent is valid."
 msgstr ""
 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
 
-#: 
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts
 msgid "Time-based One-Time Passwords"
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/PolicyBindingForm.ts
+#: src/pages/stages/email/EmailStageForm.ts
 msgid "Timeout"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/flows/FlowForm.ts
+#: src/pages/tenants/TenantForm.ts
 msgid "Title"
 msgstr ""
 
-#: 
+#: src/pages/events/EventInfo.ts
 msgid "To"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "To use SSL instead, use 'ldaps://' and disable this option."
 msgstr ""
 
-#: 
-#: 
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/user-settings/tokens/UserTokenList.ts
 msgid "Token"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts
 msgid "Token URL"
 msgstr ""
 
-#: 
+#: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 msgid "Token count"
 msgstr ""
 
-#: 
+#: src/pages/stages/email/EmailStageForm.ts
 msgid "Token expiry"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Token validity"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
+#: src/interfaces/AdminInterface.ts
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/user-settings/UserSettingsPage.ts
 msgid "Tokens"
 msgstr ""
 
-#: 
+#: src/pages/tokens/TokenListPage.ts
 msgid "Tokens are used throughout authentik for Email validation stages, Recovery keys and API access."
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/charts/FlowStatusChart.ts
 msgid "Total flows"
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/charts/GroupCountStatusChart.ts
 msgid "Total groups"
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/charts/PolicyStatusChart.ts
 msgid "Total policies"
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/charts/UserCountStatusChart.ts
 msgid "Total users"
 msgstr ""
 
-#: 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Traditional authenticator"
 msgstr ""
 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Transient"
 msgstr ""
 
-#: 
+#: src/pages/events/RuleForm.ts
 msgid "Transports"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/outposts/OutpostForm.ts
+#: src/pages/outposts/ServiceConnectionListPage.ts
+#: src/pages/policies/PolicyListPage.ts
+#: src/pages/property-mappings/PropertyMappingListPage.ts
+#: src/pages/providers/ProviderListPage.ts
+#: src/pages/sources/SourcesListPage.ts
+#: src/pages/stages/prompt/PromptForm.ts
+#: src/pages/stages/prompt/PromptListPage.ts
 msgid "Type"
 msgstr ""
 
-#: 
+#: src/pages/applications/ApplicationForm.ts
 msgid "UI settings"
 msgstr ""
 
-#: 
+#: src/pages/events/EventInfo.ts
 msgid "UID"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "UID start number"
+msgstr ""
+
+#: src/flows/stages/identification/IdentificationStage.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "UPN"
 msgstr ""
 
-#: 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
 msgid "URL settings"
 msgstr ""
 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "URL that the initial Login request is sent to."
 msgstr ""
 
-#: 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
 msgid "URL the user is redirect to to consent the authorization."
 msgstr ""
 
-#: 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
 msgid "URL used by authentik to get user information."
 msgstr ""
 
-#: 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
 msgid "URL used by authentik to retrieve tokens."
 msgstr ""
 
-#: 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
 msgid "URL used to request the initial token. This URL is only required for OAuth 1."
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/charts/PolicyStatusChart.ts
 msgid "Unbound policies"
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowForm.ts
 msgid "Unenrollment"
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantForm.ts
 msgid "Unenrollment flow"
 msgstr ""
 
-#: 
+#: src/pages/outposts/ServiceConnectionListPage.ts
 msgid "Unhealthy"
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/charts/OutpostStatusChart.ts
 msgid "Unhealthy outposts"
 msgstr ""
 
-#: 
+#: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Unknown"
 msgstr ""
 
 #: 
-msgid "Unmanaged"
-msgstr ""
+#~ msgid "Unmanaged"
+#~ msgstr ""
 
-#: 
+#: src/pages/admin-overview/charts/LDAPSyncStatusChart.ts
 msgid "Unsynced sources"
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/cards/VersionStatusCard.ts
 msgid "Up-to-date!"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/applications/ApplicationListPage.ts
+#: src/pages/applications/ApplicationViewPage.ts
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+#: src/pages/events/RuleListPage.ts
+#: src/pages/events/TransportListPage.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/groups/GroupListPage.ts
+#: src/pages/outposts/OutpostListPage.ts
+#: src/pages/outposts/OutpostListPage.ts
+#: src/pages/outposts/ServiceConnectionListPage.ts
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/PolicyListPage.ts
+#: src/pages/property-mappings/PropertyMappingListPage.ts
+#: src/pages/providers/ProviderListPage.ts
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts
+#: src/pages/sources/plex/PlexSourceViewPage.ts
+#: src/pages/sources/saml/SAMLSourceViewPage.ts
+#: src/pages/stages/StageListPage.ts
+#: src/pages/stages/prompt/PromptListPage.ts
+#: src/pages/tenants/TenantListPage.ts
+#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
+#: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/pages/users/UserActiveForm.ts
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Update"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/applications/ApplicationListPage.ts
+#: src/pages/applications/ApplicationViewPage.ts
 msgid "Update Application"
 msgstr ""
 
-#: 
+#: src/pages/policies/BoundPoliciesList.ts
 msgid "Update Binding"
 msgstr ""
 
-#: 
+#: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Update Certificate-Key Pair"
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowListPage.ts
 msgid "Update Flow"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/groups/GroupListPage.ts
+#: src/pages/policies/BoundPoliciesList.ts
 msgid "Update Group"
 msgstr ""
 
-#: 
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
 msgid "Update LDAP Provider"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts
 msgid "Update LDAP Source"
 msgstr ""
 
-#: 
+#: src/pages/events/RuleListPage.ts
 msgid "Update Notification Rule"
 msgstr ""
 
-#: 
+#: src/pages/events/TransportListPage.ts
 msgid "Update Notification Transport"
 msgstr ""
 
-#: 
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts
 msgid "Update OAuth Source"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 msgid "Update OAuth2 Provider"
 msgstr ""
 
-#: 
+#: src/pages/outposts/OutpostListPage.ts
+#: src/pages/outposts/OutpostListPage.ts
 msgid "Update Outpost"
 msgstr ""
 
-#: 
+#: src/pages/sources/plex/PlexSourceViewPage.ts
 msgid "Update Plex Source"
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptListPage.ts
 msgid "Update Prompt"
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Update Proxy Provider"
 msgstr ""
 
-#: 
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "Update SAML Provider"
 msgstr ""
 
-#: 
+#: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "Update SAML Source"
 msgstr ""
 
-#: 
+#: src/pages/flows/BoundStagesList.ts
 msgid "Update Stage binding"
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantListPage.ts
 msgid "Update Tenant"
 msgstr ""
 
-#: 
+#: src/pages/user-settings/tokens/UserTokenList.ts
 msgid "Update Token"
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Update User"
 msgstr ""
 
-#: 
+#: src/pages/events/utils.ts
+msgid "Update available"
+msgstr ""
+
+#: src/pages/user-settings/UserDetailsPage.ts
 msgid "Update details"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/outposts/ServiceConnectionListPage.ts
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/PolicyListPage.ts
+#: src/pages/property-mappings/PropertyMappingListPage.ts
+#: src/pages/providers/ProviderListPage.ts
+#: src/pages/sources/SourcesListPage.ts
+#: src/pages/stages/StageListPage.ts
+#: src/pages/users/UserActiveForm.ts
 msgid "Update {0}"
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Upstream host that the requests are forwarded to."
 msgstr ""
 
-#: 
+#: src/pages/stages/email/EmailStageForm.ts
 msgid "Use SSL"
 msgstr ""
 
-#: 
+#: src/pages/stages/email/EmailStageForm.ts
 msgid "Use TLS"
 msgstr ""
 
-#: 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Use a code-based authenticator."
 msgstr ""
 
-#: 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Use a security key to prove your identity."
 msgstr ""
 
-#: 
+#: src/pages/stages/email/EmailStageForm.ts
 msgid "Use global settings"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
 msgid "Use the user's email address, but deny enrollment when the email address already exists."
 msgstr ""
 
-#: 
-#: 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
 msgid "Use the user's username, but deny enrollment when the username already exists."
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /akprox must be routed to the outpost (when using a manged outpost, this is done for you)."
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application."
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantForm.ts
 msgid "Use this tenant for each domain that doesn't have a dedicated tenant."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/elements/events/ObjectChangelog.ts
+#: src/elements/events/UserEvents.ts
+#: src/pages/applications/ApplicationCheckAccessForm.ts
+#: src/pages/events/EventInfo.ts
+#: src/pages/events/EventListPage.ts
+#: src/pages/policies/PolicyBindingForm.ts
+#: src/pages/policies/PolicyBindingForm.ts
+#: src/pages/policies/PolicyTestForm.ts
+#: src/pages/property-mappings/PropertyMappingTestForm.ts
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserListPage.ts
 msgid "User"
 msgstr ""
 
-#: 
+#: src/pages/users/UserViewPage.ts
 msgid "User Info"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "User Property Mappings"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/policies/reputation/UserReputationListPage.ts
+#: src/pages/policies/reputation/UserReputationListPage.ts
 msgid "User Reputation"
 msgstr ""
 
-#: 
+#: src/pages/user-settings/UserSettingsPage.ts
 msgid "User Settings"
 msgstr ""
 
-#: 
+#: src/pages/user-settings/UserSettingsPage.ts
 msgid "User details"
 msgstr ""
 
-#: 
+#: src/pages/users/UserViewPage.ts
 msgid "User events"
 msgstr ""
 
-#: 
+#: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "User fields"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
 msgid "User matching mode"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "User object filter"
 msgstr ""
 
-#: 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "User password writeback"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/events/utils.ts
+msgid "User was written to"
+msgstr ""
+
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/users/UserViewPage.ts
 msgid "User {0}"
 msgstr ""
 
-#: 
+#: src/flows/FormStatic.ts
 msgid "User's avatar"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/users/UserForm.ts
 msgid "User's display name."
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "User/Group Attribute used for the password part of the HTTP-Basic Header."
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used."
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 msgid "Userinfo URL"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/flows/stages/identification/IdentificationStage.ts
+#: src/pages/policies/reputation/UserReputationListPage.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
+#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/users/UserForm.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Username"
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptForm.ts
 msgid "Username: Same as Text input, but checks for and prevents duplicate usernames."
 msgstr ""
 
-#: 
-#: 
-#: 
+#: src/interfaces/AdminInterface.ts
+#: src/pages/admin-overview/AdminOverviewPage.ts
+#: src/pages/users/UserListPage.ts
 msgid "Users"
 msgstr ""
 
-#: 
+#: src/pages/groups/GroupForm.ts
 msgid "Users added to this group will be superusers."
 msgstr ""
 
-#: 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed."
 msgstr ""
 
-#: 
+#: src/pages/events/EventInfo.ts
 msgid "Using flow"
 msgstr ""
 
-#: 
+#: src/pages/events/EventInfo.ts
 msgid "Using source"
 msgstr ""
 
-#: 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows."
 msgstr ""
 
-#: 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Validate SSL Certificates of upstream servers."
 msgstr ""
 
-#: 
+#: src/pages/stages/password/PasswordStageForm.ts
 msgid "Validate the user's password against the selected backend(s)."
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptStageForm.ts
 msgid "Validation Policies"
 msgstr ""
 
-#: 
+#: src/pages/crypto/CertificateGenerateForm.ts
 msgid "Validity days"
 msgstr ""
 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Verification Certificate"
 msgstr ""
 
-#: 
+#: src/pages/stages/email/EmailStageForm.ts
 msgid "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity."
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "Version"
 msgstr ""
 
-#: 
+#: src/pages/outposts/OutpostHealth.ts
 msgid "Version: {0}"
 msgstr ""
 
-#: 
+#: src/pages/outposts/OutpostListPage.ts
 msgid "View Deployment Info"
 msgstr ""
 
-#: 
+#: src/pages/outposts/OutpostDeploymentModal.ts
 msgid "View deployment documentation"
 msgstr ""
 
-#: 
+#: src/pages/flows/FlowForm.ts
 msgid "Visible in the URL."
 msgstr ""
 
-#: 
+#: src/pages/policies/dummy/DummyPolicyForm.ts
 msgid "Wait (max)"
 msgstr ""
 
-#: 
+#: src/pages/policies/dummy/DummyPolicyForm.ts
 msgid "Wait (min)"
 msgstr ""
 
-#: 
-#: 
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
+#: src/pages/events/RuleForm.ts
+#: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Warning"
 msgstr ""
 
-#: 
+#: src/pages/policies/PolicyListPage.ts
 msgid "Warning: Policy is not assigned."
 msgstr ""
 
-#: 
+#: src/pages/providers/ProviderListPage.ts
 msgid "Warning: Provider not assigned to any application."
 msgstr ""
 
-#: 
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "WebAuthn Authenticators"
 msgstr ""
 
-#: 
+#: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
 msgid "WebAuthn Devices"
 msgstr ""
 
-#: 
+#: src/pages/events/TransportForm.ts
 msgid "Webhook (Slack/Discord)"
 msgstr ""
 
-#: 
+#: src/pages/events/TransportForm.ts
 msgid "Webhook (generic)"
 msgstr ""
 
-#: 
+#: src/pages/events/TransportForm.ts
 msgid "Webhook URL"
 msgstr ""
 
-#: 
+#: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown."
 msgstr ""
 
-#: 
+#: src/pages/stages/email/EmailStageForm.ts
 msgid "When enabled, global Email connection settings will be used and connection settings below will be ignored."
 msgstr ""
 
-#: 
+#: src/pages/stages/invitation/InvitationForm.ts
 msgid "When enabled, the invitation will be deleted after usage."
 msgstr ""
 
-#: 
+#: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "When enabled, user fields are matched regardless of their casing."
 msgstr ""
 
-#: 
+#: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "When selected, a password field is shown on the same page instead of a separate page. This prevents username enumeration attacks."
 msgstr ""
 
-#: 
+#: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/pages/policies/dummy/DummyPolicyForm.ts
+#: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
+#: src/pages/policies/expiry/ExpiryPolicyForm.ts
+#: src/pages/policies/expression/ExpressionPolicyForm.ts
+#: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts
+#: src/pages/policies/password/PasswordPolicyForm.ts
+#: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
 msgstr ""
 
-#: 
+#: src/pages/tenants/TenantForm.ts
+msgid "When using an external logging solution for archiving, this can be set to \"minutes=5\"."
+msgstr ""
+
+#: src/flows/FlowExecutor.ts
 msgid "Whoops!"
 msgstr ""
 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Windows"
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "Workers"
 msgstr ""
 
-#: 
+#: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid ""
 "Write any data from the flow's context's 'prompt_data' to the currently pending user. If no user\n"
 "is pending, a new user is created, and data is written to them."
 msgstr ""
 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "X509 Subject"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
-#: 
+#: src/elements/oauth/UserRefreshList.ts
+#: src/pages/applications/ApplicationCheckAccessForm.ts
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+#: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/MemberSelectModal.ts
+#: src/pages/outposts/ServiceConnectionListPage.ts
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/PolicyTestForm.ts
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+#: src/pages/tenants/TenantListPage.ts
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/pages/users/UserListPage.ts
 msgid "Yes"
 msgstr ""
 
-#: 
+#: src/pages/outposts/OutpostForm.ts
 msgid "You can only select providers that match the type of the outpost."
 msgstr ""
 
-#: 
+#: src/interfaces/AdminInterface.ts
 msgid "You're currently impersonating {0}. Click to stop."
 msgstr ""
 
-#: 
+#: src/pages/stages/password/PasswordStageForm.ts
 msgid "authentik Builtin Database"
 msgstr ""
 
-#: 
+#: src/pages/stages/password/PasswordStageForm.ts
 msgid "authentik LDAP Backend"
 msgstr ""
 
-#: 
+#: src/elements/forms/DeleteForm.ts
 msgid "connecting object will be deleted"
 msgstr ""
 
-#: 
+#: src/elements/Tabs.ts
 msgid "no tabs defined"
 msgstr ""
 
-#: 
+#: src/elements/forms/DeleteForm.ts
 msgid "object will be DELETED"
 msgstr ""
 
-#: 
+#: src/elements/forms/DeleteForm.ts
 msgid "reference will be reset to default value"
 msgstr ""
 
-#: 
+#: src/elements/forms/DeleteForm.ts
 msgid "reference will be set to an empty value"
 msgstr ""
 
-#: 
-#: 
+#: src/elements/Expand.ts
+#: src/elements/Expand.ts
 msgid "{0}"
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptStageForm.ts
 msgid "{0} (\"{1}\", of type {2})"
 msgstr ""
 
-#: 
+#: src/pages/stages/prompt/PromptStageForm.ts
 msgid "{0} ({1})"
 msgstr ""
 
-#: 
+#: src/elements/forms/DeleteForm.ts
 msgid "{0} ({consequence})"
 msgstr ""
 
-#: 
+#: src/elements/table/TablePagination.ts
 msgid "{0} - {1} of {2}"
 msgstr ""
 
-#: 
+#: src/pages/admin-overview/cards/VersionStatusCard.ts
 msgid "{0} is available!"
 msgstr ""
 
-#: 
+#: src/elements/notifications/NotificationDrawer.ts
 msgid "{0} unread"
 msgstr ""
 
-#: 
+#: src/pages/outposts/OutpostHealth.ts
 msgid "{0}, should be {1}"
 msgstr ""
 
-#: 
+#: src/elements/forms/ConfirmationForm.ts
 msgid "{0}: {1}"
 msgstr ""

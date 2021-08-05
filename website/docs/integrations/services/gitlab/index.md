@@ -22,13 +22,14 @@ Create an application in authentik and note the slug, as this will be used later
 - ACS URL: `https://gitlab.company/users/auth/saml/callback`
 - Audience: `https://gitlab.company`
 - Issuer: `https://gitlab.company`
-- Binding: `Post`
+- Binding: `Redirect`
 
-You can of course use a custom signing certificate, and adjust durations. To get the value for `idp_cert_fingerprint`, you can use a tool like [this](https://www.samltool.com/fingerprint.php).
+Under *Advanced protocol settings*, set a certificate for *Signing Certificate*.
 
 ## GitLab Configuration
 
 Paste the following block in your `gitlab.rb` file, after replacing the placeholder values from above. The file is located in `/etc/gitlab`.
+To get the value for `idp_cert_fingerprint`, go to the Certificate list under *Identity & Cryptography*, and expand the selected certificate.
 
 ```ruby
 gitlab_rails['omniauth_enabled'] = true
@@ -46,7 +47,7 @@ gitlab_rails['omniauth_providers'] = [
       assertion_consumer_service_url: 'https://gitlab.company/users/auth/saml/callback',
       # Shown when navigating to certificates in authentik
       idp_cert_fingerprint: '4E:1E:CD:67:4A:67:5A:E9:6A:D0:3C:E6:DD:7A:F2:44:2E:76:00:6A',
-      idp_sso_target_url: 'https://authentik.company/application/saml/<authentik application slug>/sso/binding/post/',
+      idp_sso_target_url: 'https://authentik.company/application/saml/<authentik application slug>/sso/binding/redirect/',
       issuer: 'https://gitlab.company',
       name_identifier_format: 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
       attribute_statements: {

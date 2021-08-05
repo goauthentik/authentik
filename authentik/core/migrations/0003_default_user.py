@@ -17,9 +17,7 @@ def create_default_user(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         username="akadmin", email="root@localhost", name="authentik Default Admin"
     )
     if "TF_BUILD" in environ or "AK_ADMIN_PASS" in environ or settings.TEST:
-        akadmin.set_password(
-            environ.get("AK_ADMIN_PASS", "akadmin"), signal=False
-        )  # noqa # nosec
+        akadmin.set_password(environ.get("AK_ADMIN_PASS", "akadmin"), signal=False)  # noqa # nosec
     else:
         akadmin.set_unusable_password()
     akadmin.save()

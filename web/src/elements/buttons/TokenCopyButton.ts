@@ -17,23 +17,25 @@ export class TokenCopyButton extends ActionButton {
         if (!this.identifier) {
             return Promise.reject();
         }
-        return new CoreApi(DEFAULT_CONFIG).coreTokensViewKeyRetrieve({
-            identifier: this.identifier
-        }).then((token) => {
-            if (!token.key) {
-                return Promise.reject();
-            }
-            return navigator.clipboard.writeText(token.key).then(() => {
-                this.buttonClass = SUCCESS_CLASS;
-                setTimeout(() => {
-                    this.buttonClass = PRIMARY_CLASS;
-                }, 1500);
+        return new CoreApi(DEFAULT_CONFIG)
+            .coreTokensViewKeyRetrieve({
+                identifier: this.identifier,
+            })
+            .then((token) => {
+                if (!token.key) {
+                    return Promise.reject();
+                }
+                return navigator.clipboard.writeText(token.key).then(() => {
+                    this.buttonClass = SUCCESS_CLASS;
+                    setTimeout(() => {
+                        this.buttonClass = PRIMARY_CLASS;
+                    }, 1500);
+                });
+            })
+            .catch((err: Response | undefined) => {
+                return err?.json().then((errResp) => {
+                    throw new Error(errResp["detail"]);
+                });
             });
-        }).catch((err: Response | undefined) => {
-            return err?.json().then(errResp => {
-                throw new Error(errResp["detail"]);
-            });
-        });
-    }
-
+    };
 }

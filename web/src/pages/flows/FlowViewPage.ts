@@ -1,5 +1,13 @@
 import { t } from "@lingui/macro";
-import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import {
+    css,
+    CSSResult,
+    customElement,
+    html,
+    LitElement,
+    property,
+    TemplateResult,
+} from "lit-element";
 
 import "../../elements/Tabs";
 import "../../elements/PageHeader";
@@ -23,14 +31,16 @@ import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 export class FlowViewPage extends LitElement {
     @property()
     set flowSlug(value: string) {
-        new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({
-            slug: value
-        }).then((flow) => {
-            this.flow = flow;
-        });
+        new FlowsApi(DEFAULT_CONFIG)
+            .flowsInstancesRetrieve({
+                slug: value,
+            })
+            .then((flow) => {
+                this.flow = flow;
+            });
     }
 
-    @property({attribute: false})
+    @property({ attribute: false })
     flow!: Flow;
 
     static get styles(): CSSResult[] {
@@ -42,7 +52,7 @@ export class FlowViewPage extends LitElement {
                 ak-tabs {
                     height: 100%;
                 }
-            `
+            `,
         );
     }
 
@@ -51,12 +61,17 @@ export class FlowViewPage extends LitElement {
             return html``;
         }
         return html`<ak-page-header
-            icon="pf-icon pf-icon-process-automation"
-            header=${this.flow.name}
-            description=${this.flow.title}>
+                icon="pf-icon pf-icon-process-automation"
+                header=${this.flow.name}
+                description=${this.flow.title}
+            >
             </ak-page-header>
             <ak-tabs>
-                <div slot="page-overview" data-tab-title="${t`Flow Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div
+                    slot="page-overview"
+                    data-tab-title="${t`Flow Overview`}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
                     <div class="pf-l-gallery pf-m-gutter">
                         <div class="pf-c-card pf-l-gallery__item">
                             <div class="pf-c-card__title">${t`Related`}</div>
@@ -64,62 +79,98 @@ export class FlowViewPage extends LitElement {
                                 <dl class="pf-c-description-list">
                                     <div class="pf-c-description-list__group">
                                         <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text">${t`Execute flow`}</span>
+                                            <span class="pf-c-description-list__text"
+                                                >${t`Execute flow`}</span
+                                            >
                                         </dt>
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">
                                                 <button
-                                                    class="pf-c-button pf-m-secondary"
+                                                    class="pf-c-button pf-m-primary"
                                                     @click=${() => {
-                                                    new FlowsApi(DEFAULT_CONFIG).flowsInstancesExecuteRetrieve({
-                                                        slug: this.flow.slug
-                                                    }).then(link => {
-                                                        const finalURL = `${link.link}?next=/%23${window.location.hash}`;
-                                                        window.open(finalURL, "_blank");
-                                                    });
-                                                }}>
+                                                        new FlowsApi(DEFAULT_CONFIG)
+                                                            .flowsInstancesExecuteRetrieve({
+                                                                slug: this.flow.slug,
+                                                            })
+                                                            .then((link) => {
+                                                                const finalURL = `${link.link}?next=/%23${window.location.hash}`;
+                                                                window.open(finalURL, "_blank");
+                                                            });
+                                                    }}
+                                                >
                                                     ${t`Execute`}
                                                 </button>
+                                            </div>
+                                        </dd>
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text"
+                                                >${t`Export flow`}</span
+                                            >
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                <a
+                                                    class="pf-c-button pf-m-secondary"
+                                                    href=${this.flow.exportUrl}
+                                                >
+                                                    ${t`Export`}
+                                                </a>
                                             </div>
                                         </dd>
                                     </div>
                                 </dl>
                             </div>
                         </div>
-                        <div class="pf-c-card pf-l-gallery__item" style="grid-column-end: span 4;grid-row-end: span 2;">
+                        <div
+                            class="pf-c-card pf-l-gallery__item"
+                            style="grid-column-end: span 4;grid-row-end: span 2;"
+                        >
                             <div class="pf-c-card">
                                 <div class="pf-c-card__body">
-                                    <ak-flow-diagram flowSlug=${this.flow.slug}>
-                                    </ak-flow-diagram>
+                                    <ak-flow-diagram flowSlug=${this.flow.slug}> </ak-flow-diagram>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div slot="page-stage-bindings" data-tab-title="${t`Stage Bindings`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div
+                    slot="page-stage-bindings"
+                    data-tab-title="${t`Stage Bindings`}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
-                            <ak-bound-stages-list .target=${this.flow.pk}>
-                            </ak-bound-stages-list>
+                            <ak-bound-stages-list .target=${this.flow.pk}> </ak-bound-stages-list>
                         </div>
                     </div>
                 </div>
-                <div slot="page-policy-bindings" data-tab-title="${t`Policy / Group / User Bindings`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div
+                    slot="page-policy-bindings"
+                    data-tab-title="${t`Policy / Group / User Bindings`}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__title">${t`These bindings control which users can access this flow.`}</div>
+                        <div class="pf-c-card__title">
+                            ${t`These bindings control which users can access this flow.`}
+                        </div>
                         <div class="pf-c-card__body">
                             <ak-bound-policies-list .target=${this.flow.policybindingmodelPtrId}>
                             </ak-bound-policies-list>
                         </div>
                     </div>
                 </div>
-                <div slot="page-changelog" data-tab-title="${t`Changelog`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div
+                    slot="page-changelog"
+                    data-tab-title="${t`Changelog`}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
                             <ak-object-changelog
                                 targetModelPk=${this.flow.pk || ""}
                                 targetModelApp="authentik_flows"
-                                targetModelName="flow">
+                                targetModelName="flow"
+                            >
                             </ak-object-changelog>
                         </div>
                     </div>

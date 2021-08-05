@@ -16,6 +16,7 @@ import "./RuleForm";
 @customElement("ak-event-rule-list")
 export class RuleListPage extends TablePage<NotificationRule> {
     expandable = true;
+    checkbox = true;
 
     searchEnabled(): boolean {
         return true;
@@ -47,8 +48,31 @@ export class RuleListPage extends TablePage<NotificationRule> {
             new TableColumn(t`Name`, "name"),
             new TableColumn(t`Severity`, "severity"),
             new TableColumn(t`Sent to group`, "group"),
-            new TableColumn(""),
+            new TableColumn(t`Actions`),
         ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`Notification rule`}
+            .usedBy=${() => {
+                return new EventsApi(DEFAULT_CONFIG).eventsRulesUsedByList({
+                    pbmUuid: item.pk,
+                });
+            }}
+            .delete=${() => {
+                return new EventsApi(DEFAULT_CONFIG).eventsRulesDestroy({
+                    pbmUuid: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete>`;
     }
 
     row(item: NotificationRule): TemplateResult[] {
@@ -56,70 +80,40 @@ export class RuleListPage extends TablePage<NotificationRule> {
             html`${item.name}`,
             html`${item.severity}`,
             html`${item.groupObj?.name || t`None (rule disabled)`}`,
-            html`
-            <ak-forms-modal>
-                <span slot="submit">
-                    ${t`Update`}
-                </span>
-                <span slot="header">
-                    ${t`Update Notification Rule`}
-                </span>
-                <ak-event-rule-form slot="form" .instancePk=${item.pk}>
-                </ak-event-rule-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${t`Edit`}
+            html` <ak-forms-modal>
+                <span slot="submit"> ${t`Update`} </span>
+                <span slot="header"> ${t`Update Notification Rule`} </span>
+                <ak-event-rule-form slot="form" .instancePk=${item.pk}> </ak-event-rule-form>
+                <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <i class="fas fa-edit"></i>
                 </button>
-            </ak-forms-modal>
-            <ak-forms-delete
-                .obj=${item}
-                objectLabel=${t`Notification rule`}
-                .usedBy=${() => {
-                    return new EventsApi(DEFAULT_CONFIG).eventsRulesUsedByList({
-                        pbmUuid: item.pk
-                    });
-                }}
-                .delete=${() => {
-                    return new EventsApi(DEFAULT_CONFIG).eventsRulesDestroy({
-                        pbmUuid: item.pk
-                    });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete`}
-                </button>
-            </ak-forms-delete>`,
+            </ak-forms-modal>`,
         ];
     }
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-forms-modal>
-            <span slot="submit">
-                ${t`Create`}
-            </span>
-            <span slot="header">
-                ${t`Create Notification Rule`}
-            </span>
-            <ak-event-rule-form slot="form">
-            </ak-event-rule-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${t`Create`}
-            </button>
-        </ak-forms-modal>
-        ${super.renderToolbar()}
+            <ak-forms-modal>
+                <span slot="submit"> ${t`Create`} </span>
+                <span slot="header"> ${t`Create Notification Rule`} </span>
+                <ak-event-rule-form slot="form"> </ak-event-rule-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+            </ak-forms-modal>
+            ${super.renderToolbar()}
         `;
     }
 
     renderExpanded(item: NotificationRule): TemplateResult {
-        return html`
-        <td role="cell" colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <p>${t`These bindings control upon which events this rule triggers. Bindings to
-                groups/users are checked against the user of the event.`}</p>
-                <ak-bound-policies-list .target=${item.pk}>
-                </ak-bound-policies-list>
-            </div>
-        </td>
-        <td></td>
-        <td></td>`;
+        return html` <td role="cell" colspan="4">
+                <div class="pf-c-table__expandable-row-content">
+                    <p>
+                        ${t`These bindings control upon which events this rule triggers. Bindings to
+                groups/users are checked against the user of the event.`}
+                    </p>
+                    <ak-bound-policies-list .target=${item.pk}> </ak-bound-policies-list>
+                </div>
+            </td>
+            <td></td>
+            <td></td>`;
     }
 }

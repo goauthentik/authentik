@@ -16,6 +16,8 @@ Local backups can be created by running the following command in your authentik 
 
 ```
 docker-compose run --rm worker backup
+# Or for kubernetes
+kubectl exec -it authentik-worker-.... -- ./lifecycle/bootstrap.sh backup
 ```
 
 This will dump the current database into the `./backups` folder. By defaults, the last 10 Backups are kept.
@@ -26,15 +28,19 @@ Run this command in your authentik installation directory
 
 ```
 docker-compose run --rm worker restore
+# Or for kubernetes
+kubectl exec -it authentik-worker-.... -- ./lifecycle/bootstrap.sh restore
 ```
 
 This will prompt you to restore from your last backup. If you want to restore from a specific file, use the `-i` flag with the filename:
 
 ```
 docker-compose run --rm worker restore -i default-2020-10-03-115557.psql
+# Or for kubernetes
+kubectl exec -it authentik-worker-.... -- ./lifecycle/bootstrap.sh restore -i default-2020-10-03-115557.psql
 ```
 
-After you've restored the backup, it is recommended to restart all services with `docker-compose restart`.
+After you've restored the backup, it is recommended to restart all services with `docker-compose restart` or `kubectl restart deployment --all`.
 
 ### S3 Configuration
 
@@ -92,12 +98,15 @@ Simply enable these options in your values.yaml file
 
 ```yaml
 # Enable Database Backups to S3
-backup:
-    accessKey: access-key
-    secretKey: secret-key
-    bucket: s3-bucket
-    region: eu-central-1
-    host: s3-host
+authentik:
+  postgresql:
+    s3_backup:
+      bucket: "authentik-backup"
+      access_key: foo
+      secret_key: bar
+      region: eu-central-1
+      # Optional S3 host
+      # host: "https://backup-s3.beryju.org"
 ```
 
 Afterwards, run a `helm upgrade` to update the ConfigMap. Backups are done automatically as above, at 00:00 every day.

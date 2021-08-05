@@ -12,7 +12,6 @@ export enum PFColor {
 
 @customElement("ak-label")
 export class Label extends LitElement {
-
     @property()
     color: PFColor = PFColor.Grey;
 
@@ -45,11 +44,14 @@ export class Label extends LitElement {
         return html`<span class="pf-c-label ${this.color}">
             <span class="pf-c-label__content">
                 <span class="pf-c-label__icon">
-                    <i class="fas ${this.text ? "fa-fw" : ""} ${this.icon || this.getDefaultIcon()}" aria-hidden="true"></i>
+                    <i
+                        class="fas ${this.text ? "fa-fw" : ""} ${this.icon ||
+                        this.getDefaultIcon()}"
+                        aria-hidden="true"
+                    ></i>
                 </span>
                 ${this.text || ""}
             </span>
         </span>`;
     }
-
 }

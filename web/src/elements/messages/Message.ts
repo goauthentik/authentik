@@ -9,7 +9,7 @@ export enum MessageLevel {
     error = "error",
     warning = "warning",
     success = "success",
-    info = "info"
+    info = "info",
 }
 export interface APIMessage {
     level: MessageLevel;
@@ -27,14 +27,13 @@ const LEVEL_ICON_MAP: { [key: string]: string } = {
 
 @customElement("ak-message")
 export class Message extends LitElement {
-
-    @property({attribute: false})
+    @property({ attribute: false })
     message?: APIMessage;
 
-    @property({type: Number})
+    @property({ type: Number })
     removeAfter = 8000;
 
-    @property({attribute: false})
+    @property({ attribute: false })
     onRemove?: (m: APIMessage) => void;
 
     static get styles(): CSSResult[] {
@@ -51,27 +50,34 @@ export class Message extends LitElement {
 
     render(): TemplateResult {
         return html`<li class="pf-c-alert-group__item">
-            <div class="pf-c-alert pf-m-${this.message?.level} ${this.message?.level === MessageLevel.error ? "pf-m-danger" : ""}">
+            <div
+                class="pf-c-alert pf-m-${this.message?.level} ${this.message?.level ===
+                MessageLevel.error
+                    ? "pf-m-danger"
+                    : ""}"
+            >
                 <div class="pf-c-alert__icon">
                     <i class="${this.message ? LEVEL_ICON_MAP[this.message.level] : ""}"></i>
                 </div>
-                <p class="pf-c-alert__title">
-                    ${this.message?.message}
-                </p>
-                ${this.message?.description && html`<div class="pf-c-alert__description">
+                <p class="pf-c-alert__title">${this.message?.message}</p>
+                ${this.message?.description &&
+                html`<div class="pf-c-alert__description">
                     <p>${this.message.description}</p>
                 </div>`}
                 <div class="pf-c-alert__action">
-                    <button class="pf-c-button pf-m-plain" type="button" @click=${() => {
-                        if (!this.message) return;
-                        if (!this.onRemove) return;
-                        this.onRemove(this.message);
-                    }}>
+                    <button
+                        class="pf-c-button pf-m-plain"
+                        type="button"
+                        @click=${() => {
+                            if (!this.message) return;
+                            if (!this.onRemove) return;
+                            this.onRemove(this.message);
+                        }}
+                    >
                         <i class="fas fa-times" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>
         </li>`;
     }
-
 }

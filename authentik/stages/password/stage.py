@@ -91,9 +91,7 @@ class PasswordStageView(ChallengeStageView):
                 "authentik_core:if-flow",
                 kwargs={"flow_slug": recovery_flow.first().slug},
             )
-            challenge.initial_data["recovery_url"] = self.request.build_absolute_uri(
-                recover_url
-            )
+            challenge.initial_data["recovery_url"] = self.request.build_absolute_uri(recover_url)
         return challenge
 
     def challenge_invalid(self, response: PasswordChallengeResponse) -> HttpResponse:
@@ -122,9 +120,7 @@ class PasswordStageView(ChallengeStageView):
             "username": pending_user.username,
         }
         try:
-            user = authenticate(
-                self.request, self.executor.current_stage.backends, **auth_kwargs
-            )
+            user = authenticate(self.request, self.executor.current_stage.backends, **auth_kwargs)
         except PermissionDenied:
             del auth_kwargs["password"]
             # User was found, but permission was denied (i.e. user is not active)
@@ -142,13 +138,9 @@ class PasswordStageView(ChallengeStageView):
                 LOGGER.debug("Invalid credentials")
                 # Manually inject error into form
                 response._errors.setdefault("password", [])
-                response._errors["password"].append(
-                    ErrorDetail(_("Invalid password"), "invalid")
-                )
+                response._errors["password"].append(ErrorDetail(_("Invalid password"), "invalid"))
                 return self.challenge_invalid(response)
             # User instance returned from authenticate() has .backend property set
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = user
-            self.executor.plan.context[
-                PLAN_CONTEXT_AUTHENTICATION_BACKEND
-            ] = user.backend
+            self.executor.plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = user.backend
             return self.executor.stage_ok()

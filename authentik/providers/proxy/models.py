@@ -28,9 +28,7 @@ SCOPE_AK_PROXY = "ak_proxy"
 
 def get_cookie_secret():
     """Generate random 32-character string for cookie-secret"""
-    return "".join(
-        SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(32)
-    )
+    return "".join(SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(32))
 
 
 def _get_callback_url(uri: str) -> str:
@@ -53,9 +51,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         validators=[DomainlessURLValidator(schemes=("http", "https"))],
         blank=True,
     )
-    external_host = models.TextField(
-        validators=[DomainlessURLValidator(schemes=("http", "https"))]
-    )
+    external_host = models.TextField(validators=[DomainlessURLValidator(schemes=("http", "https"))])
     internal_host_ssl_validation = models.BooleanField(
         default=True,
         help_text=_("Validate SSL Certificates of upstream servers"),
@@ -101,11 +97,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     basic_auth_password_attribute = models.TextField(
         blank=True,
         verbose_name=_("HTTP-Basic Password Key"),
-        help_text=_(
-            (
-                "User/Group Attribute used for the password part of the HTTP-Basic Header."
-            )
-        ),
+        help_text=_(("User/Group Attribute used for the password part of the HTTP-Basic Header.")),
     )
 
     certificate = models.ForeignKey(

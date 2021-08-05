@@ -13,7 +13,7 @@ The following placeholders will be used:
 
 ## Github
 
-1. Create an OAuth app under Developer Settings https://github.com/settings/developers by clicking on the **Register a neww application**
+1. Create an OAuth app under Developer Settings https://github.com/settings/developers by clicking on the **Register a new application**
 
 ![Register OAuth App](githubdeveloper1.png)
 

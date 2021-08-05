@@ -54,9 +54,7 @@ class TestIdentificationStage(TestCase):
     def test_valid_with_email(self):
         """Test with valid email, check that URL redirects back to itself"""
         form_data = {"uid_field": self.user.email}
-        url = reverse(
-            "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
-        )
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.post(url, form_data)
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
@@ -70,15 +68,11 @@ class TestIdentificationStage(TestCase):
 
     def test_valid_with_password(self):
         """Test with valid email and password in single step"""
-        pw_stage = PasswordStage.objects.create(
-            name="password", backends=[BACKEND_DJANGO]
-        )
+        pw_stage = PasswordStage.objects.create(name="password", backends=[BACKEND_DJANGO])
         self.stage.password_stage = pw_stage
         self.stage.save()
         form_data = {"uid_field": self.user.email, "password": self.password}
-        url = reverse(
-            "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
-        )
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.post(url, form_data)
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
@@ -92,18 +86,14 @@ class TestIdentificationStage(TestCase):
 
     def test_invalid_with_password(self):
         """Test with valid email and invalid password in single step"""
-        pw_stage = PasswordStage.objects.create(
-            name="password", backends=[BACKEND_DJANGO]
-        )
+        pw_stage = PasswordStage.objects.create(name="password", backends=[BACKEND_DJANGO])
         self.stage.password_stage = pw_stage
         self.stage.save()
         form_data = {
             "uid_field": self.user.email,
             "password": self.password + "test",
         }
-        url = reverse(
-            "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
-        )
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.post(url, form_data)
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
@@ -142,9 +132,7 @@ class TestIdentificationStage(TestCase):
         """Test invalid with username (user exists but stage only allows email)"""
         form_data = {"uid_field": self.user.username}
         response = self.client.post(
-            reverse(
-                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            ),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             form_data,
         )
         self.assertEqual(response.status_code, 200)
@@ -153,9 +141,7 @@ class TestIdentificationStage(TestCase):
         """Test with invalid email (user doesn't exist) -> Will return to login form"""
         form_data = {"uid_field": self.user.email + "test"}
         response = self.client.post(
-            reverse(
-                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            ),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             form_data,
         )
         self.assertEqual(response.status_code, 200)
@@ -177,9 +163,7 @@ class TestIdentificationStage(TestCase):
         )
 
         response = self.client.get(
-            reverse(
-                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            ),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
         )
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
@@ -228,9 +212,7 @@ class TestIdentificationStage(TestCase):
             order=0,
         )
         response = self.client.get(
-            reverse(
-                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            ),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
         )
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(

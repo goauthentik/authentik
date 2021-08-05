@@ -27,9 +27,7 @@ class LDAPBackend(ModelBackend):
                 return user
         return None
 
-    def auth_user(
-        self, source: LDAPSource, password: str, **filters: str
-    ) -> Optional[User]:
+    def auth_user(self, source: LDAPSource, password: str, **filters: str) -> Optional[User]:
         """Try to bind as either user_dn or mail with password.
         Returns True on success, otherwise False"""
         users = User.objects.filter(**filters)
@@ -37,9 +35,7 @@ class LDAPBackend(ModelBackend):
             return None
         user: User = users.first()
         if LDAP_DISTINGUISHED_NAME not in user.attributes:
-            LOGGER.debug(
-                "User doesn't have DN set, assuming not LDAP imported.", user=user
-            )
+            LOGGER.debug("User doesn't have DN set, assuming not LDAP imported.", user=user)
             return None
         # Either has unusable password,
         # or has a password, but couldn't be authenticated by ModelBackend.
@@ -54,9 +50,7 @@ class LDAPBackend(ModelBackend):
         LOGGER.debug("Failed to bind, password invalid")
         return None
 
-    def auth_user_by_bind(
-        self, source: LDAPSource, user: User, password: str
-    ) -> Optional[User]:
+    def auth_user_by_bind(self, source: LDAPSource, user: User, password: str) -> Optional[User]:
         """Attempt authentication by binding to the LDAP server as `user`. This
         method should be avoided as its slow to do the bind."""
         # Try to bind as new user

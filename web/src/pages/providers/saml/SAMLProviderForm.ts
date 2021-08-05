@@ -1,4 +1,14 @@
-import { CryptoApi, FlowsApi, SAMLProvider, ProvidersApi, PropertymappingsApi,  SpBindingEnum, DigestAlgorithmEnum, SignatureAlgorithmEnum, FlowsInstancesListDesignationEnum } from "authentik-api";
+import {
+    CryptoApi,
+    FlowsApi,
+    SAMLProvider,
+    ProvidersApi,
+    PropertymappingsApi,
+    SpBindingEnum,
+    DigestAlgorithmEnum,
+    SignatureAlgorithmEnum,
+    FlowsInstancesListDesignationEnum,
+} from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -11,7 +21,6 @@ import "../../../elements/forms/FormGroup";
 
 @customElement("ak-provider-saml-form")
 export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
-
     loadInstance(pk: number): Promise<SAMLProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({
             id: pk,
@@ -30,193 +39,331 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersSamlUpdate({
                 id: this.instance.pk || 0,
-                sAMLProviderRequest: data
+                sAMLProviderRequest: data,
             });
         } else {
             return new ProvidersApi(DEFAULT_CONFIG).providersSamlCreate({
-                sAMLProviderRequest: data
+                sAMLProviderRequest: data,
             });
         }
     };
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal
-                label=${t`Name`}
-                ?required=${true}
-                name="name">
-                <input type="text" value="${ifDefined(this.instance?.name)}" class="pf-c-form-control" required>
+            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.name)}"
+                    class="pf-c-form-control"
+                    required
+                />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Authorization flow`}
                 ?required=${true}
-                name="authorizationFlow">
+                name="authorizationFlow"
+            >
                 <select class="pf-c-form-control">
-                    ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
-                        ordering: "pk",
-                        designation: FlowsInstancesListDesignationEnum.Authorization,
-                    }).then(flows => {
-                        return flows.results.map(flow => {
-                            return html`<option value=${ifDefined(flow.pk)} ?selected=${this.instance?.authorizationFlow === flow.pk}>${flow.name} (${flow.slug})</option>`;
-                        });
-                    }), html`<option>${t`Loading...`}</option>`)}
+                    ${until(
+                        new FlowsApi(DEFAULT_CONFIG)
+                            .flowsInstancesList({
+                                ordering: "pk",
+                                designation: FlowsInstancesListDesignationEnum.Authorization,
+                            })
+                            .then((flows) => {
+                                return flows.results.map((flow) => {
+                                    return html`<option
+                                        value=${ifDefined(flow.pk)}
+                                        ?selected=${this.instance?.authorizationFlow === flow.pk}
+                                    >
+                                        ${flow.name} (${flow.slug})
+                                    </option>`;
+                                });
+                            }),
+                        html`<option>${t`Loading...`}</option>`,
+                    )}
                 </select>
-                <p class="pf-c-form__helper-text">${t`Flow used when authorizing this provider.`}</p>
+                <p class="pf-c-form__helper-text">
+                    ${t`Flow used when authorizing this provider.`}
+                </p>
             </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>
-                <span slot="header">
-                    ${t`Protocol settings`}
-                </span>
+                <span slot="header"> ${t`Protocol settings`} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${t`ACS URL`}
-                        ?required=${true}
-                        name="acsUrl">
-                        <input type="text" value="${ifDefined(this.instance?.acsUrl)}" class="pf-c-form-control" required>
+                    <ak-form-element-horizontal label=${t`ACS URL`} ?required=${true} name="acsUrl">
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.acsUrl)}"
+                            class="pf-c-form-control"
+                            required
+                        />
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`Issuer`}
-                        ?required=${true}
-                        name="issuer">
-                        <input type="text" value="${this.instance?.issuer || "authentik"}" class="pf-c-form-control" required>
+                    <ak-form-element-horizontal label=${t`Issuer`} ?required=${true} name="issuer">
+                        <input
+                            type="text"
+                            value="${this.instance?.issuer || "authentik"}"
+                            class="pf-c-form-control"
+                            required
+                        />
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Service Provider Binding`}
                         ?required=${true}
-                        name="spBinding">
+                        name="spBinding"
+                    >
                         <select class="pf-c-form-control">
-                            <option value=${SpBindingEnum.Redirect} ?selected=${this.instance?.spBinding === SpBindingEnum.Redirect}>
+                            <option
+                                value=${SpBindingEnum.Redirect}
+                                ?selected=${this.instance?.spBinding === SpBindingEnum.Redirect}
+                            >
                                 ${t`Redirect`}
                             </option>
-                            <option value=${SpBindingEnum.Post} ?selected=${this.instance?.spBinding === SpBindingEnum.Post}>
+                            <option
+                                value=${SpBindingEnum.Post}
+                                ?selected=${this.instance?.spBinding === SpBindingEnum.Post}
+                            >
                                 ${t`Post`}
                             </option>
                         </select>
-                        <p class="pf-c-form__helper-text">${t`Determines how authentik sends the response back to the Service Provider.`}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Determines how authentik sends the response back to the Service Provider.`}
+                        </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`Audience`}
-                        name="audience">
-                        <input type="text" value="${ifDefined(this.instance?.audience)}" class="pf-c-form-control">
+                    <ak-form-element-horizontal label=${t`Audience`} name="audience">
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.audience)}"
+                            class="pf-c-form-control"
+                        />
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
 
             <ak-form-group>
-                <span slot="header">
-                    ${t`Advanced protocol settings`}
-                </span>
+                <span slot="header"> ${t`Advanced protocol settings`} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${t`Signing Certificate`}
-                        name="signingKp">
+                    <ak-form-element-horizontal label=${t`Signing Certificate`} name="signingKp">
                         <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.signingKp === undefined}>---------</option>
-                            ${until(new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
-                                ordering: "pk",
-                                hasKey: true,
-                            }).then(keys => {
-                                return keys.results.map(key => {
-                                    return html`<option value=${ifDefined(key.pk)} ?selected=${this.instance?.signingKp === key.pk}>${key.name}</option>`;
-                                });
-                            }), html`<option>${t`Loading...`}</option>`)}
+                            <option value="" ?selected=${this.instance?.signingKp === undefined}>
+                                ---------
+                            </option>
+                            ${until(
+                                new CryptoApi(DEFAULT_CONFIG)
+                                    .cryptoCertificatekeypairsList({
+                                        ordering: "pk",
+                                        hasKey: true,
+                                    })
+                                    .then((keys) => {
+                                        return keys.results.map((key) => {
+                                            return html`<option
+                                                value=${ifDefined(key.pk)}
+                                                ?selected=${this.instance?.signingKp === key.pk}
+                                            >
+                                                ${key.name}
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
                         </select>
-                        <p class="pf-c-form__helper-text">${t`Certificate used to sign outgoing Responses going to the Service Provider.`}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Certificate used to sign outgoing Responses going to the Service Provider.`}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Verification Certificate`}
-                        name="verificationKp">
+                        name="verificationKp"
+                    >
                         <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.verificationKp === undefined}>---------</option>
-                            ${until(new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
-                                ordering: "pk",
-                            }).then(keys => {
-                                return keys.results.map(key => {
-                                    return html`<option value=${ifDefined(key.pk)} ?selected=${this.instance?.verificationKp === key.pk}>${key.name}</option>`;
-                                });
-                            }), html`<option>${t`Loading...`}</option>`)}
+                            <option
+                                value=""
+                                ?selected=${this.instance?.verificationKp === undefined}
+                            >
+                                ---------
+                            </option>
+                            ${until(
+                                new CryptoApi(DEFAULT_CONFIG)
+                                    .cryptoCertificatekeypairsList({
+                                        ordering: "pk",
+                                    })
+                                    .then((keys) => {
+                                        return keys.results.map((key) => {
+                                            return html`<option
+                                                value=${ifDefined(key.pk)}
+                                                ?selected=${this.instance?.verificationKp ===
+                                                key.pk}
+                                            >
+                                                ${key.name}
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
                         </select>
-                        <p class="pf-c-form__helper-text">${t`When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.`}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.`}
+                        </p>
                     </ak-form-element-horizontal>
 
                     <ak-form-element-horizontal
                         label=${t`Property mappings`}
                         ?required=${true}
-                        name="propertyMappings">
+                        name="propertyMappings"
+                    >
                         <select class="pf-c-form-control" multiple>
-                            ${until(new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlList({
-                                ordering: "saml_name"
-                            }).then(mappings => {
-                                return mappings.results.map(mapping => {
-                                    let selected = false;
-                                    if (!this.instance?.propertyMappings) {
-                                        selected = mapping.managed?.startsWith("goauthentik.io/providers/saml") || false;
-                                    } else {
-                                        selected = Array.from(this.instance?.propertyMappings).some(su => {
-                                            return su == mapping.pk;
+                            ${until(
+                                new PropertymappingsApi(DEFAULT_CONFIG)
+                                    .propertymappingsSamlList({
+                                        ordering: "saml_name",
+                                    })
+                                    .then((mappings) => {
+                                        return mappings.results.map((mapping) => {
+                                            let selected = false;
+                                            if (!this.instance?.propertyMappings) {
+                                                selected =
+                                                    mapping.managed?.startsWith(
+                                                        "goauthentik.io/providers/saml",
+                                                    ) || false;
+                                            } else {
+                                                selected = Array.from(
+                                                    this.instance?.propertyMappings,
+                                                ).some((su) => {
+                                                    return su == mapping.pk;
+                                                });
+                                            }
+                                            return html`<option
+                                                value=${ifDefined(mapping.pk)}
+                                                ?selected=${selected}
+                                            >
+                                                ${mapping.name}
+                                            </option>`;
                                         });
-                                    }
-                                    return html`<option value=${ifDefined(mapping.pk)} ?selected=${selected}>${mapping.name}</option>`;
-                                });
-                            }), html`<option>${t`Loading...`}</option>`)}
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
                         </select>
-                        <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Hold control/command to select multiple items.`}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`NameID Property Mapping`}
-                        name="nameIdMapping">
+                        name="nameIdMapping"
+                    >
                         <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.nameIdMapping === undefined}>---------</option>
-                            ${until(new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlList({
-                                ordering: "saml_name"
-                            }).then(mappings => {
-                                return mappings.results.map(mapping => {
-                                    return html`<option value=${ifDefined(mapping.pk)} ?selected=${this.instance?.nameIdMapping === mapping.pk}>${mapping.name}</option>`;
-                                });
-                            }), html`<option>${t`Loading...`}</option>`)}
+                            <option
+                                value=""
+                                ?selected=${this.instance?.nameIdMapping === undefined}
+                            >
+                                ---------
+                            </option>
+                            ${until(
+                                new PropertymappingsApi(DEFAULT_CONFIG)
+                                    .propertymappingsSamlList({
+                                        ordering: "saml_name",
+                                    })
+                                    .then((mappings) => {
+                                        return mappings.results.map((mapping) => {
+                                            return html`<option
+                                                value=${ifDefined(mapping.pk)}
+                                                ?selected=${this.instance?.nameIdMapping ===
+                                                mapping.pk}
+                                            >
+                                                ${mapping.name}
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
                         </select>
-                        <p class="pf-c-form__helper-text">${t`Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected.`}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected.`}
+                        </p>
                     </ak-form-element-horizontal>
 
                     <ak-form-element-horizontal
                         label=${t`Assertion valid not before`}
                         ?required=${true}
-                        name="assertionValidNotBefore">
-                        <input type="text" value="${this.instance?.assertionValidNotBefore || "minutes=-5"}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${t`Configure the maximum allowed time drift for an asseration.`}</p>
-                        <p class="pf-c-form__helper-text">${t`(Format: hours=-1;minutes=-2;seconds=-3).`}</p>
+                        name="assertionValidNotBefore"
+                    >
+                        <input
+                            type="text"
+                            value="${this.instance?.assertionValidNotBefore || "minutes=-5"}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`Configure the maximum allowed time drift for an asseration.`}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`(Format: hours=-1;minutes=-2;seconds=-3).`}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Assertion valid not on or after`}
                         ?required=${true}
-                        name="assertionValidNotOnOrAfter">
-                        <input type="text" value="${this.instance?.assertionValidNotOnOrAfter || "minutes=5"}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${t`Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).`}</p>
+                        name="assertionValidNotOnOrAfter"
+                    >
+                        <input
+                            type="text"
+                            value="${this.instance?.assertionValidNotOnOrAfter || "minutes=5"}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).`}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Session valid not on or after`}
                         ?required=${true}
-                        name="sessionValidNotOnOrAfter">
-                        <input type="text" value="${this.instance?.sessionValidNotOnOrAfter || "minutes=86400"}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${t`Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).`}</p>
+                        name="sessionValidNotOnOrAfter"
+                    >
+                        <input
+                            type="text"
+                            value="${this.instance?.sessionValidNotOnOrAfter || "minutes=86400"}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).`}
+                        </p>
                     </ak-form-element-horizontal>
 
                     <ak-form-element-horizontal
                         label=${t`Digest algorithm`}
                         ?required=${true}
-                        name="digestAlgorithm">
+                        name="digestAlgorithm"
+                    >
                         <select class="pf-c-form-control">
-                            <option value=${DigestAlgorithmEnum._200009Xmldsigsha1} ?selected=${this.instance?.digestAlgorithm === DigestAlgorithmEnum._200009Xmldsigsha1}>
+                            <option
+                                value=${DigestAlgorithmEnum._200009Xmldsigsha1}
+                                ?selected=${this.instance?.digestAlgorithm ===
+                                DigestAlgorithmEnum._200009Xmldsigsha1}
+                            >
                                 ${t`SHA1`}
                             </option>
-                            <option value=${DigestAlgorithmEnum._200104Xmlencsha256} ?selected=${this.instance?.digestAlgorithm === DigestAlgorithmEnum._200104Xmlencsha256 || this.instance?.digestAlgorithm === undefined}>
+                            <option
+                                value=${DigestAlgorithmEnum._200104Xmlencsha256}
+                                ?selected=${this.instance?.digestAlgorithm ===
+                                    DigestAlgorithmEnum._200104Xmlencsha256 ||
+                                this.instance?.digestAlgorithm === undefined}
+                            >
                                 ${t`SHA256`}
                             </option>
-                            <option value=${DigestAlgorithmEnum._200104XmldsigMoresha384} ?selected=${this.instance?.digestAlgorithm === DigestAlgorithmEnum._200104XmldsigMoresha384}>
+                            <option
+                                value=${DigestAlgorithmEnum._200104XmldsigMoresha384}
+                                ?selected=${this.instance?.digestAlgorithm ===
+                                DigestAlgorithmEnum._200104XmldsigMoresha384}
+                            >
                                 ${t`SHA384`}
                             </option>
-                            <option value=${DigestAlgorithmEnum._200104Xmlencsha512} ?selected=${this.instance?.digestAlgorithm === DigestAlgorithmEnum._200104Xmlencsha512}>
+                            <option
+                                value=${DigestAlgorithmEnum._200104Xmlencsha512}
+                                ?selected=${this.instance?.digestAlgorithm ===
+                                DigestAlgorithmEnum._200104Xmlencsha512}
+                            >
                                 ${t`SHA512`}
                             </option>
                         </select>
@@ -224,21 +371,43 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                     <ak-form-element-horizontal
                         label=${t`Signature algorithm`}
                         ?required=${true}
-                        name="signatureAlgorithm">
+                        name="signatureAlgorithm"
+                    >
                         <select class="pf-c-form-control">
-                            <option value=${SignatureAlgorithmEnum._200009XmldsigrsaSha1} ?selected=${this.instance?.signatureAlgorithm === SignatureAlgorithmEnum._200009XmldsigrsaSha1}>
+                            <option
+                                value=${SignatureAlgorithmEnum._200009XmldsigrsaSha1}
+                                ?selected=${this.instance?.signatureAlgorithm ===
+                                SignatureAlgorithmEnum._200009XmldsigrsaSha1}
+                            >
                                 ${t`RSA-SHA1`}
                             </option>
-                            <option value=${SignatureAlgorithmEnum._200104XmldsigMorersaSha256} ?selected=${this.instance?.signatureAlgorithm === SignatureAlgorithmEnum._200104XmldsigMorersaSha256 || this.instance?.signatureAlgorithm === undefined}>
+                            <option
+                                value=${SignatureAlgorithmEnum._200104XmldsigMorersaSha256}
+                                ?selected=${this.instance?.signatureAlgorithm ===
+                                    SignatureAlgorithmEnum._200104XmldsigMorersaSha256 ||
+                                this.instance?.signatureAlgorithm === undefined}
+                            >
                                 ${t`RSA-SHA256`}
                             </option>
-                            <option value=${SignatureAlgorithmEnum._200104XmldsigMorersaSha384} ?selected=${this.instance?.signatureAlgorithm === SignatureAlgorithmEnum._200104XmldsigMorersaSha384}>
+                            <option
+                                value=${SignatureAlgorithmEnum._200104XmldsigMorersaSha384}
+                                ?selected=${this.instance?.signatureAlgorithm ===
+                                SignatureAlgorithmEnum._200104XmldsigMorersaSha384}
+                            >
                                 ${t`RSA-SHA384`}
                             </option>
-                            <option value=${SignatureAlgorithmEnum._200104XmldsigMorersaSha512} ?selected=${this.instance?.signatureAlgorithm === SignatureAlgorithmEnum._200104XmldsigMorersaSha512}>
+                            <option
+                                value=${SignatureAlgorithmEnum._200104XmldsigMorersaSha512}
+                                ?selected=${this.instance?.signatureAlgorithm ===
+                                SignatureAlgorithmEnum._200104XmldsigMorersaSha512}
+                            >
                                 ${t`RSA-SHA512`}
                             </option>
-                            <option value=${SignatureAlgorithmEnum._200009XmldsigdsaSha1} ?selected=${this.instance?.signatureAlgorithm === SignatureAlgorithmEnum._200009XmldsigdsaSha1}>
+                            <option
+                                value=${SignatureAlgorithmEnum._200009XmldsigdsaSha1}
+                                ?selected=${this.instance?.signatureAlgorithm ===
+                                SignatureAlgorithmEnum._200009XmldsigdsaSha1}
+                            >
                                 ${t`DSA-SHA1`}
                             </option>
                         </select>
@@ -247,5 +416,4 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
             </ak-form-group>
         </form>`;
     }
-
 }

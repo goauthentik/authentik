@@ -26,14 +26,14 @@ def clean_expired_models(self: MonitoredTask):
     messages = []
     for cls in ExpiringModel.__subclasses__():
         cls: ExpiringModel
-        amount, _ = (
-            cls.objects.all()
-            .exclude(expiring=False)
-            .exclude(expiring=True, expires__gt=now())
-            .delete()
+        objects = (
+            cls.objects.all().exclude(expiring=False).exclude(expiring=True, expires__gt=now())
         )
-        LOGGER.debug("Deleted expired models", model=cls, amount=amount)
-        messages.append(f"Deleted {amount} expired {cls._meta.verbose_name_plural}")
+        for obj in objects:
+            obj.expire_action()
+        amount = objects.count()
+        LOGGER.debug("Expired models", model=cls, amount=amount)
+        messages.append(f"Expired {amount} {cls._meta.verbose_name_plural}")
     self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, messages))
 
 

@@ -24,9 +24,7 @@ class TestOAuth2ProviderAPI(APITestCase):
             data={
                 "name": "test",
                 "jwt_alg": str(JWTAlgorithms.RS256),
-                "authorization_flow": Flow.objects.filter(
-                    designation=FlowDesignation.AUTHORIZATION
-                )
+                "authorization_flow": Flow.objects.filter(designation=FlowDesignation.AUTHORIZATION)
                 .first()
                 .pk,
             },

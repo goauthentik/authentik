@@ -21,18 +21,9 @@ from authentik.providers.oauth2.constants import (
     SCOPE_OPENID_EMAIL,
     SCOPE_OPENID_PROFILE,
 )
-from authentik.providers.oauth2.generators import (
-    generate_client_id,
-    generate_client_secret,
-)
+from authentik.providers.oauth2.generators import generate_client_id, generate_client_secret
 from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
-from tests.e2e.utils import (
-    USER,
-    SeleniumTestCase,
-    apply_migration,
-    object_manager,
-    retry,
-)
+from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, object_manager, retry
 
 LOGGER = get_logger()
 
@@ -204,9 +195,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         sleep(2)
         self.login()
 
-        self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor"))
-        )
+        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor")))
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
         consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
@@ -271,9 +260,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         self.driver.get("http://localhost:9009/implicit/")
         sleep(2)
         self.login()
-        self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, "header > h1"))
-        )
+        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "header > h1")))
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "header > h1").text,
             "Permission denied",

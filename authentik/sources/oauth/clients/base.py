@@ -25,9 +25,7 @@ class BaseOAuthClient:
 
     callback: Optional[str]
 
-    def __init__(
-        self, source: OAuthSource, request: HttpRequest, callback: Optional[str] = None
-    ):
+    def __init__(self, source: OAuthSource, request: HttpRequest, callback: Optional[str] = None):
         self.source = source
         self.session = Session()
         self.request = request

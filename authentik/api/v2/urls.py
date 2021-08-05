@@ -1,5 +1,6 @@
 """api v2 urls"""
 from django.urls import path
+from django.views.decorators.csrf import csrf_exempt
 from drf_spectacular.views import SpectacularAPIView
 from rest_framework import routers
 
@@ -10,6 +11,7 @@ from authentik.admin.api.tasks import TaskViewSet
 from authentik.admin.api.version import VersionView
 from authentik.admin.api.workers import WorkerView
 from authentik.api.v2.config import ConfigView
+from authentik.api.v2.sentry import SentryTunnelView
 from authentik.api.views import APIBrowserView
 from authentik.core.api.applications import ApplicationViewSet
 from authentik.core.api.authenticated_sessions import AuthenticatedSessionViewSet
@@ -50,20 +52,12 @@ from authentik.policies.reputation.api import (
 from authentik.providers.ldap.api import LDAPOutpostConfigViewSet, LDAPProviderViewSet
 from authentik.providers.oauth2.api.provider import OAuth2ProviderViewSet
 from authentik.providers.oauth2.api.scope import ScopeMappingViewSet
-from authentik.providers.oauth2.api.tokens import (
-    AuthorizationCodeViewSet,
-    RefreshTokenViewSet,
-)
-from authentik.providers.proxy.api import (
-    ProxyOutpostConfigViewSet,
-    ProxyProviderViewSet,
-)
+from authentik.providers.oauth2.api.tokens import AuthorizationCodeViewSet, RefreshTokenViewSet
+from authentik.providers.proxy.api import ProxyOutpostConfigViewSet, ProxyProviderViewSet
 from authentik.providers.saml.api import SAMLPropertyMappingViewSet, SAMLProviderViewSet
 from authentik.sources.ldap.api import LDAPPropertyMappingViewSet, LDAPSourceViewSet
 from authentik.sources.oauth.api.source import OAuthSourceViewSet
-from authentik.sources.oauth.api.source_connection import (
-    UserOAuthSourceConnectionViewSet,
-)
+from authentik.sources.oauth.api.source_connection import UserOAuthSourceConnectionViewSet
 from authentik.sources.plex.api import PlexSourceViewSet
 from authentik.sources.saml.api import SAMLSourceViewSet
 from authentik.stages.authenticator_duo.api import (
@@ -81,9 +75,7 @@ from authentik.stages.authenticator_totp.api import (
     TOTPAdminDeviceViewSet,
     TOTPDeviceViewSet,
 )
-from authentik.stages.authenticator_validate.api import (
-    AuthenticatorValidateStageViewSet,
-)
+from authentik.stages.authenticator_validate.api import AuthenticatorValidateStageViewSet
 from authentik.stages.authenticator_webauthn.api import (
     AuthenticateWebAuthnStageViewSet,
     WebAuthnAdminDeviceViewSet,
@@ -120,9 +112,7 @@ router.register("core/tenants", TenantViewSet)
 router.register("outposts/instances", OutpostViewSet)
 router.register("outposts/service_connections/all", ServiceConnectionViewSet)
 router.register("outposts/service_connections/docker", DockerServiceConnectionViewSet)
-router.register(
-    "outposts/service_connections/kubernetes", KubernetesServiceConnectionViewSet
-)
+router.register("outposts/service_connections/kubernetes", KubernetesServiceConnectionViewSet)
 router.register("outposts/proxy", ProxyOutpostConfigViewSet)
 router.register("outposts/ldap", LDAPOutpostConfigViewSet)
 
@@ -182,9 +172,7 @@ router.register(
     StaticAdminDeviceViewSet,
     basename="admin-staticdevice",
 )
-router.register(
-    "authenticators/admin/totp", TOTPAdminDeviceViewSet, basename="admin-totpdevice"
-)
+router.register("authenticators/admin/totp", TOTPAdminDeviceViewSet, basename="admin-totpdevice")
 router.register(
     "authenticators/admin/webauthn",
     WebAuthnAdminDeviceViewSet,
@@ -235,6 +223,7 @@ urlpatterns = (
             FlowExecutorView.as_view(),
             name="flow-executor",
         ),
+        path("sentry/", csrf_exempt(SentryTunnelView.as_view()), name="sentry"),
         path("schema/", SpectacularAPIView.as_view(), name="schema"),
     ]
 )

@@ -22,39 +22,40 @@ export class UserConsentList extends Table<UserConsent> {
         });
     }
 
+    checkbox = true;
     order = "-expires";
 
     columns(): TableColumn[] {
         return [
             new TableColumn(t`Application`, "application"),
             new TableColumn(t`Expires`, "expires"),
-            new TableColumn(""),
         ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`Consent`}
+            .usedBy=${() => {
+                return new CoreApi(DEFAULT_CONFIG).coreUserConsentUsedByList({
+                    id: item.pk,
+                });
+            }}
+            .delete=${() => {
+                return new CoreApi(DEFAULT_CONFIG).coreUserConsentDestroy({
+                    id: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete Consent`}
+            </button>
+        </ak-forms-delete>`;
     }
 
     row(item: UserConsent): TemplateResult[] {
-        return [
-            html`${item.application.name}`,
-            html`${item.expires?.toLocaleString()}`,
-            html`
-            <ak-forms-delete
-                .obj=${item}
-                objectLabel=${t`Consent`}
-                .usedBy=${() => {
-                    return new CoreApi(DEFAULT_CONFIG).coreUserConsentUsedByList({
-                        id: item.pk
-                    });
-                }}
-                .delete=${() => {
-                    return new CoreApi(DEFAULT_CONFIG).coreUserConsentDestroy({
-                        id: item.pk,
-                    });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete Consent`}
-                </button>
-            </ak-forms-delete>`,
-        ];
+        return [html`${item.application.name}`, html`${item.expires?.toLocaleString()}`];
     }
-
 }

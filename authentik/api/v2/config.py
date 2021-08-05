@@ -49,7 +49,7 @@ class ConfigView(APIView):
             caps.append(Capabilities.CAN_GEO_IP)
         if SERVICE_HOST_ENV_NAME in environ:
             # Running in k8s, only s3 backup is supported
-            if CONFIG.y("postgresql.s3_backup"):
+            if CONFIG.y_bool("postgresql.s3_backup"):
                 caps.append(Capabilities.CAN_BACKUP)
         else:
             # Running in compose, backup is always supported

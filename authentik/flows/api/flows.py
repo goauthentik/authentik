@@ -14,12 +14,7 @@ from rest_framework.fields import BooleanField, FileField, ReadOnlyField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import (
-    CharField,
-    ModelSerializer,
-    Serializer,
-    SerializerMethodField,
-)
+from rest_framework.serializers import CharField, ModelSerializer, Serializer, SerializerMethodField
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
@@ -152,11 +147,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         ],
     )
     @extend_schema(
-        request={
-            "multipart/form-data": inline_serializer(
-                "SetIcon", fields={"file": FileField()}
-            )
-        },
+        request={"multipart/form-data": inline_serializer("SetIcon", fields={"file": FileField()})},
         responses={
             204: OpenApiResponse(description="Successfully imported flow"),
             400: OpenApiResponse(description="Bad request"),
@@ -221,9 +212,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
             .order_by("order")
         ):
             for p_index, policy_binding in enumerate(
-                get_objects_for_user(
-                    request.user, "authentik_policies.view_policybinding"
-                )
+                get_objects_for_user(request.user, "authentik_policies.view_policybinding")
                 .filter(target=stage_binding)
                 .exclude(policy__isnull=True)
                 .order_by("order")
@@ -256,20 +245,14 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
                 element: DiagramElement = body[index]
                 if element.type == "condition":
                     # Policy passes, link policy yes to next stage
-                    footer.append(
-                        f"{element.identifier}(yes, right)->{body[index + 1].identifier}"
-                    )
+                    footer.append(f"{element.identifier}(yes, right)->{body[index + 1].identifier}")
                     # Policy doesn't pass, go to stage after next stage
                     no_element = body[index + 1]
                     if no_element.type != "end":
                         no_element = body[index + 2]
-                    footer.append(
-                        f"{element.identifier}(no, bottom)->{no_element.identifier}"
-                    )
+                    footer.append(f"{element.identifier}(no, bottom)->{no_element.identifier}")
                 elif element.type == "operation":
-                    footer.append(
-                        f"{element.identifier}(bottom)->{body[index + 1].identifier}"
-                    )
+                    footer.append(f"{element.identifier}(bottom)->{body[index + 1].identifier}")
         diagram = "\n".join([str(x) for x in header + body + footer])
         return Response({"diagram": diagram})
 

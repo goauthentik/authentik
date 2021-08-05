@@ -6,23 +6,25 @@ This installation method is for test-setups and small-scale productive setups.
 
 ## Requirements
 
-- A Linux host with at least 2 CPU cores and 4 GB of RAM.
+- A Linux host with at least 2 CPU cores and 2 GB of RAM.
 - docker
 - docker-compose
 
 ## Preparation
 
-Download the latest `docker-compose.yml` from [here](https://raw.githubusercontent.com/goauthentik/authentik/version/2021.6.2/docker-compose.yml). Place it in a directory of your choice.
+Download the latest `docker-compose.yml` from [here](https://raw.githubusercontent.com/goauthentik/authentik/version/2021.7.2/docker-compose.yml). Place it in a directory of your choice.
 
 To optionally enable error-reporting, run `echo AUTHENTIK_ERROR_REPORTING__ENABLED=true >> .env`
 
-To optionally deploy a different version run `echo AUTHENTIK_TAG=2021.6.2 >> .env`
+To optionally deploy a different version run `echo AUTHENTIK_TAG=2021.7.2 >> .env`
 
 If this is a fresh authentik install run the following commands to generate a password:
 
 ```shell
 # You can also use openssl instead: `openssl rand -base64 36`
 sudo apt-get install -y pwgen
+# Because of a PostgreSQL limitation, only passwords up to 99 chars are supported
+# See https://www.postgresql.org/message-id/09512C4F-8CB9-4021-B455-EF4C4F0D55A0@amazon.com
 echo "PG_PASS=$(pwgen 40 1)" >> .env
 echo "AUTHENTIK_SECRET_KEY=$(pwgen 50 1)" >> .env
 # Skip if you don't want to enable error reporting

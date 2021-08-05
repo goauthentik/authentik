@@ -35,6 +35,8 @@ export class ProviderListPage extends TablePage<Provider> {
         return "pf-icon pf-icon-integration";
     }
 
+    checkbox = true;
+
     @property()
     order = "name";
 
@@ -52,94 +54,91 @@ export class ProviderListPage extends TablePage<Provider> {
             new TableColumn(t`Name`, "name"),
             new TableColumn(t`Application`),
             new TableColumn(t`Type`),
-            new TableColumn(""),
+            new TableColumn(t`Actions`),
         ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`Provider`}
+            .usedBy=${() => {
+                return new ProvidersApi(DEFAULT_CONFIG).providersAllUsedByList({
+                    id: item.pk,
+                });
+            }}
+            .delete=${() => {
+                return new ProvidersApi(DEFAULT_CONFIG).providersAllDestroy({
+                    id: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete>`;
     }
 
     row(item: Provider): TemplateResult[] {
         return [
-            html`<a href="#/core/providers/${item.pk}">
-                ${item.name}
-            </a>`,
-            item.assignedApplicationName ?
-                html`<i class="pf-icon pf-icon-ok pf-m-success"></i>
-                    ${t`Assigned to application `}
-                    <a href="#/core/applications/${item.assignedApplicationSlug}">${item.assignedApplicationName}</a>` :
-                html`<i class="pf-icon pf-icon-warning-triangle pf-m-warning"></i>
-                ${t`Warning: Provider not assigned to any application.`}`,
+            html`<a href="#/core/providers/${item.pk}"> ${item.name} </a>`,
+            item.assignedApplicationName
+                ? html`<i class="pf-icon pf-icon-ok pf-m-success"></i>
+                      ${t`Assigned to application `}
+                      <a href="#/core/applications/${item.assignedApplicationSlug}"
+                          >${item.assignedApplicationName}</a
+                      >`
+                : html`<i class="pf-icon pf-icon-warning-triangle pf-m-warning"></i>
+                      ${t`Warning: Provider not assigned to any application.`}`,
             html`${item.verboseName}`,
-            html`
-            <ak-forms-modal>
-                <span slot="submit">
-                    ${t`Update`}
-                </span>
-                <span slot="header">
-                    ${t`Update ${item.verboseName}`}
-                </span>
+            html` <ak-forms-modal>
+                <span slot="submit"> ${t`Update`} </span>
+                <span slot="header"> ${t`Update ${item.verboseName}`} </span>
                 <ak-proxy-form
                     slot="form"
                     .args=${{
-                        "instancePk": item.pk
+                        instancePk: item.pk,
                     }}
-                    type=${ifDefined(item.component)}>
+                    type=${ifDefined(item.component)}
+                >
                 </ak-proxy-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${t`Edit`}
+                <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <i class="fas fa-edit"></i>
                 </button>
-            </ak-forms-modal>
-            <ak-forms-delete
-                .obj=${item}
-                objectLabel=${t`Provider`}
-                .usedBy=${() => {
-                    return new ProvidersApi(DEFAULT_CONFIG).providersAllUsedByList({
-                        id: item.pk
-                    });
-                }}
-                .delete=${() => {
-                    return new ProvidersApi(DEFAULT_CONFIG).providersAllDestroy({
-                        id: item.pk
-                    });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete`}
-                </button>
-            </ak-forms-delete>`,
+            </ak-forms-modal>`,
         ];
     }
 
     renderToolbar(): TemplateResult {
-        return html`
-        <ak-dropdown class="pf-c-dropdown">
-            <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
-                <span class="pf-c-dropdown__toggle-text">${t`Create`}</span>
-                <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
-            </button>
-            <ul class="pf-c-dropdown__menu" hidden>
-                ${until(new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((types) => {
-                    return types.map((type) => {
-                        return html`<li>
-                            <ak-forms-modal>
-                                <span slot="submit">
-                                    ${t`Create`}
-                                </span>
-                                <span slot="header">
-                                    ${t`Create ${type.name}`}
-                                </span>
-                                <ak-proxy-form
-                                    slot="form"
-                                    type=${type.component}>
-                                </ak-proxy-form>
-                                <button slot="trigger" class="pf-c-dropdown__menu-item">
-                                    ${type.name}<br>
-                                    <small>${type.description}</small>
-                                </button>
-                            </ak-forms-modal>
-                        </li>`;
-                    });
-                }), html`<ak-spinner></ak-spinner>`)}
-            </ul>
-        </ak-dropdown>
-        ${super.renderToolbar()}`;
+        return html` <ak-dropdown class="pf-c-dropdown">
+                <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
+                    <span class="pf-c-dropdown__toggle-text">${t`Create`}</span>
+                    <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
+                </button>
+                <ul class="pf-c-dropdown__menu" hidden>
+                    ${until(
+                        new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((types) => {
+                            return types.map((type) => {
+                                return html`<li>
+                                    <ak-forms-modal>
+                                        <span slot="submit"> ${t`Create`} </span>
+                                        <span slot="header"> ${t`Create ${type.name}`} </span>
+                                        <ak-proxy-form slot="form" type=${type.component}>
+                                        </ak-proxy-form>
+                                        <button slot="trigger" class="pf-c-dropdown__menu-item">
+                                            ${type.name}<br />
+                                            <small>${type.description}</small>
+                                        </button>
+                                    </ak-forms-modal>
+                                </li>`;
+                            });
+                        }),
+                        html`<ak-spinner></ak-spinner>`,
+                    )}
+                </ul>
+            </ak-dropdown>
+            ${super.renderToolbar()}`;
     }
-
 }

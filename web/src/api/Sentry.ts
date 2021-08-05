@@ -15,6 +15,7 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
             Sentry.init({
                 dsn: "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8",
                 release: `authentik@${VERSION}`,
+                tunnel: "/api/v2beta/sentry/",
                 integrations: [
                     new Integrations.BrowserTracing({
                         tracingOrigins: [window.location.host, "localhost"],
@@ -32,24 +33,7 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
                         }
                     }
                     if (hint.originalException instanceof Response) {
-                        const response = hint.originalException as Response;
-                        // We only care about server errors
-                        if (response.status < 500) {
-                            return null;
-                        }
-                        const body = await response.json();
-                        event.message = `${response.status} ${response.url}: ${JSON.stringify(body)}`
-                    }
-                    if (event.exception) {
-                        me().then(user => {
-                            Sentry.showReportDialog({
-                                eventId: event.event_id,
-                                user: {
-                                    email: user.user.email,
-                                    name: user.user.name,
-                                }
-                            });
-                        });
+                        return null;
                     }
                     return event;
                 },

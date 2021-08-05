@@ -35,9 +35,7 @@ class ProviderInfoView(View):
     def get_info(self, provider: OAuth2Provider) -> dict[str, Any]:
         """Get dictionary for OpenID Connect information"""
         scopes = list(
-            ScopeMapping.objects.filter(provider=provider).values_list(
-                "scope_name", flat=True
-            )
+            ScopeMapping.objects.filter(provider=provider).values_list("scope_name", flat=True)
         )
         if SCOPE_OPENID not in scopes:
             scopes.append(SCOPE_OPENID)
@@ -99,9 +97,7 @@ class ProviderInfoView(View):
     # pylint: disable=unused-argument
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """OpenID-compliant Provider Info"""
-        return JsonResponse(
-            self.get_info(self.provider), json_dumps_params={"indent": 2}
-        )
+        return JsonResponse(self.get_info(self.provider), json_dumps_params={"indent": 2})
 
     def dispatch(
         self, request: HttpRequest, application_slug: str, *args: Any, **kwargs: Any

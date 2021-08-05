@@ -15,11 +15,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import (
-    MetaNameSerializer,
-    PassiveSerializer,
-    TypeCreateSerializer,
-)
+from authentik.core.api.utils import MetaNameSerializer, PassiveSerializer, TypeCreateSerializer
 from authentik.core.expression import PropertyMappingEvaluator
 from authentik.core.models import PropertyMapping
 from authentik.lib.utils.reflection import all_subclasses
@@ -141,9 +137,7 @@ class PropertyMappingViewSet(
                 self.request,
                 **test_params.validated_data.get("context", {}),
             )
-            response_data["result"] = dumps(
-                result, indent=(4 if format_result else None)
-            )
+            response_data["result"] = dumps(result, indent=(4 if format_result else None))
         except Exception as exc:  # pylint: disable=broad-except
             response_data["result"] = str(exc)
             response_data["successful"] = False

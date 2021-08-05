@@ -7,7 +7,6 @@ export interface StageHost {
 }
 
 export class BaseStage<Tin, Tout> extends LitElement {
-
     host!: StageHost;
 
     @property({ attribute: false })
@@ -19,7 +18,7 @@ export class BaseStage<Tin, Tout> extends LitElement {
             [key: string]: unknown;
         } = {};
         const form = new FormData(this.shadowRoot?.querySelector("form") || undefined);
-        form.forEach((value, key) => object[key] = value);
+        form.forEach((value, key) => (object[key] = value));
         this.host?.submit(object as unknown as Tout);
     }
 
@@ -28,18 +27,14 @@ export class BaseStage<Tin, Tout> extends LitElement {
             return html``;
         }
         return html`<div class="pf-c-form__alert">
-            ${errors.map(err => {
+            ${errors.map((err) => {
                 return html`<div class="pf-c-alert pf-m-inline pf-m-danger">
                     <div class="pf-c-alert__icon">
                         <i class="fas fa-exclamation-circle"></i>
                     </div>
-                    <h4 class="pf-c-alert__title">
-                        ${err.string}
-                    </h4>
+                    <h4 class="pf-c-alert__title">${err.string}</h4>
                 </div>`;
             })}
         </div>`;
     }
-
-
 }

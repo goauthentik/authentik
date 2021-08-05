@@ -23,7 +23,19 @@ module.exports = {
         {
             type: "category",
             label: "Providers",
-            items: ["providers/oauth2", "providers/saml", "providers/proxy"],
+            items: [
+                "providers/oauth2",
+                "providers/saml",
+                {
+                    type: "category",
+                    label: "Proxy",
+                    items: [
+                        "providers/proxy/proxy",
+                        "providers/proxy/forward_auth",
+                    ],
+                },
+                "providers/ldap",
+            ],
         },
         {
             type: "category",
@@ -37,21 +49,6 @@ module.exports = {
                         "outposts/upgrading",
                         "outposts/manual-deploy-docker-compose",
                         "outposts/manual-deploy-kubernetes",
-                    ],
-                },
-                {
-                    type: "category",
-                    label: "Proxy",
-                    items: [
-                        "outposts/proxy/proxy",
-                        "outposts/proxy/forward_auth",
-                    ],
-                },
-                {
-                    type: "category",
-                    label: "LDAP",
-                    items: [
-                        "outposts/ldap/ldap",
                     ],
                 },
             ],
@@ -172,18 +169,25 @@ module.exports = {
             type: "category",
             label: "Release Notes",
             items: [
+                "releases/v2021.7",
                 "releases/v2021.6",
                 "releases/v2021.5",
                 "releases/v2021.4",
                 "releases/v2021.3",
                 "releases/v2021.2",
                 "releases/v2021.1",
-                "releases/v0.14",
-                "releases/v0.13",
-                "releases/v0.12",
-                "releases/v0.11",
-                "releases/v0.10",
-                "releases/v0.9",
+                {
+                    type: "category",
+                    label: "Previous versions",
+                    items: [
+                        "releases/v0.14",
+                        "releases/v0.13",
+                        "releases/v0.12",
+                        "releases/v0.11",
+                        "releases/v0.10",
+                        "releases/v0.9",
+                    ],
+                },
             ],
         },
         {

@@ -32,7 +32,7 @@ gen-build:
 
 gen-clean:
 	rm -rf web/api/src/
-	rm -rf outpost/api/
+	rm -rf api/
 
 gen-web:
 	docker run \
@@ -55,11 +55,14 @@ gen-outpost:
 		--git-user-id api \
 		-i /local/schema.yml \
 		-g go \
-		-o /local/outpost/api \
+		-o /local/api \
 		--additional-properties=packageName=api,enumClassPrefix=true,useOneOfDiscriminatorLookup=true
-	rm -f outpost/api/go.mod outpost/api/go.sum
+	rm -f api/go.mod api/go.sum
 
 gen: gen-build gen-clean gen-web gen-outpost
+
+migrate:
+	python -m lifecycle.migrate
 
 run:
 	go run -v cmd/server/main.go

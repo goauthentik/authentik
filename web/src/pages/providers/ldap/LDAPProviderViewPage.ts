@@ -25,24 +25,37 @@ import { EVENT_REFRESH } from "../../../constants";
 
 @customElement("ak-provider-ldap-view")
 export class LDAPProviderViewPage extends LitElement {
-
     @property()
     set args(value: { [key: string]: number }) {
         this.providerID = value.id;
     }
 
-    @property({type: Number})
+    @property({ type: Number })
     set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG).providersLdapRetrieve({
-            id: value,
-        }).then((prov) => (this.provider = prov));
+        new ProvidersApi(DEFAULT_CONFIG)
+            .providersLdapRetrieve({
+                id: value,
+            })
+            .then((prov) => (this.provider = prov));
     }
 
     @property({ attribute: false })
     provider?: LDAPProvider;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFPage, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, AKGlobal];
+        return [
+            PFBase,
+            PFButton,
+            PFPage,
+            PFFlex,
+            PFDisplay,
+            PFGallery,
+            PFContent,
+            PFCard,
+            PFDescriptionList,
+            PFSizing,
+            AKGlobal,
+        ];
     }
 
     constructor() {
@@ -58,72 +71,90 @@ export class LDAPProviderViewPage extends LitElement {
             return html``;
         }
         return html`<ak-tabs>
-                <section slot="page-overview" data-tab-title="${t`Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
-                    <div class="pf-u-display-flex pf-u-justify-content-center">
-                        <div class="pf-u-w-75">
-                            <div class="pf-c-card">
-                                <div class="pf-c-card__body">
-                                    <dl class="pf-c-description-list pf-m-3-col-on-lg">
-                                        <div class="pf-c-description-list__group">
-                                            <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${t`Name`}</span>
-                                            </dt>
-                                            <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.provider.name}</div>
-                                            </dd>
-                                        </div>
-                                        <div class="pf-c-description-list__group">
-                                            <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${t`Assigned to application`}</span>
-                                            </dt>
-                                            <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">
-                                                    <ak-provider-related-application .provider=${this.provider}></ak-provider-related-application>
-                                                </div>
-                                            </dd>
-                                        </div>
-                                        <div class="pf-c-description-list__group">
-                                            <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${t`Base DN`}</span>
-                                            </dt>
-                                            <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.provider.baseDn}</div>
-                                            </dd>
-                                        </div>
-                                    </dl>
-                                </div>
-                                <div class="pf-c-card__footer">
-                                    <ak-forms-modal>
-                                        <span slot="submit">
-                                            ${t`Update`}
-                                        </span>
-                                        <span slot="header">
-                                            ${t`Update LDAP Provider`}
-                                        </span>
-                                        <ak-provider-ldap-form
-                                            slot="form"
-                                            .instancePk=${this.provider.pk || 0}>
-                                        </ak-provider-ldap-form>
-                                        <button slot="trigger" class="pf-c-button pf-m-primary">
-                                            ${t`Edit`}
-                                        </button>
-                                    </ak-forms-modal>
-                                </div>
+            <section
+                slot="page-overview"
+                data-tab-title="${t`Overview`}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-u-display-flex pf-u-justify-content-center">
+                    <div class="pf-u-w-75">
+                        <div class="pf-c-card">
+                            <div class="pf-c-card__body">
+                                <dl class="pf-c-description-list pf-m-3-col-on-lg">
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text"
+                                                >${t`Name`}</span
+                                            >
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                ${this.provider.name}
+                                            </div>
+                                        </dd>
+                                    </div>
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text"
+                                                >${t`Assigned to application`}</span
+                                            >
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                <ak-provider-related-application
+                                                    .provider=${this.provider}
+                                                ></ak-provider-related-application>
+                                            </div>
+                                        </dd>
+                                    </div>
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text"
+                                                >${t`Base DN`}</span
+                                            >
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                ${this.provider.baseDn}
+                                            </div>
+                                        </dd>
+                                    </div>
+                                </dl>
+                            </div>
+                            <div class="pf-c-card__footer">
+                                <ak-forms-modal>
+                                    <span slot="submit"> ${t`Update`} </span>
+                                    <span slot="header"> ${t`Update LDAP Provider`} </span>
+                                    <ak-provider-ldap-form
+                                        slot="form"
+                                        .instancePk=${this.provider.pk}
+                                    >
+                                    </ak-provider-ldap-form>
+                                    <button slot="trigger" class="pf-c-button pf-m-primary">
+                                        ${t`Edit`}
+                                    </button>
+                                </ak-forms-modal>
                             </div>
                         </div>
                     </div>
-                </section>
-                <section slot="page-changelog" data-tab-title="${t`Changelog`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
-                    <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.provider.pk || ""}
-                                targetModelApp="authentik_providers_ldap"
-                                targetModelName="LDAPProvider">
-                            </ak-object-changelog>
-                        </div>
+                </div>
+            </section>
+            <section
+                slot="page-changelog"
+                data-tab-title="${t`Changelog`}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <div class="pf-c-card__body">
+                        <ak-object-changelog
+                            targetModelPk=${this.provider.pk || ""}
+                            targetModelApp="authentik_providers_ldap"
+                            targetModelName="LDAPProvider"
+                        >
+                        </ak-object-changelog>
                     </div>
-                </section>
-            </ak-tabs>`;
+                </div>
+            </section>
+        </ak-tabs>`;
     }
 }

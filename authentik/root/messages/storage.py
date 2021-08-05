@@ -27,6 +27,7 @@ class ChannelsStorage(BaseStorage):
                     uid,
                     {
                         "type": "event.update",
+                        "message_type": "message",
                         "level": message.level_tag,
                         "tags": message.tags,
                         "message": message.message,

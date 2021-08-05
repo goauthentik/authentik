@@ -11,7 +11,12 @@ import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import AKGlobal from "../../../authentik.css";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
-import { IdentificationChallenge, IdentificationChallengeResponseRequest, LoginSource, UserFieldsEnum } from "authentik-api";
+import {
+    IdentificationChallenge,
+    IdentificationChallengeResponseRequest,
+    LoginSource,
+    UserFieldsEnum,
+} from "authentik-api";
 
 export const PasswordManagerPrefill: {
     password: string | undefined;
@@ -21,13 +26,27 @@ export const PasswordManagerPrefill: {
     totp: undefined,
 };
 
-export const OR_LIST_FORMATTERS = new Intl.ListFormat("default", { style: "short", type: "disjunction" });
+export const OR_LIST_FORMATTERS = new Intl.ListFormat("default", {
+    style: "short",
+    type: "disjunction",
+});
 
 @customElement("ak-stage-identification")
-export class IdentificationStage extends BaseStage<IdentificationChallenge, IdentificationChallengeResponseRequest> {
-
+export class IdentificationStage extends BaseStage<
+    IdentificationChallenge,
+    IdentificationChallengeResponseRequest
+> {
     static get styles(): CSSResult[] {
-        return [PFBase, PFAlert, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal].concat(
+        return [
+            PFBase,
+            PFAlert,
+            PFLogin,
+            PFForm,
+            PFFormControl,
+            PFTitle,
+            PFButton,
+            AKGlobal,
+        ].concat(
             css`
                 /* login page's icons */
                 .pf-c-login__main-footer-links-item button {
@@ -41,7 +60,7 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
                     height: 100%;
                     max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
                 }
-            `
+            `,
         );
     }
 
@@ -56,12 +75,14 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
         username.setAttribute("autocomplete", "username");
         username.onkeyup = (ev: Event) => {
             const el = ev.target as HTMLInputElement;
-            (this.shadowRoot || this).querySelectorAll<HTMLInputElement>("input[name=uidField]").forEach(input => {
-                input.value = el.value;
-                // Because we assume only one input field exists that matches this
-                // call focus so the user can press enter
-                input.focus();
-            });
+            (this.shadowRoot || this)
+                .querySelectorAll<HTMLInputElement>("input[name=uidField]")
+                .forEach((input) => {
+                    input.value = el.value;
+                    // Because we assume only one input field exists that matches this
+                    // call focus so the user can press enter
+                    input.focus();
+                });
         };
         wrapperForm.appendChild(username);
         const password = document.createElement("input");
@@ -79,11 +100,13 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
             PasswordManagerPrefill.password = el.value;
             // Because password managers fill username, then password,
             // we need to re-focus the uid_field here too
-            (this.shadowRoot || this).querySelectorAll<HTMLInputElement>("input[name=uidField]").forEach(input => {
-                // Because we assume only one input field exists that matches this
-                // call focus so the user can press enter
-                input.focus();
-            });
+            (this.shadowRoot || this)
+                .querySelectorAll<HTMLInputElement>("input[name=uidField]")
+                .forEach((input) => {
+                    // Because we assume only one input field exists that matches this
+                    // call focus so the user can press enter
+                    input.focus();
+                });
         };
         wrapperForm.appendChild(password);
         const totp = document.createElement("input");
@@ -101,11 +124,13 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
             PasswordManagerPrefill.totp = el.value;
             // Because totp managers fill username, then password, then optionally,
             // we need to re-focus the uid_field here too
-            (this.shadowRoot || this).querySelectorAll<HTMLInputElement>("input[name=uidField]").forEach(input => {
-                // Because we assume only one input field exists that matches this
-                // call focus so the user can press enter
-                input.focus();
-            });
+            (this.shadowRoot || this)
+                .querySelectorAll<HTMLInputElement>("input[name=uidField]")
+                .forEach((input) => {
+                    // Because we assume only one input field exists that matches this
+                    // call focus so the user can press enter
+                    input.focus();
+                });
         };
         wrapperForm.appendChild(totp);
     }
@@ -113,16 +138,19 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
     renderSource(source: LoginSource): TemplateResult {
         let icon = html`<i class="fas fas fa-share-square" title="${source.name}"></i>`;
         if (source.iconUrl) {
-            icon = html`<img src="${source.iconUrl}" alt="${source.name}">`;
+            icon = html`<img src="${source.iconUrl}" alt="${source.name}" />`;
         }
         return html`<li class="pf-c-login__main-footer-links-item">
-                <button type="button" @click=${() => {
+            <button
+                type="button"
+                @click=${() => {
                     if (!this.host) return;
                     this.host.challenge = source.challenge;
-                }}>
-                    ${icon}
-                </button>
-            </li>`;
+                }}
+            >
+                ${icon}
+            </button>
+        </li>`;
     }
 
     renderFooter(): TemplateResult {
@@ -130,24 +158,26 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
             return html``;
         }
         return html`<div class="pf-c-login__main-footer-band">
-                ${this.challenge.enrollUrl ? html`
-                <p class="pf-c-login__main-footer-band-item">
-                    ${t`Need an account?`}
-                    <a id="enroll" href="${this.challenge.enrollUrl}">${t`Sign up.`}</a>
-                </p>` : html``}
-                ${this.challenge.recoveryUrl ? html`
-                <p class="pf-c-login__main-footer-band-item">
-                    <a id="recovery" href="${this.challenge.recoveryUrl}">${t`Forgot username or password?`}</a>
-                </p>` : html``}
-            </div>`;
+            ${this.challenge.enrollUrl
+                ? html` <p class="pf-c-login__main-footer-band-item">
+                      ${t`Need an account?`}
+                      <a id="enroll" href="${this.challenge.enrollUrl}">${t`Sign up.`}</a>
+                  </p>`
+                : html``}
+            ${this.challenge.recoveryUrl
+                ? html` <p class="pf-c-login__main-footer-band-item">
+                      <a id="recovery" href="${this.challenge.recoveryUrl}"
+                          >${t`Forgot username or password?`}</a
+                      >
+                  </p>`
+                : html``}
+        </div>`;
     }
 
     renderInput(): TemplateResult {
         let type = "text";
         if (!this.challenge?.userFields) {
-            return html`<p>
-                ${t`Select one of the sources below to login.`}
-            </p>`;
+            return html`<p>${t`Select one of the sources below to login.`}</p>`;
         }
         const fields = (this.challenge?.userFields || []).sort();
         // Check if the field should be *only* email to set the input type
@@ -159,40 +189,48 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
             [UserFieldsEnum.Email]: t`Email`,
             [UserFieldsEnum.Upn]: t`UPN`,
         };
-        const label = OR_LIST_FORMATTERS.format(fields.map(f => uiFields[f]));
+        const label = OR_LIST_FORMATTERS.format(fields.map((f) => uiFields[f]));
         return html`<ak-form-element
                 label=${label}
                 ?required="${true}"
                 class="pf-c-form__group"
-                .errors=${(this.challenge.responseErrors || {})["uid_field"]}>
+                .errors=${(this.challenge.responseErrors || {})["uid_field"]}
+            >
                 <!-- @ts-ignore -->
-                <input type=${type}
+                <input
+                    type=${type}
                     name="uidField"
                     placeholder=${label}
                     autofocus=""
                     autocomplete="username"
                     class="pf-c-form-control"
-                    required>
+                    required
+                />
             </ak-form-element>
-            ${this.challenge.passwordFields ? html`
-                <ak-form-element
-                    label="${t`Password`}"
-                    ?required="${true}"
-                    class="pf-c-form__group"
-                    .errors=${(this.challenge.responseErrors || {})["password"]}>
-                    <input type="password"
-                        name="password"
-                        placeholder="${t`Password`}"
-                        autofocus=""
-                        autocomplete="current-password"
-                        class="pf-c-form-control"
-                        required
-                        value=${PasswordManagerPrefill.password || ""}>
-                </ak-form-element>
-            `: html``}
-            ${"non_field_errors" in (this.challenge?.responseErrors || {}) ?
-                this.renderNonFieldErrors(this.challenge?.responseErrors?.non_field_errors || []) :
-                html``}
+            ${this.challenge.passwordFields
+                ? html`
+                      <ak-form-element
+                          label="${t`Password`}"
+                          ?required="${true}"
+                          class="pf-c-form__group"
+                          .errors=${(this.challenge.responseErrors || {})["password"]}
+                      >
+                          <input
+                              type="password"
+                              name="password"
+                              placeholder="${t`Password`}"
+                              autofocus=""
+                              autocomplete="current-password"
+                              class="pf-c-form-control"
+                              required
+                              value=${PasswordManagerPrefill.password || ""}
+                          />
+                      </ak-form-element>
+                  `
+                : html``}
+            ${"non_field_errors" in (this.challenge?.responseErrors || {})
+                ? this.renderNonFieldErrors(this.challenge?.responseErrors?.non_field_errors || [])
+                : html``}
             <div class="pf-c-form__group pf-m-action">
                 <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                     ${this.challenge.primaryAction}
@@ -202,23 +240,21 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state
-                ?loading="${true}"
-                header=${t`Loading`}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">
-                    ${this.challenge.flowInfo?.title}
-                </h1>
+                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
             <div class="pf-c-login__main-body">
-                <form class="pf-c-form" @submit=${(e: Event) => {this.submitForm(e);}}>
-                    ${this.challenge.applicationPre ?
-                        html`<p>
-                            ${t`Login to continue to ${this.challenge.applicationPre}.`}
-                        </p>`:
-                        html``}
+                <form
+                    class="pf-c-form"
+                    @submit=${(e: Event) => {
+                        this.submitForm(e);
+                    }}
+                >
+                    ${this.challenge.applicationPre
+                        ? html`<p>${t`Login to continue to ${this.challenge.applicationPre}.`}</p>`
+                        : html``}
                     ${this.renderInput()}
                 </form>
             </div>
@@ -231,5 +267,4 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
                 ${this.renderFooter()}
             </footer>`;
     }
-
 }

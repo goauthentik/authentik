@@ -16,11 +16,7 @@ class Migration(migrations.Migration):
             model_name="ldapsource",
             name="server_uri",
             field=models.TextField(
-                validators=[
-                    authentik.lib.models.DomainlessURLValidator(
-                        schemes=["ldap", "ldaps"]
-                    )
-                ],
+                validators=[authentik.lib.models.DomainlessURLValidator(schemes=["ldap", "ldaps"])],
                 verbose_name="Server URI",
             ),
         ),

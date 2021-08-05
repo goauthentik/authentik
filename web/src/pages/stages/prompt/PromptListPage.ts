@@ -28,6 +28,8 @@ export class PromptListPage extends TablePage<Prompt> {
         return "pf-icon pf-icon-plugged";
     }
 
+    checkbox = true;
+
     @property()
     order = "order";
 
@@ -47,8 +49,31 @@ export class PromptListPage extends TablePage<Prompt> {
             new TableColumn(t`Type`, "type"),
             new TableColumn(t`Order`, "order"),
             new TableColumn(t`Stages`),
-            new TableColumn(""),
+            new TableColumn(t`Actions`),
         ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`Prompt`}
+            .usedBy=${() => {
+                return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsUsedByList({
+                    promptUuid: item.pk,
+                });
+            }}
+            .delete=${() => {
+                return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsDestroy({
+                    promptUuid: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete>`;
     }
 
     row(item: Prompt): TemplateResult[] {
@@ -60,56 +85,26 @@ export class PromptListPage extends TablePage<Prompt> {
             html`${item.promptstageSet?.map((stage) => {
                 return html`<li>${stage.name}</li>`;
             })}`,
-            html`
-            <ak-forms-modal>
-                <span slot="submit">
-                    ${t`Update`}
-                </span>
-                <span slot="header">
-                    ${t`Update Prompt`}
-                </span>
-                <ak-prompt-form slot="form" .instancePk=${item.pk}>
-                </ak-prompt-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${t`Edit`}
+            html` <ak-forms-modal>
+                <span slot="submit"> ${t`Update`} </span>
+                <span slot="header"> ${t`Update Prompt`} </span>
+                <ak-prompt-form slot="form" .instancePk=${item.pk}> </ak-prompt-form>
+                <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <i class="fas fa-edit"></i>
                 </button>
-            </ak-forms-modal>
-            <ak-forms-delete
-                .obj=${item}
-                objectLabel=${t`Prompt`}
-                .usedBy=${() => {
-                    return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsUsedByList({
-                        promptUuid: item.pk
-                    });
-                }}
-                .delete=${() => {
-                    return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsDestroy({
-                        promptUuid: item.pk
-                    });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete`}
-                </button>
-            </ak-forms-delete>`,
+            </ak-forms-modal>`,
         ];
     }
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-forms-modal>
-            <span slot="submit">
-                ${t`Create`}
-            </span>
-            <span slot="header">
-                ${t`Create Prompt`}
-            </span>
-            <ak-prompt-form slot="form">
-            </ak-prompt-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${t`Create`}
-            </button>
-        </ak-forms-modal>
-        ${super.renderToolbar()}
+            <ak-forms-modal>
+                <span slot="submit"> ${t`Create`} </span>
+                <span slot="header"> ${t`Create Prompt`} </span>
+                <ak-prompt-form slot="form"> </ak-prompt-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+            </ak-forms-modal>
+            ${super.renderToolbar()}
         `;
     }
 }

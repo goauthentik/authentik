@@ -100,13 +100,9 @@ class MetadataProcessor:
         digest_algorithm_transform = DIGEST_ALGORITHM_TRANSLATION_MAP.get(
             self.provider.digest_algorithm, xmlsec.constants.TransformSha1
         )
-        assertion = entity_descriptor.xpath("//md:EntityDescriptor", namespaces=NS_MAP)[
-            0
-        ]
+        assertion = entity_descriptor.xpath("//md:EntityDescriptor", namespaces=NS_MAP)[0]
         xmlsec.tree.add_ids(assertion, ["ID"])
-        signature_node = xmlsec.tree.find_node(
-            assertion, xmlsec.constants.NodeSignature
-        )
+        signature_node = xmlsec.tree.find_node(assertion, xmlsec.constants.NodeSignature)
         ref = xmlsec.template.add_reference(
             signature_node,
             digest_algorithm_transform,
@@ -133,9 +129,7 @@ class MetadataProcessor:
 
     def build_entity_descriptor(self) -> str:
         """Build full EntityDescriptor"""
-        entity_descriptor = Element(
-            f"{{{NS_SAML_METADATA}}}EntityDescriptor", nsmap=NS_MAP
-        )
+        entity_descriptor = Element(f"{{{NS_SAML_METADATA}}}EntityDescriptor", nsmap=NS_MAP)
         entity_descriptor.attrib["ID"] = self.xml_id
         entity_descriptor.attrib["entityID"] = self.provider.issuer
 

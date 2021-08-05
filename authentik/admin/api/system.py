@@ -61,9 +61,7 @@ class SystemSerializer(PassiveSerializer):
         return {
             "python_version": python_version,
             "gunicorn_version": ".".join(str(x) for x in gunicorn_version),
-            "environment": "kubernetes"
-            if SERVICE_HOST_ENV_NAME in os.environ
-            else "compose",
+            "environment": "kubernetes" if SERVICE_HOST_ENV_NAME in os.environ else "compose",
             "architecture": platform.machine(),
             "platform": platform.platform(),
             "uname": " ".join(platform.uname()),

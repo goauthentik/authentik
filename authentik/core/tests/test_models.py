@@ -22,9 +22,7 @@ class TestModels(TestCase):
 
     def test_token_expire_no_expire(self):
         """Test token expiring with "expiring" set"""
-        token = Token.objects.create(
-            expires=now(), user=get_anonymous_user(), expiring=False
-        )
+        token = Token.objects.create(expires=now(), user=get_anonymous_user(), expiring=False)
         sleep(0.5)
         self.assertFalse(token.is_expired)
 

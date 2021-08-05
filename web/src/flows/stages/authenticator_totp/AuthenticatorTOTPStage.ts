@@ -14,53 +14,66 @@ import { showMessage } from "../../../elements/messages/MessageContainer";
 import "../../../elements/EmptyState";
 import "../../FormStatic";
 import { MessageLevel } from "../../../elements/messages/Message";
-import { AuthenticatorTOTPChallenge, AuthenticatorTOTPChallengeResponseRequest } from "authentik-api";
+import {
+    AuthenticatorTOTPChallenge,
+    AuthenticatorTOTPChallengeResponseRequest,
+} from "authentik-api";
 import { ifDefined } from "lit-html/directives/if-defined";
 
-
 @customElement("ak-stage-authenticator-totp")
-export class AuthenticatorTOTPStage extends BaseStage<AuthenticatorTOTPChallenge, AuthenticatorTOTPChallengeResponseRequest> {
-
+export class AuthenticatorTOTPStage extends BaseStage<
+    AuthenticatorTOTPChallenge,
+    AuthenticatorTOTPChallengeResponseRequest
+> {
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
     }
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state
-                ?loading="${true}"
-                header=${t`Loading`}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">
-                    ${this.challenge.flowInfo?.title}
-                </h1>
+                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
             <div class="pf-c-login__main-body">
-                <form class="pf-c-form" @submit=${(e: Event) => { this.submitForm(e); }}>
+                <form
+                    class="pf-c-form"
+                    @submit=${(e: Event) => {
+                        this.submitForm(e);
+                    }}
+                >
                     <ak-form-static
                         class="pf-c-form__group"
                         userAvatar="${this.challenge.pendingUserAvatar}"
-                        user=${this.challenge.pendingUser}>
+                        user=${this.challenge.pendingUser}
+                    >
                         <div slot="link">
-                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}">${t`Not you?`}</a>
+                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
+                                >${t`Not you?`}</a
+                            >
                         </div>
                     </ak-form-static>
                     <input type="hidden" name="otp_uri" value=${this.challenge.configUrl} />
                     <ak-form-element>
                         <!-- @ts-ignore -->
                         <qr-code data="${this.challenge.configUrl}"></qr-code>
-                        <button type="button" class="pf-c-button pf-m-secondary pf-m-progress pf-m-in-progress" @click=${(e: Event) => {
-                            e.preventDefault();
-                            if (!this.challenge?.configUrl) return;
-                            navigator.clipboard.writeText(this.challenge?.configUrl).then(() => {
-                                showMessage({
-                                    level: MessageLevel.success,
-                                    message: t`Successfully copied TOTP Config.`
-                                });
-                            });
-                        }}>
+                        <button
+                            type="button"
+                            class="pf-c-button pf-m-secondary pf-m-progress pf-m-in-progress"
+                            @click=${(e: Event) => {
+                                e.preventDefault();
+                                if (!this.challenge?.configUrl) return;
+                                navigator.clipboard
+                                    .writeText(this.challenge?.configUrl)
+                                    .then(() => {
+                                        showMessage({
+                                            level: MessageLevel.success,
+                                            message: t`Successfully copied TOTP Config.`,
+                                        });
+                                    });
+                            }}
+                        >
                             <span class="pf-c-button__progress"><i class="fas fa-copy"></i></span>
                             ${t`Copy`}
                         </button>
@@ -69,9 +82,11 @@ export class AuthenticatorTOTPStage extends BaseStage<AuthenticatorTOTPChallenge
                         label="${t`Code`}"
                         ?required="${true}"
                         class="pf-c-form__group"
-                        .errors=${(this.challenge?.responseErrors || {})["code"]}>
+                        .errors=${(this.challenge?.responseErrors || {})["code"]}
+                    >
                         <!-- @ts-ignore -->
-                        <input type="text"
+                        <input
+                            type="text"
                             name="code"
                             inputmode="numeric"
                             pattern="[0-9]*"
@@ -79,7 +94,8 @@ export class AuthenticatorTOTPStage extends BaseStage<AuthenticatorTOTPChallenge
                             autofocus=""
                             autocomplete="one-time-code"
                             class="pf-c-form-control"
-                            required>
+                            required
+                        />
                     </ak-form-element>
 
                     <div class="pf-c-form__group pf-m-action">
@@ -90,9 +106,7 @@ export class AuthenticatorTOTPStage extends BaseStage<AuthenticatorTOTPChallenge
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links">
-                </ul>
+                <ul class="pf-c-login__main-footer-links"></ul>
             </footer>`;
     }
-
 }

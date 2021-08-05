@@ -4,7 +4,7 @@ from channels.generic.websocket import JsonWebsocketConsumer
 from rest_framework.exceptions import AuthenticationFailed
 from structlog.stdlib import get_logger
 
-from authentik.api.authentication import token_from_header
+from authentik.api.authentication import bearer_auth
 from authentik.core.models import User
 
 LOGGER = get_logger()
@@ -24,12 +24,12 @@ class AuthJsonConsumer(JsonWebsocketConsumer):
         raw_header = headers[b"authorization"]
 
         try:
-            token = token_from_header(raw_header)
-            # token is only None when no header was given, in which case we deny too
-            if not token:
+            user = bearer_auth(raw_header)
+            # user is only None when no header was given, in which case we deny too
+            if not user:
                 raise DenyConnection()
         except AuthenticationFailed as exc:
             LOGGER.warning("Failed to authenticate", exc=exc)
             raise DenyConnection()
 
-        self.user = token.user
+        self.user = user

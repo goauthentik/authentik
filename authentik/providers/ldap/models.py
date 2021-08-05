@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Group, Provider
+from authentik.crypto.models import CertificateKeyPair
 from authentik.outposts.models import OutpostModel
 
 
@@ -25,6 +26,36 @@ class LDAPProvider(OutpostModel, Provider):
         help_text=_(
             "Users in this group can do search queries. "
             "If not set, every user can execute search queries."
+        ),
+    )
+
+    tls_server_name = models.TextField(
+        default="",
+        blank=True,
+    )
+    certificate = models.ForeignKey(
+        CertificateKeyPair,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+
+    uid_start_number = models.IntegerField(
+        default=2000,
+        help_text=_(
+            "The start for uidNumbers, this number is added to the user.Pk to make sure that the "
+            "numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't "
+            "collide with local users uidNumber"
+        ),
+    )
+
+    gid_start_number = models.IntegerField(
+        default=4000,
+        help_text=_(
+            "The start for gidNumbers, this number is added to a number generated from the "
+            "group.Pk to make sure that the numbers aren't too low for POSIX groups. Default "
+            "is 4000 to ensure that we don't collide with local groups or users "
+            "primary groups gidNumber"
         ),
     )
 

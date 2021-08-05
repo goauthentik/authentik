@@ -23,9 +23,7 @@ class TestPoliciesAPI(APITestCase):
                 "user": self.user.pk,
             },
         )
-        self.assertJSONEqual(
-            response.content.decode(), {"passing": True, "messages": ["dummy"]}
-        )
+        self.assertJSONEqual(response.content.decode(), {"passing": True, "messages": ["dummy"]})
 
     def test_types(self):
         """Test Policy's types endpoint"""

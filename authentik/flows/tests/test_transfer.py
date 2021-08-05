@@ -76,9 +76,7 @@ class TestFlowTransfer(TransactionTestCase):
             PolicyBinding.objects.create(policy=flow_policy, target=flow, order=0)
 
             user_login = UserLoginStage.objects.create(name=stage_name)
-            fsb = FlowStageBinding.objects.create(
-                target=flow, stage=user_login, order=0
-            )
+            fsb = FlowStageBinding.objects.create(target=flow, stage=user_login, order=0)
             PolicyBinding.objects.create(policy=flow_policy, target=fsb, order=0)
 
             exporter = FlowExporter(flow)

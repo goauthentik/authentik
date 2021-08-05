@@ -53,11 +53,7 @@ class Migration(migrations.Migration):
                 (
                     "server_uri",
                     models.TextField(
-                        validators=[
-                            django.core.validators.URLValidator(
-                                schemes=["ldap", "ldaps"]
-                            )
-                        ],
+                        validators=[django.core.validators.URLValidator(schemes=["ldap", "ldaps"])],
                         verbose_name="Server URI",
                     ),
                 ),

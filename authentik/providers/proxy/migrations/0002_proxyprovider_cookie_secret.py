@@ -15,8 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="proxyprovider",
             name="cookie_secret",
-            field=models.TextField(
-                default=authentik.providers.proxy.models.get_cookie_secret
-            ),
+            field=models.TextField(default=authentik.providers.proxy.models.get_cookie_secret),
         ),
     ]

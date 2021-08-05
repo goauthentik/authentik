@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2021.6.2
+  version: 2021.7.2
   description: Making authentication simple.
   contact:
     email: hello@beryju.org
@@ -1933,6 +1933,24 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: members_by_pk
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
+      - in: query
+        name: members_by_username
+        schema:
+          type: array
+          items:
+            type: string
+        description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+          only.
+        explode: true
+        style: form
+      - in: query
         name: name
         schema:
           type: string
@@ -2430,6 +2448,15 @@ paths:
         schema:
           type: string
       - in: query
+        name: expires
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: expiring
+        schema:
+          type: boolean
+      - in: query
         name: identifier
         schema:
           type: string
@@ -2835,6 +2862,10 @@ paths:
           type: string
         description: Attributes
       - in: query
+        name: email
+        schema:
+          type: string
+      - in: query
         name: is_active
         schema:
           type: boolean
@@ -3096,7 +3127,11 @@ paths:
                 $ref: '#/components/schemas/Link'
           description: ''
         '404':
-          description: No recovery flow found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Link'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -3572,6 +3607,37 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+    post:
+      operationId: events_events_create
+      description: Event Read-Only Viewset
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EventRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EventRequest'
+        required: true
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/events/events/{event_uuid}/:
     get:
       operationId: events_events_retrieve
@@ -3596,6 +3662,106 @@ paths:
               schema:
                 $ref: '#/components/schemas/Event'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    put:
+      operationId: events_events_update
+      description: Event Read-Only Viewset
+      parameters:
+      - in: path
+        name: event_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Event.
+        required: true
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EventRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EventRequest'
+        required: true
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    patch:
+      operationId: events_events_partial_update
+      description: Event Read-Only Viewset
+      parameters:
+      - in: path
+        name: event_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Event.
+        required: true
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEventRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEventRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEventRequest'
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    delete:
+      operationId: events_events_destroy
+      description: Event Read-Only Viewset
+      parameters:
+      - in: path
+        name: event_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Event.
+        required: true
+      tags:
+      - events
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -4441,6 +4607,18 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: invalid_response_action
+        schema:
+          type: string
+          enum:
+          - restart
+          - restart_with_context
+          - retry
+        description: Configure how the flow executor should handle an invalid response
+          to a challenge. RETRY returns the error message and a similar challenge
+          to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
+          restarts the flow while keeping the current context.
       - in: query
         name: order
         schema:
@@ -18494,7 +18672,10 @@ components:
           title: Kp uuid
         name:
           type: string
-        fingerprint:
+        fingerprint_sha256:
+          type: string
+          readOnly: true
+        fingerprint_sha1:
           type: string
           readOnly: true
         cert_expiry:
@@ -18517,7 +18698,8 @@ components:
       - cert_expiry
       - cert_subject
       - certificate_download_url
-      - fingerprint
+      - fingerprint_sha1
+      - fingerprint_sha256
       - name
       - pk
       - private_key_available
@@ -18759,6 +18941,12 @@ components:
             name: Documentation
           - href: https://goauthentik.io/
             name: authentik Website
+        flow_authentication:
+          type: string
+        flow_invalidation:
+          type: string
+        flow_recovery:
+          type: string
         flow_unenrollment:
           type: string
       required:
@@ -19242,7 +19430,7 @@ components:
           type: object
           additionalProperties: {}
         action:
-          type: string
+          $ref: '#/components/schemas/EventActions'
         app:
           type: string
         context:
@@ -19266,6 +19454,35 @@ components:
       - app
       - created
       - pk
+    EventActions:
+      enum:
+      - login
+      - login_failed
+      - logout
+      - user_write
+      - suspicious_request
+      - password_set
+      - secret_view
+      - secret_rotate
+      - invitation_used
+      - authorize_application
+      - source_linked
+      - impersonation_started
+      - impersonation_ended
+      - policy_execution
+      - policy_exception
+      - property_mapping_exception
+      - system_task_execution
+      - system_task_exception
+      - system_exception
+      - configuration_error
+      - model_created
+      - model_updated
+      - model_deleted
+      - email_sent
+      - update_available
+      - custom_
+      type: string
     EventMatcherPolicy:
       type: object
       description: Event Matcher Policy Serializer
@@ -19296,7 +19513,7 @@ components:
           readOnly: true
         action:
           allOf:
-          - $ref: '#/components/schemas/EventMatcherPolicyActionEnum'
+          - $ref: '#/components/schemas/EventActions'
           description: Match created events with this action type. When left empty,
             all action types will be matched.
         client_ip:
@@ -19314,34 +19531,6 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
-    EventMatcherPolicyActionEnum:
-      enum:
-      - login
-      - login_failed
-      - logout
-      - user_write
-      - suspicious_request
-      - password_set
-      - secret_view
-      - invitation_used
-      - authorize_application
-      - source_linked
-      - impersonation_started
-      - impersonation_ended
-      - policy_execution
-      - policy_exception
-      - property_mapping_exception
-      - system_task_execution
-      - system_task_exception
-      - system_exception
-      - configuration_error
-      - model_created
-      - model_updated
-      - model_deleted
-      - email_sent
-      - update_available
-      - custom_
-      type: string
     EventMatcherPolicyRequest:
       type: object
       description: Event Matcher Policy Serializer
@@ -19355,7 +19544,7 @@ components:
             will be logged. By default, only execution errors are logged.
         action:
           allOf:
-          - $ref: '#/components/schemas/EventMatcherPolicyActionEnum'
+          - $ref: '#/components/schemas/EventActions'
           description: Match created events with this action type. When left empty,
             all action types will be matched.
         client_ip:
@@ -19375,7 +19564,7 @@ components:
           type: object
           additionalProperties: {}
         action:
-          type: string
+          $ref: '#/components/schemas/EventActions'
         app:
           type: string
         context:
@@ -19673,6 +19862,13 @@ components:
           minimum: -2147483648
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
+        invalid_response_action:
+          allOf:
+          - $ref: '#/components/schemas/InvalidResponseActionEnum'
+          description: Configure how the flow executor should handle an invalid response
+            to a challenge. RETRY returns the error message and a similar challenge
+            to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
+            restarts the flow while keeping the current context.
       required:
       - order
       - pk
@@ -19703,6 +19899,13 @@ components:
           minimum: -2147483648
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
+        invalid_response_action:
+          allOf:
+          - $ref: '#/components/schemas/InvalidResponseActionEnum'
+          description: Configure how the flow executor should handle an invalid response
+            to a challenge. RETRY returns the error message and a similar challenge
+            to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
+            restarts the flow while keeping the current context.
       required:
       - order
       - stage
@@ -19756,11 +19959,100 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+        users_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupMember'
+          readOnly: true
       required:
       - name
       - parent
       - pk
       - users
+      - users_obj
+    GroupMember:
+      type: object
+      description: Stripped down user serializer to show relevant users for groups
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        is_superuser:
+          type: boolean
+          readOnly: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        avatar:
+          type: string
+          readOnly: true
+        attributes:
+          type: object
+          additionalProperties: {}
+        uid:
+          type: string
+          readOnly: true
+      required:
+      - avatar
+      - is_superuser
+      - name
+      - pk
+      - uid
+      - username
+    GroupMemberRequest:
+      type: object
+      description: Stripped down user serializer to show relevant users for groups
+      properties:
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - name
+      - username
     GroupRequest:
       type: object
       description: Group Serializer
@@ -20048,6 +20340,12 @@ components:
       - api
       - recovery
       type: string
+    InvalidResponseActionEnum:
+      enum:
+      - retry
+      - restart
+      - restart_with_context
+      type: string
     Invitation:
       type: object
       description: Invitation Serializer
@@ -20225,6 +20523,27 @@ components:
           nullable: true
           description: Users in this group can do search queries. If not set, every
             user can execute search queries.
+        certificate:
+          type: string
+          format: uuid
+          nullable: true
+        tls_server_name:
+          type: string
+        uid_start_number:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The start for uidNumbers, this number is added to the user.Pk
+            to make sure that the numbers aren't too low for POSIX users. Default
+            is 2000 to ensure that we don't collide with local users uidNumber
+        gid_start_number:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The start for gidNumbers, this number is added to a number
+            generated from the group.Pk to make sure that the numbers aren't too low
+            for POSIX groups. Default is 4000 to ensure that we don't collide with
+            local groups or users primary groups gidNumber
       required:
       - application_slug
       - bind_flow_slug
@@ -20337,6 +20656,27 @@ components:
           nullable: true
           description: Users in this group can do search queries. If not set, every
             user can execute search queries.
+        certificate:
+          type: string
+          format: uuid
+          nullable: true
+        tls_server_name:
+          type: string
+        uid_start_number:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The start for uidNumbers, this number is added to the user.Pk
+            to make sure that the numbers aren't too low for POSIX users. Default
+            is 2000 to ensure that we don't collide with local users uidNumber
+        gid_start_number:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The start for gidNumbers, this number is added to a number
+            generated from the group.Pk to make sure that the numbers aren't too low
+            for POSIX groups. Default is 4000 to ensure that we don't collide with
+            local groups or users primary groups gidNumber
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -20370,6 +20710,27 @@ components:
           nullable: true
           description: Users in this group can do search queries. If not set, every
             user can execute search queries.
+        certificate:
+          type: string
+          format: uuid
+          nullable: true
+        tls_server_name:
+          type: string
+        uid_start_number:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The start for uidNumbers, this number is added to the user.Pk
+            to make sure that the numbers aren't too low for POSIX users. Default
+            is 2000 to ensure that we don't collide with local users uidNumber
+        gid_start_number:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The start for gidNumbers, this number is added to a number
+            generated from the group.Pk to make sure that the numbers aren't too low
+            for POSIX groups. Default is 4000 to ensure that we don't collide with
+            local groups or users primary groups gidNumber
       required:
       - authorization_flow
       - name
@@ -21217,6 +21578,14 @@ components:
         config:
           type: object
           additionalProperties: {}
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects which are managed by authentik. These objects are created
+            and updated automatically. This is flag only indicates that an object
+            can be overwritten by migrations. You can still modify the objects via
+            the API, but expect changes to be overwritten in a later update.
       required:
       - config
       - name
@@ -21279,6 +21648,14 @@ components:
         config:
           type: object
           additionalProperties: {}
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects which are managed by authentik. These objects are created
+            and updated automatically. This is flag only indicates that an object
+            can be overwritten by migrations. You can still modify the objects via
+            the API, but expect changes to be overwritten in a later update.
       required:
       - config
       - name
@@ -24429,7 +24806,7 @@ components:
             will be logged. By default, only execution errors are logged.
         action:
           allOf:
-          - $ref: '#/components/schemas/EventMatcherPolicyActionEnum'
+          - $ref: '#/components/schemas/EventActions'
           description: Match created events with this action type. When left empty,
             all action types will be matched.
         client_ip:
@@ -24441,6 +24818,29 @@ components:
           - $ref: '#/components/schemas/AppEnum'
           description: Match events created by selected application. When left empty,
             all applications are matched.
+    PatchedEventRequest:
+      type: object
+      description: Event Serializer
+      properties:
+        user:
+          type: object
+          additionalProperties: {}
+        action:
+          $ref: '#/components/schemas/EventActions'
+        app:
+          type: string
+        context:
+          type: object
+          additionalProperties: {}
+        client_ip:
+          type: string
+          nullable: true
+        expires:
+          type: string
+          format: date-time
+        tenant:
+          type: object
+          additionalProperties: {}
     PatchedExpressionPolicyRequest:
       type: object
       description: Group Membership Policy Serializer
@@ -24502,6 +24902,13 @@ components:
           minimum: -2147483648
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
+        invalid_response_action:
+          allOf:
+          - $ref: '#/components/schemas/InvalidResponseActionEnum'
+          description: Configure how the flow executor should handle an invalid response
+            to a challenge. RETRY returns the error message and a similar challenge
+            to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
+            restarts the flow while keeping the current context.
     PatchedGroupRequest:
       type: object
       description: Group Serializer
@@ -24676,6 +25083,27 @@ components:
           nullable: true
           description: Users in this group can do search queries. If not set, every
             user can execute search queries.
+        certificate:
+          type: string
+          format: uuid
+          nullable: true
+        tls_server_name:
+          type: string
+        uid_start_number:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The start for uidNumbers, this number is added to the user.Pk
+            to make sure that the numbers aren't too low for POSIX users. Default
+            is 2000 to ensure that we don't collide with local users uidNumber
+        gid_start_number:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The start for gidNumbers, this number is added to a number
+            generated from the group.Pk to make sure that the numbers aren't too low
+            for POSIX groups. Default is 4000 to ensure that we don't collide with
+            local groups or users primary groups gidNumber
     PatchedLDAPSourceRequest:
       type: object
       description: LDAP Source Serializer
@@ -24953,6 +25381,14 @@ components:
         config:
           type: object
           additionalProperties: {}
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects which are managed by authentik. These objects are created
+            and updated automatically. This is flag only indicates that an object
+            can be overwritten by migrations. You can still modify the objects via
+            the API, but expect changes to be overwritten in a later update.
     PatchedPasswordExpiryPolicyRequest:
       type: object
       description: Password Expiry Policy Serializer
@@ -25466,6 +25902,9 @@ components:
           type: string
           format: uuid
           nullable: true
+        event_retention:
+          type: string
+          description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
     PatchedTokenRequest:
       type: object
       description: Token Serializer
@@ -25579,6 +26018,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowRequest'
+        create_users_as_inactive:
+          type: boolean
+          description: When set, newly created users are inactive and cannot login.
     PatchedWebAuthnDeviceRequest:
       type: object
       description: Serializer for WebAuthn authenticator devices
@@ -26277,13 +26719,8 @@ components:
             Exclusive with internal_host.
         cookie_domain:
           type: string
-        forward_auth_mode:
-          type: boolean
-          readOnly: true
-          deprecated: true
       required:
       - external_host
-      - forward_auth_mode
       - name
       - oidc_configuration
       - pk
@@ -26481,6 +26918,8 @@ components:
         id_token:
           type: string
           readOnly: true
+        revoked:
+          type: boolean
       required:
       - id_token
       - is_expired
@@ -27541,6 +27980,9 @@ components:
           type: string
           format: uuid
           nullable: true
+        event_retention:
+          type: string
+          description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
       required:
       - domain
       - tenant_uuid
@@ -27576,6 +28018,9 @@ components:
           type: string
           format: uuid
           nullable: true
+        event_retention:
+          type: string
+          description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
       required:
       - domain
     Token:
@@ -28073,6 +28518,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Flow'
+        create_users_as_inactive:
+          type: boolean
+          description: When set, newly created users are inactive and cannot login.
       required:
       - component
       - name
@@ -28089,6 +28537,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowRequest'
+        create_users_as_inactive:
+          type: boolean
+          description: When set, newly created users are inactive and cannot login.
       required:
       - name
     ValidationError:

@@ -40,11 +40,15 @@ while True:
         sleep(1)
         j_print(f"PostgreSQL Connection failed, retrying... ({exc})")
 
+REDIS_PROTOCOL_PREFIX = "redis://"
+if CONFIG.y_bool("redis.tls", False):
+    REDIS_PROTOCOL_PREFIX = "rediss://"
 while True:
     try:
         redis = Redis.from_url(
-            f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:6379"
-            f"/{CONFIG.y('redis.ws_db')}"
+            f"{REDIS_PROTOCOL_PREFIX}:"
+            f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
+            f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.ws_db')}"
         )
         redis.ping()
         break

@@ -2,12 +2,11 @@
 from json import loads
 
 from django.db.models.query import QuerySet
-from django.http.response import Http404
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
 from django_filters.filters import BooleanFilter, CharFilter
 from django_filters.filterset import FilterSet
-from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_field
+from drf_spectacular.utils import extend_schema, extend_schema_field
 from guardian.utils import get_anonymous_user
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, JSONField, SerializerMethodField
@@ -27,10 +26,7 @@ from authentik.api.decorators import permission_required
 from authentik.core.api.groups import GroupSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import LinkSerializer, PassiveSerializer, is_dict
-from authentik.core.middleware import (
-    SESSION_IMPERSONATE_ORIGINAL_USER,
-    SESSION_IMPERSONATE_USER,
-)
+from authentik.core.middleware import SESSION_IMPERSONATE_ORIGINAL_USER, SESSION_IMPERSONATE_USER
 from authentik.core.models import Token, TokenIntents, User
 from authentik.events.models import EventAction
 from authentik.tenants.models import Tenant
@@ -88,17 +84,13 @@ class UserMetricsSerializer(PassiveSerializer):
     def get_logins_failed_per_1h(self, _):
         """Get failed logins per hour for the last 24 hours"""
         user = self.context["user"]
-        return get_events_per_1h(
-            action=EventAction.LOGIN_FAILED, context__username=user.username
-        )
+        return get_events_per_1h(action=EventAction.LOGIN_FAILED, context__username=user.username)
 
     @extend_schema_field(CoordinateSerializer(many=True))
     def get_authorizations_per_1h(self, _):
         """Get failed logins per hour for the last 24 hours"""
         user = self.context["user"]
-        return get_events_per_1h(
-            action=EventAction.AUTHORIZE_APPLICATION, user__pk=user.pk
-        )
+        return get_events_per_1h(action=EventAction.AUTHORIZE_APPLICATION, user__pk=user.pk)
 
 
 class UsersFilter(FilterSet):
@@ -129,7 +121,14 @@ class UsersFilter(FilterSet):
 
     class Meta:
         model = User
-        fields = ["username", "name", "is_active", "is_superuser", "attributes"]
+        fields = [
+            "username",
+            "email",
+            "name",
+            "is_active",
+            "is_superuser",
+            "attributes",
+        ]
 
 
 class UserViewSet(UsedByMixin, ModelViewSet):
@@ -137,7 +136,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
 
     queryset = User.objects.none()
     serializer_class = UserSerializer
-    search_fields = ["username", "name", "is_active"]
+    search_fields = ["username", "name", "is_active", "email"]
     filterset_class = UsersFilter
 
     def get_queryset(self):  # pragma: no cover
@@ -148,9 +147,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     # pylint: disable=invalid-name
     def me(self, request: Request) -> Response:
         """Get information about current user"""
-        serializer = SessionUserSerializer(
-            data={"user": UserSerializer(request.user).data}
-        )
+        serializer = SessionUserSerializer(data={"user": UserSerializer(request.user).data})
         if SESSION_IMPERSONATE_USER in request._request.session:
             serializer.initial_data["original"] = UserSerializer(
                 request._request.session[SESSION_IMPERSONATE_ORIGINAL_USER]
@@ -173,7 +170,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(
         responses={
             "200": LinkSerializer(many=False),
-            "404": OpenApiResponse(description="No recovery flow found."),
+            "404": LinkSerializer(many=False),
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
@@ -184,7 +181,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         # Check that there is a recovery flow, if not return an error
         flow = tenant.flow_recovery
         if not flow:
-            raise Http404
+            return Response({"link": ""}, status=404)
         user: User = self.get_object()
         token, __ = Token.objects.get_or_create(
             identifier=f"{user.uid}-password-reset",
@@ -207,6 +204,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         return queryset
 
     def filter_queryset(self, queryset):
-        if self.request.user.has_perm("authentik_core.view_group"):
+        if self.request.user.has_perm("authentik_core.view_user"):
             return self._filter_queryset_for_list(queryset)
         return super().filter_queryset(queryset)

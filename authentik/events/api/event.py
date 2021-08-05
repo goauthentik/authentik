@@ -6,11 +6,11 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, DictField, IntegerField
+from rest_framework.fields import DictField, IntegerField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
-from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.utils import PassiveSerializer, TypeCreateSerializer
 from authentik.events.models import Event, EventAction
@@ -18,11 +18,6 @@ from authentik.events.models import Event, EventAction
 
 class EventSerializer(ModelSerializer):
     """Event Serializer"""
-
-    # Since we only use this serializer for read-only operations,
-    # no checking of the action is done here.
-    # This allows clients to check wildcards, prefixes and custom types
-    action = CharField()
 
     class Meta:
 
@@ -96,7 +91,7 @@ class EventsFilter(django_filters.FilterSet):
         fields = ["action", "client_ip", "username"]
 
 
-class EventViewSet(ReadOnlyModelViewSet):
+class EventViewSet(ModelViewSet):
     """Event Read-Only Viewset"""
 
     queryset = Event.objects.all()
@@ -148,7 +143,5 @@ class EventViewSet(ReadOnlyModelViewSet):
         """Get all actions"""
         data = []
         for value, name in EventAction.choices:
-            data.append(
-                {"name": name, "description": "", "component": value, "model_name": ""}
-            )
+            data.append({"name": name, "description": "", "component": value, "model_name": ""})
         return Response(TypeCreateSerializer(data, many=True).data)

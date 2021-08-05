@@ -4,10 +4,7 @@ from typing import TYPE_CHECKING
 from kubernetes.client import CoreV1Api, V1Service, V1ServicePort, V1ServiceSpec
 
 from authentik.outposts.controllers.base import FIELD_MANAGER
-from authentik.outposts.controllers.k8s.base import (
-    KubernetesObjectReconciler,
-    NeedsUpdate,
-)
+from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler, NeedsUpdate
 from authentik.outposts.controllers.k8s.deployment import DeploymentReconciler
 
 if TYPE_CHECKING:
@@ -58,9 +55,7 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
         )
 
     def delete(self, reference: V1Service):
-        return self.api.delete_namespaced_service(
-            reference.metadata.name, self.namespace
-        )
+        return self.api.delete_namespaced_service(reference.metadata.name, self.namespace)
 
     def retrieve(self) -> V1Service:
         return self.api.read_namespaced_service(self.name, self.namespace)

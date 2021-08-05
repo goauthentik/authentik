@@ -32,7 +32,7 @@ export class APIMiddleware implements Middleware {
             new CustomEvent(EVENT_API_DRAWER_REFRESH, {
                 bubbles: true,
                 composed: true,
-            })
+            }),
         );
         return Promise.resolve(context.response);
     }
@@ -43,7 +43,6 @@ export const API_DRAWER_MIDDLEWARE = new APIMiddleware();
 
 @customElement("ak-api-drawer")
 export class APIDrawer extends LitElement {
-
     static get styles(): CSSResult[] {
         return [PFBase, PFNotificationDrawer, PFContent, PFDropdown, AKGlobal];
     }
@@ -58,9 +57,7 @@ export class APIDrawer extends LitElement {
     renderItem(item: RequestInfo): TemplateResult {
         return html`<li class="pf-c-notification-drawer__list-item pf-m-read">
             <div class="pf-c-notification-drawer__list-item-header">
-                <h2 class="pf-c-notification-drawer__list-item-header-title">
-                    ${item.method}
-                </h2>
+                <h2 class="pf-c-notification-drawer__list-item-header-title">${item.method}</h2>
             </div>
             <p class="pf-c-notification-drawer__list-item-description">${item.path}</p>
         </li>`;
@@ -70,17 +67,14 @@ export class APIDrawer extends LitElement {
         return html`<div class="pf-c-drawer__body pf-m-no-padding">
             <div class="pf-c-notification-drawer">
                 <div class="pf-c-notification-drawer__header pf-c-content">
-                    <h1>
-                        ${t`API Requests`}
-                    </h1>
+                    <h1>${t`API Requests`}</h1>
                 </div>
                 <div class="pf-c-notification-drawer__body">
                     <ul class="pf-c-notification-drawer__list">
-                        ${API_DRAWER_MIDDLEWARE.requests.map(n => this.renderItem(n))}
+                        ${API_DRAWER_MIDDLEWARE.requests.map((n) => this.renderItem(n))}
                     </ul>
                 </div>
             </div>
         </div>`;
     }
-
 }

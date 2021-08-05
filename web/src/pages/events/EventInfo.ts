@@ -1,7 +1,15 @@
 import { t } from "@lingui/macro";
-import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import {
+    css,
+    CSSResult,
+    customElement,
+    html,
+    LitElement,
+    property,
+    TemplateResult,
+} from "lit-element";
 import { until } from "lit-html/directives/until";
-import { EventMatcherPolicyActionEnum, FlowsApi } from "authentik-api";
+import { EventActions, FlowsApi } from "authentik-api";
 import "../../elements/Spinner";
 import "../../elements/Expand";
 import { PFSize } from "../../elements/Spinner";
@@ -16,12 +24,16 @@ import { VERSION } from "../../constants";
 
 @customElement("ak-event-info")
 export class EventInfo extends LitElement {
-
-    @property({attribute: false})
+    @property({ attribute: false })
     event!: EventWithContext;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFFlex, PFList, PFDescriptionList,
+        return [
+            PFBase,
+            PFButton,
+            PFFlex,
+            PFList,
+            PFDescriptionList,
             css`
                 code {
                     display: block;
@@ -37,7 +49,7 @@ export class EventInfo extends LitElement {
                     width: 100%;
                     height: 50rem;
                 }
-            `
+            `,
         ];
     }
 
@@ -116,7 +128,7 @@ export class EventInfo extends LitElement {
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
-                        ${(context.to_email as string[]).map(to => {
+                        ${(context.to_email as string[]).map((to) => {
                             return html`<li>${to}</li>`;
                         })}
                     </div>
@@ -127,15 +139,15 @@ export class EventInfo extends LitElement {
 
     defaultResponse(): TemplateResult {
         return html`<div class="pf-l-flex">
-                <div class="pf-l-flex__item">
-                    <h3>${t`Context`}</h3>
-                    <code>${JSON.stringify(this.event?.context, null, 4)}</code>
-                </div>
-                <div class="pf-l-flex__item">
-                    <h3>${t`User`}</h3>
-                    <code>${JSON.stringify(this.event?.user, null, 4)}</code>
-                </div>
-            </div>`;
+            <div class="pf-l-flex__item">
+                <h3>${t`Context`}</h3>
+                <code>${JSON.stringify(this.event?.context, null, 4)}</code>
+            </div>
+            <div class="pf-l-flex__item">
+                <h3>${t`User`}</h3>
+                <code>${JSON.stringify(this.event?.user, null, 4)}</code>
+            </div>
+        </div>`;
     }
 
     buildGitHubIssueUrl(context: EventContext): string {
@@ -189,150 +201,201 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
             return html`<ak-spinner size=${PFSize.Medium}></ak-spinner>`;
         }
         switch (this.event?.action) {
-        case EventMatcherPolicyActionEnum.ModelCreated:
-        case EventMatcherPolicyActionEnum.ModelUpdated:
-        case EventMatcherPolicyActionEnum.ModelDeleted:
-            return html`
-                <h3>${t`Affected model:`}</h3>
-                ${this.getModelInfo(this.event.context?.model as EventModel)}
+            case EventActions.ModelCreated:
+            case EventActions.ModelUpdated:
+            case EventActions.ModelDeleted:
+                return html`
+                    <h3>${t`Affected model:`}</h3>
+                    ${this.getModelInfo(this.event.context?.model as EventModel)}
                 `;
-        case EventMatcherPolicyActionEnum.AuthorizeApplication:
-            return html`<div class="pf-l-flex">
-                    <div class="pf-l-flex__item">
-                        <h3>${t`Authorized application:`}</h3>
-                        ${this.getModelInfo(this.event.context.authorized_application as EventModel)}
-                    </div>
-                    <div class="pf-l-flex__item">
-                        <h3>${t`Using flow`}</h3>
-                        <span>${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
-                            flowUuid: this.event.context.flow as string,
-                        }).then(resp => {
-                            return html`<a href="#/flow/flows/${resp.results[0].slug}">${resp.results[0].name}</a>`;
-                        }), html`<ak-spinner size=${PFSize.Medium}></ak-spinner>`)}
-                        </span>
-                    </div>
-                </div>
-                <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case EventMatcherPolicyActionEnum.EmailSent:
-            return html`<h3>${t`Email info:`}</h3>
-                ${this.getEmailInfo(this.event.context)}
-                <ak-expand>
-                    <iframe srcdoc=${this.event.context.body}></iframe>
-                </ak-expand>`;
-        case EventMatcherPolicyActionEnum.SecretView:
-            return html`
-                <h3>${t`Secret:`}</h3>
-                ${this.getModelInfo(this.event.context.secret as EventModel)}`;
-        case EventMatcherPolicyActionEnum.SystemException:
-            return html`
-                <a
-                    class="pf-c-button pf-m-primary"
-                    target="_blank"
-                    href=${this.buildGitHubIssueUrl(
-                        this.event.context
-                    )}>
-                    ${t`Open issue on GitHub...`}
-                </a>
-                <div class="pf-l-flex">
-                    <div class="pf-l-flex__item">
-                        <h3>${t`Exception`}</h3>
-                        <code>${this.event.context.message}</code>
-                    </div>
-                </div>
-                <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case EventMatcherPolicyActionEnum.PropertyMappingException:
-            return html`<div class="pf-l-flex">
-                    <div class="pf-l-flex__item">
-                        <h3>${t`Exception`}</h3>
-                        <code>${this.event.context.message || this.event.context.error}</code>
-                    </div>
-                    <div class="pf-l-flex__item">
-                        <h3>${t`Expression`}</h3>
-                        <code>${this.event.context.expression}</code>
-                    </div>
-                </div>
-                <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case EventMatcherPolicyActionEnum.PolicyException:
-            return html`<div class="pf-l-flex">
-                    <div class="pf-l-flex__item">
-                        <h3>${t`Binding`}</h3>
-                        ${this.getModelInfo(this.event.context.binding as EventModel)}
-                    </div>
-                    <div class="pf-l-flex__item">
-                        <h3>${t`Request`}</h3>
-                        <ul class="pf-c-list">
-                            <li>${t`Object`}: ${this.getModelInfo((this.event.context.request as EventContext).obj as EventModel)}</li>
-                            <li><span>${t`Context`}: <code>${JSON.stringify((this.event.context.request as EventContext).context, null, 4)}</code></span></li>
-                        </ul>
-                    </div>
-                    <div class="pf-l-flex__item">
-                        <h3>${t`Exception`}</h3>
-                        <code>${this.event.context.message || this.event.context.error}</code>
-                    </div>
-                </div>
-                <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case EventMatcherPolicyActionEnum.PolicyExecution:
-            return html`<div class="pf-l-flex">
-                    <div class="pf-l-flex__item">
-                        <h3>${t`Binding`}</h3>
-                        ${this.getModelInfo(this.event.context.binding as EventModel)}
-                    </div>
-                    <div class="pf-l-flex__item">
-                        <h3>${t`Request`}</h3>
-                        <ul class="pf-c-list">
-                            <li>${t`Object`}: ${this.getModelInfo((this.event.context.request as EventContext).obj as EventModel)}</li>
-                            <li><span>${t`Context`}: <code>${JSON.stringify((this.event.context.request as EventContext).context, null, 4)}</code></span></li>
-                        </ul>
-                    </div>
-                    <div class="pf-l-flex__item">
-                        <h3>${t`Result`}</h3>
-                        <ul class="pf-c-list">
-                            <li>${t`Passing`}: ${(this.event.context.result as EventContext).passing}</li>
-                            <li>${t`Messages`}:
-                                <ul class="pf-c-list">
-                                    ${((this.event.context.result as EventContext).messages as string[]).map(msg => {
-                                        return html`<li>${msg}</li>`;
-                                    })}
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case EventMatcherPolicyActionEnum.ConfigurationError:
-            return html`<h3>${this.event.context.message}</h3>
-                <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case EventMatcherPolicyActionEnum.UpdateAvailable:
-            return html`<h3>${t`New version available!`}</h3>
-                <a
-                    target="_blank"
-                    href="https://github.com/goauthentik/authentik/releases/tag/version%2F${this.event.context.new_version}">
-                    ${this.event.context.new_version}
-                </a>`;
-        // Action types which typically don't record any extra context.
-        // If context is not empty, we fall to the default response.
-        case EventMatcherPolicyActionEnum.Login:
-            if ("using_source" in this.event.context) {
+            case EventActions.AuthorizeApplication:
                 return html`<div class="pf-l-flex">
-                    <div class="pf-l-flex__item">
-                        <h3>${t`Using source`}</h3>
-                        ${this.getModelInfo(this.event.context.using_source as EventModel)}
+                        <div class="pf-l-flex__item">
+                            <h3>${t`Authorized application:`}</h3>
+                            ${this.getModelInfo(
+                                this.event.context.authorized_application as EventModel,
+                            )}
+                        </div>
+                        <div class="pf-l-flex__item">
+                            <h3>${t`Using flow`}</h3>
+                            <span
+                                >${until(
+                                    new FlowsApi(DEFAULT_CONFIG)
+                                        .flowsInstancesList({
+                                            flowUuid: this.event.context.flow as string,
+                                        })
+                                        .then((resp) => {
+                                            return html`<a
+                                                href="#/flow/flows/${resp.results[0].slug}"
+                                                >${resp.results[0].name}</a
+                                            >`;
+                                        }),
+                                    html`<ak-spinner size=${PFSize.Medium}></ak-spinner>`,
+                                )}
+                            </span>
+                        </div>
                     </div>
-                </div>`;
-            }
-            return this.defaultResponse();
-        case EventMatcherPolicyActionEnum.LoginFailed:
-            return html`
-                <h3>${t`Attempted to log in as ${this.event.context.username}`}</h3>
-                <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case EventMatcherPolicyActionEnum.Logout:
-            if (this.event.context === {}) {
-                return html`<span>${t`No additional data available.`}</span>`;
-            }
-            return this.defaultResponse();
-        default:
-            return this.defaultResponse();
+                    <ak-expand>${this.defaultResponse()}</ak-expand>`;
+            case EventActions.EmailSent:
+                return html`<h3>${t`Email info:`}</h3>
+                    ${this.getEmailInfo(this.event.context)}
+                    <ak-expand>
+                        <iframe srcdoc=${this.event.context.body}></iframe>
+                    </ak-expand>`;
+            case EventActions.SecretView:
+                return html` <h3>${t`Secret:`}</h3>
+                    ${this.getModelInfo(this.event.context.secret as EventModel)}`;
+            case EventActions.SystemException:
+                return html` <a
+                        class="pf-c-button pf-m-primary"
+                        target="_blank"
+                        href=${this.buildGitHubIssueUrl(this.event.context)}
+                    >
+                        ${t`Open issue on GitHub...`}
+                    </a>
+                    <div class="pf-l-flex">
+                        <div class="pf-l-flex__item">
+                            <h3>${t`Exception`}</h3>
+                            <code>${this.event.context.message}</code>
+                        </div>
+                    </div>
+                    <ak-expand>${this.defaultResponse()}</ak-expand>`;
+            case EventActions.PropertyMappingException:
+                return html`<div class="pf-l-flex">
+                        <div class="pf-l-flex__item">
+                            <h3>${t`Exception`}</h3>
+                            <code>${this.event.context.message || this.event.context.error}</code>
+                        </div>
+                        <div class="pf-l-flex__item">
+                            <h3>${t`Expression`}</h3>
+                            <code>${this.event.context.expression}</code>
+                        </div>
+                    </div>
+                    <ak-expand>${this.defaultResponse()}</ak-expand>`;
+            case EventActions.PolicyException:
+                return html`<div class="pf-l-flex">
+                        <div class="pf-l-flex__item">
+                            <h3>${t`Binding`}</h3>
+                            ${this.getModelInfo(this.event.context.binding as EventModel)}
+                        </div>
+                        <div class="pf-l-flex__item">
+                            <h3>${t`Request`}</h3>
+                            <ul class="pf-c-list">
+                                <li>
+                                    ${t`Object`}:
+                                    ${this.getModelInfo(
+                                        (this.event.context.request as EventContext)
+                                            .obj as EventModel,
+                                    )}
+                                </li>
+                                <li>
+                                    <span
+                                        >${t`Context`}:
+                                        <code
+                                            >${JSON.stringify(
+                                                (this.event.context.request as EventContext)
+                                                    .context,
+                                                null,
+                                                4,
+                                            )}</code
+                                        ></span
+                                    >
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="pf-l-flex__item">
+                            <h3>${t`Exception`}</h3>
+                            <code>${this.event.context.message || this.event.context.error}</code>
+                        </div>
+                    </div>
+                    <ak-expand>${this.defaultResponse()}</ak-expand>`;
+            case EventActions.PolicyExecution:
+                return html`<div class="pf-l-flex">
+                        <div class="pf-l-flex__item">
+                            <h3>${t`Binding`}</h3>
+                            ${this.getModelInfo(this.event.context.binding as EventModel)}
+                        </div>
+                        <div class="pf-l-flex__item">
+                            <h3>${t`Request`}</h3>
+                            <ul class="pf-c-list">
+                                <li>
+                                    ${t`Object`}:
+                                    ${this.getModelInfo(
+                                        (this.event.context.request as EventContext)
+                                            .obj as EventModel,
+                                    )}
+                                </li>
+                                <li>
+                                    <span
+                                        >${t`Context`}:
+                                        <code
+                                            >${JSON.stringify(
+                                                (this.event.context.request as EventContext)
+                                                    .context,
+                                                null,
+                                                4,
+                                            )}</code
+                                        ></span
+                                    >
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="pf-l-flex__item">
+                            <h3>${t`Result`}</h3>
+                            <ul class="pf-c-list">
+                                <li>
+                                    ${t`Passing`}:
+                                    ${(this.event.context.result as EventContext).passing}
+                                </li>
+                                <li>
+                                    ${t`Messages`}:
+                                    <ul class="pf-c-list">
+                                        ${(
+                                            (this.event.context.result as EventContext)
+                                                .messages as string[]
+                                        ).map((msg) => {
+                                            return html`<li>${msg}</li>`;
+                                        })}
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <ak-expand>${this.defaultResponse()}</ak-expand>`;
+            case EventActions.ConfigurationError:
+                return html`<h3>${this.event.context.message}</h3>
+                    <ak-expand>${this.defaultResponse()}</ak-expand>`;
+            case EventActions.UpdateAvailable:
+                return html`<h3>${t`New version available!`}</h3>
+                    <a
+                        target="_blank"
+                        href="https://github.com/goauthentik/authentik/releases/tag/version%2F${this
+                            .event.context.new_version}"
+                    >
+                        ${this.event.context.new_version}
+                    </a>`;
+            // Action types which typically don't record any extra context.
+            // If context is not empty, we fall to the default response.
+            case EventActions.Login:
+                if ("using_source" in this.event.context) {
+                    return html`<div class="pf-l-flex">
+                        <div class="pf-l-flex__item">
+                            <h3>${t`Using source`}</h3>
+                            ${this.getModelInfo(this.event.context.using_source as EventModel)}
+                        </div>
+                    </div>`;
+                }
+                return this.defaultResponse();
+            case EventActions.LoginFailed:
+                return html` <h3>${t`Attempted to log in as ${this.event.context.username}`}</h3>
+                    <ak-expand>${this.defaultResponse()}</ak-expand>`;
+            case EventActions.Logout:
+                if (this.event.context === {}) {
+                    return html`<span>${t`No additional data available.`}</span>`;
+                }
+                return this.defaultResponse();
+            default:
+                return this.defaultResponse();
         }
     }
-
 }

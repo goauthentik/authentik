@@ -39,7 +39,7 @@ sentry-sdk = "*"
 service_identity = "*"
 structlog = "*"
 swagger-spec-validator = "*"
-twisted = "==20.3.0"
+twisted = "==21.7.0"
 urllib3 = {extras = ["secure"],version = "*"}
 uvicorn = {extras = ["standard"],version = "*"}
 webauthn = "*"
@@ -47,6 +47,7 @@ xmlsec = "*"
 duo-client = "*"
 ua-parser = "*"
 deepmerge = "*"
+colorama = "*"
 
 [requires]
 python_version = "3.9"

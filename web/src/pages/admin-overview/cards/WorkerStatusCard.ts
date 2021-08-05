@@ -6,7 +6,6 @@ import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
 
 @customElement("ak-admin-status-card-workers")
 export class WorkersStatusCard extends AdminStatusCard<number> {
-
     getPrimaryValue(): Promise<number> {
         return new AdminApi(DEFAULT_CONFIG).adminWorkersRetrieve().then((workers) => {
             return workers.count;
@@ -21,9 +20,8 @@ export class WorkersStatusCard extends AdminStatusCard<number> {
             });
         } else {
             return Promise.resolve<AdminStatus>({
-                icon: "fa fa-check-circle pf-m-success"
+                icon: "fa fa-check-circle pf-m-success",
             });
         }
     }
-
 }

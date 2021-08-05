@@ -4,13 +4,13 @@
 
 ---
 
-[![](https://img.shields.io/discord/809154715984199690?label=Discord&style=flat-square)](https://discord.gg/jg33eMhnj6)
-[![CI Build status](https://img.shields.io/azure-devops/build/beryjuorg/authentik/6?style=flat-square)](https://dev.azure.com/beryjuorg/authentik/_build?definitionId=6)
-[![Tests](https://img.shields.io/azure-devops/tests/beryjuorg/authentik/6?compact_message&style=flat-square)](https://dev.azure.com/beryjuorg/authentik/_build?definitionId=6)
-[![Code Coverage](https://img.shields.io/codecov/c/gh/goauthentik/authentik?style=flat-square)](https://codecov.io/gh/goauthentik/authentik)
-![Docker pulls](https://img.shields.io/docker/pulls/beryju/authentik.svg?style=flat-square)
-![Latest version](https://img.shields.io/docker/v/beryju/authentik?sort=semver&style=flat-square)
-![LGTM Grade](https://img.shields.io/lgtm/grade/python/github/goauthentik/authentik?style=flat-square)
+[![](https://img.shields.io/discord/809154715984199690?label=Discord&style=for-the-badge)](https://discord.gg/jg33eMhnj6)
+[![CI Build status](https://img.shields.io/azure-devops/build/beryjuorg/authentik/6?style=for-the-badge)](https://dev.azure.com/beryjuorg/authentik/_build?definitionId=6)
+[![Tests](https://img.shields.io/azure-devops/tests/beryjuorg/authentik/6?compact_message&style=for-the-badge)](https://dev.azure.com/beryjuorg/authentik/_build?definitionId=6)
+[![Code Coverage](https://img.shields.io/codecov/c/gh/goauthentik/authentik?style=for-the-badge)](https://codecov.io/gh/goauthentik/authentik)
+![Docker pulls](https://img.shields.io/docker/pulls/beryju/authentik.svg?style=for-the-badge)
+![Latest version](https://img.shields.io/docker/v/beryju/authentik?sort=semver&style=for-the-badge)
+![LGTM Grade](https://img.shields.io/lgtm/grade/python/github/goauthentik/authentik?style=for-the-badge)
 [Transifex](https://www.transifex.com/beryjuorg/authentik/)
 
 ## What is authentik?
@@ -21,7 +21,7 @@ authentik is an open-source Identity Provider focused on flexibility and versati
 
 For small/test setups it is recommended to use docker-compose, see the [documentation](https://goauthentik.io/docs/installation/docker-compose/)
 
-For bigger setups, there is a Helm Chart [here])(https://github.com/goauthentik/helm). This is documented [here](https://goauthentik.io/docs/installation/kubernetes/)
+For bigger setups, there is a Helm Chart [here](https://github.com/goauthentik/helm). This is documented [here](https://goauthentik.io/docs/installation/kubernetes/)
 
 ## Screenshots
 
