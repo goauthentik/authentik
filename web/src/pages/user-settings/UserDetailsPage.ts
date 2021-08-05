@@ -69,9 +69,8 @@ export class UserDetailsPage extends LitElement {
                         </ak-form-element-horizontal>
                         <ak-form-element-horizontal
                             label=${t`Email`}
-                            ?required=${true}
                             name="email">
-                            <input type="email" value="${ifDefined(this.user?.email)}" class="pf-c-form-control" required>
+                            <input type="email" value="${ifDefined(this.user?.email)}" class="pf-c-form-control">
                         </ak-form-element-horizontal>
 
                         <div class="pf-c-form__group pf-m-action">

@@ -58,9 +58,8 @@ export class UserForm extends ModelForm<User, number> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Email`}
-                ?required=${true}
                 name="email">
-                <input type="email" autocomplete="off" value="${ifDefined(this.instance?.email)}" class="pf-c-form-control" required>
+                <input type="email" autocomplete="off" value="${ifDefined(this.instance?.email)}" class="pf-c-form-control">
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 name="isActive">
