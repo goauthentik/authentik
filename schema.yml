@@ -3185,6 +3185,38 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/core/users/update_self/:
+    put:
+      operationId: core_users_update_self_update
+      description: Allow users to change information on their own profile
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSelfRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserSelfRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserSelfRequest'
+        required: true
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionUser'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/crypto/certificatekeypairs/:
     get:
       operationId: crypto_certificatekeypairs_list
@@ -27577,9 +27609,9 @@ components:
         and, if this user is being impersonated, the original user in the `original` property.
       properties:
         user:
-          $ref: '#/components/schemas/User'
+          $ref: '#/components/schemas/UserSelf'
         original:
-          $ref: '#/components/schemas/User'
+          $ref: '#/components/schemas/UserSelf'
       required:
       - user
     SetIconRequest:
@@ -28475,6 +28507,82 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+      required:
+      - name
+      - username
+    UserSelf:
+      type: object
+      description: |-
+        User Serializer for information a user can retrieve about themselves and
+        update about themselves
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          readOnly: true
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        is_superuser:
+          type: boolean
+          readOnly: true
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          readOnly: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        avatar:
+          type: string
+          readOnly: true
+        uid:
+          type: string
+          readOnly: true
+      required:
+      - avatar
+      - groups
+      - is_active
+      - is_superuser
+      - name
+      - pk
+      - uid
+      - username
+    UserSelfRequest:
+      type: object
+      description: |-
+        User Serializer for information a user can retrieve about themselves and
+        update about themselves
+      properties:
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
       required:
       - name
       - username

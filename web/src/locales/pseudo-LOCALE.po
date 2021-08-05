@@ -1071,7 +1071,7 @@ msgstr ""
 msgid "Delete Session"
 msgstr ""
 
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 msgid "Delete account"
 msgstr ""
 
@@ -1289,7 +1289,7 @@ msgstr ""
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/pages/events/TransportForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Email"
@@ -1426,7 +1426,6 @@ msgstr ""
 msgid "Exception"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts
 #: src/pages/flows/FlowViewPage.ts
 msgid "Execute"
 msgstr ""
@@ -1479,7 +1478,6 @@ msgstr ""
 msgid "Explicit Consent"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts
 #: src/pages/flows/FlowViewPage.ts
 msgid "Export"
 msgstr ""
@@ -2105,7 +2103,7 @@ msgstr ""
 #: src/flows/stages/prompt/PromptStage.ts
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 #: src/utils.ts
 msgid "Loading"
 msgstr ""
@@ -2394,7 +2392,7 @@ msgstr ""
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 #: src/pages/stages/user_logout/UserLogoutStageForm.ts
 #: src/pages/stages/user_write/UserWriteStageForm.ts
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
@@ -3110,7 +3108,7 @@ msgstr ""
 msgid "Required"
 msgstr ""
 
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/users/UserForm.ts
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr ""
@@ -3757,7 +3755,7 @@ msgstr ""
 msgid "Successfully updated certificate-key pair."
 msgstr ""
 
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 msgid "Successfully updated details."
 msgstr ""
 
@@ -4282,7 +4280,7 @@ msgstr ""
 #: src/pages/stages/StageListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/tenants/TenantListPage.ts
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
@@ -4385,7 +4383,7 @@ msgstr ""
 msgid "Update available"
 msgstr ""
 
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSettingsPage.ts
 msgid "Update details"
 msgstr ""
 
@@ -4518,7 +4516,7 @@ msgstr ""
 msgid "User's avatar"
 msgstr ""
 
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/users/UserForm.ts
 msgid "User's display name."
 msgstr ""
@@ -4538,7 +4536,7 @@ msgstr ""
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/pages/policies/reputation/UserReputationListPage.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Username"

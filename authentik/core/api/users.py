@@ -10,6 +10,7 @@ from drf_spectacular.utils import extend_schema, extend_schema_field
 from guardian.utils import get_anonymous_user
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, JSONField, SerializerMethodField
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
@@ -62,12 +63,40 @@ class UserSerializer(ModelSerializer):
         ]
 
 
+class UserSelfSerializer(ModelSerializer):
+    """User Serializer for information a user can retrieve about themselves and
+    update about themselves"""
+
+    is_superuser = BooleanField(read_only=True)
+    avatar = CharField(read_only=True)
+    groups = ListSerializer(child=GroupSerializer(), read_only=True, source="ak_groups")
+    uid = CharField(read_only=True)
+
+    class Meta:
+
+        model = User
+        fields = [
+            "pk",
+            "username",
+            "name",
+            "is_active",
+            "is_superuser",
+            "groups",
+            "email",
+            "avatar",
+            "uid",
+        ]
+        extra_kwargs = {
+            "is_active": {"read_only": True},
+        }
+
+
 class SessionUserSerializer(PassiveSerializer):
     """Response for the /user/me endpoint, returns the currently active user (as `user` property)
     and, if this user is being impersonated, the original user in the `original` property."""
 
-    user = UserSerializer()
-    original = UserSerializer(required=False)
+    user = UserSelfSerializer()
+    original = UserSelfSerializer(required=False)
 
 
 class UserMetricsSerializer(PassiveSerializer):
@@ -158,11 +187,35 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             data={"user": UserSerializer(request.user).data}
         )
         if SESSION_IMPERSONATE_USER in request._request.session:
-            serializer.initial_data["original"] = UserSerializer(
+            serializer.initial_data["original"] = UserSelfSerializer(
                 request._request.session[SESSION_IMPERSONATE_ORIGINAL_USER]
             ).data
         serializer.is_valid()
         return Response(serializer.data)
+
+    @extend_schema(
+        request=UserSelfSerializer, responses={200: SessionUserSerializer(many=False)}
+    )
+    @action(
+        methods=["PUT"],
+        detail=False,
+        pagination_class=None,
+        filter_backends=[],
+        permission_classes=[IsAuthenticated],
+    )
+    def update_self(self, request: Request) -> Response:
+        """Allow users to change information on their own profile"""
+        data = UserSelfSerializer(
+            instance=User.objects.get(pk=request.user.pk), data=request.data
+        )
+        if not data.is_valid():
+            return Response(data.errors)
+        new_user = data.save()
+        # If we're impersonating, we need to update that user object
+        # since it caches the full object
+        if SESSION_IMPERSONATE_USER in request.session:
+            request.session[SESSION_IMPERSONATE_USER] = new_user
+        return self.me(request)
 
     @permission_required("authentik_core.view_user", ["authentik_events.view_event"])
     @extend_schema(responses={200: UserMetricsSerializer(many=False)})

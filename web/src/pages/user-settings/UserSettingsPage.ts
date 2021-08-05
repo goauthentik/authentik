@@ -20,7 +20,7 @@ import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/Tabs";
 import "../../elements/PageHeader";
 import "./tokens/UserTokenList";
-import "./UserDetailsPage";
+import "./UserSelfForm";
 import "./settings/UserSettingsAuthenticatorDuo";
 import "./settings/UserSettingsAuthenticatorStatic";
 import "./settings/UserSettingsAuthenticatorTOTP";
@@ -95,8 +95,17 @@ export class UserSettingsPage extends LitElement {
                     description=${t`Configure settings relevant to your user profile.`}>
                 </ak-page-header>
                 <ak-tabs ?vertical="${true}" style="height: 100%;">
-                    <section slot="page-details" data-tab-title="${t`User details`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
-                        <ak-user-details></ak-user-details>
+                    <section
+                        slot="page-details"
+                        data-tab-title="${t`User details`}"
+                        class="pf-c-page__main-section pf-m-no-padding-mobile"
+                    >
+                        <div class="pf-c-card">
+                            <div class="pf-c-card__title">${t`Update details`}</div>
+                            <div class="pf-c-card__body">
+                                <ak-user-self-form .instancePk=${1}></ak-user-self-form>
+                            </div>
+                        </div>
                     </section>
                     <section slot="page-tokens" data-tab-title="${t`Tokens`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                         <ak-user-token-list></ak-user-token-list>
