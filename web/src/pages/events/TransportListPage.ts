@@ -87,6 +87,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                     </button>
                 </ak-forms-modal>
                 <ak-action-button
+                    class="pf-m-plain"
                     .apiRequest=${() => {
                     return new EventsApi(DEFAULT_CONFIG).eventsTransportsTestCreate({
                         uuid: item.pk || "",

@@ -80,7 +80,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
             html`${item.name}`,
             html`${item.severity}`,
             html`${item.groupObj?.name || t`None (rule disabled)`}`,
-            html` <ak-forms-modal>
+            html`<ak-forms-modal>
                 <span slot="submit"> ${t`Update`} </span>
                 <span slot="header"> ${t`Update Notification Rule`} </span>
                 <ak-event-rule-form slot="form" .instancePk=${item.pk}> </ak-event-rule-form>
@@ -112,8 +112,6 @@ export class RuleListPage extends TablePage<NotificationRule> {
                     </p>
                     <ak-bound-policies-list .target=${item.pk}> </ak-bound-policies-list>
                 </div>
-            </td>
-            <td></td>
-            <td></td>`;
+            </td>`;
     }
 }
