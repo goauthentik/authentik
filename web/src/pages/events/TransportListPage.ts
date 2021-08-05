@@ -77,16 +77,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         return [
             html`${item.name}`,
             html`${item.modeVerbose}`,
-            html` <ak-action-button
-                    .apiRequest=${() => {
-                        return new EventsApi(DEFAULT_CONFIG).eventsTransportsTestCreate({
-                            uuid: item.pk || "",
-                        });
-                    }}
-                >
-                    ${t`Test`}
-                </ak-action-button>
-                <ak-forms-modal>
+            html`<ak-forms-modal>
                     <span slot="submit"> ${t`Update`} </span>
                     <span slot="header"> ${t`Update Notification Transport`} </span>
                     <ak-event-transport-form slot="form" .instancePk=${item.pk}>
@@ -94,7 +85,16 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <i class="fas fa-edit"></i>
                     </button>
-                </ak-forms-modal>`,
+                </ak-forms-modal>
+                <ak-action-button
+                    .apiRequest=${() => {
+                    return new EventsApi(DEFAULT_CONFIG).eventsTransportsTestCreate({
+                        uuid: item.pk || "",
+                    });
+                }}
+                >
+                    <i class="fas fa-vial" aria-hidden="true"></i>
+                </ak-action-button>`,
         ];
     }
 

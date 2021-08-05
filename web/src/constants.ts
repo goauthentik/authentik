@@ -9,7 +9,8 @@ export const TITLE_DEFAULT = "authentik";
 export const ROUTE_SEPARATOR = ";";
 
 export const EVENT_REFRESH = "ak-refresh";
-export const EVENT_NOTIFICATION_TOGGLE = "ak-notification-toggle";
+export const EVENT_NOTIFICATION_DRAWER_TOGGLE = "ak-notification-toggle";
+export const EVENT_API_DRAWER_TOGGLE = "ak-api-drawer-toggle";
 export const EVENT_SIDEBAR_TOGGLE = "ak-sidebar-toggle";
 export const EVENT_API_DRAWER_REFRESH = "ak-api-drawer-refresh";
 export const EVENT_WS_MESSAGE = "ak-ws-message";

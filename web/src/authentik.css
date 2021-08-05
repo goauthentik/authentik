@@ -230,6 +230,9 @@ body {
     .pf-c-form-control[readonly] {
         background-color: var(--ak-dark-background-light);
     }
+    .pf-c-button.pf-m-plain:hover {
+        color: var(--ak-dark-foreground);
+    }
     .pf-c-button.pf-m-control {
         --pf-c-button--after--BorderColor: var(--ak-dark-background-lighter)
             var(--ak-dark-background-lighter)

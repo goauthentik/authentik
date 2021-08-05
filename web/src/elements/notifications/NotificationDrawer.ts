@@ -17,7 +17,7 @@ import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css"
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import AKGlobal from "../../authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import { EVENT_NOTIFICATION_TOGGLE } from "../../constants";
+import { EVENT_NOTIFICATION_DRAWER_TOGGLE } from "../../constants";
 import { ActionToLabel } from "../../pages/events/utils";
 
 @customElement("ak-notification-drawer")
@@ -135,7 +135,7 @@ export class NotificationDrawer extends LitElement {
                             <button
                                 @click=${() => {
                                     this.dispatchEvent(
-                                        new CustomEvent(EVENT_NOTIFICATION_TOGGLE, {
+                                        new CustomEvent(EVENT_NOTIFICATION_DRAWER_TOGGLE, {
                                             bubbles: true,
                                             composed: true,
                                         }),
