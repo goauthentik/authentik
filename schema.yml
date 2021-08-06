@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2021.6.4
+  version: 2021.7.3
   description: Making authentication simple.
   contact:
     email: hello@beryju.org
@@ -1933,6 +1933,24 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: members_by_pk
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
+      - in: query
+        name: members_by_username
+        schema:
+          type: array
+          items:
+            type: string
+        description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+          only.
+        explode: true
+        style: form
+      - in: query
         name: name
         schema:
           type: string
@@ -2844,6 +2862,10 @@ paths:
           type: string
         description: Attributes
       - in: query
+        name: email
+        schema:
+          type: string
+      - in: query
         name: is_active
         schema:
           type: boolean
@@ -3149,6 +3171,38 @@ paths:
       description: Get information about current user
       tags:
       - core
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionUser'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/core/users/update_self/:
+    put:
+      operationId: core_users_update_self_update
+      description: Allow users to change information on their own profile
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSelfRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserSelfRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserSelfRequest'
+        required: true
       security:
       - authentik: []
       - cookieAuth: []
@@ -25880,6 +25934,9 @@ components:
           type: string
           format: uuid
           nullable: true
+        event_retention:
+          type: string
+          description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
     PatchedTokenRequest:
       type: object
       description: Token Serializer
@@ -26694,13 +26751,8 @@ components:
             Exclusive with internal_host.
         cookie_domain:
           type: string
-        forward_auth_mode:
-          type: boolean
-          readOnly: true
-          deprecated: true
       required:
       - external_host
-      - forward_auth_mode
       - name
       - oidc_configuration
       - pk
@@ -27557,9 +27609,9 @@ components:
         and, if this user is being impersonated, the original user in the `original` property.
       properties:
         user:
-          $ref: '#/components/schemas/User'
+          $ref: '#/components/schemas/UserSelf'
         original:
-          $ref: '#/components/schemas/User'
+          $ref: '#/components/schemas/UserSelf'
       required:
       - user
     SetIconRequest:
@@ -27960,6 +28012,9 @@ components:
           type: string
           format: uuid
           nullable: true
+        event_retention:
+          type: string
+          description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
       required:
       - domain
       - tenant_uuid
@@ -27995,6 +28050,9 @@ components:
           type: string
           format: uuid
           nullable: true
+        event_retention:
+          type: string
+          description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
       required:
       - domain
     Token:
@@ -28449,6 +28507,82 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+      required:
+      - name
+      - username
+    UserSelf:
+      type: object
+      description: |-
+        User Serializer for information a user can retrieve about themselves and
+        update about themselves
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          readOnly: true
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        is_superuser:
+          type: boolean
+          readOnly: true
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          readOnly: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        avatar:
+          type: string
+          readOnly: true
+        uid:
+          type: string
+          readOnly: true
+      required:
+      - avatar
+      - groups
+      - is_active
+      - is_superuser
+      - name
+      - pk
+      - uid
+      - username
+    UserSelfRequest:
+      type: object
+      description: |-
+        User Serializer for information a user can retrieve about themselves and
+        update about themselves
+      properties:
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
       required:
       - name
       - username

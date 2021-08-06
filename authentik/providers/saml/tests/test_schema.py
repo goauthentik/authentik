@@ -37,9 +37,7 @@ class TestSchema(TestCase):
             slug="provider",
             issuer="authentik",
             signing_kp=cert,
-            pre_authentication_flow=Flow.objects.get(
-                slug="default-source-pre-authentication"
-            ),
+            pre_authentication_flow=Flow.objects.get(slug="default-source-pre-authentication"),
         )
         self.factory = RequestFactory()
 
@@ -57,9 +55,7 @@ class TestSchema(TestCase):
 
         metadata = etree.fromstring(request)  # nosec
 
-        schema = etree.XMLSchema(
-            etree.parse("xml/saml-schema-protocol-2.0.xsd")
-        )  # nosec
+        schema = etree.XMLSchema(etree.parse("xml/saml-schema-protocol-2.0.xsd"))  # nosec
         self.assertTrue(schema.validate(metadata))
 
     def test_response_schema(self):

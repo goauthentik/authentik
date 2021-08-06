@@ -8,8 +8,10 @@ import (
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"github.com/pires/go-proxyproto"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/config"
+	"goauthentik.io/internal/outpost/proxy"
 )
 
 type WebServer struct {
@@ -19,6 +21,8 @@ type WebServer struct {
 	LegacyProxy bool
 
 	stop chan struct{} // channel for waiting shutdown
+
+	ProxyServer *proxy.Server
 
 	m   *mux.Router
 	lh  *mux.Router
@@ -63,7 +67,10 @@ func (ws *WebServer) listenPlain() {
 	}
 	ws.log.WithField("addr", config.G.Web.Listen).Info("Running")
 
-	ws.serve(ln)
+	proxyListener := &proxyproto.Listener{Listener: ln}
+	defer proxyListener.Close()
+
+	ws.serve(proxyListener)
 
 	ws.log.WithField("addr", config.G.Web.Listen).Info("Running")
 	err = http.ListenAndServe(config.G.Web.Listen, ws.m)

@@ -22,9 +22,7 @@ LOGGER = get_logger()
 def event_notification_handler(event_uuid: str):
     """Start task for each trigger definition"""
     for trigger in NotificationRule.objects.all():
-        event_trigger_handler.apply_async(
-            args=[event_uuid, trigger.name], queue="authentik_events"
-        )
+        event_trigger_handler.apply_async(args=[event_uuid, trigger.name], queue="authentik_events")
 
 
 @CELERY_APP.task()
@@ -43,17 +41,13 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
     if "policy_uuid" in event.context:
         policy_uuid = event.context["policy_uuid"]
         if PolicyBinding.objects.filter(
-            target__in=NotificationRule.objects.all().values_list(
-                "pbm_uuid", flat=True
-            ),
+            target__in=NotificationRule.objects.all().values_list("pbm_uuid", flat=True),
             policy=policy_uuid,
         ).exists():
             # If policy that caused this event to be created is attached
             # to *any* NotificationRule, we return early.
             # This is the most effective way to prevent infinite loops.
-            LOGGER.debug(
-                "e(trigger): attempting to prevent infinite loop", trigger=trigger
-            )
+            LOGGER.debug("e(trigger): attempting to prevent infinite loop", trigger=trigger)
             return
 
     if not trigger.group:
@@ -62,9 +56,7 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
 
     LOGGER.debug("e(trigger): checking if trigger applies", trigger=trigger)
     try:
-        user = (
-            User.objects.filter(pk=event.user.get("pk")).first() or get_anonymous_user()
-        )
+        user = User.objects.filter(pk=event.user.get("pk")).first() or get_anonymous_user()
     except User.DoesNotExist:
         LOGGER.warning("e(trigger): failed to get user", trigger=trigger)
         return
@@ -99,20 +91,14 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
     retry_backoff=True,
     base=MonitoredTask,
 )
-def notification_transport(
-    self: MonitoredTask, notification_pk: int, transport_pk: int
-):
+def notification_transport(self: MonitoredTask, notification_pk: int, transport_pk: int):
     """Send notification over specified transport"""
     self.save_on_success = False
     try:
-        notification: Notification = Notification.objects.filter(
-            pk=notification_pk
-        ).first()
+        notification: Notification = Notification.objects.filter(pk=notification_pk).first()
         if not notification:
             return
-        transport: NotificationTransport = NotificationTransport.objects.get(
-            pk=transport_pk
-        )
+        transport: NotificationTransport = NotificationTransport.objects.get(pk=transport_pk)
         transport.send(notification)
         self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL))
     except NotificationTransportError as exc:

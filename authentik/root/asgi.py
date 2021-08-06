@@ -74,13 +74,9 @@ class ASGILogger:
             if message["type"] == "http.response.start":
                 response_headers = dict(message["headers"])
                 nonlocal request_id
-                request_id = response_headers.get(
-                    RESPONSE_HEADER_ID.encode(), b""
-                ).decode()
+                request_id = response_headers.get(RESPONSE_HEADER_ID.encode(), b"").decode()
 
-            if message["type"] == "http.response.body" and not message.get(
-                "more_body", True
-            ):
+            if message["type"] == "http.response.body" and not message.get("more_body", True):
                 runtime = int((time() - self.start) * 1000)
                 self.log(scope, runtime, content_length, request_id=request_id)
             await send(message)

@@ -9,11 +9,7 @@ from authentik.core.models import Provider
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.utils.reflection import class_to_path
 from authentik.outposts.models import Outpost, OutpostServiceConnection
-from authentik.outposts.tasks import (
-    CACHE_KEY_OUTPOST_DOWN,
-    outpost_controller,
-    outpost_post_save,
-)
+from authentik.outposts.tasks import CACHE_KEY_OUTPOST_DOWN, outpost_controller, outpost_post_save
 
 LOGGER = get_logger()
 UPDATE_TRIGGERING_MODELS = (
@@ -37,9 +33,7 @@ def pre_save_outpost(sender, instance: Outpost, **_):
     # Name changes the deployment name, need to recreate
     dirty += old_instance.name != instance.name
     # namespace requires re-create
-    dirty += (
-        old_instance.config.kubernetes_namespace != instance.config.kubernetes_namespace
-    )
+    dirty += old_instance.config.kubernetes_namespace != instance.config.kubernetes_namespace
     if bool(dirty):
         LOGGER.info("Outpost needs re-deployment due to changes", instance=instance)
         cache.set(CACHE_KEY_OUTPOST_DOWN % instance.pk.hex, old_instance)

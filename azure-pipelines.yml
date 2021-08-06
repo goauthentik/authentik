@@ -14,13 +14,13 @@ resources:
   - repo: self
 
 variables:
-  POSTGRES_DB: authentik
-  POSTGRES_USER: authentik
-  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
-  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/pull/') }}:
-    branchName: ${{ replace(variables['System.PullRequest.SourceBranch'], '/', '-') }}
-  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/') }}:
-    branchName: ${{ replace(variables['Build.SourceBranchName'], 'refs/heads/', '') }}
+  - name: POSTGRES_DB
+    value: authentik
+  - name: POSTGRES_USER
+    value: authentik
+  - name: POSTGRES_PASSWORD
+    value: "EK-5jnKfjrGRm<77"
+  - group: coverage
 
 stages:
   - stage: Lint_and_test
@@ -397,6 +397,16 @@ stages:
           - task: CmdLine@2
             inputs:
               script: bash <(curl -s https://codecov.io/bash)
+          - task: CmdLine@2
+            inputs:
+              script: |
+                npm install -g @zeus-ci/cli
+                npx zeus job update -b $BUILD_BUILDID -j $BUILD_BUILDNUMBER -r $BUILD_SOURCEVERSION
+                npx zeus upload -b $BUILD_BUILDID -j $BUILD_BUILDNUMBER -t "application/x-cobertura+xml" coverage.xml
+                npx zeus upload -b $BUILD_BUILDID -j $BUILD_BUILDNUMBER -t "application/x-junit+xml" coverage-e2e/unittest.xml
+                npx zeus upload -b $BUILD_BUILDID -j $BUILD_BUILDNUMBER -t "application/x-junit+xml" coverage-integration/unittest.xml
+                npx zeus upload -b $BUILD_BUILDID -j $BUILD_BUILDNUMBER -t "application/x-junit+xml" coverage-unittest/unittest.xml
+                npx zeus job update --status=passed -b $BUILD_BUILDID -j $BUILD_BUILDNUMBER -r $BUILD_SOURCEVERSION
   - stage: Build
     jobs:
       - job: build_server

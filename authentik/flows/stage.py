@@ -42,14 +42,9 @@ class StageView(View):
         other things besides the form display.
 
         If no user is pending, returns request.user"""
-        if (
-            PLAN_CONTEXT_PENDING_USER_IDENTIFIER in self.executor.plan.context
-            and for_display
-        ):
+        if PLAN_CONTEXT_PENDING_USER_IDENTIFIER in self.executor.plan.context and for_display:
             return User(
-                username=self.executor.plan.context.get(
-                    PLAN_CONTEXT_PENDING_USER_IDENTIFIER
-                ),
+                username=self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER_IDENTIFIER),
                 email="",
             )
         if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:

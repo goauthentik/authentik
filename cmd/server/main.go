@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"net/url"
+	"time"
 
 	"github.com/getsentry/sentry-go"
 	log "github.com/sirupsen/logrus"
@@ -9,6 +11,8 @@ import (
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/gounicorn"
+	"goauthentik.io/internal/outpost/ak"
+	"goauthentik.io/internal/outpost/proxy"
 	"goauthentik.io/internal/web"
 )
 
@@ -24,6 +28,10 @@ func main() {
 	err = config.LoadConfig("./local.env.yml")
 	if err != nil {
 		log.WithError(err).Debug("failed to local config")
+	}
+	err = config.FromEnv()
+	if err != nil {
+		log.WithError(err).Debug("failed to environment variables")
 	}
 	config.ConfigureLogger()
 
@@ -43,7 +51,7 @@ func main() {
 	ex := common.Init()
 	defer common.Defer()
 
-	// u, _ := url.Parse("http://localhost:8000")
+	u, _ := url.Parse("http://localhost:8000")
 
 	g := gounicorn.NewGoUnicorn()
 	ws := web.NewWebServer()
@@ -52,7 +60,7 @@ func main() {
 	for {
 		go attemptStartBackend(g)
 		ws.Start()
-		// go attemptProxyStart(u)
+		go attemptProxyStart(ws, u)
 
 		<-ex
 		running = false
@@ -73,35 +81,36 @@ func attemptStartBackend(g *gounicorn.GoUnicorn) {
 	}
 }
 
-// func attemptProxyStart(u *url.URL) error {
-// 	maxTries := 100
-// 	attempt := 0
-// 	for {
-// 		log.WithField("logger", "authentik").Debug("attempting to init outpost")
-// 		ac := ak.NewAPIController(*u, config.G.SecretKey)
-// 		if ac == nil {
-// 			attempt += 1
-// 			time.Sleep(1 * time.Second)
-// 			if attempt > maxTries {
-// 				break
-// 			}
-// 			continue
-// 		}
-// 		ac.Server = proxy.NewServer(ac)
-// 		err := ac.Start()
-// 		log.WithField("logger", "authentik").Debug("attempting to start outpost")
-// 		if err != nil {
-// 			attempt += 1
-// 			time.Sleep(5 * time.Second)
-// 			if attempt > maxTries {
-// 				break
-// 			}
-// 			continue
-// 		}
-// 		if !running {
-// 			ac.Shutdown()
-// 			return nil
-// 		}
-// 	}
-// 	return nil
-// }
+func attemptProxyStart(ws *web.WebServer, u *url.URL) {
+	maxTries := 100
+	attempt := 0
+	// Sleep to wait for the app server to start
+	time.Sleep(30 * time.Second)
+	for {
+		log.WithField("logger", "authentik").Debug("attempting to init outpost")
+		ac := ak.NewAPIController(*u, config.G.SecretKey)
+		if ac == nil {
+			attempt += 1
+			time.Sleep(1 * time.Second)
+			if attempt > maxTries {
+				break
+			}
+			continue
+		}
+		srv := proxy.NewServer(ac)
+		ws.ProxyServer = srv
+		ac.Server = srv
+		log.WithField("logger", "authentik").Debug("attempting to start outpost")
+		err := ac.StartBackgorundTasks()
+		if err != nil {
+			attempt += 1
+			time.Sleep(15 * time.Second)
+			if attempt > maxTries {
+				break
+			}
+			continue
+		} else {
+			select {}
+		}
+	}
+}

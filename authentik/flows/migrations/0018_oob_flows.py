@@ -32,9 +32,7 @@ def create_default_oobe_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEditor
     PromptStage = apps.get_model("authentik_stages_prompt", "PromptStage")
     Prompt = apps.get_model("authentik_stages_prompt", "Prompt")
 
-    ExpressionPolicy = apps.get_model(
-        "authentik_policies_expression", "ExpressionPolicy"
-    )
+    ExpressionPolicy = apps.get_model("authentik_policies_expression", "ExpressionPolicy")
 
     db_alias = schema_editor.connection.alias
 
@@ -52,9 +50,7 @@ def create_default_oobe_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEditor
         name="default-oobe-prefill-user",
         defaults={"expression": PREFILL_POLICY_EXPRESSION},
     )
-    password_usable_policy, _ = ExpressionPolicy.objects.using(
-        db_alias
-    ).update_or_create(
+    password_usable_policy, _ = ExpressionPolicy.objects.using(db_alias).update_or_create(
         name="default-oobe-password-usable",
         defaults={"expression": PW_USABLE_POLICY_EXPRESSION},
     )
@@ -83,9 +79,7 @@ def create_default_oobe_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEditor
     prompt_stage, _ = PromptStage.objects.using(db_alias).update_or_create(
         name="default-oobe-password",
     )
-    prompt_stage.fields.set(
-        [prompt_header, prompt_email, password_first, password_second]
-    )
+    prompt_stage.fields.set([prompt_header, prompt_email, password_first, password_second])
     prompt_stage.save()
 
     user_write, _ = UserWriteStage.objects.using(db_alias).update_or_create(

@@ -56,9 +56,9 @@ class RequestProcessor:
     def get_auth_n(self) -> Element:
         """Get full AuthnRequest"""
         auth_n_request = Element(f"{{{NS_SAML_PROTOCOL}}}AuthnRequest", nsmap=NS_MAP)
-        auth_n_request.attrib[
-            "AssertionConsumerServiceURL"
-        ] = self.source.build_full_url(self.http_request)
+        auth_n_request.attrib["AssertionConsumerServiceURL"] = self.source.build_full_url(
+            self.http_request
+        )
         auth_n_request.attrib["Destination"] = self.source.sso_url
         auth_n_request.attrib["ID"] = self.request_id
         auth_n_request.attrib["IssueInstant"] = self.issue_instant
@@ -106,9 +106,7 @@ class RequestProcessor:
                 self.source.digest_algorithm, xmlsec.constants.TransformSha1
             )
 
-            signature_node = xmlsec.tree.find_node(
-                auth_n_request, xmlsec.constants.NodeSignature
-            )
+            signature_node = xmlsec.tree.find_node(auth_n_request, xmlsec.constants.NodeSignature)
 
             ref = xmlsec.template.add_reference(
                 signature_node,
@@ -129,9 +127,7 @@ class RequestProcessor:
         Signature. See https://docs.oasis-open.org/security/saml/v2.0/saml-bindings-2.0-os.pdf"""
         auth_n_request = self.get_auth_n()
 
-        saml_request = deflate_and_base64_encode(
-            etree.tostring(auth_n_request).decode()
-        )
+        saml_request = deflate_and_base64_encode(etree.tostring(auth_n_request).decode())
 
         response_dict = {
             "SAMLRequest": saml_request,
@@ -162,9 +158,7 @@ class RequestProcessor:
             )
             ctx.key = key
 
-            signature = ctx.sign_binary(
-                querystring.encode("utf-8"), sign_algorithm_transform
-            )
+            signature = ctx.sign_binary(querystring.encode("utf-8"), sign_algorithm_transform)
             response_dict["Signature"] = b64encode(signature).decode()
             response_dict["SigAlg"] = self.source.signature_algorithm
 

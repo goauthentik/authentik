@@ -15,12 +15,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, is_dict
 from authentik.core.models import Provider
 from authentik.outposts.api.service_connections import ServiceConnectionSerializer
-from authentik.outposts.models import (
-    Outpost,
-    OutpostConfig,
-    OutpostType,
-    default_outpost_config,
-)
+from authentik.outposts.models import Outpost, OutpostConfig, OutpostType, default_outpost_config
 from authentik.providers.ldap.models import LDAPProvider
 from authentik.providers.proxy.models import ProxyProvider
 

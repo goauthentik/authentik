@@ -7,6 +7,7 @@
     --ak-dark-background: #18191a;
     --ak-dark-background-darker: #000000;
     --ak-dark-background-light: #1c1e21;
+    --ak-dark-background-light-ish: #212427;
     --ak-dark-background-lighter: #2b2e33;
 }
 
@@ -75,23 +76,11 @@ html > form > input {
 .pf-m-success {
     color: var(--pf-global--success-color--100);
 }
-.pf-c-button.pf-m-success {
-    color: var(--pf-c-button--m-primary--Color);
-    background-color: var(--pf-global--success-color--100);
-}
 .pf-m-warning {
     color: var(--pf-global--warning-color--100);
 }
-.pf-c-button.pf-m-warning {
-    color: var(--pf-c-button--m-primary--Color);
-    background-color: var(--pf-global--warning-color--100);
-}
 .pf-m-danger {
     color: var(--pf-global--danger-color--100);
-}
-.pf-c-button.pf-m-danger {
-    color: var(--pf-c-button--m-primary--Color);
-    background-color: var(--pf-global--danger-color--100);
 }
 
 .ak-static-page h1 {
@@ -99,6 +88,11 @@ html > form > input {
 }
 .form-help-text {
     color: var(--pf-global--Color--100);
+}
+
+/* Fix alignment issues with images in tables */
+.pf-c-table tbody > tr > * {
+    vertical-align: middle;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -127,7 +121,8 @@ html > form > input {
     .pf-c-page__main-section {
         --pf-c-page__main-section--BackgroundColor: var(--ak-dark-background);
     }
-    .sidebar-trigger {
+    .sidebar-trigger,
+    .notification-trigger {
         background-color: var(--ak-dark-background-light) !important;
     }
     .pf-c-page__main-section.pf-m-light {
@@ -167,7 +162,9 @@ html > form > input {
         color: var(--ak-dark-foreground) !important;
     }
     .pf-c-table__expandable-row.pf-m-expanded {
-        --pf-c-table__expandable-row--m-expanded--BorderBottomColor: var(--ak-dark-background-lighter);
+        --pf-c-table__expandable-row--m-expanded--BorderBottomColor: var(
+            --ak-dark-background-lighter
+        );
     }
     /* tabs */
     .pf-c-tabs {
@@ -212,7 +209,8 @@ html > form > input {
         border-bottom: 0;
     }
     /* inputs */
-    optgroup, option {
+    optgroup,
+    option {
         color: var(--ak-dark-foreground);
     }
     .pf-c-input-group {
@@ -232,8 +230,14 @@ html > form > input {
     .pf-c-form-control[readonly] {
         background-color: var(--ak-dark-background-light);
     }
+    .pf-c-button.pf-m-plain:hover {
+        color: var(--ak-dark-foreground);
+    }
     .pf-c-button.pf-m-control {
-        --pf-c-button--after--BorderColor: var(--ak-dark-background-lighter) var(--ak-dark-background-lighter) var(--pf-c-button--m-control--after--BorderBottomColor) var(--ak-dark-background-lighter);
+        --pf-c-button--after--BorderColor: var(--ak-dark-background-lighter)
+            var(--ak-dark-background-lighter)
+            var(--pf-c-button--m-control--after--BorderBottomColor)
+            var(--ak-dark-background-lighter);
         background-color: var(--ak-dark-background-light);
         color: var(--ak-dark-foreground);
     }
@@ -263,6 +267,10 @@ html > form > input {
     }
     .pf-c-toggle-group__button:not(.pf-m-selected) {
         background-color: var(--ak-dark-background-light) !important;
+    }
+    .pf-c-toggle-group__button.pf-m-selected {
+        color: var(--ak-dark-foreground) !important;
+        background-color: var(--pf-global--primary-color--100) !important;
     }
     /* inputs help text */
     .pf-c-form__helper-text:not(.pf-m-error) {
@@ -302,11 +310,18 @@ html > form > input {
         color: var(--ak-dark-foreground);
     }
     /* notifications */
+    .pf-c-drawer__panel {
+        background-color: var(--ak-dark-background);
+    }
     .pf-c-notification-drawer {
         --pf-c-notification-drawer--BackgroundColor: var(--ak-dark-background);
     }
     .pf-c-notification-drawer__header {
         background-color: var(--ak-dark-background-lighter);
+        color: var(--ak-dark-foreground);
+    }
+    .pf-c-notification-drawer__list-item {
+        background-color: var(--ak-dark-background-light-ish);
         color: var(--ak-dark-foreground);
     }
     /* data list */

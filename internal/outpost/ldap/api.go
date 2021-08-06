@@ -5,13 +5,14 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"net"
 	"net/http"
 	"strings"
 	"sync"
 
 	"github.com/go-openapi/strfmt"
+	"github.com/pires/go-proxyproto"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/internal/outpost/ak"
 )
 
 func (ls *LDAPServer) Refresh() error {
@@ -43,14 +44,12 @@ func (ls *LDAPServer) Refresh() error {
 			gidStartNumber:      *provider.GidStartNumber,
 		}
 		if provider.Certificate.Get() != nil {
-			logger.WithField("provider", provider.Name).Debug("Enabling TLS")
-			cert, err := ak.ParseCertificate(*provider.Certificate.Get(), ls.ac.Client.CryptoApi)
+			kp := provider.Certificate.Get()
+			err := ls.cs.AddKeypair(*kp)
 			if err != nil {
-				logger.WithField("provider", provider.Name).WithError(err).Warning("Failed to fetch certificate")
-			} else {
-				providers[idx].cert = cert
-				logger.WithField("provider", provider.Name).Debug("Loaded certificates")
+				ls.log.WithError(err).Warning("Failed to initially fetch certificate")
 			}
+			providers[idx].cert = ls.cs.Get(*kp)
 		}
 	}
 	ls.providers = providers
@@ -70,7 +69,20 @@ func (ls *LDAPServer) StartHTTPServer() error {
 
 func (ls *LDAPServer) StartLDAPServer() error {
 	listen := "0.0.0.0:3389"
+
+	ln, err := net.Listen("tcp", listen)
+	if err != nil {
+		ls.log.Fatalf("FATAL: listen (%s) failed - %s", listen, err)
+	}
+	proxyListener := &proxyproto.Listener{Listener: ln}
+	defer proxyListener.Close()
+
 	ls.log.WithField("listen", listen).Info("Starting ldap server")
+	err = ls.s.Serve(proxyListener)
+	if err != nil {
+		return err
+	}
+	ls.log.Printf("closing %s", ln.Addr())
 	return ls.s.ListenAndServe(listen)
 }
 
@@ -82,12 +94,18 @@ func (ls *LDAPServer) StartLDAPTLSServer() error {
 		GetCertificate: ls.getCertificates,
 	}
 
-	ln, err := tls.Listen("tcp", listen, tlsConfig)
+	ln, err := net.Listen("tcp", listen)
 	if err != nil {
 		ls.log.Fatalf("FATAL: listen (%s) failed - %s", listen, err)
 	}
+
+	proxyListener := &proxyproto.Listener{Listener: ln}
+	defer proxyListener.Close()
+
+	tln := tls.NewListener(proxyListener, tlsConfig)
+
 	ls.log.WithField("listen", listen).Info("Starting ldap tls server")
-	err = ls.s.Serve(ln)
+	err = ls.s.Serve(tln)
 	if err != nil {
 		return err
 	}

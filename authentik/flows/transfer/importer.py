@@ -16,11 +16,7 @@ from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.flows.models import Flow, FlowStageBinding, Stage
-from authentik.flows.transfer.common import (
-    EntryInvalidError,
-    FlowBundle,
-    FlowBundleEntry,
-)
+from authentik.flows.transfer.common import EntryInvalidError, FlowBundle, FlowBundleEntry
 from authentik.lib.models import SerializerModel
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.stages.prompt.models import Prompt
@@ -105,9 +101,7 @@ class FlowImporter:
             if isinstance(value, dict) and "pk" in value:
                 del updated_identifiers[key]
                 updated_identifiers[f"{key}"] = value["pk"]
-        existing_models = model.objects.filter(
-            self.__query_from_identifier(updated_identifiers)
-        )
+        existing_models = model.objects.filter(self.__query_from_identifier(updated_identifiers))
 
         serializer_kwargs = {}
         if existing_models.exists():
@@ -120,9 +114,7 @@ class FlowImporter:
             )
             serializer_kwargs["instance"] = model_instance
         else:
-            self.logger.debug(
-                "initialise new instance", model=model, **updated_identifiers
-            )
+            self.logger.debug("initialise new instance", model=model, **updated_identifiers)
         full_data = self.__update_pks_for_attrs(entry.attrs)
         full_data.update(updated_identifiers)
         serializer_kwargs["data"] = full_data

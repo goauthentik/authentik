@@ -175,9 +175,7 @@ REST_FRAMEWORK = {
         "rest_framework.filters.OrderingFilter",
         "rest_framework.filters.SearchFilter",
     ],
-    "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.DjangoObjectPermissions",
-    ),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.DjangoObjectPermissions",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "authentik.api.authentication.TokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
@@ -398,9 +396,7 @@ if _ERROR_REPORTING:
     if build_hash == "":
         build_hash = "tagged"
     set_tag("authentik.build_hash", build_hash)
-    set_tag(
-        "authentik.env", "kubernetes" if "KUBERNETES_PORT" in os.environ else "compose"
-    )
+    set_tag("authentik.env", "kubernetes" if "KUBERNETES_PORT" in os.environ else "compose")
     set_tag("authentik.component", "backend")
     j_print(
         "Error reporting is enabled",
@@ -514,12 +510,8 @@ for _app in INSTALLED_APPS:
             app_settings = importlib.import_module("%s.settings" % _app)
             INSTALLED_APPS.extend(getattr(app_settings, "INSTALLED_APPS", []))
             MIDDLEWARE.extend(getattr(app_settings, "MIDDLEWARE", []))
-            AUTHENTICATION_BACKENDS.extend(
-                getattr(app_settings, "AUTHENTICATION_BACKENDS", [])
-            )
-            CELERY_BEAT_SCHEDULE.update(
-                getattr(app_settings, "CELERY_BEAT_SCHEDULE", {})
-            )
+            AUTHENTICATION_BACKENDS.extend(getattr(app_settings, "AUTHENTICATION_BACKENDS", []))
+            CELERY_BEAT_SCHEDULE.update(getattr(app_settings, "CELERY_BEAT_SCHEDULE", {}))
             for _attr in dir(app_settings):
                 if not _attr.startswith("__") and _attr not in _DISALLOWED_ITEMS:
                     globals()[_attr] = getattr(app_settings, _attr)

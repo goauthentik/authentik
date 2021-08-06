@@ -143,7 +143,5 @@ class EventViewSet(ModelViewSet):
         """Get all actions"""
         data = []
         for value, name in EventAction.choices:
-            data.append(
-                {"name": name, "description": "", "component": value, "model_name": ""}
-            )
+            data.append({"name": name, "description": "", "component": value, "model_name": ""})
         return Response(TypeCreateSerializer(data, many=True).data)

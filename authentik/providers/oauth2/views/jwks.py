@@ -24,13 +24,11 @@ class JWKSView(View):
     def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """Show RSA Key data for Provider"""
         application = get_object_or_404(Application, slug=application_slug)
-        provider: OAuth2Provider = get_object_or_404(
-            OAuth2Provider, pk=application.provider_id
-        )
+        provider: OAuth2Provider = get_object_or_404(OAuth2Provider, pk=application.provider_id)
 
         response_data = {}
 
-        if provider.jwt_alg == JWTAlgorithms.RS256:
+        if provider.jwt_alg == JWTAlgorithms.RS256 and provider.rsa_key:
             public_key: RSAPublicKey = provider.rsa_key.private_key.public_key()
             public_numbers = public_key.public_numbers()
             response_data["keys"] = [

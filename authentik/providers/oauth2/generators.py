@@ -12,6 +12,4 @@ def generate_client_id():
 def generate_client_secret():
     """Generate a suitable client secret"""
     rand = SystemRandom()
-    return "".join(
-        rand.choice(string.ascii_letters + string.digits) for x in range(128)
-    )
+    return "".join(rand.choice(string.ascii_letters + string.digits) for x in range(128))

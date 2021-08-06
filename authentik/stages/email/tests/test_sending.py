@@ -21,9 +21,7 @@ class TestEmailStageSending(TestCase):
 
     def setUp(self):
         super().setUp()
-        self.user = User.objects.create_user(
-            username="unittest", email="test@beryju.org"
-        )
+        self.user = User.objects.create_user(username="unittest", email="test@beryju.org")
         self.client = Client()
 
         self.flow = Flow.objects.create(
@@ -34,26 +32,18 @@ class TestEmailStageSending(TestCase):
         self.stage = EmailStage.objects.create(
             name="email",
         )
-        self.binding = FlowStageBinding.objects.create(
-            target=self.flow, stage=self.stage, order=2
-        )
+        self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     def test_pending_user(self):
         """Test with pending user"""
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
-        url = reverse(
-            "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
-        )
-        with self.settings(
-            EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend"
-        ):
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        with self.settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend"):
             response = self.client.post(url)
             self.assertEqual(response.status_code, 200)
             self.assertEqual(len(mail.outbox), 1)
@@ -68,20 +58,14 @@ class TestEmailStageSending(TestCase):
 
     def test_send_error(self):
         """Test error during sending (sending will be retried)"""
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
-        url = reverse(
-            "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
-        )
-        with self.settings(
-            EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend"
-        ):
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        with self.settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend"):
             with patch(
                 "django.core.mail.backends.locmem.EmailBackend.send_messages",
                 MagicMock(side_effect=[SMTPException, EmailBackend.send_messages]),

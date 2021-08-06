@@ -23,9 +23,7 @@ class TestPropertyMappingAPI(APITestCase):
     def test_test_call(self):
         """Test PropertMappings's test endpoint"""
         response = self.client.post(
-            reverse(
-                "authentik_api:propertymapping-test", kwargs={"pk": self.mapping.pk}
-            ),
+            reverse("authentik_api:propertymapping-test", kwargs={"pk": self.mapping.pk}),
             data={
                 "user": self.user.pk,
             },

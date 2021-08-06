@@ -38,6 +38,7 @@ USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
 USER_ATTRIBUTE_SA = "goauthentik.io/user/service-account"
 USER_ATTRIBUTE_SOURCES = "goauthentik.io/user/sources"
 USER_ATTRIBUTE_TOKEN_EXPIRING = "goauthentik.io/user/token-expires"  # nosec
+USER_ATTRIBUTE_CAN_OVERRIDE_IP = "goauthentik.io/user/override-ips"
 
 GRAVATAR_URL = "https://secure.gravatar.com"
 DEFAULT_AVATAR = static("dist/assets/images/user_default.png")
@@ -153,9 +154,7 @@ class User(GuardianUserMixin, AbstractUser):
                 ("s", "158"),
                 ("r", "g"),
             ]
-            gravatar_url = (
-                f"{GRAVATAR_URL}/avatar/{mail_hash}?{urlencode(parameters, doseq=True)}"
-            )
+            gravatar_url = f"{GRAVATAR_URL}/avatar/{mail_hash}?{urlencode(parameters, doseq=True)}"
             return escape(gravatar_url)
         return mode % {
             "username": self.username,
@@ -185,9 +184,7 @@ class Provider(SerializerModel):
         related_name="provider_authorization",
     )
 
-    property_mappings = models.ManyToManyField(
-        "PropertyMapping", default=None, blank=True
-    )
+    property_mappings = models.ManyToManyField("PropertyMapping", default=None, blank=True)
 
     objects = InheritanceManager()
 
@@ -217,9 +214,7 @@ class Application(PolicyBindingModel):
     add custom fields and other properties"""
 
     name = models.TextField(help_text=_("Application's display Name."))
-    slug = models.SlugField(
-        help_text=_("Internal application name, used in URLs."), unique=True
-    )
+    slug = models.SlugField(help_text=_("Internal application name, used in URLs."), unique=True)
     provider = models.OneToOneField(
         "Provider", null=True, blank=True, default=None, on_delete=models.SET_DEFAULT
     )
@@ -243,9 +238,7 @@ class Application(PolicyBindingModel):
         it is returned as-is"""
         if not self.meta_icon:
             return None
-        if self.meta_icon.name.startswith("http") or self.meta_icon.name.startswith(
-            "/static"
-        ):
+        if self.meta_icon.name.startswith("http") or self.meta_icon.name.startswith("/static"):
             return self.meta_icon.name
         return self.meta_icon.url
 
@@ -300,14 +293,10 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
     name = models.TextField(help_text=_("Source's display Name."))
-    slug = models.SlugField(
-        help_text=_("Internal source name, used in URLs."), unique=True
-    )
+    slug = models.SlugField(help_text=_("Internal source name, used in URLs."), unique=True)
 
     enabled = models.BooleanField(default=True)
-    property_mappings = models.ManyToManyField(
-        "PropertyMapping", default=None, blank=True
-    )
+    property_mappings = models.ManyToManyField("PropertyMapping", default=None, blank=True)
 
     authentication_flow = models.ForeignKey(
         Flow,
@@ -480,9 +469,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         """Get serializer for this model"""
         raise NotImplementedError
 
-    def evaluate(
-        self, user: Optional[User], request: Optional[HttpRequest], **kwargs
-    ) -> Any:
+    def evaluate(self, user: Optional[User], request: Optional[HttpRequest], **kwargs) -> Any:
         """Evaluate `self.expression` using `**kwargs` as Context."""
         from authentik.core.expression import PropertyMappingEvaluator
 
@@ -490,8 +477,8 @@ class PropertyMapping(SerializerModel, ManagedModel):
         evaluator.set_context(user, request, self, **kwargs)
         try:
             return evaluator.evaluate(self.expression)
-        except (ValueError, SyntaxError) as exc:
-            raise PropertyMappingExpressionException from exc
+        except Exception as exc:
+            raise PropertyMappingExpressionException(str(exc)) from exc
 
     def __str__(self):
         return f"Property Mapping {self.name}"
@@ -521,9 +508,7 @@ class AuthenticatedSession(ExpiringModel):
     last_used = models.DateTimeField(auto_now=True)
 
     @staticmethod
-    def from_request(
-        request: HttpRequest, user: User
-    ) -> Optional["AuthenticatedSession"]:
+    def from_request(request: HttpRequest, user: User) -> Optional["AuthenticatedSession"]:
         """Create a new session from a http request"""
         if not hasattr(request, "session") or not request.session.session_key:
             return None
@@ -534,3 +519,8 @@ class AuthenticatedSession(ExpiringModel):
             last_user_agent=request.META.get("HTTP_USER_AGENT", ""),
             expires=request.session.get_expiry_date(),
         )
+
+    class Meta:
+
+        verbose_name = _("Authenticated Session")
+        verbose_name_plural = _("Authenticated Sessions")

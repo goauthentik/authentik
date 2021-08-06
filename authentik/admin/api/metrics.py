@@ -23,9 +23,7 @@ def get_events_per_1h(**filter_kwargs) -> list[dict[str, int]]:
     date_from = now() - timedelta(days=1)
     result = (
         Event.objects.filter(created__gte=date_from, **filter_kwargs)
-        .annotate(
-            age=ExpressionWrapper(now() - F("created"), output_field=DurationField())
-        )
+        .annotate(age=ExpressionWrapper(now() - F("created"), output_field=DurationField()))
         .annotate(age_hours=ExtractHour("age"))
         .values("age_hours")
         .annotate(count=Count("pk"))
@@ -37,8 +35,7 @@ def get_events_per_1h(**filter_kwargs) -> list[dict[str, int]]:
     for hour in range(0, -24, -1):
         results.append(
             {
-                "x_cord": time.mktime((_now + timedelta(hours=hour)).timetuple())
-                * 1000,
+                "x_cord": time.mktime((_now + timedelta(hours=hour)).timetuple()) * 1000,
                 "y_cord": data[hour * -1],
             }
         )

@@ -10,12 +10,7 @@ from django_filters.filters import BooleanFilter
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import (
-    CharField,
-    DateTimeField,
-    IntegerField,
-    SerializerMethodField,
-)
+from rest_framework.fields import CharField, DateTimeField, IntegerField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, ValidationError
@@ -86,9 +81,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
                     backend=default_backend(),
                 )
             except (ValueError, TypeError):
-                raise ValidationError(
-                    "Unable to load private key (possibly encrypted?)."
-                )
+                raise ValidationError("Unable to load private key (possibly encrypted?).")
         return value
 
     class Meta:
@@ -123,9 +116,7 @@ class CertificateGenerationSerializer(PassiveSerializer):
     """Certificate generation parameters"""
 
     common_name = CharField()
-    subject_alt_name = CharField(
-        required=False, allow_blank=True, label=_("Subject-alt name")
-    )
+    subject_alt_name = CharField(required=False, allow_blank=True, label=_("Subject-alt name"))
     validity_days = IntegerField(initial=365)
 
 
@@ -170,9 +161,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         builder = CertificateBuilder()
         builder.common_name = data.validated_data["common_name"]
         builder.build(
-            subject_alt_names=data.validated_data.get("subject_alt_name", "").split(
-                ","
-            ),
+            subject_alt_names=data.validated_data.get("subject_alt_name", "").split(","),
             validity_days=int(data.validated_data["validity_days"]),
         )
         instance = builder.save()
@@ -208,9 +197,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
                 "Content-Disposition"
             ] = f'attachment; filename="{certificate.name}_certificate.pem"'
             return response
-        return Response(
-            CertificateDataSerializer({"data": certificate.certificate_data}).data
-        )
+        return Response(CertificateDataSerializer({"data": certificate.certificate_data}).data)
 
     @extend_schema(
         parameters=[
@@ -234,9 +221,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         ).from_http(request)
         if "download" in request._request.GET:
             # Mime type from https://pki-tutorial.readthedocs.io/en/latest/mime.html
-            response = HttpResponse(
-                certificate.key_data, content_type="application/x-pem-file"
-            )
+            response = HttpResponse(certificate.key_data, content_type="application/x-pem-file")
             response[
                 "Content-Disposition"
             ] = f'attachment; filename="{certificate.name}_private_key.pem"'

@@ -27,9 +27,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="samlprovider",
             name="issuer",
-            field=models.TextField(
-                default="authentik", help_text="Also known as EntityID"
-            ),
+            field=models.TextField(default="authentik", help_text="Also known as EntityID"),
         ),
         migrations.AlterField(
             model_name="samlprovider",

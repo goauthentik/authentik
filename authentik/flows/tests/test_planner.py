@@ -89,14 +89,10 @@ class TestFlowPlanner(TestCase):
 
         planner = FlowPlanner(flow)
         planner.plan(request)
-        self.assertEqual(
-            CACHE_MOCK.set.call_count, 1
-        )  # Ensure plan is written to cache
+        self.assertEqual(CACHE_MOCK.set.call_count, 1)  # Ensure plan is written to cache
         planner = FlowPlanner(flow)
         planner.plan(request)
-        self.assertEqual(
-            CACHE_MOCK.set.call_count, 1
-        )  # Ensure nothing is written to cache
+        self.assertEqual(CACHE_MOCK.set.call_count, 1)  # Ensure nothing is written to cache
         self.assertEqual(CACHE_MOCK.get.call_count, 2)  # Get is called twice
 
     def test_planner_default_context(self):
@@ -176,9 +172,7 @@ class TestFlowPlanner(TestCase):
         request.session.save()
 
         # Here we patch the dummy policy to evaluate to true so the stage is included
-        with patch(
-            "authentik.policies.dummy.models.DummyPolicy.passes", POLICY_RETURN_TRUE
-        ):
+        with patch("authentik.policies.dummy.models.DummyPolicy.passes", POLICY_RETURN_TRUE):
             planner = FlowPlanner(flow)
             plan = planner.plan(request)
 

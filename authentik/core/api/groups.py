@@ -1,5 +1,7 @@
 """Groups API Viewset"""
 from django.db.models.query import QuerySet
+from django_filters.filters import ModelMultipleChoiceFilter
+from django_filters.filterset import FilterSet
 from rest_framework.fields import BooleanField, CharField, JSONField
 from rest_framework.serializers import ListSerializer, ModelSerializer
 from rest_framework.viewsets import ModelViewSet
@@ -57,13 +59,32 @@ class GroupSerializer(ModelSerializer):
         ]
 
 
+class GroupFilter(FilterSet):
+    """Filter for groups"""
+
+    members_by_username = ModelMultipleChoiceFilter(
+        field_name="users__username",
+        to_field_name="username",
+        queryset=User.objects.all(),
+    )
+    members_by_pk = ModelMultipleChoiceFilter(
+        field_name="users",
+        queryset=User.objects.all(),
+    )
+
+    class Meta:
+
+        model = Group
+        fields = ["name", "is_superuser", "members_by_pk", "members_by_username"]
+
+
 class GroupViewSet(UsedByMixin, ModelViewSet):
     """Group Viewset"""
 
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     search_fields = ["name", "is_superuser"]
-    filterset_fields = ["name", "is_superuser"]
+    filterset_class = GroupFilter
     ordering = ["name"]
 
     def _filter_queryset_for_list(self, queryset: QuerySet) -> QuerySet:

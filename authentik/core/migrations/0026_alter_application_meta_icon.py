@@ -17,4 +17,11 @@ class Migration(migrations.Migration):
                 default=None, max_length=500, null=True, upload_to="application-icons/"
             ),
         ),
+        migrations.AlterModelOptions(
+            name="authenticatedsession",
+            options={
+                "verbose_name": "Authenticated Session",
+                "verbose_name_plural": "Authenticated Sessions",
+            },
+        ),
     ]

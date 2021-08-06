@@ -46,9 +46,5 @@ class LDAPPasswordTests(TestCase):
         self.assertFalse(pwc.ad_password_complexity("test", user))  # 1 category
         self.assertFalse(pwc.ad_password_complexity("test1", user))  # 2 categories
         self.assertTrue(pwc.ad_password_complexity("test1!", user))  # 2 categories
-        self.assertFalse(
-            pwc.ad_password_complexity("erin!qewrqewr", user)
-        )  # displayName token
-        self.assertFalse(
-            pwc.ad_password_complexity("hagens!qewrqewr", user)
-        )  # displayName token
+        self.assertFalse(pwc.ad_password_complexity("erin!qewrqewr", user))  # displayName token
+        self.assertFalse(pwc.ad_password_complexity("hagens!qewrqewr", user))  # displayName token

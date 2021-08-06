@@ -1,74 +1,111 @@
 package ldap
 
 import (
-	"context"
 	"errors"
 	"fmt"
-	"net"
 	"strings"
+	"sync"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/nmcclain/ldap"
 	"goauthentik.io/api"
 )
 
-func (pi *ProviderInstance) SearchMe(user api.User, searchReq ldap.SearchRequest, conn net.Conn) (ldap.ServerSearchResult, error) {
+func (pi *ProviderInstance) SearchMe(req SearchRequest, f UserFlags) (ldap.ServerSearchResult, error) {
+	if f.UserInfo == nil {
+		u, _, err := pi.s.ac.Client.CoreApi.CoreUsersRetrieve(req.ctx, f.UserInfo.Pk).Execute()
+		if err != nil {
+			req.log.WithError(err).Warning("Failed to get user info")
+			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Failed to get userinfo")
+		}
+		f.UserInfo = &u
+	}
 	entries := make([]*ldap.Entry, 1)
-	entries[0] = pi.UserEntry(user)
+	entries[0] = pi.UserEntry(*f.UserInfo)
 	return ldap.ServerSearchResult{Entries: entries, Referrals: []string{}, Controls: []ldap.Control{}, ResultCode: ldap.LDAPResultSuccess}, nil
 }
 
-func (pi *ProviderInstance) Search(bindDN string, searchReq ldap.SearchRequest, conn net.Conn) (ldap.ServerSearchResult, error) {
-	bindDN = strings.ToLower(bindDN)
+func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, error) {
+	accsp := sentry.StartSpan(req.ctx, "authentik.providers.ldap.search.check_access")
 	baseDN := strings.ToLower("," + pi.BaseDN)
 
 	entries := []*ldap.Entry{}
-	filterEntity, err := ldap.GetFilterObjectClass(searchReq.Filter)
+	filterEntity, err := ldap.GetFilterObjectClass(req.Filter)
 	if err != nil {
-		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: error parsing filter: %s", searchReq.Filter)
+		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: error parsing filter: %s", req.Filter)
 	}
-	if len(bindDN) < 1 {
-		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: Anonymous BindDN not allowed %s", bindDN)
+	if len(req.BindDN) < 1 {
+		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: Anonymous BindDN not allowed %s", req.BindDN)
 	}
-	if !strings.HasSuffix(bindDN, baseDN) {
-		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: BindDN %s not in our BaseDN %s", bindDN, pi.BaseDN)
+	if !strings.HasSuffix(req.BindDN, baseDN) {
+		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: BindDN %s not in our BaseDN %s", req.BindDN, pi.BaseDN)
 	}
 
 	pi.boundUsersMutex.RLock()
-	defer pi.boundUsersMutex.RUnlock()
-	flags, ok := pi.boundUsers[bindDN]
+	flags, ok := pi.boundUsers[req.BindDN]
+	pi.boundUsersMutex.RUnlock()
 	if !ok {
 		pi.log.Debug("User info not cached")
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, errors.New("access denied")
 	}
 	if !flags.CanSearch {
 		pi.log.Debug("User can't search, showing info about user")
-		return pi.SearchMe(flags.UserInfo, searchReq, conn)
+		return pi.SearchMe(req, flags)
+	}
+	accsp.Finish()
+
+	parsedFilter, err := ldap.CompileFilter(req.Filter)
+	if err != nil {
+		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: error parsing filter: %s", req.Filter)
 	}
 
 	switch filterEntity {
 	default:
-		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: unhandled filter type: %s [%s]", filterEntity, searchReq.Filter)
+		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: unhandled filter type: %s [%s]", filterEntity, req.Filter)
 	case GroupObjectClass:
-		groups, _, err := pi.s.ac.Client.CoreApi.CoreGroupsList(context.Background()).Execute()
-		if err != nil {
-			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("API Error: %s", err)
-		}
-		pi.log.WithField("count", len(groups.Results)).Trace("Got results from API")
+		wg := sync.WaitGroup{}
+		wg.Add(2)
 
-		for _, g := range groups.Results {
-			entries = append(entries, pi.GroupEntry(pi.APIGroupToLDAPGroup(g)))
-		}
+		gEntries := make([]*ldap.Entry, 0)
+		uEntries := make([]*ldap.Entry, 0)
 
-		users, _, err := pi.s.ac.Client.CoreApi.CoreUsersList(context.Background()).Execute()
-		if err != nil {
-			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("API Error: %s", err)
-		}
+		go func() {
+			defer wg.Done()
+			gapisp := sentry.StartSpan(req.ctx, "authentik.providers.ldap.search.api_group")
+			groups, _, err := parseFilterForGroup(pi.s.ac.Client.CoreApi.CoreGroupsList(gapisp.Context()), parsedFilter).Execute()
+			gapisp.Finish()
+			if err != nil {
+				req.log.WithError(err).Warning("failed to get groups")
+				return
+			}
+			pi.log.WithField("count", len(groups.Results)).Trace("Got results from API")
 
-		for _, u := range users.Results {
-			entries = append(entries, pi.GroupEntry(pi.APIUserToLDAPGroup(u)))
-		}
+			for _, g := range groups.Results {
+				gEntries = append(gEntries, pi.GroupEntry(pi.APIGroupToLDAPGroup(g)))
+			}
+		}()
+
+		go func() {
+			defer wg.Done()
+			uapisp := sentry.StartSpan(req.ctx, "authentik.providers.ldap.search.api_user")
+			users, _, err := parseFilterForUser(pi.s.ac.Client.CoreApi.CoreUsersList(uapisp.Context()), parsedFilter).Execute()
+			uapisp.Finish()
+			if err != nil {
+				req.log.WithError(err).Warning("failed to get groups")
+				return
+			}
+
+			for _, u := range users.Results {
+				uEntries = append(uEntries, pi.GroupEntry(pi.APIUserToLDAPGroup(u)))
+			}
+		}()
+		wg.Wait()
+		entries = append(gEntries, uEntries...)
 	case UserObjectClass, "":
-		users, _, err := pi.s.ac.Client.CoreApi.CoreUsersList(context.Background()).Execute()
+		uapisp := sentry.StartSpan(req.ctx, "authentik.providers.ldap.search.api_user")
+		users, _, err := parseFilterForUser(pi.s.ac.Client.CoreApi.CoreUsersList(uapisp.Context()), parsedFilter).Execute()
+		uapisp.Finish()
+
 		if err != nil {
 			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("API Error: %s", err)
 		}
@@ -76,7 +113,6 @@ func (pi *ProviderInstance) Search(bindDN string, searchReq ldap.SearchRequest, 
 			entries = append(entries, pi.UserEntry(u))
 		}
 	}
-	pi.log.WithField("filter", searchReq.Filter).Debug("Search OK")
 	return ldap.ServerSearchResult{Entries: entries, Referrals: []string{}, Controls: []ldap.Control{}, ResultCode: ldap.LDAPResultSuccess}, nil
 }
 

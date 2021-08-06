@@ -71,14 +71,12 @@ func (ac *APIController) Shutdown() {
 func (ac *APIController) startWSHandler() {
 	logger := ac.logger.WithField("loop", "ws-handler")
 	for {
-		if !ac.wsConn.IsConnected() {
-			continue
-		}
 		var wsMsg websocketMessage
 		err := ac.wsConn.ReadJSON(&wsMsg)
 		if err != nil {
 			logger.WithError(err).Warning("ws write error, reconnecting")
 			ac.wsConn.CloseAndReconnect()
+			time.Sleep(time.Second * 5)
 			continue
 		}
 		if wsMsg.Instruction == WebsocketInstructionTriggerUpdate {
@@ -118,7 +116,7 @@ func (ac *APIController) startWSHealth() {
 
 func (ac *APIController) startIntervalUpdater() {
 	logger := ac.logger.WithField("loop", "interval-updater")
-	ticker := time.NewTicker(time.Second * 150)
+	ticker := time.NewTicker(5 * time.Minute)
 	for ; true; <-ticker.C {
 		err := ac.Server.Refresh()
 		if err != nil {

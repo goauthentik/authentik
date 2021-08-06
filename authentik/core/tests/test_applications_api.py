@@ -17,9 +17,7 @@ class TestApplicationsAPI(APITestCase):
         self.denied = Application.objects.create(name="denied", slug="denied")
         PolicyBinding.objects.create(
             target=self.denied,
-            policy=DummyPolicy.objects.create(
-                name="deny", result=False, wait_min=1, wait_max=2
-            ),
+            policy=DummyPolicy.objects.create(name="deny", result=False, wait_min=1, wait_max=2),
             order=0,
         )
 
@@ -33,9 +31,7 @@ class TestApplicationsAPI(APITestCase):
             )
         )
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content), {"messages": [], "passing": True}
-        )
+        self.assertJSONEqual(force_str(response.content), {"messages": [], "passing": True})
         response = self.client.get(
             reverse(
                 "authentik_api:application-check-access",
@@ -43,9 +39,7 @@ class TestApplicationsAPI(APITestCase):
             )
         )
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content), {"messages": ["dummy"], "passing": False}
-        )
+        self.assertJSONEqual(force_str(response.content), {"messages": ["dummy"], "passing": False})
 
     def test_list(self):
         """Test list operation without superuser_full_list"""

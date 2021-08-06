@@ -26,7 +26,5 @@ class TestEvaluator(TestCase):
     def test_is_group_member(self):
         """Test expr_is_group_member"""
         self.assertFalse(
-            BaseEvaluator.expr_is_group_member(
-                User.objects.get(username="akadmin"), name="test"
-            )
+            BaseEvaluator.expr_is_group_member(User.objects.get(username="akadmin"), name="test")
         )

@@ -1,4 +1,14 @@
-import { SAMLSource, SourcesApi, BindingTypeEnum, NameIdPolicyEnum, CryptoApi, DigestAlgorithmEnum, SignatureAlgorithmEnum, FlowsApi, FlowsInstancesListDesignationEnum } from "authentik-api";
+import {
+    SAMLSource,
+    SourcesApi,
+    BindingTypeEnum,
+    NameIdPolicyEnum,
+    CryptoApi,
+    DigestAlgorithmEnum,
+    SignatureAlgorithmEnum,
+    FlowsApi,
+    FlowsInstancesListDesignationEnum,
+} from "authentik-api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -12,7 +22,6 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-source-saml-form")
 export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
-
     loadInstance(pk: string): Promise<SAMLSource> {
         return new SourcesApi(DEFAULT_CONFIG).sourcesSamlRetrieve({
             slug: pk,
@@ -31,127 +40,190 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
         if (this.instance) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesSamlUpdate({
                 slug: this.instance.slug,
-                sAMLSourceRequest: data
+                sAMLSourceRequest: data,
             });
         } else {
             return new SourcesApi(DEFAULT_CONFIG).sourcesSamlCreate({
-                sAMLSourceRequest: data
+                sAMLSourceRequest: data,
             });
         }
     };
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal
-                label=${t`Name`}
-                ?required=${true}
-                name="name">
-                <input type="text" value="${ifDefined(this.instance?.name)}" class="pf-c-form-control" required>
+            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.name)}"
+                    class="pf-c-form-control"
+                    required
+                />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${t`Slug`}
-                ?required=${true}
-                name="slug">
-                <input type="text" value="${ifDefined(this.instance?.slug)}" class="pf-c-form-control" required>
+            <ak-form-element-horizontal label=${t`Slug`} ?required=${true} name="slug">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.slug)}"
+                    class="pf-c-form-control"
+                    required
+                />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="enabled">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.enabled, true)}>
-                    <label class="pf-c-check__label">
-                        ${t`Enabled`}
-                    </label>
+                    <input
+                        type="checkbox"
+                        class="pf-c-check__input"
+                        ?checked=${first(this.instance?.enabled, true)}
+                    />
+                    <label class="pf-c-check__label"> ${t`Enabled`} </label>
                 </div>
             </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>
-                <span slot="header">
-                    ${t`Protocol settings`}
-                </span>
+                <span slot="header"> ${t`Protocol settings`} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${t`SSO URL`}
-                        ?required=${true}
-                        name="ssoUrl">
-                        <input type="text" value="${ifDefined(this.instance?.ssoUrl)}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${t`URL that the initial Login request is sent to.`}</p>
+                    <ak-form-element-horizontal label=${t`SSO URL`} ?required=${true} name="ssoUrl">
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.ssoUrl)}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`URL that the initial Login request is sent to.`}
+                        </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`SLO URL`}
-                        name="sloUrl">
-                        <input type="text" value="${ifDefined(this.instance?.sloUrl || "")}" class="pf-c-form-control">
-                        <p class="pf-c-form__helper-text">${t`Optional URL if the IDP supports Single-Logout.`}</p>
+                    <ak-form-element-horizontal label=${t`SLO URL`} name="sloUrl">
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.sloUrl || "")}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`Optional URL if the IDP supports Single-Logout.`}
+                        </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`Issuer`}
-                        name="issuer">
-                        <input type="text" value="${ifDefined(this.instance?.issuer)}" class="pf-c-form-control">
-                        <p class="pf-c-form__helper-text">${t`Also known as Entity ID. Defaults the Metadata URL.`}</p>
+                    <ak-form-element-horizontal label=${t`Issuer`} name="issuer">
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.issuer)}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`Also known as Entity ID. Defaults the Metadata URL.`}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Binding Type`}
                         ?required=${true}
-                        name="bindingType">
+                        name="bindingType"
+                    >
                         <select class="pf-c-form-control">
-                            <option value=${BindingTypeEnum.Redirect} ?selected=${this.instance?.bindingType === BindingTypeEnum.Redirect}>
+                            <option
+                                value=${BindingTypeEnum.Redirect}
+                                ?selected=${this.instance?.bindingType === BindingTypeEnum.Redirect}
+                            >
                                 ${t`Redirect binding`}
                             </option>
-                            <option value=${BindingTypeEnum.PostAuto} ?selected=${this.instance?.bindingType === BindingTypeEnum.PostAuto}>
+                            <option
+                                value=${BindingTypeEnum.PostAuto}
+                                ?selected=${this.instance?.bindingType === BindingTypeEnum.PostAuto}
+                            >
                                 ${t`Post binding (auto-submit)`}
                             </option>
-                            <option value=${BindingTypeEnum.Post} ?selected=${this.instance?.bindingType === BindingTypeEnum.Post}>
+                            <option
+                                value=${BindingTypeEnum.Post}
+                                ?selected=${this.instance?.bindingType === BindingTypeEnum.Post}
+                            >
                                 ${t`Post binding`}
                             </option>
                         </select>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`Signing keypair`}
-                        name="signingKp">
+                    <ak-form-element-horizontal label=${t`Signing keypair`} name="signingKp">
                         <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.signingKp === undefined}>---------</option>
-                            ${until(new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
-                                ordering: "pk",
-                            }).then(keys => {
-                                return keys.results.map(key => {
-                                    return html`<option value=${ifDefined(key.pk)} ?selected=${this.instance?.signingKp === key.pk}>${key.name}</option>`;
-                                });
-                            }), html`<option>${t`Loading...`}</option>`)}
+                            <option value="" ?selected=${this.instance?.signingKp === undefined}>
+                                ---------
+                            </option>
+                            ${until(
+                                new CryptoApi(DEFAULT_CONFIG)
+                                    .cryptoCertificatekeypairsList({
+                                        ordering: "pk",
+                                    })
+                                    .then((keys) => {
+                                        return keys.results.map((key) => {
+                                            return html`<option
+                                                value=${ifDefined(key.pk)}
+                                                ?selected=${this.instance?.signingKp === key.pk}
+                                            >
+                                                ${key.name}
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
                         </select>
-                        <p class="pf-c-form__helper-text">${t`Keypair which is used to sign outgoing requests. Leave empty to disable signing.`}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Keypair which is used to sign outgoing requests. Leave empty to disable signing.`}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             <ak-form-group>
-                <span slot="header">
-                    ${t`Advanced protocol settings`}
-                </span>
+                <span slot="header"> ${t`Advanced protocol settings`} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="allowIdpInitiated">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.allowIdpInitiated, false)}>
+                            <input
+                                type="checkbox"
+                                class="pf-c-check__input"
+                                ?checked=${first(this.instance?.allowIdpInitiated, false)}
+                            />
                             <label class="pf-c-check__label">
                                 ${t` Allow IDP-initiated logins`}
                             </label>
                         </div>
-                        <p class="pf-c-form__helper-text">${t`Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.`}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.`}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`NameID Policy`}
                         ?required=${true}
-                        name="nameIdPolicy">
+                        name="nameIdPolicy"
+                    >
                         <select class="pf-c-form-control">
-                            <option value=${NameIdPolicyEnum._20nameidFormatpersistent} ?selected=${this.instance?.nameIdPolicy === NameIdPolicyEnum._20nameidFormatpersistent}>
+                            <option
+                                value=${NameIdPolicyEnum._20nameidFormatpersistent}
+                                ?selected=${this.instance?.nameIdPolicy ===
+                                NameIdPolicyEnum._20nameidFormatpersistent}
+                            >
                                 ${t`Persistent`}
                             </option>
-                            <option value=${NameIdPolicyEnum._11nameidFormatemailAddress} ?selected=${this.instance?.nameIdPolicy === NameIdPolicyEnum._11nameidFormatemailAddress}>
+                            <option
+                                value=${NameIdPolicyEnum._11nameidFormatemailAddress}
+                                ?selected=${this.instance?.nameIdPolicy ===
+                                NameIdPolicyEnum._11nameidFormatemailAddress}
+                            >
                                 ${t`Email address`}
                             </option>
-                            <option value=${NameIdPolicyEnum._20nameidFormatWindowsDomainQualifiedName} ?selected=${this.instance?.nameIdPolicy === NameIdPolicyEnum._20nameidFormatWindowsDomainQualifiedName}>
+                            <option
+                                value=${NameIdPolicyEnum._20nameidFormatWindowsDomainQualifiedName}
+                                ?selected=${this.instance?.nameIdPolicy ===
+                                NameIdPolicyEnum._20nameidFormatWindowsDomainQualifiedName}
+                            >
                                 ${t`Windows`}
                             </option>
-                            <option value=${NameIdPolicyEnum._20nameidFormatX509SubjectName} ?selected=${this.instance?.nameIdPolicy === NameIdPolicyEnum._20nameidFormatX509SubjectName}>
+                            <option
+                                value=${NameIdPolicyEnum._20nameidFormatX509SubjectName}
+                                ?selected=${this.instance?.nameIdPolicy ===
+                                NameIdPolicyEnum._20nameidFormatX509SubjectName}
+                            >
                                 ${t`X509 Subject`}
                             </option>
-                            <option value=${NameIdPolicyEnum._20nameidFormattransient} ?selected=${this.instance?.nameIdPolicy === NameIdPolicyEnum._20nameidFormattransient}>
+                            <option
+                                value=${NameIdPolicyEnum._20nameidFormattransient}
+                                ?selected=${this.instance?.nameIdPolicy ===
+                                NameIdPolicyEnum._20nameidFormattransient}
+                            >
                                 ${t`Transient`}
                             </option>
                         </select>
@@ -159,25 +231,51 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                     <ak-form-element-horizontal
                         label=${t`Delete temporary users after`}
                         ?required=${true}
-                        name="temporaryUserDeleteAfter">
-                        <input type="text" value="${this.instance?.temporaryUserDeleteAfter || "days=1"}" class="pf-c-form-control" required>
-                        <p class="pf-c-form__helper-text">${t`Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3).`}</p>
+                        name="temporaryUserDeleteAfter"
+                    >
+                        <input
+                            type="text"
+                            value="${this.instance?.temporaryUserDeleteAfter || "days=1"}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3).`}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Digest algorithm`}
                         ?required=${true}
-                        name="digestAlgorithm">
+                        name="digestAlgorithm"
+                    >
                         <select class="pf-c-form-control">
-                            <option value=${DigestAlgorithmEnum._200009Xmldsigsha1} ?selected=${this.instance?.digestAlgorithm === DigestAlgorithmEnum._200009Xmldsigsha1}>
+                            <option
+                                value=${DigestAlgorithmEnum._200009Xmldsigsha1}
+                                ?selected=${this.instance?.digestAlgorithm ===
+                                DigestAlgorithmEnum._200009Xmldsigsha1}
+                            >
                                 ${t`SHA1`}
                             </option>
-                            <option value=${DigestAlgorithmEnum._200104Xmlencsha256} ?selected=${this.instance?.digestAlgorithm === DigestAlgorithmEnum._200104Xmlencsha256 || this.instance?.digestAlgorithm === undefined}>
+                            <option
+                                value=${DigestAlgorithmEnum._200104Xmlencsha256}
+                                ?selected=${this.instance?.digestAlgorithm ===
+                                    DigestAlgorithmEnum._200104Xmlencsha256 ||
+                                this.instance?.digestAlgorithm === undefined}
+                            >
                                 ${t`SHA256`}
                             </option>
-                            <option value=${DigestAlgorithmEnum._200104XmldsigMoresha384} ?selected=${this.instance?.digestAlgorithm === DigestAlgorithmEnum._200104XmldsigMoresha384}>
+                            <option
+                                value=${DigestAlgorithmEnum._200104XmldsigMoresha384}
+                                ?selected=${this.instance?.digestAlgorithm ===
+                                DigestAlgorithmEnum._200104XmldsigMoresha384}
+                            >
                                 ${t`SHA384`}
                             </option>
-                            <option value=${DigestAlgorithmEnum._200104Xmlencsha512} ?selected=${this.instance?.digestAlgorithm === DigestAlgorithmEnum._200104Xmlencsha512}>
+                            <option
+                                value=${DigestAlgorithmEnum._200104Xmlencsha512}
+                                ?selected=${this.instance?.digestAlgorithm ===
+                                DigestAlgorithmEnum._200104Xmlencsha512}
+                            >
                                 ${t`SHA512`}
                             </option>
                         </select>
@@ -185,21 +283,43 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                     <ak-form-element-horizontal
                         label=${t`Signature algorithm`}
                         ?required=${true}
-                        name="signatureAlgorithm">
+                        name="signatureAlgorithm"
+                    >
                         <select class="pf-c-form-control">
-                            <option value=${SignatureAlgorithmEnum._200009XmldsigrsaSha1} ?selected=${this.instance?.signatureAlgorithm === SignatureAlgorithmEnum._200009XmldsigrsaSha1}>
+                            <option
+                                value=${SignatureAlgorithmEnum._200009XmldsigrsaSha1}
+                                ?selected=${this.instance?.signatureAlgorithm ===
+                                SignatureAlgorithmEnum._200009XmldsigrsaSha1}
+                            >
                                 ${t`RSA-SHA1`}
                             </option>
-                            <option value=${SignatureAlgorithmEnum._200104XmldsigMorersaSha256} ?selected=${this.instance?.signatureAlgorithm === SignatureAlgorithmEnum._200104XmldsigMorersaSha256 || this.instance?.signatureAlgorithm === undefined}>
+                            <option
+                                value=${SignatureAlgorithmEnum._200104XmldsigMorersaSha256}
+                                ?selected=${this.instance?.signatureAlgorithm ===
+                                    SignatureAlgorithmEnum._200104XmldsigMorersaSha256 ||
+                                this.instance?.signatureAlgorithm === undefined}
+                            >
                                 ${t`RSA-SHA256`}
                             </option>
-                            <option value=${SignatureAlgorithmEnum._200104XmldsigMorersaSha384} ?selected=${this.instance?.signatureAlgorithm === SignatureAlgorithmEnum._200104XmldsigMorersaSha384}>
+                            <option
+                                value=${SignatureAlgorithmEnum._200104XmldsigMorersaSha384}
+                                ?selected=${this.instance?.signatureAlgorithm ===
+                                SignatureAlgorithmEnum._200104XmldsigMorersaSha384}
+                            >
                                 ${t`RSA-SHA384`}
                             </option>
-                            <option value=${SignatureAlgorithmEnum._200104XmldsigMorersaSha512} ?selected=${this.instance?.signatureAlgorithm === SignatureAlgorithmEnum._200104XmldsigMorersaSha512}>
+                            <option
+                                value=${SignatureAlgorithmEnum._200104XmldsigMorersaSha512}
+                                ?selected=${this.instance?.signatureAlgorithm ===
+                                SignatureAlgorithmEnum._200104XmldsigMorersaSha512}
+                            >
                                 ${t`RSA-SHA512`}
                             </option>
-                            <option value=${SignatureAlgorithmEnum._200009XmldsigdsaSha1} ?selected=${this.instance?.signatureAlgorithm === SignatureAlgorithmEnum._200009XmldsigdsaSha1}>
+                            <option
+                                value=${SignatureAlgorithmEnum._200009XmldsigdsaSha1}
+                                ?selected=${this.instance?.signatureAlgorithm ===
+                                SignatureAlgorithmEnum._200009XmldsigdsaSha1}
+                            >
                                 ${t`DSA-SHA1`}
                             </option>
                         </select>
@@ -207,73 +327,124 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                 </div>
             </ak-form-group>
             <ak-form-group>
-                <span slot="header">
-                    ${t`Flow settings`}
-                </span>
+                <span slot="header"> ${t`Flow settings`} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${t`Pre-authentication flow`}
                         ?required=${true}
-                        name="preAuthenticationFlow">
+                        name="preAuthenticationFlow"
+                    >
                         <select class="pf-c-form-control">
-                            ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
-                                ordering: "pk",
-                                designation: FlowsInstancesListDesignationEnum.StageConfiguration,
-                            }).then(flows => {
-                                return flows.results.map(flow => {
-                                    let selected = this.instance?.preAuthenticationFlow === flow.pk;
-                                    if (!this.instance?.pk && !this.instance?.preAuthenticationFlow && flow.slug === "default-source-pre-authentication") {
-                                        selected = true;
-                                    }
-                                    return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
-                                });
-                            }), html`<option>${t`Loading...`}</option>`)}
+                            ${until(
+                                new FlowsApi(DEFAULT_CONFIG)
+                                    .flowsInstancesList({
+                                        ordering: "pk",
+                                        designation:
+                                            FlowsInstancesListDesignationEnum.StageConfiguration,
+                                    })
+                                    .then((flows) => {
+                                        return flows.results.map((flow) => {
+                                            let selected =
+                                                this.instance?.preAuthenticationFlow === flow.pk;
+                                            if (
+                                                !this.instance?.pk &&
+                                                !this.instance?.preAuthenticationFlow &&
+                                                flow.slug === "default-source-pre-authentication"
+                                            ) {
+                                                selected = true;
+                                            }
+                                            return html`<option
+                                                value=${ifDefined(flow.pk)}
+                                                ?selected=${selected}
+                                            >
+                                                ${flow.name} (${flow.slug})
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Flow used before authentication.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Authentication flow`}
                         ?required=${true}
-                        name="authenticationFlow">
+                        name="authenticationFlow"
+                    >
                         <select class="pf-c-form-control">
-                            ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
-                                ordering: "pk",
-                                designation: FlowsInstancesListDesignationEnum.Authentication,
-                            }).then(flows => {
-                                return flows.results.map(flow => {
-                                    let selected = this.instance?.authenticationFlow === flow.pk;
-                                    if (!this.instance?.pk && !this.instance?.authenticationFlow && flow.slug === "default-source-authentication") {
-                                        selected = true;
-                                    }
-                                    return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
-                                });
-                            }), html`<option>${t`Loading...`}</option>`)}
+                            ${until(
+                                new FlowsApi(DEFAULT_CONFIG)
+                                    .flowsInstancesList({
+                                        ordering: "pk",
+                                        designation:
+                                            FlowsInstancesListDesignationEnum.Authentication,
+                                    })
+                                    .then((flows) => {
+                                        return flows.results.map((flow) => {
+                                            let selected =
+                                                this.instance?.authenticationFlow === flow.pk;
+                                            if (
+                                                !this.instance?.pk &&
+                                                !this.instance?.authenticationFlow &&
+                                                flow.slug === "default-source-authentication"
+                                            ) {
+                                                selected = true;
+                                            }
+                                            return html`<option
+                                                value=${ifDefined(flow.pk)}
+                                                ?selected=${selected}
+                                            >
+                                                ${flow.name} (${flow.slug})
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
                         </select>
-                        <p class="pf-c-form__helper-text">${t`Flow to use when authenticating existing users.`}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Flow to use when authenticating existing users.`}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Enrollment flow`}
                         ?required=${true}
-                        name="enrollmentFlow">
+                        name="enrollmentFlow"
+                    >
                         <select class="pf-c-form-control">
-                            ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
-                                ordering: "pk",
-                                designation: FlowsInstancesListDesignationEnum.Enrollment,
-                            }).then(flows => {
-                                return flows.results.map(flow => {
-                                    let selected = this.instance?.enrollmentFlow === flow.pk;
-                                    if (!this.instance?.pk && !this.instance?.enrollmentFlow && flow.slug === "default-source-enrollment") {
-                                        selected = true;
-                                    }
-                                    return html`<option value=${ifDefined(flow.pk)} ?selected=${selected}>${flow.name} (${flow.slug})</option>`;
-                                });
-                            }), html`<option>${t`Loading...`}</option>`)}
+                            ${until(
+                                new FlowsApi(DEFAULT_CONFIG)
+                                    .flowsInstancesList({
+                                        ordering: "pk",
+                                        designation: FlowsInstancesListDesignationEnum.Enrollment,
+                                    })
+                                    .then((flows) => {
+                                        return flows.results.map((flow) => {
+                                            let selected =
+                                                this.instance?.enrollmentFlow === flow.pk;
+                                            if (
+                                                !this.instance?.pk &&
+                                                !this.instance?.enrollmentFlow &&
+                                                flow.slug === "default-source-enrollment"
+                                            ) {
+                                                selected = true;
+                                            }
+                                            return html`<option
+                                                value=${ifDefined(flow.pk)}
+                                                ?selected=${selected}
+                                            >
+                                                ${flow.name} (${flow.slug})
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
                         </select>
-                        <p class="pf-c-form__helper-text">${t`Flow to use when enrolling new users.`}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Flow to use when enrolling new users.`}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
         </form>`;
     }
-
 }

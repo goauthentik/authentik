@@ -24,9 +24,7 @@ class KubernetesController(BaseController):
     client: ApiClient
     connection: KubernetesServiceConnection
 
-    def __init__(
-        self, outpost: Outpost, connection: KubernetesServiceConnection
-    ) -> None:
+    def __init__(self, outpost: Outpost, connection: KubernetesServiceConnection) -> None:
         super().__init__(outpost, connection)
         self.client = connection.client()
         self.reconcilers = {

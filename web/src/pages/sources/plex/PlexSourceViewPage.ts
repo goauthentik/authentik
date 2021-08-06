@@ -26,21 +26,34 @@ import { EVENT_REFRESH } from "../../../constants";
 
 @customElement("ak-source-plex-view")
 export class PlexSourceViewPage extends LitElement {
-
     @property({ type: String })
     set sourceSlug(value: string) {
-        new SourcesApi(DEFAULT_CONFIG).sourcesPlexRetrieve({
-            slug: value
-        }).then((source) => {
-            this.source = source;
-        });
+        new SourcesApi(DEFAULT_CONFIG)
+            .sourcesPlexRetrieve({
+                slug: value,
+            })
+            .then((source) => {
+                this.source = source;
+            });
     }
 
     @property({ attribute: false })
     source?: PlexSource;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFButton, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, AKGlobal];
+        return [
+            PFBase,
+            PFPage,
+            PFButton,
+            PFFlex,
+            PFDisplay,
+            PFGallery,
+            PFContent,
+            PFCard,
+            PFDescriptionList,
+            PFSizing,
+            AKGlobal,
+        ];
     }
 
     constructor() {
@@ -56,64 +69,80 @@ export class PlexSourceViewPage extends LitElement {
             return html``;
         }
         return html`<ak-tabs>
-                <section slot="page-overview" data-tab-title="${t`Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
-                    <div class="pf-u-display-flex pf-u-justify-content-center">
-                        <div class="pf-u-w-75">
-                            <div class="pf-c-card">
-                                <div class="pf-c-card__body">
-                                    <dl class="pf-c-description-list pf-m-2-col-on-lg">
-                                        <div class="pf-c-description-list__group">
-                                            <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${t`Name`}</span>
-                                            </dt>
-                                            <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.source.name}</div>
-                                            </dd>
-                                        </div>
-                                    </dl>
-                                </div>
-                                <div class="pf-c-card__footer">
-                                    <ak-forms-modal>
-                                        <span slot="submit">
-                                            ${t`Update`}
-                                        </span>
-                                        <span slot="header">
-                                            ${t`Update Plex Source`}
-                                        </span>
-                                        <ak-source-plex-form
-                                            slot="form"
-                                            .instancePk=${this.source.slug}>
-                                        </ak-source-plex-form>
-                                        <button slot="trigger" class="pf-c-button pf-m-primary">
-                                            ${t`Edit`}
-                                        </button>
-                                    </ak-forms-modal>
-                                </div>
+            <section
+                slot="page-overview"
+                data-tab-title="${t`Overview`}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-u-display-flex pf-u-justify-content-center">
+                    <div class="pf-u-w-75">
+                        <div class="pf-c-card">
+                            <div class="pf-c-card__body">
+                                <dl class="pf-c-description-list pf-m-2-col-on-lg">
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text"
+                                                >${t`Name`}</span
+                                            >
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                ${this.source.name}
+                                            </div>
+                                        </dd>
+                                    </div>
+                                </dl>
+                            </div>
+                            <div class="pf-c-card__footer">
+                                <ak-forms-modal>
+                                    <span slot="submit"> ${t`Update`} </span>
+                                    <span slot="header"> ${t`Update Plex Source`} </span>
+                                    <ak-source-plex-form
+                                        slot="form"
+                                        .instancePk=${this.source.slug}
+                                    >
+                                    </ak-source-plex-form>
+                                    <button slot="trigger" class="pf-c-button pf-m-primary">
+                                        ${t`Edit`}
+                                    </button>
+                                </ak-forms-modal>
                             </div>
                         </div>
                     </div>
-                </section>
-                <section slot="page-changelog" data-tab-title="${t`Changelog`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
-                    <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.source.pk || ""}
-                                targetModelApp="authentik_sources_plex"
-                                targetModelName="plexsource">
-                            </ak-object-changelog>
-                        </div>
-                    </div>
-                </section>
-                <div slot="page-policy-binding" data-tab-title="${t`Policy Bindings`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
-                    <div class="pf-c-card">
-                        <div class="pf-c-card__title">${t`These bindings control which users can access this source.
-                        You can only use policies here as access is checked before the user is authenticated.`}</div>
-                        <div class="pf-c-card__body">
-                            <ak-bound-policies-list .target=${this.source.pk} ?policyOnly=${true}>
-                            </ak-bound-policies-list>
-                        </div>
+                </div>
+            </section>
+            <section
+                slot="page-changelog"
+                data-tab-title="${t`Changelog`}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <div class="pf-c-card__body">
+                        <ak-object-changelog
+                            targetModelPk=${this.source.pk || ""}
+                            targetModelApp="authentik_sources_plex"
+                            targetModelName="plexsource"
+                        >
+                        </ak-object-changelog>
                     </div>
                 </div>
-            </ak-tabs>`;
+            </section>
+            <div
+                slot="page-policy-binding"
+                data-tab-title="${t`Policy Bindings`}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <div class="pf-c-card__title">
+                        ${t`These bindings control which users can access this source.
+                        You can only use policies here as access is checked before the user is authenticated.`}
+                    </div>
+                    <div class="pf-c-card__body">
+                        <ak-bound-policies-list .target=${this.source.pk} ?policyOnly=${true}>
+                        </ak-bound-policies-list>
+                    </div>
+                </div>
+            </div>
+        </ak-tabs>`;
     }
 }

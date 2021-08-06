@@ -39,6 +39,8 @@ export class PolicyListPage extends TablePage<Policy> {
         return "pf-icon pf-icon-infrastructure";
     }
 
+    checkbox = true;
+
     @property()
     order = "name";
 
@@ -55,7 +57,7 @@ export class PolicyListPage extends TablePage<Policy> {
         return [
             new TableColumn(t`Name`, "name"),
             new TableColumn(t`Type`),
-            new TableColumn(""),
+            new TableColumn(t`Actions`),
         ];
     }
 
@@ -63,119 +65,113 @@ export class PolicyListPage extends TablePage<Policy> {
         return [
             html`<div>
                 <div>${item.name}</div>
-                ${(item.boundTo || 0) > 0 ?
-                        html`<i class="pf-icon pf-icon-ok"></i>
-                        <small>
-                            ${t`Assigned to ${item.boundTo} objects.`}
-                        </small>`:
-                    html`<i class="pf-icon pf-icon-warning-triangle"></i>
-                    <small>${t`Warning: Policy is not assigned.`}</small>`}
+                ${(item.boundTo || 0) > 0
+                    ? html`<i class="pf-icon pf-icon-ok"></i>
+                          <small> ${t`Assigned to ${item.boundTo} objects.`} </small>`
+                    : html`<i class="pf-icon pf-icon-warning-triangle"></i>
+                          <small>${t`Warning: Policy is not assigned.`}</small>`}
             </div>`,
             html`${item.verboseName}`,
-            html`
-            <ak-forms-modal>
-                <span slot="submit">
-                    ${t`Update`}
-                </span>
-                <span slot="header">
-                    ${t`Update ${item.verboseName}`}
-                </span>
-                <ak-proxy-form
-                    slot="form"
-                    .args=${{
-                        "instancePk": item.pk
-                    }}
-                    type=${ifDefined(item.component)}>
-                </ak-proxy-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${t`Edit`}
-                </button>
-            </ak-forms-modal>
-            <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
-                <span slot="submit">
-                    ${t`Test`}
-                </span>
-                <span slot="header">
-                    ${t`Test Policy`}
-                </span>
-                <ak-policy-test-form slot="form" .policy=${item}>
-                </ak-policy-test-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${t`Test`}
-                </button>
-            </ak-forms-modal>
-            <ak-forms-delete
-                .obj=${item}
-                objectLabel=${t`Policy`}
-                .usedBy=${() => {
-                    return new PoliciesApi(DEFAULT_CONFIG).policiesAllUsedByList({
-                        policyUuid: item.pk
-                    });
-                }}
-                .delete=${() => {
-                    return new PoliciesApi(DEFAULT_CONFIG).policiesAllDestroy({
-                        policyUuid: item.pk
-                    });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete`}
-                </button>
-            </ak-forms-delete>`,
+            html` <ak-forms-modal>
+                    <span slot="submit"> ${t`Update`} </span>
+                    <span slot="header"> ${t`Update ${item.verboseName}`} </span>
+                    <ak-proxy-form
+                        slot="form"
+                        .args=${{
+                            instancePk: item.pk,
+                        }}
+                        type=${ifDefined(item.component)}
+                    >
+                    </ak-proxy-form>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                    </button>
+                </ak-forms-modal>
+                <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
+                    <span slot="submit"> ${t`Test`} </span>
+                    <span slot="header"> ${t`Test Policy`} </span>
+                    <ak-policy-test-form slot="form" .policy=${item}> </ak-policy-test-form>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <i class="fas fa-vial" aria-hidden="true"></i>
+                    </button>
+                </ak-forms-modal>`,
         ];
     }
 
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`Policy`}
+            .usedBy=${() => {
+                return new PoliciesApi(DEFAULT_CONFIG).policiesAllUsedByList({
+                    policyUuid: item.pk,
+                });
+            }}
+            .delete=${() => {
+                return new PoliciesApi(DEFAULT_CONFIG).policiesAllDestroy({
+                    policyUuid: item.pk,
+                });
+            }}
+        >
+            <button
+                ?disabled=${disabled}
+                slot="trigger"
+                type="button"
+                class="pf-c-button pf-m-danger ${disabled && "pf-m-disabled"}"
+            >
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete>`;
+    }
+
     renderToolbar(): TemplateResult {
-        return html`
-            <ak-dropdown class="pf-c-dropdown">
+        return html` <ak-dropdown class="pf-c-dropdown">
                 <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
                     <span class="pf-c-dropdown__toggle-text">${t`Create`}</span>
                     <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                 </button>
                 <ul class="pf-c-dropdown__menu" hidden>
-                    ${until(new PoliciesApi(DEFAULT_CONFIG).policiesAllTypesList().then((types) => {
-                        return types.map((type) => {
-                            return html`<li>
-                                <ak-forms-modal>
-                                    <span slot="submit">
-                                        ${t`Create`}
-                                    </span>
-                                    <span slot="header">
-                                        ${t`Create ${type.name}`}
-                                    </span>
-                                    <ak-proxy-form
-                                        slot="form"
-                                        type=${type.component}>
-                                    </ak-proxy-form>
-                                    <button slot="trigger" class="pf-c-dropdown__menu-item">
-                                        ${type.name}<br>
-                                        <small>${type.description}</small>
-                                    </button>
-                                </ak-forms-modal>
-                            </li>`;
-                        });
-                    }), html`<ak-spinner></ak-spinner>`)}
-            </ul>
-        </ak-dropdown>
-        ${super.renderToolbar()}
-        <ak-forms-confirm
-            successMessage=${t`Successfully cleared policy cache`}
-            errorMessage=${t`Failed to delete policy cache`}
-            action=${t`Clear cache`}
-            .onConfirm=${() => {
-                return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheClearCreate();
-            }}>
-            <span slot="header">
-                ${t`Clear Policy cache`}
-            </span>
-            <p slot="body">
-                ${t`Are you sure you want to clear the policy cache?
+                    ${until(
+                        new PoliciesApi(DEFAULT_CONFIG).policiesAllTypesList().then((types) => {
+                            return types.map((type) => {
+                                return html`<li>
+                                    <ak-forms-modal>
+                                        <span slot="submit"> ${t`Create`} </span>
+                                        <span slot="header"> ${t`Create ${type.name}`} </span>
+                                        <ak-proxy-form slot="form" type=${type.component}>
+                                        </ak-proxy-form>
+                                        <button slot="trigger" class="pf-c-dropdown__menu-item">
+                                            ${type.name}<br />
+                                            <small>${type.description}</small>
+                                        </button>
+                                    </ak-forms-modal>
+                                </li>`;
+                            });
+                        }),
+                        html`<ak-spinner></ak-spinner>`,
+                    )}
+                </ul>
+            </ak-dropdown>
+            ${super.renderToolbar()}
+            <ak-forms-confirm
+                successMessage=${t`Successfully cleared policy cache`}
+                errorMessage=${t`Failed to delete policy cache`}
+                action=${t`Clear cache`}
+                .onConfirm=${() => {
+                    return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheClearCreate();
+                }}
+            >
+                <span slot="header"> ${t`Clear Policy cache`} </span>
+                <p slot="body">
+                    ${t`Are you sure you want to clear the policy cache?
                 This will cause all policies to be re-evaluated on their next usage.`}
-            </p>
-            <button slot="trigger" class="pf-c-button pf-m-secondary" type="button">
-                ${t`Clear cache`}
-            </button>
-            <div slot="modal"></div>
-        </ak-forms-confirm>`;
+                </p>
+                <button slot="trigger" class="pf-c-button pf-m-secondary" type="button">
+                    ${t`Clear cache`}
+                </button>
+                <div slot="modal"></div>
+            </ak-forms-confirm>`;
     }
-
 }

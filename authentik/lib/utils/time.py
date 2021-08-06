@@ -5,12 +5,12 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 ALLOWED_KEYS = (
-    "days",
-    "seconds",
     "microseconds",
     "milliseconds",
+    "seconds",
     "minutes",
     "hours",
+    "days",
     "weeks",
 )
 

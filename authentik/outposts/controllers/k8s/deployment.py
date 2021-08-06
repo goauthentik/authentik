@@ -17,10 +17,7 @@ from kubernetes.client import (
 )
 
 from authentik.outposts.controllers.base import FIELD_MANAGER
-from authentik.outposts.controllers.k8s.base import (
-    KubernetesObjectReconciler,
-    NeedsUpdate,
-)
+from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler, NeedsUpdate
 from authentik.outposts.models import Outpost
 
 if TYPE_CHECKING:
@@ -124,9 +121,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         )
 
     def delete(self, reference: V1Deployment):
-        return self.api.delete_namespaced_deployment(
-            reference.metadata.name, self.namespace
-        )
+        return self.api.delete_namespaced_deployment(reference.metadata.name, self.namespace)
 
     def retrieve(self) -> V1Deployment:
         return self.api.read_namespaced_deployment(self.name, self.namespace)

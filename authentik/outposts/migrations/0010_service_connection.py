@@ -14,9 +14,7 @@ import authentik.lib.models
 def migrate_to_service_connection(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     db_alias = schema_editor.connection.alias
     Outpost = apps.get_model("authentik_outposts", "Outpost")
-    DockerServiceConnection = apps.get_model(
-        "authentik_outposts", "DockerServiceConnection"
-    )
+    DockerServiceConnection = apps.get_model("authentik_outposts", "DockerServiceConnection")
     KubernetesServiceConnection = apps.get_model(
         "authentik_outposts", "KubernetesServiceConnection"
     )
@@ -25,9 +23,7 @@ def migrate_to_service_connection(apps: Apps, schema_editor: BaseDatabaseSchemaE
     k8s = KubernetesServiceConnection.objects.filter(local=True).first()
 
     try:
-        for outpost in (
-            Outpost.objects.using(db_alias).all().exclude(deployment_type="custom")
-        ):
+        for outpost in Outpost.objects.using(db_alias).all().exclude(deployment_type="custom"):
             if outpost.deployment_type == "kubernetes":
                 outpost.service_connection = k8s
             elif outpost.deployment_type == "docker":

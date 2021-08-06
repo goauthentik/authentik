@@ -44,9 +44,7 @@ class FlowBundleEntry:
     attrs: dict[str, Any]
 
     @staticmethod
-    def from_model(
-        model: SerializerModel, *extra_identifier_names: str
-    ) -> "FlowBundleEntry":
+    def from_model(model: SerializerModel, *extra_identifier_names: str) -> "FlowBundleEntry":
         """Convert a SerializerModel instance to a Bundle Entry"""
         identifiers = {
             "pk": model.pk,

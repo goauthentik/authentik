@@ -9,7 +9,6 @@ import "./SidebarUser";
 
 @customElement("ak-sidebar")
 export class Sidebar extends LitElement {
-
     static get styles(): CSSResult[] {
         return [
             PFBase,

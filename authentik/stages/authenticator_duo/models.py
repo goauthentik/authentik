@@ -23,9 +23,7 @@ class AuthenticatorDuoStage(ConfigurableStage, Stage):
 
     @property
     def serializer(self) -> BaseSerializer:
-        from authentik.stages.authenticator_duo.api import (
-            AuthenticatorDuoStageSerializer,
-        )
+        from authentik.stages.authenticator_duo.api import AuthenticatorDuoStageSerializer
 
         return AuthenticatorDuoStageSerializer
 

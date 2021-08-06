@@ -51,9 +51,7 @@ class LDAPSyncTests(TestCase):
             ):
                 backend = LDAPBackend()
                 self.assertEqual(
-                    backend.authenticate(
-                        None, username="user0_sn", password=LDAP_PASSWORD
-                    ),
+                    backend.authenticate(None, username="user0_sn", password=LDAP_PASSWORD),
                     user,
                 )
 
@@ -80,8 +78,6 @@ class LDAPSyncTests(TestCase):
             ):
                 backend = LDAPBackend()
                 self.assertEqual(
-                    backend.authenticate(
-                        None, username="user0_sn", password=LDAP_PASSWORD
-                    ),
+                    backend.authenticate(None, username="user0_sn", password=LDAP_PASSWORD),
                     user,
                 )

@@ -8,7 +8,7 @@ import (
 
 	sessionsapi "github.com/oauth2-proxy/oauth2-proxy/pkg/apis/sessions"
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/cookies"
-	"github.com/oauth2-proxy/oauth2-proxy/pkg/util"
+	"goauthentik.io/internal/utils/web"
 )
 
 // MakeCSRFCookie creates a cookie for CSRF
@@ -20,7 +20,7 @@ func (p *OAuthProxy) makeCookie(req *http.Request, name string, value string, ex
 	cookieDomain := cookies.GetCookieDomain(req, p.CookieDomains)
 
 	if cookieDomain != "" {
-		domain := util.GetRequestHost(req)
+		domain := web.GetHost(req)
 		if h, _, err := net.SplitHostPort(domain); err == nil {
 			domain = h
 		}

@@ -16,8 +16,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="authenticatorvalidatestage",
             name="not_configured_action",
-            field=models.TextField(
-                choices=[("skip", "Skip"), ("deny", "Deny")], default="skip"
-            ),
+            field=models.TextField(choices=[("skip", "Skip"), ("deny", "Deny")], default="skip"),
         ),
     ]

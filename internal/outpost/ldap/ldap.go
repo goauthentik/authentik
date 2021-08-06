@@ -39,7 +39,8 @@ type ProviderInstance struct {
 }
 
 type UserFlags struct {
-	UserInfo  api.User
+	UserInfo  *api.User
+	UserPk    int32
 	CanSearch bool
 }
 
@@ -47,6 +48,7 @@ type LDAPServer struct {
 	s           *ldap.Server
 	log         *log.Entry
 	ac          *ak.APIController
+	cs          *ak.CryptoStore
 	defaultCert *tls.Certificate
 	providers   []*ProviderInstance
 }
@@ -69,6 +71,7 @@ func NewServer(ac *ak.APIController) *LDAPServer {
 		s:         s,
 		log:       log.WithField("logger", "authentik.outpost.ldap"),
 		ac:        ac,
+		cs:        ak.NewCryptoStore(ac.Client.CryptoApi),
 		providers: []*ProviderInstance{},
 	}
 	defaultCert, err := crypto.GenerateSelfSignedCert()

@@ -42,10 +42,7 @@ class PasswordExpiryPolicy(Policy):
                 request.user.set_unusable_password()
                 request.user.save()
                 message = _(
-                    (
-                        "Password expired %(days)d days ago. "
-                        "Please update your password."
-                    )
+                    ("Password expired %(days)d days ago. " "Please update your password.")
                     % {"days": days_since_expiry}
                 )
                 return PolicyResult(False, message)

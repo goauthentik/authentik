@@ -30,6 +30,8 @@ export class IPReputationListPage extends TablePage<IPReputation> {
     @property()
     order = "ip";
 
+    checkbox = true;
+
     apiEndpoint(page: number): Promise<AKResponse<IPReputation>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesReputationIpsList({
             ordering: this.order,
@@ -43,33 +45,34 @@ export class IPReputationListPage extends TablePage<IPReputation> {
         return [
             new TableColumn(t`IP`, "ip"),
             new TableColumn(t`Score`, "score"),
-            new TableColumn(""),
+            new TableColumn(t`Actions`),
         ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html`<ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`IP Reputation`}
+            .usedBy=${() => {
+                return new PoliciesApi(DEFAULT_CONFIG).policiesReputationIpsUsedByList({
+                    id: item.pk,
+                });
+            }}
+            .delete=${() => {
+                return new PoliciesApi(DEFAULT_CONFIG).policiesReputationIpsDestroy({
+                    id: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete>`;
     }
 
     row(item: IPReputation): TemplateResult[] {
-        return [
-            html`${item.ip}`,
-            html`${item.score}`,
-            html`
-            <ak-forms-delete
-                .obj=${item}
-                objectLabel=${t`IP Reputation`}
-                .usedBy=${() => {
-                    return new PoliciesApi(DEFAULT_CONFIG).policiesReputationIpsUsedByList({
-                        id: item.pk
-                    });
-                }}
-                .delete=${() => {
-                    return new PoliciesApi(DEFAULT_CONFIG).policiesReputationIpsDestroy({
-                        id: item.pk,
-                    });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete`}
-                </button>
-            </ak-forms-delete>`,
-        ];
+        return [html`${item.ip}`, html`${item.score}`];
     }
-
 }

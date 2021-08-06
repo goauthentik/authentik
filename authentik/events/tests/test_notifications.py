@@ -81,12 +81,8 @@ class TestEventsNotifications(TestCase):
 
         execute_mock = MagicMock()
         passes = MagicMock(side_effect=PolicyException)
-        with patch(
-            "authentik.policies.event_matcher.models.EventMatcherPolicy.passes", passes
-        ):
-            with patch(
-                "authentik.events.models.NotificationTransport.send", execute_mock
-            ):
+        with patch("authentik.policies.event_matcher.models.EventMatcherPolicy.passes", passes):
+            with patch("authentik.events.models.NotificationTransport.send", execute_mock):
                 Event.new(EventAction.CUSTOM_PREFIX).save()
         self.assertEqual(passes.call_count, 1)
 
@@ -96,9 +92,7 @@ class TestEventsNotifications(TestCase):
         self.group.users.add(user2)
         self.group.save()
 
-        transport = NotificationTransport.objects.create(
-            name="transport", send_once=True
-        )
+        transport = NotificationTransport.objects.create(name="transport", send_once=True)
         NotificationRule.objects.filter(name__startswith="default").delete()
         trigger = NotificationRule.objects.create(name="trigger", group=self.group)
         trigger.transports.add(transport)

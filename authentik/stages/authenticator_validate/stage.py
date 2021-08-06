@@ -5,11 +5,7 @@ from rest_framework.fields import CharField, IntegerField, JSONField, ListField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
-from authentik.flows.challenge import (
-    ChallengeResponse,
-    ChallengeTypes,
-    WithUserInfoChallenge,
-)
+from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
 from authentik.flows.models import NotConfiguredAction, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
@@ -20,10 +16,7 @@ from authentik.stages.authenticator_validate.challenge import (
     validate_challenge_duo,
     validate_challenge_webauthn,
 )
-from authentik.stages.authenticator_validate.models import (
-    AuthenticatorValidateStage,
-    DeviceClasses,
-)
+from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 
 LOGGER = get_logger()
 
@@ -46,18 +39,14 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     component = CharField(default="ak-stage-authenticator-validate")
 
     def _challenge_allowed(self, classes: list):
-        device_challenges: list[dict] = self.stage.request.session.get(
-            "device_challenges"
-        )
+        device_challenges: list[dict] = self.stage.request.session.get("device_challenges")
         if not any(x["device_class"] in classes for x in device_challenges):
             raise ValidationError("No compatible device class allowed")
 
     def validate_code(self, code: str) -> str:
         """Validate code-based response, raise error if code isn't allowed"""
         self._challenge_allowed([DeviceClasses.TOTP, DeviceClasses.STATIC])
-        return validate_challenge_code(
-            code, self.stage.request, self.stage.get_pending_user()
-        )
+        return validate_challenge_code(code, self.stage.request, self.stage.get_pending_user())
 
     def validate_webauthn(self, webauthn: dict) -> dict:
         """Validate webauthn response, raise error if webauthn wasn't allowed
@@ -70,9 +59,7 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     def validate_duo(self, duo: int) -> int:
         """Initiate Duo authentication"""
         self._challenge_allowed([DeviceClasses.DUO])
-        return validate_challenge_duo(
-            duo, self.stage.request, self.stage.get_pending_user()
-        )
+        return validate_challenge_duo(duo, self.stage.request, self.stage.get_pending_user())
 
     def validate(self, attrs: dict):
         # Checking if the given data is from a valid device class is done above
@@ -162,8 +149,6 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         )
 
     # pylint: disable=unused-argument
-    def challenge_valid(
-        self, response: AuthenticatorValidationChallengeResponse
-    ) -> HttpResponse:
+    def challenge_valid(self, response: AuthenticatorValidationChallengeResponse) -> HttpResponse:
         # All validation is done by the serializer
         return self.executor.stage_ok()

@@ -7,12 +7,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
 
-from authentik.core.models import (
-    USER_ATTRIBUTE_SOURCES,
-    Source,
-    User,
-    UserSourceConnection,
-)
+from authentik.core.models import USER_ATTRIBUTE_SOURCES, Source, User, UserSourceConnection
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.markers import StageMarker
@@ -37,30 +32,23 @@ class TestUserWriteStage(TestCase):
             designation=FlowDesignation.AUTHENTICATION,
         )
         self.stage = UserWriteStage.objects.create(name="write")
-        self.binding = FlowStageBinding.objects.create(
-            target=self.flow, stage=self.stage, order=2
-        )
+        self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
         self.source = Source.objects.create(name="fake_source")
 
     def test_user_create(self):
         """Test creation of user"""
         password = "".join(
-            SystemRandom().choice(string.ascii_uppercase + string.digits)
-            for _ in range(8)
+            SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(8)
         )
 
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PROMPT] = {
             "username": "test-user",
             "name": "name",
             "email": "test@beryju.org",
             "password": password,
         }
-        plan.context[PLAN_CONTEXT_SOURCES_CONNECTION] = UserSourceConnection(
-            source=self.source
-        )
+        plan.context[PLAN_CONTEXT_SOURCES_CONNECTION] = UserSourceConnection(source=self.source)
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -78,24 +66,17 @@ class TestUserWriteStage(TestCase):
                 "type": ChallengeTypes.REDIRECT.value,
             },
         )
-        user_qs = User.objects.filter(
-            username=plan.context[PLAN_CONTEXT_PROMPT]["username"]
-        )
+        user_qs = User.objects.filter(username=plan.context[PLAN_CONTEXT_PROMPT]["username"])
         self.assertTrue(user_qs.exists())
         self.assertTrue(user_qs.first().check_password(password))
-        self.assertEqual(
-            user_qs.first().attributes, {USER_ATTRIBUTE_SOURCES: [self.source.name]}
-        )
+        self.assertEqual(user_qs.first().attributes, {USER_ATTRIBUTE_SOURCES: [self.source.name]})
 
     def test_user_update(self):
         """Test update of existing user"""
         new_password = "".join(
-            SystemRandom().choice(string.ascii_uppercase + string.digits)
-            for _ in range(8)
+            SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(8)
         )
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = User.objects.create(
             username="unittest", email="test@beryju.org"
         )
@@ -122,9 +103,7 @@ class TestUserWriteStage(TestCase):
                 "type": ChallengeTypes.REDIRECT.value,
             },
         )
-        user_qs = User.objects.filter(
-            username=plan.context[PLAN_CONTEXT_PROMPT]["username"]
-        )
+        user_qs = User.objects.filter(username=plan.context[PLAN_CONTEXT_PROMPT]["username"])
         self.assertTrue(user_qs.exists())
         self.assertTrue(user_qs.first().check_password(new_password))
         self.assertEqual(user_qs.first().attributes["some-custom-attribute"], "test")
@@ -136,9 +115,7 @@ class TestUserWriteStage(TestCase):
     )
     def test_without_data(self):
         """Test without data results in error"""
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -168,9 +145,7 @@ class TestUserWriteStage(TestCase):
     )
     def test_blank_username(self):
         """Test with blank username results in error"""
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         session = self.client.session
         plan.context[PLAN_CONTEXT_PROMPT] = {
             "username": "",
@@ -205,9 +180,7 @@ class TestUserWriteStage(TestCase):
     )
     def test_duplicate_data(self):
         """Test with duplicate data, should trigger error"""
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         session = self.client.session
         plan.context[PLAN_CONTEXT_PROMPT] = {
             "username": "akadmin",

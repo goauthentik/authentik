@@ -1,4 +1,6 @@
 """outpost tests"""
+from django.apps import apps
+from django.contrib.auth.management import create_permissions
 from django.test import TestCase
 from guardian.models import UserObjectPermission
 
@@ -10,6 +12,10 @@ from authentik.providers.proxy.models import ProxyProvider
 
 class OutpostTests(TestCase):
     """Outpost Tests"""
+
+    def setUp(self) -> None:
+        create_permissions(apps.get_app_config("authentik_outposts"))
+        return super().setUp()
 
     def test_service_account_permissions(self):
         """Test that the service account has correct permissions"""
@@ -31,7 +37,6 @@ class OutpostTests(TestCase):
 
         # We add a provider, user should only have access to outpost and provider
         outpost.providers.add(provider)
-        outpost.save()
         permissions = UserObjectPermission.objects.filter(user=outpost.user).order_by(
             "content_type__model"
         )
@@ -53,7 +58,6 @@ class OutpostTests(TestCase):
 
         # Remove provider from outpost, user should only have access to outpost
         outpost.providers.remove(provider)
-        outpost.save()
         permissions = UserObjectPermission.objects.filter(user=outpost.user)
         self.assertEqual(len(permissions), 1)
         self.assertEqual(permissions[0].object_pk, str(outpost.pk))

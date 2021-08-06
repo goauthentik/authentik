@@ -4,12 +4,7 @@ from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.test import APITestCase
 
-from authentik.core.models import (
-    USER_ATTRIBUTE_TOKEN_EXPIRING,
-    Token,
-    TokenIntents,
-    User,
-)
+from authentik.core.models import USER_ATTRIBUTE_TOKEN_EXPIRING, Token, TokenIntents, User
 from authentik.core.tasks import clean_expired_models
 
 

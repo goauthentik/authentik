@@ -6,7 +6,6 @@ import { AdminStatusCard, AdminStatus } from "./AdminStatusCard";
 
 @customElement("ak-admin-status-version")
 export class VersionStatusCard extends AdminStatusCard<Version> {
-
     getPrimaryValue(): Promise<Version> {
         return new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
     }
@@ -26,12 +25,11 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
         }
         return Promise.resolve<AdminStatus>({
             icon: "fa fa-check-circle pf-m-success",
-            message: t`Up-to-date!`
+            message: t`Up-to-date!`,
         });
     }
 
     renderValue(): TemplateResult {
         return html`${this.value?.versionCurrent}`;
     }
-
 }

@@ -28,6 +28,7 @@ from authentik.outposts.models import (
     OutpostServiceConnection,
     OutpostState,
     OutpostType,
+    ServiceConnectionInvalid,
 )
 from authentik.providers.ldap.controllers.docker import LDAPDockerController
 from authentik.providers.ldap.controllers.kubernetes import LDAPKubernetesController
@@ -61,9 +62,7 @@ def controller_for_outpost(outpost: Outpost) -> Optional[BaseController]:
 def outpost_service_connection_state(connection_pk: Any):
     """Update cached state of a service connection"""
     connection: OutpostServiceConnection = (
-        OutpostServiceConnection.objects.filter(pk=connection_pk)
-        .select_subclasses()
-        .first()
+        OutpostServiceConnection.objects.filter(pk=connection_pk).select_subclasses().first()
     )
     if not connection:
         return
@@ -114,7 +113,7 @@ def outpost_controller(
         for log in logs:
             LOGGER.debug(log)
         LOGGER.debug("-----------------Outpost Controller logs end-------------------")
-    except ControllerException as exc:
+    except (ControllerException, ServiceConnectionInvalid) as exc:
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
     else:
         self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, logs))
@@ -156,9 +155,7 @@ def outpost_post_save(model_class: str, model_pk: Any):
         outpost_controller.delay(instance.pk)
 
     if isinstance(instance, (OutpostModel, Outpost)):
-        LOGGER.debug(
-            "triggering outpost update from outpostmodel/outpost", instance=instance
-        )
+        LOGGER.debug("triggering outpost update from outpostmodel/outpost", instance=instance)
         outpost_send_update(instance)
 
     if isinstance(instance, OutpostServiceConnection):
@@ -207,9 +204,7 @@ def _outpost_single_update(outpost: Outpost, layer=None):
         layer = get_channel_layer()
     for state in OutpostState.for_outpost(outpost):
         for channel in state.channel_ids:
-            LOGGER.debug(
-                "sending update", channel=channel, instance=state.uid, outpost=outpost
-            )
+            LOGGER.debug("sending update", channel=channel, instance=state.uid, outpost=outpost)
             async_to_sync(layer.send)(channel, {"type": "event.update"})
 
 
@@ -230,9 +225,7 @@ def outpost_local_connection():
     if Path(kubeconfig_path).exists():
         LOGGER.debug("Detected kubeconfig")
         kubeconfig_local_name = f"k8s-{gethostname()}"
-        if not KubernetesServiceConnection.objects.filter(
-            name=kubeconfig_local_name
-        ).exists():
+        if not KubernetesServiceConnection.objects.filter(name=kubeconfig_local_name).exists():
             LOGGER.debug("Creating kubeconfig Service Connection")
             with open(kubeconfig_path, "r") as _kubeconfig:
                 KubernetesServiceConnection.objects.create(

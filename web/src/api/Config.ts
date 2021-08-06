@@ -1,6 +1,6 @@
 import { Config, Configuration, CoreApi, CurrentTenant, Middleware, ResponseContext, RootApi, Tenant } from "authentik-api";
 import { getCookie } from "../utils";
-import { API_DRAWER_MIDDLEWARE } from "../elements/notifications/APIDrawer";
+import { APIMiddleware } from "../elements/notifications/APIDrawer";
 import { MessageMiddleware } from "../elements/messages/Middleware";
 
 export class LoggingMiddleware implements Middleware {
@@ -62,7 +62,7 @@ export const DEFAULT_CONFIG = new Configuration({
         "X-CSRFToken": getCookie("authentik_csrf"),
     },
     middleware: [
-        API_DRAWER_MIDDLEWARE,
+        new APIMiddleware(),
         new MessageMiddleware(),
         new LoggingMiddleware(),
     ],

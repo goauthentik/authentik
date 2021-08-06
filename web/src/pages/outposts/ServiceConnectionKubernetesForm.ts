@@ -11,8 +11,10 @@ import { first } from "../../utils";
 import { ModelForm } from "../../elements/forms/ModelForm";
 
 @customElement("ak-service-connection-kubernetes-form")
-export class ServiceConnectionKubernetesForm extends ModelForm<KubernetesServiceConnection, string> {
-
+export class ServiceConnectionKubernetesForm extends ModelForm<
+    KubernetesServiceConnection,
+    string
+> {
     loadInstance(pk: string): Promise<KubernetesServiceConnection> {
         return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesRetrieve({
             uuid: pk,
@@ -21,9 +23,9 @@ export class ServiceConnectionKubernetesForm extends ModelForm<KubernetesService
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated service-connection.`;
+            return t`Successfully updated integration.`;
         } else {
-            return t`Successfully created service-connection.`;
+            return t`Successfully created integration.`;
         }
     }
 
@@ -31,40 +33,48 @@ export class ServiceConnectionKubernetesForm extends ModelForm<KubernetesService
         if (this.instance) {
             return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesUpdate({
                 uuid: this.instance.pk || "",
-                kubernetesServiceConnectionRequest: data
+                kubernetesServiceConnectionRequest: data,
             });
         } else {
             return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesCreate({
-                kubernetesServiceConnectionRequest: data
+                kubernetesServiceConnectionRequest: data,
             });
         }
     };
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal
-                label=${t`Name`}
-                ?required=${true}
-                name="name">
-                <input type="text" value="${ifDefined(this.instance?.name)}" class="pf-c-form-control" required>
+            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.name)}"
+                    class="pf-c-form-control"
+                    required
+                />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="local">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.local, false)}>
-                    <label class="pf-c-check__label">
-                        ${t`Local`}
-                    </label>
+                    <input
+                        type="checkbox"
+                        class="pf-c-check__input"
+                        ?checked=${first(this.instance?.local, false)}
+                    />
+                    <label class="pf-c-check__label"> ${t`Local`} </label>
                 </div>
-                <p class="pf-c-form__helper-text">${t`If enabled, use the local connection. Required Docker socket/Kubernetes Integration.`}</p>
+                <p class="pf-c-form__helper-text">
+                    ${t`If enabled, use the local connection. Required Docker socket/Kubernetes Integration.`}
+                </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${t`Kubeconfig`}
-                name="kubeconfig">
-                <ak-codemirror mode="yaml" value="${YAML.stringify(first(this.instance?.kubeconfig, {}))}">
+            <ak-form-element-horizontal label=${t`Kubeconfig`} name="kubeconfig">
+                <ak-codemirror
+                    mode="yaml"
+                    value="${YAML.stringify(first(this.instance?.kubeconfig, {}))}"
+                >
                 </ak-codemirror>
-                <p class="pf-c-form__helper-text">${t`Set custom attributes using YAML or JSON.`}</p>
+                <p class="pf-c-form__helper-text">
+                    ${t`Set custom attributes using YAML or JSON.`}
+                </p>
             </ak-form-element-horizontal>
         </form>`;
     }
-
 }

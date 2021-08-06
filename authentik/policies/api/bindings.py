@@ -2,11 +2,7 @@
 from typing import OrderedDict
 
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.serializers import (
-    ModelSerializer,
-    PrimaryKeyRelatedField,
-    ValidationError,
-)
+from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField, ValidationError
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 

@@ -78,14 +78,10 @@ class FlowPlan:
         marker = self.markers[0]
 
         if marker.__class__ is not StageMarker:
-            LOGGER.debug(
-                "f(plan_inst): stage has marker", binding=binding, marker=marker
-            )
+            LOGGER.debug("f(plan_inst): stage has marker", binding=binding, marker=marker)
         marked_stage = marker.process(self, binding, http_request)
         if not marked_stage:
-            LOGGER.debug(
-                "f(plan_inst): marker returned none, next stage", binding=binding
-            )
+            LOGGER.debug("f(plan_inst): marker returned none, next stage", binding=binding)
             self.bindings.remove(binding)
             self.markers.remove(marker)
             if not self.has_stages:
@@ -193,9 +189,9 @@ class FlowPlanner:
             if default_context:
                 plan.context = default_context
             # Check Flow policies
-            for binding in FlowStageBinding.objects.filter(
-                target__pk=self.flow.pk
-            ).order_by("order"):
+            for binding in FlowStageBinding.objects.filter(target__pk=self.flow.pk).order_by(
+                "order"
+            ):
                 binding: FlowStageBinding
                 stage = binding.stage
                 marker = StageMarker()

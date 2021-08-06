@@ -17,9 +17,7 @@ class PasswordPolicy(Policy):
 
     password_field = models.TextField(
         default="password",
-        help_text=_(
-            "Field key to check, field keys defined in Prompt stages are available."
-        ),
+        help_text=_("Field key to check, field keys defined in Prompt stages are available."),
     )
 
     amount_uppercase = models.IntegerField(default=0)
@@ -55,9 +53,7 @@ class PasswordPolicy(Policy):
         if self.amount_uppercase > 0:
             filter_regex.append(r"[A-Z]{%d,}" % self.amount_uppercase)
         if self.amount_symbols > 0:
-            filter_regex.append(
-                r"[%s]{%d,}" % (self.symbol_charset, self.amount_symbols)
-            )
+            filter_regex.append(r"[%s]{%d,}" % (self.symbol_charset, self.amount_symbols))
         full_regex = "|".join(filter_regex)
         LOGGER.debug("Built regex", regexp=full_regex)
         result = bool(re.compile(full_regex).match(password))

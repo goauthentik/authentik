@@ -27,10 +27,7 @@ from authentik.lib.utils.urls import redirect_with_qs
 from authentik.lib.views import bad_request_message
 from authentik.providers.saml.utils.encoding import nice64
 from authentik.providers.saml.views.flows import AutosubmitChallenge
-from authentik.sources.saml.exceptions import (
-    MissingSAMLResponse,
-    UnsupportedNameIDFormat,
-)
+from authentik.sources.saml.exceptions import MissingSAMLResponse, UnsupportedNameIDFormat
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.metadata import MetadataProcessor
 from authentik.sources.saml.processors.request import RequestProcessor
@@ -69,9 +66,7 @@ class AutosubmitStageView(ChallengeStageView):
 class InitiateView(View):
     """Get the Form with SAML Request, which sends us to the IDP"""
 
-    def handle_login_flow(
-        self, source: SAMLSource, *stages_to_append, **kwargs
-    ) -> HttpResponse:
+    def handle_login_flow(self, source: SAMLSource, *stages_to_append, **kwargs) -> HttpResponse:
         """Prepare Authentication Plan, redirect user FlowExecutor"""
         # Ensure redirect is carried through when user was trying to
         # authorize application

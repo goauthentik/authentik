@@ -27,21 +27,34 @@ import { EVENT_REFRESH } from "../../../constants";
 
 @customElement("ak-source-ldap-view")
 export class LDAPSourceViewPage extends LitElement {
-
     @property({ type: String })
     set sourceSlug(slug: string) {
-        new SourcesApi(DEFAULT_CONFIG).sourcesLdapRetrieve({
-            slug: slug
-        }).then((source) => {
-            this.source = source;
-        });
+        new SourcesApi(DEFAULT_CONFIG)
+            .sourcesLdapRetrieve({
+                slug: slug,
+            })
+            .then((source) => {
+                this.source = source;
+            });
     }
 
     @property({ attribute: false })
     source!: LDAPSource;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFButton, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, AKGlobal];
+        return [
+            PFBase,
+            PFPage,
+            PFButton,
+            PFFlex,
+            PFDisplay,
+            PFGallery,
+            PFContent,
+            PFCard,
+            PFDescriptionList,
+            PFSizing,
+            AKGlobal,
+        ];
     }
 
     constructor() {
@@ -57,120 +70,155 @@ export class LDAPSourceViewPage extends LitElement {
             return html``;
         }
         return html`<ak-tabs>
-                <section slot="page-overview" data-tab-title="${t`Overview`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
-                    <div class="pf-u-display-flex pf-u-justify-content-center">
-                        <div class="pf-u-w-75">
-                            <div class="pf-c-card">
-                                <div class="pf-c-card__body">
-                                    <dl class="pf-c-description-list pf-m-2-col-on-lg">
-                                        <div class="pf-c-description-list__group">
-                                            <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${t`Name`}</span>
-                                            </dt>
-                                            <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.source.name}</div>
-                                            </dd>
-                                        </div>
-                                        <div class="pf-c-description-list__group">
-                                            <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${t`Server URI`}</span>
-                                            </dt>
-                                            <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.source.serverUri}</div>
-                                            </dd>
-                                        </div>
-                                        <div class="pf-c-description-list__group">
-                                            <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${t`Base DN`}</span>
-                                            </dt>
-                                            <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">
-                                                    <ul>
-                                                        <li>${this.source.baseDn}</li>
-                                                    </ul>
-                                                </div>
-                                            </dd>
-                                        </div>
-                                    </dl>
-                                </div>
-                                <div class="pf-c-card__footer">
-                                    <ak-forms-modal>
-                                        <span slot="submit">
-                                            ${t`Update`}
-                                        </span>
-                                        <span slot="header">
-                                            ${t`Update LDAP Source`}
-                                        </span>
-                                        <ak-source-ldap-form
-                                            slot="form"
-                                            .instancePk=${this.source.slug}>
-                                        </ak-source-ldap-form>
-                                        <button slot="trigger" class="pf-c-button pf-m-primary">
-                                            ${t`Edit`}
-                                        </button>
-                                    </ak-forms-modal>
-                                </div>
+            <section
+                slot="page-overview"
+                data-tab-title="${t`Overview`}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-u-display-flex pf-u-justify-content-center">
+                    <div class="pf-u-w-75">
+                        <div class="pf-c-card">
+                            <div class="pf-c-card__body">
+                                <dl class="pf-c-description-list pf-m-2-col-on-lg">
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text"
+                                                >${t`Name`}</span
+                                            >
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                ${this.source.name}
+                                            </div>
+                                        </dd>
+                                    </div>
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text"
+                                                >${t`Server URI`}</span
+                                            >
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                ${this.source.serverUri}
+                                            </div>
+                                        </dd>
+                                    </div>
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text"
+                                                >${t`Base DN`}</span
+                                            >
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                <ul>
+                                                    <li>${this.source.baseDn}</li>
+                                                </ul>
+                                            </div>
+                                        </dd>
+                                    </div>
+                                </dl>
+                            </div>
+                            <div class="pf-c-card__footer">
+                                <ak-forms-modal>
+                                    <span slot="submit"> ${t`Update`} </span>
+                                    <span slot="header"> ${t`Update LDAP Source`} </span>
+                                    <ak-source-ldap-form
+                                        slot="form"
+                                        .instancePk=${this.source.slug}
+                                    >
+                                    </ak-source-ldap-form>
+                                    <button slot="trigger" class="pf-c-button pf-m-primary">
+                                        ${t`Edit`}
+                                    </button>
+                                </ak-forms-modal>
                             </div>
                         </div>
                     </div>
-                </section>
-                <section slot="page-changelog" data-tab-title="${t`Changelog`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
-                    <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.source.pk || ""}
-                                targetModelApp="authentik_sources_ldap"
-                                targetModelName="ldapsource">
-                            </ak-object-changelog>
-                        </div>
+                </div>
+            </section>
+            <section
+                slot="page-changelog"
+                data-tab-title="${t`Changelog`}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <div class="pf-c-card__body">
+                        <ak-object-changelog
+                            targetModelPk=${this.source.pk || ""}
+                            targetModelApp="authentik_sources_ldap"
+                            targetModelName="ldapsource"
+                        >
+                        </ak-object-changelog>
                     </div>
-                </section>
-                <section slot="page-sync" data-tab-title="${t`Sync`}" class="pf-c-page__main-section pf-m-no-padding-mobile">
-                    <div class="pf-u-display-flex pf-u-justify-content-center">
-                        <div class="pf-u-w-75">
-                            <div class="pf-c-card">
-                                <div class="pf-c-card__title">
-                                    <p>${t`Sync status`}</p>
-                                </div>
-                                <div class="pf-c-card__body">
-                                    ${until(new SourcesApi(DEFAULT_CONFIG).sourcesLdapSyncStatusRetrieve({
-                                        slug: this.source.slug
-                                    }).then((ls) => {
-                                        let header = html``;
-                                        if (ls.status === StatusEnum.Warning) {
-                                            header = html`<p>${t`Task finished with warnings`}</p>`;
-                                        } else if (status === StatusEnum.Error) {
-                                            header = html`<p>${t`Task finished with errors`}</p>`;
-                                        } else {
-                                            header = html`<p>${t`Last sync: ${ls.taskFinishTimestamp.toLocaleString()}`}</p>`;
-                                        }
-                                        return html`
-                                            ${header}
-                                            <ul>
-                                                ${ls.messages.map(m => {
-                                                    return html`<li>${m}</li>`;
-                                                })}
-                                            </ul>
-                                        `;
-                                    }).catch(() => {
-                                        return html`<p>${t`Not synced yet.`}</p>`;
-                                    }), "loading")}
-                                </div>
-                                <div class="pf-c-card__footer">
-                                    <ak-action-button
-                                        .apiRequest=${() => {
-                                            return new SourcesApi(DEFAULT_CONFIG).sourcesLdapPartialUpdate({
-                                                slug: this.source?.slug || "",
-                                                patchedLDAPSourceRequest: this.source,
-                                            });
-                                        }}>
-                                        ${t`Retry Task`}
-                                    </ak-action-button>
-                                </div>
+                </div>
+            </section>
+            <section
+                slot="page-sync"
+                data-tab-title="${t`Sync`}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-u-display-flex pf-u-justify-content-center">
+                    <div class="pf-u-w-75">
+                        <div class="pf-c-card">
+                            <div class="pf-c-card__title">
+                                <p>${t`Sync status`}</p>
+                            </div>
+                            <div class="pf-c-card__body">
+                                ${until(
+                                    new SourcesApi(DEFAULT_CONFIG)
+                                        .sourcesLdapSyncStatusRetrieve({
+                                            slug: this.source.slug,
+                                        })
+                                        .then((ls) => {
+                                            let header = html``;
+                                            if (ls.status === StatusEnum.Warning) {
+                                                header = html`<p>
+                                                    ${t`Task finished with warnings`}
+                                                </p>`;
+                                            } else if (status === StatusEnum.Error) {
+                                                header = html`<p>
+                                                    ${t`Task finished with errors`}
+                                                </p>`;
+                                            } else {
+                                                header = html`<p>
+                                                    ${t`Last sync: ${ls.taskFinishTimestamp.toLocaleString()}`}
+                                                </p>`;
+                                            }
+                                            return html`
+                                                ${header}
+                                                <ul>
+                                                    ${ls.messages.map((m) => {
+                                                        return html`<li>${m}</li>`;
+                                                    })}
+                                                </ul>
+                                            `;
+                                        })
+                                        .catch(() => {
+                                            return html`<p>${t`Not synced yet.`}</p>`;
+                                        }),
+                                    "loading",
+                                )}
+                            </div>
+                            <div class="pf-c-card__footer">
+                                <ak-action-button
+                                    .apiRequest=${() => {
+                                        return new SourcesApi(
+                                            DEFAULT_CONFIG,
+                                        ).sourcesLdapPartialUpdate({
+                                            slug: this.source?.slug || "",
+                                            patchedLDAPSourceRequest: this.source,
+                                        });
+                                    }}
+                                >
+                                    ${t`Retry Task`}
+                                </ak-action-button>
                             </div>
                         </div>
                     </div>
-                </section>
-            </ak-tabs>`;
+                </div>
+            </section>
+        </ak-tabs>`;
     }
 }

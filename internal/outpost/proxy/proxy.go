@@ -14,7 +14,6 @@ import (
 
 	"github.com/coreos/go-oidc"
 	"github.com/justinas/alice"
-	ipapi "github.com/oauth2-proxy/oauth2-proxy/pkg/apis/ip"
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/apis/options"
 	sessionsapi "github.com/oauth2-proxy/oauth2-proxy/pkg/apis/sessions"
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/middleware"
@@ -22,6 +21,7 @@ import (
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/upstream"
 	"github.com/oauth2-proxy/oauth2-proxy/providers"
 	"goauthentik.io/api"
+	"goauthentik.io/internal/utils/web"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -91,7 +91,6 @@ type OAuthProxy struct {
 	extraJwtBearerVerifiers []*oidc.IDTokenVerifier
 	compiledRegex           []*regexp.Regexp
 	templates               *template.Template
-	realClientIPParser      ipapi.RealClientIPParser
 
 	sessionChain alice.Chain
 
@@ -160,7 +159,6 @@ func NewOAuthProxy(opts *options.Options, provider api.ProxyOutpostConfig, c *ht
 		mainJwtBearerVerifier:   opts.GetOIDCVerifier(),
 		extraJwtBearerVerifiers: opts.GetJWTBearerVerifiers(),
 		compiledRegex:           opts.GetCompiledRegex(),
-		realClientIPParser:      opts.GetRealClientIPParser(),
 		SetXAuthRequest:         opts.SetXAuthRequest,
 		SetBasicAuth:            opts.SetBasicAuth,
 		PassUserHeaders:         opts.PassUserHeaders,
@@ -238,6 +236,7 @@ func (p *OAuthProxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	if req.URL.Path != p.AuthOnlyPath && strings.HasPrefix(req.URL.Path, p.ProxyPrefix) {
 		prepareNoCache(rw)
 	}
+	rw.Header().Set("Server", "authentik-outpost")
 
 	switch path := req.URL.Path; {
 	case path == p.RobotsPath:
@@ -310,7 +309,7 @@ func (p *OAuthProxy) AuthenticateOnly(rw http.ResponseWriter, req *http.Request)
 				// Optional suffix, which is appended to the URL
 				suffix := ""
 				if p.mode == api.PROXYMODE_FORWARD_SINGLE {
-					host = getHost(req)
+					host = web.GetHost(req)
 				} else if p.mode == api.PROXYMODE_FORWARD_DOMAIN {
 					host = p.ExternalHost
 					// set the ?rd flag to the current URL we have, since we redirect
@@ -410,6 +409,8 @@ func (p *OAuthProxy) getAuthenticatedSession(rw http.ResponseWriter, req *http.R
 
 // addHeadersForProxying adds the appropriate headers the request / response for proxying
 func (p *OAuthProxy) addHeadersForProxying(rw http.ResponseWriter, req *http.Request, session *sessionsapi.SessionState) {
+	// req is the request that is forwarded to the upstream server
+	// rw is the response writer that goes back to the client
 	req.Header["X-Forwarded-User"] = []string{session.User}
 	if session.Email != "" {
 		req.Header["X-Forwarded-Email"] = []string{session.Email}
@@ -428,6 +429,10 @@ func (p *OAuthProxy) addHeadersForProxying(rw http.ResponseWriter, req *http.Req
 	if err != nil {
 		log.WithError(err).Warning("Failed to parse IDToken")
 	}
+	// Set groups in header
+	groups := strings.Join(claims.Groups, "|")
+	req.Header["X-Auth-Groups"] = []string{groups}
+
 	userAttributes := claims.Proxy.UserAttributes
 	// Attempt to set basic auth based on user's attributes
 	if p.SetBasicAuth {
@@ -461,6 +466,7 @@ func (p *OAuthProxy) addHeadersForProxying(rw http.ResponseWriter, req *http.Req
 func (p *OAuthProxy) stripAuthHeaders(req *http.Request) {
 	if p.PassUserHeaders {
 		req.Header.Del("X-Forwarded-User")
+		req.Header.Del("X-Auth-Groups")
 		req.Header.Del("X-Forwarded-Email")
 		req.Header.Del("X-Forwarded-Preferred-Username")
 	}
