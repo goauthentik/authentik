@@ -15,7 +15,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     @property()
     type: OutpostTypeEnum = OutpostTypeEnum.Proxy;
 
-    @property({type: Boolean})
+    @property({ type: Boolean })
     embedded: boolean = false;
 
     loadInstance(pk: string): Promise<Outpost> {
