@@ -208,7 +208,7 @@ export abstract class Table<T> extends LitElement {
         if (this.data.pagination.count === 0) {
             return [this.renderEmpty()];
         }
-        return this.data.results.map((item: T, idx: number) => {
+        return this.data.results.map((item: T) => {
             return html`<tbody
                 role="rowgroup"
                 class="${this.expandedElements.indexOf(item) > -1 ? "pf-m-expanded" : ""}"
