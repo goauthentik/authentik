@@ -186,7 +186,7 @@ class TokenView(View):
             try:
                 self.provider = OAuth2Provider.objects.get(client_id=client_id)
             except OAuth2Provider.DoesNotExist:
-                LOGGER.warning("OAuth2Provider does not exist", client_id=self.client_id)
+                LOGGER.warning("OAuth2Provider does not exist", client_id=client_id)
                 raise TokenError("invalid_client")
 
             if not self.provider:
