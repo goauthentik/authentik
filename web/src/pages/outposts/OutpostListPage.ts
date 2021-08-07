@@ -80,7 +80,12 @@ export class OutpostListPage extends TablePage<Outpost> {
             html`<ak-forms-modal>
                     <span slot="submit"> ${t`Update`} </span>
                     <span slot="header"> ${t`Update Outpost`} </span>
-                    <ak-outpost-form slot="form" .instancePk=${item.pk}> </ak-outpost-form>
+                    <ak-outpost-form
+                        slot="form"
+                        .instancePk=${item.pk}
+                        .embedded=${item.managed === "goauthentik.io/outposts/embedded"}
+                    >
+                    </ak-outpost-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <i class="fas fa-edit"></i>
                     </button>

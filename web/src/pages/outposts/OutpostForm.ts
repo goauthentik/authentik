@@ -15,6 +15,9 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     @property()
     type: OutpostTypeEnum = OutpostTypeEnum.Proxy;
 
+    @property({type: Boolean})
+    embedded: boolean = false;
+
     loadInstance(pk: string): Promise<Outpost> {
         return new OutpostsApi(DEFAULT_CONFIG)
             .outpostsInstancesRetrieve({
@@ -161,7 +164,11 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     >.
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Providers`} ?required=${true} name="providers">
+            <ak-form-element-horizontal
+                label=${t`Providers`}
+                ?required=${!this.embedded}
+                name="providers"
+            >
                 <select class="pf-c-form-control" multiple>
                     ${until(this.renderProviders(), html`<option>${t`Loading...`}</option>`)}
                 </select>
