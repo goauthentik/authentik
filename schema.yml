@@ -1852,7 +1852,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this authenticated session.
+        description: A UUID string identifying this Authenticated Session.
         required: true
       tags:
       - core
@@ -1879,7 +1879,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this authenticated session.
+        description: A UUID string identifying this Authenticated Session.
         required: true
       tags:
       - core
@@ -1903,7 +1903,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this authenticated session.
+        description: A UUID string identifying this Authenticated Session.
         required: true
       tags:
       - core
@@ -2188,6 +2188,50 @@ paths:
       operationId: core_tenants_list
       description: Tenant Viewset
       parameters:
+      - in: query
+        name: branding_favicon
+        schema:
+          type: string
+      - in: query
+        name: branding_logo
+        schema:
+          type: string
+      - in: query
+        name: branding_title
+        schema:
+          type: string
+      - in: query
+        name: default
+        schema:
+          type: boolean
+      - in: query
+        name: domain
+        schema:
+          type: string
+      - in: query
+        name: event_retention
+        schema:
+          type: string
+      - in: query
+        name: flow_authentication
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: flow_invalidation
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: flow_recovery
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: flow_unenrollment
+        schema:
+          type: string
+          format: uuid
       - name: ordering
         required: false
         in: query
@@ -2212,6 +2256,11 @@ paths:
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: tenant_uuid
+        schema:
+          type: string
+          format: uuid
       tags:
       - core
       security:
@@ -4130,6 +4179,14 @@ paths:
       operationId: events_rules_list
       description: NotificationRule Viewset
       parameters:
+      - in: query
+        name: group__name
+        schema:
+          type: string
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -4154,6 +4211,16 @@ paths:
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: severity
+        schema:
+          type: string
+          enum:
+          - alert
+          - notice
+          - warning
+        description: Controls which severity level the created notifications will
+          have.
       tags:
       - events
       security:
@@ -4364,6 +4431,18 @@ paths:
       operationId: events_transports_list
       description: NotificationTransport Viewset
       parameters:
+      - in: query
+        name: mode
+        schema:
+          type: string
+          enum:
+          - email
+          - webhook
+          - webhook_slack
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -4386,6 +4465,14 @@ paths:
         required: false
         in: query
         description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: send_once
+        schema:
+          type: boolean
+      - in: query
+        name: webhook_url
         schema:
           type: string
       tags:
@@ -5724,6 +5811,14 @@ paths:
       operationId: outposts_instances_list
       description: Outpost Viewset
       parameters:
+      - in: query
+        name: name__icontains
+        schema:
+          type: string
+      - in: query
+        name: name__iexact
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -5750,6 +5845,14 @@ paths:
         required: false
         in: query
         description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: service_connection__name__icontains
+        schema:
+          type: string
+      - in: query
+        name: service_connection__name__iexact
         schema:
           type: string
       tags:
@@ -5932,6 +6035,14 @@ paths:
       operationId: outposts_instances_health_list
       description: Get outposts current health
       parameters:
+      - in: query
+        name: name__icontains
+        schema:
+          type: string
+      - in: query
+        name: name__iexact
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -5946,6 +6057,14 @@ paths:
         required: false
         in: query
         description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: service_connection__name__icontains
+        schema:
+          type: string
+      - in: query
+        name: service_connection__name__iexact
         schema:
           type: string
       - in: path
@@ -6352,6 +6471,14 @@ paths:
       operationId: outposts_service_connections_docker_list
       description: DockerServiceConnection Viewset
       parameters:
+      - in: query
+        name: local
+        schema:
+          type: boolean
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -6374,6 +6501,20 @@ paths:
         required: false
         in: query
         description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: tls_authentication
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: tls_verification
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: url
         schema:
           type: string
       tags:
@@ -6586,6 +6727,14 @@ paths:
       operationId: outposts_service_connections_kubernetes_list
       description: KubernetesServiceConnection Viewset
       parameters:
+      - in: query
+        name: local
+        schema:
+          type: boolean
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -7308,6 +7457,24 @@ paths:
       operationId: policies_dummy_list
       description: Dummy Viewset
       parameters:
+      - in: query
+        name: created
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: execution_logging
+        schema:
+          type: boolean
+      - in: query
+        name: last_updated
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -7326,12 +7493,29 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: result
+        schema:
+          type: boolean
       - name: search
         required: false
         in: query
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: wait_max
+        schema:
+          type: integer
+      - in: query
+        name: wait_min
+        schema:
+          type: integer
       tags:
       - policies
       security:
@@ -7540,6 +7724,113 @@ paths:
       operationId: policies_event_matcher_list
       description: Event Matcher Policy Viewset
       parameters:
+      - in: query
+        name: action
+        schema:
+          type: string
+          enum:
+          - authorize_application
+          - configuration_error
+          - custom_
+          - email_sent
+          - impersonation_ended
+          - impersonation_started
+          - invitation_used
+          - login
+          - login_failed
+          - logout
+          - model_created
+          - model_deleted
+          - model_updated
+          - password_set
+          - policy_exception
+          - policy_execution
+          - property_mapping_exception
+          - secret_rotate
+          - secret_view
+          - source_linked
+          - suspicious_request
+          - system_exception
+          - system_task_exception
+          - system_task_execution
+          - update_available
+          - user_write
+        description: Match created events with this action type. When left empty,
+          all action types will be matched.
+      - in: query
+        name: app
+        schema:
+          type: string
+          enum:
+          - authentik.admin
+          - authentik.api
+          - authentik.core
+          - authentik.crypto
+          - authentik.events
+          - authentik.flows
+          - authentik.lib
+          - authentik.managed
+          - authentik.outposts
+          - authentik.policies
+          - authentik.policies.dummy
+          - authentik.policies.event_matcher
+          - authentik.policies.expiry
+          - authentik.policies.expression
+          - authentik.policies.hibp
+          - authentik.policies.password
+          - authentik.policies.reputation
+          - authentik.providers.ldap
+          - authentik.providers.oauth2
+          - authentik.providers.proxy
+          - authentik.providers.saml
+          - authentik.recovery
+          - authentik.sources.ldap
+          - authentik.sources.oauth
+          - authentik.sources.plex
+          - authentik.sources.saml
+          - authentik.stages.authenticator_duo
+          - authentik.stages.authenticator_static
+          - authentik.stages.authenticator_totp
+          - authentik.stages.authenticator_validate
+          - authentik.stages.authenticator_webauthn
+          - authentik.stages.captcha
+          - authentik.stages.consent
+          - authentik.stages.deny
+          - authentik.stages.dummy
+          - authentik.stages.email
+          - authentik.stages.identification
+          - authentik.stages.invitation
+          - authentik.stages.password
+          - authentik.stages.prompt
+          - authentik.stages.user_delete
+          - authentik.stages.user_login
+          - authentik.stages.user_logout
+          - authentik.stages.user_write
+          - authentik.tenants
+        description: Match events created by selected application. When left empty,
+          all applications are matched.
+      - in: query
+        name: client_ip
+        schema:
+          type: string
+      - in: query
+        name: created
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: execution_logging
+        schema:
+          type: boolean
+      - in: query
+        name: last_updated
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -7558,6 +7849,11 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
       - name: search
         required: false
         in: query
@@ -7772,6 +8068,28 @@ paths:
       operationId: policies_expression_list
       description: Source Viewset
       parameters:
+      - in: query
+        name: created
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: execution_logging
+        schema:
+          type: boolean
+      - in: query
+        name: expression
+        schema:
+          type: string
+      - in: query
+        name: last_updated
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -7790,6 +8108,11 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
       - name: search
         required: false
         in: query
@@ -8006,6 +8329,28 @@ paths:
       operationId: policies_haveibeenpwned_list
       description: Source Viewset
       parameters:
+      - in: query
+        name: allowed_count
+        schema:
+          type: integer
+      - in: query
+        name: created
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: execution_logging
+        schema:
+          type: boolean
+      - in: query
+        name: last_updated
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -8024,6 +8369,15 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: password_field
+        schema:
+          type: string
+      - in: query
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
       - name: search
         required: false
         in: query
@@ -8238,6 +8592,44 @@ paths:
       operationId: policies_password_list
       description: Password Policy Viewset
       parameters:
+      - in: query
+        name: amount_lowercase
+        schema:
+          type: integer
+      - in: query
+        name: amount_symbols
+        schema:
+          type: integer
+      - in: query
+        name: amount_uppercase
+        schema:
+          type: integer
+      - in: query
+        name: created
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: error_message
+        schema:
+          type: string
+      - in: query
+        name: execution_logging
+        schema:
+          type: boolean
+      - in: query
+        name: last_updated
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: length_min
+        schema:
+          type: integer
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -8256,10 +8648,23 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: password_field
+        schema:
+          type: string
+      - in: query
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
       - name: search
         required: false
         in: query
         description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: symbol_charset
         schema:
           type: string
       tags:
@@ -8472,6 +8877,32 @@ paths:
       operationId: policies_password_expiry_list
       description: Password Expiry Viewset
       parameters:
+      - in: query
+        name: created
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: days
+        schema:
+          type: integer
+      - in: query
+        name: deny_only
+        schema:
+          type: boolean
+      - in: query
+        name: execution_logging
+        schema:
+          type: boolean
+      - in: query
+        name: last_updated
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -8490,6 +8921,11 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
       - name: search
         required: false
         in: query
@@ -8706,6 +9142,32 @@ paths:
       operationId: policies_reputation_list
       description: Reputation Policy Viewset
       parameters:
+      - in: query
+        name: check_ip
+        schema:
+          type: boolean
+      - in: query
+        name: check_username
+        schema:
+          type: boolean
+      - in: query
+        name: created
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: execution_logging
+        schema:
+          type: boolean
+      - in: query
+        name: last_updated
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -8724,12 +9186,21 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
       - name: search
         required: false
         in: query
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: threshold
+        schema:
+          type: integer
       tags:
       - policies
       security:
@@ -9396,6 +9867,22 @@ paths:
       operationId: propertymappings_ldap_list
       description: LDAP PropertyMapping Viewset
       parameters:
+      - in: query
+        name: expression
+        schema:
+          type: string
+      - in: query
+        name: managed
+        schema:
+          type: string
+      - in: query
+        name: name
+        schema:
+          type: string
+      - in: query
+        name: object_field
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -9414,6 +9901,11 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
       - name: search
         required: false
         in: query
@@ -9630,6 +10122,22 @@ paths:
       operationId: propertymappings_saml_list
       description: SAMLPropertyMapping Viewset
       parameters:
+      - in: query
+        name: expression
+        schema:
+          type: string
+      - in: query
+        name: friendly_name
+        schema:
+          type: string
+      - in: query
+        name: managed
+        schema:
+          type: string
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -9648,6 +10156,15 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: saml_name
+        schema:
+          type: string
       - name: search
         required: false
         in: query
@@ -9864,6 +10381,14 @@ paths:
       operationId: propertymappings_scope_list
       description: ScopeMapping Viewset
       parameters:
+      - in: query
+        name: managed
+        schema:
+          type: string
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -9882,6 +10407,10 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: scope_name
+        schema:
+          type: string
       - name: search
         required: false
         in: query
@@ -10247,6 +10776,28 @@ paths:
       operationId: providers_ldap_list
       description: LDAPProvider Viewset
       parameters:
+      - in: query
+        name: authorization_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: base_dn
+        schema:
+          type: string
+      - in: query
+        name: certificate
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: gid_start_number
+        schema:
+          type: integer
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -10265,12 +10816,34 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: property_mappings
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       - name: search
         required: false
         in: query
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: search_group
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: tls_server_name
+        schema:
+          type: string
+      - in: query
+        name: uid_start_number
+        schema:
+          type: integer
       tags:
       - providers
       security:
@@ -10476,6 +11049,59 @@ paths:
       operationId: providers_oauth2_list
       description: OAuth2Provider Viewset
       parameters:
+      - in: query
+        name: access_code_validity
+        schema:
+          type: string
+      - in: query
+        name: application
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: authorization_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: client_id
+        schema:
+          type: string
+      - in: query
+        name: client_type
+        schema:
+          type: string
+          enum:
+          - confidential
+          - public
+        description: |-
+          Confidential clients are capable of maintaining the confidentiality
+              of their credentials. Public clients are incapable.
+      - in: query
+        name: include_claims_in_id_token
+        schema:
+          type: boolean
+      - in: query
+        name: issuer_mode
+        schema:
+          type: string
+          enum:
+          - global
+          - per_provider
+        description: Configure how the issuer field of the ID Token should be filled.
+      - in: query
+        name: jwt_alg
+        schema:
+          type: string
+          title: JWT Algorithm
+          enum:
+          - HS256
+          - RS256
+        description: Algorithm used to sign the JWT Token
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -10494,10 +11120,43 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: property_mappings
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
+        name: redirect_uris
+        schema:
+          type: string
+      - in: query
+        name: rsa_key
+        schema:
+          type: string
+          format: uuid
       - name: search
         required: false
         in: query
         description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: sub_mode
+        schema:
+          type: string
+          enum:
+          - hashed_user_id
+          - user_email
+          - user_upn
+          - user_username
+        description: Configure what data should be used as unique User Identifier.
+          For most cases, the default should be fine.
+      - in: query
+        name: token_validity
         schema:
           type: string
       tags:
@@ -10734,6 +11393,105 @@ paths:
       operationId: providers_proxy_list
       description: ProxyProvider Viewset
       parameters:
+      - in: query
+        name: access_code_validity
+        schema:
+          type: string
+      - in: query
+        name: authorization_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: basic_auth_enabled
+        schema:
+          type: boolean
+      - in: query
+        name: basic_auth_password_attribute
+        schema:
+          type: string
+      - in: query
+        name: basic_auth_user_attribute
+        schema:
+          type: string
+      - in: query
+        name: certificate
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: client_id
+        schema:
+          type: string
+      - in: query
+        name: client_secret
+        schema:
+          type: string
+      - in: query
+        name: client_type
+        schema:
+          type: string
+          enum:
+          - confidential
+          - public
+        description: |-
+          Confidential clients are capable of maintaining the confidentiality
+              of their credentials. Public clients are incapable.
+      - in: query
+        name: cookie_domain
+        schema:
+          type: string
+      - in: query
+        name: cookie_secret
+        schema:
+          type: string
+      - in: query
+        name: external_host
+        schema:
+          type: string
+      - in: query
+        name: include_claims_in_id_token
+        schema:
+          type: boolean
+      - in: query
+        name: internal_host
+        schema:
+          type: string
+      - in: query
+        name: internal_host_ssl_validation
+        schema:
+          type: boolean
+      - in: query
+        name: issuer_mode
+        schema:
+          type: string
+          enum:
+          - global
+          - per_provider
+        description: Configure how the issuer field of the ID Token should be filled.
+      - in: query
+        name: jwt_alg
+        schema:
+          type: string
+          title: JWT Algorithm
+          enum:
+          - HS256
+          - RS256
+        description: Algorithm used to sign the JWT Token
+      - in: query
+        name: mode
+        schema:
+          type: string
+          enum:
+          - forward_domain
+          - forward_single
+          - proxy
+        description: Enable support for forwardAuth in traefik and nginx auth_request.
+          Exclusive with internal_host.
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -10752,10 +11510,47 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: property_mappings
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
+        name: redirect_uris
+        schema:
+          type: string
+      - in: query
+        name: rsa_key
+        schema:
+          type: string
+          format: uuid
       - name: search
         required: false
         in: query
         description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: skip_path_regex
+        schema:
+          type: string
+      - in: query
+        name: sub_mode
+        schema:
+          type: string
+          enum:
+          - hashed_user_id
+          - user_email
+          - user_upn
+          - user_username
+        description: Configure what data should be used as unique User Identifier.
+          For most cases, the default should be fine.
+      - in: query
+        name: token_validity
         schema:
           type: string
       tags:
@@ -10963,6 +11758,49 @@ paths:
       operationId: providers_saml_list
       description: SAMLProvider Viewset
       parameters:
+      - in: query
+        name: acs_url
+        schema:
+          type: string
+      - in: query
+        name: assertion_valid_not_before
+        schema:
+          type: string
+      - in: query
+        name: assertion_valid_not_on_or_after
+        schema:
+          type: string
+      - in: query
+        name: audience
+        schema:
+          type: string
+      - in: query
+        name: authorization_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: digest_algorithm
+        schema:
+          type: string
+          enum:
+          - http://www.w3.org/2000/09/xmldsig#sha1
+          - http://www.w3.org/2001/04/xmldsig-more#sha384
+          - http://www.w3.org/2001/04/xmlenc#sha256
+          - http://www.w3.org/2001/04/xmlenc#sha512
+      - in: query
+        name: issuer
+        schema:
+          type: string
+      - in: query
+        name: name
+        schema:
+          type: string
+      - in: query
+        name: name_id_mapping
+        schema:
+          type: string
+          format: uuid
       - name: ordering
         required: false
         in: query
@@ -10981,12 +11819,55 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: property_mappings
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       - name: search
         required: false
         in: query
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: session_valid_not_on_or_after
+        schema:
+          type: string
+      - in: query
+        name: signature_algorithm
+        schema:
+          type: string
+          enum:
+          - http://www.w3.org/2000/09/xmldsig#dsa-sha1
+          - http://www.w3.org/2000/09/xmldsig#rsa-sha1
+          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
+          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha384
+          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
+      - in: query
+        name: signing_kp
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: sp_binding
+        schema:
+          type: string
+          title: Service Provider Binding
+          enum:
+          - post
+          - redirect
+        description: This determines how authentik sends the response back to the
+          Service Provider.
+      - in: query
+        name: verification_kp
+        schema:
+          type: string
+          format: uuid
       tags:
       - providers
       security:
@@ -11583,6 +12464,52 @@ paths:
       operationId: sources_ldap_list
       description: LDAP Source Viewset
       parameters:
+      - in: query
+        name: additional_group_dn
+        schema:
+          type: string
+      - in: query
+        name: additional_user_dn
+        schema:
+          type: string
+      - in: query
+        name: authentication_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: base_dn
+        schema:
+          type: string
+      - in: query
+        name: bind_cn
+        schema:
+          type: string
+      - in: query
+        name: enabled
+        schema:
+          type: boolean
+      - in: query
+        name: enrollment_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: group_membership_field
+        schema:
+          type: string
+      - in: query
+        name: group_object_filter
+        schema:
+          type: string
+      - in: query
+        name: name
+        schema:
+          type: string
+      - in: query
+        name: object_uniqueness_field
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -11601,10 +12528,68 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: policy_engine_mode
+        schema:
+          type: string
+          enum:
+          - all
+          - any
+      - in: query
+        name: property_mappings
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
+        name: property_mappings_group
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       - name: search
         required: false
         in: query
         description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: server_uri
+        schema:
+          type: string
+      - in: query
+        name: slug
+        schema:
+          type: string
+      - in: query
+        name: start_tls
+        schema:
+          type: boolean
+      - in: query
+        name: sync_groups
+        schema:
+          type: boolean
+      - in: query
+        name: sync_parent_group
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: sync_users
+        schema:
+          type: boolean
+      - in: query
+        name: sync_users_password
+        schema:
+          type: boolean
+      - in: query
+        name: user_object_filter
         schema:
           type: string
       tags:
@@ -11841,6 +12826,36 @@ paths:
       operationId: sources_oauth_list
       description: Source Viewset
       parameters:
+      - in: query
+        name: access_token_url
+        schema:
+          type: string
+      - in: query
+        name: authentication_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: authorization_url
+        schema:
+          type: string
+      - in: query
+        name: consumer_key
+        schema:
+          type: string
+      - in: query
+        name: enabled
+        schema:
+          type: boolean
+      - in: query
+        name: enrollment_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -11859,12 +12874,47 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: policy_engine_mode
+        schema:
+          type: string
+          enum:
+          - all
+          - any
+      - in: query
+        name: profile_url
+        schema:
+          type: string
+      - in: query
+        name: provider_type
+        schema:
+          type: string
+      - in: query
+        name: request_token_url
+        schema:
+          type: string
       - name: search
         required: false
         in: query
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: slug
+        schema:
+          type: string
+      - in: query
+        name: user_matching_mode
+        schema:
+          type: string
+          enum:
+          - email_deny
+          - email_link
+          - identifier
+          - username_deny
+          - username_link
+        description: How the source determines if an existing user should be authenticated
+          or a new user enrolled.
       tags:
       - sources
       security:
@@ -12294,6 +13344,32 @@ paths:
       operationId: sources_plex_list
       description: Plex source Viewset
       parameters:
+      - in: query
+        name: allow_friends
+        schema:
+          type: boolean
+      - in: query
+        name: authentication_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: client_id
+        schema:
+          type: string
+      - in: query
+        name: enabled
+        schema:
+          type: boolean
+      - in: query
+        name: enrollment_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -12312,12 +13388,35 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: policy_engine_mode
+        schema:
+          type: string
+          enum:
+          - all
+          - any
       - name: search
         required: false
         in: query
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: slug
+        schema:
+          type: string
+      - in: query
+        name: user_matching_mode
+        schema:
+          type: string
+          enum:
+          - email_deny
+          - email_link
+          - identifier
+          - username_deny
+          - username_link
+        description: How the source determines if an existing user should be authenticated
+          or a new user enrolled.
       tags:
       - sources
       security:
@@ -12563,6 +13662,65 @@ paths:
       operationId: sources_saml_list
       description: SAMLSource Viewset
       parameters:
+      - in: query
+        name: allow_idp_initiated
+        schema:
+          type: boolean
+      - in: query
+        name: authentication_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: binding_type
+        schema:
+          type: string
+          enum:
+          - POST
+          - POST_AUTO
+          - REDIRECT
+      - in: query
+        name: digest_algorithm
+        schema:
+          type: string
+          enum:
+          - http://www.w3.org/2000/09/xmldsig#sha1
+          - http://www.w3.org/2001/04/xmldsig-more#sha384
+          - http://www.w3.org/2001/04/xmlenc#sha256
+          - http://www.w3.org/2001/04/xmlenc#sha512
+      - in: query
+        name: enabled
+        schema:
+          type: boolean
+      - in: query
+        name: enrollment_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: issuer
+        schema:
+          type: string
+      - in: query
+        name: managed
+        schema:
+          type: string
+      - in: query
+        name: name
+        schema:
+          type: string
+      - in: query
+        name: name_id_policy
+        schema:
+          type: string
+          enum:
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+        description: NameID Policy sent to the IdP. Can be unset, in which case no
+          Policy is sent.
       - name: ordering
         required: false
         in: query
@@ -12581,12 +13739,90 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: policies
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
+        name: policy_engine_mode
+        schema:
+          type: string
+          enum:
+          - all
+          - any
+      - in: query
+        name: pre_authentication_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: property_mappings
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       - name: search
         required: false
         in: query
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: signature_algorithm
+        schema:
+          type: string
+          enum:
+          - http://www.w3.org/2000/09/xmldsig#dsa-sha1
+          - http://www.w3.org/2000/09/xmldsig#rsa-sha1
+          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
+          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha384
+          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
+      - in: query
+        name: signing_kp
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: slo_url
+        schema:
+          type: string
+      - in: query
+        name: slug
+        schema:
+          type: string
+      - in: query
+        name: sso_url
+        schema:
+          type: string
+      - in: query
+        name: temporary_user_delete_after
+        schema:
+          type: string
+      - in: query
+        name: user_matching_mode
+        schema:
+          type: string
+          enum:
+          - email_deny
+          - email_link
+          - identifier
+          - username_deny
+          - username_link
+        description: How the source determines if an existing user should be authenticated
+          or a new user enrolled.
       tags:
       - sources
       security:
@@ -12993,6 +14229,23 @@ paths:
       operationId: stages_authenticator_duo_list
       description: AuthenticatorDuoStage Viewset
       parameters:
+      - in: query
+        name: api_hostname
+        schema:
+          type: string
+      - in: query
+        name: client_id
+        schema:
+          type: string
+      - in: query
+        name: configure_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -13253,6 +14506,15 @@ paths:
       operationId: stages_authenticator_static_list
       description: AuthenticatorStaticStage Viewset
       parameters:
+      - in: query
+        name: configure_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -13277,6 +14539,15 @@ paths:
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: token_count
+        schema:
+          type: integer
       tags:
       - stages
       security:
@@ -13487,6 +14758,22 @@ paths:
       operationId: stages_authenticator_totp_list
       description: AuthenticatorTOTPStage Viewset
       parameters:
+      - in: query
+        name: configure_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: digits
+        schema:
+          type: integer
+          enum:
+          - 6
+          - 8
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -13511,6 +14798,11 @@ paths:
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
       tags:
       - stages
       security:
@@ -13721,6 +15013,23 @@ paths:
       operationId: stages_authenticator_validate_list
       description: AuthenticatorValidateStage Viewset
       parameters:
+      - in: query
+        name: configuration_stage
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: name
+        schema:
+          type: string
+      - in: query
+        name: not_configured_action
+        schema:
+          type: string
+          enum:
+          - configure
+          - deny
+          - skip
       - name: ordering
         required: false
         in: query
@@ -13955,6 +15264,15 @@ paths:
       operationId: stages_authenticator_webauthn_list
       description: AuthenticateWebAuthnStage Viewset
       parameters:
+      - in: query
+        name: configure_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -13979,6 +15297,11 @@ paths:
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
       tags:
       - stages
       security:
@@ -14189,6 +15512,10 @@ paths:
       operationId: stages_captcha_list
       description: CaptchaStage Viewset
       parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -14207,6 +15534,10 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: public_key
+        schema:
+          type: string
       - name: search
         required: false
         in: query
@@ -14423,6 +15754,22 @@ paths:
       operationId: stages_consent_list
       description: ConsentStage Viewset
       parameters:
+      - in: query
+        name: consent_expire_in
+        schema:
+          type: string
+      - in: query
+        name: mode
+        schema:
+          type: string
+          enum:
+          - always_require
+          - expiring
+          - permanent
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -14447,6 +15794,11 @@ paths:
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
       tags:
       - stages
       security:
@@ -14657,6 +16009,10 @@ paths:
       operationId: stages_deny_list
       description: DenyStage Viewset
       parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -14681,6 +16037,11 @@ paths:
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
       tags:
       - stages
       security:
@@ -14891,6 +16252,10 @@ paths:
       operationId: stages_dummy_list
       description: DummyStage Viewset
       parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -14915,6 +16280,11 @@ paths:
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
       tags:
       - stages
       security:
@@ -15125,6 +16495,18 @@ paths:
       operationId: stages_email_list
       description: EmailStage Viewset
       parameters:
+      - in: query
+        name: from_address
+        schema:
+          type: string
+      - in: query
+        name: host
+        schema:
+          type: string
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -15143,10 +16525,46 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: port
+        schema:
+          type: integer
       - name: search
         required: false
         in: query
         description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: subject
+        schema:
+          type: string
+      - in: query
+        name: template
+        schema:
+          type: string
+      - in: query
+        name: timeout
+        schema:
+          type: integer
+      - in: query
+        name: token_expiry
+        schema:
+          type: integer
+      - in: query
+        name: use_global_settings
+        schema:
+          type: boolean
+      - in: query
+        name: use_ssl
+        schema:
+          type: boolean
+      - in: query
+        name: use_tls
+        schema:
+          type: boolean
+      - in: query
+        name: username
         schema:
           type: string
       tags:
@@ -15381,6 +16799,19 @@ paths:
       operationId: stages_identification_list
       description: IdentificationStage Viewset
       parameters:
+      - in: query
+        name: case_insensitive_matching
+        schema:
+          type: boolean
+      - in: query
+        name: enrollment_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -15399,12 +16830,26 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: password_stage
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: recovery_flow
+        schema:
+          type: string
+          format: uuid
       - name: search
         required: false
         in: query
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: show_matched_user
+        schema:
+          type: boolean
       tags:
       - stages
       security:
@@ -15856,6 +17301,14 @@ paths:
       operationId: stages_invitation_stages_list
       description: InvitationStage Viewset
       parameters:
+      - in: query
+        name: continue_flow_without_invitation
+        schema:
+          type: boolean
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -15880,6 +17333,11 @@ paths:
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
       tags:
       - stages
       security:
@@ -16090,6 +17548,19 @@ paths:
       operationId: stages_password_list
       description: PasswordStage Viewset
       parameters:
+      - in: query
+        name: configure_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: failed_attempts_before_cancel
+        schema:
+          type: integer
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -16586,6 +18057,19 @@ paths:
       operationId: stages_prompt_stages_list
       description: PromptStage Viewset
       parameters:
+      - in: query
+        name: fields
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -16610,6 +18094,20 @@ paths:
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: validation_policies
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       tags:
       - stages
       security:
@@ -16820,6 +18318,10 @@ paths:
       operationId: stages_user_delete_list
       description: UserDeleteStage Viewset
       parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -16844,6 +18346,11 @@ paths:
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
       tags:
       - stages
       security:
@@ -17054,6 +18561,10 @@ paths:
       operationId: stages_user_login_list
       description: UserLoginStage Viewset
       parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -17078,6 +18589,15 @@ paths:
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: session_duration
+        schema:
+          type: string
+      - in: query
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
       tags:
       - stages
       security:
@@ -17288,6 +18808,10 @@ paths:
       operationId: stages_user_logout_list
       description: UserLogoutStage Viewset
       parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -17312,6 +18836,11 @@ paths:
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
       tags:
       - stages
       security:
@@ -17522,6 +19051,14 @@ paths:
       operationId: stages_user_write_list
       description: UserWriteStage Viewset
       parameters:
+      - in: query
+        name: create_users_as_inactive
+        schema:
+          type: boolean
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -17546,6 +19083,11 @@ paths:
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
       tags:
       - stages
       security:

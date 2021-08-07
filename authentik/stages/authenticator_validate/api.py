@@ -38,3 +38,5 @@ class AuthenticatorValidateStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = AuthenticatorValidateStage.objects.all()
     serializer_class = AuthenticatorValidateStageSerializer
+    filterset_fields = ["name", "not_configured_action", "configuration_stage"]
+    ordering = ["name"]

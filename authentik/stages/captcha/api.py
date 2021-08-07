@@ -21,3 +21,5 @@ class CaptchaStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = CaptchaStage.objects.all()
     serializer_class = CaptchaStageSerializer
+    filterset_fields = ["name", "public_key"]
+    ordering = ["name"]

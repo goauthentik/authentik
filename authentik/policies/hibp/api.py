@@ -19,3 +19,5 @@ class HaveIBeenPwendPolicyViewSet(UsedByMixin, ModelViewSet):
 
     queryset = HaveIBeenPwendPolicy.objects.all()
     serializer_class = HaveIBeenPwendPolicySerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]

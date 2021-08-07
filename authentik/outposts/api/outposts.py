@@ -99,6 +99,8 @@ class OutpostViewSet(UsedByMixin, ModelViewSet):
     serializer_class = OutpostSerializer
     filterset_fields = {
         "providers": ["isnull"],
+        "name": ["iexact", "icontains"],
+        "service_connection__name": ["iexact", "icontains"],
     }
     search_fields = [
         "name",

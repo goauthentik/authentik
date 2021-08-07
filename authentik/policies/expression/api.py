@@ -26,3 +26,5 @@ class ExpressionPolicyViewSet(UsedByMixin, ModelViewSet):
 
     queryset = ExpressionPolicy.objects.all()
     serializer_class = ExpressionPolicySerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]

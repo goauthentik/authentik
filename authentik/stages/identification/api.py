@@ -28,3 +28,12 @@ class IdentificationStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = IdentificationStage.objects.all()
     serializer_class = IdentificationStageSerializer
+    filterset_fields = [
+        "name",
+        "password_stage",
+        "case_insensitive_matching",
+        "show_matched_user",
+        "enrollment_flow",
+        "recovery_flow",
+    ]
+    ordering = ["name"]

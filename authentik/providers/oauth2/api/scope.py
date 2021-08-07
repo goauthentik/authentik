@@ -23,3 +23,5 @@ class ScopeMappingViewSet(UsedByMixin, ModelViewSet):
 
     queryset = ScopeMapping.objects.all()
     serializer_class = ScopeMappingSerializer
+    filterset_fields = ["scope_name", "name", "managed"]
+    ordering = ["scope_name", "name"]

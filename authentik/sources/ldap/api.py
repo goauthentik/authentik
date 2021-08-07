@@ -48,6 +48,31 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
     queryset = LDAPSource.objects.all()
     serializer_class = LDAPSourceSerializer
     lookup_field = "slug"
+    filterset_fields = [
+        "name",
+        "slug",
+        "enabled",
+        "authentication_flow",
+        "enrollment_flow",
+        "policy_engine_mode",
+        "server_uri",
+        "bind_cn",
+        "start_tls",
+        "base_dn",
+        "additional_user_dn",
+        "additional_group_dn",
+        "user_object_filter",
+        "group_object_filter",
+        "group_membership_field",
+        "object_uniqueness_field",
+        "sync_users",
+        "sync_users_password",
+        "sync_groups",
+        "sync_parent_group",
+        "property_mappings",
+        "property_mappings_group",
+    ]
+    ordering = ["name"]
 
     @extend_schema(
         responses={
@@ -81,3 +106,5 @@ class LDAPPropertyMappingViewSet(UsedByMixin, ModelViewSet):
 
     queryset = LDAPPropertyMapping.objects.all()
     serializer_class = LDAPPropertyMappingSerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]

@@ -89,6 +89,8 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
 
     queryset = SAMLProvider.objects.all()
     serializer_class = SAMLProviderSerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]
 
     @extend_schema(
         responses={
@@ -183,3 +185,5 @@ class SAMLPropertyMappingViewSet(UsedByMixin, ModelViewSet):
 
     queryset = SAMLPropertyMapping.objects.all()
     serializer_class = SAMLPropertyMappingSerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]

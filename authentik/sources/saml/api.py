@@ -40,6 +40,8 @@ class SAMLSourceViewSet(UsedByMixin, ModelViewSet):
     queryset = SAMLSource.objects.all()
     serializer_class = SAMLSourceSerializer
     lookup_field = "slug"
+    filterset_fields = "__all__"
+    ordering = ["name"]
 
     @extend_schema(responses={200: SAMLMetadataSerializer(many=False)})
     @action(methods=["GET"], detail=True)
