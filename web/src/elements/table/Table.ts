@@ -127,7 +127,7 @@ export abstract class Table<T> extends LitElement {
     expandable = false;
 
     @property({ attribute: false })
-    expandedRows: boolean[] = [];
+    expandedElements: T[] = [];
 
     static get styles(): CSSResult[] {
         return [
@@ -158,7 +158,16 @@ export abstract class Table<T> extends LitElement {
             .then((r) => {
                 this.data = r;
                 this.page = r.pagination.current;
-                this.expandedRows = [];
+                r.results.forEach((res) => {
+                    const selectedIndex = this.selectedElements.indexOf(res);
+                    if (selectedIndex <= -1) {
+                        this.selectedElements.splice(selectedIndex, 1);
+                    }
+                    const expandedIndex = this.expandedElements.indexOf(res);
+                    if (expandedIndex <= -1) {
+                        this.expandedElements.splice(expandedIndex, 1);
+                    }
+                });
                 this.isLoading = false;
             })
             .catch(() => {
@@ -200,12 +209,9 @@ export abstract class Table<T> extends LitElement {
             return [this.renderEmpty()];
         }
         return this.data.results.map((item: T, idx: number) => {
-            if (this.expandedRows.length - 1 < idx) {
-                this.expandedRows[idx] = false;
-            }
             return html`<tbody
                 role="rowgroup"
-                class="${this.expandedRows[idx] ? "pf-m-expanded" : ""}"
+                class="${this.expandedElements.indexOf(item) > -1 ? "pf-m-expanded" : ""}"
             >
                 <tr role="row">
                     ${this.checkbox
@@ -231,11 +237,20 @@ export abstract class Table<T> extends LitElement {
                     ${this.expandable
                         ? html`<td class="pf-c-table__toggle" role="cell">
                               <button
-                                  class="pf-c-button pf-m-plain ${this.expandedRows[idx]
+                                  class="pf-c-button pf-m-plain ${this.expandedElements.indexOf(
+                                      item,
+                                  ) > -1
                                       ? "pf-m-expanded"
                                       : ""}"
                                   @click=${() => {
-                                      this.expandedRows[idx] = !this.expandedRows[idx];
+                                      const idx = this.expandedElements.indexOf(item);
+                                      if (idx <= -1) {
+                                          // Element is not expanded, add it
+                                          this.expandedElements.push(item);
+                                      } else {
+                                          // Element is expanded, remove it
+                                          this.expandedElements.splice(idx, 1);
+                                      }
                                       this.requestUpdate();
                                   }}
                               >
@@ -251,13 +266,13 @@ export abstract class Table<T> extends LitElement {
                     })}
                 </tr>
                 <tr
-                    class="pf-c-table__expandable-row ${this.expandedRows[idx]
+                    class="pf-c-table__expandable-row ${this.expandedElements.indexOf(item) > -1
                         ? "pf-m-expanded"
                         : ""}"
                     role="row"
                 >
                     <td></td>
-                    ${this.expandedRows[idx] ? this.renderExpanded(item) : html``}
+                    ${this.expandedElements.indexOf(item) > -1 ? this.renderExpanded(item) : html``}
                 </tr>
             </tbody>`;
         });
