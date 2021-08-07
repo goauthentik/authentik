@@ -1,11 +1,13 @@
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
+import { CSSResult, customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { AKResponse } from "../../api/Client";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import "./OutpostHealth";
+import "./OutpostHealthSimple";
 import "./OutpostForm";
 import "./OutpostDeploymentModal";
 import "../../elements/buttons/SpinnerButton";
@@ -16,9 +18,12 @@ import { Outpost, OutpostsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { PFSize } from "../../elements/Spinner";
+import { until } from "lit-html/directives/until";
 
 @customElement("ak-outpost-list")
 export class OutpostListPage extends TablePage<Outpost> {
+    expandable = true;
+
     pageTitle(): string {
         return t`Outposts`;
     }
@@ -49,15 +54,16 @@ export class OutpostListPage extends TablePage<Outpost> {
         ];
     }
 
+    static get styles(): CSSResult[] {
+        return super.styles.concat(PFDescriptionList);
+    }
+
     checkbox = true;
 
     @property()
     order = "name";
 
     row(item: Outpost): TemplateResult[] {
-        if (item.managed === "goauthentik.io/outposts/embedded") {
-            return this.rowInbuilt(item);
-        }
         return [
             html`${item.name}`,
             html`<ul>
@@ -68,8 +74,10 @@ export class OutpostListPage extends TablePage<Outpost> {
                 })}
             </ul>`,
             html`${item.serviceConnectionObj?.name || t`No integration active`}`,
-            html`<ak-outpost-health outpostId=${ifDefined(item.pk)}></ak-outpost-health>`,
-            html` <ak-forms-modal>
+            html`<ak-outpost-health-simple
+                outpostId=${ifDefined(item.pk)}
+            ></ak-outpost-health-simple>`,
+            html`<ak-forms-modal>
                     <span slot="submit"> ${t`Update`} </span>
                     <span slot="header"> ${t`Update Outpost`} </span>
                     <ak-outpost-form slot="form" .instancePk=${item.pk}> </ak-outpost-form>
@@ -83,6 +91,35 @@ export class OutpostListPage extends TablePage<Outpost> {
                     </button>
                 </ak-outpost-deployment-modal>`,
         ];
+    }
+
+    renderExpanded(item: Outpost): TemplateResult {
+        return html`<td role="cell" colspan="3">
+            <div class="pf-c-table__expandable-row-content">
+                <h3>${t`Detailed health (one instance per column, data is cached so may be out of data)`}</h3>
+                <dl class="pf-c-description-list">
+                    ${until(
+                        new OutpostsApi(DEFAULT_CONFIG)
+                            .outpostsInstancesHealthList({
+                                uuid: item.pk,
+                            })
+                            .then((health) => {
+                                return health.map((h) => {
+                                    return html` <div class="pf-c-description-list__group">
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                <ak-outpost-health
+                                                    .outpostHealth=${h}
+                                                ></ak-outpost-health>
+                                            </div>
+                                        </dd>
+                                    </div>`;
+                                });
+                            }),
+                    )}
+                </dl>
+            </div>
+        </td>`;
     }
 
     renderToolbarSelected(): TemplateResult {
@@ -106,32 +143,6 @@ export class OutpostListPage extends TablePage<Outpost> {
                 ${t`Delete`}
             </button>
         </ak-forms-delete>`;
-    }
-
-    rowInbuilt(item: Outpost): TemplateResult[] {
-        return [
-            html`${item.name}`,
-            html`<ul>
-                ${item.providersObj?.map((p) => {
-                    return html`<li>
-                        <a href="#/core/providers/${p.pk}">${p.name}</a>
-                    </li>`;
-                })}
-            </ul>`,
-            html`${item.serviceConnectionObj?.name || t`No integration active`}`,
-            html`<ak-outpost-health
-                .showVersion=${false}
-                outpostId=${ifDefined(item.pk)}
-            ></ak-outpost-health>`,
-            html`<ak-forms-modal>
-                <span slot="submit"> ${t`Update`} </span>
-                <span slot="header"> ${t`Update Outpost`} </span>
-                <ak-outpost-form slot="form" .instancePk=${item.pk}> </ak-outpost-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <i class="fas fa-edit"></i>
-                </button>
-            </ak-forms-modal>`,
-        ];
     }
 
     renderToolbar(): TemplateResult {

@@ -118,6 +118,10 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
+#: src/pages/users/UserViewPage.ts
+msgid "Actions over the last 24 hours"
+msgstr ""
+
 #: src/pages/groups/MemberSelectModal.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
@@ -1147,6 +1151,10 @@ msgstr ""
 msgid "Designation"
 msgstr ""
 
+#: src/pages/outposts/OutpostListPage.ts
+msgid "Detailed health (one instance per column, data is cached so may be out of data)"
+msgstr ""
+
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Determines how authentik sends the response back to the Service Provider."
 msgstr ""
@@ -2055,6 +2063,7 @@ msgid "Last run"
 msgstr ""
 
 #: src/pages/outposts/OutpostHealth.ts
+#: src/pages/outposts/OutpostHealthSimple.ts
 msgid "Last seen: {0}"
 msgstr ""
 
@@ -2488,7 +2497,6 @@ msgid "No form found"
 msgstr ""
 
 #: src/pages/outposts/OutpostListPage.ts
-#: src/pages/outposts/OutpostListPage.ts
 msgid "No integration active"
 msgstr ""
 
@@ -2521,7 +2529,7 @@ msgstr ""
 msgid "None (rule disabled)"
 msgstr ""
 
-#: src/pages/outposts/OutpostHealth.ts
+#: src/pages/outposts/OutpostHealthSimple.ts
 msgid "Not available"
 msgstr ""
 
@@ -4009,7 +4017,6 @@ msgid "Tenants"
 msgstr ""
 
 #: src/pages/applications/ApplicationViewPage.ts
-#: src/pages/events/TransportListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
@@ -4301,7 +4308,6 @@ msgstr ""
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/outposts/OutpostListPage.ts
-#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
@@ -4379,7 +4385,6 @@ msgstr ""
 msgid "Update OAuth2 Provider"
 msgstr ""
 
-#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/OutpostListPage.ts
 msgid "Update Outpost"
 msgstr ""

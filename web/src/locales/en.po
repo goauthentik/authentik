@@ -118,6 +118,10 @@ msgstr "Action"
 msgid "Actions"
 msgstr "Actions"
 
+#: src/pages/users/UserViewPage.ts
+msgid "Actions over the last 24 hours"
+msgstr "Actions over the last 24 hours"
+
 #: src/pages/groups/MemberSelectModal.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
@@ -1155,6 +1159,10 @@ msgstr "Designates whether this user should be treated as active. Unselect this 
 msgid "Designation"
 msgstr "Designation"
 
+#: src/pages/outposts/OutpostListPage.ts
+msgid "Detailed health (one instance per column, data is cached so may be out of data)"
+msgstr "Detailed health (one instance per column, data is cached so may be out of data)"
+
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Determines how authentik sends the response back to the Service Provider."
 msgstr "Determines how authentik sends the response back to the Service Provider."
@@ -2063,6 +2071,7 @@ msgid "Last run"
 msgstr "Last run"
 
 #: src/pages/outposts/OutpostHealth.ts
+#: src/pages/outposts/OutpostHealthSimple.ts
 msgid "Last seen: {0}"
 msgstr "Last seen: {0}"
 
@@ -2496,7 +2505,6 @@ msgid "No form found"
 msgstr "No form found"
 
 #: src/pages/outposts/OutpostListPage.ts
-#: src/pages/outposts/OutpostListPage.ts
 msgid "No integration active"
 msgstr "No integration active"
 
@@ -2529,7 +2537,7 @@ msgstr "No workers connected. Background tasks will not run."
 msgid "None (rule disabled)"
 msgstr "None (rule disabled)"
 
-#: src/pages/outposts/OutpostHealth.ts
+#: src/pages/outposts/OutpostHealthSimple.ts
 msgid "Not available"
 msgstr "Not available"
 
@@ -4017,7 +4025,6 @@ msgid "Tenants"
 msgstr "Tenants"
 
 #: src/pages/applications/ApplicationViewPage.ts
-#: src/pages/events/TransportListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
@@ -4316,7 +4323,6 @@ msgstr "Up-to-date!"
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/outposts/OutpostListPage.ts
-#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
@@ -4394,7 +4400,6 @@ msgstr "Update OAuth Source"
 msgid "Update OAuth2 Provider"
 msgstr "Update OAuth2 Provider"
 
-#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/OutpostListPage.ts
 msgid "Update Outpost"
 msgstr "Update Outpost"
