@@ -1,12 +1,9 @@
 """Outpost managed objects"""
-from dataclasses import asdict
-
 from authentik.managed.manager import EnsureExists, ObjectManager
 from authentik.outposts.models import (
     DockerServiceConnection,
     KubernetesServiceConnection,
     Outpost,
-    OutpostConfig,
     OutpostType,
 )
 
@@ -33,14 +30,12 @@ class OutpostManager(ObjectManager):
                 created_callback=outpost_created,
                 name="authentik Embedded Outpost",
                 type=OutpostType.PROXY,
-                _config=asdict(
-                    OutpostConfig(
-                        authentik_host="",
-                        kubernetes_disabled_components=[
-                            "deployment",
-                            "secret",
-                        ],
-                    )
-                ),
+                _config={
+                    # We don't use OutpostConfig here to not override authentik_host
+                    "kubernetes_disabled_components": [
+                        "deployment",
+                        "secret",
+                    ],
+                },
             ),
         ]
