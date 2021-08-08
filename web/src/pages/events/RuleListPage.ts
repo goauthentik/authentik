@@ -80,7 +80,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
             html`${item.name}`,
             html`${item.severity}`,
             html`${item.groupObj?.name || t`None (rule disabled)`}`,
-            html` <ak-forms-modal>
+            html`<ak-forms-modal>
                 <span slot="submit"> ${t`Update`} </span>
                 <span slot="header"> ${t`Update Notification Rule`} </span>
                 <ak-event-rule-form slot="form" .instancePk=${item.pk}> </ak-event-rule-form>
@@ -105,15 +105,13 @@ export class RuleListPage extends TablePage<NotificationRule> {
 
     renderExpanded(item: NotificationRule): TemplateResult {
         return html` <td role="cell" colspan="4">
-                <div class="pf-c-table__expandable-row-content">
-                    <p>
-                        ${t`These bindings control upon which events this rule triggers. Bindings to
+            <div class="pf-c-table__expandable-row-content">
+                <p>
+                    ${t`These bindings control upon which events this rule triggers. Bindings to
                 groups/users are checked against the user of the event.`}
-                    </p>
-                    <ak-bound-policies-list .target=${item.pk}> </ak-bound-policies-list>
-                </div>
-            </td>
-            <td></td>
-            <td></td>`;
+                </p>
+                <ak-bound-policies-list .target=${item.pk}> </ak-bound-policies-list>
+            </div>
+        </td>`;
     }
 }

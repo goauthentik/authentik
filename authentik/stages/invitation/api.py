@@ -26,6 +26,8 @@ class InvitationStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = InvitationStage.objects.all()
     serializer_class = InvitationStageSerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]
 
 
 class InvitationSerializer(ModelSerializer):

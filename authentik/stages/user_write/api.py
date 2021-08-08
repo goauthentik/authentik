@@ -20,3 +20,5 @@ class UserWriteStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = UserWriteStage.objects.all()
     serializer_class = UserWriteStageSerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]

@@ -14,7 +14,7 @@ import { Application, CoreApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -39,16 +39,7 @@ export class ApplicationViewPage extends LitElement {
     application!: Application;
 
     static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFPage,
-            PFContent,
-            PFButton,
-            PFDescriptionList,
-            PFGallery,
-            PFCard,
-            AKGlobal,
-        ];
+        return [PFBase, PFPage, PFContent, PFButton, PFDescriptionList, PFGrid, PFCard, AKGlobal];
     }
 
     render(): TemplateResult {
@@ -72,8 +63,10 @@ export class ApplicationViewPage extends LitElement {
                 data-tab-title="${t`Overview`}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
-                <div class="pf-l-gallery pf-m-gutter">
-                    <div class="pf-c-card pf-l-gallery__item">
+                <div class="pf-l-grid pf-m-gutter">
+                    <div
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-2-col-on-2xl"
+                    >
                         <div class="pf-c-card__title">${t`Related`}</div>
                         <div class="pf-c-card__body">
                             <dl class="pf-c-description-list">
@@ -187,8 +180,7 @@ export class ApplicationViewPage extends LitElement {
                         </div>
                     </div>
                     <div
-                        class="pf-c-card pf-l-gallery__item"
-                        style="grid-column-end: span 4;grid-row-end: span 2;"
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-10-col-on-xl pf-m-10-col-on-2xl"
                     >
                         <div class="pf-c-card__title">${t`Logins over the last 24 hours`}</div>
                         <div class="pf-c-card__body">
@@ -199,10 +191,7 @@ export class ApplicationViewPage extends LitElement {
                             </ak-charts-application-authorize>`}
                         </div>
                     </div>
-                    <div
-                        class="pf-c-card pf-l-gallery__item"
-                        style="grid-column-end: span 5;grid-row-end: span 3;"
-                    >
+                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                         <div class="pf-c-card__title">${t`Changelog`}</div>
                         <div class="pf-c-card__body">
                             <ak-object-changelog
@@ -215,7 +204,7 @@ export class ApplicationViewPage extends LitElement {
                     </div>
                 </div>
             </section>
-            <div
+            <section
                 slot="page-policy-bindings"
                 data-tab-title="${t`Policy / Group / User Bindings`}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
@@ -227,7 +216,7 @@ export class ApplicationViewPage extends LitElement {
                     <ak-bound-policies-list .target=${this.application.pk}>
                     </ak-bound-policies-list>
                 </div>
-            </div>
+            </section>
         </ak-tabs>`;
     }
 }

@@ -24,7 +24,12 @@ import "../elements/messages/MessageContainer";
 import "../elements/notifications/NotificationDrawer";
 import "../elements/sidebar/Sidebar";
 import { until } from "lit-html/directives/until";
-import { EVENT_NOTIFICATION_TOGGLE, EVENT_SIDEBAR_TOGGLE, VERSION } from "../constants";
+import {
+    EVENT_API_DRAWER_TOGGLE,
+    EVENT_NOTIFICATION_DRAWER_TOGGLE,
+    EVENT_SIDEBAR_TOGGLE,
+    VERSION,
+} from "../constants";
 import { AdminApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../api/Config";
 import { WebsocketClient } from "../common/ws";
@@ -36,6 +41,9 @@ export class AdminInterface extends LitElement {
 
     @property({ type: Boolean })
     notificationOpen = false;
+
+    @property({ type: Boolean })
+    apiDrawerOpen = false;
 
     ws: WebsocketClient;
 
@@ -52,6 +60,9 @@ export class AdminInterface extends LitElement {
                 .pf-c-page__drawer {
                     z-index: auto !important;
                 }
+                .display-none {
+                    display: none;
+                }
             `,
         ];
     }
@@ -67,8 +78,11 @@ export class AdminInterface extends LitElement {
         window.addEventListener(EVENT_SIDEBAR_TOGGLE, () => {
             this.sidebarOpen = !this.sidebarOpen;
         });
-        window.addEventListener(EVENT_NOTIFICATION_TOGGLE, () => {
+        window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, () => {
             this.notificationOpen = !this.notificationOpen;
+        });
+        window.addEventListener(EVENT_API_DRAWER_TOGGLE, () => {
+            this.apiDrawerOpen = !this.apiDrawerOpen;
         });
     }
 
@@ -81,7 +95,7 @@ export class AdminInterface extends LitElement {
             </ak-sidebar>
             <div class="pf-c-page__drawer">
                 <div
-                    class="pf-c-drawer ${this.notificationOpen
+                    class="pf-c-drawer ${this.notificationOpen || this.apiDrawerOpen
                         ? "pf-m-expanded"
                         : "pf-m-collapsed"}"
                 >
@@ -100,8 +114,16 @@ export class AdminInterface extends LitElement {
                                 </main>
                             </div>
                         </div>
-                        <ak-notification-drawer class="pf-c-drawer__panel pf-m-width-33">
-                        </ak-notification-drawer>
+                        <ak-notification-drawer
+                            class="pf-c-drawer__panel pf-m-width-33 ${this.notificationOpen
+                                ? "display-none"
+                                : ""}"
+                        ></ak-notification-drawer>
+                        <ak-api-drawer
+                            class="pf-c-drawer__panel pf-m-width-33 ${this.apiDrawerOpen
+                                ? "display-none"
+                                : ""}"
+                        ></ak-api-drawer>
                     </div>
                 </div>
             </div>

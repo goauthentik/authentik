@@ -20,7 +20,7 @@ export class SystemStatusCard extends AdminStatusCard<System> {
             this.header = t`Warning`;
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
-                message: t`HTTPS is not detected correctly`,
+                message: html`${t`HTTPS is not detected correctly`}`,
             });
         }
         const timeDiff = value.serverTime.getTime() - (this.now || new Date()).getTime();
@@ -29,12 +29,12 @@ export class SystemStatusCard extends AdminStatusCard<System> {
             this.header = t`Warning`;
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
-                message: t`Server and client are further than 5 seconds apart.`,
+                message: html`${t`Server and client are further than 5 seconds apart.`}`,
             });
         }
         return Promise.resolve<AdminStatus>({
             icon: "fa fa-check-circle pf-m-success",
-            message: t`Everything is ok.`,
+            message: html`${t`Everything is ok.`}`,
         });
     }
 

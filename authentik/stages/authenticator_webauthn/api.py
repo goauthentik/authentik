@@ -26,6 +26,8 @@ class AuthenticateWebAuthnStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = AuthenticateWebAuthnStage.objects.all()
     serializer_class = AuthenticateWebAuthnStageSerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]
 
 
 class WebAuthnDeviceSerializer(ModelSerializer):

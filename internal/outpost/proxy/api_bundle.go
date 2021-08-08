@@ -35,6 +35,15 @@ func intToPointer(i int) *int {
 	return &i
 }
 
+func (pb *providerBundle) replaceLocal(url string) string {
+	if strings.Contains(url, "localhost:8000") {
+		f := strings.ReplaceAll(url, "localhost:8000", pb.s.ak.Client.GetConfig().Host)
+		f = strings.ReplaceAll(f, "http", pb.s.ak.Client.GetConfig().Scheme)
+		return f
+	}
+	return url
+}
+
 func (pb *providerBundle) prepareOpts(provider api.ProxyOutpostConfig) *options.Options {
 	externalHost, err := url.Parse(provider.ExternalHost)
 	if err != nil {
@@ -54,12 +63,12 @@ func (pb *providerBundle) prepareOpts(provider api.ProxyOutpostConfig) *options.
 	providerOpts.Cookie.Secure = externalHost.Scheme == "https"
 
 	providerOpts.SkipOIDCDiscovery = true
-	providerOpts.OIDCIssuerURL = provider.OidcConfiguration.Issuer
-	providerOpts.LoginURL = provider.OidcConfiguration.AuthorizationEndpoint
-	providerOpts.RedeemURL = provider.OidcConfiguration.TokenEndpoint
-	providerOpts.OIDCJwksURL = provider.OidcConfiguration.JwksUri
-	providerOpts.ProfileURL = provider.OidcConfiguration.UserinfoEndpoint
-	providerOpts.ValidateURL = provider.OidcConfiguration.UserinfoEndpoint
+	providerOpts.OIDCIssuerURL = pb.replaceLocal(provider.OidcConfiguration.Issuer)
+	providerOpts.LoginURL = pb.replaceLocal(provider.OidcConfiguration.AuthorizationEndpoint)
+	providerOpts.RedeemURL = pb.replaceLocal(provider.OidcConfiguration.TokenEndpoint)
+	providerOpts.OIDCJwksURL = pb.replaceLocal(provider.OidcConfiguration.JwksUri)
+	providerOpts.ProfileURL = pb.replaceLocal(provider.OidcConfiguration.UserinfoEndpoint)
+	providerOpts.ValidateURL = pb.replaceLocal(provider.OidcConfiguration.UserinfoEndpoint)
 	providerOpts.AcrValues = "goauthentik.io/providers/oauth2/default"
 
 	if *provider.SkipPathRegex != "" {

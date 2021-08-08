@@ -49,6 +49,18 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
     queryset = PlexSource.objects.all()
     serializer_class = PlexSourceSerializer
     lookup_field = "slug"
+    filterset_fields = [
+        "name",
+        "slug",
+        "enabled",
+        "authentication_flow",
+        "enrollment_flow",
+        "policy_engine_mode",
+        "user_matching_mode",
+        "client_id",
+        "allow_friends",
+    ]
+    ordering = ["name"]
 
     @permission_required(None)
     @extend_schema(

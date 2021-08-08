@@ -80,6 +80,7 @@ class ProxyProviderViewSet(UsedByMixin, ModelViewSet):
 
     queryset = ProxyProvider.objects.all()
     serializer_class = ProxyProviderSerializer
+    filterset_fields = "__all__"
     ordering = ["name"]
 
 

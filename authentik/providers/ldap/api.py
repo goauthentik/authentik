@@ -29,6 +29,7 @@ class LDAPProviderViewSet(UsedByMixin, ModelViewSet):
 
     queryset = LDAPProvider.objects.all()
     serializer_class = LDAPProviderSerializer
+    filterset_fields = "__all__"
     ordering = ["name"]
 
 

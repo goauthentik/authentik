@@ -1,6 +1,8 @@
 """Source API Views"""
 from django.http.response import Http404
 from django.utils.text import slugify
+from django_filters.filters import AllValuesMultipleFilter
+from django_filters.filterset import FilterSet
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.request import Request
@@ -48,6 +50,31 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
     queryset = LDAPSource.objects.all()
     serializer_class = LDAPSourceSerializer
     lookup_field = "slug"
+    filterset_fields = [
+        "name",
+        "slug",
+        "enabled",
+        "authentication_flow",
+        "enrollment_flow",
+        "policy_engine_mode",
+        "server_uri",
+        "bind_cn",
+        "start_tls",
+        "base_dn",
+        "additional_user_dn",
+        "additional_group_dn",
+        "user_object_filter",
+        "group_object_filter",
+        "group_membership_field",
+        "object_uniqueness_field",
+        "sync_users",
+        "sync_users_password",
+        "sync_groups",
+        "sync_parent_group",
+        "property_mappings",
+        "property_mappings_group",
+    ]
+    ordering = ["name"]
 
     @extend_schema(
         responses={
@@ -76,8 +103,20 @@ class LDAPPropertyMappingSerializer(PropertyMappingSerializer):
         ]
 
 
+class LDAPPropertyMappingFilter(FilterSet):
+    """Filter for LDAPPropertyMapping"""
+
+    managed = AllValuesMultipleFilter(field_name="managed")
+
+    class Meta:
+        model = LDAPPropertyMapping
+        fields = "__all__"
+
+
 class LDAPPropertyMappingViewSet(UsedByMixin, ModelViewSet):
     """LDAP PropertyMapping Viewset"""
 
     queryset = LDAPPropertyMapping.objects.all()
     serializer_class = LDAPPropertyMappingSerializer
+    filterset_class = LDAPPropertyMappingFilter
+    ordering = ["name"]

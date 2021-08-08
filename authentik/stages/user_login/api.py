@@ -22,3 +22,5 @@ class UserLoginStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = UserLoginStage.objects.all()
     serializer_class = UserLoginStageSerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]

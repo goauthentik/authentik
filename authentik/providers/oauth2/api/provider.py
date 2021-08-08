@@ -62,6 +62,25 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
 
     queryset = OAuth2Provider.objects.all()
     serializer_class = OAuth2ProviderSerializer
+    filterset_fields = [
+        "name",
+        "authorization_flow",
+        "property_mappings",
+        "application",
+        "authorization_flow",
+        "client_type",
+        "client_id",
+        "access_code_validity",
+        "token_validity",
+        "include_claims_in_id_token",
+        "jwt_alg",
+        "rsa_key",
+        "redirect_uris",
+        "sub_mode",
+        "property_mappings",
+        "issuer_mode",
+    ]
+    ordering = ["name"]
 
     @extend_schema(
         responses={

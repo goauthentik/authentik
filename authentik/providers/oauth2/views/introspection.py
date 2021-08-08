@@ -85,7 +85,7 @@ class TokenIntrospectionParams:
 
         params = TokenIntrospectionParams(token=token)
         if not any([params.authenticate_basic(request), params.authenticate_bearer(request)]):
-            LOGGER.debug("Not authenticated")
+            LOGGER.warning("Not authenticated")
             raise TokenIntrospectionError()
         return params
 

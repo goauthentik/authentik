@@ -118,6 +118,10 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
+#: src/pages/users/UserViewPage.ts
+msgid "Actions over the last 24 hours"
+msgstr ""
+
 #: src/pages/groups/MemberSelectModal.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
@@ -466,8 +470,12 @@ msgid "Browser"
 msgstr ""
 
 #: src/pages/admin-overview/cards/VersionStatusCard.ts
-msgid "Build hash: {0}"
+msgid "Build hash:"
 msgstr ""
+
+#: 
+#~ msgid "Build hash: {0}"
+#~ msgstr ""
 
 #: src/pages/sources/SourcesListPage.ts
 #: src/pages/sources/SourcesListPage.ts
@@ -1097,7 +1105,7 @@ msgstr ""
 msgid "Delete Session"
 msgstr ""
 
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 msgid "Delete account"
 msgstr ""
 
@@ -1145,6 +1153,10 @@ msgstr ""
 #: src/pages/flows/FlowForm.ts
 #: src/pages/flows/FlowListPage.ts
 msgid "Designation"
+msgstr ""
+
+#: src/pages/outposts/OutpostListPage.ts
+msgid "Detailed health (one instance per column, data is cached so may be out of data)"
 msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -1299,7 +1311,7 @@ msgstr ""
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/pages/events/TransportForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Email"
@@ -1436,7 +1448,6 @@ msgstr ""
 msgid "Exception"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts
 #: src/pages/flows/FlowViewPage.ts
 msgid "Execute"
 msgstr ""
@@ -1489,7 +1500,6 @@ msgstr ""
 msgid "Explicit Consent"
 msgstr ""
 
-#: src/pages/flows/FlowListPage.ts
 #: src/pages/flows/FlowViewPage.ts
 msgid "Export"
 msgstr ""
@@ -2057,6 +2067,7 @@ msgid "Last run"
 msgstr ""
 
 #: src/pages/outposts/OutpostHealth.ts
+#: src/pages/outposts/OutpostHealthSimple.ts
 msgid "Last seen: {0}"
 msgstr ""
 
@@ -2124,7 +2135,7 @@ msgstr ""
 #: src/flows/stages/prompt/PromptStage.ts
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 #: src/utils.ts
 msgid "Loading"
 msgstr ""
@@ -2413,7 +2424,7 @@ msgstr ""
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 #: src/pages/stages/user_logout/UserLogoutStageForm.ts
 #: src/pages/stages/user_write/UserWriteStageForm.ts
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
@@ -2490,7 +2501,6 @@ msgid "No form found"
 msgstr ""
 
 #: src/pages/outposts/OutpostListPage.ts
-#: src/pages/outposts/OutpostListPage.ts
 msgid "No integration active"
 msgstr ""
 
@@ -2523,7 +2533,7 @@ msgstr ""
 msgid "None (rule disabled)"
 msgstr ""
 
-#: src/pages/outposts/OutpostHealth.ts
+#: src/pages/outposts/OutpostHealthSimple.ts
 msgid "Not available"
 msgstr ""
 
@@ -3138,7 +3148,7 @@ msgstr ""
 msgid "Required"
 msgstr ""
 
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/users/UserForm.ts
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr ""
@@ -3794,7 +3804,7 @@ msgstr ""
 msgid "Successfully updated certificate-key pair."
 msgstr ""
 
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 msgid "Successfully updated details."
 msgstr ""
 
@@ -4011,9 +4021,7 @@ msgid "Tenants"
 msgstr ""
 
 #: src/pages/applications/ApplicationViewPage.ts
-#: src/pages/events/TransportListPage.ts
 #: src/pages/policies/PolicyListPage.ts
-#: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 msgid "Test"
 msgstr ""
@@ -4303,7 +4311,6 @@ msgstr ""
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/outposts/OutpostListPage.ts
-#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
@@ -4324,7 +4331,7 @@ msgstr ""
 #: src/pages/stages/StageListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/tenants/TenantListPage.ts
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
@@ -4382,7 +4389,6 @@ msgid "Update OAuth2 Provider"
 msgstr ""
 
 #: src/pages/outposts/OutpostListPage.ts
-#: src/pages/outposts/OutpostListPage.ts
 msgid "Update Outpost"
 msgstr ""
 
@@ -4428,7 +4434,7 @@ msgstr ""
 msgid "Update available"
 msgstr ""
 
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSettingsPage.ts
 msgid "Update details"
 msgstr ""
 
@@ -4561,7 +4567,7 @@ msgstr ""
 msgid "User's avatar"
 msgstr ""
 
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/users/UserForm.ts
 msgid "User's display name."
 msgstr ""
@@ -4581,7 +4587,7 @@ msgstr ""
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/pages/policies/reputation/UserReputationListPage.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
-#: src/pages/user-settings/UserDetailsPage.ts
+#: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Username"

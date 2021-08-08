@@ -59,7 +59,7 @@ class OutpostConfig:
 
     # update website/docs/outposts/outposts.md
 
-    authentik_host: str
+    authentik_host: str = ""
     authentik_host_insecure: bool = False
 
     log_level: str = CONFIG.y("log_level")

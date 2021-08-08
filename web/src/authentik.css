@@ -230,6 +230,9 @@ body {
     .pf-c-form-control[readonly] {
         background-color: var(--ak-dark-background-light);
     }
+    .pf-c-button.pf-m-plain:hover {
+        color: var(--ak-dark-foreground);
+    }
     .pf-c-button.pf-m-control {
         --pf-c-button--after--BorderColor: var(--ak-dark-background-lighter)
             var(--ak-dark-background-lighter)
@@ -264,6 +267,10 @@ body {
     }
     .pf-c-toggle-group__button:not(.pf-m-selected) {
         background-color: var(--ak-dark-background-light) !important;
+    }
+    .pf-c-toggle-group__button.pf-m-selected {
+        color: var(--ak-dark-foreground) !important;
+        background-color: var(--pf-global--primary-color--100) !important;
     }
     /* inputs help text */
     .pf-c-form__helper-text:not(.pf-m-error) {

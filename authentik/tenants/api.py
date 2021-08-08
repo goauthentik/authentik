@@ -70,6 +70,7 @@ class TenantViewSet(UsedByMixin, ModelViewSet):
         "domain",
         "branding_title",
     ]
+    filterset_fields = "__all__"
     ordering = ["domain"]
 
     @extend_schema(

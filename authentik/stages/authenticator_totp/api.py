@@ -27,6 +27,8 @@ class AuthenticatorTOTPStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = AuthenticatorTOTPStage.objects.all()
     serializer_class = AuthenticatorTOTPStageSerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]
 
 
 class TOTPDeviceSerializer(ModelSerializer):

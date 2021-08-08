@@ -79,7 +79,7 @@ export class SpinnerButton extends LitElement {
             }}
         >
             ${this.isRunning
-                ? html` <span class="pf-c-button__progress">
+                ? html`<span class="pf-c-button__progress">
                       <ak-spinner size=${PFSize.Medium}></ak-spinner>
                   </span>`
                 : ""}
