@@ -104,7 +104,7 @@ export class OutpostListPage extends TablePage<Outpost> {
                 <h3>
                     ${t`Detailed health (one instance per column, data is cached so may be out of data)`}
                 </h3>
-                <dl class="pf-c-description-list">
+                <dl class="pf-c-description-list pf-m-3-col-on-lg">
                     ${until(
                         new OutpostsApi(DEFAULT_CONFIG)
                             .outpostsInstancesHealthList({
