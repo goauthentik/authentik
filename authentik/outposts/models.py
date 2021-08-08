@@ -59,7 +59,7 @@ class OutpostConfig:
 
     # update website/docs/outposts/outposts.md
 
-    authentik_host: str
+    authentik_host: str = ""
     authentik_host_insecure: bool = False
 
     log_level: str = CONFIG.y("log_level")
@@ -312,10 +312,6 @@ class Outpost(ManagedModel):
     @property
     def config(self) -> OutpostConfig:
         """Load config as OutpostConfig object"""
-        # When embedded outpost is generated initially, this field isn't set
-        # (on purpose, as we don't want it to be managed by us)
-        if "authentik_host" not in self._config:
-            self._config["authentik_host"] = ""
         return from_dict(OutpostConfig, self._config)
 
     @config.setter

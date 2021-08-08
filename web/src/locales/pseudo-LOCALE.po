@@ -470,8 +470,12 @@ msgid "Browser"
 msgstr ""
 
 #: src/pages/admin-overview/cards/VersionStatusCard.ts
-msgid "Build hash: {0}"
+msgid "Build hash:"
 msgstr ""
+
+#: 
+#~ msgid "Build hash: {0}"
+#~ msgstr ""
 
 #: src/pages/sources/SourcesListPage.ts
 #: src/pages/sources/SourcesListPage.ts
@@ -4018,7 +4022,6 @@ msgstr ""
 
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/policies/PolicyListPage.ts
-#: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 msgid "Test"
 msgstr ""
