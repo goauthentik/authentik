@@ -1,6 +1,8 @@
 """Source API Views"""
 from django.http.response import Http404
 from django.utils.text import slugify
+from django_filters.filters import AllValuesMultipleFilter
+from django_filters.filterset import FilterSet
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.request import Request
@@ -101,10 +103,20 @@ class LDAPPropertyMappingSerializer(PropertyMappingSerializer):
         ]
 
 
+class LDAPPropertyMappingFilter(FilterSet):
+    """Filter for LDAPPropertyMapping"""
+
+    managed = AllValuesMultipleFilter(field_name="managed")
+
+    class Meta:
+        model = LDAPPropertyMapping
+        fields = "__all__"
+
+
 class LDAPPropertyMappingViewSet(UsedByMixin, ModelViewSet):
     """LDAP PropertyMapping Viewset"""
 
     queryset = LDAPPropertyMapping.objects.all()
     serializer_class = LDAPPropertyMappingSerializer
-    filterset_fields = "__all__"
+    filterset_class = LDAPPropertyMappingFilter
     ordering = ["name"]

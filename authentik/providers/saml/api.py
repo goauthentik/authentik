@@ -6,6 +6,8 @@ from django.http.response import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django_filters.filters import AllValuesMultipleFilter
+from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
@@ -180,10 +182,20 @@ class SAMLPropertyMappingSerializer(PropertyMappingSerializer):
         ]
 
 
+class SAMLPropertyMappingFilter(FilterSet):
+    """Filter for SAMLPropertyMapping"""
+
+    managed = AllValuesMultipleFilter(field_name="managed")
+
+    class Meta:
+        model = SAMLPropertyMapping
+        fields = "__all__"
+
+
 class SAMLPropertyMappingViewSet(UsedByMixin, ModelViewSet):
     """SAMLPropertyMapping Viewset"""
 
     queryset = SAMLPropertyMapping.objects.all()
     serializer_class = SAMLPropertyMappingSerializer
-    filterset_fields = "__all__"
+    filterset_class = SAMLPropertyMappingFilter
     ordering = ["name"]
