@@ -75,7 +75,7 @@ warnings.filterwarnings(
     "ignore",
     message=(
         "'dbbackup' defines default_app_config = 'dbbackup.apps.DbbackupConfig'. Django now det"
-        "ects this configuration automatically. You can remove default_app_config.",
+        "ects this configuration automatically. You can remove default_app_config."
     ),
 )
 warnings.simplefilter("once")
