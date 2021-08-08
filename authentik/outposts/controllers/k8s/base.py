@@ -41,6 +41,11 @@ class KubernetesObjectReconciler(Generic[T]):
         self.logger = get_logger().bind(type=self.__class__.__name__)
 
     @property
+    def is_embedded(self) -> bool:
+        """Return true if the current outpost is embedded"""
+        return self.controller.outpost.managed != ""
+
+    @property
     def noop(self) -> bool:
         """Return true if this object should not be created/updated/deleted in this cluster"""
         return False

@@ -38,7 +38,6 @@ class OutpostManager(ObjectManager):
                         authentik_host="",
                         kubernetes_disabled_components=[
                             "deployment",
-                            "service",
                             "secret",
                         ],
                     )
