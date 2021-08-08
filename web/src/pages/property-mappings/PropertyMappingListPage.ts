@@ -107,7 +107,9 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                     <span slot="header"> ${t`Test Property Mapping`} </span>
                     <ak-property-mapping-test-form slot="form" .mapping=${item}>
                     </ak-property-mapping-test-form>
-                    <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Test`}</button>
+                    <button slot="trigger" class="pf-c-button pf-m-secondary">
+                        <i class="fas fa-vial" aria-hidden="true"></i>
+                    </button>
                 </ak-forms-modal>`,
         ];
     }
