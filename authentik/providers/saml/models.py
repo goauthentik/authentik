@@ -1,8 +1,8 @@
 """authentik saml_idp Models"""
 from typing import Optional, Type
-from urllib.parse import urlparse
 
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
@@ -152,9 +152,15 @@ class SAMLProvider(Provider):
 
     @property
     def launch_url(self) -> Optional[str]:
-        """Guess launch_url based on acs URL"""
-        launch_url = urlparse(self.acs_url)
-        return self.acs_url.replace(launch_url.path, "")
+        """Use IDP-Initiated SAML flow as launch URL"""
+        try:
+            # pylint: disable=no-member
+            return reverse(
+                "authentik_providers_saml:sso-init",
+                kwargs={"application_slug": self.application.slug},
+            )
+        except Provider.application.RelatedObjectDoesNotExist:
+            return None
 
     @property
     def serializer(self) -> Type[Serializer]:
