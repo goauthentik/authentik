@@ -65,7 +65,7 @@ export class ApplicationViewPage extends LitElement {
             >
                 <div class="pf-l-grid pf-m-gutter">
                     <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-1-col-on-2xl"
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-2-col-on-2xl"
                     >
                         <div class="pf-c-card__title">${t`Related`}</div>
                         <div class="pf-c-card__body">
@@ -180,7 +180,7 @@ export class ApplicationViewPage extends LitElement {
                         </div>
                     </div>
                     <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-10-col-on-xl pf-m-11-col-on-2xl"
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-10-col-on-xl pf-m-10-col-on-2xl"
                     >
                         <div class="pf-c-card__title">${t`Logins over the last 24 hours`}</div>
                         <div class="pf-c-card__body">
