@@ -60,6 +60,9 @@ export class AdminInterface extends LitElement {
                 .pf-c-page__drawer {
                     z-index: auto !important;
                 }
+                .display-none {
+                    display: none;
+                }
             `,
         ];
     }
@@ -111,16 +114,16 @@ export class AdminInterface extends LitElement {
                                 </main>
                             </div>
                         </div>
-                        ${this.notificationOpen
-                            ? html`<ak-notification-drawer
-                                  class="pf-c-drawer__panel pf-m-width-33"
-                              ></ak-notification-drawer>`
-                            : html``}
-                        ${this.apiDrawerOpen
-                            ? html`<ak-api-drawer
-                                  class="pf-c-drawer__panel pf-m-width-33"
-                              ></ak-api-drawer>`
-                            : html``}
+                        <ak-notification-drawer
+                            class="pf-c-drawer__panel pf-m-width-33 ${this.notificationOpen
+                                ? "display-none"
+                                : ""}"
+                        ></ak-notification-drawer>
+                        <ak-api-drawer
+                            class="pf-c-drawer__panel pf-m-width-33 ${this.apiDrawerOpen
+                                ? "display-none"
+                                : ""}"
+                        ></ak-api-drawer>
                     </div>
                 </div>
             </div>
