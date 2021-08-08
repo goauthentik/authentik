@@ -131,7 +131,7 @@ export class AdminOverviewPage extends LitElement {
                     </div>
                     <!-- row 2 -->
                     <div
-                        class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-4-col-on-xl card-container"
+                        class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-3-col-on-xl card-container"
                     >
                         <ak-admin-status-version
                             icon="pf-icon pf-icon-bundle"
@@ -141,7 +141,7 @@ export class AdminOverviewPage extends LitElement {
                         </ak-admin-status-version>
                     </div>
                     <div
-                        class="pf-l-grid__item pf-m-6-col pf-m-2-col-on-md pf-m-2-col-on-xl card-container"
+                        class="pf-l-grid__item pf-m-6-col pf-m-2-col-on-md pf-m-3-col-on-xl card-container"
                     >
                         <ak-admin-status-card-backup
                             icon="fa fa-database"
