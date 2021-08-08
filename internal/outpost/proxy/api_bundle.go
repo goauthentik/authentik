@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"crypto/tls"
+	"fmt"
 	"net"
 	"net/http"
 	"net/url"
@@ -38,7 +39,7 @@ func intToPointer(i int) *int {
 func (pb *providerBundle) replaceLocal(url string) string {
 	if strings.Contains(url, "localhost:8000") {
 		f := strings.ReplaceAll(url, "localhost:8000", pb.s.ak.Client.GetConfig().Host)
-		f = strings.ReplaceAll(f, "http", pb.s.ak.Client.GetConfig().Scheme)
+		f = strings.ReplaceAll(f, "http://", fmt.Sprintf("%s://", pb.s.ak.Client.GetConfig().Scheme))
 		return f
 	}
 	return url
