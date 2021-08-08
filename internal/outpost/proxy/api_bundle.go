@@ -36,9 +36,12 @@ func intToPointer(i int) *int {
 }
 
 func (pb *providerBundle) replaceLocal(url string) string {
-	f := strings.ReplaceAll(url, "localhost:8000", pb.s.ak.Client.GetConfig().Host)
-	f = strings.ReplaceAll(f, "http", pb.s.ak.Client.GetConfig().Scheme)
-	return f
+	if strings.Contains(url, "localhost:8000") {
+		f := strings.ReplaceAll(url, "localhost:8000", pb.s.ak.Client.GetConfig().Host)
+		f = strings.ReplaceAll(f, "http", pb.s.ak.Client.GetConfig().Scheme)
+		return f
+	}
+	return url
 }
 
 func (pb *providerBundle) prepareOpts(provider api.ProxyOutpostConfig) *options.Options {
