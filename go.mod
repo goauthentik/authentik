@@ -3,14 +3,14 @@ module goauthentik.io
 go 1.16
 
 require (
-	github.com/Netflix/go-env v0.0.0-20210215222557-e437a7e7f9fb // indirect
+	github.com/Netflix/go-env v0.0.0-20210215222557-e437a7e7f9fb
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/getsentry/sentry-go v0.11.0
 	github.com/go-ldap/ldap/v3 v3.3.0
 	github.com/go-openapi/analysis v0.20.1 // indirect
 	github.com/go-openapi/errors v0.20.0 // indirect
-	github.com/go-openapi/runtime v0.19.29
+	github.com/go-openapi/runtime v0.19.30
 	github.com/go-openapi/strfmt v0.20.1
 	github.com/go-openapi/swag v0.19.15 // indirect
 	github.com/go-openapi/validate v0.20.2 // indirect
@@ -26,11 +26,11 @@ require (
 	github.com/kr/pretty v0.2.1 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
-	github.com/nmcclain/asn1-ber v0.0.0-20170104154839-2661553a0484 // indirect
+	github.com/nmcclain/asn1-ber v0.0.0-20170104154839-2661553a0484
 	github.com/nmcclain/ldap v0.0.0-20191021200707-3b3b69a7e9e3
 	github.com/oauth2-proxy/oauth2-proxy v0.0.0-20200831161845-e4e5580852dc
 	github.com/pelletier/go-toml v1.9.1 // indirect
-	github.com/pires/go-proxyproto v0.6.0 // indirect
+	github.com/pires/go-proxyproto v0.6.0
 	github.com/pkg/errors v0.9.1
 	github.com/pquerna/cachecontrol v0.0.0-20201205024021-ac21108117ac // indirect
 	github.com/recws-org/recws v1.3.1
