@@ -78,7 +78,10 @@ class LDAPProvider(OutpostModel, Provider):
         return f"LDAP Provider {self.name}"
 
     def get_required_objects(self) -> Iterable[Union[models.Model, str]]:
-        return [self, "authentik_core.view_user", "authentik_core.view_group"]
+        required_models = [self, "authentik_core.view_user", "authentik_core.view_group"]
+        if self.certificate is not None:
+            required_models.append(self.certificate)
+        return required_models
 
     class Meta:
 
