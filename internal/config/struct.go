@@ -7,6 +7,23 @@ type Config struct {
 	Paths          PathsConfig          `yaml:"paths"`
 	LogLevel       string               `yaml:"log_level" env:"AUTHENTIK_LOG_LEVEL"`
 	ErrorReporting ErrorReportingConfig `yaml:"error_reporting"`
+	Redis          RedisConfig          `yaml:"redis"`
+}
+
+type RedisConfig struct {
+	Host                   string `yaml:"host" env:"AUTHENTIK_REDIS__HOST"`
+	Port                   int    `yaml:"port" env:"AUTHENTIK_REDIS__PORT"`
+	Password               string `yaml:"password" env:"AUTHENTIK_REDIS__PASSWORD"`
+	TLS                    bool   `yaml:"tls" env:"AUTHENTIK_REDIS__TLS"`
+	TLSReqs                string `yaml:"tls_reqs" env:"AUTHENTIK_REDIS__TLS_REQS"`
+	CacheDB                int    `yaml:"cache_db" env:"AUTHENTIK_REDIS__CACHE_DB"`
+	MessageQueueDB         int    `yaml:"message_queue_db" env:"AUTHENTIK_REDIS__MESSAGE_QUEUE_DB"`
+	WSDB                   int    `yaml:"ws_db" env:"AUTHENTIK_REDIS__WS_DB"`
+	OutpostSessionDB       int    `yaml:"outpost_session_db" env:"AUTHENTIK_REDIS__OUTPOST_SESSION_DB"`
+	CacheTimeout           int    `yaml:"cache_timeout" env:"AUTHENTIK_REDIS__CACHE_TIMEOUT"`
+	CacheTimeoutFlows      int    `yaml:"cache_timeout_flows" env:"AUTHENTIK_REDIS__CACHE_TIMEOUT_FLOWS"`
+	CacheTimeoutPolicies   int    `yaml:"cache_timeout_policies" env:"AUTHENTIK_REDIS__CACHE_TIMEOUT_POLICIES"`
+	CacheTimeoutReputation int    `yaml:"cache_timeout_reputation" env:"AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION"`
 }
 
 type WebConfig struct {

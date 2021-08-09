@@ -36,12 +36,12 @@ export class BackupStatusCard extends AdminStatusCard<StatusEnum> {
             case StatusEnum.Warning:
                 return Promise.resolve<AdminStatus>({
                     icon: "fa fa-exclamation-triangle pf-m-warning",
-                    message: t`Backup finished with warnings/backup not supported.`,
+                    message: html`${t`Backup finished with warnings/backup not supported.`}`,
                 });
             case StatusEnum.Error:
                 return Promise.resolve<AdminStatus>({
                     icon: "fa fa-times-circle pf-m-danger",
-                    message: t`Backup finished with errors.`,
+                    message: html`${t`Backup finished with errors.`}`,
                 });
             default:
                 return Promise.resolve<AdminStatus>({

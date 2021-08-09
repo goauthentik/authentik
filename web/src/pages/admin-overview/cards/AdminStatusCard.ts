@@ -6,7 +6,7 @@ import { PFSize } from "../../../elements/Spinner";
 
 export interface AdminStatus {
     icon: string;
-    message?: string;
+    message?: TemplateResult;
 }
 
 export abstract class AdminStatusCard<T> extends AggregateCard {

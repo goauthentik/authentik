@@ -20,6 +20,7 @@ redis:
   cache_db: 0
   message_queue_db: 1
   ws_db: 2
+  outpost_session_db: 3
   cache_timeout: 300
   cache_timeout_flows: 300
   cache_timeout_policies: 300

@@ -19,3 +19,5 @@ class DummyPolicyViewSet(UsedByMixin, ModelViewSet):
 
     queryset = DummyPolicy.objects.all()
     serializer_class = DummyPolicySerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]

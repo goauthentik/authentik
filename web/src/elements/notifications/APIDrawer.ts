@@ -90,7 +90,10 @@ export class APIDrawer extends LitElement {
                     ${item.method}: ${item.status}
                 </h2>
             </div>
-            <a class="pf-c-notification-drawer__list-item-description" href=${item.path}
+            <a
+                class="pf-c-notification-drawer__list-item-description"
+                target="_blank"
+                href=${item.path}
                 >${item.path}</a
             >
         </li>`;

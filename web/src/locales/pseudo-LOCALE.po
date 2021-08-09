@@ -474,8 +474,12 @@ msgid "Browser"
 msgstr ""
 
 #: src/pages/admin-overview/cards/VersionStatusCard.ts
-msgid "Build hash: {0}"
+msgid "Build hash:"
 msgstr ""
+
+#: 
+#~ msgid "Build hash: {0}"
+#~ msgstr ""
 
 #: src/pages/sources/SourcesListPage.ts
 #: src/pages/sources/SourcesListPage.ts
@@ -1153,6 +1157,10 @@ msgstr ""
 #: src/pages/flows/FlowForm.ts
 #: src/pages/flows/FlowListPage.ts
 msgid "Designation"
+msgstr ""
+
+#: src/pages/outposts/OutpostListPage.ts
+msgid "Detailed health (one instance per column, data is cached so may be out of data)"
 msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -2064,6 +2072,7 @@ msgid "Last run"
 msgstr ""
 
 #: src/pages/outposts/OutpostHealth.ts
+#: src/pages/outposts/OutpostHealthSimple.ts
 msgid "Last seen: {0}"
 msgstr ""
 
@@ -2500,7 +2509,6 @@ msgid "No form found"
 msgstr ""
 
 #: src/pages/outposts/OutpostListPage.ts
-#: src/pages/outposts/OutpostListPage.ts
 msgid "No integration active"
 msgstr ""
 
@@ -2533,7 +2541,7 @@ msgstr ""
 msgid "None (rule disabled)"
 msgstr ""
 
-#: src/pages/outposts/OutpostHealth.ts
+#: src/pages/outposts/OutpostHealthSimple.ts
 msgid "Not available"
 msgstr ""
 
@@ -4023,7 +4031,6 @@ msgstr ""
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
-#: src/pages/property-mappings/PropertyMappingListPage.ts
 msgid "Test"
 msgstr ""
 
@@ -4312,7 +4319,6 @@ msgstr ""
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/outposts/OutpostListPage.ts
-#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
@@ -4390,7 +4396,6 @@ msgstr ""
 msgid "Update OAuth2 Provider"
 msgstr ""
 
-#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/OutpostListPage.ts
 msgid "Update Outpost"
 msgstr ""

@@ -10,6 +10,7 @@ from structlog.stdlib import get_logger
 
 from authentik import __version__
 from authentik.lib.sentry import SentryIgnoredException
+from authentik.outposts.managed import MANAGED_OUTPOST
 
 if TYPE_CHECKING:
     from authentik.outposts.controllers.kubernetes import KubernetesController
@@ -39,6 +40,11 @@ class KubernetesObjectReconciler(Generic[T]):
         self.controller = controller
         self.namespace = controller.outpost.config.kubernetes_namespace
         self.logger = get_logger().bind(type=self.__class__.__name__)
+
+    @property
+    def is_embedded(self) -> bool:
+        """Return true if the current outpost is embedded"""
+        return self.controller.outpost.managed == MANAGED_OUTPOST
 
     @property
     def noop(self) -> bool:

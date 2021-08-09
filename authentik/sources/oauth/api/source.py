@@ -83,6 +83,22 @@ class OAuthSourceViewSet(UsedByMixin, ModelViewSet):
     queryset = OAuthSource.objects.all()
     serializer_class = OAuthSourceSerializer
     lookup_field = "slug"
+    filterset_fields = [
+        "name",
+        "slug",
+        "enabled",
+        "authentication_flow",
+        "enrollment_flow",
+        "policy_engine_mode",
+        "user_matching_mode",
+        "provider_type",
+        "request_token_url",
+        "authorization_url",
+        "access_token_url",
+        "profile_url",
+        "consumer_key",
+    ]
+    ordering = ["name"]
 
     @extend_schema(responses={200: SourceTypeSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])

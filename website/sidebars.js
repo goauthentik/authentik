@@ -92,6 +92,7 @@ module.exports = {
                         "integrations/services/tautulli/index",
                         "integrations/services/ubuntu-landscape/index",
                         "integrations/services/veeam-enterprise-manager/index",
+                        "integrations/services/vikunja/index",
                         "integrations/services/vmware-vcenter/index",
                         "integrations/services/wekan/index",
                         "integrations/services/wiki-js/index",

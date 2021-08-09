@@ -14,7 +14,11 @@ from kubernetes.client import (
 from kubernetes.client.models.networking_v1beta1_ingress_rule import NetworkingV1beta1IngressRule
 
 from authentik.outposts.controllers.base import FIELD_MANAGER
-from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler, NeedsUpdate
+from authentik.outposts.controllers.k8s.base import (
+    KubernetesObjectReconciler,
+    NeedsRecreate,
+    NeedsUpdate,
+)
 from authentik.providers.proxy.models import ProxyMode, ProxyProvider
 
 if TYPE_CHECKING:
@@ -66,6 +70,10 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
             raise NeedsUpdate()
         if have_hosts_tls != expected_hosts_tls:
             raise NeedsUpdate()
+        # If we have a current ingress, which wouldn't have any hosts, raise
+        # NeedsRecreate() so that its deleted, and check hosts on create
+        if len(have_hosts) < 1:
+            raise NeedsRecreate()
 
     def get_ingress_annotations(self) -> dict[str, str]:
         """Get ingress annotations"""
@@ -141,6 +149,9 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
         )
 
     def create(self, reference: NetworkingV1beta1Ingress):
+        if len(reference.spec.rules) < 1:
+            self.logger.debug("No hosts defined, not creating ingress.")
+            return None
         return self.api.create_namespaced_ingress(
             self.namespace, reference, field_manager=FIELD_MANAGER
         )
