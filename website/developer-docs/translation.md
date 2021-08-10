@@ -22,6 +22,8 @@ If you want to translate the frontend to a new language, ensure the language cod
     // [...]
 ```
 
+You should have `@lingui/cli` and `@babel/core` installed in your home directory (See [LinguiJS Docs](https://lingui.js.org/tutorials/setup-react.html) for more information).
+
 Afterwards, run `npx lingui extract` to generate a base .po file.
 
 The .po files can be edited by any text editor, or using a tool such as [POEdit](https://poedit.net/).
