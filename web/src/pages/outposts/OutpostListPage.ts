@@ -65,7 +65,16 @@ export class OutpostListPage extends TablePage<Outpost> {
 
     row(item: Outpost): TemplateResult[] {
         return [
-            html`${item.name}`,
+            html`<div>
+                <div>${item.name}</div>
+                ${item.config.authentik_host === ""
+                    ? html`<i class="pf-icon pf-icon-warning-triangle"></i>
+                          <small
+                              >${t`Warning: authentik Domain is not configured, authentication will not work.`}</small
+                          >`
+                    : html`<i class="pf-icon pf-icon-ok"></i>
+                          <small> ${t`Logging in via ${item.config.authentik_host}.`} </small>`}
+            </div>`,
             html`<ul>
                 ${item.providersObj?.map((p) => {
                     return html`<li>

@@ -611,6 +611,10 @@ msgstr "Check Username"
 msgid "Check access"
 msgstr "Check access"
 
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
+msgid "Check outposts."
+msgstr "Check outposts."
+
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 msgid "Check status"
 msgstr "Check status"
@@ -1364,6 +1368,10 @@ msgstr "Email stage"
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Email: Text field with Email type."
 msgstr "Email: Text field with Email type."
+
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
+msgid "Embedded outpost is not configured correctly."
+msgstr "Embedded outpost is not configured correctly."
 
 #: 
 #: 
@@ -2251,6 +2259,10 @@ msgstr "Local"
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "Log the currently pending user in."
 msgstr "Log the currently pending user in."
+
+#: src/pages/outposts/OutpostListPage.ts
+msgid "Logging in via {0}."
+msgstr "Logging in via {0}."
 
 #: src/pages/events/utils.ts
 msgid "Login"
@@ -4746,6 +4758,7 @@ msgstr "Wait (min)"
 
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
 #: src/pages/events/RuleForm.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Warning"
@@ -4758,6 +4771,10 @@ msgstr "Warning: Policy is not assigned."
 #: src/pages/providers/ProviderListPage.ts
 msgid "Warning: Provider not assigned to any application."
 msgstr "Warning: Provider not assigned to any application."
+
+#: src/pages/outposts/OutpostListPage.ts
+msgid "Warning: authentik Domain is not configured, authentication will not work."
+msgstr "Warning: authentik Domain is not configured, authentication will not work."
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "WebAuthn Authenticators"

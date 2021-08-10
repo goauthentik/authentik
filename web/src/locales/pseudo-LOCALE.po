@@ -607,6 +607,10 @@ msgstr ""
 msgid "Check access"
 msgstr ""
 
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
+msgid "Check outposts."
+msgstr ""
+
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 msgid "Check status"
 msgstr ""
@@ -1355,6 +1359,10 @@ msgstr ""
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Email: Text field with Email type."
+msgstr ""
+
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
+msgid "Embedded outpost is not configured correctly."
 msgstr ""
 
 #: 
@@ -2242,6 +2250,10 @@ msgstr ""
 
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "Log the currently pending user in."
+msgstr ""
+
+#: src/pages/outposts/OutpostListPage.ts
+msgid "Logging in via {0}."
 msgstr ""
 
 #: src/pages/events/utils.ts
@@ -4731,6 +4743,7 @@ msgstr ""
 
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
 #: src/pages/events/RuleForm.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Warning"
@@ -4742,6 +4755,10 @@ msgstr ""
 
 #: src/pages/providers/ProviderListPage.ts
 msgid "Warning: Provider not assigned to any application."
+msgstr ""
+
+#: src/pages/outposts/OutpostListPage.ts
+msgid "Warning: authentik Domain is not configured, authentication will not work."
 msgstr ""
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts

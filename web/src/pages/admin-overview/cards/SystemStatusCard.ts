@@ -16,6 +16,14 @@ export class SystemStatusCard extends AdminStatusCard<System> {
     }
 
     getStatus(value: System): Promise<AdminStatus> {
+        if (value.embeddedOutpostHost === "") {
+            this.header = t`Warning`;
+            return Promise.resolve<AdminStatus>({
+                icon: "fa fa-exclamation-triangle pf-m-warning",
+                message: html`${t`Embedded outpost is not configured correctly.`}
+                    <a href="#/outpost/outposts">${t`Check outposts.`}</a>`,
+            });
+        }
         if (!value.httpIsSecure && document.location.protocol === "https:") {
             this.header = t`Warning`;
             return Promise.resolve<AdminStatus>({

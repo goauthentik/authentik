@@ -29524,7 +29524,11 @@ components:
           type: string
           format: date-time
           readOnly: true
+        embedded_outpost_host:
+          type: string
+          readOnly: true
       required:
+      - embedded_outpost_host
       - http_headers
       - http_host
       - http_is_secure
