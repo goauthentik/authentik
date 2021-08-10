@@ -202,6 +202,7 @@ class TestProviderLDAP(SeleniumTestCase):
                     "dn": f"cn={outpost_user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
                     "attributes": {
                         "cn": [outpost_user.username],
+                        "sAMAccountName": [outpost_user.username],
                         "uid": [outpost_user.uid],
                         "name": [""],
                         "displayName": [""],
@@ -227,6 +228,7 @@ class TestProviderLDAP(SeleniumTestCase):
                     "dn": f"cn={embedded_account.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
                     "attributes": {
                         "cn": [embedded_account.username],
+                        "sAMAccountName": [embedded_account.username],
                         "uid": [embedded_account.uid],
                         "name": [""],
                         "displayName": [""],
@@ -252,6 +254,7 @@ class TestProviderLDAP(SeleniumTestCase):
                     "dn": f"cn={USER().username},ou=users,dc=ldap,dc=goauthentik,dc=io",
                     "attributes": {
                         "cn": [USER().username],
+                        "sAMAccountName": [USER().username],
                         "uid": [USER().uid],
                         "name": [USER().name],
                         "displayName": [USER().name],
