@@ -20,6 +20,7 @@ from rest_framework.serializers import (
     BooleanField,
     ListSerializer,
     ModelSerializer,
+    PrimaryKeyRelatedField,
     Serializer,
     ValidationError,
 )
@@ -33,7 +34,7 @@ from authentik.core.api.groups import GroupSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import LinkSerializer, PassiveSerializer, is_dict
 from authentik.core.middleware import SESSION_IMPERSONATE_ORIGINAL_USER, SESSION_IMPERSONATE_USER
-from authentik.core.models import Token, TokenIntents, User
+from authentik.core.models import Group, Token, TokenIntents, User
 from authentik.events.models import EventAction
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
@@ -49,7 +50,10 @@ class UserSerializer(ModelSerializer):
     is_superuser = BooleanField(read_only=True)
     avatar = CharField(read_only=True)
     attributes = JSONField(validators=[is_dict], required=False)
-    groups = ListSerializer(child=GroupSerializer(), read_only=True, source="ak_groups")
+    groups = PrimaryKeyRelatedField(
+        allow_empty=False, many=True, source="ak_groups", queryset=Group.objects.all()
+    )
+    groups_obj = ListSerializer(child=GroupSerializer(), read_only=True, source="ak_groups")
     uid = CharField(read_only=True)
 
     class Meta:
@@ -63,6 +67,7 @@ class UserSerializer(ModelSerializer):
             "last_login",
             "is_superuser",
             "groups",
+            "groups_obj",
             "email",
             "avatar",
             "attributes",

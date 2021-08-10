@@ -27634,6 +27634,11 @@ components:
           type: string
           format: date-time
           nullable: true
+        groups:
+          type: array
+          items:
+            type: string
+            format: uuid
         email:
           type: string
           format: email
@@ -29810,6 +29815,11 @@ components:
         groups:
           type: array
           items:
+            type: string
+            format: uuid
+        groups_obj:
+          type: array
+          items:
             $ref: '#/components/schemas/Group'
           readOnly: true
         email:
@@ -29829,6 +29839,7 @@ components:
       required:
       - avatar
       - groups
+      - groups_obj
       - is_superuser
       - name
       - pk
@@ -30105,6 +30116,11 @@ components:
           type: string
           format: date-time
           nullable: true
+        groups:
+          type: array
+          items:
+            type: string
+            format: uuid
         email:
           type: string
           format: email
@@ -30114,6 +30130,7 @@ components:
           type: object
           additionalProperties: {}
       required:
+      - groups
       - name
       - username
     UserSelf:
