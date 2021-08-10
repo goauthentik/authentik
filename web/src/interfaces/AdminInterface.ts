@@ -116,13 +116,15 @@ export class AdminInterface extends LitElement {
                         </div>
                         <ak-notification-drawer
                             class="pf-c-drawer__panel pf-m-width-33 ${this.notificationOpen
-                                ? "display-none"
-                                : ""}"
+                                ? ""
+                                : "display-none"}"
+                            ?hidden=${!this.notificationOpen}
                         ></ak-notification-drawer>
                         <ak-api-drawer
                             class="pf-c-drawer__panel pf-m-width-33 ${this.apiDrawerOpen
-                                ? "display-none"
-                                : ""}"
+                                ? ""
+                                : "display-none"}"
+                            ?hidden=${!this.apiDrawerOpen}
                         ></ak-api-drawer>
                     </div>
                 </div>
