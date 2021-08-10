@@ -1,10 +1,10 @@
 import { t } from "@lingui/macro";
-import { customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import "../../elements/forms/ModalForm";
-import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/ActionButton";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
@@ -13,6 +13,7 @@ import { DEFAULT_CONFIG, tenant } from "../../api/Config";
 import "../../elements/forms/DeleteForm";
 import "./UserActiveForm";
 import "./UserForm";
+import "./UserResetEmailForm";
 import { showMessage } from "../../elements/messages/MessageContainer";
 import { MessageLevel } from "../../elements/messages/Message";
 import { first } from "../../utils";
@@ -20,6 +21,9 @@ import { until } from "lit-html/directives/until";
 
 @customElement("ak-user-list")
 export class UserListPage extends TablePage<User> {
+    expandable = true;
+    checkbox = true;
+
     searchEnabled(): boolean {
         return true;
     }
@@ -38,6 +42,10 @@ export class UserListPage extends TablePage<User> {
 
     @property({ type: Boolean })
     hideServiceAccounts = true;
+
+    static get styles(): CSSResult[] {
+        return super.styles.concat(PFDescriptionList);
+    }
 
     apiEndpoint(page: number): Promise<AKResponse<User>> {
         return new CoreApi(DEFAULT_CONFIG).coreUsersList({
@@ -62,6 +70,29 @@ export class UserListPage extends TablePage<User> {
         ];
     }
 
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length !== 1;
+        const item = this.selectedElements[0];
+        return html` <ak-forms-delete
+            .obj=${item}
+            objectLabel=${t`User`}
+            .usedBy=${() => {
+                return new CoreApi(DEFAULT_CONFIG).coreUsersUsedByList({
+                    id: item.pk,
+                });
+            }}
+            .delete=${() => {
+                return new CoreApi(DEFAULT_CONFIG).coreUsersDestroy({
+                    id: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete>`;
+    }
+
     row(item: User): TemplateResult[] {
         return [
             html`<a href="#/identity/users/${item.pk}">
@@ -74,98 +105,133 @@ export class UserListPage extends TablePage<User> {
                     <span slot="submit"> ${t`Update`} </span>
                     <span slot="header"> ${t`Update User`} </span>
                     <ak-user-form slot="form" .instancePk=${item.pk}> </ak-user-form>
-                    <button slot="trigger" class="pf-m-secondary pf-c-button">${t`Edit`}</button>
-                </ak-forms-modal>
-                <ak-dropdown class="pf-c-dropdown">
-                    <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
-                        <span class="pf-c-dropdown__toggle-text"
-                            >${item.isActive ? t`Disable` : t`Enable`}</span
-                        >
-                        <i
-                            class="fas fa-caret-down pf-c-dropdown__toggle-icon"
-                            aria-hidden="true"
-                        ></i>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <i class="fas fa-edit"></i>
                     </button>
-                    <ul class="pf-c-dropdown__menu" hidden>
-                        <li>
-                            <ak-user-active-form
-                                .obj=${item}
-                                objectLabel=${t`User`}
-                                .delete=${() => {
-                                    return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
-                                        id: item.pk || 0,
-                                        patchedUserRequest: {
-                                            username: item.username,
-                                            name: item.name,
-                                            isActive: !item.isActive,
-                                        },
-                                    });
-                                }}
-                            >
-                                <button slot="trigger" class="pf-c-dropdown__menu-item">
-                                    ${item.isActive ? t`Disable` : t`Enable`}
-                                </button>
-                            </ak-user-active-form>
-                        </li>
-                        <li class="pf-c-divider" role="separator"></li>
-                        <li>
-                            <ak-forms-delete
-                                .obj=${item}
-                                objectLabel=${t`User`}
-                                .usedBy=${() => {
-                                    return new CoreApi(DEFAULT_CONFIG).coreUsersUsedByList({
-                                        id: item.pk,
-                                    });
-                                }}
-                                .delete=${() => {
-                                    return new CoreApi(DEFAULT_CONFIG).coreUsersDestroy({
-                                        id: item.pk,
-                                    });
-                                }}
-                            >
-                                <button slot="trigger" class="pf-c-dropdown__menu-item">
-                                    ${t`Delete`}
-                                </button>
-                            </ak-forms-delete>
-                        </li>
-                    </ul>
-                </ak-dropdown>
-                ${until(
-                    tenant().then((te) => {
-                        if (te.flowRecovery) {
-                            return html` <ak-action-button
-                                .apiRequest=${() => {
-                                    return new CoreApi(DEFAULT_CONFIG)
-                                        .coreUsersRecoveryRetrieve({
-                                            id: item.pk || 0,
-                                        })
-                                        .then((rec) => {
-                                            showMessage({
-                                                level: MessageLevel.success,
-                                                message: t`Successfully generated recovery link`,
-                                                description: rec.link,
-                                            });
-                                        })
-                                        .catch((ex: Response) => {
-                                            ex.json().then(() => {
-                                                showMessage({
-                                                    level: MessageLevel.error,
-                                                    message: t`No recovery flow is configured.`,
-                                                });
-                                            });
-                                        });
-                                }}
-                            >
-                                ${t`Reset Password`}
-                            </ak-action-button>`;
-                        }
-                        return html``;
-                    }),
-                )}
+                </ak-forms-modal>
                 <a class="pf-c-button pf-m-tertiary" href="${`/-/impersonation/${item.pk}/`}">
                     ${t`Impersonate`}
                 </a>`,
         ];
+    }
+
+    renderExpanded(item: User): TemplateResult {
+        return html`<td role="cell" colspan="3">
+                <div class="pf-c-table__expandable-row-content">
+                    <dl class="pf-c-description-list pf-m-horizontal">
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text">${t`User status`}</span>
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">
+                                    ${item.isActive ? t`Active` : t`Inactive`}
+                                </div>
+                                <div class="pf-c-description-list__text">
+                                    ${item.isSuperuser ? t`Superuser` : t`Regular user`}
+                                </div>
+                            </dd>
+                        </div>
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text">${t`Change status`}</span>
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">
+                                    <ak-user-active-form
+                                        .obj=${item}
+                                        objectLabel=${t`User`}
+                                        .delete=${() => {
+                                            return new CoreApi(
+                                                DEFAULT_CONFIG,
+                                            ).coreUsersPartialUpdate({
+                                                id: item.pk || 0,
+                                                patchedUserRequest: {
+                                                    username: item.username,
+                                                    name: item.name,
+                                                    isActive: !item.isActive,
+                                                },
+                                            });
+                                        }}
+                                    >
+                                        <button slot="trigger" class="pf-c-button pf-m-warning">
+                                            ${item.isActive ? t`Deactivate` : t`Activate`}
+                                        </button>
+                                    </ak-user-active-form>
+                                </div>
+                            </dd>
+                        </div>
+                        ${until(
+                            tenant().then((te) => {
+                                if (!te.flowRecovery) {
+                                    return html``;
+                                }
+                                return html`<div class="pf-c-description-list__group">
+                                    <dt class="pf-c-description-list__term">
+                                        <span class="pf-c-description-list__text"
+                                            >${t`Recovery`}</span
+                                        >
+                                    </dt>
+                                    <dd class="pf-c-description-list__description">
+                                        <div class="pf-c-description-list__text">
+                                            <ak-action-button
+                                                .apiRequest=${() => {
+                                                    return new CoreApi(DEFAULT_CONFIG)
+                                                        .coreUsersRecoveryRetrieve({
+                                                            id: item.pk || 0,
+                                                        })
+                                                        .then((rec) => {
+                                                            showMessage({
+                                                                level: MessageLevel.success,
+                                                                message: t`Successfully generated recovery link`,
+                                                                description: rec.link,
+                                                            });
+                                                        })
+                                                        .catch((ex: Response) => {
+                                                            ex.json().then(() => {
+                                                                showMessage({
+                                                                    level: MessageLevel.error,
+                                                                    message: t`No recovery flow is configured.`,
+                                                                });
+                                                            });
+                                                        });
+                                                }}
+                                            >
+                                                ${t`Copy recovery link`}
+                                            </ak-action-button>
+                                            ${item.email
+                                                ? html`<ak-forms-modal
+                                                      .closeAfterSuccessfulSubmit=${false}
+                                                  >
+                                                      <span slot="submit"> ${t`Send link`} </span>
+                                                      <span slot="header">
+                                                          ${t`Send recovery link to user`}
+                                                      </span>
+                                                      <ak-user-reset-email-form
+                                                          slot="form"
+                                                          .user=${item}
+                                                      >
+                                                      </ak-user-reset-email-form>
+                                                      <button
+                                                          slot="trigger"
+                                                          class="pf-c-button pf-m-secondary"
+                                                      >
+                                                          ${t`Email recovery link`}
+                                                      </button>
+                                                  </ak-forms-modal>`
+                                                : html`<span
+                                                      >${t`Recovery link cannot be emailed, user has no email address saved.`}</span
+                                                  >`}
+                                        </div>
+                                    </dd>
+                                </div>`;
+                            }),
+                        )}
+                    </dl>
+                </div>
+            </td>
+            <td></td>
+            <td></td>`;
     }
 
     renderToolbar(): TemplateResult {

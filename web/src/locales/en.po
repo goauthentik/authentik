@@ -122,7 +122,12 @@ msgstr "Actions"
 msgid "Actions over the last 24 hours"
 msgstr "Actions over the last 24 hours"
 
+#: src/pages/users/UserListPage.ts
+msgid "Activate"
+msgstr "Activate"
+
 #: src/pages/groups/MemberSelectModal.ts
+#: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Active"
@@ -560,6 +565,10 @@ msgstr "Certificates"
 msgid "Change password"
 msgstr "Change password"
 
+#: src/pages/users/UserListPage.ts
+msgid "Change status"
+msgstr "Change status"
+
 #: src/pages/user-settings/settings/UserSettingsPassword.ts
 msgid "Change your password"
 msgstr "Change your password"
@@ -862,6 +871,10 @@ msgstr "Copy Key"
 msgid "Copy download URL"
 msgstr "Copy download URL"
 
+#: src/pages/users/UserListPage.ts
+msgid "Copy recovery link"
+msgstr "Copy recovery link"
+
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/ApplicationListPage.ts
@@ -1042,6 +1055,10 @@ msgstr "Date"
 msgid "Date Time"
 msgstr "Date Time"
 
+#: src/pages/users/UserListPage.ts
+msgid "Deactivate"
+msgstr "Deactivate"
+
 #: src/pages/flows/FlowForm.ts
 msgid "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
 msgstr "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
@@ -1200,10 +1217,10 @@ msgstr "Digest algorithm"
 msgid "Digits"
 msgstr "Digits"
 
-#: src/pages/users/UserListPage.ts
-#: src/pages/users/UserListPage.ts
-msgid "Disable"
-msgstr "Disable"
+#: 
+#: 
+#~ msgid "Disable"
+#~ msgstr "Disable"
 
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
 msgid "Disable Duo authenticator"
@@ -1286,7 +1303,6 @@ msgstr "Each provider has a different issuer, based on the application slug."
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 #: src/pages/sources/plex/PlexSourceViewPage.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
-#: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Edit"
 msgstr "Edit"
@@ -1333,18 +1349,26 @@ msgstr "Email address"
 msgid "Email info:"
 msgstr "Email info:"
 
+#: src/pages/users/UserListPage.ts
+msgid "Email recovery link"
+msgstr "Email recovery link"
+
 #: src/pages/events/utils.ts
 msgid "Email sent"
 msgstr "Email sent"
+
+#: src/pages/users/UserResetEmailForm.ts
+msgid "Email stage"
+msgstr "Email stage"
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Email: Text field with Email type."
 msgstr "Email: Text field with Email type."
 
-#: src/pages/users/UserListPage.ts
-#: src/pages/users/UserListPage.ts
-msgid "Enable"
-msgstr "Enable"
+#: 
+#: 
+#~ msgid "Enable"
+#~ msgstr "Enable"
 
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
 msgid "Enable Duo authenticator"
@@ -1942,6 +1966,10 @@ msgstr "Import certificates of external providers or create certificates to sign
 msgid "In case you can't access any other method."
 msgstr "In case you can't access any other method."
 
+#: src/pages/users/UserListPage.ts
+msgid "Inactive"
+msgstr "Inactive"
+
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
 msgstr "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
@@ -2210,6 +2238,7 @@ msgstr "Loading"
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
+#: src/pages/users/UserResetEmailForm.ts
 msgid "Loading..."
 msgstr "Loading..."
 
@@ -3066,6 +3095,7 @@ msgid "Receive a push notification on your phone to prove your identity."
 msgstr "Receive a push notification on your phone to prove your identity."
 
 #: src/pages/flows/FlowForm.ts
+#: src/pages/users/UserListPage.ts
 msgid "Recovery"
 msgstr "Recovery"
 
@@ -3081,6 +3111,10 @@ msgstr "Recovery flow. If left empty, the first applicable flow sorted by the sl
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Recovery keys"
 msgstr "Recovery keys"
+
+#: src/pages/users/UserListPage.ts
+msgid "Recovery link cannot be emailed, user has no email address saved."
+msgstr "Recovery link cannot be emailed, user has no email address saved."
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Redirect"
@@ -3113,6 +3147,10 @@ msgstr "Register device"
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression."
 msgstr "Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression."
+
+#: src/pages/users/UserListPage.ts
+msgid "Regular user"
+msgstr "Regular user"
 
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/flows/FlowViewPage.ts
@@ -3161,7 +3199,6 @@ msgstr "Required"
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 
-#: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Reset Password"
 msgstr "Reset Password"
@@ -3362,6 +3399,10 @@ msgstr "Selection of backends to test the password against."
 msgid "Send Email again."
 msgstr "Send Email again."
 
+#: src/pages/users/UserListPage.ts
+msgid "Send link"
+msgstr "Send link"
+
 #: src/pages/events/RuleListPage.ts
 msgid "Send notifications whenever a specific Event is created and matched by policies."
 msgstr "Send notifications whenever a specific Event is created and matched by policies."
@@ -3369,6 +3410,10 @@ msgstr "Send notifications whenever a specific Event is created and matched by p
 #: src/pages/events/TransportForm.ts
 msgid "Send once"
 msgstr "Send once"
+
+#: src/pages/users/UserListPage.ts
+msgid "Send recovery link to user"
+msgstr "Send recovery link to user"
 
 #: src/pages/events/RuleListPage.ts
 msgid "Sent to group"
@@ -3793,6 +3838,10 @@ msgstr "Successfully imported flow."
 msgid "Successfully imported provider."
 msgstr "Successfully imported provider."
 
+#: src/pages/users/UserResetEmailForm.ts
+msgid "Successfully sent email."
+msgstr "Successfully sent email."
+
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/policies/PolicyTestForm.ts
 #: src/pages/property-mappings/PropertyMappingTestForm.ts
@@ -3925,6 +3974,7 @@ msgstr "Successfully updated user."
 msgid "Successfully updated {0} {1}"
 msgstr "Successfully updated {0} {1}"
 
+#: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Superuser"
 msgstr "Superuser"
@@ -4568,6 +4618,10 @@ msgstr "User object filter"
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "User password writeback"
 msgstr "User password writeback"
+
+#: src/pages/users/UserListPage.ts
+msgid "User status"
+msgstr "User status"
 
 #: src/pages/events/utils.ts
 msgid "User was written to"

@@ -3185,6 +3185,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/core/users/{id}/recovery_email/:
+    get:
+      operationId: core_users_recovery_email_retrieve
+      description: Create a temporary link that a user can use to recover their accounts
+      parameters:
+      - in: query
+        name: email_stage
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '404':
+          description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/users/{id}/used_by/:
     get:
       operationId: core_users_used_by_list
