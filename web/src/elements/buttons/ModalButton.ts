@@ -64,14 +64,20 @@ export class ModalButton extends LitElement {
         ];
     }
 
-    constructor() {
-        super();
-        window.addEventListener("keyup", (e) => {
-            if (e.code === "Escape") {
-                this.resetForms();
-                this.open = false;
-            }
-        });
+    firstUpdated(): void {
+        window.addEventListener("keyup", this.keyUpHandler);
+    }
+
+    keyUpHandler = (e: KeyboardEvent) => {
+        if (e.code === "Escape") {
+            this.resetForms();
+            this.open = false;
+        }
+    }
+
+    disconnectedCallback(): void {
+        super.disconnectedCallback()
+        window.removeEventListener("keyup", this.keyUpHandler)
     }
 
     resetForms(): void {
