@@ -134,6 +134,7 @@ msgid "Active"
 msgstr "Active"
 
 #: src/pages/groups/MemberSelectModal.ts
+#: src/pages/users/GroupSelectModal.ts
 msgid "Add"
 msgstr "Add"
 
@@ -515,6 +516,7 @@ msgstr "Can be in the format of 'unix://' when connecting to a local docker daem
 #: src/elements/forms/DeleteForm.ts
 #: src/elements/forms/ModalForm.ts
 #: src/pages/groups/MemberSelectModal.ts
+#: src/pages/users/GroupSelectModal.ts
 #: src/pages/users/UserActiveForm.ts
 msgid "Cancel"
 msgstr "Cancel"
@@ -1814,6 +1816,7 @@ msgstr "Group {0}"
 #: src/interfaces/AdminInterface.ts
 #: src/pages/admin-overview/AdminOverviewPage.ts
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/users/UserForm.ts
 msgid "Groups"
 msgstr "Groups"
 
@@ -1858,7 +1861,6 @@ msgid "Hide service-accounts"
 msgstr "Hide service-accounts"
 
 #: src/pages/events/RuleForm.ts
-#: src/pages/groups/GroupForm.ts
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -2246,6 +2248,7 @@ msgstr "Loading"
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
+#: src/pages/users/UserForm.ts
 #: src/pages/users/UserResetEmailForm.ts
 msgid "Loading..."
 msgstr "Loading..."
@@ -2335,6 +2338,7 @@ msgstr "Maximum age (in days)"
 
 #: src/pages/groups/GroupForm.ts
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/users/GroupSelectModal.ts
 msgid "Members"
 msgstr "Members"
 
@@ -2474,6 +2478,7 @@ msgstr "My Applications"
 #: src/pages/stages/user_logout/UserLogoutStageForm.ts
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 #: src/pages/user-settings/UserSelfForm.ts
+#: src/pages/users/GroupSelectModal.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
@@ -2520,6 +2525,7 @@ msgstr "New version available!"
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/pages/users/GroupSelectModal.ts
 #: src/pages/users/UserListPage.ts
 msgid "No"
 msgstr "No"
@@ -3367,6 +3373,10 @@ msgstr "Select an enrollment flow"
 msgid "Select an identification method."
 msgstr "Select an identification method."
 
+#: src/pages/users/GroupSelectModal.ts
+msgid "Select groups to add user to"
+msgstr "Select groups to add user to"
+
 #: src/flows/stages/identification/IdentificationStage.ts
 msgid "Select one of the sources below to login."
 msgstr "Select one of the sources below to login."
@@ -3986,6 +3996,7 @@ msgstr "Successfully updated user."
 msgid "Successfully updated {0} {1}"
 msgstr "Successfully updated {0} {1}"
 
+#: src/pages/users/GroupSelectModal.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Superuser"
@@ -4870,6 +4881,7 @@ msgstr "X509 Subject"
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/pages/users/GroupSelectModal.ts
 #: src/pages/users/UserListPage.ts
 msgid "Yes"
 msgstr "Yes"

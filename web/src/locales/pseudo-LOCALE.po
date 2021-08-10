@@ -134,6 +134,7 @@ msgid "Active"
 msgstr ""
 
 #: src/pages/groups/MemberSelectModal.ts
+#: src/pages/users/GroupSelectModal.ts
 msgid "Add"
 msgstr ""
 
@@ -511,6 +512,7 @@ msgstr ""
 #: src/elements/forms/DeleteForm.ts
 #: src/elements/forms/ModalForm.ts
 #: src/pages/groups/MemberSelectModal.ts
+#: src/pages/users/GroupSelectModal.ts
 #: src/pages/users/UserActiveForm.ts
 msgid "Cancel"
 msgstr ""
@@ -1806,6 +1808,7 @@ msgstr ""
 #: src/interfaces/AdminInterface.ts
 #: src/pages/admin-overview/AdminOverviewPage.ts
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/users/UserForm.ts
 msgid "Groups"
 msgstr ""
 
@@ -1850,7 +1853,6 @@ msgid "Hide service-accounts"
 msgstr ""
 
 #: src/pages/events/RuleForm.ts
-#: src/pages/groups/GroupForm.ts
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -2238,6 +2240,7 @@ msgstr ""
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
+#: src/pages/users/UserForm.ts
 #: src/pages/users/UserResetEmailForm.ts
 msgid "Loading..."
 msgstr ""
@@ -2327,6 +2330,7 @@ msgstr ""
 
 #: src/pages/groups/GroupForm.ts
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/users/GroupSelectModal.ts
 msgid "Members"
 msgstr ""
 
@@ -2466,6 +2470,7 @@ msgstr ""
 #: src/pages/stages/user_logout/UserLogoutStageForm.ts
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 #: src/pages/user-settings/UserSelfForm.ts
+#: src/pages/users/GroupSelectModal.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
@@ -2512,6 +2517,7 @@ msgstr ""
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/pages/users/GroupSelectModal.ts
 #: src/pages/users/UserListPage.ts
 msgid "No"
 msgstr ""
@@ -3359,6 +3365,10 @@ msgstr ""
 msgid "Select an identification method."
 msgstr ""
 
+#: src/pages/users/GroupSelectModal.ts
+msgid "Select groups to add user to"
+msgstr ""
+
 #: src/flows/stages/identification/IdentificationStage.ts
 msgid "Select one of the sources below to login."
 msgstr ""
@@ -3978,6 +3988,7 @@ msgstr ""
 msgid "Successfully updated {0} {1}"
 msgstr ""
 
+#: src/pages/users/GroupSelectModal.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Superuser"
@@ -4853,6 +4864,7 @@ msgstr ""
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/pages/users/GroupSelectModal.ts
 #: src/pages/users/UserListPage.ts
 msgid "Yes"
 msgstr ""
