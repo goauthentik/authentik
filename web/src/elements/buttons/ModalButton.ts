@@ -66,7 +66,7 @@ export class ModalButton extends LitElement {
         ];
     }
 
-    connectedCallback(): void {
+    firstUpdated(): void {
         if (this.handlerBound) return;
         window.addEventListener("keyup", this.keyUpHandler);
         this.handlerBound = true;

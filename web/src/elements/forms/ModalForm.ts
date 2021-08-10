@@ -4,11 +4,15 @@ import { EVENT_REFRESH } from "../../constants";
 import { ModalButton } from "../buttons/ModalButton";
 import { Form } from "./Form";
 import "../buttons/SpinnerButton";
+import "../LoadingOverlay";
 
 @customElement("ak-forms-modal")
 export class ModalForm extends ModalButton {
     @property({ type: Boolean })
     closeAfterSuccessfulSubmit = true;
+
+    @property({ type: Boolean })
+    loading = false;
 
     confirm(): Promise<void> {
         const form = this.querySelector<Form<unknown>>("[slot=form]");
@@ -24,6 +28,7 @@ export class ModalForm extends ModalButton {
                 this.open = false;
                 form?.resetForm();
             }
+            this.loading = false;
             this.dispatchEvent(
                 new CustomEvent(EVENT_REFRESH, {
                     bubbles: true,
@@ -34,7 +39,8 @@ export class ModalForm extends ModalButton {
     }
 
     renderModalInner(): TemplateResult {
-        return html`<section class="pf-c-page__main-section pf-m-light">
+        return html`${this.loading ? html`<ak-loading-overlay></ak-loading-overlay>` : html``}
+            <section class="pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">
                         <slot name="header"></slot>
@@ -47,6 +53,7 @@ export class ModalForm extends ModalButton {
             <footer class="pf-c-modal-box__footer">
                 <ak-spinner-button
                     .callAction=${() => {
+                        this.loading = true;
                         return this.confirm();
                     }}
                     class="pf-m-primary"
