@@ -35,6 +35,9 @@ export class ModalForm extends ModalButton {
                     composed: true,
                 }),
             );
+        }).catch((exc) => {
+            this.loading = false;
+            throw exc;
         });
     }
 
