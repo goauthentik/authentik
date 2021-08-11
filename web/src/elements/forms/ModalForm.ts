@@ -23,22 +23,24 @@ export class ModalForm extends ModalButton {
         if (!formPromise) {
             return Promise.reject(t`Form didn't return a promise for submitting`);
         }
-        return formPromise.then(() => {
-            if (this.closeAfterSuccessfulSubmit) {
-                this.open = false;
-                form?.resetForm();
-            }
-            this.loading = false;
-            this.dispatchEvent(
-                new CustomEvent(EVENT_REFRESH, {
-                    bubbles: true,
-                    composed: true,
-                }),
-            );
-        }).catch((exc) => {
-            this.loading = false;
-            throw exc;
-        });
+        return formPromise
+            .then(() => {
+                if (this.closeAfterSuccessfulSubmit) {
+                    this.open = false;
+                    form?.resetForm();
+                }
+                this.loading = false;
+                this.dispatchEvent(
+                    new CustomEvent(EVENT_REFRESH, {
+                        bubbles: true,
+                        composed: true,
+                    }),
+                );
+            })
+            .catch((exc) => {
+                this.loading = false;
+                throw exc;
+            });
     }
 
     renderModalInner(): TemplateResult {
