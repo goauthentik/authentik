@@ -8,9 +8,7 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 def create_default_user_token(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     # We have to use a direct import here, otherwise we get an object manager error
-    from authentik.core.models import TokenIntents, User
-
-    Token = apps.get_model("authentik_core", "token")
+    from authentik.core.models import Token, TokenIntents, User
 
     db_alias = schema_editor.connection.alias
 
