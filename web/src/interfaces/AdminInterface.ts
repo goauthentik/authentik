@@ -30,7 +30,7 @@ import {
     EVENT_SIDEBAR_TOGGLE,
     VERSION,
 } from "../constants";
-import { AdminApi } from "authentik-api";
+import { AdminApi, Version } from "authentik-api";
 import { DEFAULT_CONFIG } from "../api/Config";
 import { WebsocketClient } from "../common/ws";
 
@@ -46,6 +46,8 @@ export class AdminInterface extends LitElement {
     apiDrawerOpen = false;
 
     ws: WebsocketClient;
+
+    private version: Promise<Version>;
 
     static get styles(): CSSResult[] {
         return [
@@ -84,6 +86,7 @@ export class AdminInterface extends LitElement {
         window.addEventListener(EVENT_API_DRAWER_TOGGLE, () => {
             this.apiDrawerOpen = !this.apiDrawerOpen;
         });
+        this.version = new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
     }
 
     render(): TemplateResult {
@@ -138,7 +141,7 @@ export class AdminInterface extends LitElement {
         };
         return html`
             ${until(
-                new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve().then((version) => {
+                this.version.then((version) => {
                     if (version.versionCurrent !== VERSION) {
                         return html`<ak-sidebar-item ?highlight=${true}>
                             <span slot="label"
