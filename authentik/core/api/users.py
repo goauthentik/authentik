@@ -51,7 +51,7 @@ class UserSerializer(ModelSerializer):
     avatar = CharField(read_only=True)
     attributes = JSONField(validators=[is_dict], required=False)
     groups = PrimaryKeyRelatedField(
-        allow_empty=False, many=True, source="ak_groups", queryset=Group.objects.all()
+        allow_empty=True, many=True, source="ak_groups", queryset=Group.objects.all()
     )
     groups_obj = ListSerializer(child=GroupSerializer(), read_only=True, source="ak_groups")
     uid = CharField(read_only=True)
