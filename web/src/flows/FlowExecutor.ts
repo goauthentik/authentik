@@ -84,7 +84,6 @@ export class FlowExecutor extends LitElement implements StageHost {
     constructor() {
         super();
         this.ws = new WebsocketClient();
-        this.ws.connect();
         this.flowSlug = window.location.pathname.split("/")[3];
     }
 

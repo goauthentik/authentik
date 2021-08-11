@@ -72,7 +72,6 @@ export class AdminInterface extends LitElement {
     constructor() {
         super();
         this.ws = new WebsocketClient();
-        this.ws.connect();
         this.sidebarOpen = window.innerWidth >= 1280;
         window.addEventListener("resize", () => {
             this.sidebarOpen = window.innerWidth >= 1280;
