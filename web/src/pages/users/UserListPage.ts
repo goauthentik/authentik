@@ -10,7 +10,7 @@ import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
 import { CoreApi, User } from "authentik-api";
 import { DEFAULT_CONFIG, tenant } from "../../api/Config";
-import "../../elements/forms/DeleteForm";
+import "../../elements/forms/DeleteBulkForm";
 import "./UserActiveForm";
 import "./UserForm";
 import "./UserResetEmailForm";
@@ -71,26 +71,25 @@ export class UserListPage extends TablePage<User> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html` <ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`User`}
-            .usedBy=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html` <ak-forms-delete-bulk
+            objectLabel=${t`User(s)`}
+            .objects=${this.selectedElements}
+            .usedBy=${(itemPk: number) => {
                 return new CoreApi(DEFAULT_CONFIG).coreUsersUsedByList({
-                    id: item.pk,
+                    id: itemPk,
                 });
             }}
-            .delete=${() => {
+            .delete=${(itemPk: number) => {
                 return new CoreApi(DEFAULT_CONFIG).coreUsersDestroy({
-                    id: item.pk,
+                    id: itemPk,
                 });
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: User): TemplateResult[] {

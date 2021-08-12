@@ -276,6 +276,10 @@ msgid ""
 "This will cause all policies to be re-evaluated on their next usage."
 msgstr ""
 
+#: src/elements/forms/DeleteBulkForm.ts
+msgid "Are you sure you want to delete {0} {1}?"
+msgstr ""
+
 #: src/elements/forms/DeleteForm.ts
 msgid "Are you sure you want to delete {0} {objName} ?"
 msgstr ""
@@ -509,6 +513,7 @@ msgid "Can be in the format of 'unix://' when connecting to a local docker daemo
 msgstr ""
 
 #: src/elements/forms/ConfirmationForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
 #: src/elements/forms/ModalForm.ts
 #: src/pages/groups/MemberSelectModal.ts
@@ -1079,6 +1084,7 @@ msgstr ""
 msgid "Define how notifications are sent to users, like Email or Webhook."
 msgstr ""
 
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
 #: src/elements/oauth/UserCodeList.ts
 #: src/elements/oauth/UserRefreshList.ts
@@ -1150,6 +1156,7 @@ msgid ""
 "confirmation. Use a consent stage to ensure the user is aware of their actions."
 msgstr ""
 
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
 msgid "Delete {0}"
 msgstr ""
@@ -1591,6 +1598,7 @@ msgstr ""
 msgid "Failed to delete policy cache"
 msgstr ""
 
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
 msgid "Failed to delete {0}: {1}"
 msgstr ""
@@ -1872,6 +1880,7 @@ msgstr ""
 msgid "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage."
 msgstr ""
 
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
 msgid "ID"
 msgstr ""
@@ -2399,6 +2408,7 @@ msgstr ""
 msgid "My Applications"
 msgstr ""
 
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/crypto/CertificateKeyPairForm.ts
@@ -2598,6 +2608,10 @@ msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 msgid "Not synced yet."
+msgstr ""
+
+#: src/elements/forms/DeleteBulkForm.ts
+msgid "Not used by any other object."
 msgstr ""
 
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
@@ -3831,6 +3845,7 @@ msgstr ""
 msgid "Successfully created user."
 msgstr ""
 
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
 msgid "Successfully deleted {0} {1}"
 msgstr ""
@@ -4122,6 +4137,10 @@ msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "The external URL you'll authenticate at. Can be the same domain as authentik."
+msgstr ""
+
+#: src/elements/forms/DeleteBulkForm.ts
+msgid "The following objects use {0}:"
 msgstr ""
 
 #: src/elements/forms/DeleteForm.ts
@@ -4581,7 +4600,6 @@ msgstr ""
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
 #: src/pages/users/UserListPage.ts
-#: src/pages/users/UserListPage.ts
 msgid "User"
 msgstr ""
 
@@ -4647,6 +4665,10 @@ msgstr ""
 #: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/users/UserForm.ts
 msgid "User's display name."
+msgstr ""
+
+#: src/pages/users/UserListPage.ts
+msgid "User(s)"
 msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
@@ -4889,18 +4911,25 @@ msgstr ""
 msgid "connecting object will be deleted"
 msgstr ""
 
+#: src/elements/forms/DeleteBulkForm.ts
+msgid "connection will be deleted"
+msgstr ""
+
 #: src/elements/Tabs.ts
 msgid "no tabs defined"
 msgstr ""
 
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
 msgid "object will be DELETED"
 msgstr ""
 
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
 msgid "reference will be reset to default value"
 msgstr ""
 
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
 msgid "reference will be set to an empty value"
 msgstr ""
@@ -4918,6 +4947,7 @@ msgstr ""
 msgid "{0} ({1})"
 msgstr ""
 
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
 msgid "{0} ({consequence})"
 msgstr ""
