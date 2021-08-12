@@ -438,6 +438,7 @@ class Token(ManagedModel, ExpiringModel):
         from authentik.events.models import Event, EventAction
 
         self.key = default_token_key()
+        self.expires = default_token_duration()
         self.save(*args, **kwargs)
         Event.new(
             action=EventAction.SECRET_ROTATE,
