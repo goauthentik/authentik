@@ -8,7 +8,7 @@ import { CryptoApi, CertificateKeyPair } from "authentik-api";
 
 import "../../elements/forms/ModalForm";
 import "../../elements/buttons/SpinnerButton";
-import "../../elements/forms/DeleteForm";
+import "../../elements/forms/DeleteBulkForm";
 import "./CertificateKeyPairForm";
 import "./CertificateGenerateForm";
 import { TableColumn } from "../../elements/table/Table";
@@ -59,17 +59,22 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`Certificate-Key Pair`}
-            .usedBy=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Certificate-Key Pair(s)`}
+            .objects=${this.selectedElements}
+            .metadata=${(item: CertificateKeyPair) => {
+                return [
+                    { key: t`Name`, value: item.name },
+                    { key: t`Expiry`, value: item.certExpiry.toLocaleString() },
+                ];
+            }}
+            .usedBy=${(item: CertificateKeyPair) => {
                 return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsUsedByList({
                     kpUuid: item.pk,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: CertificateKeyPair) => {
                 return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsDestroy({
                     kpUuid: item.pk,
                 });
@@ -78,7 +83,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: CertificateKeyPair): TemplateResult[] {

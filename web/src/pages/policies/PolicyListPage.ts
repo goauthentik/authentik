@@ -5,7 +5,7 @@ import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/SpinnerButton";
-import "../../elements/forms/DeleteForm";
+import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
 import "../../elements/forms/ProxyForm";
 import "../../elements/forms/ConfirmationForm";
@@ -99,31 +99,25 @@ export class PolicyListPage extends TablePage<Policy> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`Policy`}
-            .usedBy=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Policy / Policies`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: Policy) => {
                 return new PoliciesApi(DEFAULT_CONFIG).policiesAllUsedByList({
                     policyUuid: item.pk,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: Policy) => {
                 return new PoliciesApi(DEFAULT_CONFIG).policiesAllDestroy({
                     policyUuid: item.pk,
                 });
             }}
         >
-            <button
-                ?disabled=${disabled}
-                slot="trigger"
-                type="button"
-                class="pf-c-button pf-m-danger ${disabled && "pf-m-disabled"}"
-            >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     renderToolbar(): TemplateResult {

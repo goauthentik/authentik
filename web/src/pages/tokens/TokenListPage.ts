@@ -5,7 +5,7 @@ import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/TokenCopyButton";
-import "../../elements/forms/DeleteForm";
+import "../../elements/forms/DeleteBulkForm";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
 import { CoreApi, Token } from "authentik-api";
@@ -51,17 +51,16 @@ export class TokenListPage extends TablePage<Token> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`Token`}
-            .usedBy=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Token(s)`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: Token) => {
                 return new CoreApi(DEFAULT_CONFIG).coreTokensUsedByList({
                     identifier: item.identifier,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: Token) => {
                 return new CoreApi(DEFAULT_CONFIG).coreTokensDestroy({
                     identifier: item.identifier,
                 });
@@ -70,7 +69,7 @@ export class TokenListPage extends TablePage<Token> {
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: Token): TemplateResult[] {

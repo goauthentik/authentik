@@ -75,14 +75,20 @@ export class UserListPage extends TablePage<User> {
         return html` <ak-forms-delete-bulk
             objectLabel=${t`User(s)`}
             .objects=${this.selectedElements}
-            .usedBy=${(itemPk: number) => {
+            .metadata=${(item: User) => {
+                return [
+                    { key: t`Username`, value: item.username },
+                    { key: t`ID`, value: item.pk.toString() },
+                ];
+            }}
+            .usedBy=${(item: User) => {
                 return new CoreApi(DEFAULT_CONFIG).coreUsersUsedByList({
-                    id: itemPk,
+                    id: item.pk,
                 });
             }}
-            .delete=${(itemPk: number) => {
+            .delete=${(item: User) => {
                 return new CoreApi(DEFAULT_CONFIG).coreUsersDestroy({
-                    id: itemPk,
+                    id: item.pk,
                 });
             }}
         >

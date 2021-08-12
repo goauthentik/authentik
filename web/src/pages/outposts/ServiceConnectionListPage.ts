@@ -8,7 +8,7 @@ import { TablePage } from "../../elements/table/TablePage";
 import "./OutpostHealth";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
-import "../../elements/forms/DeleteForm";
+import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
 import "./ServiceConnectionKubernetesForm";
 import "./ServiceConnectionDockerForm";
@@ -102,17 +102,16 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`Outpost integration`}
-            .usedBy=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Outpost integration(s)`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: ServiceConnection) => {
                 return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllUsedByList({
                     uuid: item.pk,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: ServiceConnection) => {
                 return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllDestroy({
                     uuid: item.pk,
                 });
@@ -121,7 +120,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     renderToolbar(): TemplateResult {

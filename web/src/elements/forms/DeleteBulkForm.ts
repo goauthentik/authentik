@@ -12,29 +12,28 @@ import { Table, TableColumn } from "../table/Table";
 import { AKResponse } from "../../api/Client";
 import { PFSize } from "../Spinner";
 
-export interface AKObject<T extends string | number> {
-    pk: T;
-    slug?: string;
-    name?: string;
-    [key: string]: unknown;
-}
+type BulkDeleteMetadata = { key: string; value: string }[];
 
 @customElement("ak-delete-objects-table")
-export class DeleteObjectsTable<ObjPkT extends string | number> extends Table<AKObject<ObjPkT>> {
+export class DeleteObjectsTable<T> extends Table<T> {
     expandable = true;
     paginated = false;
 
     @property({ attribute: false })
-    objects: AKObject<ObjPkT>[] = [];
+    objects: T[] = [];
 
     @property({ attribute: false })
-    usedBy?: (item: AKObject<ObjPkT>) => Promise<UsedBy[]>;
+    metadata!: (item: T) => BulkDeleteMetadata;
+
+    @property({ attribute: false })
+    usedBy?: (item: T) => Promise<UsedBy[]>;
 
     static get styles(): CSSResult[] {
         return super.styles.concat(PFList);
     }
 
-    apiEndpoint(page: number): Promise<AKResponse<AKObject<ObjPkT>>> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    apiEndpoint(page: number): Promise<AKResponse<T>> {
         return Promise.resolve({
             pagination: {
                 count: this.objects.length,
@@ -48,77 +47,93 @@ export class DeleteObjectsTable<ObjPkT extends string | number> extends Table<AK
     }
 
     columns(): TableColumn[] {
-        return [new TableColumn(t`Name`), new TableColumn(t`ID`)];
+        return this.metadata(this.objects[0]).map((element) => {
+            return new TableColumn(element.key);
+        });
     }
 
-    row(item: AKObject<ObjPkT>): TemplateResult[] {
-        return [html`${item.name}`, html`${item.pk}`];
+    row(item: T): TemplateResult[] {
+        return this.metadata(item).map((element) => {
+            return html`${element.value}`;
+        });
     }
 
     renderToolbarContainer(): TemplateResult {
         return html``;
     }
 
-    renderExpanded(item: AKObject<ObjPkT>): TemplateResult {
-        return html`${this.usedBy
-            ? until(
-                  this.usedBy(item).then((usedBy) => {
-                      return this.renderUsedBy(item, usedBy);
-                  }),
-                  html`<ak-spinner size=${PFSize.XLarge}></ak-spinner>`,
-              )
-            : html``}`;
-    }
-
-    renderUsedBy(item: AKObject<ObjPkT>, usedBy: UsedBy[]): TemplateResult {
-        if (usedBy.length < 1) {
-            return html`<td role="cell" colspan="2">
-                <div class="pf-c-table__expandable-row-content">
-                    <span>${t`Not used by any other object.`}</span>
-                </div>
-            </td>`;
-        }
+    renderExpanded(item: T): TemplateResult {
         return html`<td role="cell" colspan="2">
             <div class="pf-c-table__expandable-row-content">
-                <p>${t`The following objects use ${item.name}:`}</p>
-                <ul class="pf-c-list">
-                    ${usedBy.map((ub) => {
-                        let consequence = "";
-                        switch (ub.action) {
-                            case UsedByActionEnum.Cascade:
-                                consequence = t`object will be DELETED`;
-                                break;
-                            case UsedByActionEnum.CascadeMany:
-                                consequence = t`connection will be deleted`;
-                                break;
-                            case UsedByActionEnum.SetDefault:
-                                consequence = t`reference will be reset to default value`;
-                                break;
-                            case UsedByActionEnum.SetNull:
-                                consequence = t`reference will be set to an empty value`;
-                                break;
-                        }
-                        return html`<li>${t`${ub.name} (${consequence})`}</li>`;
-                    })}
-                </ul>
+                ${this.usedBy
+                    ? until(
+                          this.usedBy(item).then((usedBy) => {
+                              return this.renderUsedBy(usedBy);
+                          }),
+                          html`<ak-spinner size=${PFSize.XLarge}></ak-spinner>`,
+                      )
+                    : html``}
             </div>
-        </td> `;
+        </td>`;
+    }
+
+    renderUsedBy(usedBy: UsedBy[]): TemplateResult {
+        if (usedBy.length < 1) {
+            return html` <span>${t`Not used by any other object.`}</span>`;
+        }
+        return html`<ul class="pf-c-list">
+            ${usedBy.map((ub) => {
+                let consequence = "";
+                switch (ub.action) {
+                    case UsedByActionEnum.Cascade:
+                        consequence = t`object will be DELETED`;
+                        break;
+                    case UsedByActionEnum.CascadeMany:
+                        consequence = t`connection will be deleted`;
+                        break;
+                    case UsedByActionEnum.SetDefault:
+                        consequence = t`reference will be reset to default value`;
+                        break;
+                    case UsedByActionEnum.SetNull:
+                        consequence = t`reference will be set to an empty value`;
+                        break;
+                }
+                return html`<li>${t`${ub.name} (${consequence})`}</li>`;
+            })}
+        </ul>`;
     }
 }
 
 @customElement("ak-forms-delete-bulk")
-export class DeleteBulkForm<ObjPkT extends string | number> extends ModalButton {
+export class DeleteBulkForm extends ModalButton {
     @property({ attribute: false })
-    objects: AKObject<ObjPkT>[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    objects: any[] = [];
 
     @property()
     objectLabel?: string;
 
     @property({ attribute: false })
-    usedBy?: (itemPk: AKObject<ObjPkT>) => Promise<UsedBy[]>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    metadata: (item: any) => BulkDeleteMetadata = (item: any) => {
+        const rec = item as Record<string, unknown>;
+        const meta = [];
+        if (Object.prototype.hasOwnProperty.call(rec, "name")) {
+            meta.push({ key: t`Name`, value: rec.name as string });
+        }
+        if (Object.prototype.hasOwnProperty.call(rec, "pk")) {
+            meta.push({ key: t`ID`, value: rec.pk as string });
+        }
+        return meta;
+    };
 
     @property({ attribute: false })
-    delete!: (itemPk: AKObject<ObjPkT>) => Promise<unknown>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    usedBy?: (item: any) => Promise<UsedBy[]>;
+
+    @property({ attribute: false })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete!: (item: any) => Promise<any>;
 
     confirm(): Promise<void> {
         return Promise.all(
@@ -170,7 +185,11 @@ export class DeleteBulkForm<ObjPkT extends string | number> extends ModalButton 
                 </form>
             </section>
             <section class="pf-c-page__main-section">
-                <ak-delete-objects-table .objects=${this.objects} .usedBy=${this.usedBy}>
+                <ak-delete-objects-table
+                    .objects=${this.objects}
+                    .usedBy=${this.usedBy}
+                    .metadata=${this.metadata}
+                >
                 </ak-delete-objects-table>
             </section>
             <footer class="pf-c-modal-box__footer">

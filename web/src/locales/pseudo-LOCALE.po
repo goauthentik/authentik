@@ -280,7 +280,7 @@ msgstr ""
 msgid "Are you sure you want to delete {0} {1}?"
 msgstr ""
 
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 msgid "Are you sure you want to delete {0} {objName} ?"
 msgstr ""
 
@@ -483,7 +483,7 @@ msgstr ""
 msgid "Build hash:"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Build hash: {0}"
 #~ msgstr ""
 
@@ -514,7 +514,7 @@ msgstr ""
 
 #: src/elements/forms/ConfirmationForm.ts
 #: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/ModalForm.ts
 #: src/pages/groups/MemberSelectModal.ts
 #: src/pages/users/GroupSelectModal.ts
@@ -1085,7 +1085,7 @@ msgid "Define how notifications are sent to users, like Email or Webhook."
 msgstr ""
 
 #: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/oauth/UserCodeList.ts
 #: src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationListPage.ts
@@ -1113,7 +1113,7 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Delete Authorization Code"
 #~ msgstr ""
 
@@ -1126,7 +1126,7 @@ msgstr ""
 msgid "Delete Consent"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Delete Refresh Code"
 #~ msgstr ""
 
@@ -1157,7 +1157,7 @@ msgid ""
 msgstr ""
 
 #: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 msgid "Delete {0}"
 msgstr ""
 
@@ -1222,8 +1222,8 @@ msgstr ""
 msgid "Digits"
 msgstr ""
 
-#: 
-#: 
+#:
+#:
 #~ msgid "Disable"
 #~ msgstr ""
 
@@ -1374,8 +1374,8 @@ msgstr ""
 msgid "Embedded outpost is not configured correctly."
 msgstr ""
 
-#: 
-#: 
+#:
+#:
 #~ msgid "Enable"
 #~ msgstr ""
 
@@ -1599,7 +1599,7 @@ msgid "Failed to delete policy cache"
 msgstr ""
 
 #: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 msgid "Failed to delete {0}: {1}"
 msgstr ""
 
@@ -2694,7 +2694,7 @@ msgstr ""
 msgid "Only send notification once, for example when sending a webhook into a chat channel."
 msgstr ""
 
-#: 
+#:
 #~ msgid "Open application"
 #~ msgstr ""
 
@@ -2771,7 +2771,7 @@ msgstr ""
 msgid "Outpost Deployment Info"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Outpost Service-connection"
 #~ msgstr ""
 
@@ -3411,7 +3411,7 @@ msgstr ""
 msgid "Selected policies are executed when the stage is submitted to validate the data."
 msgstr ""
 
-#: 
+#:
 #~ msgid "Selecting a service-connection enables the management of the outpost by authentik."
 #~ msgstr ""
 
@@ -3468,7 +3468,7 @@ msgstr ""
 msgid "Server validation of credential failed: {err}"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Service Connections"
 #~ msgstr ""
 
@@ -3476,8 +3476,8 @@ msgstr ""
 msgid "Service Provider Binding"
 msgstr ""
 
-#: 
-#: 
+#:
+#:
 #~ msgid "Service connection"
 #~ msgstr ""
 
@@ -3796,8 +3796,8 @@ msgstr ""
 msgid "Successfully created rule."
 msgstr ""
 
-#: 
-#: 
+#:
+#:
 #~ msgid "Successfully created service-connection."
 #~ msgstr ""
 
@@ -3846,7 +3846,7 @@ msgid "Successfully created user."
 msgstr ""
 
 #: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 msgid "Successfully deleted {0} {1}"
 msgstr ""
 
@@ -3950,8 +3950,8 @@ msgstr ""
 msgid "Successfully updated rule."
 msgstr ""
 
-#: 
-#: 
+#:
+#:
 #~ msgid "Successfully updated service-connection."
 #~ msgstr ""
 
@@ -4143,7 +4143,7 @@ msgstr ""
 msgid "The following objects use {0}:"
 msgstr ""
 
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 msgid "The following objects use {objName}"
 msgstr ""
 
@@ -4381,7 +4381,7 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Unmanaged"
 #~ msgstr ""
 
@@ -4907,7 +4907,7 @@ msgstr ""
 msgid "authentik LDAP Backend"
 msgstr ""
 
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 msgid "connecting object will be deleted"
 msgstr ""
 
@@ -4920,17 +4920,17 @@ msgid "no tabs defined"
 msgstr ""
 
 #: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 msgid "object will be DELETED"
 msgstr ""
 
 #: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 msgid "reference will be reset to default value"
 msgstr ""
 
 #: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 msgid "reference will be set to an empty value"
 msgstr ""
 
@@ -4948,7 +4948,7 @@ msgid "{0} ({1})"
 msgstr ""
 
 #: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 msgid "{0} ({consequence})"
 msgstr ""
 

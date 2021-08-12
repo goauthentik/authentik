@@ -5,7 +5,7 @@ import { TablePage } from "../../../elements/table/TablePage";
 
 import "../../../elements/buttons/ModalButton";
 import "../../../elements/buttons/SpinnerButton";
-import "../../../elements/forms/DeleteForm";
+import "../../../elements/forms/DeleteBulkForm";
 import "../../../elements/forms/ModalForm";
 import { TableColumn } from "../../../elements/table/Table";
 import { PAGE_SIZE } from "../../../constants";
@@ -50,17 +50,16 @@ export class IPReputationListPage extends TablePage<IPReputation> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
             objectLabel=${t`IP Reputation`}
-            .usedBy=${() => {
+            .objects=${this.selectedElements}
+            .usedBy=${(item: IPReputation) => {
                 return new PoliciesApi(DEFAULT_CONFIG).policiesReputationIpsUsedByList({
                     id: item.pk,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: IPReputation) => {
                 return new PoliciesApi(DEFAULT_CONFIG).policiesReputationIpsDestroy({
                     id: item.pk,
                 });
@@ -69,7 +68,7 @@ export class IPReputationListPage extends TablePage<IPReputation> {
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: IPReputation): TemplateResult[] {

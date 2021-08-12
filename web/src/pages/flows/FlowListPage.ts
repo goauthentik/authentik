@@ -4,7 +4,7 @@ import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/buttons/SpinnerButton";
-import "../../elements/forms/DeleteForm";
+import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
 import "../../elements/forms/ConfirmationForm";
 import "./FlowForm";
@@ -55,17 +55,16 @@ export class FlowListPage extends TablePage<Flow> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`Flow`}
-            .usedBy=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Flow(s)`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: Flow) => {
                 return new FlowsApi(DEFAULT_CONFIG).flowsInstancesUsedByList({
                     slug: item.slug,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: Flow) => {
                 return new FlowsApi(DEFAULT_CONFIG).flowsInstancesDestroy({
                     slug: item.slug,
                 });
@@ -74,7 +73,7 @@ export class FlowListPage extends TablePage<Flow> {
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: Flow): TemplateResult[] {
