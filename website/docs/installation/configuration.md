@@ -20,6 +20,7 @@ All of these variables can be set to values, but you can also use a URI-like for
 - `AUTHENTIK_POSTGRESQL__HOST`: Hostname of your PostgreSQL Server
 - `AUTHENTIK_POSTGRESQL__NAME`: Database name
 - `AUTHENTIK_POSTGRESQL__USER`: Database user
+- `AUTHENTIK_POSTGRESQL__PORT`: Database port, defaults to 5432
 - `AUTHENTIK_POSTGRESQL__PASSWORD`: Database password, defaults to the environment variable `POSTGRES_PASSWORD`
 
 ## Redis Settings
