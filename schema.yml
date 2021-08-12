@@ -22468,7 +22468,6 @@ components:
           description: Property mappings used for group creation/updating.
       required:
       - base_dn
-      - bind_cn
       - component
       - name
       - pk
@@ -22565,8 +22564,6 @@ components:
           description: Property mappings used for group creation/updating.
       required:
       - base_dn
-      - bind_cn
-      - bind_password
       - name
       - server_uri
       - slug

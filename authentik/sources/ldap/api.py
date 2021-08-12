@@ -1,10 +1,13 @@
 """Source API Views"""
+from typing import Any
+
 from django.http.response import Http404
 from django.utils.text import slugify
 from django_filters.filters import AllValuesMultipleFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -19,6 +22,16 @@ from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 
 class LDAPSourceSerializer(SourceSerializer):
     """LDAP Source Serializer"""
+
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
+        """Check that only a single source has password_sync on"""
+        sync_users_password = attrs.get("sync_users_password", True)
+        if sync_users_password:
+            if LDAPSource.objects.filter(sync_users_password=True).exists():
+                raise ValidationError(
+                    "Only a single LDAP Source with password synchronization is allowed"
+                )
+        return super().validate(attrs)
 
     class Meta:
         model = LDAPSource
