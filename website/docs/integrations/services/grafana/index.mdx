@@ -95,3 +95,7 @@ contains(groups[*], 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana
 ```
 
 For more information on group/role mappings, see [Grafana's docs](https://grafana.com/docs/grafana/latest/auth/generic-oauth/#role-mapping).
+
+### Grafana Configuration Considerations
+
+Make sure in your configuration that `root_url` is set correctly, otherwise your redirect url might get processed incorrectly. For example, if your grafana instance is running on the default configuration and is accesible behind a reverse proxy at `https://grafana.company`, your redirect url will end up looking like this, `https://grafana.company:3000`.
