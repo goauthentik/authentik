@@ -379,7 +379,8 @@ export abstract class Table<T> extends LitElement {
                                       aria-label=${t`Select all rows`}
                                       @input=${(ev: InputEvent) => {
                                           if ((ev.target as HTMLInputElement).checked) {
-                                              this.selectedElements = this.data?.results || [];
+                                              this.selectedElements =
+                                                  this.data?.results.slice(0) || [];
                                           } else {
                                               this.selectedElements = [];
                                           }
