@@ -6,7 +6,7 @@ import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
-import "../../elements/forms/DeleteForm";
+import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ProxyForm";
 import "../../elements/forms/ModalForm";
 import { until } from "lit-html/directives/until";
@@ -72,17 +72,16 @@ export class StageListPage extends TablePage<Stage> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
-            objectLabel=${item?.verboseName}
-            .usedBy=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Stage(s)`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: Stage) => {
                 return new StagesApi(DEFAULT_CONFIG).stagesAllUsedByList({
                     stageUuid: item.pk,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: Stage) => {
                 return new StagesApi(DEFAULT_CONFIG).stagesAllDestroy({
                     stageUuid: item.pk,
                 });
@@ -91,7 +90,7 @@ export class StageListPage extends TablePage<Stage> {
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: Stage): TemplateResult[] {

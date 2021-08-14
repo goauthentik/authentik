@@ -24,8 +24,9 @@ const ConfigErrorReportingEnvironment = "error_reporting_environment"
 
 // APIController main controller which connects to the authentik api via http and ws
 type APIController struct {
-	Client *api.APIClient
-	token  string
+	Client  *api.APIClient
+	Outpost api.Outpost
+	token   string
 
 	Server Outpost
 
@@ -72,6 +73,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 
 		reloadOffset: time.Duration(rand.Intn(10)) * time.Second,
 		instanceUUID: uuid.New(),
+		Outpost:      outpost,
 	}
 	ac.logger.Debugf("HA Reload offset: %s", ac.reloadOffset)
 	ac.initWS(akURL, strfmt.UUID(outpost.Pk))

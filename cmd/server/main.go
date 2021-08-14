@@ -27,7 +27,7 @@ func main() {
 	}
 	err = config.LoadConfig("./local.env.yml")
 	if err != nil {
-		log.WithError(err).Debug("failed to local config")
+		log.WithError(err).Debug("no local config to load")
 	}
 	err = config.FromEnv()
 	if err != nil {

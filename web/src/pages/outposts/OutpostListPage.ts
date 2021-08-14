@@ -12,7 +12,7 @@ import "./OutpostForm";
 import "./OutpostDeploymentModal";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/ModalForm";
-import "../../elements/forms/DeleteForm";
+import "../../elements/forms/DeleteBulkForm";
 import { PAGE_SIZE } from "../../constants";
 import { Outpost, OutpostsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -65,7 +65,16 @@ export class OutpostListPage extends TablePage<Outpost> {
 
     row(item: Outpost): TemplateResult[] {
         return [
-            html`${item.name}`,
+            html`<div>
+                <div>${item.name}</div>
+                ${item.config.authentik_host === ""
+                    ? html`<i class="pf-icon pf-icon-warning-triangle"></i>
+                          <small
+                              >${t`Warning: authentik Domain is not configured, authentication will not work.`}</small
+                          >`
+                    : html`<i class="pf-icon pf-icon-ok"></i>
+                          <small> ${t`Logging in via ${item.config.authentik_host}.`} </small>`}
+            </div>`,
             html`<ul>
                 ${item.providersObj?.map((p) => {
                     return html`<li>
@@ -130,17 +139,16 @@ export class OutpostListPage extends TablePage<Outpost> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`Outpost`}
-            .usedBy=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Outpost(s)`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: Outpost) => {
                 return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesUsedByList({
                     uuid: item.pk,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: Outpost) => {
                 return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesDestroy({
                     uuid: item.pk,
                 });
@@ -149,7 +157,7 @@ export class OutpostListPage extends TablePage<Outpost> {
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     renderToolbar(): TemplateResult {

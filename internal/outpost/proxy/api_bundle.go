@@ -36,9 +36,13 @@ func intToPointer(i int) *int {
 }
 
 func (pb *providerBundle) replaceLocal(url string) string {
-	if strings.Contains(url, "localhost:8000") {
-		f := strings.ReplaceAll(url, "localhost:8000", pb.s.ak.Client.GetConfig().Host)
-		f = strings.ReplaceAll(f, "http", pb.s.ak.Client.GetConfig().Scheme)
+	if strings.HasPrefix(url, "http://localhost:8000") {
+		authentikHost, c := pb.s.ak.Outpost.Config["authentik_host"]
+		if !c {
+			pb.log.Warning("Outpost has localhost API Connection but no authentik_host is configured.")
+			return url
+		}
+		f := strings.ReplaceAll(url, "http://localhost:8000", authentikHost.(string))
 		return f
 	}
 	return url

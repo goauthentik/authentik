@@ -3,7 +3,7 @@ import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { Table, TableColumn } from "../../elements/table/Table";
 
-import "../../elements/forms/DeleteForm";
+import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
 import "../../elements/forms/ProxyForm";
 import "./StageBindingForm";
@@ -44,26 +44,25 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`Stage binding`}
-            .usedBy=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Stage binding(s)`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: FlowStageBinding) => {
                 return new FlowsApi(DEFAULT_CONFIG).flowsBindingsUsedByList({
                     fsbUuid: item.pk,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: FlowStageBinding) => {
                 return new FlowsApi(DEFAULT_CONFIG).flowsBindingsDestroy({
                     fsbUuid: item.pk,
                 });
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete Binding`}
+                ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: FlowStageBinding): TemplateResult[] {

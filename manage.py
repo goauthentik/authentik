@@ -2,8 +2,33 @@
 """Django manage.py"""
 import os
 import sys
+import warnings
 
 from defusedxml import defuse_stdlib
+
+warnings.filterwarnings(
+    "ignore",
+    message="defusedxml.lxml is no longer supported and will be removed in a future release.",
+)
+warnings.filterwarnings(
+    "ignore",
+    message="defusedxml.cElementTree is deprecated, import from defusedxml.ElementTree instead.",
+)
+warnings.filterwarnings(
+    "ignore",
+    message=(
+        "'django_prometheus' defines default_app_config = 'django_prometheus.apps.DjangoPromethe"
+        "usConfig'. Django now detects this configuration automatically. You can remove d"
+        "efault_app_config."
+    ),
+)
+warnings.filterwarnings(
+    "ignore",
+    message=(
+        "'dbbackup' defines default_app_config = 'dbbackup.apps.DbbackupConfig'. Django now det"
+        "ects this configuration automatically. You can remove default_app_config."
+    ),
+)
 
 defuse_stdlib()
 

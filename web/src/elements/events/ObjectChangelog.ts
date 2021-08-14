@@ -4,7 +4,6 @@ import { AKResponse } from "../../api/Client";
 import { Table, TableColumn } from "../table/Table";
 import { Event, EventsApi } from "authentik-api";
 
-import "../forms/DeleteForm";
 import "../Tabs";
 import "../buttons/ModalButton";
 import "../buttons/SpinnerButton";
