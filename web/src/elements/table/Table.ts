@@ -233,6 +233,18 @@ export abstract class Table<T> extends LitElement {
                                           this.selectedElements.splice(index, 1);
                                       }
                                       this.requestUpdate();
+                                      // Unset select-all if selectedElements is empty
+                                      if (this.selectedElements.length < 1) {
+                                          const selectAllCheckbox =
+                                              this.shadowRoot?.querySelector<HTMLInputElement>(
+                                                  "[name=select-all]",
+                                              );
+                                          if (!selectAllCheckbox) {
+                                              return;
+                                          }
+                                          selectAllCheckbox.checked = false;
+                                          this.requestUpdate();
+                                      }
                                   }}
                               />
                           </td>`
@@ -375,11 +387,13 @@ export abstract class Table<T> extends LitElement {
                         ${this.checkbox
                             ? html`<td class="pf-c-table__check" role="cell">
                                   <input
+                                      name="select-all"
                                       type="checkbox"
                                       aria-label=${t`Select all rows`}
                                       @input=${(ev: InputEvent) => {
                                           if ((ev.target as HTMLInputElement).checked) {
-                                              this.selectedElements = this.data?.results || [];
+                                              this.selectedElements =
+                                                  this.data?.results.slice(0) || [];
                                           } else {
                                               this.selectedElements = [];
                                           }

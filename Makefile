@@ -43,6 +43,8 @@ gen-web:
 		-g typescript-fetch \
 		-o /local/web/api \
 		--additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
+	# npm i runs tsc as part of the installation process
+	cd web/api && npm i
 	cd web/api && npx tsc
 
 gen-outpost:
