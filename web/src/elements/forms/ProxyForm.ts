@@ -12,21 +12,23 @@ export class ProxyForm extends Form<unknown> {
     @property({ attribute: false })
     typeMap: Record<string, string> = {};
 
+    innerElement?: Form<unknown>;
+
     submit(ev: Event): Promise<unknown> | undefined {
-        return (this.shadowRoot?.firstElementChild as Form<unknown>).submit(ev);
+        return this.innerElement?.submit(ev);
     }
 
     resetForm(): void {
-        (this.shadowRoot?.firstElementChild as Form<unknown> | undefined)?.resetForm();
+        this.innerElement?.resetForm();
     }
 
     getSuccessMessage(): string {
-        return (this.shadowRoot?.firstElementChild as Form<unknown>).getSuccessMessage();
+        return this.innerElement?.getSuccessMessage() || "";
     }
 
     async requestUpdate(name?: PropertyKey | undefined, oldValue?: unknown): Promise<unknown> {
         const result = await super.requestUpdate(name, oldValue);
-        await (this.shadowRoot?.firstElementChild as Form<unknown> | undefined)?.requestUpdate();
+        await this.innerElement?.requestUpdate();
         return result;
     }
 
@@ -35,11 +37,11 @@ export class ProxyForm extends Form<unknown> {
         if (this.type in this.typeMap) {
             elementName = this.typeMap[this.type];
         }
-        const el = document.createElement(elementName);
+        this.innerElement = document.createElement(elementName) as Form<unknown>;
         for (const k in this.args) {
-            el.setAttribute(k, this.args[k] as string);
-            (el as unknown as Record<string, unknown>)[k] = this.args[k];
+            this.innerElement.setAttribute(k, this.args[k] as string);
+            (this.innerElement as unknown as Record<string, unknown>)[k] = this.args[k];
         }
-        return html`${el}`;
+        return html`${this.innerElement}`;
     }
 }

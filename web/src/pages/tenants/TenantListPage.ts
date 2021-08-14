@@ -3,7 +3,7 @@ import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
-import "../../elements/forms/DeleteForm";
+import "../../elements/forms/DeleteBulkForm";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
@@ -50,17 +50,16 @@ export class TenantListPage extends TablePage<Tenant> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`Tenant`}
-            .usedBy=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Tenant(s)`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: Tenant) => {
                 return new CoreApi(DEFAULT_CONFIG).coreTenantsUsedByList({
                     tenantUuid: item.tenantUuid,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: Tenant) => {
                 return new CoreApi(DEFAULT_CONFIG).coreTenantsDestroy({
                     tenantUuid: item.tenantUuid,
                 });
@@ -69,7 +68,7 @@ export class TenantListPage extends TablePage<Tenant> {
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: Tenant): TemplateResult[] {

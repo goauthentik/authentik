@@ -5,7 +5,7 @@ import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/forms/ModalForm";
-import "../../elements/forms/DeleteForm";
+import "../../elements/forms/DeleteBulkForm";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
@@ -69,17 +69,16 @@ export class ApplicationListPage extends TablePage<Application> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`Application`}
-            .usedBy=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Application(s)`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: Application) => {
                 return new CoreApi(DEFAULT_CONFIG).coreApplicationsUsedByList({
                     slug: item.slug,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: Application) => {
                 return new CoreApi(DEFAULT_CONFIG).coreApplicationsDestroy({
                     slug: item.slug,
                 });
@@ -88,7 +87,7 @@ export class ApplicationListPage extends TablePage<Application> {
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: Application): TemplateResult[] {

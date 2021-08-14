@@ -14,8 +14,6 @@ This installation method is for test-setups and small-scale productive setups.
 
 Download the latest `docker-compose.yml` from [here](https://raw.githubusercontent.com/goauthentik/authentik/version/2021.7.3/docker-compose.yml). Place it in a directory of your choice.
 
-To optionally enable error-reporting, run `echo AUTHENTIK_ERROR_REPORTING__ENABLED=true >> .env`
-
 To optionally deploy a different version run `echo AUTHENTIK_TAG=2021.7.3 >> .env`
 
 If this is a fresh authentik install run the following commands to generate a password:
@@ -78,7 +76,7 @@ docker-compose pull
 docker-compose up -d
 ```
 
-The compose file statically references the latest version available at the time of downloading the compose file, which can be overridden with the `SERVER_TAG` environment variable.
+The compose file statically references the latest version available at the time of downloading the compose file, which can be overridden with the `AUTHENTIK_TAG` environment variable.
 
 authentik will then be reachable on port 9000 (HTTP) and port 9443 (HTTPS).
 

@@ -46,6 +46,8 @@ export class ModalButton extends LitElement {
     @property({ type: Boolean })
     open = false;
 
+    handlerBound = false;
+
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -64,14 +66,22 @@ export class ModalButton extends LitElement {
         ];
     }
 
-    constructor() {
-        super();
-        window.addEventListener("keyup", (e) => {
-            if (e.code === "Escape") {
-                this.resetForms();
-                this.open = false;
-            }
-        });
+    firstUpdated(): void {
+        if (this.handlerBound) return;
+        window.addEventListener("keyup", this.keyUpHandler);
+        this.handlerBound = true;
+    }
+
+    keyUpHandler = (e: KeyboardEvent): void => {
+        if (e.code === "Escape") {
+            this.resetForms();
+            this.open = false;
+        }
+    };
+
+    disconnectedCallback(): void {
+        super.disconnectedCallback();
+        window.removeEventListener("keyup", this.keyUpHandler);
     }
 
     resetForms(): void {

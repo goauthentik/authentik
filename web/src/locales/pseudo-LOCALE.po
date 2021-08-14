@@ -122,13 +122,19 @@ msgstr ""
 msgid "Actions over the last 24 hours"
 msgstr ""
 
+#: src/pages/users/UserListPage.ts
+msgid "Activate"
+msgstr ""
+
 #: src/pages/groups/MemberSelectModal.ts
+#: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Active"
 msgstr ""
 
 #: src/pages/groups/MemberSelectModal.ts
+#: src/pages/users/GroupSelectModal.ts
 msgid "Add"
 msgstr ""
 
@@ -270,7 +276,11 @@ msgid ""
 "This will cause all policies to be re-evaluated on their next usage."
 msgstr ""
 
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
+msgid "Are you sure you want to delete {0} {1}?"
+msgstr ""
+
+#: src/elements/forms/DeleteBulkForm.ts
 msgid "Are you sure you want to delete {0} {objName} ?"
 msgstr ""
 
@@ -473,7 +483,7 @@ msgstr ""
 msgid "Build hash:"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Build hash: {0}"
 #~ msgstr ""
 
@@ -503,9 +513,11 @@ msgid "Can be in the format of 'unix://' when connecting to a local docker daemo
 msgstr ""
 
 #: src/elements/forms/ConfirmationForm.ts
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/ModalForm.ts
 #: src/pages/groups/MemberSelectModal.ts
+#: src/pages/users/GroupSelectModal.ts
 #: src/pages/users/UserActiveForm.ts
 msgid "Cancel"
 msgstr ""
@@ -556,6 +568,10 @@ msgstr ""
 msgid "Change password"
 msgstr ""
 
+#: src/pages/users/UserListPage.ts
+msgid "Change status"
+msgstr ""
+
 #: src/pages/user-settings/settings/UserSettingsPassword.ts
 msgid "Change your password"
 msgstr ""
@@ -596,6 +612,10 @@ msgstr ""
 
 #: src/pages/applications/ApplicationViewPage.ts
 msgid "Check access"
+msgstr ""
+
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
+msgid "Check outposts."
 msgstr ""
 
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
@@ -856,6 +876,10 @@ msgstr ""
 msgid "Copy download URL"
 msgstr ""
 
+#: src/pages/users/UserListPage.ts
+msgid "Copy recovery link"
+msgstr ""
+
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/ApplicationListPage.ts
@@ -1036,6 +1060,10 @@ msgstr ""
 msgid "Date Time"
 msgstr ""
 
+#: src/pages/users/UserListPage.ts
+msgid "Deactivate"
+msgstr ""
+
 #: src/pages/flows/FlowForm.ts
 msgid "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
 msgstr ""
@@ -1056,7 +1084,8 @@ msgstr ""
 msgid "Define how notifications are sent to users, like Email or Webhook."
 msgstr ""
 
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/oauth/UserCodeList.ts
 #: src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationListPage.ts
@@ -1084,7 +1113,7 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Delete Authorization Code"
 #~ msgstr ""
 
@@ -1097,7 +1126,7 @@ msgstr ""
 msgid "Delete Consent"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Delete Refresh Code"
 #~ msgstr ""
 
@@ -1127,7 +1156,8 @@ msgid ""
 "confirmation. Use a consent stage to ensure the user is aware of their actions."
 msgstr ""
 
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 msgid "Delete {0}"
 msgstr ""
 
@@ -1192,10 +1222,10 @@ msgstr ""
 msgid "Digits"
 msgstr ""
 
-#: src/pages/users/UserListPage.ts
-#: src/pages/users/UserListPage.ts
-msgid "Disable"
-msgstr ""
+#:
+#:
+#~ msgid "Disable"
+#~ msgstr ""
 
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
 msgid "Disable Duo authenticator"
@@ -1278,7 +1308,6 @@ msgstr ""
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 #: src/pages/sources/plex/PlexSourceViewPage.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
-#: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Edit"
 msgstr ""
@@ -1325,18 +1354,30 @@ msgstr ""
 msgid "Email info:"
 msgstr ""
 
+#: src/pages/users/UserListPage.ts
+msgid "Email recovery link"
+msgstr ""
+
 #: src/pages/events/utils.ts
 msgid "Email sent"
+msgstr ""
+
+#: src/pages/users/UserResetEmailForm.ts
+msgid "Email stage"
 msgstr ""
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Email: Text field with Email type."
 msgstr ""
 
-#: src/pages/users/UserListPage.ts
-#: src/pages/users/UserListPage.ts
-msgid "Enable"
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
+msgid "Embedded outpost is not configured correctly."
 msgstr ""
+
+#:
+#:
+#~ msgid "Enable"
+#~ msgstr ""
 
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
 msgid "Enable Duo authenticator"
@@ -1557,7 +1598,8 @@ msgstr ""
 msgid "Failed to delete policy cache"
 msgstr ""
 
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 msgid "Failed to delete {0}: {1}"
 msgstr ""
 
@@ -1774,6 +1816,7 @@ msgstr ""
 #: src/interfaces/AdminInterface.ts
 #: src/pages/admin-overview/AdminOverviewPage.ts
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/users/UserForm.ts
 msgid "Groups"
 msgstr ""
 
@@ -1818,7 +1861,6 @@ msgid "Hide service-accounts"
 msgstr ""
 
 #: src/pages/events/RuleForm.ts
-#: src/pages/groups/GroupForm.ts
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -1838,6 +1880,7 @@ msgstr ""
 msgid "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage."
 msgstr ""
 
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
 msgid "ID"
 msgstr ""
@@ -1932,6 +1975,10 @@ msgstr ""
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "In case you can't access any other method."
+msgstr ""
+
+#: src/pages/users/UserListPage.ts
+msgid "Inactive"
 msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
@@ -2202,6 +2249,8 @@ msgstr ""
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
+#: src/pages/users/UserForm.ts
+#: src/pages/users/UserResetEmailForm.ts
 msgid "Loading..."
 msgstr ""
 
@@ -2213,6 +2262,10 @@ msgstr ""
 
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "Log the currently pending user in."
+msgstr ""
+
+#: src/pages/outposts/OutpostListPage.ts
+msgid "Logging in via {0}."
 msgstr ""
 
 #: src/pages/events/utils.ts
@@ -2286,6 +2339,7 @@ msgstr ""
 
 #: src/pages/groups/GroupForm.ts
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/users/GroupSelectModal.ts
 msgid "Members"
 msgstr ""
 
@@ -2354,6 +2408,7 @@ msgstr ""
 msgid "My Applications"
 msgstr ""
 
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/crypto/CertificateKeyPairForm.ts
@@ -2425,6 +2480,7 @@ msgstr ""
 #: src/pages/stages/user_logout/UserLogoutStageForm.ts
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 #: src/pages/user-settings/UserSelfForm.ts
+#: src/pages/users/GroupSelectModal.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
@@ -2471,6 +2527,7 @@ msgstr ""
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/pages/users/GroupSelectModal.ts
 #: src/pages/users/UserListPage.ts
 msgid "No"
 msgstr ""
@@ -2553,6 +2610,10 @@ msgstr ""
 msgid "Not synced yet."
 msgstr ""
 
+#: src/elements/forms/DeleteBulkForm.ts
+msgid "Not used by any other object."
+msgstr ""
+
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
@@ -2633,7 +2694,7 @@ msgstr ""
 msgid "Only send notification once, for example when sending a webhook into a chat channel."
 msgstr ""
 
-#: 
+#:
 #~ msgid "Open application"
 #~ msgstr ""
 
@@ -2710,7 +2771,7 @@ msgstr ""
 msgid "Outpost Deployment Info"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Outpost Service-connection"
 #~ msgstr ""
 
@@ -3058,6 +3119,7 @@ msgid "Receive a push notification on your phone to prove your identity."
 msgstr ""
 
 #: src/pages/flows/FlowForm.ts
+#: src/pages/users/UserListPage.ts
 msgid "Recovery"
 msgstr ""
 
@@ -3072,6 +3134,10 @@ msgstr ""
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Recovery keys"
+msgstr ""
+
+#: src/pages/users/UserListPage.ts
+msgid "Recovery link cannot be emailed, user has no email address saved."
 msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -3104,6 +3170,10 @@ msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression."
+msgstr ""
+
+#: src/pages/users/UserListPage.ts
+msgid "Regular user"
 msgstr ""
 
 #: src/pages/applications/ApplicationViewPage.ts
@@ -3153,7 +3223,6 @@ msgstr ""
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr ""
 
-#: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Reset Password"
 msgstr ""
@@ -3310,6 +3379,10 @@ msgstr ""
 msgid "Select an identification method."
 msgstr ""
 
+#: src/pages/users/GroupSelectModal.ts
+msgid "Select groups to add user to"
+msgstr ""
+
 #: src/flows/stages/identification/IdentificationStage.ts
 msgid "Select one of the sources below to login."
 msgstr ""
@@ -3338,7 +3411,7 @@ msgstr ""
 msgid "Selected policies are executed when the stage is submitted to validate the data."
 msgstr ""
 
-#: 
+#:
 #~ msgid "Selecting a service-connection enables the management of the outpost by authentik."
 #~ msgstr ""
 
@@ -3354,12 +3427,20 @@ msgstr ""
 msgid "Send Email again."
 msgstr ""
 
+#: src/pages/users/UserListPage.ts
+msgid "Send link"
+msgstr ""
+
 #: src/pages/events/RuleListPage.ts
 msgid "Send notifications whenever a specific Event is created and matched by policies."
 msgstr ""
 
 #: src/pages/events/TransportForm.ts
 msgid "Send once"
+msgstr ""
+
+#: src/pages/users/UserListPage.ts
+msgid "Send recovery link to user"
 msgstr ""
 
 #: src/pages/events/RuleListPage.ts
@@ -3387,7 +3468,7 @@ msgstr ""
 msgid "Server validation of credential failed: {err}"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Service Connections"
 #~ msgstr ""
 
@@ -3395,8 +3476,8 @@ msgstr ""
 msgid "Service Provider Binding"
 msgstr ""
 
-#: 
-#: 
+#:
+#:
 #~ msgid "Service connection"
 #~ msgstr ""
 
@@ -3715,8 +3796,8 @@ msgstr ""
 msgid "Successfully created rule."
 msgstr ""
 
-#: 
-#: 
+#:
+#:
 #~ msgid "Successfully created service-connection."
 #~ msgstr ""
 
@@ -3764,7 +3845,8 @@ msgstr ""
 msgid "Successfully created user."
 msgstr ""
 
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 msgid "Successfully deleted {0} {1}"
 msgstr ""
 
@@ -3783,6 +3865,10 @@ msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderImportForm.ts
 msgid "Successfully imported provider."
+msgstr ""
+
+#: src/pages/users/UserResetEmailForm.ts
+msgid "Successfully sent email."
 msgstr ""
 
 #: src/pages/applications/ApplicationCheckAccessForm.ts
@@ -3864,8 +3950,8 @@ msgstr ""
 msgid "Successfully updated rule."
 msgstr ""
 
-#: 
-#: 
+#:
+#:
 #~ msgid "Successfully updated service-connection."
 #~ msgstr ""
 
@@ -3917,6 +4003,8 @@ msgstr ""
 msgid "Successfully updated {0} {1}"
 msgstr ""
 
+#: src/pages/users/GroupSelectModal.ts
+#: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Superuser"
 msgstr ""
@@ -4051,7 +4139,11 @@ msgstr ""
 msgid "The external URL you'll authenticate at. Can be the same domain as authentik."
 msgstr ""
 
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
+msgid "The following objects use {0}:"
+msgstr ""
+
+#: src/elements/forms/DeleteBulkForm.ts
 msgid "The following objects use {objName}"
 msgstr ""
 
@@ -4289,7 +4381,7 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Unmanaged"
 #~ msgstr ""
 
@@ -4508,7 +4600,6 @@ msgstr ""
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
 #: src/pages/users/UserListPage.ts
-#: src/pages/users/UserListPage.ts
 msgid "User"
 msgstr ""
 
@@ -4554,6 +4645,10 @@ msgstr ""
 msgid "User password writeback"
 msgstr ""
 
+#: src/pages/users/UserListPage.ts
+msgid "User status"
+msgstr ""
+
 #: src/pages/events/utils.ts
 msgid "User was written to"
 msgstr ""
@@ -4570,6 +4665,10 @@ msgstr ""
 #: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/users/UserForm.ts
 msgid "User's display name."
+msgstr ""
+
+#: src/pages/users/UserListPage.ts
+msgid "User(s)"
 msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
@@ -4677,6 +4776,7 @@ msgstr ""
 
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
 #: src/pages/events/RuleForm.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Warning"
@@ -4688,6 +4788,10 @@ msgstr ""
 
 #: src/pages/providers/ProviderListPage.ts
 msgid "Warning: Provider not assigned to any application."
+msgstr ""
+
+#: src/pages/outposts/OutpostListPage.ts
+msgid "Warning: authentik Domain is not configured, authentication will not work."
 msgstr ""
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
@@ -4782,6 +4886,7 @@ msgstr ""
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/pages/users/GroupSelectModal.ts
 #: src/pages/users/UserListPage.ts
 msgid "Yes"
 msgstr ""
@@ -4802,23 +4907,30 @@ msgstr ""
 msgid "authentik LDAP Backend"
 msgstr ""
 
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 msgid "connecting object will be deleted"
+msgstr ""
+
+#: src/elements/forms/DeleteBulkForm.ts
+msgid "connection will be deleted"
 msgstr ""
 
 #: src/elements/Tabs.ts
 msgid "no tabs defined"
 msgstr ""
 
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 msgid "object will be DELETED"
 msgstr ""
 
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 msgid "reference will be reset to default value"
 msgstr ""
 
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 msgid "reference will be set to an empty value"
 msgstr ""
 
@@ -4835,7 +4947,8 @@ msgstr ""
 msgid "{0} ({1})"
 msgstr ""
 
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 msgid "{0} ({consequence})"
 msgstr ""
 

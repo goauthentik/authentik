@@ -5,7 +5,7 @@ import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
-import "../../elements/forms/DeleteForm";
+import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
 import "../../elements/forms/ProxyForm";
 import "./ldap/LDAPProviderForm";
@@ -59,17 +59,16 @@ export class ProviderListPage extends TablePage<Provider> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`Provider`}
-            .usedBy=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Provider(s)`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: Provider) => {
                 return new ProvidersApi(DEFAULT_CONFIG).providersAllUsedByList({
                     id: item.pk,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: Provider) => {
                 return new ProvidersApi(DEFAULT_CONFIG).providersAllDestroy({
                     id: item.pk,
                 });
@@ -78,7 +77,7 @@ export class ProviderListPage extends TablePage<Provider> {
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: Provider): TemplateResult[] {

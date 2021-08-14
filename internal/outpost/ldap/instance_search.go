@@ -123,6 +123,10 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 			Values: []string{u.Username},
 		},
 		{
+			Name:   "sAMAccountName",
+			Values: []string{u.Username},
+		},
+		{
 			Name:   "uid",
 			Values: []string{u.Uid},
 		},

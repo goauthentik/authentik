@@ -18,6 +18,7 @@ module.exports = {
                 "installation/beta",
                 "installation/configuration",
                 "installation/reverse-proxy",
+                "installation/automated-install",
             ],
         },
         {

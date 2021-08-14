@@ -3,7 +3,7 @@ import { CSSResult, customElement, html, property, TemplateResult } from "lit-el
 import { AKResponse } from "../../../api/Client";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import "../../../elements/forms/DeleteForm";
+import "../../../elements/forms/DeleteBulkForm";
 import "../../../elements/forms/ModalForm";
 import "../../../elements/buttons/ModalButton";
 import "../../../elements/buttons/Dropdown";
@@ -96,12 +96,11 @@ export class UserTokenList extends Table<Token> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`Token`}
-            .delete=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Token(s)`}
+            .objects=${this.selectedElements}
+            .delete=${(item: Token) => {
                 return new CoreApi(DEFAULT_CONFIG).coreTokensDestroy({
                     identifier: item.identifier,
                 });
@@ -110,7 +109,7 @@ export class UserTokenList extends Table<Token> {
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: Token): TemplateResult[] {

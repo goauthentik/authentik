@@ -18,6 +18,7 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import AKGlobal from "../authentik.css";
 
 import { unsafeHTML } from "lit-html/directives/unsafe-html";
+import "../elements/LoadingOverlay";
 import "./access_denied/FlowAccessDenied";
 import "./stages/authenticator_static/AuthenticatorStaticStage";
 import "./stages/authenticator_totp/AuthenticatorTOTPStage";
@@ -46,7 +47,6 @@ import {
 import { DEFAULT_CONFIG, tenant } from "../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
-import { PFSize } from "../elements/Spinner";
 import { TITLE_DEFAULT } from "../constants";
 import { configureSentry } from "../api/Sentry";
 import { WebsocketClient } from "../common/ws";
@@ -68,16 +68,6 @@ export class FlowExecutor extends LitElement implements StageHost {
 
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFButton, PFTitle, PFList, PFBackgroundImage, AKGlobal].concat(css`
-            .ak-loading {
-                display: flex;
-                height: 100%;
-                width: 100%;
-                justify-content: center;
-                align-items: center;
-                position: absolute;
-                background-color: var(--pf-global--BackgroundColor--dark-transparent-100);
-                z-index: 1;
-            }
             .ak-hidden {
                 display: none;
             }
@@ -94,7 +84,6 @@ export class FlowExecutor extends LitElement implements StageHost {
     constructor() {
         super();
         this.ws = new WebsocketClient();
-        this.ws.connect();
         this.flowSlug = window.location.pathname.split("/")[3];
     }
 
@@ -194,12 +183,6 @@ export class FlowExecutor extends LitElement implements StageHost {
                 </ul>
             </footer>`,
         } as ChallengeTypes;
-    }
-
-    renderLoading(): TemplateResult {
-        return html`<div class="ak-loading">
-            <ak-spinner size=${PFSize.XLarge}></ak-spinner>
-        </div>`;
     }
 
     renderChallenge(): TemplateResult {
@@ -309,7 +292,10 @@ export class FlowExecutor extends LitElement implements StageHost {
         if (!this.challenge) {
             return html`<ak-empty-state ?loading=${true} header=${t`Loading`}> </ak-empty-state>`;
         }
-        return html` ${this.loading ? this.renderLoading() : html``} ${this.renderChallenge()} `;
+        return html`
+            ${this.loading ? html`<ak-loading-overlay></ak-loading-overlay>` : html``}
+            ${this.renderChallenge()}
+        `;
     }
 
     render(): TemplateResult {

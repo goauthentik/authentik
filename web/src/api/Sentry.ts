@@ -35,6 +35,17 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
                     if (hint.originalException instanceof Response) {
                         return null;
                     }
+                    if (event.exception) {
+                        me().then(user => {
+                            Sentry.showReportDialog({
+                                eventId: event.event_id,
+                                user: {
+                                    email: user.user.email,
+                                    name: user.user.name,
+                                }
+                            });
+                        });
+                    }
                     return event;
                 },
             });

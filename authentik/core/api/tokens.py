@@ -48,7 +48,7 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
     """Token Viewset"""
 
     lookup_field = "identifier"
-    queryset = Token.filter_not_expired()
+    queryset = Token.objects.all()
     serializer_class = TokenSerializer
     search_fields = [
         "identifier",

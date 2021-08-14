@@ -20,6 +20,7 @@ from time import time
 
 import structlog
 from celery.schedules import crontab
+from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
 from sentry_sdk import init as sentry_init
 from sentry_sdk.api import set_tag
 from sentry_sdk.integrations.celery import CeleryIntegration
@@ -396,7 +397,7 @@ if _ERROR_REPORTING:
     if build_hash == "":
         build_hash = "tagged"
     set_tag("authentik.build_hash", build_hash)
-    set_tag("authentik.env", "kubernetes" if "KUBERNETES_PORT" in os.environ else "compose")
+    set_tag("authentik.env", "kubernetes" if SERVICE_HOST_ENV_NAME in os.environ else "compose")
     set_tag("authentik.component", "backend")
     j_print(
         "Error reporting is enabled",
@@ -485,6 +486,7 @@ _LOGGING_HANDLER_MAP = {
     "kubernetes": "INFO",
     "asyncio": "WARNING",
     "aioredis": "WARNING",
+    "s3transfer": "WARNING",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false

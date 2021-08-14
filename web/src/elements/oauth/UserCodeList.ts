@@ -3,7 +3,7 @@ import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { Table, TableColumn } from "../table/Table";
 
-import "../forms/DeleteForm";
+import "../forms/DeleteBulkForm";
 import { PAGE_SIZE } from "../../constants";
 import { ExpiringBaseGrantModel, Oauth2Api } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -34,17 +34,16 @@ export class UserOAuthCodeList extends Table<ExpiringBaseGrantModel> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`Authorization Code`}
-            .usedBy=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Authorization Code(s)`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: ExpiringBaseGrantModel) => {
                 return new Oauth2Api(DEFAULT_CONFIG).oauth2AuthorizationCodesUsedByList({
                     id: item.pk,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: ExpiringBaseGrantModel) => {
                 return new Oauth2Api(DEFAULT_CONFIG).oauth2AuthorizationCodesDestroy({
                     id: item.pk,
                 });
@@ -53,7 +52,7 @@ export class UserOAuthCodeList extends Table<ExpiringBaseGrantModel> {
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: ExpiringBaseGrantModel): TemplateResult[] {

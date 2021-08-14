@@ -3185,6 +3185,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/core/users/{id}/recovery_email/:
+    get:
+      operationId: core_users_recovery_email_retrieve
+      description: Create a temporary link that a user can use to recover their accounts
+      parameters:
+      - in: query
+        name: email_stage
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '404':
+          description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/users/{id}/used_by/:
     get:
       operationId: core_users_used_by_list
@@ -22438,7 +22468,6 @@ components:
           description: Property mappings used for group creation/updating.
       required:
       - base_dn
-      - bind_cn
       - component
       - name
       - pk
@@ -22535,8 +22564,6 @@ components:
           description: Property mappings used for group creation/updating.
       required:
       - base_dn
-      - bind_cn
-      - bind_password
       - name
       - server_uri
       - slug
@@ -27604,6 +27631,11 @@ components:
           type: string
           format: date-time
           nullable: true
+        groups:
+          type: array
+          items:
+            type: string
+            format: uuid
         email:
           type: string
           format: email
@@ -29494,7 +29526,11 @@ components:
           type: string
           format: date-time
           readOnly: true
+        embedded_outpost_host:
+          type: string
+          readOnly: true
       required:
+      - embedded_outpost_host
       - http_headers
       - http_host
       - http_is_secure
@@ -29776,6 +29812,11 @@ components:
         groups:
           type: array
           items:
+            type: string
+            format: uuid
+        groups_obj:
+          type: array
+          items:
             $ref: '#/components/schemas/Group'
           readOnly: true
         email:
@@ -29795,6 +29836,7 @@ components:
       required:
       - avatar
       - groups
+      - groups_obj
       - is_superuser
       - name
       - pk
@@ -30071,6 +30113,11 @@ components:
           type: string
           format: date-time
           nullable: true
+        groups:
+          type: array
+          items:
+            type: string
+            format: uuid
         email:
           type: string
           format: email
@@ -30080,6 +30127,7 @@ components:
           type: object
           additionalProperties: {}
       required:
+      - groups
       - name
       - username
     UserSelf:

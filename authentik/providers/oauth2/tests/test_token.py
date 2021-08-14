@@ -13,6 +13,7 @@ from authentik.providers.oauth2.constants import (
     GRANT_TYPE_AUTHORIZATION_CODE,
     GRANT_TYPE_REFRESH_TOKEN,
 )
+from authentik.providers.oauth2.errors import TokenError
 from authentik.providers.oauth2.generators import generate_client_id, generate_client_secret
 from authentik.providers.oauth2.models import AuthorizationCode, OAuth2Provider, RefreshToken
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
@@ -51,6 +52,31 @@ class TestToken(OAuthTestCase):
         )
         params = TokenParams.parse(request, provider, provider.client_id, provider.client_secret)
         self.assertEqual(params.provider, provider)
+        with self.assertRaises(TokenError):
+            TokenParams.parse(request, provider, provider.client_id, generate_client_secret())
+
+    def test_request_auth_code_invalid(self):
+        """test request param"""
+        provider = OAuth2Provider.objects.create(
+            name="test",
+            client_id=generate_client_id(),
+            client_secret=generate_client_secret(),
+            authorization_flow=Flow.objects.first(),
+            redirect_uris="http://testserver",
+            rsa_key=CertificateKeyPair.objects.first(),
+        )
+        header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
+        request = self.factory.post(
+            "/",
+            data={
+                "grant_type": GRANT_TYPE_AUTHORIZATION_CODE,
+                "code": "foo",
+                "redirect_uri": "http://testserver",
+            },
+            HTTP_AUTHORIZATION=f"Basic {header}",
+        )
+        with self.assertRaises(TokenError):
+            TokenParams.parse(request, provider, provider.client_id, provider.client_secret)
 
     def test_request_refresh_token(self):
         """test request param"""

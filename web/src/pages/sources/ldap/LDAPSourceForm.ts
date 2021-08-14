@@ -129,21 +129,19 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             ${t`To use SSL instead, use 'ldaps://' and disable this option.`}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Bind CN`} ?required=${true} name="bindCn">
+                    <ak-form-element-horizontal label=${t`Bind CN`} name="bindCn">
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.bindCn)}"
                             class="pf-c-form-control"
-                            required
                         />
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Bind Password`}
-                        ?required=${true}
                         ?writeOnly=${this.instance !== undefined}
                         name="bindPassword"
                     >
-                        <input type="text" value="" class="pf-c-form-control" required />
+                        <input type="text" value="" class="pf-c-form-control" />
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Base DN`} ?required=${true} name="baseDn">
                         <input
