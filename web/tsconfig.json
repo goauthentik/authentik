@@ -27,5 +27,8 @@
                 "strict": true
             }
         ]
-    }
+    },
+    "exclude": [
+        "api/src/",
+    ]
 }
