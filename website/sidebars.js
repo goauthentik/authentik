@@ -86,6 +86,7 @@ module.exports = {
                         "integrations/services/home-assistant/index",
                         "integrations/services/minio/index",
                         "integrations/services/nextcloud/index",
+                        "integrations/services/portainer/index",
                         "integrations/services/rancher/index",
                         "integrations/services/sentry/index",
                         "integrations/services/sonarr/index",
