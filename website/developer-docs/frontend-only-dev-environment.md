@@ -43,9 +43,8 @@ If you want to only make changes on the UI, you don't need a backend running fro
     This makes the local web files and the config file available to the authentik server.
 
 5. Run `docker-compose up -d` to apply those changes to your containers.
-6. Run `make gen-web` in the project root directory to generate the API Client used by the web interfaces
-7. `cd web`
-8. Run `npm i` and then `npm run watch` to start the build process.
+6. `cd web`
+7. Run `npm i` and then `npm run watch` to start the build process.
 
 You can now access authentik on http://localhost:9000 (or https://localhost:9443).
 

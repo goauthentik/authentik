@@ -163,7 +163,6 @@ jobs:
       - name: Build web api client and web ui
         run: |
           export NODE_ENV=production
-          make gen-web
           cd web
           npm i
           npm run build
