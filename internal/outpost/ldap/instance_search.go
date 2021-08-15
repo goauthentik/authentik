@@ -183,6 +183,10 @@ func (pi *ProviderInstance) GroupEntry(g LDAPGroup) *ldap.Entry {
 			Values: []string{g.uid},
 		},
 		{
+			Name:   "sAMAccountName",
+			Values: []string{g.cn},
+		},
+		{
 			Name:   "gidNumber",
 			Values: []string{g.gidNumber},
 		},
