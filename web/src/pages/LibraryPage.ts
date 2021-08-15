@@ -14,7 +14,7 @@ import { Application, CoreApi } from "authentik-api";
 import { AKResponse } from "../api/Client";
 import { DEFAULT_CONFIG } from "../api/Config";
 import { me } from "../api/Users";
-import { loading } from "../utils";
+import { loading, truncate } from "../utils";
 import "../elements/PageHeader";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
