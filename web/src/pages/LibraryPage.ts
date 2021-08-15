@@ -25,6 +25,7 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import AKGlobal from "../authentik.css";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 @customElement("ak-library-app")
 export class LibraryApplication extends LitElement {
@@ -35,6 +36,7 @@ export class LibraryApplication extends LitElement {
         return [
             PFBase,
             PFCard,
+            PFButton,
             PFAvatar,
             AKGlobal,
             css`
@@ -68,23 +70,20 @@ export class LibraryApplication extends LitElement {
         if (!this.application) {
             return html`<ak-spinner></ak-spinner>`;
         }
-        return html` <a
-            href="${ifDefined(this.application.launchUrl ?? "")}"
-            class="pf-c-card pf-m-hoverable pf-m-compact"
-        >
+        return html` <div class="pf-c-card pf-m-hoverable pf-m-compact ak-lib-card">
             <div class="pf-c-card__header">
                 ${this.application.metaIcon
-                    ? html`<img
+                    ? html`<a href="${ifDefined(this.application.launchUrl ?? "")}"><img
                           class="app-icon pf-c-avatar"
                           src="${ifDefined(this.application.metaIcon)}"
                           alt="Application Icon"
-                      />`
+                      /></a>`
                     : html`<i class="fas fas fa-share-square"></i>`}
                 ${until(
                     me().then((u) => {
                         if (!u.user.isSuperuser) return html``;
                         return html`
-                            <a href="#/core/applications/${this.application?.slug}">
+                            <a class="pf-c-button pf-m-control pf-m-small" href="#/core/applications/${this.application?.slug}">
                                 <i class="fas fa-pencil-alt"></i>
                             </a>
                         `;
@@ -92,13 +91,13 @@ export class LibraryApplication extends LitElement {
                 )}
             </div>
             <div class="pf-c-card__title">
-                <p id="card-1-check-label">${this.application.name}</p>
+                <p id="card-1-check-label"><a href="${ifDefined(this.application.launchUrl ?? "")}">${this.application.name}</a></p>
                 <div class="pf-c-content">
                     <small>${this.application.metaPublisher}</small>
                 </div>
             </div>
             <div class="pf-c-card__body">${truncate(this.application.metaDescription, 35)}</div>
-        </a>`;
+        </div>`;
     }
 }
 
