@@ -73,17 +73,21 @@ export class LibraryApplication extends LitElement {
         return html` <div class="pf-c-card pf-m-hoverable pf-m-compact ak-lib-card">
             <div class="pf-c-card__header">
                 ${this.application.metaIcon
-                    ? html`<a href="${ifDefined(this.application.launchUrl ?? "")}"><img
-                          class="app-icon pf-c-avatar"
-                          src="${ifDefined(this.application.metaIcon)}"
-                          alt="Application Icon"
+                    ? html`<a href="${ifDefined(this.application.launchUrl ?? "")}"
+                          ><img
+                              class="app-icon pf-c-avatar"
+                              src="${ifDefined(this.application.metaIcon)}"
+                              alt="Application Icon"
                       /></a>`
                     : html`<i class="fas fas fa-share-square"></i>`}
                 ${until(
                     me().then((u) => {
                         if (!u.user.isSuperuser) return html``;
                         return html`
-                            <a class="pf-c-button pf-m-control pf-m-small" href="#/core/applications/${this.application?.slug}">
+                            <a
+                                class="pf-c-button pf-m-control pf-m-small"
+                                href="#/core/applications/${this.application?.slug}"
+                            >
                                 <i class="fas fa-pencil-alt"></i>
                             </a>
                         `;
@@ -91,7 +95,11 @@ export class LibraryApplication extends LitElement {
                 )}
             </div>
             <div class="pf-c-card__title">
-                <p id="card-1-check-label"><a href="${ifDefined(this.application.launchUrl ?? "")}">${this.application.name}</a></p>
+                <p id="card-1-check-label">
+                    <a href="${ifDefined(this.application.launchUrl ?? "")}"
+                        >${this.application.name}</a
+                    >
+                </p>
                 <div class="pf-c-content">
                     <small>${this.application.metaPublisher}</small>
                 </div>

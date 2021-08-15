@@ -168,7 +168,7 @@ class DockerController(BaseController):
 
     def down(self):
         if self.outpost.managed != "":
-            return None
+            return
         try:
             container, _ = self._get_container()
             if container.status == "running":
