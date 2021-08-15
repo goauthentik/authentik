@@ -2,6 +2,7 @@
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
+TIMESTAMP = $(shell date "+%s")
 
 all: lint-fix lint test gen
 
@@ -42,9 +43,7 @@ gen-web:
 		-i /local/schema.yml \
 		-g typescript-fetch \
 		-o /local/web/api \
-		--additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
-	# npm i runs tsc as part of the installation process
-	cd web/api && npm i
+		--additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=@goauthentik/api,npmVersion=${TIMESTAMP}.0.0
 
 gen-outpost:
 	docker run \

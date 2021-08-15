@@ -1,0 +1,22 @@
+name: authentik-web-api-publish
+on:
+  push:
+    branches: [ master, '*', next, version* ]
+    paths:
+      - 'schema.yml'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      # Setup .npmrc file to publish to npm
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '12.x'
+          registry-url: 'https://registry.npmjs.org'
+      - run: make gen-web
+      - run: |
+          cd web/api/
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
