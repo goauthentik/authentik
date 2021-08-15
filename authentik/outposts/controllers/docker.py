@@ -102,6 +102,8 @@ class DockerController(BaseController):
 
     # pylint: disable=too-many-return-statements
     def up(self):
+        if self.outpost.managed != "":
+            return None
         try:
             container, has_been_created = self._get_container()
             if has_been_created:
@@ -165,6 +167,8 @@ class DockerController(BaseController):
             raise ControllerException(str(exc)) from exc
 
     def down(self):
+        if self.outpost.managed != "":
+            return None
         try:
             container, _ = self._get_container()
             if container.status == "running":
