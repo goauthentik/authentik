@@ -55,7 +55,7 @@ In Portainer, under _Settings_, _Authentication_, Select _OAuth_ and _Custom_
 Portainer by default shows commas between each item in the Scopes field.  Do **NOT** use commas.  Use a _space_
 :::
 
-![](./vport1.png)
+![](./port1.png)
 
 ### Step 3 - Authentik
 
