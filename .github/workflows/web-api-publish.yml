@@ -17,6 +17,7 @@ jobs:
       - run: make gen-web
       - run: |
           cd web/api/
+          npm run build
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
