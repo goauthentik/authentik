@@ -97,6 +97,7 @@ export class LibraryApplication extends LitElement {
                     <small>${this.application.metaPublisher}</small>
                 </div>
             </div>
+            <div class="pf-c-card__body">${truncate(this.application.metaDescription, 35)}</div>
         </a>`;
     }
 }
