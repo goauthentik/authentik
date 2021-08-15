@@ -1,4 +1,4 @@
-import { EventsApi, NotificationTransport, NotificationTransportModeEnum } from "authentik-api";
+import { EventsApi, NotificationTransport, NotificationTransportModeEnum } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";

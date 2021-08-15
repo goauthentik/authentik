@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { OutpostHealth } from "authentik-api";
+import { OutpostHealth } from "@goauthentik/api";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import "../../elements/Spinner";
 import AKGlobal from "../../authentik.css";

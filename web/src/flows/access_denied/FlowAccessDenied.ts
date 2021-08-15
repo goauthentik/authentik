@@ -1,4 +1,4 @@
-import { AccessDeniedChallenge, FlowChallengeResponseRequest } from "authentik-api";
+import { AccessDeniedChallenge, FlowChallengeResponseRequest } from "@goauthentik/api";
 import { CSSResult, customElement, html, TemplateResult } from "lit-element";
 import { BaseStage } from "../stages/base";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";

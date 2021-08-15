@@ -9,7 +9,7 @@ import "../../elements/forms/DeleteBulkForm";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
-import { Application, CoreApi } from "authentik-api";
+import { Application, CoreApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import "./ApplicationForm";
 

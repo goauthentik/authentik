@@ -1,5 +1,5 @@
 import { customElement, property } from "lit-element";
-import { CoreApi, UserMetrics } from "authentik-api";
+import { CoreApi, UserMetrics } from "@goauthentik/api";
 import { AKChart } from "./Chart";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ChartData } from "chart.js";

@@ -14,7 +14,7 @@ import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/ModalForm";
 import "../../elements/forms/DeleteBulkForm";
 import { PAGE_SIZE } from "../../constants";
-import { Outpost, OutpostsApi } from "authentik-api";
+import { Outpost, OutpostsApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { PFSize } from "../../elements/Spinner";

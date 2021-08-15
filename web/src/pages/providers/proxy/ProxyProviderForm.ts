@@ -5,7 +5,7 @@ import {
     ProvidersApi,
     ProxyMode,
     ProxyProvider,
-} from "authentik-api";
+} from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { css, CSSResult, customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";

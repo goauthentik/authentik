@@ -21,7 +21,7 @@ import "../../../elements/events/ObjectChangelog";
 import "../../../elements/forms/ModalForm";
 import "./LDAPSourceForm";
 import { until } from "lit-html/directives/until";
-import { LDAPSource, SourcesApi, StatusEnum } from "authentik-api";
+import { LDAPSource, SourcesApi, StatusEnum } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";
 

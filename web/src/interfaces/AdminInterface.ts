@@ -30,7 +30,7 @@ import {
     EVENT_SIDEBAR_TOGGLE,
     VERSION,
 } from "../constants";
-import { AdminApi, Version } from "authentik-api";
+import { AdminApi, Version } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../api/Config";
 import { WebsocketClient } from "../common/ws";
 

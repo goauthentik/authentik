@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { Table, TableColumn } from "../../elements/table/Table";
-import { PoliciesApi, PolicyBinding } from "authentik-api";
+import { PoliciesApi, PolicyBinding } from "@goauthentik/api";
 
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/Tabs";

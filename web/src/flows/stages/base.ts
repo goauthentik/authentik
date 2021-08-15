@@ -1,4 +1,4 @@
-import { ErrorDetail } from "authentik-api";
+import { ErrorDetail } from "@goauthentik/api";
 import { html, LitElement, property, TemplateResult } from "lit-element";
 
 export interface StageHost {

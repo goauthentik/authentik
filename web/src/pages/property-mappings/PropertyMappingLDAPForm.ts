@@ -1,4 +1,4 @@
-import { LDAPPropertyMapping, PropertymappingsApi } from "authentik-api";
+import { LDAPPropertyMapping, PropertymappingsApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";

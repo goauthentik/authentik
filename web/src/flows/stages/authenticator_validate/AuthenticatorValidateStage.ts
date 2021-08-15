@@ -16,7 +16,7 @@ import {
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest,
     DeviceChallenge,
-} from "authentik-api";
+} from "@goauthentik/api";
 
 export enum DeviceClasses {
     STATIC = "static",

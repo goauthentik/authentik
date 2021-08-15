@@ -1,4 +1,4 @@
-import { DenyStage, StagesApi } from "authentik-api";
+import { DenyStage, StagesApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";

@@ -13,7 +13,7 @@ import "../../elements/buttons/Dropdown";
 import "../policies/BoundPoliciesList";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
-import { FlowsApi, FlowStageBinding, StagesApi } from "authentik-api";
+import { FlowsApi, FlowStageBinding, StagesApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 

@@ -10,7 +10,7 @@ import "../../../elements/forms/ModalForm";
 import "./PromptForm";
 import { TableColumn } from "../../../elements/table/Table";
 import { PAGE_SIZE } from "../../../constants";
-import { Prompt, StagesApi } from "authentik-api";
+import { Prompt, StagesApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 
 @customElement("ak-stage-prompt-list")

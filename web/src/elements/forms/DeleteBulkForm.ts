@@ -5,7 +5,7 @@ import { ModalButton } from "../buttons/ModalButton";
 import { MessageLevel } from "../messages/Message";
 import { showMessage } from "../messages/MessageContainer";
 import "../buttons/SpinnerButton";
-import { UsedBy, UsedByActionEnum } from "authentik-api";
+import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import { until } from "lit-html/directives/until";
 import { Table, TableColumn } from "../table/Table";

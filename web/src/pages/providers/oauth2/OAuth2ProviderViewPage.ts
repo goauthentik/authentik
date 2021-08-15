@@ -22,7 +22,7 @@ import "../../../elements/events/ObjectChangelog";
 import "../RelatedApplicationButton";
 import "./OAuth2ProviderForm";
 import { convertToTitle } from "../../../utils";
-import { OAuth2Provider, OAuth2ProviderSetupURLs, ProvidersApi } from "authentik-api";
+import { OAuth2Provider, OAuth2ProviderSetupURLs, ProvidersApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";
 

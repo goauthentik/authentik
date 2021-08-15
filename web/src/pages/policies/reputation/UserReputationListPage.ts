@@ -9,7 +9,7 @@ import "../../../elements/forms/DeleteBulkForm";
 import "../../../elements/forms/ModalForm";
 import { TableColumn } from "../../../elements/table/Table";
 import { PAGE_SIZE } from "../../../constants";
-import { UserReputation, PoliciesApi } from "authentik-api";
+import { UserReputation, PoliciesApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 
 @customElement("ak-policy-reputation-user-list")

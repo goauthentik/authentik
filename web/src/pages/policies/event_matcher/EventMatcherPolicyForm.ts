@@ -1,4 +1,4 @@
-import { AdminApi, EventMatcherPolicy, EventsApi, PoliciesApi } from "authentik-api";
+import { AdminApi, EventMatcherPolicy, EventsApi, PoliciesApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";

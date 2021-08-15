@@ -8,7 +8,7 @@ import "../../elements/buttons/TokenCopyButton";
 import "../../elements/forms/DeleteBulkForm";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
-import { CoreApi, Token } from "authentik-api";
+import { CoreApi, Token } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-token-list")

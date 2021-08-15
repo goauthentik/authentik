@@ -6,7 +6,7 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import AKGlobal from "../../../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
-import { FlowsApi, FlowsInstancesListDesignationEnum } from "authentik-api";
+import { FlowsApi, FlowsInstancesListDesignationEnum } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 

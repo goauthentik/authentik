@@ -1,5 +1,5 @@
 import { customElement, property } from "lit-element";
-import { Coordinate, CoreApi } from "authentik-api";
+import { Coordinate, CoreApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AKChart } from "./Chart";
 import { ChartData } from "chart.js";

@@ -43,7 +43,7 @@ import {
     FlowsApi,
     RedirectChallenge,
     ShellChallenge,
-} from "authentik-api";
+} from "@goauthentik/api";
 import { DEFAULT_CONFIG, tenant } from "../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";

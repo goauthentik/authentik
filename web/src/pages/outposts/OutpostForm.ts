@@ -1,4 +1,4 @@
-import { Outpost, OutpostsApi, OutpostTypeEnum, ProvidersApi } from "authentik-api";
+import { Outpost, OutpostsApi, OutpostTypeEnum, ProvidersApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";

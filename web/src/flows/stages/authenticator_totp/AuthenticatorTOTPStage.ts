@@ -17,7 +17,7 @@ import { MessageLevel } from "../../../elements/messages/Message";
 import {
     AuthenticatorTOTPChallenge,
     AuthenticatorTOTPChallengeResponseRequest,
-} from "authentik-api";
+} from "@goauthentik/api";
 import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-stage-authenticator-totp")

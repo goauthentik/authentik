@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { CoreApi, Group } from "authentik-api";
+import { CoreApi, Group } from "@goauthentik/api";
 import { customElement, property } from "lit-element";
 import { TemplateResult, html } from "lit-html";
 import { AKResponse } from "../../api/Client";

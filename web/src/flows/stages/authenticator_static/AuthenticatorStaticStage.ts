@@ -14,7 +14,7 @@ import "../../FormStatic";
 import {
     AuthenticatorStaticChallenge,
     AuthenticatorStaticChallengeResponseRequest,
-} from "authentik-api";
+} from "@goauthentik/api";
 import { ifDefined } from "lit-html/directives/if-defined";
 
 export const STATIC_TOKEN_STYLE = css`

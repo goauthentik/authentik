@@ -1,4 +1,4 @@
-import { Prompt, PromptTypeEnum, StagesApi } from "authentik-api";
+import { Prompt, PromptTypeEnum, StagesApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";

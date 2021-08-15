@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
-import { Event, EventsApi } from "authentik-api";
+import { Event, EventsApi } from "@goauthentik/api";
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { EventWithContext } from "../../api/Events";
