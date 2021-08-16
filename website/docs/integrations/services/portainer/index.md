@@ -47,7 +47,7 @@ In Portainer, under _Settings_, _Authentication_, Select _OAuth_ and _Custom_
 - Access Token URL: `https://authentik.company/application/o/token/`
 - Redirect URL: `https://port.company`
 - Resource URL: `https://authentik.company/application/o/userinfo/`
-- Logout URL: `https://authentik.company/o/portainer/end-session/`
+- Logout URL: `https://authentik.company/application/o/portainer/end-session/`
 - User Identifier: `email`
 - Scopes: `email opennid profile`
 
