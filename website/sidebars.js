@@ -98,6 +98,7 @@ module.exports = {
                         "integrations/services/vmware-vcenter/index",
                         "integrations/services/wekan/index",
                         "integrations/services/wiki-js/index",
+                        "integrations/services/wordpress/index",
                         "integrations/services/zabbix/index",
                     ],
                 },
