@@ -12,7 +12,7 @@ class UserWriteStageSerializer(StageSerializer):
     class Meta:
 
         model = UserWriteStage
-        fields = StageSerializer.Meta.fields
+        fields = StageSerializer.Meta.fields + ["create_users_as_inactive"]
 
 
 class UserWriteStageViewSet(UsedByMixin, ModelViewSet):
@@ -20,3 +20,5 @@ class UserWriteStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = UserWriteStage.objects.all()
     serializer_class = UserWriteStageSerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]

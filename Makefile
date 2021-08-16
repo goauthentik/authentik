@@ -32,7 +32,7 @@ gen-build:
 
 gen-clean:
 	rm -rf web/api/src/
-	rm -rf outpost/api/
+	rm -rf api/
 
 gen-web:
 	docker run \
@@ -43,7 +43,8 @@ gen-web:
 		-g typescript-fetch \
 		-o /local/web/api \
 		--additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
-	cd web/api && npx tsc
+	# npm i runs tsc as part of the installation process
+	cd web/api && npm i
 
 gen-outpost:
 	docker run \
@@ -55,11 +56,14 @@ gen-outpost:
 		--git-user-id api \
 		-i /local/schema.yml \
 		-g go \
-		-o /local/outpost/api \
+		-o /local/api \
 		--additional-properties=packageName=api,enumClassPrefix=true,useOneOfDiscriminatorLookup=true
-	rm -f outpost/api/go.mod outpost/api/go.sum
+	rm -f api/go.mod api/go.sum
 
 gen: gen-build gen-clean gen-web gen-outpost
+
+migrate:
+	python -m lifecycle.migrate
 
 run:
 	go run -v cmd/server/main.go

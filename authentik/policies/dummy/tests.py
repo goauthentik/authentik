@@ -15,9 +15,7 @@ class TestDummyPolicy(TestCase):
 
     def test_policy(self):
         """test policy .passes"""
-        policy: DummyPolicy = DummyPolicy.objects.create(
-            name="dummy", wait_min=1, wait_max=2
-        )
+        policy: DummyPolicy = DummyPolicy.objects.create(name="dummy", wait_min=1, wait_max=2)
         result = policy.passes(self.request)
         self.assertFalse(result.passing)
         self.assertEqual(result.messages, ("dummy",))

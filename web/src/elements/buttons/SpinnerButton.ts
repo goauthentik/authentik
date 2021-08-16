@@ -1,4 +1,12 @@
-import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import {
+    css,
+    CSSResult,
+    customElement,
+    html,
+    LitElement,
+    property,
+    TemplateResult,
+} from "lit-element";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
@@ -8,7 +16,7 @@ import { ERROR_CLASS, PRIMARY_CLASS, PROGRESS_CLASS, SUCCESS_CLASS } from "../..
 
 @customElement("ak-spinner-button")
 export class SpinnerButton extends LitElement {
-    @property({type: Boolean})
+    @property({ type: Boolean })
     isRunning = false;
 
     @property()
@@ -60,17 +68,20 @@ export class SpinnerButton extends LitElement {
                 }
                 this.setLoading();
                 if (this.callAction) {
-                    this.callAction().then(() => {
-                        this.setDone(SUCCESS_CLASS);
-                    }).catch(() => {
-                        this.setDone(ERROR_CLASS);
-                    });
+                    this.callAction()
+                        .then(() => {
+                            this.setDone(SUCCESS_CLASS);
+                        })
+                        .catch(() => {
+                            this.setDone(ERROR_CLASS);
+                        });
                 }
-            }}>
+            }}
+        >
             ${this.isRunning
-                ? html` <span class="pf-c-button__progress">
-                            <ak-spinner size=${PFSize.Medium}></ak-spinner>
-                        </span>`
+                ? html`<span class="pf-c-button__progress">
+                      <ak-spinner size=${PFSize.Medium}></ak-spinner>
+                  </span>`
                 : ""}
             <slot></slot>
         </button>`;

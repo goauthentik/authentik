@@ -13,29 +13,26 @@ import { EmailChallenge, EmailChallengeResponseRequest } from "authentik-api";
 
 @customElement("ak-stage-email")
 export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponseRequest> {
-
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle, AKGlobal];
     }
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state
-                ?loading="${true}"
-                header=${t`Loading`}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">
-                    ${this.challenge.flowInfo?.title}
-                </h1>
+                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
             <div class="pf-c-login__main-body">
-                <form class="pf-c-form" @submit=${(e: Event) => { this.submitForm(e); }}>
+                <form
+                    class="pf-c-form"
+                    @submit=${(e: Event) => {
+                        this.submitForm(e);
+                    }}
+                >
                     <div class="pf-c-form__group">
-                        <p>
-                            ${t`Check your Emails for a password reset link.`}
-                        </p>
+                        <p>${t`Check your Emails for a password reset link.`}</p>
                     </div>
 
                     <div class="pf-c-form__group pf-m-action">
@@ -46,9 +43,7 @@ export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponse
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links">
-                </ul>
+                <ul class="pf-c-login__main-footer-links"></ul>
             </footer>`;
     }
-
 }

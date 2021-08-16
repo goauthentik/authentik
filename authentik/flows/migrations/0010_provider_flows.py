@@ -7,9 +7,7 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 from authentik.flows.models import FlowDesignation
 
 
-def create_default_provider_authorization_flow(
-    apps: Apps, schema_editor: BaseDatabaseSchemaEditor
-):
+def create_default_provider_authorization_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     Flow = apps.get_model("authentik_flows", "Flow")
     FlowStageBinding = apps.get_model("authentik_flows", "FlowStageBinding")
 

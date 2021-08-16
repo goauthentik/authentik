@@ -15,10 +15,8 @@ import "../../../elements/EmptyState";
 import "../../../elements/Divider";
 import { PromptChallenge, PromptChallengeResponseRequest, StagePrompt } from "authentik-api";
 
-
 @customElement("ak-stage-prompt")
 export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeResponseRequest> {
-
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFAlert, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
     }
@@ -104,34 +102,41 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state
-                ?loading="${true}"
-                header=${t`Loading`}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">
-                    ${this.challenge.flowInfo?.title}
-                </h1>
+                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
             <div class="pf-c-login__main-body">
-                <form class="pf-c-form" @submit=${(e: Event) => {this.submitForm(e);}}>
+                <form
+                    class="pf-c-form"
+                    @submit=${(e: Event) => {
+                        this.submitForm(e);
+                    }}
+                >
                     ${this.challenge.fields.map((prompt) => {
                         // Special types that aren't rendered in a wrapper
-                        if (prompt.type === "static" || prompt.type === "hidden" || prompt.type === "separator") {
+                        if (
+                            prompt.type === "static" ||
+                            prompt.type === "hidden" ||
+                            prompt.type === "separator"
+                        ) {
                             return unsafeHTML(this.renderPromptInner(prompt));
                         }
                         return html`<ak-form-element
                             label="${prompt.label}"
                             ?required="${prompt.required}"
                             class="pf-c-form__group"
-                            .errors=${(this.challenge?.responseErrors || {})[prompt.fieldKey]}>
+                            .errors=${(this.challenge?.responseErrors || {})[prompt.fieldKey]}
+                        >
                             ${unsafeHTML(this.renderPromptInner(prompt))}
                         </ak-form-element>`;
                     })}
-                    ${"non_field_errors" in (this.challenge?.responseErrors || {}) ?
-                        this.renderNonFieldErrors(this.challenge?.responseErrors?.non_field_errors || []):
-                        html``}
+                    ${"non_field_errors" in (this.challenge?.responseErrors || {})
+                        ? this.renderNonFieldErrors(
+                              this.challenge?.responseErrors?.non_field_errors || [],
+                          )
+                        : html``}
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                             ${t`Continue`}
@@ -140,9 +145,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links">
-                </ul>
+                <ul class="pf-c-login__main-footer-links"></ul>
             </footer>`;
     }
-
 }

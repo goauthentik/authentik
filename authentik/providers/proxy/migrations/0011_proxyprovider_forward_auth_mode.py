@@ -25,11 +25,7 @@ class Migration(migrations.Migration):
             name="internal_host",
             field=models.TextField(
                 blank=True,
-                validators=[
-                    authentik.lib.models.DomainlessURLValidator(
-                        schemes=("http", "https")
-                    )
-                ],
+                validators=[authentik.lib.models.DomainlessURLValidator(schemes=("http", "https"))],
             ),
         ),
     ]

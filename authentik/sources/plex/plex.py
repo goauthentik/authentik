@@ -92,9 +92,7 @@ class PlexAuth:
                 if resource["provides"] != "server":
                     continue
                 if resource["clientIdentifier"] in self._source.allowed_servers:
-                    LOGGER.info(
-                        "Plex allowed access from server", name=resource["name"]
-                    )
+                    LOGGER.info("Plex allowed access from server", name=resource["name"])
                     return True
         return False
 
@@ -104,9 +102,7 @@ class PlexSourceFlowManager(SourceFlowManager):
 
     connection_type = PlexSourceConnection
 
-    def update_connection(
-        self, connection: PlexSourceConnection, **kwargs
-    ) -> PlexSourceConnection:
+    def update_connection(self, connection: PlexSourceConnection, **kwargs) -> PlexSourceConnection:
         """Set the access_token on the connection"""
         connection.plex_token = kwargs.get("plex_token")
         return connection

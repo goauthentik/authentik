@@ -19,18 +19,9 @@ from authentik.providers.oauth2.constants import (
     SCOPE_OPENID_EMAIL,
     SCOPE_OPENID_PROFILE,
 )
-from authentik.providers.oauth2.generators import (
-    generate_client_id,
-    generate_client_secret,
-)
+from authentik.providers.oauth2.generators import generate_client_id, generate_client_secret
 from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
-from tests.e2e.utils import (
-    USER,
-    SeleniumTestCase,
-    apply_migration,
-    object_manager,
-    retry,
-)
+from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, object_manager, retry
 
 LOGGER = get_logger()
 APPLICATION_SLUG = "grafana"
@@ -64,12 +55,8 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
                 "GF_AUTH_GENERIC_OAUTH_AUTH_URL": (
                     self.url("authentik_providers_oauth2:authorize")
                 ),
-                "GF_AUTH_GENERIC_OAUTH_TOKEN_URL": (
-                    self.url("authentik_providers_oauth2:token")
-                ),
-                "GF_AUTH_GENERIC_OAUTH_API_URL": (
-                    self.url("authentik_providers_oauth2:userinfo")
-                ),
+                "GF_AUTH_GENERIC_OAUTH_TOKEN_URL": (self.url("authentik_providers_oauth2:token")),
+                "GF_AUTH_GENERIC_OAUTH_API_URL": (self.url("authentik_providers_oauth2:userinfo")),
                 "GF_AUTH_SIGNOUT_REDIRECT_URL": (
                     self.url(
                         "authentik_core:if-session-end",
@@ -167,21 +154,15 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             USER().name,
         )
         self.assertEqual(
-            self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute(
-                "value"
-            ),
+            self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute("value"),
             USER().name,
         )
         self.assertEqual(
-            self.driver.find_element(
-                By.CSS_SELECTOR, "input[name=email]"
-            ).get_attribute("value"),
+            self.driver.find_element(By.CSS_SELECTOR, "input[name=email]").get_attribute("value"),
             USER().email,
         )
         self.assertEqual(
-            self.driver.find_element(
-                By.CSS_SELECTOR, "input[name=login]"
-            ).get_attribute("value"),
+            self.driver.find_element(By.CSS_SELECTOR, "input[name=login]").get_attribute("value"),
             USER().email,
         )
 
@@ -230,21 +211,15 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             USER().name,
         )
         self.assertEqual(
-            self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute(
-                "value"
-            ),
+            self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute("value"),
             USER().name,
         )
         self.assertEqual(
-            self.driver.find_element(
-                By.CSS_SELECTOR, "input[name=email]"
-            ).get_attribute("value"),
+            self.driver.find_element(By.CSS_SELECTOR, "input[name=email]").get_attribute("value"),
             USER().email,
         )
         self.assertEqual(
-            self.driver.find_element(
-                By.CSS_SELECTOR, "input[name=login]"
-            ).get_attribute("value"),
+            self.driver.find_element(By.CSS_SELECTOR, "input[name=login]").get_attribute("value"),
             USER().email,
         )
         self.driver.get("http://localhost:3000/logout")
@@ -295,9 +270,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         self.driver.find_element(By.CLASS_NAME, "btn-service--oauth").click()
         self.login()
 
-        self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor"))
-        )
+        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor")))
         sleep(1)
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
@@ -320,21 +293,15 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             USER().name,
         )
         self.assertEqual(
-            self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute(
-                "value"
-            ),
+            self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute("value"),
             USER().name,
         )
         self.assertEqual(
-            self.driver.find_element(
-                By.CSS_SELECTOR, "input[name=email]"
-            ).get_attribute("value"),
+            self.driver.find_element(By.CSS_SELECTOR, "input[name=email]").get_attribute("value"),
             USER().email,
         )
         self.assertEqual(
-            self.driver.find_element(
-                By.CSS_SELECTOR, "input[name=login]"
-            ).get_attribute("value"),
+            self.driver.find_element(By.CSS_SELECTOR, "input[name=login]").get_attribute("value"),
             USER().email,
         )
 
@@ -380,9 +347,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         self.driver.find_element(By.CLASS_NAME, "btn-service--oauth").click()
         self.login()
 
-        self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, "header > h1"))
-        )
+        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "header > h1")))
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "header > h1").text,
             "Permission denied",

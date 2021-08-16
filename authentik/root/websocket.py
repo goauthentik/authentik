@@ -8,7 +8,5 @@ from authentik.root.messages.consumer import MessageConsumer
 
 websocket_urlpatterns = [
     path("ws/outpost/<uuid:pk>/", SentryWSMiddleware(OutpostConsumer.as_asgi())),
-    path(
-        "ws/client/", AuthMiddlewareStack(SentryWSMiddleware(MessageConsumer.as_asgi()))
-    ),
+    path("ws/client/", AuthMiddlewareStack(SentryWSMiddleware(MessageConsumer.as_asgi()))),
 ]

@@ -23,3 +23,5 @@ class EventMatcherPolicyViewSet(UsedByMixin, ModelViewSet):
 
     queryset = EventMatcherPolicy.objects.all()
     serializer_class = EventMatcherPolicySerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]

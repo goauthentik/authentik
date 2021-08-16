@@ -9,6 +9,7 @@ export function me(): Promise<SessionUser> {
                 user: {
                     pk: -1,
                     isSuperuser: false,
+                    isActive: true,
                     groups: [],
                     avatar: "",
                     uid: "",

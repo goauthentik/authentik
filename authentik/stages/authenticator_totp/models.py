@@ -24,9 +24,7 @@ class AuthenticatorTOTPStage(ConfigurableStage, Stage):
 
     @property
     def serializer(self) -> BaseSerializer:
-        from authentik.stages.authenticator_totp.api import (
-            AuthenticatorTOTPStageSerializer,
-        )
+        from authentik.stages.authenticator_totp.api import AuthenticatorTOTPStageSerializer
 
         return AuthenticatorTOTPStageSerializer
 

@@ -12,20 +12,21 @@ export const FILL_LIGHT_MODE = "#f0f0f0";
 
 @customElement("ak-flow-diagram")
 export class FlowDiagram extends LitElement {
-
     _flowSlug?: string;
 
     @property()
     set flowSlug(value: string) {
         this._flowSlug = value;
-        new FlowsApi(DEFAULT_CONFIG).flowsInstancesDiagramRetrieve({
-            slug: value,
-        }).then((data) => {
-            this.diagram = FlowChart.parse(data.diagram || "");
-        });
+        new FlowsApi(DEFAULT_CONFIG)
+            .flowsInstancesDiagramRetrieve({
+                slug: value,
+            })
+            .then((data) => {
+                this.diagram = FlowChart.parse(data.diagram || "");
+            });
     }
 
-    @property({attribute: false})
+    @property({ attribute: false })
     diagram?: FlowChart.Instance;
 
     @property()
@@ -73,5 +74,4 @@ export class FlowDiagram extends LitElement {
         }
         return loading(this.diagram, html``);
     }
-
 }

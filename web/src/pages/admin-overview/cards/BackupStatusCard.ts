@@ -7,22 +7,24 @@ import { convertToTitle } from "../../../utils";
 
 @customElement("ak-admin-status-card-backup")
 export class BackupStatusCard extends AdminStatusCard<StatusEnum> {
-
     getPrimaryValue(): Promise<StatusEnum> {
-        return new AdminApi(DEFAULT_CONFIG).adminSystemTasksRetrieve({
-            id: "backup_database"
-        }).then((value) => {
-            return value.status;
-        }).catch(() => {
-            // On error (probably 404), check the config and see if the server
-            // can even backup
-            return config().then(c => {
-                if (c.capabilities.includes(CapabilitiesEnum.Backup)) {
-                    return StatusEnum.Error;
-                }
-                return StatusEnum.Warning;
+        return new AdminApi(DEFAULT_CONFIG)
+            .adminSystemTasksRetrieve({
+                id: "backup_database",
+            })
+            .then((value) => {
+                return value.status;
+            })
+            .catch(() => {
+                // On error (probably 404), check the config and see if the server
+                // can even backup
+                return config().then((c) => {
+                    if (c.capabilities.includes(CapabilitiesEnum.Backup)) {
+                        return StatusEnum.Error;
+                    }
+                    return StatusEnum.Warning;
+                });
             });
-        });
     }
 
     renderValue(): TemplateResult {
@@ -34,18 +36,17 @@ export class BackupStatusCard extends AdminStatusCard<StatusEnum> {
             case StatusEnum.Warning:
                 return Promise.resolve<AdminStatus>({
                     icon: "fa fa-exclamation-triangle pf-m-warning",
-                    message: t`Backup finished with warnings/backup not supported.`,
+                    message: html`${t`Backup finished with warnings/backup not supported.`}`,
                 });
             case StatusEnum.Error:
                 return Promise.resolve<AdminStatus>({
                     icon: "fa fa-times-circle pf-m-danger",
-                    message: t`Backup finished with errors.`,
+                    message: html`${t`Backup finished with errors.`}`,
                 });
             default:
                 return Promise.resolve<AdminStatus>({
-                    icon: "fa fa-check-circle pf-m-success"
+                    icon: "fa fa-check-circle pf-m-success",
                 });
         }
     }
-
 }

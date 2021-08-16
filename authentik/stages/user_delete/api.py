@@ -20,3 +20,5 @@ class UserDeleteStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = UserDeleteStage.objects.all()
     serializer_class = UserDeleteStageSerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]

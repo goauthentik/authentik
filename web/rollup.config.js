@@ -8,21 +8,37 @@ import copy from "rollup-plugin-copy";
 import babel from "@rollup/plugin-babel";
 import replace from "@rollup/plugin-replace";
 
-const extensions = [
-    ".js", ".jsx", ".ts", ".tsx",
-];
+const extensions = [".js", ".jsx", ".ts", ".tsx"];
 
 const resources = [
     { src: "node_modules/rapidoc/dist/rapidoc-min.js", dest: "dist/" },
 
-    { src: "node_modules/@patternfly/patternfly/patternfly.min.css", dest: "dist/" },
-    { src: "node_modules/@patternfly/patternfly/patternfly-base.css", dest: "dist/" },
-    { src: "node_modules/@patternfly/patternfly/components/Page/page.css", dest: "dist/" },
-    { src: "node_modules/@patternfly/patternfly/components/EmptyState/empty-state.css", dest: "dist/" },
-    { src: "node_modules/@patternfly/patternfly/components/Spinner/spinner.css", dest: "dist/" },
+    {
+        src: "node_modules/@patternfly/patternfly/patternfly.min.css",
+        dest: "dist/",
+    },
+    {
+        src: "node_modules/@patternfly/patternfly/patternfly-base.css",
+        dest: "dist/",
+    },
+    {
+        src: "node_modules/@patternfly/patternfly/components/Page/page.css",
+        dest: "dist/",
+    },
+    {
+        src: "node_modules/@patternfly/patternfly/components/EmptyState/empty-state.css",
+        dest: "dist/",
+    },
+    {
+        src: "node_modules/@patternfly/patternfly/components/Spinner/spinner.css",
+        dest: "dist/",
+    },
     { src: "src/authentik.css", dest: "dist/" },
 
-    { src: "node_modules/@patternfly/patternfly/assets/*", dest: "dist/assets/" },
+    {
+        src: "node_modules/@patternfly/patternfly/assets/*",
+        dest: "dist/assets/",
+    },
     { src: "src/assets/*", dest: "dist/assets" },
     { src: "./icons/*", dest: "dist/assets/icons" },
 ];
@@ -60,15 +76,15 @@ export default [
         ],
         plugins: [
             typescript({
-                "declaration": true,
-                "outDir": "./api/dist/",
+                declaration: true,
+                outDir: "./api/dist/",
             }),
             isProdBuild && terser(),
             copy({
                 targets: [...resources],
                 copyOnce: false,
             }),
-        ].filter(p => p),
+        ].filter((p) => p),
         watch: {
             clearScreen: false,
         },
@@ -81,14 +97,14 @@ export default [
                 format: "iife",
                 file: "dist/poly.js",
                 sourcemap: true,
-            }
+            },
         ],
         plugins: [
             cssimport(),
             resolve({ browser: true }),
             commonjs(),
             isProdBuild && terser(),
-        ].filter(p => p),
+        ].filter((p) => p),
         watch: {
             clearScreen: false,
         },
@@ -102,7 +118,7 @@ export default [
                 dir: "dist",
                 sourcemap: true,
                 manualChunks: manualChunks,
-                chunkFileNames: "admin-[name].js"
+                chunkFileNames: "admin-[name].js",
             },
         ],
         plugins: [
@@ -116,11 +132,11 @@ export default [
             }),
             replace({
                 "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
-                preventAssignment: true
+                "preventAssignment": true,
             }),
             sourcemaps(),
             isProdBuild && terser(),
-        ].filter(p => p),
+        ].filter((p) => p),
         watch: {
             clearScreen: false,
         },
@@ -134,7 +150,7 @@ export default [
                 dir: "dist",
                 sourcemap: true,
                 manualChunks: manualChunks,
-                chunkFileNames: "flow-[name].js"
+                chunkFileNames: "flow-[name].js",
             },
         ],
         plugins: [
@@ -148,11 +164,11 @@ export default [
             }),
             replace({
                 "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
-                preventAssignment: true
+                "preventAssignment": true,
             }),
             sourcemaps(),
             isProdBuild && terser(),
-        ].filter(p => p),
+        ].filter((p) => p),
         watch: {
             clearScreen: false,
         },

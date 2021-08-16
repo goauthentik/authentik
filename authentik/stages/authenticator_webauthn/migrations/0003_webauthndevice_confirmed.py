@@ -13,8 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="webauthndevice",
             name="confirmed",
-            field=models.BooleanField(
-                default=True, help_text="Is this device ready for use?"
-            ),
+            field=models.BooleanField(default=True, help_text="Is this device ready for use?"),
         ),
     ]

@@ -39,9 +39,7 @@ def ldap_password_validate(sender, password: str, plan_context: dict[str, Any], 
             password, plan_context.get(PLAN_CONTEXT_PENDING_USER, None)
         )
         if not passing:
-            raise ValidationError(
-                _("Password does not match Active Direcory Complexity.")
-            )
+            raise ValidationError(_("Password does not match Active Direcory Complexity."))
 
 
 @receiver(password_changed)

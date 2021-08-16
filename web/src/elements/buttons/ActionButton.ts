@@ -5,10 +5,11 @@ import { MessageLevel } from "../messages/Message";
 
 @customElement("ak-action-button")
 export class ActionButton extends SpinnerButton {
-
-    @property({attribute: false})
+    @property({ attribute: false })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    apiRequest: () => Promise<any> = () => { throw new Error(); };
+    apiRequest: () => Promise<any> = () => {
+        throw new Error();
+    };
 
     callAction = (): Promise<void> => {
         this.setLoading();
@@ -16,13 +17,13 @@ export class ActionButton extends SpinnerButton {
             if (e instanceof Error) {
                 showMessage({
                     level: MessageLevel.error,
-                    message: e.toString()
+                    message: e.toString(),
                 });
             } else {
-                e.text().then(t => {
+                e.text().then((t) => {
                     showMessage({
                         level: MessageLevel.error,
-                        message: t
+                        message: t,
                     });
                 });
             }

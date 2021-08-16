@@ -9,10 +9,7 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelV
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
-from authentik.stages.authenticator_webauthn.models import (
-    AuthenticateWebAuthnStage,
-    WebAuthnDevice,
-)
+from authentik.stages.authenticator_webauthn.models import AuthenticateWebAuthnStage, WebAuthnDevice
 
 
 class AuthenticateWebAuthnStageSerializer(StageSerializer):
@@ -29,6 +26,8 @@ class AuthenticateWebAuthnStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = AuthenticateWebAuthnStage.objects.all()
     serializer_class = AuthenticateWebAuthnStageSerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]
 
 
 class WebAuthnDeviceSerializer(ModelSerializer):

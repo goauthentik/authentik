@@ -1,86 +1,137 @@
 import { Middleware, ResponseContext } from "authentik-api";
-import { CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
+import {
+    css,
+    CSSResult,
+    customElement,
+    html,
+    LitElement,
+    property,
+    TemplateResult,
+} from "lit-element";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
-import AKGlobal from "../../authentik.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import AKGlobal from "../../authentik.css";
 import { t } from "@lingui/macro";
-import { EVENT_API_DRAWER_REFRESH } from "../../constants";
+import { EVENT_API_DRAWER_REFRESH, EVENT_API_DRAWER_TOGGLE } from "../../constants";
 
 export interface RequestInfo {
     method: string;
     path: string;
+    status: number;
 }
 
 export class APIMiddleware implements Middleware {
-    requests: RequestInfo[];
-
-    constructor() {
-        this.requests = [];
-    }
-
     post?(context: ResponseContext): Promise<Response | void> {
-        this.requests.push({
+        const request: RequestInfo = {
             method: (context.init.method || "GET").toUpperCase(),
             path: context.url,
-        });
-        if (this.requests.length > MAX_REQUESTS) {
-            this.requests.shift();
-        }
+            status: context.response.status,
+        };
         window.dispatchEvent(
             new CustomEvent(EVENT_API_DRAWER_REFRESH, {
                 bubbles: true,
                 composed: true,
-            })
+                detail: request,
+            }),
         );
         return Promise.resolve(context.response);
     }
 }
 
-export const MAX_REQUESTS = 50;
-export const API_DRAWER_MIDDLEWARE = new APIMiddleware();
-
 @customElement("ak-api-drawer")
 export class APIDrawer extends LitElement {
+    @property({ attribute: false })
+    requests: RequestInfo[] = [];
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFNotificationDrawer, PFContent, PFDropdown, AKGlobal];
+        return [
+            PFBase,
+            PFNotificationDrawer,
+            PFButton,
+            PFContent,
+            PFDropdown,
+            AKGlobal,
+            css`
+                .pf-c-notification-drawer__header {
+                    height: 114px;
+                    align-items: center;
+                }
+                .pf-c-notification-drawer__header-action,
+                .pf-c-notification-drawer__header-action-close,
+                .pf-c-notification-drawer__header-action-close > .pf-c-button.pf-m-plain {
+                    height: 100%;
+                }
+                .pf-c-notification-drawer__list-item-description {
+                    white-space: pre-wrap;
+                    font-family: monospace;
+                }
+            `,
+        ];
     }
 
     constructor() {
         super();
-        this.addEventListener(EVENT_API_DRAWER_REFRESH, () => {
+        window.addEventListener(EVENT_API_DRAWER_REFRESH, ((e: CustomEvent<RequestInfo>) => {
+            this.requests.splice(0, 0, e.detail);
+            if (this.requests.length > 50) {
+                this.requests.shift();
+            }
             this.requestUpdate();
-        });
+        }) as EventListener);
     }
 
     renderItem(item: RequestInfo): TemplateResult {
         return html`<li class="pf-c-notification-drawer__list-item pf-m-read">
             <div class="pf-c-notification-drawer__list-item-header">
                 <h2 class="pf-c-notification-drawer__list-item-header-title">
-                    ${item.method}
+                    ${item.method}: ${item.status}
                 </h2>
             </div>
-            <p class="pf-c-notification-drawer__list-item-description">${item.path}</p>
+            <a
+                class="pf-c-notification-drawer__list-item-description"
+                target="_blank"
+                href=${item.path}
+                >${item.path}</a
+            >
         </li>`;
     }
 
     render(): TemplateResult {
         return html`<div class="pf-c-drawer__body pf-m-no-padding">
             <div class="pf-c-notification-drawer">
-                <div class="pf-c-notification-drawer__header pf-c-content">
-                    <h1>
-                        ${t`API Requests`}
-                    </h1>
+                <div class="pf-c-notification-drawer__header">
+                    <div class="text">
+                        <h1 class="pf-c-notification-drawer__header-title">${t`API Requests`}</h1>
+                    </div>
+                    <div class="pf-c-notification-drawer__header-action">
+                        <div class="pf-c-notification-drawer__header-action-close">
+                            <button
+                                @click=${() => {
+                                    this.dispatchEvent(
+                                        new CustomEvent(EVENT_API_DRAWER_TOGGLE, {
+                                            bubbles: true,
+                                            composed: true,
+                                        }),
+                                    );
+                                }}
+                                class="pf-c-button pf-m-plain"
+                                type="button"
+                                aria-label="Close"
+                            >
+                                <i class="fas fa-times" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="pf-c-notification-drawer__body">
                     <ul class="pf-c-notification-drawer__list">
-                        ${API_DRAWER_MIDDLEWARE.requests.map(n => this.renderItem(n))}
+                        ${this.requests.map((n) => this.renderItem(n))}
                     </ul>
                 </div>
             </div>
         </div>`;
     }
-
 }

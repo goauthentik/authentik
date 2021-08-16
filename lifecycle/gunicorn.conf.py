@@ -51,7 +51,31 @@ logconfig_dict = {
 if SERVICE_HOST_ENV_NAME in os.environ:
     workers = 2
 else:
-    workers = int(os.environ.get("WORKERS", cpu_count() * 2 + 1))
+    default_workers = max(cpu_count() * 0.25, 1) + 1  # Minimum of 2 workers
+    workers = int(os.environ.get("WORKERS", default_workers))
 threads = 4
 
+warnings.filterwarnings(
+    "ignore",
+    message="defusedxml.lxml is no longer supported and will be removed in a future release.",
+)
+warnings.filterwarnings(
+    "ignore",
+    message="defusedxml.cElementTree is deprecated, import from defusedxml.ElementTree instead.",
+)
+warnings.filterwarnings(
+    "ignore",
+    message=(
+        "'django_prometheus' defines default_app_config = 'django_prometheus.apps.DjangoPromethe"
+        "usConfig'. Django now detects this configuration automatically. You can remove d"
+        "efault_app_config."
+    ),
+)
+warnings.filterwarnings(
+    "ignore",
+    message=(
+        "'dbbackup' defines default_app_config = 'dbbackup.apps.DbbackupConfig'. Django now det"
+        "ects this configuration automatically. You can remove default_app_config."
+    ),
+)
 warnings.simplefilter("once")

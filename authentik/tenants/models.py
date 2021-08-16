@@ -5,6 +5,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from authentik.flows.models import Flow
+from authentik.lib.utils.time import timedelta_string_validator
 
 
 class Tenant(models.Model):
@@ -22,9 +23,8 @@ class Tenant(models.Model):
     )
 
     branding_title = models.TextField(default="authentik")
-    branding_logo = models.TextField(
-        default="/static/dist/assets/icons/icon_left_brand.svg"
-    )
+
+    branding_logo = models.TextField(default="/static/dist/assets/icons/icon_left_brand.svg")
     branding_favicon = models.TextField(default="/static/dist/assets/icons/icon.png")
 
     flow_authentication = models.ForeignKey(
@@ -38,6 +38,17 @@ class Tenant(models.Model):
     )
     flow_unenrollment = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_unenrollment"
+    )
+
+    event_retention = models.TextField(
+        default="days=365",
+        validators=[timedelta_string_validator],
+        help_text=_(
+            (
+                "Events will be deleted after this duration."
+                "(Format: weeks=3;days=2;hours=3,seconds=2)."
+            )
+        ),
     )
 
     def __str__(self) -> str:

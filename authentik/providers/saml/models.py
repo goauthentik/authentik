@@ -1,8 +1,8 @@
 """authentik saml_idp Models"""
 from typing import Optional, Type
-from urllib.parse import urlparse
 
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
@@ -46,18 +46,13 @@ class SAMLProvider(Provider):
             )
         ),
     )
-    issuer = models.TextField(
-        help_text=_("Also known as EntityID"), default="authentik"
-    )
+    issuer = models.TextField(help_text=_("Also known as EntityID"), default="authentik")
     sp_binding = models.TextField(
         choices=SAMLBindings.choices,
         default=SAMLBindings.REDIRECT,
         verbose_name=_("Service Provider Binding"),
         help_text=_(
-            (
-                "This determines how authentik sends the "
-                "response back to the Service Provider."
-            )
+            ("This determines how authentik sends the " "response back to the Service Provider.")
         ),
     )
 
@@ -150,18 +145,22 @@ class SAMLProvider(Provider):
         default=None,
         null=True,
         blank=True,
-        help_text=_(
-            "Keypair used to sign outgoing Responses going to the Service Provider."
-        ),
+        help_text=_("Keypair used to sign outgoing Responses going to the Service Provider."),
         on_delete=models.SET_NULL,
         verbose_name=_("Signing Keypair"),
     )
 
     @property
     def launch_url(self) -> Optional[str]:
-        """Guess launch_url based on acs URL"""
-        launch_url = urlparse(self.acs_url)
-        return self.acs_url.replace(launch_url.path, "")
+        """Use IDP-Initiated SAML flow as launch URL"""
+        try:
+            # pylint: disable=no-member
+            return reverse(
+                "authentik_providers_saml:sso-init",
+                kwargs={"application_slug": self.application.slug},
+            )
+        except Provider.application.RelatedObjectDoesNotExist:
+            return None
 
     @property
     def serializer(self) -> Type[Serializer]:

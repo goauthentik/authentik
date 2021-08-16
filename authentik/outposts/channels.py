@@ -59,9 +59,7 @@ class OutpostConsumer(AuthJsonConsumer):
     def connect(self):
         super().connect()
         uuid = self.scope["url_route"]["kwargs"]["pk"]
-        outpost = get_objects_for_user(
-            self.user, "authentik_outposts.view_outpost"
-        ).filter(pk=uuid)
+        outpost = get_objects_for_user(self.user, "authentik_outposts.view_outpost").filter(pk=uuid)
         if not outpost.exists():
             raise DenyConnection()
         self.accept()
@@ -69,7 +67,7 @@ class OutpostConsumer(AuthJsonConsumer):
         self.last_uid = self.channel_name
 
     # pylint: disable=unused-argument
-    def disconnect(self, close_code):
+    def disconnect(self, code):
         if self.outpost and self.last_uid:
             state = OutpostState.for_instance_uid(self.outpost, self.last_uid)
             if self.channel_name in state.channel_ids:
@@ -129,7 +127,5 @@ class OutpostConsumer(AuthJsonConsumer):
     def event_update(self, event):
         """Event handler which is called by post_save signals, Send update instruction"""
         self.send_json(
-            asdict(
-                WebsocketMessage(instruction=WebsocketMessageInstruction.TRIGGER_UPDATE)
-            )
+            asdict(WebsocketMessage(instruction=WebsocketMessageInstruction.TRIGGER_UPDATE))
         )

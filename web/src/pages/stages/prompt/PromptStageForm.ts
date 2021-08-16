@@ -13,7 +13,6 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-stage-prompt-form")
 export class PromptStageForm extends ModelForm<PromptStage, string> {
-
     loadInstance(pk: string): Promise<PromptStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesRetrieve({
             stageUuid: pk,
@@ -32,11 +31,11 @@ export class PromptStageForm extends ModelForm<PromptStage, string> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesUpdate({
                 stageUuid: this.instance.pk || "",
-                promptStageRequest: data
+                promptStageRequest: data,
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesCreate({
-                promptStageRequest: data
+                promptStageRequest: data,
             });
         }
     };
@@ -46,45 +45,49 @@ export class PromptStageForm extends ModelForm<PromptStage, string> {
             <div class="form-help-text">
                 ${t`Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.`}
             </div>
-            <ak-form-element-horizontal
-                label=${t`Name`}
-                ?required=${true}
-                name="name">
-                <input type="text" value="${ifDefined(this.instance?.name || "")}" class="pf-c-form-control" required>
+            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.name || "")}"
+                    class="pf-c-form-control"
+                    required
+                />
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header">
-                    ${t`Stage-specific settings`}
-                </span>
+                <span slot="header"> ${t`Stage-specific settings`} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${t`Fields`}
-                        ?required=${true}
-                        name="fields">
+                    <ak-form-element-horizontal label=${t`Fields`} ?required=${true} name="fields">
                         <select name="users" class="pf-c-form-control" multiple>
-                            ${until(new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsList({
-                                ordering: "field_name"
-                            }).then(prompts => {
-                                return prompts.results.map(prompt => {
-                                    const selected = Array.from(this.instance?.fields || []).some(su => {
-                                        return su == prompt.pk;
-                                    });
-                                    return html`<option value=${ifDefined(prompt.pk)} ?selected=${selected}>
-                                        ${t`${prompt.fieldKey} ("${prompt.label}", of type ${prompt.type})`}
-                                    </option>`;
-                                });
-                            }), html`<option>${t`Loading...`}</option>`)}
+                            ${until(
+                                new StagesApi(DEFAULT_CONFIG)
+                                    .stagesPromptPromptsList({
+                                        ordering: "field_name",
+                                    })
+                                    .then((prompts) => {
+                                        return prompts.results.map((prompt) => {
+                                            const selected = Array.from(
+                                                this.instance?.fields || [],
+                                            ).some((su) => {
+                                                return su == prompt.pk;
+                                            });
+                                            return html`<option
+                                                value=${ifDefined(prompt.pk)}
+                                                ?selected=${selected}
+                                            >
+                                                ${t`${prompt.fieldKey} ("${prompt.label}", of type ${prompt.type})`}
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
                         </select>
-                        <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Hold control/command to select multiple items.`}
+                        </p>
                         <ak-forms-modal>
-                            <span slot="submit">
-                                ${t`Create`}
-                            </span>
-                            <span slot="header">
-                                ${t`Create Prompt`}
-                            </span>
-                            <ak-prompt-form slot="form">
-                            </ak-prompt-form>
+                            <span slot="submit"> ${t`Create`} </span>
+                            <span slot="header"> ${t`Create Prompt`} </span>
+                            <ak-prompt-form slot="form"> </ak-prompt-form>
                             <button type="button" slot="trigger" class="pf-c-button pf-m-primary">
                                 ${t`Create`}
                             </button>
@@ -92,27 +95,41 @@ export class PromptStageForm extends ModelForm<PromptStage, string> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Validation Policies`}
-                        name="validationPolicies">
+                        name="validationPolicies"
+                    >
                         <select name="users" class="pf-c-form-control" multiple>
-                            ${until(new PoliciesApi(DEFAULT_CONFIG).policiesAllList({
-                                ordering: "name"
-                            }).then(policies => {
-                                return policies.results.map(policy => {
-                                    const selected = Array.from(this.instance?.validationPolicies || []).some(su => {
-                                        return su == policy.pk;
-                                    });
-                                    return html`<option value=${ifDefined(policy.pk)} ?selected=${selected}>
-                                        ${t`${policy.name} (${policy.verboseName})`}
-                                    </option>`;
-                                });
-                            }), html`<option>${t`Loading...`}</option>`)}
+                            ${until(
+                                new PoliciesApi(DEFAULT_CONFIG)
+                                    .policiesAllList({
+                                        ordering: "name",
+                                    })
+                                    .then((policies) => {
+                                        return policies.results.map((policy) => {
+                                            const selected = Array.from(
+                                                this.instance?.validationPolicies || [],
+                                            ).some((su) => {
+                                                return su == policy.pk;
+                                            });
+                                            return html`<option
+                                                value=${ifDefined(policy.pk)}
+                                                ?selected=${selected}
+                                            >
+                                                ${t`${policy.name} (${policy.verboseName})`}
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
                         </select>
-                        <p class="pf-c-form__helper-text">${t`Selected policies are executed when the stage is submitted to validate the data.`}</p>
-                        <p class="pf-c-form__helper-text">${t`Hold control/command to select multiple items.`}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Selected policies are executed when the stage is submitted to validate the data.`}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Hold control/command to select multiple items.`}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
         </form>`;
     }
-
 }

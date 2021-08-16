@@ -5,7 +5,7 @@ import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/TokenCopyButton";
-import "../../elements/forms/DeleteForm";
+import "../../elements/forms/DeleteBulkForm";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
 import { CoreApi, Token } from "authentik-api";
@@ -26,6 +26,8 @@ export class TokenListPage extends TablePage<Token> {
         return "pf-icon pf-icon-security";
     }
 
+    checkbox = true;
+
     @property()
     order = "expires";
 
@@ -44,8 +46,30 @@ export class TokenListPage extends TablePage<Token> {
             new TableColumn(t`User`, "user"),
             new TableColumn(t`Expires?`, "expiring"),
             new TableColumn(t`Expiry date`, "expires"),
-            new TableColumn(""),
+            new TableColumn(t`Actions`),
         ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Token(s)`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: Token) => {
+                return new CoreApi(DEFAULT_CONFIG).coreTokensUsedByList({
+                    identifier: item.identifier,
+                });
+            }}
+            .delete=${(item: Token) => {
+                return new CoreApi(DEFAULT_CONFIG).coreTokensDestroy({
+                    identifier: item.identifier,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: Token): TemplateResult[] {
@@ -55,28 +79,10 @@ export class TokenListPage extends TablePage<Token> {
             html`${item.expiring ? t`Yes` : t`No`}`,
             html`${item.expiring ? item.expires?.toLocaleString() : "-"}`,
             html`
-            <ak-forms-delete
-                .obj=${item}
-                objectLabel=${t`Token`}
-                .usedBy=${() => {
-                    return new CoreApi(DEFAULT_CONFIG).coreTokensUsedByList({
-                        identifier: item.identifier
-                    });
-                }}
-                .delete=${() => {
-                    return new CoreApi(DEFAULT_CONFIG).coreTokensDestroy({
-                        identifier: item.identifier
-                    });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete`}
-                </button>
-            </ak-forms-delete>
-            <ak-token-copy-button identifier="${item.identifier}">
-                ${t`Copy Key`}
-            </ak-token-copy-button>
+                <ak-token-copy-button identifier="${item.identifier}">
+                    ${t`Copy Key`}
+                </ak-token-copy-button>
             `,
         ];
     }
-
 }

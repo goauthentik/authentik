@@ -114,7 +114,7 @@ class MonitoredTask(Task):
     # For tasks that should only be listed if they failed, set this to False
     save_on_success: bool
 
-    _result: TaskResult
+    _result: Optional[TaskResult]
 
     _uid: Optional[str]
 
@@ -122,7 +122,7 @@ class MonitoredTask(Task):
         super().__init__(*args, **kwargs)
         self.save_on_success = True
         self._uid = None
-        self._result = TaskResult(status=TaskResultStatus.ERROR, messages=[])
+        self._result = None
         self.result_timeout_hours = 6
         self.start = default_timer()
 
@@ -135,28 +135,29 @@ class MonitoredTask(Task):
         self._result = result
 
     # pylint: disable=too-many-arguments
-    def after_return(
-        self, status, retval, task_id, args: list[Any], kwargs: dict[str, Any], einfo
-    ):
-        if not self._result.uid:
-            self._result.uid = self._uid
-        if self.save_on_success:
-            TaskInfo(
-                task_name=self.__name__,
-                task_description=self.__doc__,
-                start_timestamp=self.start,
-                finish_timestamp=default_timer(),
-                finish_time=datetime.now(),
-                result=self._result,
-                task_call_module=self.__module__,
-                task_call_func=self.__name__,
-                task_call_args=args,
-                task_call_kwargs=kwargs,
-            ).save(self.result_timeout_hours)
+    def after_return(self, status, retval, task_id, args: list[Any], kwargs: dict[str, Any], einfo):
+        if self._result:
+            if not self._result.uid:
+                self._result.uid = self._uid
+            if self.save_on_success:
+                TaskInfo(
+                    task_name=self.__name__,
+                    task_description=self.__doc__,
+                    start_timestamp=self.start,
+                    finish_timestamp=default_timer(),
+                    finish_time=datetime.now(),
+                    result=self._result,
+                    task_call_module=self.__module__,
+                    task_call_func=self.__name__,
+                    task_call_args=args,
+                    task_call_kwargs=kwargs,
+                ).save(self.result_timeout_hours)
         return super().after_return(status, retval, task_id, args, kwargs, einfo=einfo)
 
     # pylint: disable=too-many-arguments
     def on_failure(self, exc, task_id, args, kwargs, einfo):
+        if not self._result:
+            self._result = TaskResult(status=TaskResultStatus.ERROR, messages=[str(exc)])
         if not self._result.uid:
             self._result.uid = self._uid
         TaskInfo(
@@ -174,8 +175,7 @@ class MonitoredTask(Task):
         Event.new(
             EventAction.SYSTEM_TASK_EXCEPTION,
             message=(
-                f"Task {self.__name__} encountered an error: "
-                "\n".join(self._result.messages)
+                f"Task {self.__name__} encountered an error: " "\n".join(self._result.messages)
             ),
         ).save()
         return super().on_failure(exc, task_id, args, kwargs, einfo=einfo)

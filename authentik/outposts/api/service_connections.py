@@ -15,11 +15,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import (
-    MetaNameSerializer,
-    PassiveSerializer,
-    TypeCreateSerializer,
-)
+from authentik.core.api.utils import MetaNameSerializer, PassiveSerializer, TypeCreateSerializer
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.outposts.models import (
     DockerServiceConnection,
@@ -119,6 +115,8 @@ class DockerServiceConnectionViewSet(UsedByMixin, ModelViewSet):
 
     queryset = DockerServiceConnection.objects.all()
     serializer_class = DockerServiceConnectionSerializer
+    filterset_fields = ["name", "local", "url", "tls_verification", "tls_authentication"]
+    ordering = ["name"]
 
 
 class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
@@ -129,9 +127,7 @@ class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
         if kubeconfig == {}:
             if not self.initial_data["local"]:
                 raise serializers.ValidationError(
-                    _(
-                        "You can only use an empty kubeconfig when connecting to a local cluster."
-                    )
+                    _("You can only use an empty kubeconfig when connecting to a local cluster.")
                 )
             # Empty kubeconfig is valid
             return kubeconfig
@@ -153,3 +149,5 @@ class KubernetesServiceConnectionViewSet(UsedByMixin, ModelViewSet):
 
     queryset = KubernetesServiceConnection.objects.all()
     serializer_class = KubernetesServiceConnectionSerializer
+    filterset_fields = ["name", "local"]
+    ordering = ["name"]

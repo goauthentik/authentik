@@ -90,14 +90,18 @@ class PromptChallengeResponse(ChallengeResponse):
             raise ValidationError(_("Passwords don't match."))
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
-        # Check if we have two password fields, and make sure they are the same
-        password_fields: QuerySet[Prompt] = self.stage.fields.filter(
-            type=FieldTypes.PASSWORD
+        # Check if we have any static or hidden fields, and ensure they
+        # still have the same value
+        static_hidden_fields: QuerySet[Prompt] = self.stage.fields.filter(
+            type__in=[FieldTypes.HIDDEN, FieldTypes.STATIC]
         )
+        for static_hidden in static_hidden_fields:
+            attrs[static_hidden.field_key] = static_hidden.placeholder
+
+        # Check if we have two password fields, and make sure they are the same
+        password_fields: QuerySet[Prompt] = self.stage.fields.filter(type=FieldTypes.PASSWORD)
         if password_fields.exists() and password_fields.count() == 2:
-            self._validate_password_fields(
-                *[field.field_key for field in password_fields]
-            )
+            self._validate_password_fields(*[field.field_key for field in password_fields])
 
         user = self.plan.context.get(PLAN_CONTEXT_PENDING_USER, get_anonymous_user())
         engine = ListPolicyEngine(self.stage.validation_policies.all(), user)
@@ -127,9 +131,7 @@ def password_single_validator_factory() -> Callable[[PromptChallenge, str], Any]
 
     def password_single_clean(self: PromptChallenge, value: str) -> Any:
         """Send password validation signals for e.g. LDAP Source"""
-        password_validate.send(
-            sender=self, password=value, plan_context=self.plan.context
-        )
+        password_validate.send(sender=self, password=value, plan_context=self.plan.context)
         return value
 
     return password_single_clean
@@ -138,11 +140,7 @@ def password_single_validator_factory() -> Callable[[PromptChallenge, str], Any]
 class ListPolicyEngine(PolicyEngine):
     """Slightly modified policy engine, which uses a list instead of a PolicyBindingModel"""
 
-    __list: list[Policy]
-
-    def __init__(
-        self, policies: list[Policy], user: User, request: HttpRequest = None
-    ) -> None:
+    def __init__(self, policies: list[Policy], user: User, request: HttpRequest = None) -> None:
         super().__init__(PolicyBindingModel(), user, request)
         self.__list = policies
         self.use_cache = False

@@ -6,12 +6,13 @@ import { ChartData } from "chart.js";
 
 @customElement("ak-charts-application-authorize")
 export class ApplicationAuthorizeChart extends AKChart<Coordinate[]> {
-
     @property()
     applicationSlug!: string;
 
     apiRequest(): Promise<Coordinate[]> {
-        return new CoreApi(DEFAULT_CONFIG).coreApplicationsMetricsList({ slug: this.applicationSlug });
+        return new CoreApi(DEFAULT_CONFIG).coreApplicationsMetricsList({
+            slug: this.applicationSlug,
+        });
     }
 
     getChartData(data: Coordinate[]): ChartData {
@@ -21,15 +22,15 @@ export class ApplicationAuthorizeChart extends AKChart<Coordinate[]> {
                     label: "Authorizations",
                     backgroundColor: "rgba(189, 229, 184, .5)",
                     spanGaps: true,
-                    data: data.map((cord) => {
-                        return {
-                            x: cord.xCord || 0,
-                            y: cord.yCord || 0,
-                        };
-                    }) || [],
+                    data:
+                        data.map((cord) => {
+                            return {
+                                x: cord.xCord || 0,
+                                y: cord.yCord || 0,
+                            };
+                        }) || [],
                 },
-            ]
+            ],
         };
     }
-
 }

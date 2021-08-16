@@ -11,13 +11,12 @@ from kubernetes.client import (
     NetworkingV1beta1IngressSpec,
     NetworkingV1beta1IngressTLS,
 )
-from kubernetes.client.models.networking_v1beta1_ingress_rule import (
-    NetworkingV1beta1IngressRule,
-)
+from kubernetes.client.models.networking_v1beta1_ingress_rule import NetworkingV1beta1IngressRule
 
 from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import (
     KubernetesObjectReconciler,
+    NeedsRecreate,
     NeedsUpdate,
 )
 from authentik.providers.proxy.models import ProxyMode, ProxyProvider
@@ -41,9 +40,7 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
             if reference.metadata.annotations[key] != value:
                 raise NeedsUpdate()
 
-    def reconcile(
-        self, current: NetworkingV1beta1Ingress, reference: NetworkingV1beta1Ingress
-    ):
+    def reconcile(self, current: NetworkingV1beta1Ingress, reference: NetworkingV1beta1Ingress):
         super().reconcile(current, reference)
         self._check_annotations(reference)
         # Create a list of all expected host and tls hosts
@@ -60,12 +57,12 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
         expected_hosts.sort()
         expected_hosts_tls.sort()
 
-        have_hosts = [rule.host for rule in reference.spec.rules]
+        have_hosts = [rule.host for rule in current.spec.rules]
         have_hosts.sort()
 
         have_hosts_tls = []
-        for tls_config in reference.spec.tls:
-            if tls_config:
+        for tls_config in current.spec.tls:
+            if tls_config and tls_config.hosts:
                 have_hosts_tls += tls_config.hosts
         have_hosts_tls.sort()
 
@@ -73,6 +70,10 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
             raise NeedsUpdate()
         if have_hosts_tls != expected_hosts_tls:
             raise NeedsUpdate()
+        # If we have a current ingress, which wouldn't have any hosts, raise
+        # NeedsRecreate() so that its deleted, and check hosts on create
+        if len(have_hosts) < 1:
+            raise NeedsRecreate()
 
     def get_ingress_annotations(self) -> dict[str, str]:
         """Get ingress annotations"""
@@ -84,9 +85,7 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
             "nginx.ingress.kubernetes.io/proxy-buffers-number": "4",
             "nginx.ingress.kubernetes.io/proxy-buffer-size": "16k",
         }
-        annotations.update(
-            self.controller.outpost.config.kubernetes_ingress_annotations
-        )
+        annotations.update(self.controller.outpost.config.kubernetes_ingress_annotations)
         return annotations
 
     def get_reference_object(self) -> NetworkingV1beta1Ingress:
@@ -150,21 +149,20 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
         )
 
     def create(self, reference: NetworkingV1beta1Ingress):
+        if len(reference.spec.rules) < 1:
+            self.logger.debug("No hosts defined, not creating ingress.")
+            return None
         return self.api.create_namespaced_ingress(
             self.namespace, reference, field_manager=FIELD_MANAGER
         )
 
     def delete(self, reference: NetworkingV1beta1Ingress):
-        return self.api.delete_namespaced_ingress(
-            reference.metadata.name, self.namespace
-        )
+        return self.api.delete_namespaced_ingress(reference.metadata.name, self.namespace)
 
     def retrieve(self) -> NetworkingV1beta1Ingress:
         return self.api.read_namespaced_ingress(self.name, self.namespace)
 
-    def update(
-        self, current: NetworkingV1beta1Ingress, reference: NetworkingV1beta1Ingress
-    ):
+    def update(self, current: NetworkingV1beta1Ingress, reference: NetworkingV1beta1Ingress):
         return self.api.patch_namespaced_ingress(
             current.metadata.name,
             self.namespace,

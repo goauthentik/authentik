@@ -42,16 +42,12 @@ class ConsentStageView(ChallengeStageView):
     def get_challenge(self) -> Challenge:
         data = {
             "type": ChallengeTypes.NATIVE.value,
-            "permissions": self.executor.plan.context.get(
-                PLAN_CONTEXT_CONSENT_PERMISSIONS, []
-            ),
+            "permissions": self.executor.plan.context.get(PLAN_CONTEXT_CONSENT_PERMISSIONS, []),
         }
         if PLAN_CONTEXT_CONSENT_TITLE in self.executor.plan.context:
             data["title"] = self.executor.plan.context[PLAN_CONTEXT_CONSENT_TITLE]
         if PLAN_CONTEXT_CONSENT_HEADER in self.executor.plan.context:
-            data["header_text"] = self.executor.plan.context[
-                PLAN_CONTEXT_CONSENT_HEADER
-            ]
+            data["header_text"] = self.executor.plan.context[PLAN_CONTEXT_CONSENT_HEADER]
         challenge = ConsentChallenge(data=data)
         return challenge
 

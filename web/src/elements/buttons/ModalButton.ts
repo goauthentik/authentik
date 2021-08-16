@@ -1,4 +1,12 @@
-import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import {
+    css,
+    CSSResult,
+    customElement,
+    html,
+    LitElement,
+    property,
+    TemplateResult,
+} from "lit-element";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFModalBox from "@patternfly/patternfly/components/ModalBox/modal-box.css";
@@ -35,25 +43,49 @@ export class ModalButton extends LitElement {
     @property()
     size: PFSize = PFSize.Large;
 
-    @property({type: Boolean})
+    @property({ type: Boolean })
     open = false;
 
+    handlerBound = false;
+
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFModalBox, PFForm, PFTitle, PFFormControl, PFBullseye, PFBackdrop, PFPage, PFCard, PFContent, AKGlobal, MODAL_BUTTON_STYLES];
+        return [
+            PFBase,
+            PFButton,
+            PFModalBox,
+            PFForm,
+            PFTitle,
+            PFFormControl,
+            PFBullseye,
+            PFBackdrop,
+            PFPage,
+            PFCard,
+            PFContent,
+            AKGlobal,
+            MODAL_BUTTON_STYLES,
+        ];
     }
 
-    constructor() {
-        super();
-        window.addEventListener("keyup", (e) => {
-            if (e.code === "Escape") {
-                this.resetForms();
-                this.open = false;
-            }
-        });
+    firstUpdated(): void {
+        if (this.handlerBound) return;
+        window.addEventListener("keyup", this.keyUpHandler);
+        this.handlerBound = true;
+    }
+
+    keyUpHandler = (e: KeyboardEvent): void => {
+        if (e.code === "Escape") {
+            this.resetForms();
+            this.open = false;
+        }
+    };
+
+    disconnectedCallback(): void {
+        super.disconnectedCallback();
+        window.removeEventListener("keyup", this.keyUpHandler);
     }
 
     resetForms(): void {
-        this.querySelectorAll<HTMLFormElement>("[slot=form]").forEach(form => {
+        this.querySelectorAll<HTMLFormElement>("[slot=form]").forEach((form) => {
             if ("resetForm" in form) {
                 form?.resetForm();
             }
@@ -62,7 +94,7 @@ export class ModalButton extends LitElement {
 
     onClick(): void {
         this.open = true;
-        this.querySelectorAll("*").forEach(child => {
+        this.querySelectorAll("*").forEach((child) => {
             if ("requestUpdate" in child) {
                 (child as LitElement).requestUpdate();
             }
@@ -70,17 +102,13 @@ export class ModalButton extends LitElement {
     }
 
     renderModalInner(): TemplateResult {
-        return html`<slot name='modal'></slot>`;
+        return html`<slot name="modal"></slot>`;
     }
 
     renderModal(): TemplateResult {
         return html`<div class="pf-c-backdrop">
             <div class="pf-l-bullseye">
-                <div
-                    class="pf-c-modal-box ${this.size}"
-                    role="dialog"
-                    aria-modal="true"
-                >
+                <div class="pf-c-modal-box ${this.size}" role="dialog" aria-modal="true">
                     <button
                         @click=${() => (this.open = false)}
                         class="pf-c-button pf-m-plain"
@@ -99,5 +127,4 @@ export class ModalButton extends LitElement {
         return html` <slot name="trigger" @click=${() => this.onClick()}></slot>
             ${this.open ? this.renderModal() : ""}`;
     }
-
 }

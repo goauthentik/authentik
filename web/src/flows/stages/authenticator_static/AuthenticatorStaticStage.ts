@@ -11,59 +11,75 @@ import { BaseStage } from "../base";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import "../../FormStatic";
-import { AuthenticatorStaticChallenge } from "authentik-api";
-import { AuthenticatorStaticChallengeResponseRequest } from "authentik-api/dist/models/AuthenticatorStaticChallengeResponseRequest";
+import {
+    AuthenticatorStaticChallenge,
+    AuthenticatorStaticChallengeResponseRequest,
+} from "authentik-api";
 import { ifDefined } from "lit-html/directives/if-defined";
 
 export const STATIC_TOKEN_STYLE = css`
-/* Static OTP Tokens */
-.ak-otp-tokens {
-    list-style: circle;
-    columns: 2;
-    -webkit-columns: 2;
-    -moz-columns: 2;
-    margin-left: var(--pf-global--spacer--xs);
-}
-.ak-otp-tokens li {
-    font-size: var(--pf-global--FontSize--2xl);
-    font-family: monospace;
-}
+    /* Static OTP Tokens */
+    .ak-otp-tokens {
+        list-style: circle;
+        columns: 2;
+        -webkit-columns: 2;
+        -moz-columns: 2;
+        margin-left: var(--pf-global--spacer--xs);
+    }
+    .ak-otp-tokens li {
+        font-size: var(--pf-global--FontSize--2xl);
+        font-family: monospace;
+    }
 `;
 
-
 @customElement("ak-stage-authenticator-static")
-export class AuthenticatorStaticStage extends BaseStage<AuthenticatorStaticChallenge, AuthenticatorStaticChallengeResponseRequest> {
-
+export class AuthenticatorStaticStage extends BaseStage<
+    AuthenticatorStaticChallenge,
+    AuthenticatorStaticChallengeResponseRequest
+> {
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal, STATIC_TOKEN_STYLE];
+        return [
+            PFBase,
+            PFLogin,
+            PFForm,
+            PFFormControl,
+            PFTitle,
+            PFButton,
+            AKGlobal,
+            STATIC_TOKEN_STYLE,
+        ];
     }
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state
-                ?loading="${true}"
-                header=${t`Loading`}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">
-                    ${this.challenge.flowInfo?.title}
-                </h1>
+                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
             <div class="pf-c-login__main-body">
-                <form class="pf-c-form" @submit=${(e: Event) => { this.submitForm(e); }}>
+                <form
+                    class="pf-c-form"
+                    @submit=${(e: Event) => {
+                        this.submitForm(e);
+                    }}
+                >
                     <ak-form-static
                         class="pf-c-form__group"
                         userAvatar="${this.challenge.pendingUserAvatar}"
-                        user=${this.challenge.pendingUser}>
+                        user=${this.challenge.pendingUser}
+                    >
                         <div slot="link">
-                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}">${t`Not you?`}</a>
+                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
+                                >${t`Not you?`}</a
+                            >
                         </div>
                     </ak-form-static>
                     <ak-form-element
                         label="${t`Tokens`}"
                         ?required="${true}"
-                        class="pf-c-form__group">
+                        class="pf-c-form__group"
+                    >
                         <ul class="ak-otp-tokens">
                             ${this.challenge.codes.map((token) => {
                                 return html`<li>${token}</li>`;
@@ -79,9 +95,7 @@ export class AuthenticatorStaticStage extends BaseStage<AuthenticatorStaticChall
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links">
-                </ul>
+                <ul class="pf-c-login__main-footer-links"></ul>
             </footer>`;
     }
-
 }

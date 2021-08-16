@@ -132,9 +132,7 @@ class OAuthAuthorizationParams:
             scope=query_dict.get("scope", "").split(),
             state=state,
             nonce=query_dict.get("nonce"),
-            prompt=ALLOWED_PROMPT_PARAMS.intersection(
-                set(query_dict.get("prompt", "").split())
-            ),
+            prompt=ALLOWED_PROMPT_PARAMS.intersection(set(query_dict.get("prompt", "").split())),
             request=query_dict.get("request", None),
             max_age=int(max_age) if max_age else None,
             code_challenge=query_dict.get("code_challenge"),
@@ -143,9 +141,7 @@ class OAuthAuthorizationParams:
 
     def __post_init__(self):
         try:
-            self.provider: OAuth2Provider = OAuth2Provider.objects.get(
-                client_id=self.client_id
-            )
+            self.provider: OAuth2Provider = OAuth2Provider.objects.get(client_id=self.client_id)
         except OAuth2Provider.DoesNotExist:
             LOGGER.warning("Invalid client identifier", client_id=self.client_id)
             raise ClientIdError(client_id=self.client_id)
@@ -156,20 +152,23 @@ class OAuthAuthorizationParams:
 
     def check_redirect_uri(self):
         """Redirect URI validation."""
+        allowed_redirect_urls = self.provider.redirect_uris.split()
         if not self.redirect_uri:
             LOGGER.warning("Missing redirect uri.")
-            raise RedirectUriError("", self.provider.redirect_uris.split())
-        if self.redirect_uri.lower() not in [
-            x.lower() for x in self.provider.redirect_uris.split()
-        ]:
+            raise RedirectUriError("", allowed_redirect_urls)
+        if len(allowed_redirect_urls) < 1:
+            LOGGER.warning(
+                "Provider has no allowed redirect_uri set, allowing all.",
+                allow=self.redirect_uri.lower(),
+            )
+            return
+        if self.redirect_uri.lower() not in [x.lower() for x in allowed_redirect_urls]:
             LOGGER.warning(
                 "Invalid redirect uri",
                 redirect_uri=self.redirect_uri,
-                excepted=self.provider.redirect_uris.split(),
+                excepted=allowed_redirect_urls,
             )
-            raise RedirectUriError(
-                self.redirect_uri, self.provider.redirect_uris.split()
-            )
+            raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
         if self.request:
             raise AuthorizeError(
                 self.redirect_uri, "request_not_supported", self.grant_type, self.state
@@ -179,16 +178,17 @@ class OAuthAuthorizationParams:
         """Ensure openid scope is set in Hybrid flows, or when requesting an id_token"""
         if SCOPE_OPENID not in self.scope and (
             self.grant_type == GrantTypes.HYBRID
-            or self.response_type
-            in [ResponseTypes.ID_TOKEN, ResponseTypes.ID_TOKEN_TOKEN]
+            or self.response_type in [ResponseTypes.ID_TOKEN, ResponseTypes.ID_TOKEN_TOKEN]
         ):
             LOGGER.warning("Missing 'openid' scope.")
-            raise AuthorizeError(
-                self.redirect_uri, "invalid_scope", self.grant_type, self.state
-            )
+            raise AuthorizeError(self.redirect_uri, "invalid_scope", self.grant_type, self.state)
 
     def check_nonce(self):
         """Nonce parameter validation."""
+        # https://openid.net/specs/openid-connect-core-1_0.html#ImplicitIDTValidation
+        # Nonce is only required for Implicit flows
+        if self.grant_type != GrantTypes.IMPLICIT:
+            return
         if not self.nonce:
             self.nonce = self.state
             LOGGER.warning("Using state as nonce for OpenID Request")
@@ -219,9 +219,7 @@ class OAuthAuthorizationParams:
             code.code_challenge = self.code_challenge
             code.code_challenge_method = self.code_challenge_method
 
-        code.expires_at = timezone.now() + timedelta_from_string(
-            self.provider.access_code_validity
-        )
+        code.expires_at = timezone.now() + timedelta_from_string(self.provider.access_code_validity)
         code.scope = self.scope
         code.nonce = self.nonce
         code.is_open_id = SCOPE_OPENID in self.scope
@@ -246,12 +244,8 @@ class OAuthFulfillmentStage(StageView):
         if PLAN_CONTEXT_PARAMS not in self.executor.plan.context:
             LOGGER.warning("Got to fulfillment stage with no pending context")
             return HttpResponseBadRequest()
-        self.params: OAuthAuthorizationParams = self.executor.plan.context.pop(
-            PLAN_CONTEXT_PARAMS
-        )
-        application: Application = self.executor.plan.context.pop(
-            PLAN_CONTEXT_APPLICATION
-        )
+        self.params: OAuthAuthorizationParams = self.executor.plan.context.pop(PLAN_CONTEXT_PARAMS)
+        application: Application = self.executor.plan.context.pop(PLAN_CONTEXT_APPLICATION)
         self.provider = get_object_or_404(OAuth2Provider, pk=application.provider_id)
         try:
             # At this point we don't need to check permissions anymore
@@ -296,9 +290,7 @@ class OAuthFulfillmentStage(StageView):
 
             if self.params.grant_type == GrantTypes.AUTHORIZATION_CODE:
                 query_params["code"] = code.code
-                query_params["state"] = [
-                    str(self.params.state) if self.params.state else ""
-                ]
+                query_params["state"] = [str(self.params.state) if self.params.state else ""]
 
                 uri = uri._replace(query=urlencode(query_params, doseq=True))
                 return urlunsplit(uri)
@@ -374,9 +366,9 @@ class OAuthFulfillmentStage(StageView):
             query_fragment["code"] = code.code
 
         query_fragment["token_type"] = "bearer"
-        query_fragment["expires_in"] = timedelta_from_string(
-            self.provider.token_validity
-        ).seconds
+        query_fragment["expires_in"] = int(
+            timedelta_from_string(self.provider.token_validity).total_seconds()
+        )
         query_fragment["state"] = self.params.state if self.params.state else ""
 
         return query_fragment
@@ -426,9 +418,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
         if self.params.max_age:
             current_age: timedelta = (
                 timezone.now()
-                - Event.objects.filter(
-                    action=EventAction.LOGIN, user=get_user(self.request.user)
-                )
+                - Event.objects.filter(action=EventAction.LOGIN, user=get_user(self.request.user))
                 .latest("created")
                 .created
             )
@@ -458,9 +448,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 # OAuth2 related params
                 PLAN_CONTEXT_PARAMS: self.params,
                 # Consent related params
-                PLAN_CONTEXT_CONSENT_HEADER: _(
-                    "You're about to sign into %(application)s."
-                )
+                PLAN_CONTEXT_CONSENT_HEADER: _("You're about to sign into %(application)s.")
                 % {"application": self.application.name},
                 PLAN_CONTEXT_CONSENT_PERMISSIONS: scope_descriptions,
             },
@@ -468,14 +456,14 @@ class AuthorizationFlowInitView(PolicyAccessView):
         # OpenID clients can specify a `prompt` parameter, and if its set to consent we
         # need to inject a consent stage
         if PROMPT_CONSNET in self.params.prompt:
-            if not any(isinstance(x, ConsentStageView) for x in plan.stages):
+            if not any(isinstance(x.stage, ConsentStageView) for x in plan.bindings):
                 # Plan does not have any consent stage, so we add an in-memory one
                 stage = ConsentStage(
                     name="OAuth2 Provider In-memory consent stage",
                     mode=ConsentMode.ALWAYS_REQUIRE,
                 )
-                plan.append(stage)
-        plan.append(in_memory_stage(OAuthFulfillmentStage))
+                plan.append_stage(stage)
+        plan.append_stage(in_memory_stage(OAuthFulfillmentStage))
         self.request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
             "authentik_core:if-flow",

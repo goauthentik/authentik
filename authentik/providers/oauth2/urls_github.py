@@ -2,10 +2,7 @@
 from django.urls import include, path
 from django.views.decorators.csrf import csrf_exempt
 
-from authentik.providers.oauth2.constants import (
-    SCOPE_GITHUB_ORG_READ,
-    SCOPE_GITHUB_USER_EMAIL,
-)
+from authentik.providers.oauth2.constants import SCOPE_GITHUB_ORG_READ, SCOPE_GITHUB_USER_EMAIL
 from authentik.providers.oauth2.utils import protected_resource_view
 from authentik.providers.oauth2.views.authorize import AuthorizationFlowInitView
 from authentik.providers.oauth2.views.github import GitHubUserTeamsView, GitHubUserView
@@ -24,17 +21,13 @@ github_urlpatterns = [
     ),
     path(
         "user",
-        csrf_exempt(
-            protected_resource_view([SCOPE_GITHUB_USER_EMAIL])(GitHubUserView.as_view())
-        ),
+        csrf_exempt(protected_resource_view([SCOPE_GITHUB_USER_EMAIL])(GitHubUserView.as_view())),
         name="github-user",
     ),
     path(
         "user/teams",
         csrf_exempt(
-            protected_resource_view([SCOPE_GITHUB_ORG_READ])(
-                GitHubUserTeamsView.as_view()
-            )
+            protected_resource_view([SCOPE_GITHUB_ORG_READ])(GitHubUserTeamsView.as_view())
         ),
         name="github-user-teams",
     ),

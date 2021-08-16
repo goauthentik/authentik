@@ -12,8 +12,11 @@ import "./AuthenticatorValidateStageWebAuthn";
 import "./AuthenticatorValidateStageCode";
 import "./AuthenticatorValidateStageDuo";
 import { PasswordManagerPrefill } from "../identification/IdentificationStage";
-import { AuthenticatorValidationChallengeResponseRequest, DeviceChallenge } from "authentik-api";
-import { AuthenticatorValidationChallenge } from "authentik-api/dist/models/AuthenticatorValidationChallenge";
+import {
+    AuthenticatorValidationChallenge,
+    AuthenticatorValidationChallengeResponseRequest,
+    DeviceChallenge,
+} from "authentik-api";
 
 export enum DeviceClasses {
     STATIC = "static",
@@ -23,9 +26,14 @@ export enum DeviceClasses {
 }
 
 @customElement("ak-stage-authenticator-validate")
-export class AuthenticatorValidateStage extends BaseStage<AuthenticatorValidationChallenge, AuthenticatorValidationChallengeResponseRequest> implements StageHost {
-
-    @property({attribute: false})
+export class AuthenticatorValidateStage
+    extends BaseStage<
+        AuthenticatorValidationChallenge,
+        AuthenticatorValidationChallengeResponseRequest
+    >
+    implements StageHost
+{
+    @property({ attribute: false })
     selectedDeviceChallenge?: DeviceChallenge;
 
     submit(payload: AuthenticatorValidationChallengeResponseRequest): Promise<void> {
@@ -66,7 +74,9 @@ export class AuthenticatorValidateStage extends BaseStage<AuthenticatorValidatio
                 return html`<i class="fas fa-mobile-alt"></i>
                     <div class="right">
                         <p>${t`Duo push-notifications`}</p>
-                        <small>${t`Receive a push notification on your phone to prove your identity.`}</small>
+                        <small
+                            >${t`Receive a push notification on your phone to prove your identity.`}</small
+                        >
                     </div>`;
             case DeviceClasses.WEBAUTHN:
                 return html`<i class="fas fa-mobile-alt"></i>
@@ -79,7 +89,9 @@ export class AuthenticatorValidateStage extends BaseStage<AuthenticatorValidatio
                 // and we have a pre-filled value from the password manager,
                 // directly set the the TOTP device Challenge as active.
                 if (PasswordManagerPrefill.totp) {
-                    console.debug("authentik/stages/authenticator_validate: found prefill totp code, selecting totp challenge");
+                    console.debug(
+                        "authentik/stages/authenticator_validate: found prefill totp code, selecting totp challenge",
+                    );
                     this.selectedDeviceChallenge = deviceChallenge;
                     // Delay the update as a re-render isn't triggered from here
                     setTimeout(() => {
@@ -104,13 +116,16 @@ export class AuthenticatorValidateStage extends BaseStage<AuthenticatorValidatio
     }
 
     renderDevicePicker(): TemplateResult {
-        return html`
-        <ul>
+        return html` <ul>
             ${this.challenge?.deviceChallenges.map((challenges) => {
                 return html`<li>
-                    <button class="pf-c-button authenticator-button" type="button" @click=${() => {
-                        this.selectedDeviceChallenge = challenges;
-                    }}>
+                    <button
+                        class="pf-c-button authenticator-button"
+                        type="button"
+                        @click=${() => {
+                            this.selectedDeviceChallenge = challenges;
+                        }}
+                    >
                         ${this.renderDevicePickerSingle(challenges)}
                     </button>
                 </li>`;
@@ -123,60 +138,56 @@ export class AuthenticatorValidateStage extends BaseStage<AuthenticatorValidatio
             return html``;
         }
         switch (this.selectedDeviceChallenge?.deviceClass) {
-        case DeviceClasses.STATIC:
-        case DeviceClasses.TOTP:
-            return html`<ak-stage-authenticator-validate-code
-                .host=${this}
-                .challenge=${this.challenge}
-                .deviceChallenge=${this.selectedDeviceChallenge}
-                .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}>
-            </ak-stage-authenticator-validate-code>`;
-        case DeviceClasses.WEBAUTHN:
-            return html`<ak-stage-authenticator-validate-webauthn
-                .host=${this}
-                .challenge=${this.challenge}
-                .deviceChallenge=${this.selectedDeviceChallenge}
-                .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}>
-            </ak-stage-authenticator-validate-webauthn>`;
-        case DeviceClasses.DUO:
-            return html`<ak-stage-authenticator-validate-duo
-                .host=${this}
-                .challenge=${this.challenge}
-                .deviceChallenge=${this.selectedDeviceChallenge}
-                .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}>
-            </ak-stage-authenticator-validate-duo>`;
+            case DeviceClasses.STATIC:
+            case DeviceClasses.TOTP:
+                return html`<ak-stage-authenticator-validate-code
+                    .host=${this}
+                    .challenge=${this.challenge}
+                    .deviceChallenge=${this.selectedDeviceChallenge}
+                    .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}
+                >
+                </ak-stage-authenticator-validate-code>`;
+            case DeviceClasses.WEBAUTHN:
+                return html`<ak-stage-authenticator-validate-webauthn
+                    .host=${this}
+                    .challenge=${this.challenge}
+                    .deviceChallenge=${this.selectedDeviceChallenge}
+                    .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}
+                >
+                </ak-stage-authenticator-validate-webauthn>`;
+            case DeviceClasses.DUO:
+                return html`<ak-stage-authenticator-validate-duo
+                    .host=${this}
+                    .challenge=${this.challenge}
+                    .deviceChallenge=${this.selectedDeviceChallenge}
+                    .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}
+                >
+                </ak-stage-authenticator-validate-duo>`;
         }
         return html``;
     }
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state
-                ?loading="${true}"
-                header=${t`Loading`}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
         }
         // User only has a single device class, so we don't show a picker
         if (this.challenge?.deviceChallenges.length === 1) {
             this.selectedDeviceChallenge = this.challenge.deviceChallenges[0];
         }
         return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">
-                    ${this.challenge.flowInfo?.title}
-                </h1>
-                ${this.selectedDeviceChallenge ? "" : html`<p class="pf-c-login__main-header-desc">
-                    ${t`Select an identification method.`}
-                    </p>`}
+                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
+                ${this.selectedDeviceChallenge
+                    ? ""
+                    : html`<p class="pf-c-login__main-header-desc">
+                          ${t`Select an identification method.`}
+                      </p>`}
             </header>
-            ${this.selectedDeviceChallenge ?
-                this.renderDeviceChallenge() :
-                html`<div class="pf-c-login__main-body">
-                    ${this.renderDevicePicker()}
-                </div>
-                <footer class="pf-c-login__main-footer">
-                    <ul class="pf-c-login__main-footer-links">
-                    </ul>
-                </footer>`}`;
+            ${this.selectedDeviceChallenge
+                ? this.renderDeviceChallenge()
+                : html`<div class="pf-c-login__main-body">${this.renderDevicePicker()}</div>
+                      <footer class="pf-c-login__main-footer">
+                          <ul class="pf-c-login__main-footer-links"></ul>
+                      </footer>`}`;
     }
-
 }

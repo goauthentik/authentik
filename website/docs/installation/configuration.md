@@ -20,6 +20,7 @@ All of these variables can be set to values, but you can also use a URI-like for
 - `AUTHENTIK_POSTGRESQL__HOST`: Hostname of your PostgreSQL Server
 - `AUTHENTIK_POSTGRESQL__NAME`: Database name
 - `AUTHENTIK_POSTGRESQL__USER`: Database user
+- `AUTHENTIK_POSTGRESQL__PORT`: Database port, defaults to 5432
 - `AUTHENTIK_POSTGRESQL__PASSWORD`: Database password, defaults to the environment variable `POSTGRES_PASSWORD`
 
 ## Redis Settings
@@ -29,6 +30,7 @@ All of these variables can be set to values, but you can also use a URI-like for
 - `AUTHENTIK_REDIS__CACHE_DB`: Database for caching, defaults to 0
 - `AUTHENTIK_REDIS__MESSAGE_QUEUE_DB`: Database for the message queue, defaults to 1
 - `AUTHENTIK_REDIS__WS_DB`: Database for websocket connections, defaults to 2
+- `AUTHENTIK_REDIS__OUTPOST_SESSION_DB`: Database for sessions for the embedded outpost, defaults to 3
 - `AUTHENTIK_REDIS__CACHE_TIMEOUT`: Timeout for cached data until it expires in seconds, defaults to 300
 - `AUTHENTIK_REDIS__CACHE_TIMEOUT_FLOWS`: Timeout for cached flow plans until they expire in seconds, defaults to 300
 - `AUTHENTIK_REDIS__CACHE_TIMEOUT_POLICIES`: Timeout for cached polices until they expire in seconds, defaults to 300

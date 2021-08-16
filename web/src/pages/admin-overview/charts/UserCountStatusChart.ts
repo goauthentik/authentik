@@ -12,7 +12,6 @@ interface UserMetrics {
 
 @customElement("ak-admin-status-chart-user-count")
 export class UserCountStatusChart extends AKChart<UserMetrics> {
-
     getChartType(): string {
         return "doughnut";
     }
@@ -30,12 +29,16 @@ export class UserCountStatusChart extends AKChart<UserMetrics> {
 
     async apiRequest(): Promise<UserMetrics> {
         const api = new CoreApi(DEFAULT_CONFIG);
-        const count = (await api.coreUsersList({
-            pageSize: 1
-        })).pagination.count;
-        const superusers = (await api.coreUsersList({
-            isSuperuser: true
-        })).pagination.count;
+        const count = (
+            await api.coreUsersList({
+                pageSize: 1,
+            })
+        ).pagination.count;
+        const superusers = (
+            await api.coreUsersList({
+                isSuperuser: true,
+            })
+        ).pagination.count;
         this.centerText = count.toString();
         return {
             count: count - superusers,
@@ -45,24 +48,14 @@ export class UserCountStatusChart extends AKChart<UserMetrics> {
 
     getChartData(data: UserMetrics): ChartData {
         return {
-            labels: [
-                t`Total users`,
-                t`Superusers`,
-            ],
+            labels: [t`Total users`, t`Superusers`],
             datasets: [
                 {
-                    backgroundColor: [
-                        "#2b9af3",
-                        "#3e8635",
-                    ],
+                    backgroundColor: ["#2b9af3", "#3e8635"],
                     spanGaps: true,
-                    data: [
-                        data.count,
-                        data.superusers,
-                    ],
+                    data: [data.count, data.superusers],
                 },
-            ]
+            ],
         };
     }
-
 }

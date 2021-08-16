@@ -5,7 +5,7 @@ import { TablePage } from "../../../elements/table/TablePage";
 
 import "../../../elements/buttons/ModalButton";
 import "../../../elements/buttons/SpinnerButton";
-import "../../../elements/forms/DeleteForm";
+import "../../../elements/forms/DeleteBulkForm";
 import "../../../elements/forms/ModalForm";
 import { TableColumn } from "../../../elements/table/Table";
 import { PAGE_SIZE } from "../../../constants";
@@ -27,6 +27,8 @@ export class UserReputationListPage extends TablePage<UserReputation> {
         return "fa fa-ban";
     }
 
+    checkbox = true;
+
     @property()
     order = "username";
 
@@ -40,36 +42,32 @@ export class UserReputationListPage extends TablePage<UserReputation> {
     }
 
     columns(): TableColumn[] {
-        return [
-            new TableColumn(t`Username`, "username"),
-            new TableColumn(t`Score`, "score"),
-            new TableColumn(""),
-        ];
+        return [new TableColumn(t`Username`, "username"), new TableColumn(t`Score`, "score")];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`User Reputation`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: UserReputation) => {
+                return new PoliciesApi(DEFAULT_CONFIG).policiesReputationUsersUsedByList({
+                    id: item.pk,
+                });
+            }}
+            .delete=${(item: UserReputation) => {
+                return new PoliciesApi(DEFAULT_CONFIG).policiesReputationUsersDestroy({
+                    id: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: UserReputation): TemplateResult[] {
-        return [
-            html`${item.username}`,
-            html`${item.score}`,
-            html`
-            <ak-forms-delete
-                .obj=${item}
-                objectLabel=${t`User Reputation`}
-                .usedBy=${() => {
-                    return new PoliciesApi(DEFAULT_CONFIG).policiesReputationUsersUsedByList({
-                        id: item.pk
-                    });
-                }}
-                .delete=${() => {
-                    return new PoliciesApi(DEFAULT_CONFIG).policiesReputationUsersDestroy({
-                        id: item.pk,
-                    });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete`}
-                </button>
-            </ak-forms-delete>`,
-        ];
+        return [html`${item.username}`, html`${item.score}`];
     }
-
 }

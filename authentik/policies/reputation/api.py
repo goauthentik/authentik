@@ -5,11 +5,7 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.policies.api.policies import PolicySerializer
-from authentik.policies.reputation.models import (
-    IPReputation,
-    ReputationPolicy,
-    UserReputation,
-)
+from authentik.policies.reputation.models import IPReputation, ReputationPolicy, UserReputation
 
 
 class ReputationPolicySerializer(PolicySerializer):
@@ -29,6 +25,8 @@ class ReputationPolicyViewSet(UsedByMixin, ModelViewSet):
 
     queryset = ReputationPolicy.objects.all()
     serializer_class = ReputationPolicySerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]
 
 
 class IPReputationSerializer(ModelSerializer):

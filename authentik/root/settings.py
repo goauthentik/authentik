@@ -20,6 +20,7 @@ from time import time
 
 import structlog
 from celery.schedules import crontab
+from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
 from sentry_sdk import init as sentry_init
 from sentry_sdk.api import set_tag
 from sentry_sdk.integrations.celery import CeleryIntegration
@@ -153,6 +154,7 @@ SPECTACULAR_SETTINGS = {
         "url": "https://github.com/goauthentik/authentik/blob/master/LICENSE",
     },
     "ENUM_NAME_OVERRIDES": {
+        "EventActions": "authentik.events.models.EventAction",
         "ChallengeChoices": "authentik.flows.challenge.ChallengeTypes",
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
@@ -174,9 +176,7 @@ REST_FRAMEWORK = {
         "rest_framework.filters.OrderingFilter",
         "rest_framework.filters.SearchFilter",
     ],
-    "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.DjangoObjectPermissions",
-    ),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.DjangoObjectPermissions",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "authentik.api.authentication.TokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
@@ -187,12 +187,19 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
+REDIS_PROTOCOL_PREFIX = "redis://"
+REDIS_CELERY_TLS_REQUIREMENTS = ""
+if CONFIG.y_bool("redis.tls", False):
+    REDIS_PROTOCOL_PREFIX = "rediss://"
+    REDIS_CELERY_TLS_REQUIREMENTS = f"?ssl_cert_reqs={CONFIG.y('redis.tls_reqs')}"
+
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": (
-            f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:6379"
-            f"/{CONFIG.y('redis.cache_db')}"
+            f"{REDIS_PROTOCOL_PREFIX}:"
+            f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
+            f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.cache_db')}"
         ),
         "TIMEOUT": int(CONFIG.y("redis.cache_timeout", 300)),
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
@@ -202,14 +209,16 @@ DJANGO_REDIS_IGNORE_EXCEPTIONS = True
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
-SESSION_COOKIE_SAMESITE = "lax"
+# Configured via custom SessionMiddleware
+# SESSION_COOKIE_SAMESITE = "None"
+# SESSION_COOKIE_SECURE = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 MESSAGE_STORAGE = "authentik.root.messages.storage.ChannelsStorage"
 
 MIDDLEWARE = [
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
+    "authentik.root.middleware.SessionMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "authentik.core.middleware.RequestIDMiddleware",
     "authentik.tenants.middleware.TenantMiddleware",
@@ -249,8 +258,9 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [
-                f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:6379"
-                f"/{CONFIG.y('redis.ws_db')}"
+                f"{REDIS_PROTOCOL_PREFIX}:"
+                f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
+                f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.ws_db')}"
             ],
         },
     },
@@ -328,12 +338,16 @@ CELERY_BEAT_SCHEDULE = {
 CELERY_TASK_CREATE_MISSING_QUEUES = True
 CELERY_TASK_DEFAULT_QUEUE = "authentik"
 CELERY_BROKER_URL = (
-    f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}"
-    f":6379/{CONFIG.y('redis.message_queue_db')}"
+    f"{REDIS_PROTOCOL_PREFIX}:"
+    f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
+    f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.message_queue_db')}"
+    f"{REDIS_CELERY_TLS_REQUIREMENTS}"
 )
 CELERY_RESULT_BACKEND = (
-    f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}"
-    f":6379/{CONFIG.y('redis.message_queue_db')}"
+    f"{REDIS_PROTOCOL_PREFIX}:"
+    f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
+    f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.message_queue_db')}"
+    f"{REDIS_CELERY_TLS_REQUIREMENTS}"
 )
 
 # Database backup
@@ -361,11 +375,12 @@ if CONFIG.y("postgresql.s3_backup"):
     )
 
 # Sentry integration
+SENTRY_DSN = "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8"
 _ERROR_REPORTING = CONFIG.y_bool("error_reporting.enabled", False)
 if _ERROR_REPORTING:
     # pylint: disable=abstract-class-instantiated
     sentry_init(
-        dsn="https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8",
+        dsn=SENTRY_DSN,
         integrations=[
             DjangoIntegration(transaction_style="function_name"),
             CeleryIntegration(),
@@ -382,9 +397,7 @@ if _ERROR_REPORTING:
     if build_hash == "":
         build_hash = "tagged"
     set_tag("authentik.build_hash", build_hash)
-    set_tag(
-        "authentik.env", "kubernetes" if "KUBERNETES_PORT" in os.environ else "compose"
-    )
+    set_tag("authentik.env", "kubernetes" if SERVICE_HOST_ENV_NAME in os.environ else "compose")
     set_tag("authentik.component", "backend")
     j_print(
         "Error reporting is enabled",
@@ -400,9 +413,8 @@ MEDIA_URL = "/media/"
 
 TEST = False
 TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
-
-LOG_LEVEL = CONFIG.y("log_level").upper() if not TEST else "DEBUG"
-
+# We can't check TEST here as its set later by the test runner
+LOG_LEVEL = CONFIG.y("log_level").upper() if "TF_BUILD" not in os.environ else "DEBUG"
 
 structlog.configure_once(
     processors=[
@@ -474,6 +486,7 @@ _LOGGING_HANDLER_MAP = {
     "kubernetes": "INFO",
     "asyncio": "WARNING",
     "aioredis": "WARNING",
+    "s3transfer": "WARNING",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false
@@ -499,12 +512,8 @@ for _app in INSTALLED_APPS:
             app_settings = importlib.import_module("%s.settings" % _app)
             INSTALLED_APPS.extend(getattr(app_settings, "INSTALLED_APPS", []))
             MIDDLEWARE.extend(getattr(app_settings, "MIDDLEWARE", []))
-            AUTHENTICATION_BACKENDS.extend(
-                getattr(app_settings, "AUTHENTICATION_BACKENDS", [])
-            )
-            CELERY_BEAT_SCHEDULE.update(
-                getattr(app_settings, "CELERY_BEAT_SCHEDULE", {})
-            )
+            AUTHENTICATION_BACKENDS.extend(getattr(app_settings, "AUTHENTICATION_BACKENDS", []))
+            CELERY_BEAT_SCHEDULE.update(getattr(app_settings, "CELERY_BEAT_SCHEDULE", {}))
             for _attr in dir(app_settings):
                 if not _attr.startswith("__") and _attr not in _DISALLOWED_ITEMS:
                     globals()[_attr] = getattr(app_settings, _attr)

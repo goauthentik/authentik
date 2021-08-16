@@ -16,6 +16,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentik.core.api.utils import PassiveSerializer
+from authentik.outposts.managed import MANAGED_OUTPOST
+from authentik.outposts.models import Outpost
 
 
 class RuntimeDict(TypedDict):
@@ -38,6 +40,7 @@ class SystemSerializer(PassiveSerializer):
     runtime = SerializerMethodField()
     tenant = SerializerMethodField()
     server_time = SerializerMethodField()
+    embedded_outpost_host = SerializerMethodField()
 
     def get_http_headers(self, request: Request) -> dict[str, str]:
         """Get HTTP Request headers"""
@@ -61,9 +64,7 @@ class SystemSerializer(PassiveSerializer):
         return {
             "python_version": python_version,
             "gunicorn_version": ".".join(str(x) for x in gunicorn_version),
-            "environment": "kubernetes"
-            if SERVICE_HOST_ENV_NAME in os.environ
-            else "compose",
+            "environment": "kubernetes" if SERVICE_HOST_ENV_NAME in os.environ else "compose",
             "architecture": platform.machine(),
             "platform": platform.platform(),
             "uname": " ".join(platform.uname()),
@@ -76,6 +77,13 @@ class SystemSerializer(PassiveSerializer):
     def get_server_time(self, request: Request) -> datetime:
         """Current server time"""
         return now()
+
+    def get_embedded_outpost_host(self, request: Request) -> str:
+        """Get the FQDN configured on the embeddded outpost"""
+        outposts = Outpost.objects.filter(managed=MANAGED_OUTPOST)
+        if not outposts.exists():
+            return ""
+        return outposts.first().config.authentik_host
 
 
 class SystemView(APIView):

@@ -5,9 +5,7 @@ from django.db import migrations
 
 
 def set_managed_flag(apps: Apps, schema_editor):
-    LDAPPropertyMapping = apps.get_model(
-        "authentik_sources_ldap", "LDAPPropertyMapping"
-    )
+    LDAPPropertyMapping = apps.get_model("authentik_sources_ldap", "LDAPPropertyMapping")
     db_alias = schema_editor.connection.alias
     field_to_uid = {
         "name": "goauthentik.io/sources/ldap/default-name",

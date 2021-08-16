@@ -17,10 +17,7 @@ from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Application, Source, User
 from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
-from authentik.flows.stage import (
-    PLAN_CONTEXT_PENDING_USER_IDENTIFIER,
-    ChallengeStageView,
-)
+from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, ChallengeStageView
 from authentik.flows.views import SESSION_KEY_APPLICATION_PRE, challenge_types
 from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.identification.signals import identification_failed
@@ -73,25 +70,33 @@ class IdentificationChallengeResponse(ChallengeResponse):
 
     pre_user: Optional[User] = None
 
-    def validate(self, data: dict[str, Any]) -> dict[str, Any]:
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Validate that user exists, and optionally their password"""
-        uid_field = data["uid_field"]
+        uid_field = attrs["uid_field"]
         current_stage: IdentificationStage = self.stage.executor.current_stage
 
         pre_user = self.stage.get_user(uid_field)
         if not pre_user:
             sleep(0.150)
             LOGGER.debug("invalid_login", identifier=uid_field)
-            identification_failed.send(
-                sender=self, request=self.stage.request, uid_field=uid_field
+            identification_failed.send(sender=self, request=self.stage.request, uid_field=uid_field)
+            # We set the pending_user even on failure so it's part of the context, even
+            # when the input is invalid
+            # This is so its part of the current flow plan, and on flow restart can be kept, and
+            # policies can be applied.
+            self.stage.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = User(
+                username=uid_field,
+                email=uid_field,
             )
+            if not current_stage.show_matched_user:
+                self.stage.executor.plan.context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = uid_field
             raise ValidationError("Failed to authenticate.")
         self.pre_user = pre_user
         if not current_stage.password_stage:
             # No password stage select, don't validate the password
-            return data
+            return attrs
 
-        password = data["password"]
+        password = attrs["password"]
         try:
             user = authenticate(
                 self.stage.request,
@@ -104,7 +109,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
             self.pre_user = user
         except PermissionDenied as exc:
             raise ValidationError(str(exc)) from exc
-        return data
+        return attrs
 
 
 class IdentificationStageView(ChallengeStageView):
@@ -165,9 +170,7 @@ class IdentificationStageView(ChallengeStageView):
         # Check all enabled source, add them if they have a UI Login button.
         ui_sources = []
         sources: list[Source] = (
-            current_stage.sources.filter(enabled=True)
-            .order_by("name")
-            .select_subclasses()
+            current_stage.sources.filter(enabled=True).order_by("name").select_subclasses()
         )
         for source in sources:
             ui_login_button = source.ui_login_button
@@ -178,9 +181,7 @@ class IdentificationStageView(ChallengeStageView):
         challenge.initial_data["sources"] = ui_sources
         return challenge
 
-    def challenge_valid(
-        self, response: IdentificationChallengeResponse
-    ) -> HttpResponse:
+    def challenge_valid(self, response: IdentificationChallengeResponse) -> HttpResponse:
         self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = response.pre_user
         current_stage: IdentificationStage = self.executor.current_stage
         if not current_stage.show_matched_user:

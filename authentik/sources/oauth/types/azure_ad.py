@@ -24,9 +24,7 @@ class AzureADClient(OAuth2Client):
             response = self.session.request(
                 "get",
                 profile_url,
-                headers={
-                    "Authorization": f"{token['token_type']} {token['access_token']}"
-                },
+                headers={"Authorization": f"{token['token_type']} {token['access_token']}"},
             )
             LOGGER.debug(response.text)
             response.raise_for_status()

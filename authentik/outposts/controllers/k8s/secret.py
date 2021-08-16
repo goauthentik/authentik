@@ -5,10 +5,7 @@ from typing import TYPE_CHECKING
 from kubernetes.client import CoreV1Api, V1Secret
 
 from authentik.outposts.controllers.base import FIELD_MANAGER
-from authentik.outposts.controllers.k8s.base import (
-    KubernetesObjectReconciler,
-    NeedsUpdate,
-)
+from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler, NeedsUpdate
 
 if TYPE_CHECKING:
     from authentik.outposts.controllers.kubernetes import KubernetesController
@@ -38,9 +35,7 @@ class SecretReconciler(KubernetesObjectReconciler[V1Secret]):
         return V1Secret(
             metadata=meta,
             data={
-                "authentik_host": b64string(
-                    self.controller.outpost.config.authentik_host
-                ),
+                "authentik_host": b64string(self.controller.outpost.config.authentik_host),
                 "authentik_host_insecure": b64string(
                     str(self.controller.outpost.config.authentik_host_insecure)
                 ),
@@ -54,9 +49,7 @@ class SecretReconciler(KubernetesObjectReconciler[V1Secret]):
         )
 
     def delete(self, reference: V1Secret):
-        return self.api.delete_namespaced_secret(
-            reference.metadata.name, self.namespace
-        )
+        return self.api.delete_namespaced_secret(reference.metadata.name, self.namespace)
 
     def retrieve(self) -> V1Secret:
         return self.api.read_namespaced_secret(self.name, self.namespace)
