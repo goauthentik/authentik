@@ -45,11 +45,11 @@ Assumption is being made that you have successfully downloaded and activated the
 
 In Wordpress, under _Settings_, Select _OpenID Connect Client_
 
-::note
+:::note
 Only settings that have been modified from default have been listed.
 :::
 
-- Login Type: OpenID Connect Button of Login (This option display a button to login using OpenID as well as local WP login)
+- Login Type: OpenID Connect Button on Login (This option display a button to login using OpenID as well as local WP login)
 - Client ID: Client ID from step 1
 - Client Secret: Client Secret from step 1
 - OpenID Scope: `email profile openid`
