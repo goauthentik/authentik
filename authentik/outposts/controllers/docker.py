@@ -9,6 +9,7 @@ from yaml import safe_dump
 
 from authentik import __version__
 from authentik.outposts.controllers.base import BaseController, ControllerException
+from authentik.outposts.managed import MANAGED_OUTPOST
 from authentik.outposts.models import DockerServiceConnection, Outpost, ServiceConnectionInvalid
 
 
@@ -102,7 +103,7 @@ class DockerController(BaseController):
 
     # pylint: disable=too-many-return-statements
     def up(self):
-        if self.outpost.managed != "":
+        if self.outpost.managed == MANAGED_OUTPOST:
             return None
         try:
             container, has_been_created = self._get_container()
@@ -167,7 +168,7 @@ class DockerController(BaseController):
             raise ControllerException(str(exc)) from exc
 
     def down(self):
-        if self.outpost.managed != "":
+        if self.outpost.managed != MANAGED_OUTPOST:
             return
         try:
             container, _ = self._get_container()
