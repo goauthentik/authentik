@@ -27,6 +27,7 @@ import "./settings/UserSettingsAuthenticatorTOTP";
 import "./settings/UserSettingsAuthenticatorWebAuthn";
 import "./settings/UserSettingsPassword";
 import "./settings/SourceSettingsOAuth";
+import "./settings/SourceSettingsPlex";
 import { EVENT_REFRESH } from "../../constants";
 
 @customElement("ak-user-settings")
@@ -112,6 +113,12 @@ export class UserSettingsPage extends LitElement {
                     .configureUrl=${source.configureUrl}
                 >
                 </ak-user-settings-source-oauth>`;
+            case "ak-user-settings-source-plex":
+                return html`<ak-user-settings-source-plex
+                    objectId=${source.objectUid}
+                    title=${source.title}
+                >
+                </ak-user-settings-source-plex>`;
             default:
                 return html`<p>${t`Error: unsupported source settings: ${source.component}`}</p>`;
         }

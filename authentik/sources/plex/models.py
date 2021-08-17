@@ -1,4 +1,5 @@
 """Plex source"""
+from typing import Optional
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.templatetags.static import static
@@ -7,7 +8,7 @@ from rest_framework.fields import CharField
 from rest_framework.serializers import BaseSerializer
 
 from authentik.core.models import Source, UserSourceConnection
-from authentik.core.types import UILoginButton
+from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.providers.oauth2.generators import generate_client_id
 
@@ -73,6 +74,15 @@ class PlexSource(Source):
             ),
             icon_url=static("authentik/sources/plex.svg"),
             name=self.name,
+        )
+
+    @property
+    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+        return UserSettingSerializer(
+            data={
+                "title": f"Plex {self.name}",
+                "component": "ak-user-settings-source-plex",
+            }
         )
 
     class Meta:
