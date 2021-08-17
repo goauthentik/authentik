@@ -21,7 +21,7 @@ export class SourceSettingsOAuth extends BaseUserSettings {
     renderInner(): TemplateResult {
         return html`${until(
             new SourcesApi(DEFAULT_CONFIG)
-                .sourcesOauthUserConnectionsList({
+                .sourcesUserConnectionsOauthList({
                     sourceSlug: this.objectId,
                 })
                 .then((connection) => {
@@ -32,7 +32,7 @@ export class SourceSettingsOAuth extends BaseUserSettings {
                                 @click=${() => {
                                     return new SourcesApi(
                                         DEFAULT_CONFIG,
-                                    ).sourcesOauthUserConnectionsDestroy({
+                                    ).sourcesUserConnectionsOauthDestroy({
                                         id: connection.results[0].pk || 0,
                                     });
                                 }}

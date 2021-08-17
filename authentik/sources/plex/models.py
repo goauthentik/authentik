@@ -56,7 +56,7 @@ class PlexSource(Source):
 
     @property
     def serializer(self) -> BaseSerializer:
-        from authentik.sources.plex.api import PlexSourceSerializer
+        from authentik.sources.plex.api.source import PlexSourceSerializer
 
         return PlexSourceSerializer
 
