@@ -1,5 +1,6 @@
 """Plex source"""
 from typing import Optional
+
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.templatetags.static import static
