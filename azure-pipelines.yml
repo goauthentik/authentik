@@ -398,6 +398,7 @@ stages:
             inputs:
               script: bash <(curl -s https://codecov.io/bash)
           - task: CmdLine@2
+            continueOnError: true
             inputs:
               script: |
                 npm install -g @zeus-ci/cli
