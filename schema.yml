@@ -20625,7 +20625,19 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CapabilitiesEnum'
+        cache_timeout:
+          type: integer
+        cache_timeout_flows:
+          type: integer
+        cache_timeout_policies:
+          type: integer
+        cache_timeout_reputation:
+          type: integer
       required:
+      - cache_timeout
+      - cache_timeout_flows
+      - cache_timeout_policies
+      - cache_timeout_reputation
       - capabilities
       - error_reporting_enabled
       - error_reporting_environment

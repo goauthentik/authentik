@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db import models
 from drf_spectacular.utils import extend_schema
 from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
-from rest_framework.fields import BooleanField, CharField, ChoiceField, ListField
+from rest_framework.fields import BooleanField, CharField, ChoiceField, IntegerField, ListField
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -32,6 +32,11 @@ class ConfigSerializer(PassiveSerializer):
     error_reporting_send_pii = BooleanField(read_only=True)
 
     capabilities = ListField(child=ChoiceField(choices=Capabilities.choices))
+
+    cache_timeout = IntegerField(required=True)
+    cache_timeout_flows = IntegerField(required=True)
+    cache_timeout_policies = IntegerField(required=True)
+    cache_timeout_reputation = IntegerField(required=True)
 
 
 class ConfigView(APIView):
@@ -65,6 +70,10 @@ class ConfigView(APIView):
                 "error_reporting_environment": CONFIG.y("error_reporting.environment"),
                 "error_reporting_send_pii": CONFIG.y("error_reporting.send_pii"),
                 "capabilities": self.get_capabilities(),
+                "cache_timeout": int(CONFIG.y("redis.cache_timeout")),
+                "cache_timeout_flows": int(CONFIG.y("redis.cache_timeout_flows")),
+                "cache_timeout_policies": int(CONFIG.y("redis.cache_timeout_policies")),
+                "cache_timeout_reputation": int(CONFIG.y("redis.cache_timeout_reputation")),
             }
         )
         return Response(config.data)
