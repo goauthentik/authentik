@@ -27,7 +27,7 @@ jobs:
           docker-compose run -u root server test
       - name: Extract version number
         id: get_version
-        uses: actions/github-script@v4.0.2
+        uses: actions/github-script@v4.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
