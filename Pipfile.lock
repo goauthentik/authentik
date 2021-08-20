@@ -122,19 +122,19 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:ca0d576138b7c38d7fc214716a47e6394c4e9a10fdf337d8a125961eefdc25cc",
-                "sha256:d6c030dbc08f2c0b6daff9fd26b87f4c029d984781b9b48b21c112d4a76ee081"
+                "sha256:057196ac15de4de2221a24a3a0a41692414fa1dd697994d062ebd447163265e7",
+                "sha256:852e776cea4287f74edcb45564f8345fb6b0168dde0fd5bf46668b94c3f21177"
             ],
             "index": "pypi",
-            "version": "==1.18.24"
+            "version": "==1.18.25"
         },
         "botocore": {
             "hashes": [
-                "sha256:9f896207e46580a1a720a85261f516fe60c2209f7b8b918bc330b1cb8b4a2afb",
-                "sha256:ec1c0a3f18ae6062285cc8dac747826baebe9b238bc2720ad6ce4d03bb645ec3"
+                "sha256:201e10d3b1b40d65b7c9214be7087d78ed65de00e7362bd1e020741301d09fbc",
+                "sha256:b9820ee29d70059c9b0e2a69ec13ebf80f4a0bc85f47578f17e951438c506b2d"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==1.21.24"
+            "version": "==1.21.25"
         },
         "cachetools": {
             "hashes": [
@@ -487,11 +487,11 @@
         },
         "google-auth": {
             "hashes": [
-                "sha256:5c01b4be3fbece1526a76cb81551a936f938c7c3d490d10947c66f6ffd1e5161",
-                "sha256:9e00c76e1bc7b1a7fe80472f1347f3802e4caa1fa53ba1f11b7af3772b484a82"
+                "sha256:c012c8be7c442c8309ca8fa0876fef33f5fd977c467be1e1c1c2f721e8ebd73c",
+                "sha256:ea1af050b3e06eb73e4470f704d23007307bc0e87c13e015f6b90460f1407bd3"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==2.0.0"
+            "version": "==2.0.1"
         },
         "gunicorn": {
             "hashes": [
@@ -1825,11 +1825,11 @@
         },
         "stevedore": {
             "hashes": [
-                "sha256:3a5bbd0652bf552748871eaa73a4a8dc2899786bc497a2aa1fcb4dcdb0debeee",
-                "sha256:50d7b78fbaf0d04cd62411188fa7eedcb03eb7f4c4b37005615ceebe582aa82a"
+                "sha256:59b58edb7f57b11897f150475e7bc0c39c5381f0b8e3fa9f5c20ce6c89ec4aa1",
+                "sha256:920ce6259f0b2498aaa4545989536a27e4e4607b8318802d7ddc3a533d3d069e"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==3.3.0"
+            "version": "==3.4.0"
         },
         "toml": {
             "hashes": [
