@@ -2,7 +2,7 @@
 from typing import Optional
 
 from aioredis.errors import ConnectionClosedError, ReplyError
-from billiard.exceptions import WorkerLostError
+from billiard.exceptions import SoftTimeLimitExceeded, WorkerLostError
 from botocore.client import ClientError
 from botocore.exceptions import BotoCoreError
 from celery.exceptions import CeleryError
@@ -14,6 +14,7 @@ from django.http.response import Http404
 from django_redis.exceptions import ConnectionInterrupted
 from docker.errors import DockerException
 from ldap3.core.exceptions import LDAPException
+from psycopg2.errors import Error
 from redis.exceptions import ConnectionError as RedisConnectionError
 from redis.exceptions import RedisError, ResponseError
 from rest_framework.exceptions import APIException
@@ -52,6 +53,7 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
         OSError,
         PermissionError,
         # Django Errors
+        Error,
         ImproperlyConfigured,
         OperationalError,
         InternalError,
@@ -73,6 +75,7 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
         # celery errors
         WorkerLostError,
         CeleryError,
+        SoftTimeLimitExceeded,
         # S3 errors
         BotoCoreError,
         ClientError,
