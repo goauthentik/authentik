@@ -13,10 +13,10 @@ import (
 
 func (pi *ProviderInstance) SearchMe(req SearchRequest, f UserFlags) (ldap.ServerSearchResult, error) {
 	if f.UserInfo == nil {
-		u, _, err := pi.s.ac.Client.CoreApi.CoreUsersRetrieve(req.ctx, f.UserInfo.Pk).Execute()
+		u, _, err := pi.s.ac.Client.CoreApi.CoreUsersRetrieve(req.ctx, f.UserPk).Execute()
 		if err != nil {
 			req.log.WithError(err).Warning("Failed to get user info")
-			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Failed to get userinfo")
+			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("failed to get userinfo")
 		}
 		f.UserInfo = &u
 	}
@@ -91,7 +91,7 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 			users, _, err := parseFilterForUser(pi.s.ac.Client.CoreApi.CoreUsersList(uapisp.Context()), parsedFilter).Execute()
 			uapisp.Finish()
 			if err != nil {
-				req.log.WithError(err).Warning("failed to get groups")
+				req.log.WithError(err).Warning("failed to get users")
 				return
 			}
 
