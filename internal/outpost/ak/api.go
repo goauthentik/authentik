@@ -24,11 +24,13 @@ const ConfigErrorReportingEnvironment = "error_reporting_environment"
 
 // APIController main controller which connects to the authentik api via http and ws
 type APIController struct {
-	Client  *api.APIClient
-	Outpost api.Outpost
-	token   string
+	Client       *api.APIClient
+	Outpost      api.Outpost
+	GlobalConfig api.Config
 
 	Server Outpost
+
+	token string
 
 	logger *log.Entry
 
@@ -54,21 +56,28 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 
 	log := log.WithField("logger", "authentik.outpost.ak-api-controller")
 
+	akConfig, _, err := apiClient.RootApi.RootConfigRetrieve(context.Background()).Execute()
+	if err != nil {
+		log.WithError(err).Error("Failed to fetch global configuration")
+		return nil
+	}
+
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
 	outposts, _, err := apiClient.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
 
 	if err != nil {
-		log.WithError(err).Error("Failed to fetch configuration")
+		log.WithError(err).Error("Failed to fetch outpost configuration")
 		return nil
 	}
 	outpost := outposts.Results[0]
 	doGlobalSetup(outpost.Config)
 
 	ac := &APIController{
-		Client: apiClient,
-		token:  token,
+		Client:       apiClient,
+		GlobalConfig: akConfig,
 
+		token:  token,
 		logger: log,
 
 		reloadOffset: time.Duration(rand.Intn(10)) * time.Second,
