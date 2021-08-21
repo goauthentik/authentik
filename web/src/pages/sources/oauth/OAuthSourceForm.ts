@@ -58,6 +58,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
     }
 
     send = (data: OAuthSource): Promise<OAuthSource> => {
+        data.providerType = this.providerType?.slug || "";
         if (this.instance?.slug) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
                 slug: this.instance.slug,
