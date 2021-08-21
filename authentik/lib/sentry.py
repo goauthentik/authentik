@@ -14,6 +14,8 @@ from django.http.response import Http404
 from django_redis.exceptions import ConnectionInterrupted
 from docker.errors import DockerException
 from ldap3.core.exceptions import LDAPException
+
+# pylint: disable=no-name-in-module
 from psycopg2.errors import Error
 from redis.exceptions import ConnectionError as RedisConnectionError
 from redis.exceptions import RedisError, ResponseError

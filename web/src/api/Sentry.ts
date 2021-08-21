@@ -32,7 +32,7 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
                             return null;
                         }
                     }
-                    if (hint.originalException instanceof Response) {
+                    if (hint.originalException instanceof Response || hint.originalException instanceof DOMException) {
                         return null;
                     }
                     if (event.exception) {
