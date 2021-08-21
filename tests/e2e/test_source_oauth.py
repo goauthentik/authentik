@@ -118,7 +118,7 @@ class TestSourceOAuth2(SeleniumTestCase):
             slug="dex",
             authentication_flow=authentication_flow,
             enrollment_flow=enrollment_flow,
-            provider_type="openid-connect",
+            provider_type="openidconnect",
             authorization_url="http://127.0.0.1:5556/dex/auth",
             access_token_url="http://127.0.0.1:5556/dex/token",
             profile_url="http://127.0.0.1:5556/dex/userinfo",
