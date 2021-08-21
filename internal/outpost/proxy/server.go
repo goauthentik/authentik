@@ -60,6 +60,8 @@ func (s *Server) ServeHTTP() {
 	s.logger.Printf("closing %s", listener.Addr())
 }
 
+func (s *Server) TimerFlowCacheExpiry() {}
+
 func (s *Server) Handler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/akprox/ping" {
 		w.WriteHeader(204)

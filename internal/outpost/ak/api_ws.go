@@ -39,7 +39,7 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID strfmt.UUID) {
 	}
 	ws.Dial(fmt.Sprintf(pathTemplate, scheme, akURL.Host, outpostUUID.String()), header)
 
-	ac.logger.WithField("logger", "authentik.outpost.ak-ws").WithField("outpost", outpostUUID.String()).Debug("connecting to authentik")
+	ac.logger.WithField("logger", "authentik.outpost.ak-ws").WithField("outpost", outpostUUID.String()).Debug("Connecting to authentik")
 
 	ac.wsConn = ws
 	// Send hello message with our version

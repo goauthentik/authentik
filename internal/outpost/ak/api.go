@@ -56,12 +56,6 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 
 	log := log.WithField("logger", "authentik.outpost.ak-api-controller")
 
-	akConfig, _, err := apiClient.RootApi.RootConfigRetrieve(context.Background()).Execute()
-	if err != nil {
-		log.WithError(err).Error("Failed to fetch global configuration")
-		return nil
-	}
-
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
 	outposts, _, err := apiClient.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
@@ -72,6 +66,15 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	}
 	outpost := outposts.Results[0]
 	doGlobalSetup(outpost.Config)
+
+	log.WithField("name", outpost.Name).Debug("Fetched outpost configuration")
+
+	akConfig, _, err := apiClient.RootApi.RootConfigRetrieve(context.Background()).Execute()
+	if err != nil {
+		log.WithError(err).Error("Failed to fetch global configuration")
+		return nil
+	}
+	log.Debug("Fetched global configuration")
 
 	ac := &APIController{
 		Client:       apiClient,
@@ -120,6 +123,10 @@ func (a *APIController) StartBackgorundTasks() error {
 	go func() {
 		a.logger.Debug("Starting Interval updater...")
 		a.startIntervalUpdater()
+	}()
+	go func() {
+		a.logger.Debug("Starting periodical timer...")
+		a.startPeriodicalTasks()
 	}()
 	return nil
 }
