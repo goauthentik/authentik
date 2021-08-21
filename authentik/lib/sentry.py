@@ -14,9 +14,6 @@ from django.http.response import Http404
 from django_redis.exceptions import ConnectionInterrupted
 from docker.errors import DockerException
 from ldap3.core.exceptions import LDAPException
-
-# pylint: disable=no-name-in-module
-from psycopg2.errors import Error
 from redis.exceptions import ConnectionError as RedisConnectionError
 from redis.exceptions import RedisError, ResponseError
 from rest_framework.exceptions import APIException
@@ -48,6 +45,9 @@ class SentryIgnoredException(Exception):
 
 def before_send(event: dict, hint: dict) -> Optional[dict]:
     """Check if error is database error, and ignore if so"""
+    # pylint: disable=no-name-in-module
+    from psycopg2.errors import Error
+
     ignored_classes = (
         # Inbuilt types
         KeyboardInterrupt,
