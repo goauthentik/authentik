@@ -42,6 +42,7 @@ func parseFilterForGroupSingle(req api.ApiCoreGroupsListRequest, f *ber.Packet) 
 		case "cn":
 			return req.Name(vv)
 		case "member":
+		case "memberOf":
 			userDN, err := goldap.ParseDN(vv)
 			if err != nil {
 				return req

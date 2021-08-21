@@ -2915,6 +2915,23 @@ paths:
         schema:
           type: string
       - in: query
+        name: groups_by_name
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: groups_by_pk
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
         name: is_active
         schema:
           type: boolean

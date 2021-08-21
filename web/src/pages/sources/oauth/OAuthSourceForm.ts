@@ -36,13 +36,15 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
     @property()
     set modelName(v: string | undefined) {
         this._modelName = v;
-        new SourcesApi(DEFAULT_CONFIG).sourcesOauthSourceTypesList({
-            name: v?.replace("oauthsource", ""),
-        }).then((type) => {
-            this.providerType = type[0];
-        });
+        new SourcesApi(DEFAULT_CONFIG)
+            .sourcesOauthSourceTypesList({
+                name: v?.replace("oauthsource", ""),
+            })
+            .then((type) => {
+                this.providerType = type[0];
+            });
     }
-    get modelName(): string|undefined {
+    get modelName(): string | undefined {
         return this._modelName;
     }
 
@@ -85,7 +87,10 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                 >
                     <input
                         type="text"
-                        value="${first(this.instance?.authorizationUrl, this.providerType.authorizationUrl)}"
+                        value="${first(
+                            this.instance?.authorizationUrl,
+                            this.providerType.authorizationUrl,
+                        )}"
                         class="pf-c-form-control"
                         required
                     />
@@ -100,7 +105,10 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                 >
                     <input
                         type="text"
-                        value="${first(this.instance?.accessTokenUrl, this.providerType.accessTokenUrl)}"
+                        value="${first(
+                            this.instance?.accessTokenUrl,
+                            this.providerType.accessTokenUrl,
+                        )}"
                         class="pf-c-form-control"
                         required
                     />

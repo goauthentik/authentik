@@ -37,7 +37,7 @@ class TestOAuthSource(TestCase):
                 data={
                     "name": "foo",
                     "slug": "bar",
-                    "provider_type": "openid-connect",
+                    "provider_type": "openidconnect",
                     "consumer_key": "foo",
                     "consumer_secret": "foo",
                 }
