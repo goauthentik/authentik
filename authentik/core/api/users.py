@@ -150,8 +150,8 @@ class UsersFilter(FilterSet):
     is_superuser = BooleanFilter(field_name="ak_groups", lookup_expr="is_superuser")
 
     groups_by_name = ModelMultipleChoiceFilter(
-        field_name="ak_groups__username",
-        to_field_name="username",
+        field_name="ak_groups__name",
+        to_field_name="name",
         queryset=Group.objects.all(),
     )
     groups_by_pk = ModelMultipleChoiceFilter(

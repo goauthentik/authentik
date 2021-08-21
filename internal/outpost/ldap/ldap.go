@@ -19,8 +19,10 @@ const UserObjectClass = "user"
 type ProviderInstance struct {
 	BaseDN string
 
-	UserDN  string
-	GroupDN string
+	UserDN string
+
+	VirtualGroupDN string
+	GroupDN        string
 
 	appSlug  string
 	flowSlug string

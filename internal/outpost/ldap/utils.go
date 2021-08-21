@@ -95,7 +95,7 @@ func (pi *ProviderInstance) APIGroupToLDAPGroup(g api.Group) LDAPGroup {
 
 func (pi *ProviderInstance) APIUserToLDAPGroup(u api.User) LDAPGroup {
 	return LDAPGroup{
-		dn:             pi.GetGroupDN(u.Username),
+		dn:             pi.GetVirtualGroupDN(u.Username),
 		cn:             u.Username,
 		uid:            u.Uid,
 		gidNumber:      pi.GetUidNumber(u),
@@ -112,6 +112,10 @@ func (pi *ProviderInstance) GetUserDN(user string) string {
 
 func (pi *ProviderInstance) GetGroupDN(group string) string {
 	return fmt.Sprintf("cn=%s,%s", group, pi.GroupDN)
+}
+
+func (pi *ProviderInstance) GetVirtualGroupDN(group string) string {
+	return fmt.Sprintf("cn=%s,%s", group, pi.VirtualGroupDN)
 }
 
 func (pi *ProviderInstance) GetUidNumber(user api.User) string {

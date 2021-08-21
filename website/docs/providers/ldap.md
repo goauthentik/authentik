@@ -14,7 +14,7 @@ Binding against the LDAP Server uses a flow in the background. This allows you t
 
 You can configure under which base DN the information should be available. For this documentation we'll use the default of `DC=ldap,DC=goauthentik,DC=io`.
 
-Users are available under `ou=users,<base DN>` and groups under `ou=groups,<base DN>`.
+Users are available under `ou=users,<base DN>` and groups under `ou=groups,<base DN>`. To aid compatibility, each user belongs to its own "virtual" group, as is standard on most Unix-like systems. This group does not exist in the authentik database, and is generated on the fly. These virtual groups are under the `ou=virtual-groups,<base DN>` DN.
 
 You can bind using the DN `cn=<username>,ou=users,<base DN>`, or using the following ldapsearch command for example:
 
