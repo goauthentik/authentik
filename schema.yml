@@ -13178,7 +13178,14 @@ paths:
   /api/v2beta/sources/oauth/source_types/:
     get:
       operationId: sources_oauth_source_types_list
-      description: Get all creatable source types
+      description: |-
+        Get all creatable source types. If ?name is set, only returns the type for <name>.
+        If <name> isn't found, returns the default type.
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
       tags:
       - sources
       security:

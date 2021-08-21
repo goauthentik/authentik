@@ -75,7 +75,7 @@ class AzureADType(SourceType):
     callback_view = AzureADOAuthCallback
     redirect_view = AzureADOAuthRedirect
     name = "Azure AD"
-    slug = "azure-ad"
+    slug = "azuread"
 
     urls_customizable = True
 
