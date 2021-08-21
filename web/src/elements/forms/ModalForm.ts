@@ -30,6 +30,7 @@ export class ModalForm extends ModalButton {
                     form?.resetForm();
                 }
                 this.loading = false;
+                this.locked = false;
                 this.dispatchEvent(
                     new CustomEvent(EVENT_REFRESH, {
                         bubbles: true,
@@ -39,6 +40,7 @@ export class ModalForm extends ModalButton {
             })
             .catch((exc) => {
                 this.loading = false;
+                this.locked = false;
                 throw exc;
             });
     }
@@ -59,6 +61,7 @@ export class ModalForm extends ModalButton {
                 <ak-spinner-button
                     .callAction=${() => {
                         this.loading = true;
+                        this.locked = true;
                         return this.confirm();
                     }}
                     class="pf-m-primary"
