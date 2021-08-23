@@ -75,6 +75,10 @@ export default [
             resolve({ browser: true }),
             commonjs(),
             isProdBuild && terser(),
+            copy({
+                targets: [...resources],
+                copyOnce: false,
+            }),
         ].filter((p) => p),
         watch: {
             clearScreen: false,

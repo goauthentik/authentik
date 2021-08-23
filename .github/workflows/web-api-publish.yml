@@ -16,8 +16,8 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - run: make gen-web
       - run: |
-          cd web/api/
-          npm run build
+          cd web-api/
+          npm i
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
