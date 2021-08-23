@@ -103,7 +103,7 @@ export default [
             // Because the API Client uses star exports from typescript, we have to explicitly tell rollup
             // Which classes can be imported
             commonjs({
-                namedExports: { '@goauthentik/api': Object.keys(authentik) },
+                namedExports: { "@goauthentik/api": Object.keys(authentik) },
             }),
             babel({
                 extensions,
@@ -139,7 +139,7 @@ export default [
             // Because the API Client uses star exports from typescript, we have to explicitly tell rollup
             // Which classes can be imported
             commonjs({
-                namedExports: { '@goauthentik/api': Object.keys(authentik) },
+                namedExports: { "@goauthentik/api": Object.keys(authentik) },
             }),
             babel({
                 extensions,
