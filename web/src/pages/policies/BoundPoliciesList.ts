@@ -102,7 +102,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             .objects=${this.selectedElements}
             .metadata=${(item: PolicyBinding) => {
                 return [
-                    { key: t`Order`, value: item.order },
+                    { key: t`Order`, value: item.order.toString() },
                     { key: t`Policy / User / Group`, value: this.getPolicyUserGroupRow(item) },
                 ];
             }}
