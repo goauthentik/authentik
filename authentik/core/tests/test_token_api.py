@@ -27,6 +27,14 @@ class TestTokenAPI(APITestCase):
         self.assertEqual(token.intent, TokenIntents.INTENT_API)
         self.assertEqual(token.expiring, True)
 
+    def test_token_create_invalid(self):
+        """Test token creation endpoint (invalid data)"""
+        response = self.client.post(
+            reverse("authentik_api:token-list"),
+            {"identifier": "test-token", "intent": TokenIntents.INTENT_RECOVERY},
+        )
+        self.assertEqual(response.status_code, 400)
+
     def test_token_create_non_expiring(self):
         """Test token creation endpoint"""
         self.user.attributes[USER_ATTRIBUTE_TOKEN_EXPIRING] = False
