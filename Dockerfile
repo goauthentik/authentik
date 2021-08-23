@@ -98,4 +98,5 @@ COPY --from=builder /work/authentik /authentik-proxy
 USER authentik
 ENV TMPDIR /dev/shm/
 ENV PYTHONUBUFFERED 1
-ENTRYPOINT [ "/lifecycle/bootstrap.sh" ]
+ENV PATH "/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/lifecycle"
+ENTRYPOINT [ "/lifecycle/ak" ]
