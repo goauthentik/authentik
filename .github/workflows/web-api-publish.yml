@@ -26,7 +26,8 @@ jobs:
       - name: Upgrade /web
         run: |
           cd web/
-          npm i @goauthentik/api@${node -e 'console.log(require("../web-api/package.json").version)'}
+          export VERSION=`node -e 'console.log(require("../web-api/package.json").version)'`
+          npm i @goauthentik/api@$VERSION
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
