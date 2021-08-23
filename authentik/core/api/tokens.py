@@ -1,4 +1,5 @@
 """Tokens API Viewset"""
+from typing import Any
 from django.http.response import Http404
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
@@ -23,11 +24,12 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
 
     user = UserSerializer(required=False)
 
-    def validate_intent(self, value: str) -> str:
+    def validate(self, data: dict[Any, str]) -> dict[Any, str]:
         """Ensure only API or App password tokens are created."""
-        if value not in [TokenIntents.INTENT_API, TokenIntents.INTENT_APP_PASSWORD]:
-            raise ValidationError(f"Invalid intent {value}")
-        return value
+        data.setdefault("intent", TokenIntents.INTENT_API)
+        if data.get("intent") not in [TokenIntents.INTENT_API, TokenIntents.INTENT_APP_PASSWORD]:
+            raise ValidationError(f"Invalid intent {data.get('intent')}")
+        return data
 
     class Meta:
 
