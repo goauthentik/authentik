@@ -11,7 +11,7 @@ require (
 	github.com/go-openapi/analysis v0.20.1 // indirect
 	github.com/go-openapi/errors v0.20.0 // indirect
 	github.com/go-openapi/runtime v0.19.30
-	github.com/go-openapi/strfmt v0.20.1
+	github.com/go-openapi/strfmt v0.20.2
 	github.com/go-openapi/swag v0.19.15 // indirect
 	github.com/go-openapi/validate v0.20.2 // indirect
 	github.com/go-redis/redis/v7 v7.4.0 // indirect
