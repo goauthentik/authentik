@@ -15,6 +15,18 @@
         },
         {
             "identifiers": {
+                "pk": "7db93f1e-788b-4af6-8dc6-5cdeb59d8be7"
+            },
+            "model": "authentik_policies_expression.expressionpolicy",
+            "attrs": {
+                "name": "test-not-app-password",
+                "execution_logging": false,
+                "bound_to": 1,
+                "expression": "return auth_method != \"app_password\""
+            }
+        },
+        {
+            "identifiers": {
                 "pk": "69d41125-3987-499b-8d74-ef27b54b88c8",
                 "name": "default-authentication-login"
             },
@@ -91,7 +103,10 @@
             },
             "model": "authentik_flows.flowstagebinding",
             "attrs": {
-                "re_evaluate_policies": false
+                "evaluate_on_plan": false,
+                "re_evaluate_policies": true,
+                "policy_engine_mode": "any",
+                "invalid_response_action": "retry"
             }
         },
         {
@@ -104,6 +119,20 @@
             "model": "authentik_flows.flowstagebinding",
             "attrs": {
                 "re_evaluate_policies": false
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "6e40ae4d-a4ed-4bd7-a784-27b1fe5859d2",
+                "policy": "7db93f1e-788b-4af6-8dc6-5cdeb59d8be7",
+                "target": "688aec6f-5622-42c6-83a5-d22072d7e798",
+                "order": 0
+            },
+            "model": "authentik_policies.policybinding",
+            "attrs": {
+                "negate": false,
+                "enabled": true,
+                "timeout": 30
             }
         }
     ]
