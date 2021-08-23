@@ -204,6 +204,7 @@ module.exports = {
                 "troubleshooting/emails",
                 "troubleshooting/login",
                 "troubleshooting/image_upload_backup",
+                "troubleshooting/missing_permission",
             ],
         },
     ],

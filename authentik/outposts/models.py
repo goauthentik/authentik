@@ -371,7 +371,11 @@ class Outpost(ManagedModel):
                         )
                         Event.new(
                             action=EventAction.SYSTEM_EXCEPTION,
-                            message=exception_to_string(exc),
+                            message=(
+                                "While setting the permissions for the service-account, a permission "
+                                "was not found: "
+                                "Check https://goauthentik.io/docs/troubleshooting/missing_permission"
+                            ) + exception_to_string(exc),
                         ).set_user(user).save()
                 else:
                     app_label, perm = model_or_perm.split(".")
