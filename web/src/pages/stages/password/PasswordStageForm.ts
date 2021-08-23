@@ -46,8 +46,11 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
     };
 
     isBackendSelected(field: BackendsEnum): boolean {
+        if (!this.instance) {
+            return true;
+        }
         return (
-            (this.instance?.backends || []).filter((isField) => {
+            this.instance.backends.filter((isField) => {
                 return field === isField;
             }).length > 0
         );
