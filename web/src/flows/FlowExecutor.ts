@@ -159,8 +159,6 @@ export class FlowExecutor extends LitElement implements StageHost {
         let body = "";
         if (error instanceof Error) {
             body = error.message;
-        } else if (error instanceof Response) {
-            body = await error.text();
         }
         this.challenge = {
             type: ChallengeChoices.Shell,
