@@ -1,4 +1,4 @@
-import { PoliciesApi, PromptStage, StagesApi } from "authentik-api";
+import { PoliciesApi, PromptStage, StagesApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";

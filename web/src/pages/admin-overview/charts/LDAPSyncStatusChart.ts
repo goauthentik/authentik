@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
-import { SourcesApi, StatusEnum } from "authentik-api";
+import { SourcesApi, StatusEnum } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import "../../../elements/forms/ConfirmationForm";
 import { AKChart } from "../../../elements/charts/Chart";

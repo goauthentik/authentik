@@ -19,7 +19,7 @@ import "../../../elements/Tabs";
 import "../../../elements/events/ObjectChangelog";
 import "../RelatedApplicationButton";
 import "./LDAPProviderForm";
-import { ProvidersApi, LDAPProvider } from "authentik-api";
+import { ProvidersApi, LDAPProvider } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";
 

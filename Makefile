@@ -2,6 +2,7 @@
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
+NPM_VERSION = $(shell python -m scripts.npm_version)
 
 all: lint-fix lint test gen
 
@@ -41,10 +42,12 @@ gen-web:
 		openapitools/openapi-generator-cli generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
-		-o /local/web/api \
-		--additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
-	# npm i runs tsc as part of the installation process
-	cd web/api && npm i
+		-o /local/web-api \
+		--additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=@goauthentik/api,npmVersion=${NPM_VERSION}
+	mkdir -p web/node_modules/@goauthentik/api
+	python -m scripts.web_api_esm
+	cd web-api && npm i
+	\cp -rfv web-api/* web/node_modules/@goauthentik/api
 
 gen-outpost:
 	docker run \

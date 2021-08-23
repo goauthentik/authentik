@@ -1,6 +1,6 @@
 import { CSSResult, customElement, html, TemplateResult } from "lit-element";
 import { t } from "@lingui/macro";
-import { AuthenticatorsApi, WebAuthnDevice } from "authentik-api";
+import { AuthenticatorsApi, WebAuthnDevice } from "@goauthentik/api";
 import { until } from "lit-html/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { BaseUserSettings } from "./BaseUserSettings";

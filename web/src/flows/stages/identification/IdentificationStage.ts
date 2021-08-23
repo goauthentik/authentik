@@ -16,7 +16,7 @@ import {
     IdentificationChallengeResponseRequest,
     LoginSource,
     UserFieldsEnum,
-} from "authentik-api";
+} from "@goauthentik/api";
 
 export const PasswordManagerPrefill: {
     password: string | undefined;

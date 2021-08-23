@@ -11,7 +11,7 @@ import "./InvitationForm";
 import "./InvitationListLink";
 import { TableColumn } from "../../../elements/table/Table";
 import { PAGE_SIZE } from "../../../constants";
-import { Invitation, StagesApi } from "authentik-api";
+import { Invitation, StagesApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 
 @customElement("ak-stage-invitation-list")

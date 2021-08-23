@@ -1,4 +1,4 @@
-import { ScopeMapping, PropertymappingsApi } from "authentik-api";
+import { ScopeMapping, PropertymappingsApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";

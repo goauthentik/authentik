@@ -5,7 +5,7 @@ import { Table, TableColumn } from "../table/Table";
 
 import "../forms/DeleteBulkForm";
 import { PAGE_SIZE } from "../../constants";
-import { CoreApi, AuthenticatedSession } from "authentik-api";
+import { CoreApi, AuthenticatedSession } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-user-session-list")

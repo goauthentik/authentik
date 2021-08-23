@@ -13,7 +13,7 @@ import { BaseStage } from "../base";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import "../../../elements/Divider";
-import { PromptChallenge, PromptChallengeResponseRequest, StagePrompt } from "authentik-api";
+import { PromptChallenge, PromptChallengeResponseRequest, StagePrompt } from "@goauthentik/api";
 
 @customElement("ak-stage-prompt")
 export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeResponseRequest> {

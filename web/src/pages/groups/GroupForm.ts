@@ -1,4 +1,4 @@
-import { CoreApi, Group, User } from "authentik-api";
+import { CoreApi, Group, User } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";

@@ -16,7 +16,7 @@ import "../../elements/buttons/SpinnerButton";
 import "../policies/BoundPoliciesList";
 import "./BoundStagesList";
 import "./FlowDiagram";
-import { Flow, FlowsApi } from "authentik-api";
+import { Flow, FlowsApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";

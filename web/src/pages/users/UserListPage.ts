@@ -8,7 +8,7 @@ import "../../elements/forms/ModalForm";
 import "../../elements/buttons/ActionButton";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
-import { CoreApi, User } from "authentik-api";
+import { CoreApi, User } from "@goauthentik/api";
 import { DEFAULT_CONFIG, tenant } from "../../api/Config";
 import "../../elements/forms/DeleteBulkForm";
 import "./UserActiveForm";

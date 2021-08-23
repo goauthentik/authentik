@@ -4,7 +4,7 @@ import { VERSION } from "../constants";
 import { SentryIgnoredError } from "../common/errors";
 import { me } from "./Users";
 import { config } from "./Config";
-import { Config } from "authentik-api";
+import { Config } from "@goauthentik/api";
 
 export const TAG_SENTRY_COMPONENT = "authentik.component";
 export const TAG_SENTRY_CAPABILITIES = "authentik.capabilities";

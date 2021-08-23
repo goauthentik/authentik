@@ -7,7 +7,7 @@ import "../../elements/forms/DeleteBulkForm";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
-import { CoreApi, Group } from "authentik-api";
+import { CoreApi, Group } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/forms/ModalForm";
 import "./GroupForm";

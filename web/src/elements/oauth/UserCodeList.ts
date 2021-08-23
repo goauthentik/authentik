@@ -5,7 +5,7 @@ import { Table, TableColumn } from "../table/Table";
 
 import "../forms/DeleteBulkForm";
 import { PAGE_SIZE } from "../../constants";
-import { ExpiringBaseGrantModel, Oauth2Api } from "authentik-api";
+import { ExpiringBaseGrantModel, Oauth2Api } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-user-oauth-code-list")

@@ -6,7 +6,7 @@ import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 
 import "../forms/DeleteBulkForm";
 import { PAGE_SIZE } from "../../constants";
-import { RefreshTokenModel, Oauth2Api, ExpiringBaseGrantModel } from "authentik-api";
+import { RefreshTokenModel, Oauth2Api, ExpiringBaseGrantModel } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-user-oauth-refresh-list")

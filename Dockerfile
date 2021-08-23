@@ -18,17 +18,6 @@ COPY ./website /static/
 ENV NODE_ENV=production
 RUN cd /static && npm i && npm run build-docs-only
 
-# Stage 3: Build web API
-FROM openapitools/openapi-generator-cli as web-api-builder
-
-COPY ./schema.yml /local/schema.yml
-
-RUN	docker-entrypoint.sh generate \
-    -i /local/schema.yml \
-    -g typescript-fetch \
-    -o /local/web/api \
-    --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
-
 # Stage 3: Generate API Client
 FROM openapitools/openapi-generator-cli as go-api-builder
 
@@ -48,7 +37,6 @@ RUN	docker-entrypoint.sh generate \
 FROM node as web-builder
 
 COPY ./web /static/
-COPY --from=web-api-builder /local/web/api /static/api
 
 ENV NODE_ENV=production
 RUN cd /static && npm i && npm run build

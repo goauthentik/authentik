@@ -27,7 +27,7 @@ import "../../elements/Tabs";
 import "../../elements/user/SessionList";
 import "../../elements/user/UserConsentList";
 import "./UserForm";
-import { CoreApi, User } from "authentik-api";
+import { CoreApi, User } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { EVENT_REFRESH } from "../../constants";
 import { showMessage } from "../../elements/messages/MessageContainer";

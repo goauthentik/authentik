@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { customElement, html } from "lit-element";
-import { AdminApi } from "authentik-api";
+import { AdminApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
 

@@ -15,7 +15,7 @@ import {
     AuthenticatorDuoChallenge,
     AuthenticatorDuoChallengeResponseRequest,
     StagesApi,
-} from "authentik-api";
+} from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 

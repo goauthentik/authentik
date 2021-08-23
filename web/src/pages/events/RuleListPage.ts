@@ -8,7 +8,7 @@ import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/ModalForm";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
-import { EventsApi, NotificationRule } from "authentik-api";
+import { EventsApi, NotificationRule } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/forms/DeleteBulkForm";
 import "./RuleForm";

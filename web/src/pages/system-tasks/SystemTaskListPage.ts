@@ -7,7 +7,7 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/ActionButton";
 import { TableColumn } from "../../elements/table/Table";
-import { AdminApi, Task, StatusEnum } from "authentik-api";
+import { AdminApi, Task, StatusEnum } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { PFColor } from "../../elements/Label";
 

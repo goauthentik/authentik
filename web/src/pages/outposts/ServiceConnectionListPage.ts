@@ -14,7 +14,7 @@ import "./ServiceConnectionKubernetesForm";
 import "./ServiceConnectionDockerForm";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
-import { OutpostsApi, ServiceConnection } from "authentik-api";
+import { OutpostsApi, ServiceConnection } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/forms/ProxyForm";
 import { ifDefined } from "lit-html/directives/if-defined";

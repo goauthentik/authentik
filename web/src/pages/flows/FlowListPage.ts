@@ -11,7 +11,7 @@ import "./FlowForm";
 import "./FlowImportForm";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
-import { Flow, FlowsApi } from "authentik-api";
+import { Flow, FlowsApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-flow-list")

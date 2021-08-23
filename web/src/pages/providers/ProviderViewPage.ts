@@ -8,7 +8,7 @@ import "./saml/SAMLProviderViewPage";
 import "./oauth2/OAuth2ProviderViewPage";
 import "./proxy/ProxyProviderViewPage";
 import "./ldap/LDAPProviderViewPage";
-import { Provider, ProvidersApi } from "authentik-api";
+import { Provider, ProvidersApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 

@@ -1,4 +1,4 @@
-import { CoreApi, CoreUsersRecoveryEmailRetrieveRequest, StagesApi, User } from "authentik-api";
+import { CoreApi, CoreUsersRecoveryEmailRetrieveRequest, StagesApi, User } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";

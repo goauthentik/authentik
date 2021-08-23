@@ -1,4 +1,4 @@
-import { UserLogoutStage, StagesApi } from "authentik-api";
+import { UserLogoutStage, StagesApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";

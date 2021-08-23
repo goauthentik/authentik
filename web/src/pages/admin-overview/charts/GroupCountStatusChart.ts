@@ -1,5 +1,5 @@
 import { customElement } from "lit-element";
-import { CoreApi } from "authentik-api";
+import { CoreApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { AKChart } from "../../../elements/charts/Chart";
 import { t } from "@lingui/macro";

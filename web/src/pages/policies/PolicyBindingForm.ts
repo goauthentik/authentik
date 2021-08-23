@@ -1,4 +1,4 @@
-import { CoreApi, PoliciesApi, Policy, PolicyBinding } from "authentik-api";
+import { CoreApi, PoliciesApi, Policy, PolicyBinding } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { css, CSSResult, customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";

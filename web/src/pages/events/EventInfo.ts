@@ -9,7 +9,7 @@ import {
     TemplateResult,
 } from "lit-element";
 import { until } from "lit-html/directives/until";
-import { EventActions, FlowsApi } from "authentik-api";
+import { EventActions, FlowsApi } from "@goauthentik/api";
 import "../../elements/Spinner";
 import "../../elements/Expand";
 import { PFSize } from "../../elements/Spinner";

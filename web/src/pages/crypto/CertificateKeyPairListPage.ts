@@ -4,7 +4,7 @@ import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { CryptoApi, CertificateKeyPair } from "authentik-api";
+import { CryptoApi, CertificateKeyPair } from "@goauthentik/api";
 
 import "../../elements/forms/ModalForm";
 import "../../elements/buttons/SpinnerButton";

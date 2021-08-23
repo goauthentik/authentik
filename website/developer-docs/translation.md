@@ -18,9 +18,7 @@ To simplify translation you can use https://www.transifex.com/beryjuorg/authenti
 - Make (again, any recent version should work)
 - Docker
 
-In the root of the cloned repository, run `make gen-web` to generate the API Client used by the webinterface.
-
-Afterwards, run `npm i` in the `/web` folder to install all dependencies.
+Run `npm i` in the `/web` folder to install all dependencies.
 
 Ensure the language code is in the `package.json` file in `web/`:
 

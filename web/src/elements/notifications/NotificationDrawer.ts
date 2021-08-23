@@ -8,7 +8,7 @@ import {
     property,
     TemplateResult,
 } from "lit-element";
-import { EventsApi, Notification } from "authentik-api";
+import { EventsApi, Notification } from "@goauthentik/api";
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";

@@ -1,4 +1,4 @@
-import { CoreApi, EventsApi, NotificationRule, SeverityEnum } from "authentik-api";
+import { CoreApi, EventsApi, NotificationRule, SeverityEnum } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";

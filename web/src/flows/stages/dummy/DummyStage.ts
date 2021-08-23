@@ -10,7 +10,7 @@ import AKGlobal from "../../../authentik.css";
 import { BaseStage } from "../base";
 import "../../../elements/EmptyState";
 import "../../FormStatic";
-import { DummyChallenge, DummyChallengeResponseRequest } from "authentik-api";
+import { DummyChallenge, DummyChallengeResponseRequest } from "@goauthentik/api";
 
 @customElement("ak-stage-dummy")
 export class DummyStage extends BaseStage<DummyChallenge, DummyChallengeResponseRequest> {

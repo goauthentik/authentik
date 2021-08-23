@@ -309,9 +309,7 @@ stages:
             displayName: Build static files for e2e
             inputs:
               script: |
-                make gen-web
                 cd web
-                cd api && npm i && cd ..
                 npm i
                 npm run build
           - task: CmdLine@2

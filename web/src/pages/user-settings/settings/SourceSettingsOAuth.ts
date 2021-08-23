@@ -1,6 +1,6 @@
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { BaseUserSettings } from "./BaseUserSettings";
-import { SourcesApi } from "authentik-api";
+import { SourcesApi } from "@goauthentik/api";
 import { until } from "lit-html/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { t } from "@lingui/macro";

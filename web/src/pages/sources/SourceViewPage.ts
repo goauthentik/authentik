@@ -1,5 +1,5 @@
 import { customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { Source, SourcesApi } from "authentik-api";
+import { Source, SourcesApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 
 import "../../elements/buttons/SpinnerButton";

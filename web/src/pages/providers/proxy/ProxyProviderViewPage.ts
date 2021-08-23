@@ -17,7 +17,7 @@ import "../../../elements/Tabs";
 import "../../../elements/events/ObjectChangelog";
 import "../RelatedApplicationButton";
 import "./ProxyProviderForm";
-import { ProvidersApi, ProxyProvider } from "authentik-api";
+import { ProvidersApi, ProxyProvider } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";
 import { convertToTitle } from "../../../utils";

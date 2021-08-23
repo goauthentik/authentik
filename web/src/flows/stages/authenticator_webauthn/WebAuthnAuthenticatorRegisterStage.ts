@@ -17,7 +17,7 @@ import {
 import {
     AuthenticatorWebAuthnChallenge,
     AuthenticatorWebAuthnChallengeResponseRequest,
-} from "authentik-api";
+} from "@goauthentik/api";
 
 export interface WebAuthnAuthenticatorRegisterChallengeResponse {
     response: Assertion;

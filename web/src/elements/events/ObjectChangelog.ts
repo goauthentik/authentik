@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { Table, TableColumn } from "../table/Table";
-import { Event, EventsApi } from "authentik-api";
+import { Event, EventsApi } from "@goauthentik/api";
 
 import "../Tabs";
 import "../buttons/ModalButton";

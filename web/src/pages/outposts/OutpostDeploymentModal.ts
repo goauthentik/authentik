@@ -1,4 +1,4 @@
-import { Outpost } from "authentik-api";
+import { Outpost } from "@goauthentik/api";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { t } from "@lingui/macro";
 import { ifDefined } from "lit-html/directives/if-defined";

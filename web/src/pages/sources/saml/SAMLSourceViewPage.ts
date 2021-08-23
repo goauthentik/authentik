@@ -21,7 +21,7 @@ import "../../../elements/events/ObjectChangelog";
 import "../../../elements/forms/ModalForm";
 import "../../policies/BoundPoliciesList";
 import "./SAMLSourceForm";
-import { SAMLSource, SourcesApi } from "authentik-api";
+import { SAMLSource, SourcesApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";
 import { ifDefined } from "lit-html/directives/if-defined";

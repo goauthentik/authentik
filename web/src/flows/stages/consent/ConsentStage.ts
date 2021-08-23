@@ -12,7 +12,7 @@ import AKGlobal from "../../../authentik.css";
 import { BaseStage } from "../base";
 import "../../../elements/EmptyState";
 import "../../FormStatic";
-import { ConsentChallenge, ConsentChallengeResponseRequest } from "authentik-api";
+import { ConsentChallenge, ConsentChallengeResponseRequest } from "@goauthentik/api";
 import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-stage-consent")

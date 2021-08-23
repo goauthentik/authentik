@@ -14,7 +14,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import AKGlobal from "../../authentik.css";
 
 import { configureSentry } from "../../api/Sentry";
-import { CurrentTenant } from "authentik-api";
+import { CurrentTenant } from "@goauthentik/api";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { EVENT_SIDEBAR_TOGGLE } from "../../constants";
 import { tenant } from "../../api/Config";

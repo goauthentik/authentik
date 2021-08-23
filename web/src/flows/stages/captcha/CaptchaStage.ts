@@ -12,7 +12,7 @@ import { BaseStage } from "../base";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import "../../FormStatic";
-import { CaptchaChallenge, CaptchaChallengeResponseRequest } from "authentik-api";
+import { CaptchaChallenge, CaptchaChallengeResponseRequest } from "@goauthentik/api";
 import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-stage-captcha")

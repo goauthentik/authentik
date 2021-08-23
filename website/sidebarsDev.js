@@ -14,6 +14,10 @@ module.exports = {
         },
         {
             type: "doc",
+            id: "making-schema-changes",
+        },
+        {
+            type: "doc",
             id: "api",
         },
         {
