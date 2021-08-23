@@ -6,6 +6,7 @@ import cssimport from "rollup-plugin-cssimport";
 import copy from "rollup-plugin-copy";
 import babel from "@rollup/plugin-babel";
 import replace from "@rollup/plugin-replace";
+import * as authentik from "@goauthentik/api";
 
 const extensions = [".js", ".jsx", ".ts", ".tsx"];
 
@@ -99,7 +100,11 @@ export default [
         plugins: [
             cssimport(),
             resolve({ extensions, browser: true }),
-            commonjs(),
+            // Because the API Client uses star exports from typescript, we have to explicitly tell rollup
+            // Which classes can be imported
+            commonjs({
+                namedExports: { '@goauthentik/api': Object.keys(authentik) },
+            }),
             babel({
                 extensions,
                 babelHelpers: "runtime",
@@ -131,7 +136,11 @@ export default [
         plugins: [
             cssimport(),
             resolve({ extensions, browser: true }),
-            commonjs(),
+            // Because the API Client uses star exports from typescript, we have to explicitly tell rollup
+            // Which classes can be imported
+            commonjs({
+                namedExports: { '@goauthentik/api': Object.keys(authentik) },
+            }),
             babel({
                 extensions,
                 babelHelpers: "runtime",
