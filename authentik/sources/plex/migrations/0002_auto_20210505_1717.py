@@ -3,7 +3,7 @@
 import django.contrib.postgres.fields
 from django.db import migrations, models
 
-import authentik.providers.oauth2.generators
+import authentik.lib.generators
 
 
 class Migration(migrations.Migration):

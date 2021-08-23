@@ -1,11 +1,11 @@
 """LDAP Source API tests"""
 from rest_framework.test import APITestCase
 
-from authentik.providers.oauth2.generators import generate_client_secret
+from authentik.lib.generators import generate_key
 from authentik.sources.ldap.api import LDAPSourceSerializer
 from authentik.sources.ldap.models import LDAPSource
 
-LDAP_PASSWORD = generate_client_secret()
+LDAP_PASSWORD = generate_key()
 
 
 class LDAPAPITests(APITestCase):

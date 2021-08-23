@@ -6,7 +6,7 @@ from django.utils.encoding import force_str
 from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
-from authentik.providers.oauth2.generators import generate_client_secret
+from authentik.lib.generators import generate_key
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.identification.models import IdentificationStage, UserFields
 from authentik.stages.password import BACKEND_DJANGO
@@ -18,7 +18,7 @@ class TestIdentificationStage(TestCase):
 
     def setUp(self):
         super().setUp()
-        self.password = generate_client_secret()
+        self.password = generate_key()
         self.user = User.objects.create_user(
             username="unittest", email="test@beryju.org", password=self.password
         )

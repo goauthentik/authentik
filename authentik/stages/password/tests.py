@@ -13,7 +13,7 @@ from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests.test_views import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views import SESSION_KEY_PLAN
-from authentik.providers.oauth2.generators import generate_client_secret
+from authentik.lib.generators import generate_key
 from authentik.stages.password import BACKEND_DJANGO
 from authentik.stages.password.models import PasswordStage
 
@@ -25,7 +25,7 @@ class TestPasswordStage(TestCase):
 
     def setUp(self):
         super().setUp()
-        self.password = generate_client_secret()
+        self.password = generate_key()
         self.user = User.objects.create_user(
             username="unittest", email="test@beryju.org", password=self.password
         )

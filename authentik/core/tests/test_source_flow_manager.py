@@ -10,7 +10,7 @@ from guardian.utils import get_anonymous_user
 from authentik.core.models import SourceUserMatchingModes, User
 from authentik.core.sources.flow_manager import Action
 from authentik.flows.tests.test_planner import dummy_get_response
-from authentik.providers.oauth2.generators import generate_client_id
+from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from authentik.sources.oauth.views.callback import OAuthSourceFlowManager
 
@@ -22,7 +22,7 @@ class TestSourceFlowManager(TestCase):
         super().setUp()
         self.source = OAuthSource.objects.create(name="test")
         self.factory = RequestFactory()
-        self.identifier = generate_client_id()
+        self.identifier = generate_id()
 
     def get_request(self, user: User) -> HttpRequest:
         """Helper to create a get request with session and message middleware"""

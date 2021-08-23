@@ -6,8 +6,8 @@ from django.test import TestCase
 
 from authentik.core.models import Group, User
 from authentik.events.models import Event, EventAction
+from authentik.lib.generators import generate_key
 from authentik.managed.manager import ObjectManager
-from authentik.providers.oauth2.generators import generate_client_secret
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
@@ -16,7 +16,7 @@ from authentik.sources.ldap.tasks import ldap_sync_all
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 from authentik.sources.ldap.tests.mock_slapd import mock_slapd_connection
 
-LDAP_PASSWORD = generate_client_secret()
+LDAP_PASSWORD = generate_key()
 
 
 class LDAPSyncTests(TestCase):
