@@ -34,7 +34,6 @@ def replace_inbuilt(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_flows", "0008_default_flows"),
         ("authentik_stages_password", "0006_passwordchange_rename"),
     ]
 

@@ -51,7 +51,9 @@ def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
         if PLAN_CONTEXT_METHOD in flow_plan.context:
             thread.kwargs[PLAN_CONTEXT_METHOD] = flow_plan.context[PLAN_CONTEXT_METHOD]
             # Save the login method used
-            thread.kwargs[PLAN_CONTEXT_METHOD_ARGS] = flow_plan.context.get(PLAN_CONTEXT_METHOD_ARGS, {})
+            thread.kwargs[PLAN_CONTEXT_METHOD_ARGS] = flow_plan.context.get(
+                PLAN_CONTEXT_METHOD_ARGS, {}
+            )
     thread.user = user
     thread.run()
 

@@ -1,5 +1,6 @@
 """Tokens API Viewset"""
 from typing import Any
+
 from django.http.response import Http404
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
