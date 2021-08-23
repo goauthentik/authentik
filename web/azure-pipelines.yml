@@ -21,6 +21,9 @@ stages:
             inputs:
               command: 'install'
               workingDir: 'web/'
+          - task: CmdLine@2
+            inputs:
+              script: make gen-web
           - task: Npm@1
             inputs:
               command: 'custom'
@@ -38,6 +41,9 @@ stages:
             inputs:
               command: 'install'
               workingDir: 'web/'
+          - task: CmdLine@2
+            inputs:
+              script: make gen-web
           - task: Npm@1
             inputs:
               command: 'custom'
@@ -55,6 +61,9 @@ stages:
             inputs:
               command: 'install'
               workingDir: 'web/'
+          - task: CmdLine@2
+            inputs:
+              script: make gen-web
           - task: Npm@1
             inputs:
               command: 'custom'
@@ -74,6 +83,9 @@ stages:
             inputs:
               command: 'install'
               workingDir: 'web/'
+          - task: CmdLine@2
+            inputs:
+              script: make gen-web
           - task: Npm@1
             inputs:
               command: 'custom'
