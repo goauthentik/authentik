@@ -2,7 +2,7 @@
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
-TIMESTAMP = $(shell date "+%s")
+NPM_VERSION = $(shell python -m scripts.npm_version)
 
 all: lint-fix lint test gen
 
@@ -43,7 +43,7 @@ gen-web:
 		-i /local/schema.yml \
 		-g typescript-fetch \
 		-o /local/web-api \
-		--additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=@goauthentik/api,npmVersion=${TIMESTAMP}.0.0
+		--additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=@goauthentik/api,npmVersion=${NPM_VERSION}
 
 gen-outpost:
 	docker run \
