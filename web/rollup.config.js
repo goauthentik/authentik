@@ -90,6 +90,7 @@ export default [
     // Main Application
     {
         input: "./src/interfaces/AdminInterface.ts",
+        context: "window",
         output: [
             {
                 format: "es",
@@ -122,6 +123,7 @@ export default [
     // Flow executor
     {
         input: "./src/interfaces/FlowInterface.ts",
+        context: "window",
         output: [
             {
                 format: "es",

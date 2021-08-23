@@ -33,7 +33,7 @@ def bearer_auth(raw_header: bytes) -> Optional[User]:
             raise AuthenticationFailed("Malformed header")
         # Accept credentials with username and without
         if ":" in auth_credentials:
-            _, password = auth_credentials.split(":")
+            _, _, password = auth_credentials.partition(":")
         else:
             password = auth_credentials
     if password == "":  # nosec

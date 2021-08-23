@@ -10,9 +10,9 @@ from selenium.webdriver.support import expected_conditions as ec
 
 from authentik.core.models import Application
 from authentik.flows.models import Flow
+from authentik.lib.generators import generate_id, generate_key
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
-from authentik.providers.oauth2.generators import generate_client_id, generate_client_secret
 from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider
 from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, retry
 
@@ -22,8 +22,8 @@ class TestProviderOAuth2Github(SeleniumTestCase):
     """test OAuth Provider flow"""
 
     def setUp(self):
-        self.client_id = generate_client_id()
-        self.client_secret = generate_client_secret()
+        self.client_id = generate_id()
+        self.client_secret = generate_key()
         super().setUp()
 
     def get_container_specs(self) -> Optional[dict[str, Any]]:

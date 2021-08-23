@@ -9,8 +9,8 @@ from authentik.core.models import Application, User
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
+from authentik.lib.generators import generate_id, generate_key
 from authentik.managed.manager import ObjectManager
-from authentik.providers.oauth2.generators import generate_client_id, generate_client_secret
 from authentik.providers.oauth2.models import IDToken, OAuth2Provider, RefreshToken, ScopeMapping
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 
@@ -24,8 +24,8 @@ class TestUserinfo(OAuthTestCase):
         self.app = Application.objects.create(name="test", slug="test")
         self.provider: OAuth2Provider = OAuth2Provider.objects.create(
             name="test",
-            client_id=generate_client_id(),
-            client_secret=generate_client_secret(),
+            client_id=generate_id(),
+            client_secret=generate_key(),
             authorization_flow=Flow.objects.first(),
             redirect_uris="",
             rsa_key=CertificateKeyPair.objects.first(),
@@ -38,8 +38,8 @@ class TestUserinfo(OAuthTestCase):
         self.token: RefreshToken = RefreshToken.objects.create(
             provider=self.provider,
             user=self.user,
-            access_token=generate_client_id(),
-            refresh_token=generate_client_id(),
+            access_token=generate_id(),
+            refresh_token=generate_id(),
             _scope="openid user profile",
             _id_token=json.dumps(
                 asdict(

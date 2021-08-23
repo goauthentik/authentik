@@ -11,8 +11,8 @@ from rest_framework.exceptions import ValidationError
 from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import Flow, FlowStageBinding, NotConfiguredAction
+from authentik.lib.generators import generate_id, generate_key
 from authentik.lib.tests.utils import get_request
-from authentik.providers.oauth2.generators import generate_client_id, generate_client_secret
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_validate.api import AuthenticatorValidateStageSerializer
 from authentik.stages.authenticator_validate.challenge import (
@@ -132,8 +132,8 @@ class AuthenticatorValidateStageTests(TestCase):
         request = self.request_factory.get("/")
         stage = AuthenticatorDuoStage.objects.create(
             name="test",
-            client_id=generate_client_id(),
-            client_secret=generate_client_secret(),
+            client_id=generate_id(),
+            client_secret=generate_key(),
             api_hostname="",
         )
         duo_device = DuoDevice.objects.create(

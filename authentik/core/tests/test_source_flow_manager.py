@@ -6,8 +6,8 @@ from guardian.utils import get_anonymous_user
 
 from authentik.core.models import SourceUserMatchingModes, User
 from authentik.core.sources.flow_manager import Action
+from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import get_request
-from authentik.providers.oauth2.generators import generate_client_id
 from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from authentik.sources.oauth.views.callback import OAuthSourceFlowManager
 
@@ -19,7 +19,7 @@ class TestSourceFlowManager(TestCase):
         super().setUp()
         self.source = OAuthSource.objects.create(name="test")
         self.factory = RequestFactory()
-        self.identifier = generate_client_id()
+        self.identifier = generate_id()
 
     def test_unauthenticated_enroll(self):
         """Test un-authenticated user enrolling"""
