@@ -30,6 +30,7 @@ export class ModalForm extends ModalButton {
                     form?.resetForm();
                 }
                 this.loading = false;
+                this.locked = false;
                 this.dispatchEvent(
                     new CustomEvent(EVENT_REFRESH, {
                         bubbles: true,
@@ -39,12 +40,15 @@ export class ModalForm extends ModalButton {
             })
             .catch((exc) => {
                 this.loading = false;
+                this.locked = false;
                 throw exc;
             });
     }
 
     renderModalInner(): TemplateResult {
-        return html`${this.loading ? html`<ak-loading-overlay></ak-loading-overlay>` : html``}
+        return html`${this.loading
+                ? html`<ak-loading-overlay ?topMost=${true}></ak-loading-overlay>`
+                : html``}
             <section class="pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">
@@ -59,6 +63,7 @@ export class ModalForm extends ModalButton {
                 <ak-spinner-button
                     .callAction=${() => {
                         this.loading = true;
+                        this.locked = true;
                         return this.confirm();
                     }}
                     class="pf-m-primary"

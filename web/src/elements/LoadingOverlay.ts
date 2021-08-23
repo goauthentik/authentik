@@ -1,9 +1,20 @@
-import { css, CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
+import {
+    css,
+    CSSResult,
+    customElement,
+    html,
+    LitElement,
+    property,
+    TemplateResult,
+} from "lit-element";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { PFSize } from "./Spinner";
 
 @customElement("ak-loading-overlay")
 export class LoadingOverlay extends LitElement {
+    @property({ type: Boolean })
+    topMost = false;
+
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -17,6 +28,9 @@ export class LoadingOverlay extends LitElement {
                     position: absolute;
                     background-color: var(--pf-global--BackgroundColor--dark-transparent-100);
                     z-index: 1;
+                }
+                :host([topMost]) {
+                    z-index: 999;
                 }
             `,
         ];

@@ -58,7 +58,8 @@ from authentik.providers.saml.api import SAMLPropertyMappingViewSet, SAMLProvide
 from authentik.sources.ldap.api import LDAPPropertyMappingViewSet, LDAPSourceViewSet
 from authentik.sources.oauth.api.source import OAuthSourceViewSet
 from authentik.sources.oauth.api.source_connection import UserOAuthSourceConnectionViewSet
-from authentik.sources.plex.api import PlexSourceViewSet
+from authentik.sources.plex.api.source import PlexSourceViewSet
+from authentik.sources.plex.api.source_connection import PlexSourceConnectionViewSet
 from authentik.sources.saml.api import SAMLSourceViewSet
 from authentik.stages.authenticator_duo.api import (
     AuthenticatorDuoStageViewSet,
@@ -127,7 +128,8 @@ router.register("events/transports", NotificationTransportViewSet)
 router.register("events/rules", NotificationRuleViewSet)
 
 router.register("sources/all", SourceViewSet)
-router.register("sources/oauth_user_connections", UserOAuthSourceConnectionViewSet)
+router.register("sources/user_connections/oauth", UserOAuthSourceConnectionViewSet)
+router.register("sources/user_connections/plex", PlexSourceConnectionViewSet)
 router.register("sources/ldap", LDAPSourceViewSet)
 router.register("sources/saml", SAMLSourceViewSet)
 router.register("sources/oauth", OAuthSourceViewSet)

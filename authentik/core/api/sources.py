@@ -74,6 +74,8 @@ class SourceViewSet(
         for subclass in all_subclasses(self.queryset.model):
             subclass: Source
             component = ""
+            if len(subclass.__subclasses__()) > 0:
+                continue
             if subclass._meta.abstract:
                 component = subclass.__bases__[0]().component
             else:

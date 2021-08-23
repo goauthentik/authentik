@@ -40,6 +40,6 @@ class OpenIDConnectType(SourceType):
     callback_view = OpenIDConnectOAuth2Callback
     redirect_view = OpenIDConnectOAuthRedirect
     name = "OpenID Connect"
-    slug = "openid-connect"
+    slug = "openidconnect"
 
     urls_customizable = True

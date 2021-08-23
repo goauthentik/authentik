@@ -5,6 +5,7 @@ import {
     UserMatchingModeEnum,
     OAuthSourceRequest,
     FlowsInstancesListDesignationEnum,
+    SourceType,
 } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
@@ -25,19 +26,30 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                 slug: pk,
             })
             .then((source) => {
-                this.showUrlOptions = first(source.type?.urlsCustomizable, false);
+                this.providerType = source.type;
                 return source;
             });
     }
 
+    _modelName?: string;
+
     @property()
-    modelName?: string;
+    set modelName(v: string | undefined) {
+        this._modelName = v;
+        new SourcesApi(DEFAULT_CONFIG)
+            .sourcesOauthSourceTypesList({
+                name: v?.replace("oauthsource", ""),
+            })
+            .then((type) => {
+                this.providerType = type[0];
+            });
+    }
+    get modelName(): string | undefined {
+        return this._modelName;
+    }
 
-    @property({ type: Boolean })
-    showUrlOptions = false;
-
-    @property({ type: Boolean })
-    showRequestTokenURL = false;
+    @property({ attribute: false })
+    providerType?: SourceType;
 
     getSuccessMessage(): string {
         if (this.instance) {
@@ -48,6 +60,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
     }
 
     send = (data: OAuthSource): Promise<OAuthSource> => {
+        data.providerType = this.providerType?.slug || "";
         if (this.instance?.slug) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
                 slug: this.instance.slug,
@@ -61,7 +74,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
     };
 
     renderUrlOptions(): TemplateResult {
-        if (!this.showUrlOptions) {
+        if (!this.providerType?.urlsCustomizable) {
             return html``;
         }
         return html` <ak-form-group>
@@ -74,7 +87,10 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                 >
                     <input
                         type="text"
-                        value="${first(this.instance?.authorizationUrl, "")}"
+                        value="${first(
+                            this.instance?.authorizationUrl,
+                            this.providerType.authorizationUrl,
+                        )}"
                         class="pf-c-form-control"
                         required
                     />
@@ -89,7 +105,10 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                 >
                     <input
                         type="text"
-                        value="${first(this.instance?.accessTokenUrl, "")}"
+                        value="${first(
+                            this.instance?.accessTokenUrl,
+                            this.providerType.accessTokenUrl,
+                        )}"
                         class="pf-c-form-control"
                         required
                     />
@@ -104,7 +123,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                 >
                     <input
                         type="text"
-                        value="${first(this.instance?.profileUrl, "")}"
+                        value="${first(this.instance?.profileUrl, this.providerType.profileUrl)}"
                         class="pf-c-form-control"
                         required
                     />
@@ -112,7 +131,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         ${t`URL used by authentik to get user information.`}
                     </p>
                 </ak-form-element-horizontal>
-                ${this.showRequestTokenURL
+                ${this.providerType.requestTokenUrl
                     ? html`<ak-form-element-horizontal
                           label=${t`Request token URL`}
                           name="requestTokenUrl"
@@ -225,54 +244,6 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         name="consumerSecret"
                     >
                         <input type="text" value="" class="pf-c-form-control" required />
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Provider type`} name="providerType">
-                        <select
-                            class="pf-c-form-control"
-                            @change=${(ev: Event) => {
-                                const el = ev.target as HTMLSelectElement;
-                                const selected = el.selectedOptions[0];
-                                this.showUrlOptions = "data-urls-custom" in selected.attributes;
-                                this.showRequestTokenURL =
-                                    "data-request-token" in selected.attributes;
-                                if (!this.instance) {
-                                    this.instance = {} as OAuthSource;
-                                }
-                                this.instance.providerType = selected.value;
-                            }}
-                        >
-                            ${until(
-                                new SourcesApi(DEFAULT_CONFIG)
-                                    .sourcesOauthSourceTypesList()
-                                    .then((types) => {
-                                        return types.map((type) => {
-                                            let selected =
-                                                this.instance?.providerType === type.slug;
-                                            const modelSlug = this.modelName
-                                                ?.replace("oauthsource", "")
-                                                .replace("-", "");
-                                            const typeSlug = type.slug.replace("-", "");
-                                            if (!this.instance?.pk) {
-                                                if (modelSlug === typeSlug) {
-                                                    selected = true;
-                                                    this.showUrlOptions = type.urlsCustomizable;
-                                                    this.showRequestTokenURL =
-                                                        type.requestTokenUrl !== null;
-                                                }
-                                            }
-                                            return html`<option
-                                                ?data-urls-custom=${type.urlsCustomizable}
-                                                ?data-request-token=${type.requestTokenUrl}
-                                                value=${type.slug}
-                                                ?selected=${selected}
-                                            >
-                                                ${type.name}
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

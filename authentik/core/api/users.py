@@ -6,7 +6,7 @@ from django.db.models.query import QuerySet
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
 from django.utils.translation import gettext as _
-from django_filters.filters import BooleanFilter, CharFilter
+from django_filters.filters import BooleanFilter, CharFilter, ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_field
@@ -149,6 +149,16 @@ class UsersFilter(FilterSet):
 
     is_superuser = BooleanFilter(field_name="ak_groups", lookup_expr="is_superuser")
 
+    groups_by_name = ModelMultipleChoiceFilter(
+        field_name="ak_groups__name",
+        to_field_name="name",
+        queryset=Group.objects.all(),
+    )
+    groups_by_pk = ModelMultipleChoiceFilter(
+        field_name="ak_groups",
+        queryset=Group.objects.all(),
+    )
+
     # pylint: disable=unused-argument
     def filter_attributes(self, queryset, name, value):
         """Filter attributes by query args"""
@@ -172,6 +182,8 @@ class UsersFilter(FilterSet):
             "is_active",
             "is_superuser",
             "attributes",
+            "groups_by_name",
+            "groups_by_pk",
         ]
 
 

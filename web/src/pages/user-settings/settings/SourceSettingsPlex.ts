@@ -4,10 +4,9 @@ import { SourcesApi } from "@goauthentik/api";
 import { until } from "lit-html/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { t } from "@lingui/macro";
-import { ifDefined } from "lit-html/directives/if-defined";
 
-@customElement("ak-user-settings-source-oauth")
-export class SourceSettingsOAuth extends BaseUserSettings {
+@customElement("ak-user-settings-source-plex")
+export class SourceSettingsPlex extends BaseUserSettings {
     @property()
     title!: string;
 
@@ -21,7 +20,7 @@ export class SourceSettingsOAuth extends BaseUserSettings {
     renderInner(): TemplateResult {
         return html`${until(
             new SourcesApi(DEFAULT_CONFIG)
-                .sourcesUserConnectionsOauthList({
+                .sourcesUserConnectionsPlexList({
                     sourceSlug: this.objectId,
                 })
                 .then((connection) => {
@@ -32,7 +31,7 @@ export class SourceSettingsOAuth extends BaseUserSettings {
                                 @click=${() => {
                                     return new SourcesApi(
                                         DEFAULT_CONFIG,
-                                    ).sourcesUserConnectionsOauthDestroy({
+                                    ).sourcesUserConnectionsPlexDestroy({
                                         id: connection.results[0].pk || 0,
                                     });
                                 }}
@@ -40,10 +39,7 @@ export class SourceSettingsOAuth extends BaseUserSettings {
                                 ${t`Disconnect`}
                             </button>`;
                     }
-                    return html`<p>${t`Not connected.`}</p>
-                        <a class="pf-c-button pf-m-primary" href=${ifDefined(this.configureUrl)}>
-                            ${t`Connect`}
-                        </a>`;
+                    return html`<p>${t`Not connected.`}</p>`;
                 }),
         )}`;
     }

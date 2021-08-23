@@ -48,3 +48,10 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 	req.log.WithField("request", "bind").Warning("No provider found for request")
 	return ldap.LDAPResultOperationsError, nil
 }
+
+func (ls *LDAPServer) TimerFlowCacheExpiry() {
+	for _, p := range ls.providers {
+		ls.log.WithField("flow", p.flowSlug).Debug("Pre-heating flow cache")
+		p.TimerFlowCacheExpiry()
+	}
+}

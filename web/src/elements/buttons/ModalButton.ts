@@ -46,6 +46,9 @@ export class ModalButton extends LitElement {
     @property({ type: Boolean })
     open = false;
 
+    @property({ type: Boolean })
+    locked = false;
+
     handlerBound = false;
 
     static get styles(): CSSResult[] {
@@ -63,6 +66,11 @@ export class ModalButton extends LitElement {
             PFContent,
             AKGlobal,
             MODAL_BUTTON_STYLES,
+            css`
+                .locked {
+                    overflow-y: hidden !important;
+                }
+            `,
         ];
     }
 
@@ -108,7 +116,11 @@ export class ModalButton extends LitElement {
     renderModal(): TemplateResult {
         return html`<div class="pf-c-backdrop">
             <div class="pf-l-bullseye">
-                <div class="pf-c-modal-box ${this.size}" role="dialog" aria-modal="true">
+                <div
+                    class="pf-c-modal-box ${this.size} ${this.locked ? "locked" : ""}"
+                    role="dialog"
+                    aria-modal="true"
+                >
                     <button
                         @click=${() => (this.open = false)}
                         class="pf-c-button pf-m-plain"

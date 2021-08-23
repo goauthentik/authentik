@@ -118,3 +118,14 @@ func (pi *ProviderInstance) delayDeleteUserInfo(dn string) {
 		}
 	}()
 }
+
+func (pi *ProviderInstance) TimerFlowCacheExpiry() {
+	fe := outpost.NewFlowExecutor(context.Background(), pi.flowSlug, pi.s.ac.Client.GetConfig(), log.Fields{})
+	fe.Params.Add("goauthentik.io/outpost/ldap", "true")
+	fe.Params.Add("goauthentik.io/outpost/ldap-warmup", "true")
+
+	err := fe.WarmUp()
+	if err != nil {
+		pi.log.WithError(err).Warning("failed to warm up flow cache")
+	}
+}

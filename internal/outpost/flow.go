@@ -118,6 +118,15 @@ func (fe *FlowExecutor) getAnswer(stage StageComponent) string {
 	return ""
 }
 
+// WarmUp Ensure authentik's flow cache is warmed up
+func (fe *FlowExecutor) WarmUp() error {
+	defer fe.sp.Finish()
+	gcsp := sentry.StartSpan(fe.Context, "authentik.outposts.flow_executor.get_challenge")
+	req := fe.api.FlowsApi.FlowsExecutorGet(gcsp.Context(), fe.flowSlug).Query(fe.Params.Encode())
+	_, _, err := req.Execute()
+	return err
+}
+
 func (fe *FlowExecutor) Execute() (bool, error) {
 	return fe.solveFlowChallenge(1)
 }

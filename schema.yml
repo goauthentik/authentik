@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2021.7.3
+  version: 2021.8.1-rc1
   description: Making authentication simple.
   contact:
     email: hello@beryju.org
@@ -2914,6 +2914,23 @@ paths:
         name: email
         schema:
           type: string
+      - in: query
+        name: groups_by_name
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: groups_by_pk
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       - in: query
         name: is_active
         schema:
@@ -13178,7 +13195,14 @@ paths:
   /api/v2beta/sources/oauth/source_types/:
     get:
       operationId: sources_oauth_source_types_list
-      description: Get all creatable source types
+      description: |-
+        Get all creatable source types. If ?name is set, only returns the type for <name>.
+        If <name> isn't found, returns the default type.
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
       tags:
       - sources
       security:
@@ -13192,208 +13216,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/SourceType'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/oauth_user_connections/:
-    get:
-      operationId: sources_oauth_user_connections_list
-      description: Source Viewset
-      parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      - in: query
-        name: source__slug
-        schema:
-          type: string
-      tags:
-      - sources
-      security:
-      - authentik: []
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedUserOAuthSourceConnectionList'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/oauth_user_connections/{id}/:
-    get:
-      operationId: sources_oauth_user_connections_retrieve
-      description: Source Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this User OAuth Source Connection.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserOAuthSourceConnection'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-    put:
-      operationId: sources_oauth_user_connections_update
-      description: Source Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this User OAuth Source Connection.
-        required: true
-      tags:
-      - sources
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserOAuthSourceConnectionRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserOAuthSourceConnectionRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserOAuthSourceConnectionRequest'
-        required: true
-      security:
-      - authentik: []
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserOAuthSourceConnection'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-    patch:
-      operationId: sources_oauth_user_connections_partial_update
-      description: Source Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this User OAuth Source Connection.
-        required: true
-      tags:
-      - sources
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedUserOAuthSourceConnectionRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedUserOAuthSourceConnectionRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedUserOAuthSourceConnectionRequest'
-      security:
-      - authentik: []
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserOAuthSourceConnection'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-    delete:
-      operationId: sources_oauth_user_connections_destroy
-      description: Source Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this User OAuth Source Connection.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      - cookieAuth: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/oauth_user_connections/{id}/used_by/:
-    get:
-      operationId: sources_oauth_user_connections_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this User OAuth Source Connection.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
@@ -14091,6 +13913,410 @@ paths:
         schema:
           type: string
           description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/sources/user_connections/oauth/:
+    get:
+      operationId: sources_user_connections_oauth_list
+      description: Source Viewset
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: source__slug
+        schema:
+          type: string
+      tags:
+      - sources
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserOAuthSourceConnectionList'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/sources/user_connections/oauth/{id}/:
+    get:
+      operationId: sources_user_connections_oauth_retrieve
+      description: Source Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User OAuth Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserOAuthSourceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    put:
+      operationId: sources_user_connections_oauth_update
+      description: Source Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User OAuth Source Connection.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserOAuthSourceConnectionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserOAuthSourceConnectionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserOAuthSourceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserOAuthSourceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    patch:
+      operationId: sources_user_connections_oauth_partial_update
+      description: Source Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User OAuth Source Connection.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserOAuthSourceConnectionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserOAuthSourceConnectionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserOAuthSourceConnectionRequest'
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserOAuthSourceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    delete:
+      operationId: sources_user_connections_oauth_destroy
+      description: Source Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User OAuth Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/sources/user_connections/oauth/{id}/used_by/:
+    get:
+      operationId: sources_user_connections_oauth_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User OAuth Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/sources/user_connections/plex/:
+    get:
+      operationId: sources_user_connections_plex_list
+      description: Plex Source connection Serializer
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: source__slug
+        schema:
+          type: string
+      tags:
+      - sources
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPlexSourceConnectionList'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/sources/user_connections/plex/{id}/:
+    get:
+      operationId: sources_user_connections_plex_retrieve
+      description: Plex Source connection Serializer
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User Plex Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlexSourceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    put:
+      operationId: sources_user_connections_plex_update
+      description: Plex Source connection Serializer
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User Plex Source Connection.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlexSourceConnectionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PlexSourceConnectionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PlexSourceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlexSourceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    patch:
+      operationId: sources_user_connections_plex_partial_update
+      description: Plex Source connection Serializer
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User Plex Source Connection.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPlexSourceConnectionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPlexSourceConnectionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPlexSourceConnectionRequest'
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlexSourceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    delete:
+      operationId: sources_user_connections_plex_destroy
+      description: Plex Source connection Serializer
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User Plex Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /api/v2beta/sources/user_connections/plex/{id}/used_by/:
+    get:
+      operationId: sources_user_connections_plex_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User Plex Source Connection.
         required: true
       tags:
       - sources
@@ -20423,7 +20649,19 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CapabilitiesEnum'
+        cache_timeout:
+          type: integer
+        cache_timeout_flows:
+          type: integer
+        cache_timeout_policies:
+          type: integer
+        cache_timeout_reputation:
+          type: integer
       required:
+      - cache_timeout
+      - cache_timeout_flows
+      - cache_timeout_policies
+      - cache_timeout_reputation
       - capabilities
       - error_reporting_enabled
       - error_reporting_environment
@@ -24767,6 +25005,41 @@ components:
       required:
       - pagination
       - results
+    PaginatedPlexSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlexSourceConnection'
+      required:
+      - pagination
+      - results
     PaginatedPlexSourceList:
       type: object
       properties:
@@ -27099,6 +27372,19 @@ components:
           minimum: -2147483648
           description: How many attempts a user has before the flow is canceled. To
             lock the user out, use a reputation policy and a user_write stage.
+    PatchedPlexSourceConnectionRequest:
+      type: object
+      description: Plex Source connection Serializer
+      properties:
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+        plex_token:
+          type: string
     PatchedPlexSourceRequest:
       type: object
       description: Plex Source Serializer
@@ -27775,6 +28061,47 @@ components:
       - slug
       - verbose_name
       - verbose_name_plural
+    PlexSourceConnection:
+      type: object
+      description: Plex Source connection Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+        plex_token:
+          type: string
+      required:
+      - identifier
+      - pk
+      - plex_token
+      - source
+      - user
+    PlexSourceConnectionRequest:
+      type: object
+      description: Plex Source connection Serializer
+      properties:
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+        plex_token:
+          type: string
+      required:
+      - identifier
+      - plex_token
+      - source
+      - user
     PlexSourceRequest:
       type: object
       description: Plex Source Serializer

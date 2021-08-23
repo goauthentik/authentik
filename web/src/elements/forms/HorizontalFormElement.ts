@@ -5,6 +5,7 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import AKGlobal from "../../authentik.css";
 import { t } from "@lingui/macro";
+import { FormGroup } from "./FormGroup";
 
 @customElement("ak-form-element-horizontal")
 export class HorizontalFormElement extends LitElement {
@@ -43,8 +44,20 @@ export class HorizontalFormElement extends LitElement {
     @property()
     errorMessage = "";
 
+    _invalid = false;
+
     @property({ type: Boolean })
-    invalid = false;
+    set invalid(v: boolean) {
+        this._invalid = v;
+        // check if we're in a form group, and expand that form group
+        const parent = this.parentElement?.parentElement;
+        if (parent && "expanded" in parent) {
+            (parent as FormGroup).expanded = true;
+        }
+    }
+    get invalid(): boolean {
+        return this._invalid;
+    }
 
     @property()
     name = "";
