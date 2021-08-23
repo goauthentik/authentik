@@ -21,6 +21,7 @@ TSCONFIG_ESM = {
 
 with open("web-api/package.json", encoding="utf-8") as _package:
     package = loads(_package.read())
+    package["license"] = "GPL-3.0-only"
     package["module"] = "./dist/esm/index.js"
     package["sideEffects"] = False
     package["scripts"]["build"] =  "tsc && tsc --project tsconfig.esm.json"

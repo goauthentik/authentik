@@ -47,7 +47,6 @@ gen-web:
 	mkdir -p web/node_modules/@goauthentik/api
 	python -m scripts.web_api_esm
 	\cp -fv scripts/web_api_readme.md web-api/README.md
-	\cp -fv LICENSE web-api/LICENSE
 	cd web-api && npm i
 	\cp -rfv web-api/* web/node_modules/@goauthentik/api
 
