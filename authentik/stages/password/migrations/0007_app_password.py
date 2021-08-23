@@ -4,7 +4,7 @@ from django.apps.registry import Apps
 from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
-from authentik.stages.password import BACKEND_APP_PASSWORD
+from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT
 
 
 def update_default_backends(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
@@ -17,6 +17,18 @@ def update_default_backends(apps: Apps, schema_editor: BaseDatabaseSchemaEditor)
     stage = stages.first()
     stage.backends.append(BACKEND_APP_PASSWORD)
     stage.save()
+
+
+def replace_inbuilt(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
+    PasswordStage = apps.get_model("authentik_stages_password", "passwordstage")
+    db_alias = schema_editor.connection.alias
+
+    for stage in PasswordStage.objects.using(db_alias).all():
+        if "django.contrib.auth.backends.ModelBackend" not in stage.backends:
+            continue
+        stage.backends.remove("django.contrib.auth.backends.ModelBackend")
+        stage.backends.append(BACKEND_INBUILT)
+        stage.save()
 
 
 class Migration(migrations.Migration):
@@ -33,11 +45,8 @@ class Migration(migrations.Migration):
             field=django.contrib.postgres.fields.ArrayField(
                 base_field=models.TextField(
                     choices=[
-                        (
-                            "django.contrib.auth.backends.ModelBackend",
-                            "User database + standard password",
-                        ),
-                        ("authentik.core.token_auth.TokenBackend", "User database + app passwords"),
+                        ("authentik.core.auth.InbuiltBackend", "User database + standard password"),
+                        ("authentik.core.auth.TokenBackend", "User database + app passwords"),
                         (
                             "authentik.sources.ldap.auth.LDAPBackend",
                             "User database + LDAP password",

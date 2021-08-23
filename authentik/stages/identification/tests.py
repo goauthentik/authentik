@@ -9,7 +9,7 @@ from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.providers.oauth2.generators import generate_client_secret
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.identification.models import IdentificationStage, UserFields
-from authentik.stages.password import BACKEND_DJANGO
+from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordStage
 
 
@@ -68,7 +68,7 @@ class TestIdentificationStage(TestCase):
 
     def test_valid_with_password(self):
         """Test with valid email and password in single step"""
-        pw_stage = PasswordStage.objects.create(name="password", backends=[BACKEND_DJANGO])
+        pw_stage = PasswordStage.objects.create(name="password", backends=[BACKEND_INBUILT])
         self.stage.password_stage = pw_stage
         self.stage.save()
         form_data = {"uid_field": self.user.email, "password": self.password}
@@ -86,7 +86,7 @@ class TestIdentificationStage(TestCase):
 
     def test_invalid_with_password(self):
         """Test with valid email and invalid password in single step"""
-        pw_stage = PasswordStage.objects.create(name="password", backends=[BACKEND_DJANGO])
+        pw_stage = PasswordStage.objects.create(name="password", backends=[BACKEND_INBUILT])
         self.stage.password_stage = pw_stage
         self.stage.save()
         form_data = {

@@ -7,7 +7,10 @@ from django.http import HttpRequest
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
+from authentik.flows.planner import FlowPlan
+from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.sources.ldap.models import LDAPSource
+from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 LOGGER = get_logger()
 LDAP_DISTINGUISHED_NAME = "distinguishedName"
@@ -24,6 +27,13 @@ class LDAPBackend(ModelBackend):
             LOGGER.debug("LDAP Auth attempt", source=source)
             user = self.auth_user(source, **kwargs)
             if user:
+                # Since we can't directly pass other variables to signals, and we want to log
+                # the method and the token used, we assume we're running in a flow and
+                # set a variable in the context
+                flow_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
+                flow_plan.context[PLAN_CONTEXT_METHOD] = "ldap"
+                flow_plan.context[PLAN_CONTEXT_METHOD_ARGS] = {"source": source}
+                request.session[SESSION_KEY_PLAN] = flow_plan
                 return user
         return None
 

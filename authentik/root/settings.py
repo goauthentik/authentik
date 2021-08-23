@@ -73,7 +73,8 @@ LANGUAGE_COOKIE_NAME = f"authentik_language{_cookie_suffix}"
 SESSION_COOKIE_NAME = f"authentik_session{_cookie_suffix}"
 
 AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
+    "authentik.core.auth.InbuiltBackend",
+    "authentik.core.auth.TokenBackend",
     "guardian.backends.ObjectPermissionBackend",
 ]
 

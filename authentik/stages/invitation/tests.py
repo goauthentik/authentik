@@ -17,7 +17,7 @@ from authentik.flows.tests.test_views import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.stages.invitation.models import Invitation, InvitationStage
 from authentik.stages.invitation.stage import INVITATION_TOKEN_KEY, PLAN_CONTEXT_PROMPT
-from authentik.stages.password import BACKEND_DJANGO
+from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 
 
@@ -45,7 +45,7 @@ class TestUserLoginStage(TestCase):
         """Test without any invitation, continue_flow_without_invitation not set."""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = BACKEND_DJANGO
+        plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = BACKEND_INBUILT
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -74,7 +74,7 @@ class TestUserLoginStage(TestCase):
         self.stage.save()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = BACKEND_DJANGO
+        plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = BACKEND_INBUILT
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()

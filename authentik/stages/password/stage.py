@@ -27,6 +27,8 @@ from authentik.stages.password.models import PasswordStage
 
 LOGGER = get_logger()
 PLAN_CONTEXT_AUTHENTICATION_BACKEND = "user_backend"
+PLAN_CONTEXT_METHOD = "method"
+PLAN_CONTEXT_METHOD_ARGS = "method_args"
 SESSION_INVALID_TRIES = "user_invalid_tries"
 
 

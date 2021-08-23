@@ -14,7 +14,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests.test_views import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.providers.oauth2.generators import generate_client_secret
-from authentik.stages.password import BACKEND_DJANGO
+from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordStage
 
 MOCK_BACKEND_AUTHENTICATE = MagicMock(side_effect=PermissionDenied("test"))
@@ -36,7 +36,7 @@ class TestPasswordStage(TestCase):
             slug="test-password",
             designation=FlowDesignation.AUTHENTICATION,
         )
-        self.stage = PasswordStage.objects.create(name="password", backends=[BACKEND_DJANGO])
+        self.stage = PasswordStage.objects.create(name="password", backends=[BACKEND_INBUILT])
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     @patch(
