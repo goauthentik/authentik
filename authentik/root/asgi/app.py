@@ -6,8 +6,6 @@ It exposes the ASGI callable as a module-level variable named ``application``.
 For more information on this file, see
 https://docs.djangoproject.com/en/3.0/howto/deployment/asgi/
 """
-from time import time
-
 import django
 from asgiref.compatibility import guarantee_single_callable
 from channels.routing import ProtocolTypeRouter, URLRouter

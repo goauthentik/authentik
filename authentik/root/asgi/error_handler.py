@@ -17,11 +17,12 @@ class ASGIErrorHandler:
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         try:
             return await self.app(scope, receive, send)
-        except Exception as exc:  # pylint: disable=
+        except Exception as exc:  # pylint: disable=broad-except
             LOGGER.warning("Fatal ASGI exception", exc=exc)
             return await self.error_handler(send)
 
     async def error_handler(self, send: Send) -> None:
+        """Return a generic error message"""
         return await send(
             {
                 "type": "http.request",

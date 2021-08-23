@@ -1,3 +1,4 @@
+"""ASGI Types"""
 import typing
 
 # See https://github.com/encode/starlette/blob/master/starlette/types.py

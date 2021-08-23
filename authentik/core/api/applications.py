@@ -122,7 +122,10 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         # If the current user is superuser, they can set `for_user`
         for_user = request.user
         if request.user.is_superuser and "for_user" in request.query_params:
-            for_user = get_object_or_404(User, pk=request.query_params.get("for_user"))
+            try:
+                for_user = get_object_or_404(User, pk=request.query_params.get("for_user"))
+            except ValueError:
+                return HttpResponseBadRequest("for_user must be numerical")
         engine = PolicyEngine(application, for_user, request)
         engine.use_cache = False
         engine.build()
