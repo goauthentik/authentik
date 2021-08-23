@@ -9,7 +9,7 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, Stage
-from authentik.stages.password import BACKEND_DJANGO, BACKEND_LDAP
+from authentik.stages.password import BACKEND_DJANGO, BACKEND_LDAP, BACKEND_TOKEN
 
 
 def get_authentication_backends():
@@ -17,11 +17,15 @@ def get_authentication_backends():
     return [
         (
             BACKEND_DJANGO,
-            _("authentik-internal Userdatabase"),
+            _("User database + standard password"),
+        ),
+        (
+            BACKEND_TOKEN,
+            _("User database + app passwords"),
         ),
         (
             BACKEND_LDAP,
-            _("authentik LDAP"),
+            _("User database + LDAP password"),
         ),
     ]
 
