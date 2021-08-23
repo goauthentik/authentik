@@ -37,9 +37,11 @@ from authentik.core.models import (
     User,
 )
 from authentik.crypto.models import CertificateKeyPair
+from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey
 from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.utils.errors import exception_to_string
 from authentik.managed.models import ManagedModel
 from authentik.outposts.controllers.k8s.utils import get_namespace
 from authentik.outposts.docker_tls import DockerInlineTLS
@@ -358,7 +360,19 @@ class Outpost(ManagedModel):
                     code_name = (
                         f"{model_or_perm._meta.app_label}." f"view_{model_or_perm._meta.model_name}"
                     )
-                    assign_perm(code_name, user, model_or_perm)
+                    try:
+                        assign_perm(code_name, user, model_or_perm)
+                    except Permission.DoesNotExist as exc:
+                        LOGGER.warning(
+                            "permission doesn't exist",
+                            code_name=code_name,
+                            user=user,
+                            model=model_or_perm,
+                        )
+                        Event.new(
+                            action=EventAction.SYSTEM_EXCEPTION,
+                            message=exception_to_string(exc),
+                        ).set_user(user).save()
                 else:
                     app_label, perm = model_or_perm.split(".")
                     permission = Permission.objects.filter(
