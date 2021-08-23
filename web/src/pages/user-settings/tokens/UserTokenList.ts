@@ -10,7 +10,7 @@ import "../../../elements/buttons/Dropdown";
 import "../../../elements/buttons/TokenCopyButton";
 import { Table, TableColumn } from "../../../elements/table/Table";
 import { PAGE_SIZE } from "../../../constants";
-import { CoreApi, Token } from "@goauthentik/api";
+import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import "./UserTokenForm";
 
@@ -48,8 +48,19 @@ export class UserTokenList extends Table<Token> {
             <ak-forms-modal>
                 <span slot="submit"> ${t`Create`} </span>
                 <span slot="header"> ${t`Create Token`} </span>
-                <ak-user-token-form slot="form"> </ak-user-token-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+                <ak-user-token-form intent=${IntentEnum.Api} slot="form"> </ak-user-token-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
+                    ${t`Create Token`}
+                </button>
+            </ak-forms-modal>
+            <ak-forms-modal>
+                <span slot="submit"> ${t`Create`} </span>
+                <span slot="header"> ${t`Create App password`} </span>
+                <ak-user-token-form intent=${IntentEnum.AppPassword} slot="form">
+                </ak-user-token-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
+                    ${t`Create App password`}
+                </button>
             </ak-forms-modal>
             ${super.renderToolbar()}
         `;
