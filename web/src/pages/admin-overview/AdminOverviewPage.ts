@@ -131,6 +131,15 @@ export class AdminOverviewPage extends LitElement {
                     </div>
                     <!-- row 2 -->
                     <div
+                        class="pf-l-grid__item pf-m-6-col pf-m-3-col-on-md pf-m-3-col-on-xl card-container"
+                    >
+                        <ak-admin-status-system
+                            icon="pf-icon pf-icon-server"
+                            header=${t`System status`}
+                        >
+                        </ak-admin-status-system>
+                    </div>
+                    <div
                         class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-3-col-on-xl card-container"
                     >
                         <ak-admin-status-version
@@ -158,15 +167,6 @@ export class AdminOverviewPage extends LitElement {
                             header=${t`Workers`}
                         >
                         </ak-admin-status-card-workers>
-                    </div>
-                    <div
-                        class="pf-l-grid__item pf-m-6-col pf-m-3-col-on-md pf-m-3-col-on-xl card-container"
-                    >
-                        <ak-admin-status-system
-                            icon="pf-icon pf-icon-server"
-                            header=${t`System status`}
-                        >
-                        </ak-admin-status-system>
                     </div>
                     <div class="pf-l-grid__item pf-m-12-col row-divider">
                         <hr />
