@@ -4,7 +4,7 @@ from requests.exceptions import RequestException
 from requests_mock import Mocker
 
 from authentik.events.models import Event, EventAction
-from authentik.providers.oauth2.generators import generate_client_secret
+from authentik.lib.generators import generate_key
 from authentik.sources.plex.models import PlexSource
 from authentik.sources.plex.plex import PlexAuth
 from authentik.sources.plex.tasks import check_plex_token_all
@@ -41,7 +41,7 @@ class TestPlexSource(TestCase):
 
     def test_get_user_info(self):
         """Test get_user_info"""
-        token = generate_client_secret()
+        token = generate_key()
         api = PlexAuth(self.source, token)
         with Mocker() as mocker:
             mocker.get("https://plex.tv/api/v2/user", json=USER_INFO_RESPONSE)
@@ -55,7 +55,7 @@ class TestPlexSource(TestCase):
 
     def test_check_server_overlap(self):
         """Test check_server_overlap"""
-        token = generate_client_secret()
+        token = generate_key()
         api = PlexAuth(self.source, token)
         with Mocker() as mocker:
             mocker.get("https://plex.tv/api/v2/resources", json=RESOURCES_RESPONSE)

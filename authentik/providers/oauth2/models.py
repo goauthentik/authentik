@@ -22,10 +22,10 @@ from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import get_user
+from authentik.lib.generators import generate_id, generate_key
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.providers.oauth2.apps import AuthentikProviderOAuth2Config
 from authentik.providers.oauth2.constants import ACR_AUTHENTIK_DEFAULT
-from authentik.providers.oauth2.generators import generate_client_id, generate_client_secret
 
 
 class ClientTypes(models.TextChoices):
@@ -138,13 +138,13 @@ class OAuth2Provider(Provider):
         max_length=255,
         unique=True,
         verbose_name=_("Client ID"),
-        default=generate_client_id,
+        default=generate_id,
     )
     client_secret = models.CharField(
         max_length=255,
         blank=True,
         verbose_name=_("Client Secret"),
-        default=generate_client_secret,
+        default=generate_key,
     )
     jwt_alg = models.CharField(
         max_length=10,

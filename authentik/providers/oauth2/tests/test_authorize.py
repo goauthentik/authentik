@@ -7,8 +7,8 @@ from authentik.core.models import Application, User
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import Flow
+from authentik.lib.generators import generate_id, generate_key
 from authentik.providers.oauth2.errors import AuthorizeError, ClientIdError, RedirectUriError
-from authentik.providers.oauth2.generators import generate_client_id, generate_client_secret
 from authentik.providers.oauth2.models import (
     AuthorizationCode,
     GrantTypes,
@@ -183,7 +183,7 @@ class TestAuthorize(OAuthTestCase):
             redirect_uris="foo://localhost",
         )
         Application.objects.create(name="app", slug="app", provider=provider)
-        state = generate_client_id()
+        state = generate_id()
         user = User.objects.get(username="akadmin")
         self.client.force_login(user)
         # Step 1, initiate params and get redirect to flow
@@ -215,13 +215,13 @@ class TestAuthorize(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name="test",
             client_id="test",
-            client_secret=generate_client_secret(),
+            client_secret=generate_key(),
             authorization_flow=flow,
             redirect_uris="http://localhost",
             rsa_key=CertificateKeyPair.objects.first(),
         )
         Application.objects.create(name="app", slug="app", provider=provider)
-        state = generate_client_id()
+        state = generate_id()
         user = User.objects.get(username="akadmin")
         self.client.force_login(user)
         # Step 1, initiate params and get redirect to flow

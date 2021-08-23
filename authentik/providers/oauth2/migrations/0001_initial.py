@@ -7,8 +7,8 @@ from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 import authentik.core.models
+import authentik.lib.generators
 import authentik.lib.utils.time
-import authentik.providers.oauth2.generators
 
 
 class Migration(migrations.Migration):
@@ -55,7 +55,7 @@ class Migration(migrations.Migration):
                 (
                     "client_id",
                     models.CharField(
-                        default=authentik.providers.oauth2.generators.generate_client_id,
+                        default=authentik.lib.generators.generate_id,
                         max_length=255,
                         unique=True,
                         verbose_name="Client ID",
@@ -65,7 +65,7 @@ class Migration(migrations.Migration):
                     "client_secret",
                     models.CharField(
                         blank=True,
-                        default=authentik.providers.oauth2.generators.generate_client_secret,
+                        default=authentik.lib.generators.generate_key,
                         max_length=255,
                         verbose_name="Client Secret",
                     ),

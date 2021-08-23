@@ -27,7 +27,6 @@ export class ActionButton extends SpinnerButton {
                     });
                 });
             }
-            throw e;
         });
     };
 }

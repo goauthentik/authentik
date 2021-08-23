@@ -12,6 +12,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import Application
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
+from authentik.lib.generators import generate_id, generate_key
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.constants import (
@@ -19,7 +20,6 @@ from authentik.providers.oauth2.constants import (
     SCOPE_OPENID_EMAIL,
     SCOPE_OPENID_PROFILE,
 )
-from authentik.providers.oauth2.generators import generate_client_id, generate_client_secret
 from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
 from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, object_manager, retry
 
@@ -32,8 +32,8 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
     """test OAuth with OAuth Provider flow"""
 
     def setUp(self):
-        self.client_id = generate_client_id()
-        self.client_secret = generate_client_secret()
+        self.client_id = generate_id()
+        self.client_secret = generate_key()
         super().setUp()
 
     def get_container_specs(self) -> Optional[dict[str, Any]]:

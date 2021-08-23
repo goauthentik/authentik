@@ -18,7 +18,7 @@ from yaml import safe_dump
 
 from authentik.core.models import User
 from authentik.flows.models import Flow
-from authentik.providers.oauth2.generators import generate_client_id, generate_client_secret
+from authentik.lib.generators import generate_id, generate_key
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.manager import SourceType
 from authentik.sources.oauth.types.twitter import TwitterOAuthCallback
@@ -53,7 +53,7 @@ class TestSourceOAuth2(SeleniumTestCase):
     container: Container
 
     def setUp(self):
-        self.client_secret = generate_client_secret()
+        self.client_secret = generate_key()
         self.prepare_dex_config()
         super().setUp()
 
@@ -264,8 +264,8 @@ class TestSourceOAuth1(SeleniumTestCase):
     """Test OAuth1 Source"""
 
     def setUp(self) -> None:
-        self.client_id = generate_client_id()
-        self.client_secret = generate_client_secret()
+        self.client_id = generate_id()
+        self.client_secret = generate_key()
         self.source_slug = "oauth1-test"
         super().setUp()
 
