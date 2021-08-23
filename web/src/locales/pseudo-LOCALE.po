@@ -4748,6 +4748,18 @@ msgstr ""
 msgid "User Settings"
 msgstr ""
 
+#: src/pages/stages/password/PasswordStageForm.ts
+msgid "User database + LDAP password"
+msgstr ""
+
+#: src/pages/stages/password/PasswordStageForm.ts
+msgid "User database + app passwords"
+msgstr ""
+
+#: src/pages/stages/password/PasswordStageForm.ts
+msgid "User database + standard password"
+msgstr ""
+
 #: src/pages/user-settings/UserSettingsPage.ts
 msgid "User details"
 msgstr ""
@@ -5032,13 +5044,13 @@ msgstr ""
 msgid "You're currently impersonating {0}. Click to stop."
 msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts
-msgid "authentik Builtin Database"
-msgstr ""
+#: 
+#~ msgid "authentik Builtin Database"
+#~ msgstr ""
 
-#: src/pages/stages/password/PasswordStageForm.ts
-msgid "authentik LDAP Backend"
-msgstr ""
+#: 
+#~ msgid "authentik LDAP Backend"
+#~ msgstr ""
 
 #: src/elements/forms/DeleteForm.ts
 msgid "connecting object will be deleted"

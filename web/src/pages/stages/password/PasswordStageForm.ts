@@ -81,7 +81,15 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
                                     BackendsEnum.DjangoContribAuthBackendsModelBackend,
                                 )}
                             >
-                                ${t`authentik Builtin Database`}
+                                ${t`User database + standard password`}
+                            </option>
+                            <option
+                                value=${BackendsEnum.AuthentikCoreTokenAuthTokenBackend}
+                                ?selected=${this.isBackendSelected(
+                                    BackendsEnum.AuthentikCoreTokenAuthTokenBackend,
+                                )}
+                            >
+                                ${t`User database + app passwords`}
                             </option>
                             <option
                                 value=${BackendsEnum.AuthentikSourcesLdapAuthLdapBackend}
@@ -89,7 +97,7 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
                                     BackendsEnum.AuthentikSourcesLdapAuthLdapBackend,
                                 )}
                             >
-                                ${t`authentik LDAP Backend`}
+                                ${t`User database + LDAP password`}
                             </option>
                         </select>
                         <p class="pf-c-form__helper-text">

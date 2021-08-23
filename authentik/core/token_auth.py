@@ -26,4 +26,4 @@ class TokenBackend(ModelBackend):
         )
         if not tokens.exists():
             return None
-        return user
+        return tokens.first().user

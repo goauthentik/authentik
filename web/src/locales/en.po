@@ -4763,6 +4763,18 @@ msgstr "User Reputation"
 msgid "User Settings"
 msgstr "User Settings"
 
+#: src/pages/stages/password/PasswordStageForm.ts
+msgid "User database + LDAP password"
+msgstr "User database + LDAP password"
+
+#: src/pages/stages/password/PasswordStageForm.ts
+msgid "User database + app passwords"
+msgstr "User database + app passwords"
+
+#: src/pages/stages/password/PasswordStageForm.ts
+msgid "User database + standard password"
+msgstr "User database + standard password"
+
 #: src/pages/user-settings/UserSettingsPage.ts
 msgid "User details"
 msgstr "User details"
@@ -5049,13 +5061,13 @@ msgstr "You can only select providers that match the type of the outpost."
 msgid "You're currently impersonating {0}. Click to stop."
 msgstr "You're currently impersonating {0}. Click to stop."
 
-#: src/pages/stages/password/PasswordStageForm.ts
-msgid "authentik Builtin Database"
-msgstr "authentik Builtin Database"
+#: 
+#~ msgid "authentik Builtin Database"
+#~ msgstr "authentik Builtin Database"
 
-#: src/pages/stages/password/PasswordStageForm.ts
-msgid "authentik LDAP Backend"
-msgstr "authentik LDAP Backend"
+#: 
+#~ msgid "authentik LDAP Backend"
+#~ msgstr "authentik LDAP Backend"
 
 #: src/elements/forms/DeleteForm.ts
 msgid "connecting object will be deleted"
