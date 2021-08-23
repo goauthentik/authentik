@@ -20,15 +20,22 @@ class InbuiltBackend(ModelBackend):
         user = super().authenticate(request, username=username, password=password, **kwargs)
         if not user:
             return None
+        self.set_method("password", request)
+        return user
+
+    def set_method(self, method: str, request: Optional[HttpRequest], **kwargs):
+        """Set method data on current flow, if possbiel"""
+        if not request:
+            return
         # Since we can't directly pass other variables to signals, and we want to log the method
         # and the token used, we assume we're running in a flow and set a variable in the context
         flow_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
-        flow_plan.context[PLAN_CONTEXT_METHOD] = "password"
+        flow_plan.context[PLAN_CONTEXT_METHOD] = method
+        flow_plan.context[PLAN_CONTEXT_METHOD_ARGS] = kwargs
         request.session[SESSION_KEY_PLAN] = flow_plan
-        return user
 
 
-class TokenBackend(ModelBackend):
+class TokenBackend(InbuiltBackend):
     """Authenticate with token"""
 
     def authenticate(
@@ -47,10 +54,5 @@ class TokenBackend(ModelBackend):
         if not tokens.exists():
             return None
         token = tokens.first()
-        # Since we can't directly pass other variables to signals, and we want to log the method
-        # and the token used, we assume we're running in a flow and set a variable in the context
-        flow_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
-        flow_plan.context[PLAN_CONTEXT_METHOD] = "app_password"
-        flow_plan.context[PLAN_CONTEXT_METHOD_ARGS] = {"token": token}
-        request.session[SESSION_KEY_PLAN] = flow_plan
+        self.set_method("password", request, token=token)
         return token.user
