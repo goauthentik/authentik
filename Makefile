@@ -44,6 +44,9 @@ gen-web:
 		-g typescript-fetch \
 		-o /local/web-api \
 		--additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=@goauthentik/api,npmVersion=${NPM_VERSION}
+	mkdir -p web/node_modules/@goauthentik/api
+	cd web-api && npm i
+	\cp -rfv web-api/* web/node_modules/@goauthentik/api
 
 gen-outpost:
 	docker run \
