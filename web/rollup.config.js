@@ -6,7 +6,6 @@ import cssimport from "rollup-plugin-cssimport";
 import copy from "rollup-plugin-copy";
 import babel from "@rollup/plugin-babel";
 import replace from "@rollup/plugin-replace";
-import * as authentik from "@goauthentik/api";
 
 const extensions = [".js", ".jsx", ".ts", ".tsx"];
 
@@ -47,6 +46,9 @@ const resources = [
 const isProdBuild = process.env.NODE_ENV === "production";
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 function manualChunks(id) {
+    if (id.includes("@goauthentik/api")) {
+        return "api";
+    }
     if (id.includes("locales")) {
         const parts = id.split("/");
         const file = parts[parts.length - 1];
@@ -100,11 +102,7 @@ export default [
         plugins: [
             cssimport(),
             resolve({ extensions, browser: true }),
-            // Because the API Client uses star exports from typescript, we have to explicitly tell rollup
-            // Which classes can be imported
-            commonjs({
-                namedExports: { "@goauthentik/api": Object.keys(authentik) },
-            }),
+            commonjs(),
             babel({
                 extensions,
                 babelHelpers: "runtime",
@@ -136,11 +134,7 @@ export default [
         plugins: [
             cssimport(),
             resolve({ extensions, browser: true }),
-            // Because the API Client uses star exports from typescript, we have to explicitly tell rollup
-            // Which classes can be imported
-            commonjs({
-                namedExports: { "@goauthentik/api": Object.keys(authentik) },
-            }),
+            commonjs(),
             babel({
                 extensions,
                 babelHelpers: "runtime",
