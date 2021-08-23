@@ -251,7 +251,7 @@ TEMPLATES = [
     },
 ]
 
-ASGI_APPLICATION = "authentik.root.asgi.application"
+ASGI_APPLICATION = "authentik.root.asgi.app.application"
 
 CHANNEL_LAYERS = {
     "default": {

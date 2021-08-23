@@ -1,41 +1,10 @@
-"""
-ASGI config for authentik project.
-
-It exposes the ASGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/3.0/howto/deployment/asgi/
-"""
-import typing
+"""ASGI Logger"""
 from time import time
 
-import django
-from asgiref.compatibility import guarantee_single_callable
-from channels.routing import ProtocolTypeRouter, URLRouter
-from defusedxml import defuse_stdlib
-from django.core.asgi import get_asgi_application
-from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 from structlog.stdlib import get_logger
 
 from authentik.core.middleware import RESPONSE_HEADER_ID
-
-# DJANGO_SETTINGS_MODULE is set in gunicorn.conf.py
-
-defuse_stdlib()
-django.setup()
-
-# pylint: disable=wrong-import-position
-from authentik.root import websocket  # noqa  # isort:skip
-
-
-# See https://github.com/encode/starlette/blob/master/starlette/types.py
-Scope = typing.MutableMapping[str, typing.Any]
-Message = typing.MutableMapping[str, typing.Any]
-
-Receive = typing.Callable[[], typing.Awaitable[Message]]
-Send = typing.Callable[[Message], typing.Awaitable[None]]
-
-ASGIApp = typing.Callable[[Scope, Receive, Send], typing.Awaitable[None]]
+from authentik.root.asgi.types import ASGIApp, Message, Receive, Scope, Send
 
 ASGI_IP_HEADERS = (
     b"x-forwarded-for",
@@ -86,7 +55,7 @@ class ASGILogger:
             # https://code.djangoproject.com/ticket/31508
             # https://github.com/encode/uvicorn/issues/266
             return
-        await self.app(scope, receive, send_hooked)
+        return await self.app(scope, receive, send_hooked)
 
     def _get_ip(self, scope: Scope) -> str:
         client_ip = None
@@ -115,17 +84,3 @@ class ASGILogger:
             runtime=runtime,
             **kwargs,
         )
-
-
-application = ASGILogger(
-    guarantee_single_callable(
-        SentryAsgiMiddleware(
-            ProtocolTypeRouter(
-                {
-                    "http": get_asgi_application(),
-                    "websocket": URLRouter(websocket.websocket_urlpatterns),
-                }
-            )
-        )
-    )
-)
