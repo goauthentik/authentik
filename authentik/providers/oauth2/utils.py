@@ -103,8 +103,8 @@ def extract_client_auth(request: HttpRequest) -> tuple[str, str]:
     if re.compile(r"^Basic\s{1}.+$").match(auth_header):
         b64_user_pass = auth_header.split()[1]
         try:
-            user_pass = b64decode(b64_user_pass).decode("utf-8").split(":")
-            client_id, client_secret = user_pass
+            user_pass = b64decode(b64_user_pass).decode("utf-8").partition(":")
+            client_id, _, client_secret = user_pass
         except (ValueError, Error):
             client_id = client_secret = ""  # nosec
     else:
