@@ -28,6 +28,7 @@ from authentik.core.signals import password_changed
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.models import Flow
 from authentik.lib.config import CONFIG
+from authentik.lib.generators import generate_id
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 from authentik.lib.utils.http import get_client_ip
 from authentik.managed.models import ManagedModel
@@ -54,7 +55,9 @@ def default_token_duration():
 
 def default_token_key():
     """Default token key"""
-    return uuid4().hex
+    # We use generate_id since the chars in the key should be easy
+    # to use in Emails (for verification) and URLs (for recovery)
+    return generate_id(128)
 
 
 class Group(models.Model):
