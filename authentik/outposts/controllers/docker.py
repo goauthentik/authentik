@@ -102,9 +102,11 @@ class DockerController(BaseController):
             )
 
     # pylint: disable=too-many-return-statements
-    def up(self):
+    def up(self, depth=1):
         if self.outpost.managed == MANAGED_OUTPOST:
             return None
+        if depth >= 10:
+            raise ControllerException("Giving up since we exceeded recursion limit.")
         try:
             container, has_been_created = self._get_container()
             if has_been_created:
@@ -120,17 +122,17 @@ class DockerController(BaseController):
                         should=self.get_container_image(),
                     )
                     self.down()
-                    return self.up()
+                    return self.up(depth + 1)
             # Check container's ports
             if self._comp_ports(container):
                 self.logger.info("Container has mis-matched ports, re-creating...")
                 self.down()
-                return self.up()
+                return self.up(depth + 1)
             # Check that container values match our values
             if self._comp_env(container):
                 self.logger.info("Container has outdated config, re-creating...")
                 self.down()
-                return self.up()
+                return self.up(depth + 1)
             if (
                 container.attrs.get("HostConfig", {})
                 .get("RestartPolicy", {})
@@ -140,7 +142,7 @@ class DockerController(BaseController):
             ):
                 self.logger.info("Container has mis-matched restart policy, re-creating...")
                 self.down()
-                return self.up()
+                return self.up(depth + 1)
             # Check that container is healthy
             if (
                 container.status == "running"
