@@ -59,3 +59,31 @@ This includes the following:
 - `prompt_data`: Data which has been saved from a prompt stage or an external source.
 - `application`: The application the user is in the process of authorizing.
 - `pending_user`: The currently pending user, see [User](/docs/expressions/reference/user-object)
+- `auth_method`: Authentication method set (this value is set by password stages)
+
+    Depending on method, `auth_method_args` is also set.
+
+    Can be any of:
+
+    - `password`: Standard password login
+    - `app_password`: App passowrd (token)
+
+        Sets `auth_method_args` to
+        ```json
+        {
+            "token": {
+                "pk": "f6d639aac81940f38dcfdc6e0fe2a786",
+                "app": "authentik_core",
+                "name": "test (expires=2021-08-23 15:45:54.725880+00:00)",
+                "model_name": "token"
+            }
+        }
+        ```
+    - `ldap`: LDAP bind authentication
+
+        Sets `auth_method_args` to
+        ```json
+        {
+            "source": {} // Information about the source used
+        }
+        ```

@@ -47,11 +47,11 @@ def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
         flow_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
         if PLAN_CONTEXT_SOURCE in flow_plan.context:
             # Login request came from an external source, save it in the context
-            thread.kwargs["using_source"] = flow_plan.context[PLAN_CONTEXT_SOURCE]
+            thread.kwargs[PLAN_CONTEXT_SOURCE] = flow_plan.context[PLAN_CONTEXT_SOURCE]
         if PLAN_CONTEXT_METHOD in flow_plan.context:
-            thread.kwargs["method"] = flow_plan.context[PLAN_CONTEXT_METHOD]
+            thread.kwargs[PLAN_CONTEXT_METHOD] = flow_plan.context[PLAN_CONTEXT_METHOD]
             # Save the login method used
-            thread.kwargs["method_args"] = flow_plan.context.get(PLAN_CONTEXT_METHOD_ARGS, {})
+            thread.kwargs[PLAN_CONTEXT_METHOD_ARGS] = flow_plan.context.get(PLAN_CONTEXT_METHOD_ARGS, {})
     thread.user = user
     thread.run()
 

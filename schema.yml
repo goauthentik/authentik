@@ -20382,8 +20382,8 @@ components:
       - url
     BackendsEnum:
       enum:
-      - django.contrib.auth.backends.ModelBackend
-      - authentik.core.token_auth.TokenBackend
+      - authentik.core.auth.InbuiltBackend
+      - authentik.core.auth.TokenBackend
       - authentik.sources.ldap.auth.LDAPBackend
       type: string
     BindingTypeEnum:

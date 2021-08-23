@@ -76,25 +76,25 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
                     >
                         <select name="users" class="pf-c-form-control" multiple>
                             <option
-                                value=${BackendsEnum.DjangoContribAuthBackendsModelBackend}
+                                value=${BackendsEnum.CoreAuthInbuiltBackend}
                                 ?selected=${this.isBackendSelected(
-                                    BackendsEnum.DjangoContribAuthBackendsModelBackend,
+                                    BackendsEnum.CoreAuthInbuiltBackend,
                                 )}
                             >
                                 ${t`User database + standard password`}
                             </option>
                             <option
-                                value=${BackendsEnum.AuthentikCoreTokenAuthTokenBackend}
+                                value=${BackendsEnum.CoreAuthTokenBackend}
                                 ?selected=${this.isBackendSelected(
-                                    BackendsEnum.AuthentikCoreTokenAuthTokenBackend,
+                                    BackendsEnum.CoreAuthTokenBackend,
                                 )}
                             >
                                 ${t`User database + app passwords`}
                             </option>
                             <option
-                                value=${BackendsEnum.AuthentikSourcesLdapAuthLdapBackend}
+                                value=${BackendsEnum.SourcesLdapAuthLdapBackend}
                                 ?selected=${this.isBackendSelected(
-                                    BackendsEnum.AuthentikSourcesLdapAuthLdapBackend,
+                                    BackendsEnum.SourcesLdapAuthLdapBackend,
                                 )}
                             >
                                 ${t`User database + LDAP password`}
