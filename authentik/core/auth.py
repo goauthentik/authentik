@@ -6,6 +6,7 @@ from django.contrib.auth.backends import ModelBackend
 from django.http.request import HttpRequest
 
 from authentik.core.models import Token, TokenIntents, User
+from authentik.events.utils import cleanse_dict, sanitize_dict
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
@@ -31,7 +32,7 @@ class InbuiltBackend(ModelBackend):
         # and the token used, we assume we're running in a flow and set a variable in the context
         flow_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
         flow_plan.context[PLAN_CONTEXT_METHOD] = method
-        flow_plan.context[PLAN_CONTEXT_METHOD_ARGS] = kwargs
+        flow_plan.context[PLAN_CONTEXT_METHOD_ARGS] = cleanse_dict(sanitize_dict(kwargs))
         request.session[SESSION_KEY_PLAN] = flow_plan
 
 
