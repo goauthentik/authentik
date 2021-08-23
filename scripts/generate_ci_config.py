@@ -4,5 +4,6 @@ from yaml import safe_dump
 
 with open("local.env.yml", "w") as _config:
     safe_dump({
-        "secret_key": generate_id()
+        "log_level": "debug",
+        "secret_key": generate_id(),
     }, _config, default_flow_style=False)

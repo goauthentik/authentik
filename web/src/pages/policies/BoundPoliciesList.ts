@@ -100,6 +100,12 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         return html`<ak-forms-delete-bulk
             objectLabel=${t`Policy binding(s)`}
             .objects=${this.selectedElements}
+            .metadata=${(item: PolicyBinding) => {
+                return [
+                    { key: t`Order`, value: item.order.toString() },
+                    { key: t`Policy / User / Group`, value: this.getPolicyUserGroupRow(item) },
+                ];
+            }}
             .usedBy=${(item: PolicyBinding) => {
                 return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsUsedByList({
                     policyBindingUuid: item.pk,

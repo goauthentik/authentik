@@ -148,7 +148,7 @@ export class UserSettingsPage extends LitElement {
                     </section>
                     <section
                         slot="page-tokens"
-                        data-tab-title="${t`Tokens`}"
+                        data-tab-title="${t`Tokens and App passwords`}"
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
                         <ak-user-token-list></ak-user-token-list>

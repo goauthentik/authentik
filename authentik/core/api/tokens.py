@@ -1,7 +1,10 @@
 """Tokens API Viewset"""
+from typing import Any
+
 from django.http.response import Http404
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -21,6 +24,13 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
     """Token Serializer"""
 
     user = UserSerializer(required=False)
+
+    def validate(self, attrs: dict[Any, str]) -> dict[Any, str]:
+        """Ensure only API or App password tokens are created."""
+        attrs.setdefault("intent", TokenIntents.INTENT_API)
+        if attrs.get("intent") not in [TokenIntents.INTENT_API, TokenIntents.INTENT_APP_PASSWORD]:
+            raise ValidationError(f"Invalid intent {attrs.get('intent')}")
+        return attrs
 
     class Meta:
 
@@ -69,7 +79,6 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
     def perform_create(self, serializer: TokenSerializer):
         serializer.save(
             user=self.request.user,
-            intent=TokenIntents.INTENT_API,
             expiring=self.request.user.attributes.get(USER_ATTRIBUTE_TOKEN_EXPIRING, True),
         )
 

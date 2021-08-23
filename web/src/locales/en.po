@@ -63,6 +63,10 @@ msgstr "ANY, any policy must match to grant access."
 msgid "ANY, any policy must match to include this stage access."
 msgstr "ANY, any policy must match to include this stage access."
 
+#: src/pages/tokens/TokenListPage.ts
+msgid "API Access"
+msgstr "API Access"
+
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "API Hostname"
 msgstr "API Hostname"
@@ -230,6 +234,10 @@ msgstr "Always require consent"
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 msgid "App"
 msgstr "App"
+
+#: src/pages/tokens/TokenListPage.ts
+msgid "App password"
+msgstr "App password"
 
 #: src/elements/user/UserConsentList.ts
 #: src/pages/admin-overview/TopApplicationsTable.ts
@@ -952,6 +960,11 @@ msgstr "Copy recovery link"
 msgid "Create"
 msgstr "Create"
 
+#: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/pages/user-settings/tokens/UserTokenList.ts
+msgid "Create App password"
+msgstr "Create App password"
+
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/providers/RelatedApplicationButton.ts
 msgid "Create Application"
@@ -1018,6 +1031,7 @@ msgstr "Create Stage binding"
 msgid "Create Tenant"
 msgstr "Create Tenant"
 
+#: src/pages/user-settings/tokens/UserTokenList.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
 msgid "Create Token"
 msgstr "Create Token"
@@ -2047,6 +2061,11 @@ msgstr "Integration key"
 msgid "Integrations"
 msgstr "Integrations"
 
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/user-settings/tokens/UserTokenList.ts
+msgid "Intent"
+msgstr "Intent"
+
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Internal Host"
 msgstr "Internal Host"
@@ -2807,6 +2826,7 @@ msgstr "Optionally set this to your parent domain, if you want authentication an
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts
 #: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/stages/prompt/PromptForm.ts
 #: src/pages/stages/prompt/PromptListPage.ts
@@ -2954,6 +2974,7 @@ msgstr "Policy / Group / User Bindings"
 msgid "Policy / Policies"
 msgstr "Policy / Policies"
 
+#: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Policy / User / Group"
 msgstr "Policy / User / Group"
@@ -3203,6 +3224,7 @@ msgid "Receive a push notification on your phone to prove your identity."
 msgstr "Receive a push notification on your phone to prove your identity."
 
 #: src/pages/flows/FlowForm.ts
+#: src/pages/tokens/TokenListPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "Recovery"
 msgstr "Recovery"
@@ -3696,6 +3718,7 @@ msgstr "Sources"
 msgid "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
 msgstr "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
 
+#: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts
 msgid "Stage"
 msgstr "Stage"
@@ -3715,6 +3738,10 @@ msgstr "Stage Configuration"
 #: src/pages/flows/BoundStagesList.ts
 msgid "Stage binding(s)"
 msgstr "Stage binding(s)"
+
+#: src/pages/flows/BoundStagesList.ts
+msgid "Stage type"
+msgstr "Stage type"
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
@@ -4388,9 +4415,12 @@ msgstr "Token(s)"
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
 #: src/interfaces/AdminInterface.ts
 #: src/pages/tokens/TokenListPage.ts
-#: src/pages/user-settings/UserSettingsPage.ts
 msgid "Tokens"
 msgstr "Tokens"
+
+#: src/pages/user-settings/UserSettingsPage.ts
+msgid "Tokens and App passwords"
+msgstr "Tokens and App passwords"
 
 #: src/pages/tokens/TokenListPage.ts
 msgid "Tokens are used throughout authentik for Email validation stages, Recovery keys and API access."
@@ -4740,6 +4770,18 @@ msgstr "User Reputation"
 msgid "User Settings"
 msgstr "User Settings"
 
+#: src/pages/stages/password/PasswordStageForm.ts
+msgid "User database + LDAP password"
+msgstr "User database + LDAP password"
+
+#: src/pages/stages/password/PasswordStageForm.ts
+msgid "User database + app passwords"
+msgstr "User database + app passwords"
+
+#: src/pages/stages/password/PasswordStageForm.ts
+msgid "User database + standard password"
+msgstr "User database + standard password"
+
 #: src/pages/user-settings/UserSettingsPage.ts
 msgid "User details"
 msgstr "User details"
@@ -4858,6 +4900,10 @@ msgstr "Validation Policies"
 #: src/pages/crypto/CertificateGenerateForm.ts
 msgid "Validity days"
 msgstr "Validity days"
+
+#: src/pages/tokens/TokenListPage.ts
+msgid "Verification"
+msgstr "Verification"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Verification Certificate"
@@ -5022,13 +5068,13 @@ msgstr "You can only select providers that match the type of the outpost."
 msgid "You're currently impersonating {0}. Click to stop."
 msgstr "You're currently impersonating {0}. Click to stop."
 
-#: src/pages/stages/password/PasswordStageForm.ts
-msgid "authentik Builtin Database"
-msgstr "authentik Builtin Database"
+#: 
+#~ msgid "authentik Builtin Database"
+#~ msgstr "authentik Builtin Database"
 
-#: src/pages/stages/password/PasswordStageForm.ts
-msgid "authentik LDAP Backend"
-msgstr "authentik LDAP Backend"
+#: 
+#~ msgid "authentik LDAP Backend"
+#~ msgstr "authentik LDAP Backend"
 
 #: src/elements/forms/DeleteForm.ts
 msgid "connecting object will be deleted"

@@ -1,7 +1,6 @@
 """Test validator stage"""
 from unittest.mock import MagicMock, patch
 
-from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import TestCase
 from django.test.client import RequestFactory
 from django.urls.base import reverse
@@ -12,8 +11,8 @@ from rest_framework.exceptions import ValidationError
 from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import Flow, FlowStageBinding, NotConfiguredAction
-from authentik.flows.tests.test_planner import dummy_get_response
 from authentik.lib.generators import generate_id, generate_key
+from authentik.lib.tests.utils import get_request
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_validate.api import AuthenticatorValidateStageSerializer
 from authentik.stages.authenticator_validate.challenge import (
@@ -97,11 +96,8 @@ class AuthenticatorValidateStageTests(TestCase):
 
     def test_device_challenge_webauthn(self):
         """Test webauthn"""
-        request = self.request_factory.get("/")
+        request = get_request("/")
         request.user = self.user
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
 
         webauthn_device = WebAuthnDevice.objects.create(
             user=self.user,

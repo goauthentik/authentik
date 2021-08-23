@@ -1,6 +1,6 @@
-import { CoreApi, Token } from "@goauthentik/api";
+import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { customElement } from "lit-element";
+import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
@@ -9,6 +9,9 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-user-token-form")
 export class UserTokenForm extends ModelForm<Token, string> {
+    @property()
+    intent: IntentEnum = IntentEnum.Api;
+
     loadInstance(pk: string): Promise<Token> {
         return new CoreApi(DEFAULT_CONFIG).coreTokensRetrieve({
             identifier: pk,
@@ -30,6 +33,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
                 tokenRequest: data,
             });
         } else {
+            data.intent = this.intent;
             return new CoreApi(DEFAULT_CONFIG).coreTokensCreate({
                 tokenRequest: data,
             });

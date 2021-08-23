@@ -8,8 +8,21 @@ import "../../elements/buttons/TokenCopyButton";
 import "../../elements/forms/DeleteBulkForm";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
-import { CoreApi, Token } from "@goauthentik/api";
+import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
+
+export function IntentToLabel(intent: IntentEnum): string {
+    switch (intent) {
+        case IntentEnum.Api:
+            return t`API Access`;
+        case IntentEnum.AppPassword:
+            return t`App password`;
+        case IntentEnum.Recovery:
+            return t`Recovery`;
+        case IntentEnum.Verification:
+            return t`Verification`;
+    }
+}
 
 @customElement("ak-token-list")
 export class TokenListPage extends TablePage<Token> {
@@ -46,6 +59,7 @@ export class TokenListPage extends TablePage<Token> {
             new TableColumn(t`User`, "user"),
             new TableColumn(t`Expires?`, "expiring"),
             new TableColumn(t`Expiry date`, "expires"),
+            new TableColumn(t`Intent`, "intent"),
             new TableColumn(t`Actions`),
         ];
     }
@@ -78,6 +92,7 @@ export class TokenListPage extends TablePage<Token> {
             html`${item.user?.username}`,
             html`${item.expiring ? t`Yes` : t`No`}`,
             html`${item.expiring ? item.expires?.toLocaleString() : "-"}`,
+            html`${IntentToLabel(item.intent || IntentEnum.Api)}`,
             html`
                 <ak-token-copy-button identifier="${item.identifier}">
                     ${t`Copy Key`}

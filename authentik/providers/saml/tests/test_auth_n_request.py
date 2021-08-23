@@ -1,16 +1,14 @@
 """Test AuthN Request generator and parser"""
 from base64 import b64encode
 
-from django.contrib.sessions.middleware import SessionMiddleware
 from django.http.request import QueryDict
 from django.test import RequestFactory, TestCase
-from guardian.utils import get_anonymous_user
 
 from authentik.core.models import User
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
-from authentik.flows.tests.test_planner import dummy_get_response
+from authentik.lib.tests.utils import get_request
 from authentik.managed.manager import ObjectManager
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
@@ -99,11 +97,7 @@ class TestAuthNRequest(TestCase):
 
     def test_signed_valid(self):
         """Test generated AuthNRequest with valid signature"""
-        http_request = self.factory.get("/")
-
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(http_request)
-        http_request.session.save()
+        http_request = get_request("/")
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -117,12 +111,7 @@ class TestAuthNRequest(TestCase):
 
     def test_request_full_signed(self):
         """Test full SAML Request/Response flow, fully signed"""
-        http_request = self.factory.get("/")
-        http_request.user = get_anonymous_user()
-
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(http_request)
-        http_request.session.save()
+        http_request = get_request("/")
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -145,12 +134,7 @@ class TestAuthNRequest(TestCase):
 
     def test_request_id_invalid(self):
         """Test generated AuthNRequest with invalid request ID"""
-        http_request = self.factory.get("/")
-        http_request.user = get_anonymous_user()
-
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(http_request)
-        http_request.session.save()
+        http_request = get_request("/")
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -179,11 +163,7 @@ class TestAuthNRequest(TestCase):
 
     def test_signed_valid_detached(self):
         """Test generated AuthNRequest with valid signature (detached)"""
-        http_request = self.factory.get("/")
-
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(http_request)
-        http_request.session.save()
+        http_request = get_request("/")
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -243,12 +223,7 @@ class TestAuthNRequest(TestCase):
 
     def test_request_attributes(self):
         """Test full SAML Request/Response flow, fully signed"""
-        http_request = self.factory.get("/")
-        http_request.user = User.objects.get(username="akadmin")
-
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(http_request)
-        http_request.session.save()
+        http_request = get_request("/", user=User.objects.get(username="akadmin"))
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -264,12 +239,7 @@ class TestAuthNRequest(TestCase):
 
     def test_request_attributes_invalid(self):
         """Test full SAML Request/Response flow, fully signed"""
-        http_request = self.factory.get("/")
-        http_request.user = User.objects.get(username="akadmin")
-
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(http_request)
-        http_request.session.save()
+        http_request = get_request("/", user=User.objects.get(username="akadmin"))
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")

@@ -1,16 +1,13 @@
 """Test Source flow_manager"""
 from django.contrib.auth.models import AnonymousUser
-from django.contrib.messages.middleware import MessageMiddleware
-from django.contrib.sessions.middleware import SessionMiddleware
-from django.http.request import HttpRequest
 from django.test import TestCase
 from django.test.client import RequestFactory
 from guardian.utils import get_anonymous_user
 
 from authentik.core.models import SourceUserMatchingModes, User
 from authentik.core.sources.flow_manager import Action
-from authentik.flows.tests.test_planner import dummy_get_response
 from authentik.lib.generators import generate_id
+from authentik.lib.tests.utils import get_request
 from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from authentik.sources.oauth.views.callback import OAuthSourceFlowManager
 
@@ -24,22 +21,10 @@ class TestSourceFlowManager(TestCase):
         self.factory = RequestFactory()
         self.identifier = generate_id()
 
-    def get_request(self, user: User) -> HttpRequest:
-        """Helper to create a get request with session and message middleware"""
-        request = self.factory.get("/")
-        request.user = user
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
-        middleware = MessageMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
-        return request
-
     def test_unauthenticated_enroll(self):
         """Test un-authenticated user enrolling"""
         flow_manager = OAuthSourceFlowManager(
-            self.source, self.get_request(AnonymousUser()), self.identifier, {}
+            self.source, get_request("/", user=AnonymousUser()), self.identifier, {}
         )
         action, _ = flow_manager.get_action()
         self.assertEqual(action, Action.ENROLL)
@@ -52,7 +37,7 @@ class TestSourceFlowManager(TestCase):
         )
 
         flow_manager = OAuthSourceFlowManager(
-            self.source, self.get_request(AnonymousUser()), self.identifier, {}
+            self.source, get_request("/", user=AnonymousUser()), self.identifier, {}
         )
         action, _ = flow_manager.get_action()
         self.assertEqual(action, Action.AUTH)
@@ -65,7 +50,7 @@ class TestSourceFlowManager(TestCase):
         )
         user = User.objects.create(username="foo", email="foo@bar.baz")
         flow_manager = OAuthSourceFlowManager(
-            self.source, self.get_request(user), self.identifier, {}
+            self.source, get_request("/", user=user), self.identifier, {}
         )
         action, _ = flow_manager.get_action()
         self.assertEqual(action, Action.LINK)
@@ -78,7 +63,7 @@ class TestSourceFlowManager(TestCase):
 
         # Without email, deny
         flow_manager = OAuthSourceFlowManager(
-            self.source, self.get_request(AnonymousUser()), self.identifier, {}
+            self.source, get_request("/", user=AnonymousUser()), self.identifier, {}
         )
         action, _ = flow_manager.get_action()
         self.assertEqual(action, Action.DENY)
@@ -86,7 +71,7 @@ class TestSourceFlowManager(TestCase):
         # With email
         flow_manager = OAuthSourceFlowManager(
             self.source,
-            self.get_request(AnonymousUser()),
+            get_request("/", user=AnonymousUser()),
             self.identifier,
             {"email": "foo@bar.baz"},
         )
@@ -101,7 +86,7 @@ class TestSourceFlowManager(TestCase):
 
         # Without username, deny
         flow_manager = OAuthSourceFlowManager(
-            self.source, self.get_request(AnonymousUser()), self.identifier, {}
+            self.source, get_request("/", user=AnonymousUser()), self.identifier, {}
         )
         action, _ = flow_manager.get_action()
         self.assertEqual(action, Action.DENY)
@@ -109,7 +94,7 @@ class TestSourceFlowManager(TestCase):
         # With username
         flow_manager = OAuthSourceFlowManager(
             self.source,
-            self.get_request(AnonymousUser()),
+            get_request("/", user=AnonymousUser()),
             self.identifier,
             {"username": "foo"},
         )
@@ -125,7 +110,7 @@ class TestSourceFlowManager(TestCase):
         # With non-existent username, enroll
         flow_manager = OAuthSourceFlowManager(
             self.source,
-            self.get_request(AnonymousUser()),
+            get_request("/", user=AnonymousUser()),
             self.identifier,
             {
                 "username": "bar",
@@ -137,7 +122,7 @@ class TestSourceFlowManager(TestCase):
         # With username
         flow_manager = OAuthSourceFlowManager(
             self.source,
-            self.get_request(AnonymousUser()),
+            get_request("/", user=AnonymousUser()),
             self.identifier,
             {"username": "foo"},
         )
@@ -151,7 +136,7 @@ class TestSourceFlowManager(TestCase):
 
         flow_manager = OAuthSourceFlowManager(
             self.source,
-            self.get_request(AnonymousUser()),
+            get_request("/", user=AnonymousUser()),
             self.identifier,
             {"username": "foo"},
         )

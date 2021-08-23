@@ -411,6 +411,9 @@ class TokenIntents(models.TextChoices):
     # Recovery use for the recovery app
     INTENT_RECOVERY = "recovery"
 
+    # App-specific passwords
+    INTENT_APP_PASSWORD = "app_password"  # nosec
+
 
 class Token(ManagedModel, ExpiringModel):
     """Token used to authenticate the User for API Access or confirm another Stage like Email."""
