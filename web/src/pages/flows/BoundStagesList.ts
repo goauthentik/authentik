@@ -48,6 +48,12 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         return html`<ak-forms-delete-bulk
             objectLabel=${t`Stage binding(s)`}
             .objects=${this.selectedElements}
+            .metadata=${(item: FlowStageBinding) => {
+                return [
+                    { key: t`Stage`, value: item.stageObj?.name },
+                    { key: t`Stage type`, value: item.stageObj?.verboseName },
+                ];
+            }}
             .usedBy=${(item: FlowStageBinding) => {
                 return new FlowsApi(DEFAULT_CONFIG).flowsBindingsUsedByList({
                     fsbUuid: item.pk,

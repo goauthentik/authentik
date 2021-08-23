@@ -2826,6 +2826,7 @@ msgstr "Optionally set this to your parent domain, if you want authentication an
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts
 #: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/stages/prompt/PromptForm.ts
 #: src/pages/stages/prompt/PromptListPage.ts
@@ -2973,6 +2974,7 @@ msgstr "Policy / Group / User Bindings"
 msgid "Policy / Policies"
 msgstr "Policy / Policies"
 
+#: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Policy / User / Group"
 msgstr "Policy / User / Group"
@@ -3716,6 +3718,7 @@ msgstr "Sources"
 msgid "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
 msgstr "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
 
+#: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts
 msgid "Stage"
 msgstr "Stage"
@@ -3735,6 +3738,10 @@ msgstr "Stage Configuration"
 #: src/pages/flows/BoundStagesList.ts
 msgid "Stage binding(s)"
 msgstr "Stage binding(s)"
+
+#: src/pages/flows/BoundStagesList.ts
+msgid "Stage type"
+msgstr "Stage type"
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."

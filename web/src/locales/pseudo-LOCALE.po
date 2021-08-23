@@ -2818,6 +2818,7 @@ msgstr ""
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts
 #: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/stages/prompt/PromptForm.ts
 #: src/pages/stages/prompt/PromptListPage.ts
@@ -2965,6 +2966,7 @@ msgstr ""
 msgid "Policy / Policies"
 msgstr ""
 
+#: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Policy / User / Group"
 msgstr ""
@@ -3708,6 +3710,7 @@ msgstr ""
 msgid "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
 msgstr ""
 
+#: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts
 msgid "Stage"
 msgstr ""
@@ -3726,6 +3729,10 @@ msgstr ""
 
 #: src/pages/flows/BoundStagesList.ts
 msgid "Stage binding(s)"
+msgstr ""
+
+#: src/pages/flows/BoundStagesList.ts
+msgid "Stage type"
 msgstr ""
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
