@@ -2515,6 +2515,7 @@ paths:
           type: string
           enum:
           - api
+          - app_password
           - recovery
           - verification
       - name: ordering
@@ -20382,6 +20383,7 @@ components:
     BackendsEnum:
       enum:
       - django.contrib.auth.backends.ModelBackend
+      - authentik.core.token_auth.TokenBackend
       - authentik.sources.ldap.auth.LDAPBackend
       type: string
     BindingTypeEnum:
@@ -22211,6 +22213,7 @@ components:
       - verification
       - api
       - recovery
+      - app_password
       type: string
     InvalidResponseActionEnum:
       enum:

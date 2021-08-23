@@ -409,7 +409,7 @@ class TokenIntents(models.TextChoices):
     INTENT_RECOVERY = "recovery"
 
     # App-specific passwords
-    INTENT_APP_PASSWORD = "app_password"
+    INTENT_APP_PASSWORD = "app_password"  # nosec
 
 
 class Token(ManagedModel, ExpiringModel):
