@@ -63,6 +63,10 @@ msgstr ""
 msgid "ANY, any policy must match to include this stage access."
 msgstr ""
 
+#: src/pages/tokens/TokenListPage.ts
+msgid "API Access"
+msgstr ""
+
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "API Hostname"
 msgstr ""
@@ -229,6 +233,10 @@ msgstr ""
 #: src/pages/events/EventInfo.ts
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 msgid "App"
+msgstr ""
+
+#: src/pages/tokens/TokenListPage.ts
+msgid "App password"
 msgstr ""
 
 #: src/elements/user/UserConsentList.ts
@@ -946,6 +954,11 @@ msgstr ""
 msgid "Create"
 msgstr ""
 
+#: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/pages/user-settings/tokens/UserTokenList.ts
+msgid "Create App password"
+msgstr ""
+
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/providers/RelatedApplicationButton.ts
 msgid "Create Application"
@@ -1012,6 +1025,7 @@ msgstr ""
 msgid "Create Tenant"
 msgstr ""
 
+#: src/pages/user-settings/tokens/UserTokenList.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
 msgid "Create Token"
 msgstr ""
@@ -2037,6 +2051,11 @@ msgstr ""
 
 #: src/interfaces/AdminInterface.ts
 msgid "Integrations"
+msgstr ""
+
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/user-settings/tokens/UserTokenList.ts
+msgid "Intent"
 msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
@@ -3195,6 +3214,7 @@ msgid "Receive a push notification on your phone to prove your identity."
 msgstr ""
 
 #: src/pages/flows/FlowForm.ts
+#: src/pages/tokens/TokenListPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "Recovery"
 msgstr ""
@@ -4373,8 +4393,11 @@ msgstr ""
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
 #: src/interfaces/AdminInterface.ts
 #: src/pages/tokens/TokenListPage.ts
-#: src/pages/user-settings/UserSettingsPage.ts
 msgid "Tokens"
+msgstr ""
+
+#: src/pages/user-settings/UserSettingsPage.ts
+msgid "Tokens and App passwords"
 msgstr ""
 
 #: src/pages/tokens/TokenListPage.ts
@@ -4842,6 +4865,10 @@ msgstr ""
 
 #: src/pages/crypto/CertificateGenerateForm.ts
 msgid "Validity days"
+msgstr ""
+
+#: src/pages/tokens/TokenListPage.ts
+msgid "Verification"
 msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts

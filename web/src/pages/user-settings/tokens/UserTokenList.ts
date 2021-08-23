@@ -13,6 +13,7 @@ import { PAGE_SIZE } from "../../../constants";
 import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import "./UserTokenForm";
+import { IntentToLabel } from "../../tokens/TokenListPage";
 
 @customElement("ak-user-token-list")
 export class UserTokenList extends Table<Token> {
@@ -97,6 +98,16 @@ export class UserTokenList extends Table<Token> {
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
                                     ${item.expiring ? item.expires?.toLocaleString() : "-"}
+                                </div>
+                            </dd>
+                        </div>
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text">${t`Intent`}</span>
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">
+                                    ${IntentToLabel(item.intent || IntentEnum.Api)}
                                 </div>
                             </dd>
                         </div>

@@ -63,6 +63,10 @@ msgstr "ANY, any policy must match to grant access."
 msgid "ANY, any policy must match to include this stage access."
 msgstr "ANY, any policy must match to include this stage access."
 
+#: src/pages/tokens/TokenListPage.ts
+msgid "API Access"
+msgstr "API Access"
+
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "API Hostname"
 msgstr "API Hostname"
@@ -230,6 +234,10 @@ msgstr "Always require consent"
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 msgid "App"
 msgstr "App"
+
+#: src/pages/tokens/TokenListPage.ts
+msgid "App password"
+msgstr "App password"
 
 #: src/elements/user/UserConsentList.ts
 #: src/pages/admin-overview/TopApplicationsTable.ts
@@ -952,6 +960,11 @@ msgstr "Copy recovery link"
 msgid "Create"
 msgstr "Create"
 
+#: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/pages/user-settings/tokens/UserTokenList.ts
+msgid "Create App password"
+msgstr "Create App password"
+
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/providers/RelatedApplicationButton.ts
 msgid "Create Application"
@@ -1018,6 +1031,7 @@ msgstr "Create Stage binding"
 msgid "Create Tenant"
 msgstr "Create Tenant"
 
+#: src/pages/user-settings/tokens/UserTokenList.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
 msgid "Create Token"
 msgstr "Create Token"
@@ -2046,6 +2060,11 @@ msgstr "Integration key"
 #: src/interfaces/AdminInterface.ts
 msgid "Integrations"
 msgstr "Integrations"
+
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/user-settings/tokens/UserTokenList.ts
+msgid "Intent"
+msgstr "Intent"
 
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Internal Host"
@@ -3203,6 +3222,7 @@ msgid "Receive a push notification on your phone to prove your identity."
 msgstr "Receive a push notification on your phone to prove your identity."
 
 #: src/pages/flows/FlowForm.ts
+#: src/pages/tokens/TokenListPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "Recovery"
 msgstr "Recovery"
@@ -4388,9 +4408,12 @@ msgstr "Token(s)"
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
 #: src/interfaces/AdminInterface.ts
 #: src/pages/tokens/TokenListPage.ts
-#: src/pages/user-settings/UserSettingsPage.ts
 msgid "Tokens"
 msgstr "Tokens"
+
+#: src/pages/user-settings/UserSettingsPage.ts
+msgid "Tokens and App passwords"
+msgstr "Tokens and App passwords"
 
 #: src/pages/tokens/TokenListPage.ts
 msgid "Tokens are used throughout authentik for Email validation stages, Recovery keys and API access."
@@ -4858,6 +4881,10 @@ msgstr "Validation Policies"
 #: src/pages/crypto/CertificateGenerateForm.ts
 msgid "Validity days"
 msgstr "Validity days"
+
+#: src/pages/tokens/TokenListPage.ts
+msgid "Verification"
+msgstr "Verification"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Verification Certificate"
