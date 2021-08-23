@@ -55,7 +55,8 @@
             "model": "authentik_stages_password.passwordstage",
             "attrs": {
                 "backends": [
-                    "django.contrib.auth.backends.ModelBackend",
+                    "authentik.core.auth.InbuiltBackend",
+                    "authentik.core.auth.TokenBackend",
                     "authentik.sources.ldap.auth.LDAPBackend"
                 ]
             }

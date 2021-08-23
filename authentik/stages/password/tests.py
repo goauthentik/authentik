@@ -158,7 +158,7 @@ class TestPasswordStage(TestCase):
         TO_STAGE_RESPONSE_MOCK,
     )
     @patch(
-        "django.contrib.auth.backends.ModelBackend.authenticate",
+        "authentik.core.auth.InbuiltBackend.authenticate",
         MOCK_BACKEND_AUTHENTICATE,
     )
     def test_permission_denied(self):
