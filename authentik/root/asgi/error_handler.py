@@ -19,14 +19,21 @@ class ASGIErrorHandler:
             return await self.app(scope, receive, send)
         except Exception as exc:  # pylint: disable=broad-except
             LOGGER.warning("Fatal ASGI exception", exc=exc)
-            return await self.error_handler(send)
+            return await self.error_handler(scope, send)
 
-    async def error_handler(self, send: Send) -> None:
+    async def error_handler(self, scope: Scope, send: Send) -> None:
         """Return a generic error message"""
+        if scope.get("scheme", "http") == "http":
+            return await send(
+                {
+                    "type": "http.request",
+                    "body": b"Internal server error",
+                    "more_body": False,
+                }
+            )
         return await send(
             {
-                "type": "http.request",
-                "body": b"Internal server error",
-                "more_body": False,
+                "type": "websocket.send",
+                "text": b"Internal server error",
             }
         )
