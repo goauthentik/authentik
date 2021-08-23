@@ -79,7 +79,7 @@ class ConfigLoader:
             value = os.getenv(url.netloc, url.query)
         if url.scheme == "file":
             try:
-                with open(url.path, "r") as _file:
+                with open(url.path, "r", encoding="utf8") as _file:
                     value = _file.read()
             except OSError:
                 self._log("error", f"Failed to read config value from {url.path}")
@@ -89,7 +89,7 @@ class ConfigLoader:
     def update_from_file(self, path: str):
         """Update config from file contents"""
         try:
-            with open(path) as file:
+            with open(path, encoding="utf8") as file:
                 try:
                     self.update(self.__config, yaml.safe_load(file))
                     self._log("debug", "Loaded config", file=path)

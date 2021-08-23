@@ -227,7 +227,7 @@ def outpost_local_connection():
         kubeconfig_local_name = f"k8s-{gethostname()}"
         if not KubernetesServiceConnection.objects.filter(name=kubeconfig_local_name).exists():
             LOGGER.debug("Creating kubeconfig Service Connection")
-            with open(kubeconfig_path, "r") as _kubeconfig:
+            with open(kubeconfig_path, "r", encoding="utf8") as _kubeconfig:
                 KubernetesServiceConnection.objects.create(
                     name=kubeconfig_local_name,
                     kubeconfig=yaml.safe_load(_kubeconfig),

@@ -89,7 +89,7 @@ class TestSourceOAuth2(SeleniumTestCase):
             "storage": {"config": {"file": "/tmp/dex.db"}, "type": "sqlite3"},  # nosec
             "web": {"http": "0.0.0.0:5556"},
         }
-        with open(CONFIG_PATH, "w+") as _file:
+        with open(CONFIG_PATH, "w+", encoding="utf8") as _file:
             safe_dump(config, _file)
 
     def get_container_specs(self) -> Optional[dict[str, Any]]:
