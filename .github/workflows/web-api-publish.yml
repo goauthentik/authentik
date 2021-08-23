@@ -1,7 +1,7 @@
 name: authentik-web-api-publish
 on:
   push:
-    branches: [ master, '*', next, version* ]
+    branches: [ master, version* ]
     paths:
       - 'schema.yml'
 jobs:
