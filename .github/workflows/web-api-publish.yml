@@ -14,10 +14,25 @@ jobs:
         with:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
-      - run: make gen-web
-      - run: |
+      - name: Generate API Client
+        run: make gen-web
+      - name: Publish package
+        run: |
           cd web-api/
           npm i
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+      - name: Upgrade /web
+        run: |
+          cd web/
+          npm i @goauthentik/api@${node -e 'console.log(require("../web-api/package.json").version)'}
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: update-web-api-client
+          commit-message: Update Web API Client version
+          title: Update Web API Client version
+          delete-branch: true
+          signoff: true
