@@ -6,7 +6,7 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 from authentik.flows.models import FlowDesignation
 from authentik.stages.identification.models import UserFields
-from authentik.stages.password import BACKEND_DJANGO, BACKEND_LDAP
+from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_DJANGO, BACKEND_LDAP
 
 
 def create_default_authentication_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
@@ -26,7 +26,7 @@ def create_default_authentication_flow(apps: Apps, schema_editor: BaseDatabaseSc
 
     password_stage, _ = PasswordStage.objects.using(db_alias).update_or_create(
         name="default-authentication-password",
-        defaults={"backends": [BACKEND_DJANGO, BACKEND_LDAP]},
+        defaults={"backends": [BACKEND_DJANGO, BACKEND_LDAP, BACKEND_APP_PASSWORD]},
     )
 
     login_stage, _ = UserLoginStage.objects.using(db_alias).update_or_create(
