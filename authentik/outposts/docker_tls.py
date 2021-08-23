@@ -25,7 +25,7 @@ class DockerInlineTLS:
     def write_file(self, name: str, contents: str) -> str:
         """Wrapper for mkstemp that uses fdopen"""
         path = Path(gettempdir(), name)
-        with open(path, "w") as _file:
+        with open(path, "w", encoding="utf8") as _file:
             _file.write(contents)
         return str(path)
 
