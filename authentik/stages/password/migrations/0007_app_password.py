@@ -28,6 +28,7 @@ def replace_inbuilt(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
             continue
         stage.backends.remove("django.contrib.auth.backends.ModelBackend")
         stage.backends.append(BACKEND_INBUILT)
+        stage.backends.sort()
         stage.save()
 
 
