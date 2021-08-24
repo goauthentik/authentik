@@ -32,6 +32,7 @@ from authentik.core.middleware import structlog_add_request_id
 from authentik.lib.config import CONFIG
 from authentik.lib.logging import add_process_id
 from authentik.lib.sentry import before_send
+from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
 
 
 def j_print(event: str, log_level: str = "info", **kwargs):
@@ -73,8 +74,9 @@ LANGUAGE_COOKIE_NAME = f"authentik_language{_cookie_suffix}"
 SESSION_COOKIE_NAME = f"authentik_session{_cookie_suffix}"
 
 AUTHENTICATION_BACKENDS = [
-    "authentik.core.auth.InbuiltBackend",
-    "authentik.core.auth.TokenBackend",
+    BACKEND_INBUILT,
+    BACKEND_APP_PASSWORD,
+    BACKEND_LDAP,
     "guardian.backends.ObjectPermissionBackend",
 ]
 
