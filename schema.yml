@@ -29822,6 +29822,11 @@ components:
       type: object
       description: Get system information.
       properties:
+        env:
+          type: object
+          additionalProperties:
+            type: string
+          readOnly: true
         http_headers:
           type: object
           additionalProperties:
@@ -29861,6 +29866,7 @@ components:
           readOnly: true
       required:
       - embedded_outpost_host
+      - env
       - http_headers
       - http_host
       - http_is_secure
