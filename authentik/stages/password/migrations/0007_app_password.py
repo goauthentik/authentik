@@ -19,19 +19,6 @@ def update_default_backends(apps: Apps, schema_editor: BaseDatabaseSchemaEditor)
     stage.save()
 
 
-def replace_inbuilt(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    PasswordStage = apps.get_model("authentik_stages_password", "passwordstage")
-    db_alias = schema_editor.connection.alias
-
-    for stage in PasswordStage.objects.using(db_alias).all():
-        if "django.contrib.auth.backends.ModelBackend" not in stage.backends:
-            continue
-        stage.backends.remove("django.contrib.auth.backends.ModelBackend")
-        stage.backends.append(BACKEND_INBUILT)
-        stage.backends.sort()
-        stage.save()
-
-
 class Migration(migrations.Migration):
 
     dependencies = [
