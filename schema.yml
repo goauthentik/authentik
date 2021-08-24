@@ -3282,6 +3282,38 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/core/users/service_account/:
+    post:
+      operationId: core_users_service_account_create
+      description: Create a new user account that is marked as a service account
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserServiceAccountRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserServiceAccountRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserServiceAccountRequest'
+        required: true
+      security:
+      - authentik: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserServiceAccountResponse'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/core/users/update_self/:
     put:
       operationId: core_users_update_self_update
@@ -30541,6 +30573,26 @@ components:
           maxLength: 254
       required:
       - name
+      - username
+    UserServiceAccountRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        create_group:
+          type: boolean
+          default: false
+      required:
+      - name
+    UserServiceAccountResponse:
+      type: object
+      properties:
+        username:
+          type: string
+        token:
+          type: string
+      required:
+      - token
       - username
     UserSetting:
       type: object

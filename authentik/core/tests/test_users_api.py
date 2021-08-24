@@ -105,3 +105,39 @@ class TestUsersAPI(APITestCase):
             + f"?email_stage={stage.pk}"
         )
         self.assertEqual(response.status_code, 204)
+
+    def test_service_account(self):
+        """Service account creation"""
+        self.client.force_login(self.admin)
+        response = self.client.post(reverse("authentik_api:user-service-account"))
+        self.assertEqual(response.status_code, 400)
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={
+                "name": "test-sa",
+                "create_group": True,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(User.objects.filter(username="test-sa").exists())
+
+    def test_service_account_invalid(self):
+        """Service account creation (twice with same name, expect error)"""
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={
+                "name": "test-sa",
+                "create_group": True,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(User.objects.filter(username="test-sa").exists())
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={
+                "name": "test-sa",
+                "create_group": True,
+            },
+        )
+        self.assertEqual(response.status_code, 400)

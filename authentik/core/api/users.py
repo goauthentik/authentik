@@ -3,13 +3,20 @@ from json import loads
 from typing import Optional
 
 from django.db.models.query import QuerySet
+from django.db.transaction import atomic
+from django.db.utils import IntegrityError
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
 from django.utils.translation import gettext as _
 from django_filters.filters import BooleanFilter, CharFilter, ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_field
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    extend_schema,
+    extend_schema_field,
+    inline_serializer,
+)
 from guardian.shortcuts import get_anonymous_user, get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, JSONField, SerializerMethodField
@@ -34,7 +41,14 @@ from authentik.core.api.groups import GroupSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import LinkSerializer, PassiveSerializer, is_dict
 from authentik.core.middleware import SESSION_IMPERSONATE_ORIGINAL_USER, SESSION_IMPERSONATE_USER
-from authentik.core.models import Group, Token, TokenIntents, User
+from authentik.core.models import (
+    USER_ATTRIBUTE_SA,
+    USER_ATTRIBUTE_TOKEN_EXPIRING,
+    Group,
+    Token,
+    TokenIntents,
+    User,
+)
 from authentik.events.models import EventAction
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
@@ -219,6 +233,51 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             + f"?{querystring}"
         )
         return link, token
+
+    @permission_required(None, ["authentik_core.add_user", "authentik_core.add_token"])
+    @extend_schema(
+        request=inline_serializer(
+            "UserServiceAccountSerializer",
+            {
+                "name": CharField(required=True),
+                "create_group": BooleanField(default=False),
+            },
+        ),
+        responses={
+            200: inline_serializer(
+                "UserServiceAccountResponse",
+                {
+                    "username": CharField(required=True),
+                    "token": CharField(required=True),
+                },
+            )
+        },
+    )
+    @action(detail=False, methods=["POST"], pagination_class=None, filter_backends=[])
+    def service_account(self, request: Request) -> Response:
+        """Create a new user account that is marked as a service account"""
+        username = request.data.get("name")
+        create_group = request.data.get("create_group", False)
+        with atomic():
+            try:
+                user = User.objects.create(
+                    username=username,
+                    name=username,
+                    attributes={USER_ATTRIBUTE_SA: True, USER_ATTRIBUTE_TOKEN_EXPIRING: False},
+                )
+                if create_group:
+                    group = Group.objects.create(
+                        name=username,
+                    )
+                    group.users.add(user)
+                token = Token.objects.create(
+                    identifier=f"service-account-{username}-password",
+                    intent=TokenIntents.INTENT_APP_PASSWORD,
+                    user=user,
+                )
+                return Response({"username": user.username, "token": token.key})
+            except (IntegrityError) as exc:
+                return Response(data={"non_field_errors": [str(exc)]}, status=400)
 
     @extend_schema(responses={200: SessionUserSerializer(many=False)})
     @action(detail=False, pagination_class=None, filter_backends=[])
