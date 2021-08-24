@@ -40,6 +40,7 @@ class UserLoginStageView(StageView):
             self.request.session.set_expiry(delta)
         LOGGER.debug(
             "Logged in",
+            backend=backend,
             user=self.executor.plan.context[PLAN_CONTEXT_PENDING_USER],
             flow_slug=self.executor.flow.slug,
             session_duration=self.executor.current_stage.session_duration,
