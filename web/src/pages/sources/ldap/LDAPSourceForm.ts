@@ -213,7 +213,7 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             ${until(
                                 new PropertymappingsApi(DEFAULT_CONFIG)
                                     .propertymappingsLdapList({
-                                        ordering: "object_field",
+                                        ordering: "managed,object_field",
                                     })
                                     .then((mappings) => {
                                         return mappings.results.map((mapping) => {
