@@ -723,6 +723,7 @@ msgid "Client type"
 msgstr "Client type"
 
 #: src/pages/outposts/OutpostDeploymentModal.ts
+#: src/pages/users/UserListPage.ts
 msgid "Close"
 msgstr "Close"
 
@@ -957,6 +958,7 @@ msgstr "Copy recovery link"
 #: src/pages/user-settings/tokens/UserTokenList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
+#: src/pages/users/UserListPage.ts
 msgid "Create"
 msgstr "Create"
 
@@ -1018,6 +1020,11 @@ msgstr "Create Policy"
 msgid "Create Prompt"
 msgstr "Create Prompt"
 
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserListPage.ts
+msgid "Create Service account"
+msgstr "Create Service account"
+
 #: src/pages/flows/BoundStagesList.ts
 msgid "Create Stage"
 msgstr "Create Stage"
@@ -1039,6 +1046,10 @@ msgstr "Create Token"
 #: src/pages/users/UserListPage.ts
 msgid "Create User"
 msgstr "Create User"
+
+#: src/pages/users/ServiceAccountForm.ts
+msgid "Create group"
+msgstr "Create group"
 
 #: src/pages/applications/ApplicationForm.ts
 msgid "Create provider"
@@ -1454,6 +1465,10 @@ msgstr "Enable compatibility mode, increases compatibility with password manager
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Enabled"
 msgstr "Enabled"
+
+#: src/pages/users/ServiceAccountForm.ts
+msgid "Enabling this toggle will create a group named after the user, with the user as member."
+msgstr "Enabling this toggle will create a group named after the user, with the user as member."
 
 #: src/pages/flows/FlowForm.ts
 msgid "Enrollment"
@@ -2915,6 +2930,7 @@ msgstr "Passing"
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/password/PasswordStage.ts
+#: src/pages/users/ServiceAccountForm.ts
 msgid "Password"
 msgstr "Password"
 
@@ -3329,6 +3345,7 @@ msgid "Required"
 msgstr "Required"
 
 #: src/pages/user-settings/UserSelfForm.ts
+#: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserForm.ts
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
@@ -3973,6 +3990,7 @@ msgstr "Successfully created token."
 msgid "Successfully created transport."
 msgstr "Successfully created transport."
 
+#: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserForm.ts
 msgid "Successfully created user."
 msgstr "Successfully created user."
@@ -4726,6 +4744,10 @@ msgstr "Use the user's email address, but deny enrollment when the email address
 msgid "Use the user's username, but deny enrollment when the username already exists."
 msgstr "Use the user's username, but deny enrollment when the username already exists."
 
+#: src/pages/users/ServiceAccountForm.ts
+msgid "Use the username and password below to authenticate. The password can be retrieved later on the Tokens page."
+msgstr "Use the username and password below to authenticate. The password can be retrieved later on the Tokens page."
+
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /akprox must be routed to the outpost (when using a manged outpost, this is done for you)."
 msgstr "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /akprox must be routed to the outpost (when using a manged outpost, this is done for you)."
@@ -4849,6 +4871,8 @@ msgstr "Userinfo URL"
 #: src/pages/policies/reputation/UserReputationListPage.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/user-settings/UserSelfForm.ts
+#: src/pages/users/ServiceAccountForm.ts
+#: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts

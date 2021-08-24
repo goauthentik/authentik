@@ -717,6 +717,7 @@ msgid "Client type"
 msgstr ""
 
 #: src/pages/outposts/OutpostDeploymentModal.ts
+#: src/pages/users/UserListPage.ts
 msgid "Close"
 msgstr ""
 
@@ -951,6 +952,7 @@ msgstr ""
 #: src/pages/user-settings/tokens/UserTokenList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
+#: src/pages/users/UserListPage.ts
 msgid "Create"
 msgstr ""
 
@@ -1012,6 +1014,11 @@ msgstr ""
 msgid "Create Prompt"
 msgstr ""
 
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserListPage.ts
+msgid "Create Service account"
+msgstr ""
+
 #: src/pages/flows/BoundStagesList.ts
 msgid "Create Stage"
 msgstr ""
@@ -1032,6 +1039,10 @@ msgstr ""
 
 #: src/pages/users/UserListPage.ts
 msgid "Create User"
+msgstr ""
+
+#: src/pages/users/ServiceAccountForm.ts
+msgid "Create group"
 msgstr ""
 
 #: src/pages/applications/ApplicationForm.ts
@@ -1445,6 +1456,10 @@ msgstr ""
 #: src/pages/sources/plex/PlexSourceForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Enabled"
+msgstr ""
+
+#: src/pages/users/ServiceAccountForm.ts
+msgid "Enabling this toggle will create a group named after the user, with the user as member."
 msgstr ""
 
 #: src/pages/flows/FlowForm.ts
@@ -2907,6 +2922,7 @@ msgstr ""
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/password/PasswordStage.ts
+#: src/pages/users/ServiceAccountForm.ts
 msgid "Password"
 msgstr ""
 
@@ -3321,6 +3337,7 @@ msgid "Required"
 msgstr ""
 
 #: src/pages/user-settings/UserSelfForm.ts
+#: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserForm.ts
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr ""
@@ -3965,6 +3982,7 @@ msgstr ""
 msgid "Successfully created transport."
 msgstr ""
 
+#: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserForm.ts
 msgid "Successfully created user."
 msgstr ""
@@ -4711,6 +4729,10 @@ msgstr ""
 msgid "Use the user's username, but deny enrollment when the username already exists."
 msgstr ""
 
+#: src/pages/users/ServiceAccountForm.ts
+msgid "Use the username and password below to authenticate. The password can be retrieved later on the Tokens page."
+msgstr ""
+
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /akprox must be routed to the outpost (when using a manged outpost, this is done for you)."
 msgstr ""
@@ -4834,6 +4856,8 @@ msgstr ""
 #: src/pages/policies/reputation/UserReputationListPage.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/user-settings/UserSelfForm.ts
+#: src/pages/users/ServiceAccountForm.ts
+#: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts

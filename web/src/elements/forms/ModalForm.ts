@@ -12,7 +12,13 @@ export class ModalForm extends ModalButton {
     closeAfterSuccessfulSubmit = true;
 
     @property({ type: Boolean })
+    showSubmitButton = true;
+
+    @property({ type: Boolean })
     loading = false;
+
+    @property({ type: String })
+    cancelText = t`Cancel`;
 
     confirm(): Promise<void> {
         const form = this.querySelector<Form<unknown>>("[slot=form]");
@@ -60,16 +66,18 @@ export class ModalForm extends ModalButton {
                 <slot name="form"></slot>
             </section>
             <footer class="pf-c-modal-box__footer">
-                <ak-spinner-button
-                    .callAction=${() => {
-                        this.loading = true;
-                        this.locked = true;
-                        return this.confirm();
-                    }}
-                    class="pf-m-primary"
-                >
-                    <slot name="submit"></slot> </ak-spinner-button
-                >&nbsp;
+                ${this.showSubmitButton
+                    ? html`<ak-spinner-button
+                              .callAction=${() => {
+                                  this.loading = true;
+                                  this.locked = true;
+                                  return this.confirm();
+                              }}
+                              class="pf-m-primary"
+                          >
+                              <slot name="submit"></slot> </ak-spinner-button
+                          >&nbsp;`
+                    : html``}
                 <ak-spinner-button
                     .callAction=${async () => {
                         this.resetForms();
@@ -77,7 +85,7 @@ export class ModalForm extends ModalButton {
                     }}
                     class="pf-m-secondary"
                 >
-                    ${t`Cancel`}
+                    ${this.cancelText}
                 </ak-spinner-button>
             </footer>`;
     }

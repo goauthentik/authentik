@@ -14,6 +14,7 @@ import "../../elements/forms/DeleteBulkForm";
 import "./UserActiveForm";
 import "./UserForm";
 import "./UserResetEmailForm";
+import "./ServiceAccountForm";
 import { showMessage } from "../../elements/messages/MessageContainer";
 import { MessageLevel } from "../../elements/messages/Message";
 import { first } from "../../utils";
@@ -246,6 +247,14 @@ export class UserListPage extends TablePage<User> {
                 <span slot="header"> ${t`Create User`} </span>
                 <ak-user-form slot="form"> </ak-user-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+            </ak-forms-modal>
+            <ak-forms-modal .closeAfterSuccessfulSubmit=${false} .cancelText=${t`Close`}>
+                <span slot="submit"> ${t`Create`} </span>
+                <span slot="header"> ${t`Create Service account`} </span>
+                <ak-user-service-account slot="form"> </ak-user-service-account>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
+                    ${t`Create Service account`}
+                </button>
             </ak-forms-modal>
             ${super.renderToolbar()}
         `;
