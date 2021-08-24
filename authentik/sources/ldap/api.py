@@ -27,7 +27,10 @@ class LDAPSourceSerializer(SourceSerializer):
         """Check that only a single source has password_sync on"""
         sync_users_password = attrs.get("sync_users_password", True)
         if sync_users_password:
-            if LDAPSource.objects.filter(sync_users_password=True).exists():
+            filter = LDAPSource.objects.filter(sync_users_password=True)
+            if self.instance:
+                filter = filter.exclude(pk=self.instance.pk)
+            if filter.exists():
                 raise ValidationError(
                     "Only a single LDAP Source with password synchronization is allowed"
                 )
