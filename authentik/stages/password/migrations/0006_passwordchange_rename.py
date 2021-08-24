@@ -12,6 +12,8 @@ def rename_default_prompt_stage(apps: Apps, schema_editor: BaseDatabaseSchemaEdi
     if not stages.exists():
         return
     stage = stages.first()
+    if PromptStage.objects.using(db_alias).filter(name="default-password-change-prompt").exists():
+        return
     stage.name = "default-password-change-prompt"
     stage.save()
 
