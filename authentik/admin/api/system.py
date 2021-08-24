@@ -45,7 +45,7 @@ class SystemSerializer(PassiveSerializer):
 
     def get_env(self, request: Request) -> dict[str, str]:
         """Get Environment"""
-        return os.environ
+        return os.environ.copy()
 
     def get_http_headers(self, request: Request) -> dict[str, str]:
         """Get HTTP Request headers"""
