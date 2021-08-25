@@ -6,6 +6,8 @@ import { TablePage } from "../../elements/table/TablePage";
 import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/TokenCopyButton";
 import "../../elements/forms/DeleteBulkForm";
+import "../../elements/forms/ModalForm";
+import "./TokenForm";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
 import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
@@ -86,16 +88,38 @@ export class TokenListPage extends TablePage<Token> {
         </ak-forms-delete-bulk>`;
     }
 
+    renderToolbar(): TemplateResult {
+        return html`
+            <ak-forms-modal>
+                <span slot="submit"> ${t`Create`} </span>
+                <span slot="header"> ${t`Create Token`} </span>
+                <ak-token-form slot="form"> </ak-token-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+            </ak-forms-modal>
+            ${super.renderToolbar()}
+        `;
+    }
+
     row(item: Token): TemplateResult[] {
         return [
             html`${item.identifier}`,
-            html`${item.user?.username}`,
+            html`${item.userObj?.username}`,
             html`${item.expiring ? t`Yes` : t`No`}`,
             html`${item.expiring ? item.expires?.toLocaleString() : "-"}`,
             html`${IntentToLabel(item.intent || IntentEnum.Api)}`,
             html`
+                ${item.managed
+                    ? html``
+                    : html`<ak-forms-modal>
+                          <span slot="submit"> ${t`Update`} </span>
+                          <span slot="header"> ${t`Update Token`} </span>
+                          <ak-token-form slot="form" .instancePk=${item.identifier}></ak-token-form>
+                          <button slot="trigger" class="pf-c-button pf-m-plain">
+                              <i class="fas fa-edit"></i>
+                          </button>
+                      </ak-forms-modal>`}
                 <ak-token-copy-button identifier="${item.identifier}">
-                    ${t`Copy Key`}
+                    <i class="fas fa-copy"></i>
                 </ak-token-copy-button>
             `,
         ];

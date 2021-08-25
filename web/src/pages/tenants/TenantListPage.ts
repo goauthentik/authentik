@@ -75,7 +75,7 @@ export class TenantListPage extends TablePage<Tenant> {
         return [
             html`${item.domain}`,
             html`${item._default ? t`Yes` : t`No`}`,
-            html` <ak-forms-modal>
+            html`<ak-forms-modal>
                 <span slot="submit"> ${t`Update`} </span>
                 <span slot="header"> ${t`Update Tenant`} </span>
                 <ak-tenant-form slot="form" .instancePk=${item.tenantUuid}> </ak-tenant-form>

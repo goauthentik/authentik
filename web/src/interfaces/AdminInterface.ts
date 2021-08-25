@@ -275,7 +275,7 @@ export class AdminInterface extends LitElement {
                     <span slot="label">${t`Certificates`}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/core/tokens">
-                    <span slot="label">${t`Tokens`}</span>
+                    <span slot="label">${t`Tokens & App passwords`}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
         `;

@@ -75,6 +75,10 @@ msgstr ""
 msgid "API Requests"
 msgstr ""
 
+#: src/pages/tokens/TokenForm.ts
+msgid "API Token (can be used to access the API programmatically)"
+msgstr ""
+
 #: src/elements/messages/Middleware.ts
 msgid "API request failed"
 msgstr ""
@@ -237,6 +241,10 @@ msgstr ""
 
 #: src/pages/tokens/TokenListPage.ts
 msgid "App password"
+msgstr ""
+
+#: src/pages/tokens/TokenForm.ts
+msgid "App password (can be used to login using a flow executor)"
 msgstr ""
 
 #: src/elements/user/UserConsentList.ts
@@ -892,7 +900,6 @@ msgstr ""
 msgid "Copy"
 msgstr ""
 
-#: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
 msgid "Copy Key"
 msgstr ""
@@ -948,6 +955,8 @@ msgstr ""
 #: src/pages/stages/prompt/PromptStageForm.ts
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tenants/TenantListPage.ts
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
 #: src/pages/users/UserListPage.ts
@@ -1032,6 +1041,7 @@ msgstr ""
 msgid "Create Tenant"
 msgstr ""
 
+#: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
 msgid "Create Token"
@@ -1213,6 +1223,7 @@ msgstr ""
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
+#: src/pages/tokens/TokenForm.ts
 #: src/pages/user-settings/tokens/UserTokenForm.ts
 msgid "Description"
 msgstr ""
@@ -1573,6 +1584,10 @@ msgstr ""
 msgid "Expires"
 msgstr ""
 
+#: src/pages/tokens/TokenForm.ts
+msgid "Expires on"
+msgstr ""
+
 #: src/pages/tokens/TokenListPage.ts
 msgid "Expires?"
 msgstr ""
@@ -1580,6 +1595,10 @@ msgstr ""
 #: src/pages/user-settings/tokens/UserTokenList.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
 msgid "Expiring"
+msgstr ""
+
+#: src/pages/tokens/TokenForm.ts
+msgid "Expiring?"
 msgstr ""
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts
@@ -1975,6 +1994,7 @@ msgstr ""
 
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
+#: src/pages/tokens/TokenForm.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenForm.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
@@ -2008,6 +2028,10 @@ msgstr ""
 
 #: src/pages/stages/invitation/InvitationStageForm.ts
 msgid "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given."
+msgstr ""
+
+#: src/pages/tokens/TokenForm.ts
+msgid "If this is selected, the token will expire. Upon expiration, the token will be rotated."
 msgstr ""
 
 #: src/pages/outposts/OutpostDeploymentModal.ts
@@ -2068,6 +2092,7 @@ msgstr ""
 msgid "Integrations"
 msgstr ""
 
+#: src/pages/tokens/TokenForm.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
 msgid "Intent"
@@ -2323,6 +2348,7 @@ msgstr ""
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
+#: src/pages/tokens/TokenForm.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserResetEmailForm.ts
 msgid "Loading..."
@@ -3974,6 +4000,7 @@ msgstr ""
 msgid "Successfully created tenant."
 msgstr ""
 
+#: src/pages/tokens/TokenForm.ts
 #: src/pages/user-settings/tokens/UserTokenForm.ts
 msgid "Successfully created token."
 msgstr ""
@@ -4129,6 +4156,7 @@ msgstr ""
 msgid "Successfully updated tenant."
 msgstr ""
 
+#: src/pages/tokens/TokenForm.ts
 #: src/pages/user-settings/tokens/UserTokenForm.ts
 msgid "Successfully updated token."
 msgstr ""
@@ -4416,9 +4444,12 @@ msgid "Token(s)"
 msgstr ""
 
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
-#: src/interfaces/AdminInterface.ts
 #: src/pages/tokens/TokenListPage.ts
 msgid "Tokens"
+msgstr ""
+
+#: src/interfaces/AdminInterface.ts
+msgid "Tokens & App passwords"
 msgstr ""
 
 #: src/pages/user-settings/UserSettingsPage.ts
@@ -4530,6 +4561,10 @@ msgstr ""
 msgid "Unhealthy outposts"
 msgstr ""
 
+#: src/pages/tokens/TokenForm.ts
+msgid "Unique identifier the token is referenced by."
+msgstr ""
+
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Unknown"
 msgstr ""
@@ -4576,6 +4611,7 @@ msgstr ""
 #: src/pages/stages/StageListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/tenants/TenantListPage.ts
+#: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
@@ -4665,6 +4701,7 @@ msgstr ""
 msgid "Update Tenant"
 msgstr ""
 
+#: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
 msgid "Update Token"
 msgstr ""
@@ -4754,6 +4791,7 @@ msgstr ""
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyTestForm.ts
 #: src/pages/property-mappings/PropertyMappingTestForm.ts
+#: src/pages/tokens/TokenForm.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
 #: src/pages/users/UserListPage.ts
