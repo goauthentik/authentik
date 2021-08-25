@@ -24,12 +24,13 @@ type SearchRequest struct {
 
 func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn net.Conn) (ldap.ServerSearchResult, error) {
 	span := sentry.StartSpan(context.TODO(), "authentik.providers.ldap.search", sentry.TransactionName("authentik.providers.ldap.search"))
+	rid := uuid.New().String()
+	span.SetTag("request_uid", rid)
 	span.SetTag("user.username", bindDN)
 	span.SetTag("ak_filter", searchReq.Filter)
 	span.SetTag("ak_base_dn", searchReq.BaseDN)
 
 	bindDN = strings.ToLower(bindDN)
-	rid := uuid.New().String()
 	req := SearchRequest{
 		SearchRequest: searchReq,
 		BindDN:        bindDN,
