@@ -310,7 +310,9 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         # since it caches the full object
         if SESSION_IMPERSONATE_USER in request.session:
             request.session[SESSION_IMPERSONATE_USER] = new_user
-        return self.me(request)
+        serializer = SessionUserSerializer(data={"user": UserSelfSerializer(request.user).data})
+        serializer.is_valid()
+        return Response(serializer.data)
 
     @permission_required("authentik_core.view_user", ["authentik_events.view_event"])
     @extend_schema(responses={200: UserMetricsSerializer(many=False)})
