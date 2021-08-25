@@ -27876,6 +27876,8 @@ components:
         intent:
           $ref: '#/components/schemas/IntentEnum'
         user:
+          type: integer
+        user_obj:
           $ref: '#/components/schemas/UserRequest'
         description:
           type: string
@@ -30055,6 +30057,8 @@ components:
         intent:
           $ref: '#/components/schemas/IntentEnum'
         user:
+          type: integer
+        user_obj:
           $ref: '#/components/schemas/User'
         description:
           type: string
@@ -30066,6 +30070,7 @@ components:
       required:
       - identifier
       - pk
+      - user
     TokenRequest:
       type: object
       description: Token Serializer
@@ -30085,6 +30090,8 @@ components:
         intent:
           $ref: '#/components/schemas/IntentEnum'
         user:
+          type: integer
+        user_obj:
           $ref: '#/components/schemas/UserRequest'
         description:
           type: string
@@ -30095,6 +30102,7 @@ components:
           type: boolean
       required:
       - identifier
+      - user
     TokenView:
       type: object
       description: Show token's current key

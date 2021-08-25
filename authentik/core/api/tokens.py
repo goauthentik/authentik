@@ -23,7 +23,7 @@ from authentik.managed.api import ManagedSerializer
 class TokenSerializer(ManagedSerializer, ModelSerializer):
     """Token Serializer"""
 
-    user = UserSerializer(required=False)
+    user_obj = UserSerializer(required=False)
 
     def validate(self, attrs: dict[Any, str]) -> dict[Any, str]:
         """Ensure only API or App password tokens are created."""
@@ -41,11 +41,11 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
             "identifier",
             "intent",
             "user",
+            "user_obj",
             "description",
             "expires",
             "expiring",
         ]
-        depth = 2
 
 
 class TokenViewSerializer(PassiveSerializer):
