@@ -27,6 +27,8 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
 
     def validate(self, attrs: dict[Any, str]) -> dict[Any, str]:
         """Ensure only API or App password tokens are created."""
+        request: Request = self.context["request"]
+        attrs.setdefault("user", request.user)
         attrs.setdefault("intent", TokenIntents.INTENT_API)
         if attrs.get("intent") not in [TokenIntents.INTENT_API, TokenIntents.INTENT_APP_PASSWORD]:
             raise ValidationError(f"Invalid intent {attrs.get('intent')}")
@@ -46,6 +48,9 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
             "expires",
             "expiring",
         ]
+        extra_kwargs = {
+            "user": {"required": False},
+        }
 
 
 class TokenViewSerializer(PassiveSerializer):

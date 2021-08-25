@@ -30070,7 +30070,6 @@ components:
       required:
       - identifier
       - pk
-      - user
     TokenRequest:
       type: object
       description: Token Serializer
@@ -30102,7 +30101,6 @@ components:
           type: boolean
       required:
       - identifier
-      - user
     TokenView:
       type: object
       description: Show token's current key
