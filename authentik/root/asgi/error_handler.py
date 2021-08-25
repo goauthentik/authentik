@@ -33,7 +33,6 @@ class ASGIErrorHandler:
             )
         return await send(
             {
-                "type": "websocket.send",
-                "text": b"Internal server error",
+                "type": "websocket.close",
             }
         )
