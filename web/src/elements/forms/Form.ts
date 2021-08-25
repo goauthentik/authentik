@@ -136,6 +136,8 @@ export class Form<T> extends LitElement {
                 json[element.name] = values;
             } else if (element.tagName.toLowerCase() === "input" && element.type === "date") {
                 json[element.name] = element.valueAsDate;
+            } else if (element.tagName.toLowerCase() === "input" && element.type === "datetime-local") {
+                json[element.name] = new Date(element.valueAsNumber);
             } else if (element.tagName.toLowerCase() === "input" && element.type === "checkbox") {
                 json[element.name] = element.checked;
             } else {

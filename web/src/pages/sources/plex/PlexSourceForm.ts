@@ -223,7 +223,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.clientId)}"
+                            value="${first(this.instance?.clientId, "")}"
                             class="pf-c-form-control"
                             required
                         />
