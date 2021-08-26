@@ -152,7 +152,9 @@ func (fe *FlowExecutor) solveFlowChallenge(depth int) (bool, error) {
 	responseReq := fe.api.FlowsApi.FlowsExecutorSolve(scsp.Context(), fe.flowSlug).Query(fe.Params.Encode())
 	switch ch.GetComponent() {
 	case string(StageIdentification):
-		responseReq = responseReq.FlowChallengeResponseRequest(api.IdentificationChallengeResponseRequestAsFlowChallengeResponseRequest(api.NewIdentificationChallengeResponseRequest(fe.getAnswer(StageIdentification))))
+		r := api.NewIdentificationChallengeResponseRequest(fe.getAnswer(StageIdentification))
+		r.SetPassword(fe.getAnswer(StagePassword))
+		responseReq = responseReq.FlowChallengeResponseRequest(api.IdentificationChallengeResponseRequestAsFlowChallengeResponseRequest(r))
 	case string(StagePassword):
 		responseReq = responseReq.FlowChallengeResponseRequest(api.PasswordChallengeResponseRequestAsFlowChallengeResponseRequest(api.NewPasswordChallengeResponseRequest(fe.getAnswer(StagePassword))))
 	case string(StageAuthenticatorValidate):
