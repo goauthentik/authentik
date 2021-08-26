@@ -10,7 +10,7 @@ services:
     networks:
       - internal
     environment:
-      - POSTGRES_PASSWORD=${PG_PASS:-thisisnotagoodpassword}
+      - POSTGRES_PASSWORD=${PG_PASS:?database password required}
       - POSTGRES_USER=${PG_USER:-authentik}
       - POSTGRES_DB=${PG_DB:-authentik}
     env_file:
