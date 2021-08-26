@@ -74,6 +74,7 @@ LANGUAGE_COOKIE_NAME = f"authentik_language{_cookie_suffix}"
 SESSION_COOKIE_NAME = f"authentik_session{_cookie_suffix}"
 
 AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
     BACKEND_INBUILT,
     BACKEND_APP_PASSWORD,
     BACKEND_LDAP,
