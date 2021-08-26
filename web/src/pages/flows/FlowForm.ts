@@ -62,7 +62,7 @@ export class FlowForm extends ModelForm<Flow, string> {
                 return writeOp.then((app) => {
                     return new FlowsApi(DEFAULT_CONFIG).flowsInstancesSetBackgroundUrlCreate({
                         slug: app.slug,
-                        setIconURLRequest: {
+                        filePathRequest: {
                             url: data.background || "",
                         },
                     });

@@ -1710,7 +1710,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/SetIconRequest'
+              $ref: '#/components/schemas/FileUploadRequest'
       security:
       - authentik: []
       - cookieAuth: []
@@ -1738,13 +1738,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SetIconURLRequest'
+              $ref: '#/components/schemas/FilePathRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/SetIconURLRequest'
+              $ref: '#/components/schemas/FilePathRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/SetIconURLRequest'
+              $ref: '#/components/schemas/FilePathRequest'
         required: true
       security:
       - authentik: []
@@ -5492,7 +5492,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/SetIconRequest'
+              $ref: '#/components/schemas/FileUploadRequest'
       security:
       - authentik: []
       - cookieAuth: []
@@ -5520,13 +5520,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SetIconURLRequest'
+              $ref: '#/components/schemas/FilePathRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/SetIconURLRequest'
+              $ref: '#/components/schemas/FilePathRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/SetIconURLRequest'
+              $ref: '#/components/schemas/FilePathRequest'
         required: true
       security:
       - authentik: []
@@ -5613,7 +5613,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/SetIconRequest'
+              $ref: '#/components/schemas/FileUploadRequest'
       security:
       - authentik: []
       - cookieAuth: []
@@ -21583,6 +21583,24 @@ components:
           type: string
       required:
       - expression
+    FilePathRequest:
+      type: object
+      description: Serializer to upload file
+      properties:
+        url:
+          type: string
+      required:
+      - url
+    FileUploadRequest:
+      type: object
+      description: Serializer to upload file
+      properties:
+        file:
+          type: string
+          format: binary
+        clear:
+          type: boolean
+          default: false
     Flow:
       type: object
       description: Flow Serializer
@@ -29582,22 +29600,6 @@ components:
           $ref: '#/components/schemas/UserSelf'
       required:
       - user
-    SetIconRequest:
-      type: object
-      properties:
-        file:
-          type: string
-          format: binary
-        clear:
-          type: boolean
-          default: false
-    SetIconURLRequest:
-      type: object
-      properties:
-        url:
-          type: string
-      required:
-      - url
     SeverityEnum:
       enum:
       - notice

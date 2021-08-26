@@ -11,7 +11,7 @@ from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, FileField, ReadOnlyField, SerializerMethodField
+from rest_framework.fields import CharField, FileField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny
 from rest_framework.relations import SlugRelatedField
@@ -70,8 +70,8 @@ class SAMLProviderSerializer(ProviderSerializer):
 class SAMLMetadataSerializer(PassiveSerializer):
     """SAML Provider Metadata serializer"""
 
-    metadata = ReadOnlyField()
-    download_url = ReadOnlyField(required=False)
+    metadata = CharField(read_only=True)
+    download_url = CharField(read_only=True, required=False)
 
 
 class SAMLProviderImportSerializer(PassiveSerializer):

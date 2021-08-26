@@ -76,7 +76,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
                 return writeOp.then((app) => {
                     return new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconUrlCreate({
                         slug: app.slug,
-                        setIconURLRequest: {
+                        filePathRequest: {
                             url: data.metaIcon || "",
                         },
                     });
