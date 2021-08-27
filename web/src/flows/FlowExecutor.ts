@@ -55,8 +55,33 @@ import { WebsocketClient } from "../common/ws";
 export class FlowExecutor extends LitElement implements StageHost {
     flowSlug: string;
 
+    private _challenge?: ChallengeTypes;
+
     @property({ attribute: false })
-    challenge?: ChallengeTypes;
+    set challenge(value: ChallengeTypes | undefined) {
+        this._challenge = value;
+        // Assign the location as soon as we get the challenge and *not* in the render function
+        // as the render function might be called multiple times, which will navigate multiple
+        // times and can invalidate oauth codes
+        if (value?.type === ChallengeChoices.Redirect) {
+            console.debug(
+                "authentik/flows: redirecting to url from server",
+                (value as RedirectChallenge).to,
+            );
+            window.location.assign((value as RedirectChallenge).to);
+        }
+        tenant().then((tenant) => {
+            if (value?.flowInfo?.title) {
+                document.title = `${value.flowInfo?.title} - ${tenant.brandingTitle}`;
+            } else {
+                document.title = tenant.brandingTitle || TITLE_DEFAULT;
+            }
+        });
+    }
+
+    get challenge(): ChallengeTypes | undefined {
+        return this._challenge;
+    }
 
     @property({ type: Boolean })
     loading = false;
@@ -95,26 +120,6 @@ export class FlowExecutor extends LitElement implements StageHost {
             });
     }
 
-    private postUpdate(): void {
-        // Assign the location as soon as we get the challenge and *not* in the render function
-        // as the render function might be called multiple times, which will navigate multiple
-        // times and can invalidate oauth codes
-        if (this.challenge?.type === ChallengeChoices.Redirect) {
-            console.debug(
-                "authentik/flows: redirecting to url from server",
-                (this.challenge as RedirectChallenge).to,
-            );
-            window.location.assign((this.challenge as RedirectChallenge).to);
-        }
-        tenant().then((tenant) => {
-            if (this.challenge?.flowInfo?.title) {
-                document.title = `${this.challenge.flowInfo?.title} - ${tenant.brandingTitle}`;
-            } else {
-                document.title = tenant.brandingTitle || TITLE_DEFAULT;
-            }
-        });
-    }
-
     submit(payload?: FlowChallengeResponseRequest): Promise<void> {
         if (!payload) return Promise.reject();
         if (!this.challenge) return Promise.reject();
@@ -129,7 +134,6 @@ export class FlowExecutor extends LitElement implements StageHost {
             })
             .then((data) => {
                 this.challenge = data;
-                this.postUpdate();
             })
             .catch((e: Error | Response) => {
                 this.errorMessage(e);
@@ -154,7 +158,6 @@ export class FlowExecutor extends LitElement implements StageHost {
                 if (this.challenge?.flowInfo?.background) {
                     this.setBackground(this.challenge.flowInfo.background);
                 }
-                this.postUpdate();
             })
             .catch((e: Error | Response) => {
                 // Catch JSON or Update errors
