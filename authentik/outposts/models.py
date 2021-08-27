@@ -56,6 +56,7 @@ class ServiceConnectionInvalid(SentryIgnoredException):
 
 
 @dataclass
+# pylint: disable=too-many-instance-attributes
 class OutpostConfig:
     """Configuration an outpost uses to configure it self"""
 
@@ -67,8 +68,10 @@ class OutpostConfig:
     log_level: str = CONFIG.y("log_level")
     error_reporting_enabled: bool = CONFIG.y_bool("error_reporting.enabled")
     error_reporting_environment: str = CONFIG.y("error_reporting.environment", "customer")
-
     object_naming_template: str = field(default="ak-outpost-%(name)s")
+
+    docker_network: Optional[str] = field(default=None)
+
     kubernetes_replicas: int = field(default=1)
     kubernetes_namespace: str = field(default_factory=get_namespace)
     kubernetes_ingress_annotations: dict[str, str] = field(default_factory=dict)

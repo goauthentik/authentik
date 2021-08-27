@@ -92,9 +92,11 @@ class DockerController(BaseController):
                 "environment": self._get_env(),
                 "labels": self._get_labels(),
                 "restart_policy": {"Name": "unless-stopped"},
+                "network": self.outpost.config.docker_network,
             }
             if settings.TEST:
                 del container_args["ports"]
+                del container_args["network"]
                 container_args["network_mode"] = "host"
             return (
                 self.client.containers.create(**container_args),
