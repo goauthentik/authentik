@@ -120,6 +120,16 @@ export class FlowExecutor extends LitElement implements StageHost {
             .then((data) => {
                 this.challenge = data;
                 this.postUpdate();
+                // Assign the location as soon as we get the challenge and *not* in the render function
+                // as the render function might be called multiple times, which will navigate multiple
+                // times and can invalidate oauth codes
+                if (this.challenge.type === ChallengeChoices.Redirect) {
+                    console.debug(
+                        "authentik/flows: redirecting to url from server",
+                        (this.challenge as RedirectChallenge).to,
+                    );
+                    window.location.assign((this.challenge as RedirectChallenge).to);
+                }
             })
             .catch((e: Error | Response) => {
                 this.errorMessage(e);
@@ -189,11 +199,6 @@ export class FlowExecutor extends LitElement implements StageHost {
         }
         switch (this.challenge.type) {
             case ChallengeChoices.Redirect:
-                console.debug(
-                    "authentik/flows: redirecting to url from server",
-                    (this.challenge as RedirectChallenge).to,
-                );
-                window.location.assign((this.challenge as RedirectChallenge).to);
                 return html`<ak-empty-state ?loading=${true} header=${t`Loading`}>
                 </ak-empty-state>`;
             case ChallengeChoices.Shell:
