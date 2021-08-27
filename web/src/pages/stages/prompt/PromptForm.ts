@@ -157,7 +157,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
             <ak-form-element-horizontal label=${t`Order`} ?required=${true} name="order">
                 <input
                     type="number"
-                    value="${ifDefined(this.instance?.order)}"
+                    value="${first(this.instance?.order, 0)}"
                     class="pf-c-form-control"
                     required
                 />
