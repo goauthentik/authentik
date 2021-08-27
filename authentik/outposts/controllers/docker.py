@@ -29,7 +29,9 @@ class DockerController(BaseController):
             raise ControllerException from exc
 
     def _get_labels(self) -> dict[str, str]:
-        return {}
+        return {
+            "io.goauthentik.outpost-uuid": self.outpost.pk.hex,
+        }
 
     def _get_env(self) -> dict[str, str]:
         return {
@@ -46,6 +48,17 @@ class DockerController(BaseController):
         for key, expected_value in should_be.items():
             entry = f"{key.upper()}={expected_value}"
             if entry not in container_env:
+                return True
+        return False
+
+    def _comp_labels(self, container: Container) -> bool:
+        """Check if container's labels is equal to what we would set. Return true if container needs
+        to be rebuilt."""
+        should_be = self._get_labels()
+        for key, expected_value in should_be.items():
+            if key not in container.labels:
+                return True
+            if container.labels[key] != expected_value:
                 return True
         return False
 
@@ -133,6 +146,11 @@ class DockerController(BaseController):
             # Check that container values match our values
             if self._comp_env(container):
                 self.logger.info("Container has outdated config, re-creating...")
+                self.down()
+                return self.up(depth + 1)
+            # Check that container values match our values
+            if self._comp_labels(container):
+                self.logger.info("Container has outdated labels, re-creating...")
                 self.down()
                 return self.up(depth + 1)
             if (
