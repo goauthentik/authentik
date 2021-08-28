@@ -97,7 +97,6 @@ class TestPromptStage(TestCase):
                 static_prompt,
             ]
         )
-        self.stage.save()
 
         self.prompt_data = {
             username_prompt.field_key: "test-username",
