@@ -96,7 +96,9 @@ class IdentificationChallengeResponse(ChallengeResponse):
             # No password stage select, don't validate the password
             return attrs
 
-        password = attrs["password"]
+        password = attrs.get("password", None)
+        if not password:
+            LOGGER.warning("Password not set for ident+auth attempt")
         try:
             user = authenticate(
                 self.stage.request,
