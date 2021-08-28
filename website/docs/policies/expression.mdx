@@ -56,19 +56,19 @@ Additionally, when the policy is executed from a flow, every variable from the f
 
 This includes the following:
 
-- `prompt_data`: Data which has been saved from a prompt stage or an external source.
-- `application`: The application the user is in the process of authorizing.
-- `pending_user`: The currently pending user, see [User](/docs/expressions/reference/user-object)
-- `auth_method`: Authentication method set (this value is set by password stages)
+- `context['prompt_data']`: Data which has been saved from a prompt stage or an external source.
+- `context['application']`: The application the user is in the process of authorizing.
+- `context['pending_user']`: The currently pending user, see [User](/docs/expressions/reference/user-object)
+- `context['auth_method']`: Authentication method set (this value is set by password stages)
 
-    Depending on method, `auth_method_args` is also set.
+    Depending on method, `context['auth_method_args']` is also set.
 
     Can be any of:
 
     - `password`: Standard password login
     - `app_password`: App passowrd (token)
 
-        Sets `auth_method_args` to
+        Sets `context['auth_method_args']` to
         ```json
         {
             "token": {
@@ -81,7 +81,7 @@ This includes the following:
         ```
     - `ldap`: LDAP bind authentication
 
-        Sets `auth_method_args` to
+        Sets `context['auth_method_args']` to
         ```json
         {
             "source": {} // Information about the source used

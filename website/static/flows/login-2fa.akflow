@@ -22,7 +22,7 @@
                 "name": "test-not-app-password",
                 "execution_logging": false,
                 "bound_to": 1,
-                "expression": "return auth_method != \"app_password\""
+                "expression": "return context[\"auth_method\"] != \"app_password\""
             }
         },
         {
