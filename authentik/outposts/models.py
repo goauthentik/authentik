@@ -365,7 +365,7 @@ class Outpost(ManagedModel):
                     )
                     try:
                         assign_perm(code_name, user, model_or_perm)
-                    except Permission.DoesNotExist as exc:
+                    except (Permission.DoesNotExist, AttributeError) as exc:
                         LOGGER.warning(
                             "permission doesn't exist",
                             code_name=code_name,
