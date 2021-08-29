@@ -60,7 +60,9 @@ func main() {
 	for {
 		go attemptStartBackend(g)
 		ws.Start()
-		go attemptProxyStart(ws, u)
+		if !config.G.Web.DisableEmbeddedOutpost {
+			go attemptProxyStart(ws, u)
+		}
 
 		<-ex
 		running = false
