@@ -261,6 +261,12 @@ spec:
 
 Add the following settings to your IngressRoute
 
+:::warning
+By default traefik does not allow cross-namespace references for middlewares:
+
+See [here](https://doc.traefik.io/traefik/v2.4/providers/kubernetes-crd/#allowcrossnamespace) to enable it.
+:::
+
 ```yaml
 spec:
   routes:
@@ -268,8 +274,10 @@ spec:
       match: "Host(`*external host that you configured in authentik*`)"
       middlewares:
         - name: authentik
+          namespace: authentik
       priority: 10
       services: # Unchanged
+    # This part is only required for single-app setups
     - kind: Rule
       match: "Host(`*external host that you configured in authentik*`) && PathPrefix(`/akprox/`)"
       priority: 15
