@@ -25,7 +25,7 @@ export class SourceListPage extends TablePage<Source> {
         return t`Sources`;
     }
     pageDescription(): string | undefined {
-        return t`Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins`;
+        return t`Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves.`;
     }
     pageIcon(): string {
         return "pf-icon pf-icon-middleware";

@@ -77,6 +77,7 @@ export class FlowExecutor extends LitElement implements StageHost {
                 document.title = tenant.brandingTitle || TITLE_DEFAULT;
             }
         });
+        this.requestUpdate();
     }
 
     get challenge(): ChallengeTypes | undefined {
