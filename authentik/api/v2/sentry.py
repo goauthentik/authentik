@@ -4,15 +4,22 @@ from json import loads
 from django.conf import settings
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse
-from django.views.generic.base import View
 from requests import post
 from requests.exceptions import RequestException
+from rest_framework.permissions import AllowAny
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
+from rest_framework.views import APIView
 
 from authentik.lib.config import CONFIG
 
 
-class SentryTunnelView(View):
+class SentryTunnelView(APIView):
     """Sentry tunnel, to prevent ad blockers from blocking sentry"""
+
+    serializer_class = None
+    parser_classes = []
+    throttle_classes = [AnonRateThrottle, UserRateThrottle]
+    permission_classes = [AllowAny]
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Sentry tunnel, to prevent ad blockers from blocking sentry"""

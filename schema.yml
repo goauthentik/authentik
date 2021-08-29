@@ -12402,6 +12402,23 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /api/v2beta/sentry/:
+    post:
+      operationId: sentry_create
+      description: Sentry tunnel, to prevent ad blockers from blocking sentry
+      tags:
+      - sentry
+      security:
+      - authentik: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /api/v2beta/sources/all/:
     get:
       operationId: sources_all_list
