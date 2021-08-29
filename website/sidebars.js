@@ -43,13 +43,14 @@ module.exports = {
             label: "Outposts",
             items: [
                 "outposts/outposts",
+                "outposts/embedded/embedded",
                 {
                     type: "category",
                     label: "Running and upgrading",
                     items: [
-                        "outposts/upgrading",
                         "outposts/manual-deploy-docker-compose",
                         "outposts/manual-deploy-kubernetes",
+                        "outposts/upgrading",
                     ],
                 },
             ],
