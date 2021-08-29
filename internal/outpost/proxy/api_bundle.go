@@ -25,6 +25,7 @@ type providerBundle struct {
 	Host  string
 
 	endSessionUrl string
+	Mode          *api.ProxyMode
 
 	cert *tls.Certificate
 
@@ -49,6 +50,10 @@ func (pb *providerBundle) replaceLocal(url string) string {
 }
 
 func (pb *providerBundle) prepareOpts(provider api.ProxyOutpostConfig) *options.Options {
+	// We need to save the mode in the bundle
+	// Since for the embedded outpost we only switch for fully proxy providers
+	pb.Mode = provider.Mode
+
 	externalHost, err := url.Parse(provider.ExternalHost)
 	if err != nil {
 		log.WithError(err).Warning("Failed to parse URL, skipping provider")
