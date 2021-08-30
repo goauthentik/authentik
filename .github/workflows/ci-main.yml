@@ -1,0 +1,198 @@
+name: authentik-ci-main
+
+on:
+  push:
+    paths-ignore:
+      - website
+
+env:
+  POSTGRES_DB: authentik
+  POSTGRES_USER: authentik
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+
+jobs:
+  lint-pylint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: prepare
+        run: scripts/ci_prepare.sh
+      - name: run pylint
+        run: pipenv run pylint authentik tests lifecycle
+  lint-black:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: prepare
+        run: scripts/ci_prepare.sh
+      - name: run black
+        run: pipenv run black --check authentik tests lifecycle
+  lint-isort:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: prepare
+        run: scripts/ci_prepare.sh
+      - name: run isort
+        run: pipenv run isort --check authentik tests lifecycle
+  lint-bandit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: prepare
+        run: scripts/ci_prepare.sh
+      - name: run bandit
+        run: pipenv run bandit -r authentik tests lifecycle
+  lint-pyright:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: 'npm'
+      - name: prepare
+        run: |
+          scripts/ci_prepare.sh
+          npm install -g pyright@1.1.
+      - name: run bandit
+        run: pipenv run pyright e2e lifecycle
+  test-migrations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: prepare
+        run: scripts/ci_prepare.sh
+      - name: run migrations
+        run: pipenv run python -m lifecycle.migrate
+  test-migrations-from-stable:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: checkout stable
+        run: |
+          # Copy current, latest config to local
+          cp authentik/lib/default.yml local.env.yml
+          git checkout $(git describe --abbrev=0 --match 'version/*')
+      - name: prepare
+        run: scripts/ci_prepare.sh
+      - name: run migrations to stable
+        run: pipenv run python -m lifecycle.migrate
+      - name: checkout current code
+        run: |
+          set -x
+          git checkout $GITHUB_REF
+          pipenv sync --dev
+      - name: migrate to latest
+        run: pipenv run python -m lifecycle.migrate
+  test-unittest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: prepare
+        run: scripts/ci_prepare.sh
+      - name: run unittest
+        run: pipenv run make test
+      - uses: codecov/codecov-action@v2
+  test-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: prepare
+        run: scripts/ci_prepare.sh
+      - name: prepare k3d
+        run: |
+          wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+          k3d cluster create
+          k3d kubeconfig write -o ~/.kube/config --overwrite
+      - name: run integration
+        run: pipenv run make test-integration
+      - uses: codecov/codecov-action@v2
+  test-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
+      - name: prepare
+        run: |
+          scripts/ci_prepare.sh
+          docker-compose -f tests/e2e/ci.docker-compose.yml up -d
+      - name: prepare web ui
+        run: |
+          cd web
+          npm i
+          npm run build
+      - name: run e2e
+        run: pipenv run make test-e2e
+      - uses: codecov/codecov-action@v2
+  build:
+    needs:
+      - lint-pylint
+      - lint-black
+      - lint-isort
+      - lint-bandit
+      - lint-pyright
+      - test-migrations
+      - test-migrations-from-stable
+      - test-unittest
+      - test-integration
+      - test-e2e
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1.2.0
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: prepare variables
+        id: ev
+        run: |
+          python ./scripts/az_do_set_branch.py
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: beryju.org
+          username: ${{ secrets.HARBOR_USERNAME }}
+          password: ${{ secrets.HARBOR_PASSWORD }}
+      - name: Building Docker Image
+        uses: docker/build-push-action@v2
+        with:
+          tags: |
+            beryju.org/authentik/server:gh-${{ steps.ev.outputs.branchName }},
+            beryju.org/authentik/server:gh-${GITHUB_SHA}
+          build-args: |
+            GIT_BUILD_HASH=${GITHUB_SHA}
