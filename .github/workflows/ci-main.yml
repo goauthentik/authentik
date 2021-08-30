@@ -68,7 +68,7 @@ jobs:
       - name: prepare
         run: |
           scripts/ci_prepare.sh
-          npm install -g pyright@1.1.
+          npm install -g pyright@1.1.136
       - name: run bandit
         run: pipenv run pyright e2e lifecycle
   test-migrations:
