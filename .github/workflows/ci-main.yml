@@ -114,14 +114,10 @@ jobs:
           python-version: '3.9'
       - name: prepare
         run: scripts/ci_prepare.sh
-      - uses: testspace-com/setup-testspace@v1
-        with:
-          domain: ${{github.repository_owner}}
       - name: run unittest
         run: |
           pipenv run make test
           pipenv run coverage xml
-          testspace unittest.xml
       - uses: codecov/codecov-action@v2
   test-integration:
     runs-on: ubuntu-latest
@@ -137,14 +133,10 @@ jobs:
           wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
           k3d cluster create
           k3d kubeconfig write -o ~/.kube/config --overwrite
-      - uses: testspace-com/setup-testspace@v1
-        with:
-          domain: ${{github.repository_owner}}
       - name: run integration
         run: |
           pipenv run make test-integration
           pipenv run coverage xml
-          testspace unittest.xml
       - uses: codecov/codecov-action@v2
   test-e2e:
     runs-on: ubuntu-latest
@@ -167,14 +159,10 @@ jobs:
           cd web
           npm i
           npm run build
-      - uses: testspace-com/setup-testspace@v1
-        with:
-          domain: ${{github.repository_owner}}
       - name: run e2e
         run: |
           pipenv run make test-e2e
           pipenv run coverage xml
-          testspace unittest.xml
       - uses: codecov/codecov-action@v2
   build:
     needs:
