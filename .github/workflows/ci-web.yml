@@ -1,0 +1,78 @@
+name: authentik-ci-web
+
+on:
+  push:
+
+jobs:
+  lint-eslint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: 'npm'
+      - run: |
+          cd web
+          npm install
+      - name: Generate API
+        run: make gen-web
+      - name: Eslint
+        run: |
+          cd web
+          npm run lint
+  lint-prettier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: 'npm'
+      - run: |
+          cd web
+          npm install
+      - name: Generate API
+        run: make gen-web
+      - name: prettier
+        run: |
+          cd web
+          npm run prettier-check
+  lint-lit-analyse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: 'npm'
+      - run: |
+          cd web
+          npm install
+      - name: Generate API
+        run: make gen-web
+      - name: prettier
+        run: |
+          cd web
+          npm run lit-analyse
+  build:
+    needs:
+      - lint-eslint
+      - lint-prettier
+      - lint-lit-analyse
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: 'npm'
+      - run: |
+          cd web
+          npm install
+      - name: Generate API
+        run: make gen-web
+      - name: build
+        run: |
+          cd web
+          npm run build
