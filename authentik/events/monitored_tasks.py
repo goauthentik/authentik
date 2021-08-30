@@ -11,6 +11,7 @@ from django.core.cache import cache
 from prometheus_client import Gauge
 
 from authentik.events.models import Event, EventAction
+from authentik.lib.utils.errors import exception_to_string
 
 GAUGE_TASKS = Gauge(
     "authentik_system_tasks",
@@ -174,9 +175,7 @@ class MonitoredTask(Task):
         ).save(self.result_timeout_hours)
         Event.new(
             EventAction.SYSTEM_TASK_EXCEPTION,
-            message=(
-                f"Task {self.__name__} encountered an error: " "\n".join(self._result.messages)
-            ),
+            message=(f"Task {self.__name__} encountered an error: {exception_to_string(exc)}"),
         ).save()
         return super().on_failure(exc, task_id, args, kwargs, einfo=einfo)
 
