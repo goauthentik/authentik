@@ -4,22 +4,6 @@ on:
   push:
 
 jobs:
-  generate-api:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: '^1.16.3'
-      - name: Generate API
-        run: |
-          make gen-outpost
-      - name: Upload client
-        uses: actions/upload-artifact@v2
-        with:
-          name: go_api_client
-          path: |
-            api/
   lint-golint:
     needs:
       - generate-api
@@ -29,10 +13,9 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: '^1.16.3'
-      - name: Download generated client
-        uses: actions/download-artifact@v2
-        with:
-          name: go_api_client
+      - name: Generate API
+        run: |
+          make gen-outpost
       - name: Run linter
         run: |
           # Create folder structure for go embeds
