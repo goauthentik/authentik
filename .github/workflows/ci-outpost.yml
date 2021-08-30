@@ -57,8 +57,8 @@ jobs:
           tags: |
             beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchName }},
             beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchName }}-${{ steps.ev.outputs.timestamp }},
-            beryju.org/authentik/outpost-${{ matrix.type }}:gh-${GITHUB_SHA}
+            beryju.org/authentik/outpost-${{ matrix.type }}:gh-$GITHUB_SHA
           file: ${{ matrix.type }}.Dockerfile
           platforms: linux/amd64,linux/arm64
           build-args: |
-            GIT_BUILD_HASH=${GITHUB_SHA}
+            GIT_BUILD_HASH=$GITHUB_SHA
