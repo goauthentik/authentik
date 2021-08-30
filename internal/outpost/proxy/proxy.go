@@ -121,7 +121,7 @@ func NewOAuthProxy(opts *options.Options, provider api.ProxyOutpostConfig, c *ht
 		redirectURL.Path = fmt.Sprintf("%s/callback", opts.ProxyPrefix)
 	}
 
-	logger.Printf("proxy instance configured for Client ID: %s", opts.ClientID)
+	logger.WithField("auth_url", opts.GetProvider().Data().LoginURL).WithField("client_id", opts.ClientID).Info("proxy instance configured")
 
 	sessionChain := buildSessionChain(opts, sessionStore)
 
