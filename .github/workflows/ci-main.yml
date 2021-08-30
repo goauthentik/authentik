@@ -192,6 +192,6 @@ jobs:
         with:
           tags: |
             beryju.org/authentik/server:gh-${{ steps.ev.outputs.branchName }},
-            beryju.org/authentik/server:gh-$GITHUB_SHA
+            beryju.org/authentik/server:gh-${{ env.GITHUB_SHA }}
           build-args: |
-            GIT_BUILD_HASH=$GITHUB_SHA
+            GIT_BUILD_HASH=${{ env.GITHUB_SHA }}
