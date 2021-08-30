@@ -117,7 +117,7 @@ jobs:
       - name: run unittest
         run: |
           pipenv run make test
-          coverage xml
+          pipenv run coverage xml
       - uses: codecov/codecov-action@v2
   test-integration:
     runs-on: ubuntu-latest
@@ -136,7 +136,7 @@ jobs:
       - name: run integration
         run: |
           pipenv run make test-integration
-          coverage xml
+          pipenv run coverage xml
       - uses: codecov/codecov-action@v2
   test-e2e:
     runs-on: ubuntu-latest
@@ -162,7 +162,7 @@ jobs:
       - name: run e2e
         run: |
           pipenv run make test-e2e
-          coverage xml
+          pipenv run coverage xml
       - uses: codecov/codecov-action@v2
   build:
     needs:
