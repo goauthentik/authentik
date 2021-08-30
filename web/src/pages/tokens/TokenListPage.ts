@@ -103,7 +103,7 @@ export class TokenListPage extends TablePage<Token> {
     row(item: Token): TemplateResult[] {
         return [
             html`${item.identifier}`,
-            html`${item.userObj?.username}`,
+            html`<a href="#/identity/users/${item.userObj?.pk}">${item.userObj?.username}</a>`,
             html`${item.expiring ? t`Yes` : t`No`}`,
             html`${item.expiring ? item.expires?.toLocaleString() : "-"}`,
             html`${IntentToLabel(item.intent || IntentEnum.Api)}`,
