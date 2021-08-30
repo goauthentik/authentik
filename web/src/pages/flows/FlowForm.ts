@@ -243,7 +243,7 @@ export class FlowForm extends ModelForm<Flow, string> {
                     <input
                         type="checkbox"
                         class="pf-c-check__input"
-                        ?checked=${first(this.instance?.compatibilityMode, true)}
+                        ?checked=${first(this.instance?.compatibilityMode, false)}
                     />
                     <label class="pf-c-check__label"> ${t`Compatibility mode`} </label>
                 </div>
