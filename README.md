@@ -5,8 +5,9 @@
 ---
 
 [![](https://img.shields.io/discord/809154715984199690?label=Discord&style=for-the-badge)](https://discord.gg/jg33eMhnj6)
-[![CI Build status](https://img.shields.io/azure-devops/build/beryjuorg/authentik/6?style=for-the-badge)](https://dev.azure.com/beryjuorg/authentik/_build?definitionId=6)
-[![Tests](https://img.shields.io/azure-devops/tests/beryjuorg/authentik/6?compact_message&style=for-the-badge)](https://dev.azure.com/beryjuorg/authentik/_build?definitionId=6)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/goauthentik/authentik/authentik-ci-main?label=core%20build&style=for-the-badge)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/goauthentik/authentik/authentik-ci-web?label=web%20build&style=for-the-badge)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/goauthentik/authentik/authentik-ci-outpost?label=outpost%20build&style=for-the-badge)
 [![Code Coverage](https://img.shields.io/codecov/c/gh/goauthentik/authentik?style=for-the-badge)](https://codecov.io/gh/goauthentik/authentik)
 ![Docker pulls](https://img.shields.io/docker/pulls/beryju/authentik.svg?style=for-the-badge)
 ![Latest version](https://img.shields.io/docker/v/beryju/authentik?sort=semver&style=for-the-badge)
