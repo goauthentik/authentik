@@ -115,7 +115,9 @@ jobs:
       - name: prepare
         run: scripts/ci_prepare.sh
       - name: run unittest
-        run: pipenv run make test
+        run: |
+          pipenv run make test
+          coverage xml
       - uses: codecov/codecov-action@v2
   test-integration:
     runs-on: ubuntu-latest
@@ -132,7 +134,9 @@ jobs:
           k3d cluster create
           k3d kubeconfig write -o ~/.kube/config --overwrite
       - name: run integration
-        run: pipenv run make test-integration
+        run: |
+          pipenv run make test-integration
+          coverage xml
       - uses: codecov/codecov-action@v2
   test-e2e:
     runs-on: ubuntu-latest
@@ -156,7 +160,9 @@ jobs:
           npm i
           npm run build
       - name: run e2e
-        run: pipenv run make test-e2e
+        run: |
+          pipenv run make test-e2e
+          coverage xml
       - uses: codecov/codecov-action@v2
   build:
     needs:
