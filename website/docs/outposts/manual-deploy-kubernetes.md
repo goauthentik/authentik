@@ -98,7 +98,7 @@ spec:
             name: https
             protocol: TCP
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
@@ -118,7 +118,9 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: authentik-outpost
-          servicePort: http
+          service:
+            name: authentik-outpost
+            port:
+              name: http
         path: /
 ```
