@@ -45,9 +45,9 @@ jobs:
         id: ev
         run: |
           python ./scripts/gh_do_set_branch.py
-      - name: Login to GitHub Container Registry
+      - name: Login to Container Registry
         uses: docker/login-action@v1
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
         with:
           registry: beryju.org
           username: ${{ secrets.HARBOR_USERNAME }}
@@ -55,7 +55,7 @@ jobs:
       - name: Building Docker Image
         uses: docker/build-push-action@v2
         with:
-          push: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+          push: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
           tags: |
             beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchName }},
             beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchName }}-${{ steps.ev.outputs.timestamp }},
