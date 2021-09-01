@@ -52,18 +52,19 @@ def get_webauthn_challenge(request: HttpRequest, device: WebAuthnDevice) -> dict
     request.session["challenge"] = challenge.rstrip("=")
 
     assertion = {}
+    user = device.user
 
     # We want all the user's WebAuthn devices and merge their challenges
-    for device in WebAuthnDevice.objects.filter(user=device.user).order_by("name"):
+    for user_device in WebAuthnDevice.objects.filter(user=device.user).order_by("name"):
         webauthn_user = WebAuthnUser(
-            device.user.uid,
-            device.user.username,
-            device.user.name,
-            device.user.avatar,
-            device.credential_id,
-            device.public_key,
-            device.sign_count,
-            device.rp_id,
+            user.uid,
+            user.username,
+            user.name,
+            user.avatar,
+            user_device.credential_id,
+            user_device.public_key,
+            user_device.sign_count,
+            user_device.rp_id,
         )
         webauthn_assertion_options = WebAuthnAssertionOptions(webauthn_user, challenge)
         if assertion == {}:
