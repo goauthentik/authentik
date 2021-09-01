@@ -121,8 +121,12 @@ jobs:
         run: |
           pipenv run make test
           pipenv run coverage xml
+      - name: run testspace
+        if: ${{ always() }}
+        run: |
           testspace unittest.xml ?add
-      - uses: codecov/codecov-action@v2
+      - if: ${{ always() }}
+        uses: codecov/codecov-action@v2
   test-integration:
     runs-on: ubuntu-latest
     steps:
@@ -142,8 +146,12 @@ jobs:
         run: |
           pipenv run make test-integration
           pipenv run coverage xml
+      - name: run testspace
+        if: ${{ always() }}
+        run: |
           testspace unittest.xml ?add
-      - uses: codecov/codecov-action@v2
+      - if: ${{ always() }}
+        uses: codecov/codecov-action@v2
   test-e2e:
     runs-on: ubuntu-latest
     steps:
@@ -172,8 +180,27 @@ jobs:
         run: |
           pipenv run make test-e2e
           pipenv run coverage xml
+      - name: run testspace
+        if: ${{ always() }}
+        run: |
           testspace unittest.xml ?add
-      - uses: codecov/codecov-action@v2
+      - if: ${{ always() }}
+        uses: codecov/codecov-action@v2
+  report:
+    if: ${{ always() }}
+    needs:
+      - test-unittest
+      - test-integration
+      - test-e2e
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: testspace-com/setup-testspace@v1
+        with:
+          domain: ${{github.repository_owner}}
+      - name: finish testspace
+        run: |
+          testspace ?finish
   build:
     needs:
       - lint-pylint
@@ -189,12 +216,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: testspace-com/setup-testspace@v1
-        with:
-          domain: ${{github.repository_owner}}
-      - name: finish testspace
-        run: |
-          testspace ?finish
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: prepare variables
