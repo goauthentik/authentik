@@ -48,6 +48,9 @@ export class InvitationListLink extends LitElement {
                                         designation: FlowsInstancesListDesignationEnum.Enrollment,
                                     })
                                     .then((flows) => {
+                                        if (!this.selectedFlow && flows.results.length > 0) {
+                                            this.selectedFlow = flows.results[0].slug;
+                                        }
                                         return flows.results.map((flow) => {
                                             return html`<option
                                                 value=${flow.slug}
