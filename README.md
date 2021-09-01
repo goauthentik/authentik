@@ -12,7 +12,7 @@
 ![Docker pulls](https://img.shields.io/docker/pulls/beryju/authentik.svg?style=for-the-badge)
 ![Latest version](https://img.shields.io/docker/v/beryju/authentik?sort=semver&style=for-the-badge)
 ![LGTM Grade](https://img.shields.io/lgtm/grade/python/github/goauthentik/authentik?style=for-the-badge)
-[Transifex](https://www.transifex.com/beryjuorg/authentik/)
+[![](https://img.shields.io/badge/Help%20translate-transifex-blue?style=for-the-badge)](https://www.transifex.com/beryjuorg/authentik/)
 
 ## What is authentik?
 
