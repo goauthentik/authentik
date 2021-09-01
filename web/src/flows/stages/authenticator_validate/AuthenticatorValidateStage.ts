@@ -180,7 +180,7 @@ export class AuthenticatorValidateStage
                 ${this.selectedDeviceChallenge
                     ? ""
                     : html`<p class="pf-c-login__main-header-desc">
-                          ${t`Select an identification method.`}
+                          ${t`Select an authentication method.`}
                       </p>`}
             </header>
             ${this.selectedDeviceChallenge

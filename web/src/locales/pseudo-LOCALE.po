@@ -3362,6 +3362,10 @@ msgstr ""
 msgid "Required"
 msgstr ""
 
+#: src/flows/stages/prompt/PromptStage.ts
+msgid "Required."
+msgstr ""
+
 #: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserForm.ts
@@ -3516,13 +3520,17 @@ msgstr ""
 msgid "Select all rows"
 msgstr ""
 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
+msgid "Select an authentication method."
+msgstr ""
+
 #: src/pages/stages/invitation/InvitationListLink.ts
 msgid "Select an enrollment flow"
 msgstr ""
 
-#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
-msgid "Select an identification method."
-msgstr ""
+#: 
+#~ msgid "Select an identification method."
+#~ msgstr ""
 
 #: src/pages/users/GroupSelectModal.ts
 msgid "Select groups to add user to"
@@ -3749,8 +3757,12 @@ msgstr ""
 msgid "Sources"
 msgstr ""
 
+#: 
+#~ msgid "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
+#~ msgstr ""
+
 #: src/pages/sources/SourcesListPage.ts
-msgid "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
+msgid "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves."
 msgstr ""
 
 #: src/pages/flows/BoundStagesList.ts

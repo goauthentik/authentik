@@ -3370,6 +3370,10 @@ msgstr "Request token URL"
 msgid "Required"
 msgstr "Required"
 
+#: src/flows/stages/prompt/PromptStage.ts
+msgid "Required."
+msgstr "Required."
+
 #: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserForm.ts
@@ -3524,13 +3528,17 @@ msgstr "Select a provider that this application should use. Alternatively, creat
 msgid "Select all rows"
 msgstr "Select all rows"
 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
+msgid "Select an authentication method."
+msgstr "Select an authentication method."
+
 #: src/pages/stages/invitation/InvitationListLink.ts
 msgid "Select an enrollment flow"
 msgstr "Select an enrollment flow"
 
-#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
-msgid "Select an identification method."
-msgstr "Select an identification method."
+#: 
+#~ msgid "Select an identification method."
+#~ msgstr "Select an identification method."
 
 #: src/pages/users/GroupSelectModal.ts
 msgid "Select groups to add user to"
@@ -3757,9 +3765,13 @@ msgstr "Source(s)"
 msgid "Sources"
 msgstr "Sources"
 
+#: 
+#~ msgid "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
+#~ msgstr "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
+
 #: src/pages/sources/SourcesListPage.ts
-msgid "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
-msgstr "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
+msgid "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves."
+msgstr "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves."
 
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts

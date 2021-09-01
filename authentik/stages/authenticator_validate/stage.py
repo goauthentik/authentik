@@ -20,8 +20,6 @@ from authentik.stages.authenticator_validate.models import AuthenticatorValidate
 
 LOGGER = get_logger()
 
-PER_DEVICE_CLASSES = [DeviceClasses.WEBAUTHN]
-
 
 class AuthenticatorValidationChallenge(WithUserInfoChallenge):
     """Authenticator challenge"""
@@ -91,9 +89,9 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             if device_class not in stage.device_classes:
                 LOGGER.debug("device class not allowed", device_class=device_class)
                 continue
-            # Ensure only classes in PER_DEVICE_CLASSES are returned per device
-            # otherwise only return a single challenge
-            if device_class in seen_classes and device_class not in PER_DEVICE_CLASSES:
+            # Ensure only one challenge per device class
+            # WebAuthn does another device loop to find all webuahtn devices
+            if device_class in seen_classes:
                 continue
             if device_class not in seen_classes:
                 seen_classes.append(device_class)

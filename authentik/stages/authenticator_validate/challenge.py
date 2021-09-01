@@ -51,20 +51,29 @@ def get_webauthn_challenge(request: HttpRequest, device: WebAuthnDevice) -> dict
     # for the reasons outlined in the comment in webauthn_begin_activate.
     request.session["challenge"] = challenge.rstrip("=")
 
-    webauthn_user = WebAuthnUser(
-        device.user.uid,
-        device.user.username,
-        device.user.name,
-        device.user.avatar,
-        device.credential_id,
-        device.public_key,
-        device.sign_count,
-        device.rp_id,
-    )
+    assertion = {}
 
-    webauthn_assertion_options = WebAuthnAssertionOptions(webauthn_user, challenge)
+    # We want all the user's WebAuthn devices and merge their challenges
+    for device in WebAuthnDevice.objects.filter(user=device.user).order_by("name"):
+        webauthn_user = WebAuthnUser(
+            device.user.uid,
+            device.user.username,
+            device.user.name,
+            device.user.avatar,
+            device.credential_id,
+            device.public_key,
+            device.sign_count,
+            device.rp_id,
+        )
+        webauthn_assertion_options = WebAuthnAssertionOptions(webauthn_user, challenge)
+        if assertion == {}:
+            assertion = webauthn_assertion_options.assertion_dict
+        else:
+            assertion["allowCredentials"] += webauthn_assertion_options.assertion_dict.get(
+                "allowCredentials"
+            )
 
-    return webauthn_assertion_options.assertion_dict
+    return assertion
 
 
 def validate_challenge_code(code: str, request: HttpRequest, user: User) -> str:
