@@ -22300,7 +22300,6 @@ components:
         expires:
           type: string
           format: date-time
-          nullable: true
         fixed_data:
           type: object
           additionalProperties: {}
@@ -22321,7 +22320,6 @@ components:
         expires:
           type: string
           format: date-time
-          nullable: true
         fixed_data:
           type: object
           additionalProperties: {}
@@ -26978,7 +26976,6 @@ components:
         expires:
           type: string
           format: date-time
-          nullable: true
         fixed_data:
           type: object
           additionalProperties: {}
