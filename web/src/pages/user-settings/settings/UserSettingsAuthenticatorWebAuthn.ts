@@ -51,10 +51,14 @@ export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
                 slot="form"
                 successMessage=${t`Successfully updated device.`}
                 .send=${(data: unknown) => {
-                    return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsWebauthnUpdate({
-                        id: device.pk || 0,
-                        webAuthnDeviceRequest: data as WebAuthnDevice,
-                    });
+                    return new AuthenticatorsApi(DEFAULT_CONFIG)
+                        .authenticatorsWebauthnUpdate({
+                            id: device.pk || 0,
+                            webAuthnDeviceRequest: data as WebAuthnDevice,
+                        })
+                        .then(() => {
+                            this.requestUpdate();
+                        });
                 }}
             >
                 <form class="pf-c-form pf-m-horizontal">
