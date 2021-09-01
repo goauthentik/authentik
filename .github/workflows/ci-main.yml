@@ -138,8 +138,6 @@ jobs:
       - name: prepare k3d
         run: |
           wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
-          k3d cluster create
-          k3d kubeconfig write -o ~/.kube/config --overwrite
       - name: run integration
         run: |
           pipenv run make test-integration
