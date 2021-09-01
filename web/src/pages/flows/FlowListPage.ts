@@ -101,9 +101,7 @@ export class FlowListPage extends TablePage<Flow> {
                                 slug: item.slug,
                             })
                             .then((link) => {
-                                window.location.assign(
-                                    `${link.link}?next=/%23${window.location.href}`,
-                                );
+                                window.open(`${link.link}?next=/%23${window.location.href}`);
                             });
                     }}
                 >
