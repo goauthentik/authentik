@@ -57,8 +57,8 @@ jobs:
         with:
           push: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
           tags: |
-            beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchName }},
-            beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchName }}-${{ steps.ev.outputs.timestamp }},
+            beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchName }}
+            beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchName }}-${{ steps.ev.outputs.timestamp }}
             beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ env.GITHUB_SHA }}
           file: ${{ matrix.type }}.Dockerfile
           platforms: linux/amd64,linux/arm64

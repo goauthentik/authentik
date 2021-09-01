@@ -197,7 +197,7 @@ jobs:
         with:
           push: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
           tags: |
-            beryju.org/authentik/server:gh-${{ steps.ev.outputs.branchName }},
+            beryju.org/authentik/server:gh-${{ steps.ev.outputs.branchName }}
             beryju.org/authentik/server:gh-${{ env.GITHUB_SHA }}
           build-args: |
             GIT_BUILD_HASH=${{ env.GITHUB_SHA }}
