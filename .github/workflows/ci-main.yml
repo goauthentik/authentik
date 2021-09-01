@@ -121,7 +121,7 @@ jobs:
         run: |
           pipenv run make test
           pipenv run coverage xml
-          testspace unittest.xml
+          testspace unittest.xml ?add
       - uses: codecov/codecov-action@v2
   test-integration:
     runs-on: ubuntu-latest
@@ -142,7 +142,7 @@ jobs:
         run: |
           pipenv run make test-integration
           pipenv run coverage xml
-          testspace unittest.xml
+          testspace unittest.xml ?add
       - uses: codecov/codecov-action@v2
   test-e2e:
     runs-on: ubuntu-latest
@@ -172,7 +172,7 @@ jobs:
         run: |
           pipenv run make test-e2e
           pipenv run coverage xml
-          testspace unittest.xml
+          testspace unittest.xml ?add
       - uses: codecov/codecov-action@v2
   build:
     needs:
@@ -189,6 +189,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: testspace-com/setup-testspace@v1
+        with:
+          domain: ${{github.repository_owner}}
+      - name: finish testspace
+        run: |
+          testspace ?finish
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: prepare variables
