@@ -17,7 +17,6 @@ paths:
       - admin
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -39,7 +38,6 @@ paths:
       - admin
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -59,7 +57,6 @@ paths:
       - admin
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -79,7 +76,6 @@ paths:
       - admin
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -107,7 +103,6 @@ paths:
       - admin
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -135,7 +130,6 @@ paths:
       - admin
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: Task retried successfully
@@ -155,7 +149,6 @@ paths:
       - admin
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -175,7 +168,6 @@ paths:
       - admin
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -224,7 +216,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -255,7 +246,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -282,7 +272,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -320,7 +309,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -357,7 +345,6 @@ paths:
               $ref: '#/components/schemas/PatchedDuoDeviceRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -383,7 +370,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -428,7 +414,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -455,7 +440,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -504,7 +488,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -531,7 +514,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -580,7 +562,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -607,7 +588,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -656,7 +636,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -683,7 +662,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -721,7 +699,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -758,7 +735,6 @@ paths:
               $ref: '#/components/schemas/PatchedDuoDeviceRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -784,7 +760,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -807,7 +782,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -858,7 +832,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -885,7 +858,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -923,7 +895,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -960,7 +931,6 @@ paths:
               $ref: '#/components/schemas/PatchedStaticDeviceRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -986,7 +956,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -1009,7 +978,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -1060,7 +1028,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -1087,7 +1054,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -1125,7 +1091,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -1162,7 +1127,6 @@ paths:
               $ref: '#/components/schemas/PatchedTOTPDeviceRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -1188,7 +1152,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -1211,7 +1174,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -1262,7 +1224,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -1289,7 +1250,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -1327,7 +1287,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -1364,7 +1323,6 @@ paths:
               $ref: '#/components/schemas/PatchedWebAuthnDeviceRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -1390,7 +1348,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -1413,7 +1370,6 @@ paths:
       - authenticators
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -1464,7 +1420,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -1495,7 +1450,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -1522,7 +1476,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -1560,7 +1513,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -1597,7 +1549,6 @@ paths:
               $ref: '#/components/schemas/PatchedApplicationRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -1623,7 +1574,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -1650,7 +1600,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -1679,7 +1628,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -1713,7 +1661,6 @@ paths:
               $ref: '#/components/schemas/FileUploadRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           description: Success
@@ -1748,7 +1695,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           description: Success
@@ -1771,7 +1717,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -1830,7 +1775,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -1858,7 +1802,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -1885,7 +1828,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -1909,7 +1851,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -1982,7 +1923,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -2013,7 +1953,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -2041,7 +1980,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -2080,7 +2018,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -2118,7 +2055,6 @@ paths:
               $ref: '#/components/schemas/PatchedGroupRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -2145,7 +2081,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -2169,7 +2104,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -2265,7 +2199,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -2296,7 +2229,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -2324,7 +2256,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -2363,7 +2294,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -2401,7 +2331,6 @@ paths:
               $ref: '#/components/schemas/PatchedTenantRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -2428,7 +2357,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -2452,7 +2380,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -2474,7 +2401,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       - {}
       responses:
         '200':
@@ -2550,7 +2476,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -2581,7 +2506,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -2607,7 +2531,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -2644,7 +2567,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -2680,7 +2602,6 @@ paths:
               $ref: '#/components/schemas/PatchedTokenRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -2705,7 +2626,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -2727,7 +2647,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -2755,7 +2674,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -2811,7 +2729,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -2838,7 +2755,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -2864,7 +2780,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -2887,7 +2802,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -2976,7 +2890,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -3007,7 +2920,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -3034,7 +2946,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -3072,7 +2983,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -3109,7 +3019,6 @@ paths:
               $ref: '#/components/schemas/PatchedUserRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -3135,7 +3044,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -3158,7 +3066,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -3185,7 +3092,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -3223,7 +3129,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -3248,7 +3153,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -3270,7 +3174,6 @@ paths:
       - core
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -3302,7 +3205,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -3334,7 +3236,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -3388,7 +3289,6 @@ paths:
       - crypto
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -3419,7 +3319,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -3447,7 +3346,6 @@ paths:
       - crypto
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -3486,7 +3384,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -3524,7 +3421,6 @@ paths:
               $ref: '#/components/schemas/PatchedCertificateKeyPairRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -3551,7 +3447,6 @@ paths:
       - crypto
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -3575,7 +3470,6 @@ paths:
       - crypto
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -3609,7 +3503,6 @@ paths:
       - crypto
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -3641,7 +3534,6 @@ paths:
       - crypto
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -3673,7 +3565,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -3756,7 +3647,6 @@ paths:
       - events
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -3787,7 +3677,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -3815,7 +3704,6 @@ paths:
       - events
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -3854,7 +3742,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -3892,7 +3779,6 @@ paths:
               $ref: '#/components/schemas/PatchedEventRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -3919,7 +3805,6 @@ paths:
       - events
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -3935,7 +3820,6 @@ paths:
       - events
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -4012,7 +3896,6 @@ paths:
       - events
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -4085,7 +3968,6 @@ paths:
       - events
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -4113,7 +3995,6 @@ paths:
       - events
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -4151,7 +4032,6 @@ paths:
               $ref: '#/components/schemas/NotificationRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -4189,7 +4069,6 @@ paths:
               $ref: '#/components/schemas/PatchedNotificationRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -4216,7 +4095,6 @@ paths:
       - events
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -4240,7 +4118,6 @@ paths:
       - events
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -4305,7 +4182,6 @@ paths:
       - events
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -4336,7 +4212,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -4364,7 +4239,6 @@ paths:
       - events
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -4403,7 +4277,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -4441,7 +4314,6 @@ paths:
               $ref: '#/components/schemas/PatchedNotificationRuleRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -4468,7 +4340,6 @@ paths:
       - events
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -4492,7 +4363,6 @@ paths:
       - events
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -4559,7 +4429,6 @@ paths:
       - events
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -4590,7 +4459,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -4618,7 +4486,6 @@ paths:
       - events
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -4657,7 +4524,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -4695,7 +4561,6 @@ paths:
               $ref: '#/components/schemas/PatchedNotificationTransportRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -4722,7 +4587,6 @@ paths:
       - events
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -4748,7 +4612,6 @@ paths:
       - events
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -4778,7 +4641,6 @@ paths:
       - events
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -4885,7 +4747,6 @@ paths:
       - flows
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -4916,7 +4777,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -4944,7 +4804,6 @@ paths:
       - flows
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -4983,7 +4842,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -5021,7 +4879,6 @@ paths:
               $ref: '#/components/schemas/PatchedFlowStageBindingRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -5048,7 +4905,6 @@ paths:
       - flows
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -5072,7 +4928,6 @@ paths:
       - flows
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -5106,7 +4961,6 @@ paths:
       - flows
       security:
       - authentik: []
-      - cookieAuth: []
       - {}
       responses:
         '200':
@@ -5152,7 +5006,6 @@ paths:
               $ref: '#/components/schemas/FlowChallengeResponseRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       - {}
       responses:
         '200':
@@ -5225,7 +5078,6 @@ paths:
       - flows
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -5256,7 +5108,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -5283,7 +5134,6 @@ paths:
       - flows
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -5321,7 +5171,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -5358,7 +5207,6 @@ paths:
               $ref: '#/components/schemas/PatchedFlowRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -5384,7 +5232,6 @@ paths:
       - flows
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -5408,7 +5255,6 @@ paths:
       - flows
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -5435,7 +5281,6 @@ paths:
       - flows
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -5462,7 +5307,6 @@ paths:
       - flows
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -5495,7 +5339,6 @@ paths:
               $ref: '#/components/schemas/FileUploadRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           description: Success
@@ -5530,7 +5373,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           description: Success
@@ -5553,7 +5395,6 @@ paths:
       - flows
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -5575,7 +5416,6 @@ paths:
       - flows
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: Successfully cleared cache
@@ -5591,7 +5431,6 @@ paths:
       - flows
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -5616,7 +5455,6 @@ paths:
               $ref: '#/components/schemas/FileUploadRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: Successfully imported flow
@@ -5665,7 +5503,6 @@ paths:
       - oauth2
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -5692,7 +5529,6 @@ paths:
       - oauth2
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -5718,7 +5554,6 @@ paths:
       - oauth2
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -5741,7 +5576,6 @@ paths:
       - oauth2
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -5796,7 +5630,6 @@ paths:
       - oauth2
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -5823,7 +5656,6 @@ paths:
       - oauth2
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -5849,7 +5681,6 @@ paths:
       - oauth2
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -5872,7 +5703,6 @@ paths:
       - oauth2
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -5939,7 +5769,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -5970,7 +5799,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -5998,7 +5826,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -6037,7 +5864,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -6075,7 +5901,6 @@ paths:
               $ref: '#/components/schemas/PatchedOutpostRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -6102,7 +5927,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -6158,7 +5982,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -6188,7 +6011,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -6210,7 +6032,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -6255,7 +6076,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -6282,7 +6102,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -6327,7 +6146,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -6354,7 +6172,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -6403,7 +6220,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -6431,7 +6247,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -6458,7 +6273,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -6482,7 +6296,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -6510,7 +6323,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -6532,7 +6344,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -6601,7 +6412,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -6632,7 +6442,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -6660,7 +6469,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -6699,7 +6507,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -6737,7 +6544,6 @@ paths:
               $ref: '#/components/schemas/PatchedDockerServiceConnectionRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -6764,7 +6570,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -6788,7 +6593,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -6843,7 +6647,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -6874,7 +6677,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -6902,7 +6704,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -6941,7 +6742,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -6979,7 +6779,6 @@ paths:
               $ref: '#/components/schemas/PatchedKubernetesServiceConnectionRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -7006,7 +6805,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -7030,7 +6828,6 @@ paths:
       - outposts
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -7085,7 +6882,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -7113,7 +6909,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -7140,7 +6935,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -7176,7 +6970,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -7204,7 +6997,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -7226,7 +7018,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: Successfully cleared cache
@@ -7242,7 +7033,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -7262,7 +7052,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -7331,7 +7120,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -7362,7 +7150,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -7390,7 +7177,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -7429,7 +7215,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -7467,7 +7252,6 @@ paths:
               $ref: '#/components/schemas/PatchedPolicyBindingRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -7494,7 +7278,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -7518,7 +7301,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -7600,7 +7382,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -7630,7 +7411,6 @@ paths:
               $ref: '#/components/schemas/DummyPolicyRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -7658,7 +7438,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -7696,7 +7475,6 @@ paths:
               $ref: '#/components/schemas/DummyPolicyRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -7734,7 +7512,6 @@ paths:
               $ref: '#/components/schemas/PatchedDummyPolicyRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -7761,7 +7538,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -7785,7 +7561,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -7944,7 +7719,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -7974,7 +7748,6 @@ paths:
               $ref: '#/components/schemas/EventMatcherPolicyRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -8002,7 +7775,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -8040,7 +7812,6 @@ paths:
               $ref: '#/components/schemas/EventMatcherPolicyRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -8078,7 +7849,6 @@ paths:
               $ref: '#/components/schemas/PatchedEventMatcherPolicyRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -8105,7 +7875,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -8129,7 +7898,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -8203,7 +7971,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -8234,7 +8001,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -8262,7 +8028,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -8301,7 +8066,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -8339,7 +8103,6 @@ paths:
               $ref: '#/components/schemas/PatchedExpressionPolicyRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -8366,7 +8129,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -8390,7 +8152,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -8468,7 +8229,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -8498,7 +8258,6 @@ paths:
               $ref: '#/components/schemas/HaveIBeenPwendPolicyRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -8526,7 +8285,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -8564,7 +8322,6 @@ paths:
               $ref: '#/components/schemas/HaveIBeenPwendPolicyRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -8602,7 +8359,6 @@ paths:
               $ref: '#/components/schemas/PatchedHaveIBeenPwendPolicyRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -8629,7 +8385,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -8653,7 +8408,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -8751,7 +8505,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -8782,7 +8535,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -8810,7 +8562,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -8849,7 +8600,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -8887,7 +8637,6 @@ paths:
               $ref: '#/components/schemas/PatchedPasswordPolicyRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -8914,7 +8663,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -8938,7 +8686,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -9016,7 +8763,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -9047,7 +8793,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -9075,7 +8820,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -9114,7 +8858,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -9152,7 +8895,6 @@ paths:
               $ref: '#/components/schemas/PatchedPasswordExpiryPolicyRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -9179,7 +8921,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -9203,7 +8944,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -9285,7 +9025,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -9315,7 +9054,6 @@ paths:
               $ref: '#/components/schemas/ReputationPolicyRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -9343,7 +9081,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -9381,7 +9118,6 @@ paths:
               $ref: '#/components/schemas/ReputationPolicyRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -9419,7 +9155,6 @@ paths:
               $ref: '#/components/schemas/PatchedReputationPolicyRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -9446,7 +9181,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -9470,7 +9204,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -9525,7 +9258,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -9552,7 +9284,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -9578,7 +9309,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -9601,7 +9331,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -9656,7 +9385,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -9683,7 +9411,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -9709,7 +9436,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -9732,7 +9458,6 @@ paths:
       - policies
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -9783,7 +9508,6 @@ paths:
       - propertymappings
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -9811,7 +9535,6 @@ paths:
       - propertymappings
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -9838,7 +9561,6 @@ paths:
       - propertymappings
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -9878,7 +9600,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -9906,7 +9627,6 @@ paths:
       - propertymappings
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -9928,7 +9648,6 @@ paths:
       - propertymappings
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -10006,7 +9725,6 @@ paths:
       - propertymappings
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -10037,7 +9755,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -10065,7 +9782,6 @@ paths:
       - propertymappings
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -10104,7 +9820,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -10142,7 +9857,6 @@ paths:
               $ref: '#/components/schemas/PatchedLDAPPropertyMappingRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -10169,7 +9883,6 @@ paths:
       - propertymappings
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -10193,7 +9906,6 @@ paths:
       - propertymappings
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -10275,7 +9987,6 @@ paths:
       - propertymappings
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -10306,7 +10017,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -10334,7 +10044,6 @@ paths:
       - propertymappings
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -10373,7 +10082,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -10411,7 +10119,6 @@ paths:
               $ref: '#/components/schemas/PatchedSAMLPropertyMappingRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -10438,7 +10145,6 @@ paths:
       - propertymappings
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -10462,7 +10168,6 @@ paths:
       - propertymappings
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -10531,7 +10236,6 @@ paths:
       - propertymappings
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -10562,7 +10266,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -10590,7 +10293,6 @@ paths:
       - propertymappings
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -10629,7 +10331,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -10667,7 +10368,6 @@ paths:
               $ref: '#/components/schemas/PatchedScopeMappingRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -10694,7 +10394,6 @@ paths:
       - propertymappings
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -10718,7 +10417,6 @@ paths:
       - propertymappings
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -10769,7 +10467,6 @@ paths:
       - providers
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -10796,7 +10493,6 @@ paths:
       - providers
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -10822,7 +10518,6 @@ paths:
       - providers
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -10845,7 +10540,6 @@ paths:
       - providers
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -10867,7 +10561,6 @@ paths:
       - providers
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -10958,7 +10651,6 @@ paths:
       - providers
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -10989,7 +10681,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -11016,7 +10707,6 @@ paths:
       - providers
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -11054,7 +10744,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -11091,7 +10780,6 @@ paths:
               $ref: '#/components/schemas/PatchedLDAPProviderRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -11117,7 +10805,6 @@ paths:
       - providers
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -11140,7 +10827,6 @@ paths:
       - providers
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -11273,7 +10959,6 @@ paths:
       - providers
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -11304,7 +10989,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -11331,7 +11015,6 @@ paths:
       - providers
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -11369,7 +11052,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -11406,7 +11088,6 @@ paths:
               $ref: '#/components/schemas/PatchedOAuth2ProviderRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -11432,7 +11113,6 @@ paths:
       - providers
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -11455,7 +11135,6 @@ paths:
       - providers
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -11484,7 +11163,6 @@ paths:
       - providers
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -11667,7 +11345,6 @@ paths:
       - providers
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -11698,7 +11375,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -11725,7 +11401,6 @@ paths:
       - providers
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -11763,7 +11438,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -11800,7 +11474,6 @@ paths:
               $ref: '#/components/schemas/PatchedProxyProviderRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -11826,7 +11499,6 @@ paths:
       - providers
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -11849,7 +11521,6 @@ paths:
       - providers
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -11982,7 +11653,6 @@ paths:
       - providers
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -12013,7 +11683,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -12040,7 +11709,6 @@ paths:
       - providers
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -12078,7 +11746,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -12115,7 +11782,6 @@ paths:
               $ref: '#/components/schemas/PatchedSAMLProviderRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -12141,7 +11807,6 @@ paths:
       - providers
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -12168,7 +11833,6 @@ paths:
       - providers
       security:
       - authentik: []
-      - cookieAuth: []
       - {}
       responses:
         '200':
@@ -12198,7 +11862,6 @@ paths:
       - providers
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -12226,7 +11889,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: Successfully imported provider
@@ -12242,7 +11904,6 @@ paths:
       - root
       security:
       - authentik: []
-      - cookieAuth: []
       - {}
       responses:
         '200':
@@ -12376,7 +12037,6 @@ paths:
       - schema
       security:
       - authentik: []
-      - cookieAuth: []
       - {}
       responses:
         '200':
@@ -12409,8 +12069,6 @@ paths:
       tags:
       - sentry
       security:
-      - authentik: []
-      - cookieAuth: []
       - {}
       responses:
         '200':
@@ -12452,7 +12110,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -12479,7 +12136,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -12505,7 +12161,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -12528,7 +12183,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -12550,7 +12204,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -12572,7 +12225,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -12723,7 +12375,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -12754,7 +12405,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -12781,7 +12431,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -12819,7 +12468,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -12856,7 +12504,6 @@ paths:
               $ref: '#/components/schemas/PatchedLDAPSourceRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -12882,7 +12529,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -12905,7 +12551,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -12934,7 +12579,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -13046,7 +12690,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -13077,7 +12720,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -13104,7 +12746,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -13142,7 +12783,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -13179,7 +12819,6 @@ paths:
               $ref: '#/components/schemas/PatchedOAuthSourceRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -13205,7 +12844,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -13228,7 +12866,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -13257,7 +12894,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -13353,7 +12989,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -13384,7 +13019,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -13411,7 +13045,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -13449,7 +13082,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -13486,7 +13118,6 @@ paths:
               $ref: '#/components/schemas/PatchedPlexSourceRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -13512,7 +13143,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -13535,7 +13165,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -13576,7 +13205,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       - {}
       responses:
         '200':
@@ -13759,7 +13387,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -13790,7 +13417,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -13817,7 +13443,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -13855,7 +13480,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -13892,7 +13516,6 @@ paths:
               $ref: '#/components/schemas/PatchedSAMLSourceRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -13918,7 +13541,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -13941,7 +13563,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -13968,7 +13589,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -14019,7 +13639,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -14046,7 +13665,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -14084,7 +13702,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -14121,7 +13738,6 @@ paths:
               $ref: '#/components/schemas/PatchedUserOAuthSourceConnectionRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -14147,7 +13763,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -14170,7 +13785,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -14221,7 +13835,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -14248,7 +13861,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -14286,7 +13898,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -14323,7 +13934,6 @@ paths:
               $ref: '#/components/schemas/PatchedPlexSourceConnectionRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -14349,7 +13959,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -14372,7 +13981,6 @@ paths:
       - sources
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -14423,7 +14031,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -14451,7 +14058,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -14478,7 +14084,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -14502,7 +14107,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -14524,7 +14128,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -14546,7 +14149,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -14610,7 +14212,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -14641,7 +14242,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -14669,7 +14269,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -14708,7 +14307,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -14746,7 +14344,6 @@ paths:
               $ref: '#/components/schemas/PatchedAuthenticatorDuoStageRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -14773,7 +14370,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -14797,7 +14393,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: Enrollment successful
@@ -14823,7 +14418,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -14888,7 +14482,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -14919,7 +14512,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -14947,7 +14539,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -14986,7 +14577,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -15024,7 +14614,6 @@ paths:
               $ref: '#/components/schemas/PatchedAuthenticatorStaticStageRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -15051,7 +14640,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -15075,7 +14663,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -15143,7 +14730,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -15174,7 +14760,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -15202,7 +14787,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -15241,7 +14825,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -15279,7 +14862,6 @@ paths:
               $ref: '#/components/schemas/PatchedAuthenticatorTOTPStageRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -15306,7 +14888,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -15330,7 +14911,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -15394,7 +14974,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -15425,7 +15004,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -15453,7 +15031,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -15492,7 +15069,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -15530,7 +15106,6 @@ paths:
               $ref: '#/components/schemas/PatchedAuthenticatorValidateStageRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -15557,7 +15132,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -15581,7 +15155,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -15642,7 +15215,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -15673,7 +15245,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -15701,7 +15272,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -15740,7 +15310,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -15778,7 +15347,6 @@ paths:
               $ref: '#/components/schemas/PatchedAuthenticateWebAuthnStageRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -15805,7 +15373,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -15829,7 +15396,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -15884,7 +15450,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -15915,7 +15480,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -15943,7 +15507,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -15982,7 +15545,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -16020,7 +15582,6 @@ paths:
               $ref: '#/components/schemas/PatchedCaptchaStageRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -16047,7 +15608,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -16071,7 +15631,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -16139,7 +15698,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -16170,7 +15728,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -16198,7 +15755,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -16237,7 +15793,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -16275,7 +15830,6 @@ paths:
               $ref: '#/components/schemas/PatchedConsentStageRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -16302,7 +15856,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -16326,7 +15879,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -16382,7 +15934,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -16413,7 +15964,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -16441,7 +15991,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -16480,7 +16029,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -16518,7 +16066,6 @@ paths:
               $ref: '#/components/schemas/PatchedDenyStageRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -16545,7 +16092,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -16569,7 +16115,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -16625,7 +16170,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -16656,7 +16200,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -16684,7 +16227,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -16723,7 +16265,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -16761,7 +16302,6 @@ paths:
               $ref: '#/components/schemas/PatchedDummyStageRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -16788,7 +16328,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -16812,7 +16351,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -16907,7 +16445,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -16938,7 +16475,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -16966,7 +16502,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -17005,7 +16540,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -17043,7 +16577,6 @@ paths:
               $ref: '#/components/schemas/PatchedEmailStageRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -17070,7 +16603,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -17094,7 +16626,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -17116,7 +16647,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -17190,7 +16720,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -17221,7 +16750,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -17249,7 +16777,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -17288,7 +16815,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -17326,7 +16852,6 @@ paths:
               $ref: '#/components/schemas/PatchedIdentificationStageRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -17353,7 +16878,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -17377,7 +16901,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -17433,7 +16956,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -17463,7 +16985,6 @@ paths:
               $ref: '#/components/schemas/InvitationRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -17491,7 +17012,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -17529,7 +17049,6 @@ paths:
               $ref: '#/components/schemas/InvitationRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -17567,7 +17086,6 @@ paths:
               $ref: '#/components/schemas/PatchedInvitationRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -17594,7 +17112,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -17618,7 +17135,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -17678,7 +17194,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -17709,7 +17224,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -17737,7 +17251,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -17776,7 +17289,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -17814,7 +17326,6 @@ paths:
               $ref: '#/components/schemas/PatchedInvitationStageRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -17841,7 +17352,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -17865,7 +17375,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -17925,7 +17434,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -17956,7 +17464,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -17984,7 +17491,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -18023,7 +17529,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -18061,7 +17566,6 @@ paths:
               $ref: '#/components/schemas/PatchedPasswordStageRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -18088,7 +17592,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -18112,7 +17615,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -18187,7 +17689,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -18218,7 +17719,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -18246,7 +17746,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -18285,7 +17784,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -18323,7 +17821,6 @@ paths:
               $ref: '#/components/schemas/PatchedPromptRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -18350,7 +17847,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -18374,7 +17870,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -18448,7 +17943,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -18479,7 +17973,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -18507,7 +18000,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -18546,7 +18038,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -18584,7 +18075,6 @@ paths:
               $ref: '#/components/schemas/PatchedPromptStageRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -18611,7 +18101,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -18635,7 +18124,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -18691,7 +18179,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -18722,7 +18209,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -18750,7 +18236,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -18789,7 +18274,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -18827,7 +18311,6 @@ paths:
               $ref: '#/components/schemas/PatchedUserDeleteStageRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -18854,7 +18337,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -18878,7 +18360,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -18938,7 +18419,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -18969,7 +18449,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -18997,7 +18476,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -19036,7 +18514,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -19074,7 +18551,6 @@ paths:
               $ref: '#/components/schemas/PatchedUserLoginStageRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -19101,7 +18577,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -19125,7 +18600,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -19181,7 +18655,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -19212,7 +18685,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -19240,7 +18712,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -19279,7 +18750,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -19317,7 +18787,6 @@ paths:
               $ref: '#/components/schemas/PatchedUserLogoutStageRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -19344,7 +18813,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -19368,7 +18836,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -19428,7 +18895,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -19459,7 +18925,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '201':
           content:
@@ -19487,7 +18952,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -19526,7 +18990,6 @@ paths:
         required: true
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -19564,7 +19027,6 @@ paths:
               $ref: '#/components/schemas/PatchedUserWriteStageRequest'
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -19591,7 +19053,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -19615,7 +19076,6 @@ paths:
       - stages
       security:
       - authentik: []
-      - cookieAuth: []
       responses:
         '200':
           content:
@@ -30754,7 +30214,3 @@ components:
       type: apiKey
       in: header
       name: Authorization
-    cookieAuth:
-      type: apiKey
-      in: cookie
-      name: Session

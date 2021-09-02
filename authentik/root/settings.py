@@ -153,6 +153,9 @@ SPECTACULAR_SETTINGS = {
     "CONTACT": {
         "email": "hello@beryju.org",
     },
+    'AUTHENTICATION_WHITELIST': [
+        "authentik.api.authentication.TokenAuthentication"
+    ],
     "LICENSE": {
         "name": "GNU GPLv3",
         "url": "https://github.com/goauthentik/authentik/blob/master/LICENSE",
