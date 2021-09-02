@@ -122,19 +122,19 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:461f659c06f9f56693cebbca70b11866f096021eafbd949a3c029c3a8adee6a4",
-                "sha256:596d2afda27ae3d9a10112a475aa25c4d6b5cf023919e370ad8e6c6ae04d57a6"
+                "sha256:5116e9bdec19adcc5531a9b7b535be77d5314eef092aaf7033ace48a9be65036",
+                "sha256:658ddf4ba552f654fd4d48335fa95ff4e3e1a4e82f90021a1a1d3de4a5428ba4"
             ],
             "index": "pypi",
-            "version": "==1.18.33"
+            "version": "==1.18.34"
         },
         "botocore": {
             "hashes": [
-                "sha256:204327b9a33e3ae5207ff9acdd7d3b6d1f99f5dc9165a4d843d6f1a566f3006c",
-                "sha256:b321b570a0da4c6280e737d817c8f740bce0ef914f564e1c27246c7ae76b4c31"
+                "sha256:1b4999fb0e1a4c050c4d9118ebdaac8d83761ef32c3c0f13a25f9204045998fe",
+                "sha256:ec2cdf1c8ed64a7f392f352125d248c76103fa9d137b275b7c76836776cedf56"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==1.21.33"
+            "version": "==1.21.34"
         },
         "cachetools": {
             "hashes": [
@@ -1582,7 +1582,7 @@
                 "sha256:9c2ea1e62d871267b78307fe511c0838ba0da28698c5732d54e2790bf3ba9899",
                 "sha256:e17d6e2b81095c9db0a03a8025a957f334d6ea30b26f9ec70805411e5c7c81f2"
             ],
-            "markers": "python_version < '4.0' and python_full_version >= '3.6.1'",
+            "markers": "python_version < '4' and python_full_version >= '3.6.1'",
             "version": "==5.9.3"
         },
         "lazy-object-proxy": {
