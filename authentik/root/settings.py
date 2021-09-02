@@ -372,6 +372,7 @@ if CONFIG.y("postgresql.s3_backup"):
         "default_acl": "private",
         "endpoint_url": CONFIG.y("postgresql.s3_backup.host"),
         "location": CONFIG.y("postgresql.s3_backup.location", ""),
+        "verify": not CONFIG.y_bool("postgresql.s3_backup.insecure_skip_verify", False),
     }
     j_print(
         "Database backup to S3 is configured",

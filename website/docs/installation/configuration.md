@@ -23,6 +23,21 @@ All of these variables can be set to values, but you can also use a URI-like for
 - `AUTHENTIK_POSTGRESQL__PORT`: Database port, defaults to 5432
 - `AUTHENTIK_POSTGRESQL__PASSWORD`: Database password, defaults to the environment variable `POSTGRES_PASSWORD`
 
+### PostgreSQL Backup Settings
+
+Optionally enable automated database backups to S3 or S3-compatible storages.
+
+- `AUTHENTIK_POSTGRESQL__S3_BACKUP__ACCESS_KEY`: S3 Access Key
+- `AUTHENTIK_POSTGRESQL__S3_BACKUP__SECRET_KEY`: S3 Secret Key
+- `AUTHENTIK_POSTGRESQL__S3_BACKUP__BUCKET`: S3 Bucket
+- `AUTHENTIK_POSTGRESQL__S3_BACKUP__REGION`: S3 Region, defaults to `eu-central-1`
+- `AUTHENTIK_POSTGRESQL__S3_BACKUP__LOCATION`: Relative Location of the files to the bucket. Defaults to the root of the bucket.
+
+To use an S3-compatible storage, set the following settings.
+
+- `AUTHENTIK_POSTGRESQL__S3_BACKUP__HOST`: URL to the Service, for example `https://play.min.io`
+- `AUTHENTIK_POSTGRESQL__S3_BACKUP__INSECURE_SKIP_VERIFY`: Set to `true` to disable SSL Certificate verification.
+
 ## Redis Settings
 
 - `AUTHENTIK_REDIS__HOST`: Hostname of your Redis Server
