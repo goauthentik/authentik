@@ -2,6 +2,7 @@ import { Config, Configuration, CoreApi, CurrentTenant, Middleware, ResponseCont
 import { getCookie } from "../utils";
 import { APIMiddleware } from "../elements/notifications/APIDrawer";
 import { MessageMiddleware } from "../elements/messages/Middleware";
+import { VERSION } from "../constants";
 
 export class LoggingMiddleware implements Middleware {
 
@@ -59,3 +60,5 @@ export const DEFAULT_CONFIG = new Configuration({
         new LoggingMiddleware(),
     ],
 });
+
+console.debug(`authentik: version ${VERSION}`);

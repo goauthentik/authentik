@@ -32,7 +32,6 @@ export class SystemStatusCard extends AdminStatusCard<System> {
             });
         }
         const timeDiff = value.serverTime.getTime() - (this.now || new Date()).getTime();
-        console.log(`authentik/: timediff ${timeDiff}`);
         if (timeDiff > 5000 || timeDiff < -5000) {
             this.header = t`Warning`;
             return Promise.resolve<AdminStatus>({
