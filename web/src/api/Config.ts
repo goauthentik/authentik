@@ -50,7 +50,7 @@ export function tenant(): Promise<CurrentTenant> {
 }
 
 export const DEFAULT_CONFIG = new Configuration({
-    basePath: "",
+    basePath: "/api/v3",
     headers: {
         "X-CSRFToken": getCookie("authentik_csrf"),
     },

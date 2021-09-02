@@ -9,7 +9,7 @@ info:
     name: GNU GPLv3
     url: https://github.com/goauthentik/authentik/blob/master/LICENSE
 paths:
-  /api/v2beta/admin/apps/:
+  /admin/apps/:
     get:
       operationId: admin_apps_list
       description: List current messages and pass into Serializer
@@ -30,7 +30,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/admin/metrics/:
+  /admin/metrics/:
     get:
       operationId: admin_metrics_retrieve
       description: Login Metrics per 1h
@@ -49,7 +49,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/admin/system/:
+  /admin/system/:
     get:
       operationId: admin_system_retrieve
       description: Get system information.
@@ -68,7 +68,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/admin/system_tasks/:
+  /admin/system_tasks/:
     get:
       operationId: admin_system_tasks_list
       description: List system tasks
@@ -89,7 +89,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/admin/system_tasks/{id}/:
+  /admin/system_tasks/{id}/:
     get:
       operationId: admin_system_tasks_retrieve
       description: Get a single system task
@@ -116,7 +116,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/admin/system_tasks/{id}/retry/:
+  /admin/system_tasks/{id}/retry/:
     post:
       operationId: admin_system_tasks_retry_create
       description: Retry task
@@ -141,7 +141,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/admin/version/:
+  /admin/version/:
     get:
       operationId: admin_version_retrieve
       description: Get running and latest version.
@@ -160,7 +160,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/admin/workers/:
+  /admin/workers/:
     get:
       operationId: admin_workers_retrieve
       description: Get currently connected worker count.
@@ -179,7 +179,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/authenticators/admin/duo/:
+  /authenticators/admin/duo/:
     get:
       operationId: authenticators_admin_duo_list
       description: Viewset for Duo authenticator devices (for admins)
@@ -237,12 +237,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DuoDeviceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/DuoDeviceRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/DuoDeviceRequest'
         required: true
       security:
       - authentik: []
@@ -257,7 +251,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/authenticators/admin/duo/{id}/:
+  /authenticators/admin/duo/{id}/:
     get:
       operationId: authenticators_admin_duo_retrieve
       description: Viewset for Duo authenticator devices (for admins)
@@ -300,12 +294,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DuoDeviceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/DuoDeviceRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/DuoDeviceRequest'
         required: true
       security:
       - authentik: []
@@ -335,12 +323,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedDuoDeviceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedDuoDeviceRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedDuoDeviceRequest'
       security:
@@ -377,7 +359,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/authenticators/admin/static/:
+  /authenticators/admin/static/:
     get:
       operationId: authenticators_admin_static_list
       description: Viewset for static authenticator devices (for admins)
@@ -425,7 +407,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/authenticators/admin/static/{id}/:
+  /authenticators/admin/static/{id}/:
     get:
       operationId: authenticators_admin_static_retrieve
       description: Viewset for static authenticator devices (for admins)
@@ -451,7 +433,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/authenticators/admin/totp/:
+  /authenticators/admin/totp/:
     get:
       operationId: authenticators_admin_totp_list
       description: Viewset for totp authenticator devices (for admins)
@@ -499,7 +481,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/authenticators/admin/totp/{id}/:
+  /authenticators/admin/totp/{id}/:
     get:
       operationId: authenticators_admin_totp_retrieve
       description: Viewset for totp authenticator devices (for admins)
@@ -525,7 +507,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/authenticators/admin/webauthn/:
+  /authenticators/admin/webauthn/:
     get:
       operationId: authenticators_admin_webauthn_list
       description: Viewset for WebAuthn authenticator devices (for admins)
@@ -573,7 +555,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/authenticators/admin/webauthn/{id}/:
+  /authenticators/admin/webauthn/{id}/:
     get:
       operationId: authenticators_admin_webauthn_retrieve
       description: Viewset for WebAuthn authenticator devices (for admins)
@@ -599,7 +581,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/authenticators/duo/:
+  /authenticators/duo/:
     get:
       operationId: authenticators_duo_list
       description: Viewset for Duo authenticator devices
@@ -647,7 +629,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/authenticators/duo/{id}/:
+  /authenticators/duo/{id}/:
     get:
       operationId: authenticators_duo_retrieve
       description: Viewset for Duo authenticator devices
@@ -690,12 +672,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DuoDeviceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/DuoDeviceRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/DuoDeviceRequest'
         required: true
       security:
       - authentik: []
@@ -725,12 +701,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedDuoDeviceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedDuoDeviceRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedDuoDeviceRequest'
       security:
@@ -767,7 +737,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/authenticators/duo/{id}/used_by/:
+  /authenticators/duo/{id}/used_by/:
     get:
       operationId: authenticators_duo_used_by_list
       description: Get a list of all objects that use this object
@@ -795,7 +765,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/authenticators/static/:
+  /authenticators/static/:
     get:
       operationId: authenticators_static_list
       description: Viewset for static authenticator devices
@@ -843,7 +813,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/authenticators/static/{id}/:
+  /authenticators/static/{id}/:
     get:
       operationId: authenticators_static_retrieve
       description: Viewset for static authenticator devices
@@ -886,12 +856,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/StaticDeviceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/StaticDeviceRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/StaticDeviceRequest'
         required: true
       security:
       - authentik: []
@@ -921,12 +885,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedStaticDeviceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedStaticDeviceRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedStaticDeviceRequest'
       security:
@@ -963,7 +921,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/authenticators/static/{id}/used_by/:
+  /authenticators/static/{id}/used_by/:
     get:
       operationId: authenticators_static_used_by_list
       description: Get a list of all objects that use this object
@@ -991,7 +949,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/authenticators/totp/:
+  /authenticators/totp/:
     get:
       operationId: authenticators_totp_list
       description: Viewset for totp authenticator devices
@@ -1039,7 +997,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/authenticators/totp/{id}/:
+  /authenticators/totp/{id}/:
     get:
       operationId: authenticators_totp_retrieve
       description: Viewset for totp authenticator devices
@@ -1082,12 +1040,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/TOTPDeviceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/TOTPDeviceRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/TOTPDeviceRequest'
         required: true
       security:
       - authentik: []
@@ -1117,12 +1069,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedTOTPDeviceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedTOTPDeviceRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedTOTPDeviceRequest'
       security:
@@ -1159,7 +1105,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/authenticators/totp/{id}/used_by/:
+  /authenticators/totp/{id}/used_by/:
     get:
       operationId: authenticators_totp_used_by_list
       description: Get a list of all objects that use this object
@@ -1187,7 +1133,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/authenticators/webauthn/:
+  /authenticators/webauthn/:
     get:
       operationId: authenticators_webauthn_list
       description: Viewset for WebAuthn authenticator devices
@@ -1235,7 +1181,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/authenticators/webauthn/{id}/:
+  /authenticators/webauthn/{id}/:
     get:
       operationId: authenticators_webauthn_retrieve
       description: Viewset for WebAuthn authenticator devices
@@ -1278,12 +1224,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/WebAuthnDeviceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/WebAuthnDeviceRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/WebAuthnDeviceRequest'
         required: true
       security:
       - authentik: []
@@ -1313,12 +1253,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedWebAuthnDeviceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedWebAuthnDeviceRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedWebAuthnDeviceRequest'
       security:
@@ -1355,7 +1289,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/authenticators/webauthn/{id}/used_by/:
+  /authenticators/webauthn/{id}/used_by/:
     get:
       operationId: authenticators_webauthn_used_by_list
       description: Get a list of all objects that use this object
@@ -1383,7 +1317,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/applications/:
+  /core/applications/:
     get:
       operationId: core_applications_list
       description: Custom list method that checks Policy based access instead of guardian
@@ -1441,12 +1375,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ApplicationRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/ApplicationRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/ApplicationRequest'
         required: true
       security:
       - authentik: []
@@ -1461,7 +1389,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/applications/{slug}/:
+  /core/applications/{slug}/:
     get:
       operationId: core_applications_retrieve
       description: Application Viewset
@@ -1504,12 +1432,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ApplicationRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/ApplicationRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/ApplicationRequest'
         required: true
       security:
       - authentik: []
@@ -1539,12 +1461,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedApplicationRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedApplicationRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedApplicationRequest'
       security:
@@ -1581,7 +1497,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/applications/{slug}/check_access/:
+  /core/applications/{slug}/check_access/:
     get:
       operationId: core_applications_check_access_retrieve
       description: Check access to a single application by slug
@@ -1613,7 +1529,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/applications/{slug}/metrics/:
+  /core/applications/{slug}/metrics/:
     get:
       operationId: core_applications_metrics_list
       description: Metrics for application logins
@@ -1641,7 +1557,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/applications/{slug}/set_icon/:
+  /core/applications/{slug}/set_icon/:
     post:
       operationId: core_applications_set_icon_create
       description: Set application icon
@@ -1668,7 +1584,7 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/applications/{slug}/set_icon_url/:
+  /core/applications/{slug}/set_icon_url/:
     post:
       operationId: core_applications_set_icon_url_create
       description: Set application icon (as URL)
@@ -1686,12 +1602,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/FilePathRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/FilePathRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/FilePathRequest'
         required: true
       security:
       - authentik: []
@@ -1702,7 +1612,7 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/applications/{slug}/used_by/:
+  /core/applications/{slug}/used_by/:
     get:
       operationId: core_applications_used_by_list
       description: Get a list of all objects that use this object
@@ -1730,7 +1640,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/authenticated_sessions/:
+  /core/authenticated_sessions/:
     get:
       operationId: core_authenticated_sessions_list
       description: AuthenticatedSession Viewset
@@ -1786,7 +1696,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/authenticated_sessions/{uuid}/:
+  /core/authenticated_sessions/{uuid}/:
     get:
       operationId: core_authenticated_sessions_retrieve
       description: AuthenticatedSession Viewset
@@ -1835,7 +1745,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/authenticated_sessions/{uuid}/used_by/:
+  /core/authenticated_sessions/{uuid}/used_by/:
     get:
       operationId: core_authenticated_sessions_used_by_list
       description: Get a list of all objects that use this object
@@ -1864,7 +1774,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/groups/:
+  /core/groups/:
     get:
       operationId: core_groups_list
       description: Group Viewset
@@ -1944,12 +1854,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/GroupRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/GroupRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/GroupRequest'
         required: true
       security:
       - authentik: []
@@ -1964,7 +1868,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/groups/{group_uuid}/:
+  /core/groups/{group_uuid}/:
     get:
       operationId: core_groups_retrieve
       description: Group Viewset
@@ -2009,12 +1913,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/GroupRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/GroupRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/GroupRequest'
         required: true
       security:
       - authentik: []
@@ -2045,12 +1943,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedGroupRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedGroupRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedGroupRequest'
       security:
@@ -2088,7 +1980,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/groups/{group_uuid}/used_by/:
+  /core/groups/{group_uuid}/used_by/:
     get:
       operationId: core_groups_used_by_list
       description: Get a list of all objects that use this object
@@ -2117,7 +2009,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/tenants/:
+  /core/tenants/:
     get:
       operationId: core_tenants_list
       description: Tenant Viewset
@@ -2220,12 +2112,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/TenantRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/TenantRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/TenantRequest'
         required: true
       security:
       - authentik: []
@@ -2240,7 +2126,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/tenants/{tenant_uuid}/:
+  /core/tenants/{tenant_uuid}/:
     get:
       operationId: core_tenants_retrieve
       description: Tenant Viewset
@@ -2285,12 +2171,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/TenantRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/TenantRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/TenantRequest'
         required: true
       security:
       - authentik: []
@@ -2321,12 +2201,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedTenantRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedTenantRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedTenantRequest'
       security:
@@ -2364,7 +2238,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/tenants/{tenant_uuid}/used_by/:
+  /core/tenants/{tenant_uuid}/used_by/:
     get:
       operationId: core_tenants_used_by_list
       description: Get a list of all objects that use this object
@@ -2393,7 +2267,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/tenants/current/:
+  /core/tenants/current/:
     get:
       operationId: core_tenants_current_retrieve
       description: Get current tenant
@@ -2413,7 +2287,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/tokens/:
+  /core/tokens/:
     get:
       operationId: core_tokens_list
       description: Token Viewset
@@ -2497,12 +2371,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/TokenRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/TokenRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/TokenRequest'
         required: true
       security:
       - authentik: []
@@ -2517,7 +2385,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/tokens/{identifier}/:
+  /core/tokens/{identifier}/:
     get:
       operationId: core_tokens_retrieve
       description: Token Viewset
@@ -2558,12 +2426,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/TokenRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/TokenRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/TokenRequest'
         required: true
       security:
       - authentik: []
@@ -2592,12 +2454,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedTokenRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedTokenRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedTokenRequest'
       security:
@@ -2633,7 +2489,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/tokens/{identifier}/used_by/:
+  /core/tokens/{identifier}/used_by/:
     get:
       operationId: core_tokens_used_by_list
       description: Get a list of all objects that use this object
@@ -2660,7 +2516,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/tokens/{identifier}/view_key/:
+  /core/tokens/{identifier}/view_key/:
     get:
       operationId: core_tokens_view_key_retrieve
       description: Return token key and log access
@@ -2687,7 +2543,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/user_consent/:
+  /core/user_consent/:
     get:
       operationId: core_user_consent_list
       description: UserConsent Viewset
@@ -2740,7 +2596,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/user_consent/{id}/:
+  /core/user_consent/{id}/:
     get:
       operationId: core_user_consent_retrieve
       description: UserConsent Viewset
@@ -2787,7 +2643,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/user_consent/{id}/used_by/:
+  /core/user_consent/{id}/used_by/:
     get:
       operationId: core_user_consent_used_by_list
       description: Get a list of all objects that use this object
@@ -2815,7 +2671,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/users/:
+  /core/users/:
     get:
       operationId: core_users_list
       description: User Viewset
@@ -2911,12 +2767,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserRequest'
         required: true
       security:
       - authentik: []
@@ -2931,7 +2781,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/users/{id}/:
+  /core/users/{id}/:
     get:
       operationId: core_users_retrieve
       description: User Viewset
@@ -2974,12 +2824,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserRequest'
         required: true
       security:
       - authentik: []
@@ -3009,12 +2853,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedUserRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedUserRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedUserRequest'
       security:
@@ -3051,7 +2889,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/users/{id}/metrics/:
+  /core/users/{id}/metrics/:
     get:
       operationId: core_users_metrics_retrieve
       description: User metrics per 1h
@@ -3077,7 +2915,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/users/{id}/recovery/:
+  /core/users/{id}/recovery/:
     get:
       operationId: core_users_recovery_retrieve
       description: Create a temporary link that a user can use to recover their accounts
@@ -3109,7 +2947,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/users/{id}/recovery_email/:
+  /core/users/{id}/recovery_email/:
     get:
       operationId: core_users_recovery_email_retrieve
       description: Create a temporary link that a user can use to recover their accounts
@@ -3138,7 +2976,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/users/{id}/used_by/:
+  /core/users/{id}/used_by/:
     get:
       operationId: core_users_used_by_list
       description: Get a list of all objects that use this object
@@ -3166,7 +3004,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/users/me/:
+  /core/users/me/:
     get:
       operationId: core_users_me_retrieve
       description: Get information about current user
@@ -3185,7 +3023,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/users/service_account/:
+  /core/users/service_account/:
     post:
       operationId: core_users_service_account_create
       description: Create a new user account that is marked as a service account
@@ -3194,12 +3032,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/UserServiceAccountRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserServiceAccountRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/UserServiceAccountRequest'
         required: true
@@ -3216,7 +3048,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/core/users/update_self/:
+  /core/users/update_self/:
     put:
       operationId: core_users_update_self_update
       description: Allow users to change information on their own profile
@@ -3225,12 +3057,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/UserSelfRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserSelfRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/UserSelfRequest'
         required: true
@@ -3247,7 +3073,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/crypto/certificatekeypairs/:
+  /crypto/certificatekeypairs/:
     get:
       operationId: crypto_certificatekeypairs_list
       description: CertificateKeyPair Viewset
@@ -3310,12 +3136,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CertificateKeyPairRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/CertificateKeyPairRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/CertificateKeyPairRequest'
         required: true
       security:
       - authentik: []
@@ -3330,7 +3150,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/crypto/certificatekeypairs/{kp_uuid}/:
+  /crypto/certificatekeypairs/{kp_uuid}/:
     get:
       operationId: crypto_certificatekeypairs_retrieve
       description: CertificateKeyPair Viewset
@@ -3375,12 +3195,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CertificateKeyPairRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/CertificateKeyPairRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/CertificateKeyPairRequest'
         required: true
       security:
       - authentik: []
@@ -3411,12 +3225,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedCertificateKeyPairRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedCertificateKeyPairRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedCertificateKeyPairRequest'
       security:
@@ -3454,7 +3262,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/crypto/certificatekeypairs/{kp_uuid}/used_by/:
+  /crypto/certificatekeypairs/{kp_uuid}/used_by/:
     get:
       operationId: crypto_certificatekeypairs_used_by_list
       description: Get a list of all objects that use this object
@@ -3483,7 +3291,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/crypto/certificatekeypairs/{kp_uuid}/view_certificate/:
+  /crypto/certificatekeypairs/{kp_uuid}/view_certificate/:
     get:
       operationId: crypto_certificatekeypairs_view_certificate_retrieve
       description: Return certificate-key pairs certificate and log access
@@ -3514,7 +3322,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/crypto/certificatekeypairs/{kp_uuid}/view_private_key/:
+  /crypto/certificatekeypairs/{kp_uuid}/view_private_key/:
     get:
       operationId: crypto_certificatekeypairs_view_private_key_retrieve
       description: Return certificate-key pairs private key and log access
@@ -3545,7 +3353,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/crypto/certificatekeypairs/generate/:
+  /crypto/certificatekeypairs/generate/:
     post:
       operationId: crypto_certificatekeypairs_generate_create
       description: Generate a new, self-signed certificate-key pair
@@ -3554,12 +3362,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/CertificateGenerationRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/CertificateGenerationRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/CertificateGenerationRequest'
         required: true
@@ -3576,7 +3378,7 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/events/events/:
+  /events/events/:
     get:
       operationId: events_events_list
       description: Event Read-Only Viewset
@@ -3668,12 +3470,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/EventRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/EventRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/EventRequest'
         required: true
       security:
       - authentik: []
@@ -3688,7 +3484,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/events/events/{event_uuid}/:
+  /events/events/{event_uuid}/:
     get:
       operationId: events_events_retrieve
       description: Event Read-Only Viewset
@@ -3733,12 +3529,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/EventRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/EventRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/EventRequest'
         required: true
       security:
       - authentik: []
@@ -3769,12 +3559,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedEventRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedEventRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedEventRequest'
       security:
@@ -3812,7 +3596,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/events/events/actions/:
+  /events/events/actions/:
     get:
       operationId: events_events_actions_list
       description: Get all actions
@@ -3833,7 +3617,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/events/events/top_per_user/:
+  /events/events/top_per_user/:
     get:
       operationId: events_events_top_per_user_list
       description: Get the top_n events grouped by user count
@@ -3909,7 +3693,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/events/notifications/:
+  /events/notifications/:
     get:
       operationId: events_notifications_list
       description: Notification Viewset
@@ -3979,7 +3763,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/events/notifications/{uuid}/:
+  /events/notifications/{uuid}/:
     get:
       operationId: events_notifications_retrieve
       description: Notification Viewset
@@ -4024,12 +3808,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/NotificationRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/NotificationRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/NotificationRequest'
       security:
       - authentik: []
       responses:
@@ -4059,12 +3837,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedNotificationRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedNotificationRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedNotificationRequest'
       security:
@@ -4102,7 +3874,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/events/notifications/{uuid}/used_by/:
+  /events/notifications/{uuid}/used_by/:
     get:
       operationId: events_notifications_used_by_list
       description: Get a list of all objects that use this object
@@ -4131,7 +3903,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/events/rules/:
+  /events/rules/:
     get:
       operationId: events_rules_list
       description: NotificationRule Viewset
@@ -4203,12 +3975,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/NotificationRuleRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/NotificationRuleRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/NotificationRuleRequest'
         required: true
       security:
       - authentik: []
@@ -4223,7 +3989,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/events/rules/{pbm_uuid}/:
+  /events/rules/{pbm_uuid}/:
     get:
       operationId: events_rules_retrieve
       description: NotificationRule Viewset
@@ -4268,12 +4034,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/NotificationRuleRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/NotificationRuleRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/NotificationRuleRequest'
         required: true
       security:
       - authentik: []
@@ -4304,12 +4064,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedNotificationRuleRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedNotificationRuleRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedNotificationRuleRequest'
       security:
@@ -4347,7 +4101,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/events/rules/{pbm_uuid}/used_by/:
+  /events/rules/{pbm_uuid}/used_by/:
     get:
       operationId: events_rules_used_by_list
       description: Get a list of all objects that use this object
@@ -4376,7 +4130,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/events/transports/:
+  /events/transports/:
     get:
       operationId: events_transports_list
       description: NotificationTransport Viewset
@@ -4450,12 +4204,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/NotificationTransportRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/NotificationTransportRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/NotificationTransportRequest'
         required: true
       security:
       - authentik: []
@@ -4470,7 +4218,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/events/transports/{uuid}/:
+  /events/transports/{uuid}/:
     get:
       operationId: events_transports_retrieve
       description: NotificationTransport Viewset
@@ -4515,12 +4263,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/NotificationTransportRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/NotificationTransportRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/NotificationTransportRequest'
         required: true
       security:
       - authentik: []
@@ -4551,12 +4293,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedNotificationTransportRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedNotificationTransportRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedNotificationTransportRequest'
       security:
@@ -4594,7 +4330,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/events/transports/{uuid}/test/:
+  /events/transports/{uuid}/test/:
     post:
       operationId: events_transports_test_create
       description: |-
@@ -4625,7 +4361,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/events/transports/{uuid}/used_by/:
+  /events/transports/{uuid}/used_by/:
     get:
       operationId: events_transports_used_by_list
       description: Get a list of all objects that use this object
@@ -4654,7 +4390,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/flows/bindings/:
+  /flows/bindings/:
     get:
       operationId: flows_bindings_list
       description: FlowStageBinding Viewset
@@ -4768,12 +4504,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/FlowStageBindingRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/FlowStageBindingRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/FlowStageBindingRequest'
         required: true
       security:
       - authentik: []
@@ -4788,7 +4518,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/flows/bindings/{fsb_uuid}/:
+  /flows/bindings/{fsb_uuid}/:
     get:
       operationId: flows_bindings_retrieve
       description: FlowStageBinding Viewset
@@ -4833,12 +4563,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/FlowStageBindingRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/FlowStageBindingRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/FlowStageBindingRequest'
         required: true
       security:
       - authentik: []
@@ -4869,12 +4593,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedFlowStageBindingRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedFlowStageBindingRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedFlowStageBindingRequest'
       security:
@@ -4912,7 +4630,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/flows/bindings/{fsb_uuid}/used_by/:
+  /flows/bindings/{fsb_uuid}/used_by/:
     get:
       operationId: flows_bindings_used_by_list
       description: Get a list of all objects that use this object
@@ -4941,7 +4659,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/flows/executor/{flow_slug}/:
+  /flows/executor/{flow_slug}/:
     get:
       operationId: flows_executor_get
       description: Get the next pending challenge from the currently active flow.
@@ -4998,12 +4716,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/FlowChallengeResponseRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/FlowChallengeResponseRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/FlowChallengeResponseRequest'
       security:
       - authentik: []
       - {}
@@ -5018,7 +4730,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/flows/instances/:
+  /flows/instances/:
     get:
       operationId: flows_instances_list
       description: Flow Viewset
@@ -5099,12 +4811,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/FlowRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/FlowRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/FlowRequest'
         required: true
       security:
       - authentik: []
@@ -5119,7 +4825,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/flows/instances/{slug}/:
+  /flows/instances/{slug}/:
     get:
       operationId: flows_instances_retrieve
       description: Flow Viewset
@@ -5162,12 +4868,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/FlowRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/FlowRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/FlowRequest'
         required: true
       security:
       - authentik: []
@@ -5197,12 +4897,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedFlowRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedFlowRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedFlowRequest'
       security:
@@ -5239,7 +4933,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/flows/instances/{slug}/diagram/:
+  /flows/instances/{slug}/diagram/:
     get:
       operationId: flows_instances_diagram_retrieve
       description: Return diagram for flow with slug `slug`, in the format used by
@@ -5266,7 +4960,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/flows/instances/{slug}/execute/:
+  /flows/instances/{slug}/execute/:
     get:
       operationId: flows_instances_execute_retrieve
       description: Execute flow for current user
@@ -5292,7 +4986,7 @@ paths:
           description: Flow not applicable
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/flows/instances/{slug}/export/:
+  /flows/instances/{slug}/export/:
     get:
       operationId: flows_instances_export_retrieve
       description: Export flow to .akflow file
@@ -5319,7 +5013,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/flows/instances/{slug}/set_background/:
+  /flows/instances/{slug}/set_background/:
     post:
       operationId: flows_instances_set_background_create
       description: Set Flow background
@@ -5346,7 +5040,7 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/flows/instances/{slug}/set_background_url/:
+  /flows/instances/{slug}/set_background_url/:
     post:
       operationId: flows_instances_set_background_url_create
       description: Set Flow background (as URL)
@@ -5364,12 +5058,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/FilePathRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/FilePathRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/FilePathRequest'
         required: true
       security:
       - authentik: []
@@ -5380,7 +5068,7 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/flows/instances/{slug}/used_by/:
+  /flows/instances/{slug}/used_by/:
     get:
       operationId: flows_instances_used_by_list
       description: Get a list of all objects that use this object
@@ -5408,7 +5096,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/flows/instances/cache_clear/:
+  /flows/instances/cache_clear/:
     post:
       operationId: flows_instances_cache_clear_create
       description: Clear flow cache
@@ -5423,7 +5111,7 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/flows/instances/cache_info/:
+  /flows/instances/cache_info/:
     get:
       operationId: flows_instances_cache_info_retrieve
       description: Info about cached flows
@@ -5442,7 +5130,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/flows/instances/import_flow/:
+  /flows/instances/import_flow/:
     post:
       operationId: flows_instances_import_flow_create
       description: Import flow from .akflow file
@@ -5462,7 +5150,7 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/oauth2/authorization_codes/:
+  /oauth2/authorization_codes/:
     get:
       operationId: oauth2_authorization_codes_list
       description: AuthorizationCode Viewset
@@ -5514,7 +5202,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/oauth2/authorization_codes/{id}/:
+  /oauth2/authorization_codes/{id}/:
     get:
       operationId: oauth2_authorization_codes_retrieve
       description: AuthorizationCode Viewset
@@ -5561,7 +5249,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/oauth2/authorization_codes/{id}/used_by/:
+  /oauth2/authorization_codes/{id}/used_by/:
     get:
       operationId: oauth2_authorization_codes_used_by_list
       description: Get a list of all objects that use this object
@@ -5589,7 +5277,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/oauth2/refresh_tokens/:
+  /oauth2/refresh_tokens/:
     get:
       operationId: oauth2_refresh_tokens_list
       description: RefreshToken Viewset
@@ -5641,7 +5329,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/oauth2/refresh_tokens/{id}/:
+  /oauth2/refresh_tokens/{id}/:
     get:
       operationId: oauth2_refresh_tokens_retrieve
       description: RefreshToken Viewset
@@ -5688,7 +5376,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/oauth2/refresh_tokens/{id}/used_by/:
+  /oauth2/refresh_tokens/{id}/used_by/:
     get:
       operationId: oauth2_refresh_tokens_used_by_list
       description: Get a list of all objects that use this object
@@ -5716,7 +5404,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/outposts/instances/:
+  /outposts/instances/:
     get:
       operationId: outposts_instances_list
       description: Outpost Viewset
@@ -5790,12 +5478,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/OutpostRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/OutpostRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/OutpostRequest'
         required: true
       security:
       - authentik: []
@@ -5810,7 +5492,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/outposts/instances/{uuid}/:
+  /outposts/instances/{uuid}/:
     get:
       operationId: outposts_instances_retrieve
       description: Outpost Viewset
@@ -5855,12 +5537,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/OutpostRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/OutpostRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/OutpostRequest'
         required: true
       security:
       - authentik: []
@@ -5891,12 +5567,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedOutpostRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedOutpostRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedOutpostRequest'
       security:
@@ -5934,7 +5604,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/outposts/instances/{uuid}/health/:
+  /outposts/instances/{uuid}/health/:
     get:
       operationId: outposts_instances_health_list
       description: Get outposts current health
@@ -5995,7 +5665,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/outposts/instances/{uuid}/used_by/:
+  /outposts/instances/{uuid}/used_by/:
     get:
       operationId: outposts_instances_used_by_list
       description: Get a list of all objects that use this object
@@ -6024,7 +5694,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/outposts/instances/default_settings/:
+  /outposts/instances/default_settings/:
     get:
       operationId: outposts_instances_default_settings_retrieve
       description: Global default outpost config
@@ -6043,7 +5713,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/outposts/ldap/:
+  /outposts/ldap/:
     get:
       operationId: outposts_ldap_list
       description: LDAPProvider Viewset
@@ -6087,7 +5757,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/outposts/ldap/{id}/:
+  /outposts/ldap/{id}/:
     get:
       operationId: outposts_ldap_retrieve
       description: LDAPProvider Viewset
@@ -6113,7 +5783,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/outposts/proxy/:
+  /outposts/proxy/:
     get:
       operationId: outposts_proxy_list
       description: ProxyProvider Viewset
@@ -6157,7 +5827,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/outposts/proxy/{id}/:
+  /outposts/proxy/{id}/:
     get:
       operationId: outposts_proxy_retrieve
       description: ProxyProvider Viewset
@@ -6183,7 +5853,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/outposts/service_connections/all/:
+  /outposts/service_connections/all/:
     get:
       operationId: outposts_service_connections_all_list
       description: ServiceConnection Viewset
@@ -6231,7 +5901,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/outposts/service_connections/all/{uuid}/:
+  /outposts/service_connections/all/{uuid}/:
     get:
       operationId: outposts_service_connections_all_retrieve
       description: ServiceConnection Viewset
@@ -6280,7 +5950,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/outposts/service_connections/all/{uuid}/state/:
+  /outposts/service_connections/all/{uuid}/state/:
     get:
       operationId: outposts_service_connections_all_state_retrieve
       description: Get the service connection's state
@@ -6307,7 +5977,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/outposts/service_connections/all/{uuid}/used_by/:
+  /outposts/service_connections/all/{uuid}/used_by/:
     get:
       operationId: outposts_service_connections_all_used_by_list
       description: Get a list of all objects that use this object
@@ -6336,7 +6006,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/outposts/service_connections/all/types/:
+  /outposts/service_connections/all/types/:
     get:
       operationId: outposts_service_connections_all_types_list
       description: Get all creatable service connection types
@@ -6357,7 +6027,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/outposts/service_connections/docker/:
+  /outposts/service_connections/docker/:
     get:
       operationId: outposts_service_connections_docker_list
       description: DockerServiceConnection Viewset
@@ -6433,12 +6103,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DockerServiceConnectionRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/DockerServiceConnectionRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/DockerServiceConnectionRequest'
         required: true
       security:
       - authentik: []
@@ -6453,7 +6117,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/outposts/service_connections/docker/{uuid}/:
+  /outposts/service_connections/docker/{uuid}/:
     get:
       operationId: outposts_service_connections_docker_retrieve
       description: DockerServiceConnection Viewset
@@ -6498,12 +6162,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DockerServiceConnectionRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/DockerServiceConnectionRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/DockerServiceConnectionRequest'
         required: true
       security:
       - authentik: []
@@ -6534,12 +6192,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedDockerServiceConnectionRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedDockerServiceConnectionRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedDockerServiceConnectionRequest'
       security:
@@ -6577,7 +6229,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/outposts/service_connections/docker/{uuid}/used_by/:
+  /outposts/service_connections/docker/{uuid}/used_by/:
     get:
       operationId: outposts_service_connections_docker_used_by_list
       description: Get a list of all objects that use this object
@@ -6606,7 +6258,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/outposts/service_connections/kubernetes/:
+  /outposts/service_connections/kubernetes/:
     get:
       operationId: outposts_service_connections_kubernetes_list
       description: KubernetesServiceConnection Viewset
@@ -6668,12 +6320,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/KubernetesServiceConnectionRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/KubernetesServiceConnectionRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/KubernetesServiceConnectionRequest'
         required: true
       security:
       - authentik: []
@@ -6688,7 +6334,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/outposts/service_connections/kubernetes/{uuid}/:
+  /outposts/service_connections/kubernetes/{uuid}/:
     get:
       operationId: outposts_service_connections_kubernetes_retrieve
       description: KubernetesServiceConnection Viewset
@@ -6733,12 +6379,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/KubernetesServiceConnectionRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/KubernetesServiceConnectionRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/KubernetesServiceConnectionRequest'
         required: true
       security:
       - authentik: []
@@ -6769,12 +6409,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedKubernetesServiceConnectionRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedKubernetesServiceConnectionRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedKubernetesServiceConnectionRequest'
       security:
@@ -6812,7 +6446,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/outposts/service_connections/kubernetes/{uuid}/used_by/:
+  /outposts/service_connections/kubernetes/{uuid}/used_by/:
     get:
       operationId: outposts_service_connections_kubernetes_used_by_list
       description: Get a list of all objects that use this object
@@ -6841,7 +6475,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/all/:
+  /policies/all/:
     get:
       operationId: policies_all_list
       description: Policy Viewset
@@ -6893,7 +6527,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/all/{policy_uuid}/:
+  /policies/all/{policy_uuid}/:
     get:
       operationId: policies_all_retrieve
       description: Policy Viewset
@@ -6942,7 +6576,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/all/{policy_uuid}/test/:
+  /policies/all/{policy_uuid}/test/:
     post:
       operationId: policies_all_test_create
       description: Test policy
@@ -6961,12 +6595,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PolicyTestRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PolicyTestRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PolicyTestRequest'
         required: true
       security:
       - authentik: []
@@ -6981,7 +6609,7 @@ paths:
           description: Invalid parameters
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/all/{policy_uuid}/used_by/:
+  /policies/all/{policy_uuid}/used_by/:
     get:
       operationId: policies_all_used_by_list
       description: Get a list of all objects that use this object
@@ -7010,7 +6638,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/all/cache_clear/:
+  /policies/all/cache_clear/:
     post:
       operationId: policies_all_cache_clear_create
       description: Clear policy cache
@@ -7025,7 +6653,7 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/all/cache_info/:
+  /policies/all/cache_info/:
     get:
       operationId: policies_all_cache_info_retrieve
       description: Info about cached policies
@@ -7044,7 +6672,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/all/types/:
+  /policies/all/types/:
     get:
       operationId: policies_all_types_list
       description: Get all creatable policy types
@@ -7065,7 +6693,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/bindings/:
+  /policies/bindings/:
     get:
       operationId: policies_bindings_list
       description: PolicyBinding Viewset
@@ -7141,12 +6769,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PolicyBindingRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PolicyBindingRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PolicyBindingRequest'
         required: true
       security:
       - authentik: []
@@ -7161,7 +6783,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/bindings/{policy_binding_uuid}/:
+  /policies/bindings/{policy_binding_uuid}/:
     get:
       operationId: policies_bindings_retrieve
       description: PolicyBinding Viewset
@@ -7206,12 +6828,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PolicyBindingRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PolicyBindingRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PolicyBindingRequest'
         required: true
       security:
       - authentik: []
@@ -7242,12 +6858,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedPolicyBindingRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedPolicyBindingRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedPolicyBindingRequest'
       security:
@@ -7285,7 +6895,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/bindings/{policy_binding_uuid}/used_by/:
+  /policies/bindings/{policy_binding_uuid}/used_by/:
     get:
       operationId: policies_bindings_used_by_list
       description: Get a list of all objects that use this object
@@ -7314,7 +6924,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/dummy/:
+  /policies/dummy/:
     get:
       operationId: policies_dummy_list
       description: Dummy Viewset
@@ -7403,12 +7013,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DummyPolicyRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/DummyPolicyRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/DummyPolicyRequest'
       security:
       - authentik: []
       responses:
@@ -7422,7 +7026,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/dummy/{policy_uuid}/:
+  /policies/dummy/{policy_uuid}/:
     get:
       operationId: policies_dummy_retrieve
       description: Dummy Viewset
@@ -7467,12 +7071,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DummyPolicyRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/DummyPolicyRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/DummyPolicyRequest'
       security:
       - authentik: []
       responses:
@@ -7502,12 +7100,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedDummyPolicyRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedDummyPolicyRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedDummyPolicyRequest'
       security:
@@ -7545,7 +7137,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/dummy/{policy_uuid}/used_by/:
+  /policies/dummy/{policy_uuid}/used_by/:
     get:
       operationId: policies_dummy_used_by_list
       description: Get a list of all objects that use this object
@@ -7574,7 +7166,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/event_matcher/:
+  /policies/event_matcher/:
     get:
       operationId: policies_event_matcher_list
       description: Event Matcher Policy Viewset
@@ -7740,12 +7332,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/EventMatcherPolicyRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/EventMatcherPolicyRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/EventMatcherPolicyRequest'
       security:
       - authentik: []
       responses:
@@ -7759,7 +7345,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/event_matcher/{policy_uuid}/:
+  /policies/event_matcher/{policy_uuid}/:
     get:
       operationId: policies_event_matcher_retrieve
       description: Event Matcher Policy Viewset
@@ -7804,12 +7390,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/EventMatcherPolicyRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/EventMatcherPolicyRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/EventMatcherPolicyRequest'
       security:
       - authentik: []
       responses:
@@ -7839,12 +7419,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedEventMatcherPolicyRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedEventMatcherPolicyRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedEventMatcherPolicyRequest'
       security:
@@ -7882,7 +7456,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/event_matcher/{policy_uuid}/used_by/:
+  /policies/event_matcher/{policy_uuid}/used_by/:
     get:
       operationId: policies_event_matcher_used_by_list
       description: Get a list of all objects that use this object
@@ -7911,7 +7485,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/expression/:
+  /policies/expression/:
     get:
       operationId: policies_expression_list
       description: Source Viewset
@@ -7992,12 +7566,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ExpressionPolicyRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/ExpressionPolicyRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/ExpressionPolicyRequest'
         required: true
       security:
       - authentik: []
@@ -8012,7 +7580,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/expression/{policy_uuid}/:
+  /policies/expression/{policy_uuid}/:
     get:
       operationId: policies_expression_retrieve
       description: Source Viewset
@@ -8057,12 +7625,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ExpressionPolicyRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/ExpressionPolicyRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/ExpressionPolicyRequest'
         required: true
       security:
       - authentik: []
@@ -8093,12 +7655,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedExpressionPolicyRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedExpressionPolicyRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedExpressionPolicyRequest'
       security:
@@ -8136,7 +7692,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/expression/{policy_uuid}/used_by/:
+  /policies/expression/{policy_uuid}/used_by/:
     get:
       operationId: policies_expression_used_by_list
       description: Get a list of all objects that use this object
@@ -8165,7 +7721,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/haveibeenpwned/:
+  /policies/haveibeenpwned/:
     get:
       operationId: policies_haveibeenpwned_list
       description: Source Viewset
@@ -8250,12 +7806,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/HaveIBeenPwendPolicyRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/HaveIBeenPwendPolicyRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/HaveIBeenPwendPolicyRequest'
       security:
       - authentik: []
       responses:
@@ -8269,7 +7819,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/haveibeenpwned/{policy_uuid}/:
+  /policies/haveibeenpwned/{policy_uuid}/:
     get:
       operationId: policies_haveibeenpwned_retrieve
       description: Source Viewset
@@ -8314,12 +7864,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/HaveIBeenPwendPolicyRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/HaveIBeenPwendPolicyRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/HaveIBeenPwendPolicyRequest'
       security:
       - authentik: []
       responses:
@@ -8349,12 +7893,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedHaveIBeenPwendPolicyRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedHaveIBeenPwendPolicyRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedHaveIBeenPwendPolicyRequest'
       security:
@@ -8392,7 +7930,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/haveibeenpwned/{policy_uuid}/used_by/:
+  /policies/haveibeenpwned/{policy_uuid}/used_by/:
     get:
       operationId: policies_haveibeenpwned_used_by_list
       description: Get a list of all objects that use this object
@@ -8421,7 +7959,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/password/:
+  /policies/password/:
     get:
       operationId: policies_password_list
       description: Password Policy Viewset
@@ -8526,12 +8064,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PasswordPolicyRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PasswordPolicyRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PasswordPolicyRequest'
         required: true
       security:
       - authentik: []
@@ -8546,7 +8078,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/password/{policy_uuid}/:
+  /policies/password/{policy_uuid}/:
     get:
       operationId: policies_password_retrieve
       description: Password Policy Viewset
@@ -8591,12 +8123,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PasswordPolicyRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PasswordPolicyRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PasswordPolicyRequest'
         required: true
       security:
       - authentik: []
@@ -8627,12 +8153,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedPasswordPolicyRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedPasswordPolicyRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedPasswordPolicyRequest'
       security:
@@ -8670,7 +8190,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/password/{policy_uuid}/used_by/:
+  /policies/password/{policy_uuid}/used_by/:
     get:
       operationId: policies_password_used_by_list
       description: Get a list of all objects that use this object
@@ -8699,7 +8219,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/password_expiry/:
+  /policies/password_expiry/:
     get:
       operationId: policies_password_expiry_list
       description: Password Expiry Viewset
@@ -8784,12 +8304,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PasswordExpiryPolicyRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PasswordExpiryPolicyRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PasswordExpiryPolicyRequest'
         required: true
       security:
       - authentik: []
@@ -8804,7 +8318,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/password_expiry/{policy_uuid}/:
+  /policies/password_expiry/{policy_uuid}/:
     get:
       operationId: policies_password_expiry_retrieve
       description: Password Expiry Viewset
@@ -8849,12 +8363,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PasswordExpiryPolicyRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PasswordExpiryPolicyRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PasswordExpiryPolicyRequest'
         required: true
       security:
       - authentik: []
@@ -8885,12 +8393,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedPasswordExpiryPolicyRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedPasswordExpiryPolicyRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedPasswordExpiryPolicyRequest'
       security:
@@ -8928,7 +8430,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/password_expiry/{policy_uuid}/used_by/:
+  /policies/password_expiry/{policy_uuid}/used_by/:
     get:
       operationId: policies_password_expiry_used_by_list
       description: Get a list of all objects that use this object
@@ -8957,7 +8459,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/reputation/:
+  /policies/reputation/:
     get:
       operationId: policies_reputation_list
       description: Reputation Policy Viewset
@@ -9046,12 +8548,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ReputationPolicyRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/ReputationPolicyRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/ReputationPolicyRequest'
       security:
       - authentik: []
       responses:
@@ -9065,7 +8561,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/reputation/{policy_uuid}/:
+  /policies/reputation/{policy_uuid}/:
     get:
       operationId: policies_reputation_retrieve
       description: Reputation Policy Viewset
@@ -9110,12 +8606,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ReputationPolicyRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/ReputationPolicyRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/ReputationPolicyRequest'
       security:
       - authentik: []
       responses:
@@ -9145,12 +8635,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedReputationPolicyRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedReputationPolicyRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedReputationPolicyRequest'
       security:
@@ -9188,7 +8672,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/reputation/{policy_uuid}/used_by/:
+  /policies/reputation/{policy_uuid}/used_by/:
     get:
       operationId: policies_reputation_used_by_list
       description: Get a list of all objects that use this object
@@ -9217,7 +8701,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/reputation/ips/:
+  /policies/reputation/ips/:
     get:
       operationId: policies_reputation_ips_list
       description: IPReputation Viewset
@@ -9269,7 +8753,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/reputation/ips/{id}/:
+  /policies/reputation/ips/{id}/:
     get:
       operationId: policies_reputation_ips_retrieve
       description: IPReputation Viewset
@@ -9316,7 +8800,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/reputation/ips/{id}/used_by/:
+  /policies/reputation/ips/{id}/used_by/:
     get:
       operationId: policies_reputation_ips_used_by_list
       description: Get a list of all objects that use this object
@@ -9344,7 +8828,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/reputation/users/:
+  /policies/reputation/users/:
     get:
       operationId: policies_reputation_users_list
       description: UserReputation Viewset
@@ -9396,7 +8880,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/reputation/users/{id}/:
+  /policies/reputation/users/{id}/:
     get:
       operationId: policies_reputation_users_retrieve
       description: UserReputation Viewset
@@ -9443,7 +8927,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/policies/reputation/users/{id}/used_by/:
+  /policies/reputation/users/{id}/used_by/:
     get:
       operationId: policies_reputation_users_used_by_list
       description: Get a list of all objects that use this object
@@ -9471,7 +8955,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/propertymappings/all/:
+  /propertymappings/all/:
     get:
       operationId: propertymappings_all_list
       description: PropertyMapping Viewset
@@ -9519,7 +9003,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/propertymappings/all/{pm_uuid}/:
+  /propertymappings/all/{pm_uuid}/:
     get:
       operationId: propertymappings_all_retrieve
       description: PropertyMapping Viewset
@@ -9568,7 +9052,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/propertymappings/all/{pm_uuid}/test/:
+  /propertymappings/all/{pm_uuid}/test/:
     post:
       operationId: propertymappings_all_test_create
       description: Test Property Mapping
@@ -9591,12 +9075,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PolicyTestRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PolicyTestRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PolicyTestRequest'
         required: true
       security:
       - authentik: []
@@ -9611,7 +9089,7 @@ paths:
           description: Invalid parameters
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/propertymappings/all/{pm_uuid}/used_by/:
+  /propertymappings/all/{pm_uuid}/used_by/:
     get:
       operationId: propertymappings_all_used_by_list
       description: Get a list of all objects that use this object
@@ -9640,7 +9118,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/propertymappings/all/types/:
+  /propertymappings/all/types/:
     get:
       operationId: propertymappings_all_types_list
       description: Get all creatable property-mapping types
@@ -9661,7 +9139,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/propertymappings/ldap/:
+  /propertymappings/ldap/:
     get:
       operationId: propertymappings_ldap_list
       description: LDAP PropertyMapping Viewset
@@ -9746,12 +9224,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/LDAPPropertyMappingRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/LDAPPropertyMappingRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/LDAPPropertyMappingRequest'
         required: true
       security:
       - authentik: []
@@ -9766,7 +9238,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/propertymappings/ldap/{pm_uuid}/:
+  /propertymappings/ldap/{pm_uuid}/:
     get:
       operationId: propertymappings_ldap_retrieve
       description: LDAP PropertyMapping Viewset
@@ -9811,12 +9283,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/LDAPPropertyMappingRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/LDAPPropertyMappingRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/LDAPPropertyMappingRequest'
         required: true
       security:
       - authentik: []
@@ -9847,12 +9313,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedLDAPPropertyMappingRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedLDAPPropertyMappingRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedLDAPPropertyMappingRequest'
       security:
@@ -9890,7 +9350,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/propertymappings/ldap/{pm_uuid}/used_by/:
+  /propertymappings/ldap/{pm_uuid}/used_by/:
     get:
       operationId: propertymappings_ldap_used_by_list
       description: Get a list of all objects that use this object
@@ -9919,7 +9379,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/propertymappings/saml/:
+  /propertymappings/saml/:
     get:
       operationId: propertymappings_saml_list
       description: SAMLPropertyMapping Viewset
@@ -10008,12 +9468,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SAMLPropertyMappingRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/SAMLPropertyMappingRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/SAMLPropertyMappingRequest'
         required: true
       security:
       - authentik: []
@@ -10028,7 +9482,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/propertymappings/saml/{pm_uuid}/:
+  /propertymappings/saml/{pm_uuid}/:
     get:
       operationId: propertymappings_saml_retrieve
       description: SAMLPropertyMapping Viewset
@@ -10073,12 +9527,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SAMLPropertyMappingRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/SAMLPropertyMappingRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/SAMLPropertyMappingRequest'
         required: true
       security:
       - authentik: []
@@ -10109,12 +9557,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedSAMLPropertyMappingRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedSAMLPropertyMappingRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedSAMLPropertyMappingRequest'
       security:
@@ -10152,7 +9594,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/propertymappings/saml/{pm_uuid}/used_by/:
+  /propertymappings/saml/{pm_uuid}/used_by/:
     get:
       operationId: propertymappings_saml_used_by_list
       description: Get a list of all objects that use this object
@@ -10181,7 +9623,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/propertymappings/scope/:
+  /propertymappings/scope/:
     get:
       operationId: propertymappings_scope_list
       description: ScopeMapping Viewset
@@ -10257,12 +9699,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ScopeMappingRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/ScopeMappingRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/ScopeMappingRequest'
         required: true
       security:
       - authentik: []
@@ -10277,7 +9713,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/propertymappings/scope/{pm_uuid}/:
+  /propertymappings/scope/{pm_uuid}/:
     get:
       operationId: propertymappings_scope_retrieve
       description: ScopeMapping Viewset
@@ -10322,12 +9758,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ScopeMappingRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/ScopeMappingRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/ScopeMappingRequest'
         required: true
       security:
       - authentik: []
@@ -10358,12 +9788,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedScopeMappingRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedScopeMappingRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedScopeMappingRequest'
       security:
@@ -10401,7 +9825,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/propertymappings/scope/{pm_uuid}/used_by/:
+  /propertymappings/scope/{pm_uuid}/used_by/:
     get:
       operationId: propertymappings_scope_used_by_list
       description: Get a list of all objects that use this object
@@ -10430,7 +9854,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/providers/all/:
+  /providers/all/:
     get:
       operationId: providers_all_list
       description: Provider Viewset
@@ -10478,7 +9902,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/providers/all/{id}/:
+  /providers/all/{id}/:
     get:
       operationId: providers_all_retrieve
       description: Provider Viewset
@@ -10525,7 +9949,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/providers/all/{id}/used_by/:
+  /providers/all/{id}/used_by/:
     get:
       operationId: providers_all_used_by_list
       description: Get a list of all objects that use this object
@@ -10553,7 +9977,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/providers/all/types/:
+  /providers/all/types/:
     get:
       operationId: providers_all_types_list
       description: Get all creatable provider types
@@ -10574,7 +9998,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/providers/ldap/:
+  /providers/ldap/:
     get:
       operationId: providers_ldap_list
       description: LDAPProvider Viewset
@@ -10672,12 +10096,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/LDAPProviderRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/LDAPProviderRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/LDAPProviderRequest'
         required: true
       security:
       - authentik: []
@@ -10692,7 +10110,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/providers/ldap/{id}/:
+  /providers/ldap/{id}/:
     get:
       operationId: providers_ldap_retrieve
       description: LDAPProvider Viewset
@@ -10735,12 +10153,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/LDAPProviderRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/LDAPProviderRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/LDAPProviderRequest'
         required: true
       security:
       - authentik: []
@@ -10770,12 +10182,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedLDAPProviderRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedLDAPProviderRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedLDAPProviderRequest'
       security:
@@ -10812,7 +10218,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/providers/ldap/{id}/used_by/:
+  /providers/ldap/{id}/used_by/:
     get:
       operationId: providers_ldap_used_by_list
       description: Get a list of all objects that use this object
@@ -10840,7 +10246,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/providers/oauth2/:
+  /providers/oauth2/:
     get:
       operationId: providers_oauth2_list
       description: OAuth2Provider Viewset
@@ -10980,12 +10386,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/OAuth2ProviderRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/OAuth2ProviderRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/OAuth2ProviderRequest'
         required: true
       security:
       - authentik: []
@@ -11000,7 +10400,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/providers/oauth2/{id}/:
+  /providers/oauth2/{id}/:
     get:
       operationId: providers_oauth2_retrieve
       description: OAuth2Provider Viewset
@@ -11043,12 +10443,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/OAuth2ProviderRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/OAuth2ProviderRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/OAuth2ProviderRequest'
         required: true
       security:
       - authentik: []
@@ -11078,12 +10472,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedOAuth2ProviderRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedOAuth2ProviderRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedOAuth2ProviderRequest'
       security:
@@ -11120,7 +10508,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/providers/oauth2/{id}/setup_urls/:
+  /providers/oauth2/{id}/setup_urls/:
     get:
       operationId: providers_oauth2_setup_urls_retrieve
       description: Get Providers setup URLs
@@ -11148,7 +10536,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/providers/oauth2/{id}/used_by/:
+  /providers/oauth2/{id}/used_by/:
     get:
       operationId: providers_oauth2_used_by_list
       description: Get a list of all objects that use this object
@@ -11176,7 +10564,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/providers/proxy/:
+  /providers/proxy/:
     get:
       operationId: providers_proxy_list
       description: ProxyProvider Viewset
@@ -11366,12 +10754,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ProxyProviderRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/ProxyProviderRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/ProxyProviderRequest'
         required: true
       security:
       - authentik: []
@@ -11386,7 +10768,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/providers/proxy/{id}/:
+  /providers/proxy/{id}/:
     get:
       operationId: providers_proxy_retrieve
       description: ProxyProvider Viewset
@@ -11429,12 +10811,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ProxyProviderRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/ProxyProviderRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/ProxyProviderRequest'
         required: true
       security:
       - authentik: []
@@ -11464,12 +10840,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedProxyProviderRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedProxyProviderRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedProxyProviderRequest'
       security:
@@ -11506,7 +10876,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/providers/proxy/{id}/used_by/:
+  /providers/proxy/{id}/used_by/:
     get:
       operationId: providers_proxy_used_by_list
       description: Get a list of all objects that use this object
@@ -11534,7 +10904,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/providers/saml/:
+  /providers/saml/:
     get:
       operationId: providers_saml_list
       description: SAMLProvider Viewset
@@ -11674,12 +11044,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SAMLProviderRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/SAMLProviderRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/SAMLProviderRequest'
         required: true
       security:
       - authentik: []
@@ -11694,7 +11058,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/providers/saml/{id}/:
+  /providers/saml/{id}/:
     get:
       operationId: providers_saml_retrieve
       description: SAMLProvider Viewset
@@ -11737,12 +11101,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SAMLProviderRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/SAMLProviderRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/SAMLProviderRequest'
         required: true
       security:
       - authentik: []
@@ -11772,12 +11130,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedSAMLProviderRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedSAMLProviderRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedSAMLProviderRequest'
       security:
@@ -11814,7 +11166,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/providers/saml/{id}/metadata/:
+  /providers/saml/{id}/metadata/:
     get:
       operationId: providers_saml_metadata_retrieve
       description: Return metadata as XML string
@@ -11847,7 +11199,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/providers/saml/{id}/used_by/:
+  /providers/saml/{id}/used_by/:
     get:
       operationId: providers_saml_used_by_list
       description: Get a list of all objects that use this object
@@ -11875,7 +11227,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/providers/saml/import_metadata/:
+  /providers/saml/import_metadata/:
     post:
       operationId: providers_saml_import_metadata_create
       description: Create provider from SAML Metadata
@@ -11896,7 +11248,7 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/root/config/:
+  /root/config/:
     get:
       operationId: root_config_retrieve
       description: Retrive public configuration options
@@ -11916,7 +11268,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/schema/:
+  /schema/:
     get:
       operationId: schema_retrieve
       description: |-
@@ -12062,7 +11414,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sentry/:
+  /sentry/:
     post:
       operationId: sentry_create
       description: Sentry tunnel, to prevent ad blockers from blocking sentry
@@ -12077,7 +11429,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/all/:
+  /sources/all/:
     get:
       operationId: sources_all_list
       description: Source Viewset
@@ -12121,7 +11473,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/all/{slug}/:
+  /sources/all/{slug}/:
     get:
       operationId: sources_all_retrieve
       description: Source Viewset
@@ -12168,7 +11520,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/all/{slug}/used_by/:
+  /sources/all/{slug}/used_by/:
     get:
       operationId: sources_all_used_by_list
       description: Get a list of all objects that use this object
@@ -12196,7 +11548,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/all/types/:
+  /sources/all/types/:
     get:
       operationId: sources_all_types_list
       description: Get all creatable source types
@@ -12217,7 +11569,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/all/user_settings/:
+  /sources/all/user_settings/:
     get:
       operationId: sources_all_user_settings_list
       description: Get all sources the user can configure
@@ -12238,7 +11590,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/ldap/:
+  /sources/ldap/:
     get:
       operationId: sources_ldap_list
       description: LDAP Source Viewset
@@ -12396,12 +11748,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/LDAPSourceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/LDAPSourceRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/LDAPSourceRequest'
         required: true
       security:
       - authentik: []
@@ -12416,7 +11762,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/ldap/{slug}/:
+  /sources/ldap/{slug}/:
     get:
       operationId: sources_ldap_retrieve
       description: LDAP Source Viewset
@@ -12459,12 +11805,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/LDAPSourceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/LDAPSourceRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/LDAPSourceRequest'
         required: true
       security:
       - authentik: []
@@ -12494,12 +11834,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedLDAPSourceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedLDAPSourceRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedLDAPSourceRequest'
       security:
@@ -12536,7 +11870,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/ldap/{slug}/sync_status/:
+  /sources/ldap/{slug}/sync_status/:
     get:
       operationId: sources_ldap_sync_status_retrieve
       description: Get source's sync status
@@ -12564,7 +11898,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/ldap/{slug}/used_by/:
+  /sources/ldap/{slug}/used_by/:
     get:
       operationId: sources_ldap_used_by_list
       description: Get a list of all objects that use this object
@@ -12592,7 +11926,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/oauth/:
+  /sources/oauth/:
     get:
       operationId: sources_oauth_list
       description: Source Viewset
@@ -12711,12 +12045,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/OAuthSourceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/OAuthSourceRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/OAuthSourceRequest'
         required: true
       security:
       - authentik: []
@@ -12731,7 +12059,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/oauth/{slug}/:
+  /sources/oauth/{slug}/:
     get:
       operationId: sources_oauth_retrieve
       description: Source Viewset
@@ -12774,12 +12102,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/OAuthSourceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/OAuthSourceRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/OAuthSourceRequest'
         required: true
       security:
       - authentik: []
@@ -12809,12 +12131,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedOAuthSourceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedOAuthSourceRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedOAuthSourceRequest'
       security:
@@ -12851,7 +12167,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/oauth/{slug}/used_by/:
+  /sources/oauth/{slug}/used_by/:
     get:
       operationId: sources_oauth_used_by_list
       description: Get a list of all objects that use this object
@@ -12879,7 +12195,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/oauth/source_types/:
+  /sources/oauth/source_types/:
     get:
       operationId: sources_oauth_source_types_list
       description: |-
@@ -12907,7 +12223,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/plex/:
+  /sources/plex/:
     get:
       operationId: sources_plex_list
       description: Plex source Viewset
@@ -13010,12 +12326,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PlexSourceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PlexSourceRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PlexSourceRequest'
         required: true
       security:
       - authentik: []
@@ -13030,7 +12340,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/plex/{slug}/:
+  /sources/plex/{slug}/:
     get:
       operationId: sources_plex_retrieve
       description: Plex source Viewset
@@ -13073,12 +12383,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PlexSourceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PlexSourceRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PlexSourceRequest'
         required: true
       security:
       - authentik: []
@@ -13108,12 +12412,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedPlexSourceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedPlexSourceRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedPlexSourceRequest'
       security:
@@ -13150,7 +12448,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/plex/{slug}/used_by/:
+  /sources/plex/{slug}/used_by/:
     get:
       operationId: sources_plex_used_by_list
       description: Get a list of all objects that use this object
@@ -13178,7 +12476,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/plex/redeem_token/:
+  /sources/plex/redeem_token/:
     post:
       operationId: sources_plex_redeem_token_create
       description: |-
@@ -13196,12 +12494,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PlexTokenRedeemRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PlexTokenRedeemRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PlexTokenRedeemRequest'
         required: true
       security:
       - authentik: []
@@ -13217,7 +12509,7 @@ paths:
           description: Token not found
         '403':
           description: Access denied
-  /api/v2beta/sources/saml/:
+  /sources/saml/:
     get:
       operationId: sources_saml_list
       description: SAMLSource Viewset
@@ -13408,12 +12700,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SAMLSourceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/SAMLSourceRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/SAMLSourceRequest'
         required: true
       security:
       - authentik: []
@@ -13428,7 +12714,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/saml/{slug}/:
+  /sources/saml/{slug}/:
     get:
       operationId: sources_saml_retrieve
       description: SAMLSource Viewset
@@ -13471,12 +12757,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SAMLSourceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/SAMLSourceRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/SAMLSourceRequest'
         required: true
       security:
       - authentik: []
@@ -13506,12 +12786,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedSAMLSourceRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedSAMLSourceRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedSAMLSourceRequest'
       security:
@@ -13548,7 +12822,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/saml/{slug}/metadata/:
+  /sources/saml/{slug}/metadata/:
     get:
       operationId: sources_saml_metadata_retrieve
       description: Return metadata as XML string
@@ -13574,7 +12848,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/saml/{slug}/used_by/:
+  /sources/saml/{slug}/used_by/:
     get:
       operationId: sources_saml_used_by_list
       description: Get a list of all objects that use this object
@@ -13602,7 +12876,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/user_connections/oauth/:
+  /sources/user_connections/oauth/:
     get:
       operationId: sources_user_connections_oauth_list
       description: Source Viewset
@@ -13650,7 +12924,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/user_connections/oauth/{id}/:
+  /sources/user_connections/oauth/{id}/:
     get:
       operationId: sources_user_connections_oauth_retrieve
       description: Source Viewset
@@ -13693,12 +12967,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserOAuthSourceConnectionRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserOAuthSourceConnectionRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserOAuthSourceConnectionRequest'
         required: true
       security:
       - authentik: []
@@ -13728,12 +12996,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedUserOAuthSourceConnectionRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedUserOAuthSourceConnectionRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedUserOAuthSourceConnectionRequest'
       security:
@@ -13770,7 +13032,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/user_connections/oauth/{id}/used_by/:
+  /sources/user_connections/oauth/{id}/used_by/:
     get:
       operationId: sources_user_connections_oauth_used_by_list
       description: Get a list of all objects that use this object
@@ -13798,7 +13060,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/user_connections/plex/:
+  /sources/user_connections/plex/:
     get:
       operationId: sources_user_connections_plex_list
       description: Plex Source connection Serializer
@@ -13846,7 +13108,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/user_connections/plex/{id}/:
+  /sources/user_connections/plex/{id}/:
     get:
       operationId: sources_user_connections_plex_retrieve
       description: Plex Source connection Serializer
@@ -13889,12 +13151,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PlexSourceConnectionRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PlexSourceConnectionRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PlexSourceConnectionRequest'
         required: true
       security:
       - authentik: []
@@ -13924,12 +13180,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedPlexSourceConnectionRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedPlexSourceConnectionRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedPlexSourceConnectionRequest'
       security:
@@ -13966,7 +13216,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/sources/user_connections/plex/{id}/used_by/:
+  /sources/user_connections/plex/{id}/used_by/:
     get:
       operationId: sources_user_connections_plex_used_by_list
       description: Get a list of all objects that use this object
@@ -13994,7 +13244,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/all/:
+  /stages/all/:
     get:
       operationId: stages_all_list
       description: Stage Viewset
@@ -14042,7 +13292,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/all/{stage_uuid}/:
+  /stages/all/{stage_uuid}/:
     get:
       operationId: stages_all_retrieve
       description: Stage Viewset
@@ -14091,7 +13341,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/all/{stage_uuid}/used_by/:
+  /stages/all/{stage_uuid}/used_by/:
     get:
       operationId: stages_all_used_by_list
       description: Get a list of all objects that use this object
@@ -14120,7 +13370,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/all/types/:
+  /stages/all/types/:
     get:
       operationId: stages_all_types_list
       description: Get all creatable stage types
@@ -14141,7 +13391,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/all/user_settings/:
+  /stages/all/user_settings/:
     get:
       operationId: stages_all_user_settings_list
       description: Get all stages the user can configure
@@ -14162,7 +13412,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/authenticator/duo/:
+  /stages/authenticator/duo/:
     get:
       operationId: stages_authenticator_duo_list
       description: AuthenticatorDuoStage Viewset
@@ -14233,12 +13483,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AuthenticatorDuoStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/AuthenticatorDuoStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/AuthenticatorDuoStageRequest'
         required: true
       security:
       - authentik: []
@@ -14253,7 +13497,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/authenticator/duo/{stage_uuid}/:
+  /stages/authenticator/duo/{stage_uuid}/:
     get:
       operationId: stages_authenticator_duo_retrieve
       description: AuthenticatorDuoStage Viewset
@@ -14298,12 +13542,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AuthenticatorDuoStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/AuthenticatorDuoStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/AuthenticatorDuoStageRequest'
         required: true
       security:
       - authentik: []
@@ -14334,12 +13572,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedAuthenticatorDuoStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedAuthenticatorDuoStageRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedAuthenticatorDuoStageRequest'
       security:
@@ -14377,7 +13609,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/authenticator/duo/{stage_uuid}/enrollment_status/:
+  /stages/authenticator/duo/{stage_uuid}/enrollment_status/:
     post:
       operationId: stages_authenticator_duo_enrollment_status_create
       description: Check enrollment status of user details in current session
@@ -14402,7 +13634,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/authenticator/duo/{stage_uuid}/used_by/:
+  /stages/authenticator/duo/{stage_uuid}/used_by/:
     get:
       operationId: stages_authenticator_duo_used_by_list
       description: Get a list of all objects that use this object
@@ -14431,7 +13663,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/authenticator/static/:
+  /stages/authenticator/static/:
     get:
       operationId: stages_authenticator_static_list
       description: AuthenticatorStaticStage Viewset
@@ -14503,12 +13735,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AuthenticatorStaticStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/AuthenticatorStaticStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/AuthenticatorStaticStageRequest'
         required: true
       security:
       - authentik: []
@@ -14523,7 +13749,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/authenticator/static/{stage_uuid}/:
+  /stages/authenticator/static/{stage_uuid}/:
     get:
       operationId: stages_authenticator_static_retrieve
       description: AuthenticatorStaticStage Viewset
@@ -14568,12 +13794,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AuthenticatorStaticStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/AuthenticatorStaticStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/AuthenticatorStaticStageRequest'
         required: true
       security:
       - authentik: []
@@ -14604,12 +13824,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedAuthenticatorStaticStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedAuthenticatorStaticStageRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedAuthenticatorStaticStageRequest'
       security:
@@ -14647,7 +13861,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/authenticator/static/{stage_uuid}/used_by/:
+  /stages/authenticator/static/{stage_uuid}/used_by/:
     get:
       operationId: stages_authenticator_static_used_by_list
       description: Get a list of all objects that use this object
@@ -14676,7 +13890,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/authenticator/totp/:
+  /stages/authenticator/totp/:
     get:
       operationId: stages_authenticator_totp_list
       description: AuthenticatorTOTPStage Viewset
@@ -14751,12 +13965,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AuthenticatorTOTPStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/AuthenticatorTOTPStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/AuthenticatorTOTPStageRequest'
         required: true
       security:
       - authentik: []
@@ -14771,7 +13979,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/authenticator/totp/{stage_uuid}/:
+  /stages/authenticator/totp/{stage_uuid}/:
     get:
       operationId: stages_authenticator_totp_retrieve
       description: AuthenticatorTOTPStage Viewset
@@ -14816,12 +14024,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AuthenticatorTOTPStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/AuthenticatorTOTPStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/AuthenticatorTOTPStageRequest'
         required: true
       security:
       - authentik: []
@@ -14852,12 +14054,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedAuthenticatorTOTPStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedAuthenticatorTOTPStageRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedAuthenticatorTOTPStageRequest'
       security:
@@ -14895,7 +14091,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/authenticator/totp/{stage_uuid}/used_by/:
+  /stages/authenticator/totp/{stage_uuid}/used_by/:
     get:
       operationId: stages_authenticator_totp_used_by_list
       description: Get a list of all objects that use this object
@@ -14924,7 +14120,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/authenticator/validate/:
+  /stages/authenticator/validate/:
     get:
       operationId: stages_authenticator_validate_list
       description: AuthenticatorValidateStage Viewset
@@ -14995,12 +14191,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AuthenticatorValidateStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/AuthenticatorValidateStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/AuthenticatorValidateStageRequest'
         required: true
       security:
       - authentik: []
@@ -15015,7 +14205,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/authenticator/validate/{stage_uuid}/:
+  /stages/authenticator/validate/{stage_uuid}/:
     get:
       operationId: stages_authenticator_validate_retrieve
       description: AuthenticatorValidateStage Viewset
@@ -15060,12 +14250,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AuthenticatorValidateStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/AuthenticatorValidateStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/AuthenticatorValidateStageRequest'
         required: true
       security:
       - authentik: []
@@ -15096,12 +14280,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedAuthenticatorValidateStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedAuthenticatorValidateStageRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedAuthenticatorValidateStageRequest'
       security:
@@ -15139,7 +14317,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/authenticator/validate/{stage_uuid}/used_by/:
+  /stages/authenticator/validate/{stage_uuid}/used_by/:
     get:
       operationId: stages_authenticator_validate_used_by_list
       description: Get a list of all objects that use this object
@@ -15168,7 +14346,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/authenticator/webauthn/:
+  /stages/authenticator/webauthn/:
     get:
       operationId: stages_authenticator_webauthn_list
       description: AuthenticateWebAuthnStage Viewset
@@ -15236,12 +14414,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AuthenticateWebAuthnStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/AuthenticateWebAuthnStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/AuthenticateWebAuthnStageRequest'
         required: true
       security:
       - authentik: []
@@ -15256,7 +14428,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/authenticator/webauthn/{stage_uuid}/:
+  /stages/authenticator/webauthn/{stage_uuid}/:
     get:
       operationId: stages_authenticator_webauthn_retrieve
       description: AuthenticateWebAuthnStage Viewset
@@ -15301,12 +14473,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AuthenticateWebAuthnStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/AuthenticateWebAuthnStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/AuthenticateWebAuthnStageRequest'
         required: true
       security:
       - authentik: []
@@ -15337,12 +14503,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedAuthenticateWebAuthnStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedAuthenticateWebAuthnStageRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedAuthenticateWebAuthnStageRequest'
       security:
@@ -15380,7 +14540,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/authenticator/webauthn/{stage_uuid}/used_by/:
+  /stages/authenticator/webauthn/{stage_uuid}/used_by/:
     get:
       operationId: stages_authenticator_webauthn_used_by_list
       description: Get a list of all objects that use this object
@@ -15409,7 +14569,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/captcha/:
+  /stages/captcha/:
     get:
       operationId: stages_captcha_list
       description: CaptchaStage Viewset
@@ -15471,12 +14631,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CaptchaStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/CaptchaStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/CaptchaStageRequest'
         required: true
       security:
       - authentik: []
@@ -15491,7 +14645,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/captcha/{stage_uuid}/:
+  /stages/captcha/{stage_uuid}/:
     get:
       operationId: stages_captcha_retrieve
       description: CaptchaStage Viewset
@@ -15536,12 +14690,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CaptchaStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/CaptchaStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/CaptchaStageRequest'
         required: true
       security:
       - authentik: []
@@ -15572,12 +14720,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedCaptchaStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedCaptchaStageRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedCaptchaStageRequest'
       security:
@@ -15615,7 +14757,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/captcha/{stage_uuid}/used_by/:
+  /stages/captcha/{stage_uuid}/used_by/:
     get:
       operationId: stages_captcha_used_by_list
       description: Get a list of all objects that use this object
@@ -15644,7 +14786,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/consent/:
+  /stages/consent/:
     get:
       operationId: stages_consent_list
       description: ConsentStage Viewset
@@ -15719,12 +14861,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ConsentStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/ConsentStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/ConsentStageRequest'
         required: true
       security:
       - authentik: []
@@ -15739,7 +14875,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/consent/{stage_uuid}/:
+  /stages/consent/{stage_uuid}/:
     get:
       operationId: stages_consent_retrieve
       description: ConsentStage Viewset
@@ -15784,12 +14920,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ConsentStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/ConsentStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/ConsentStageRequest'
         required: true
       security:
       - authentik: []
@@ -15820,12 +14950,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedConsentStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedConsentStageRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedConsentStageRequest'
       security:
@@ -15863,7 +14987,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/consent/{stage_uuid}/used_by/:
+  /stages/consent/{stage_uuid}/used_by/:
     get:
       operationId: stages_consent_used_by_list
       description: Get a list of all objects that use this object
@@ -15892,7 +15016,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/deny/:
+  /stages/deny/:
     get:
       operationId: stages_deny_list
       description: DenyStage Viewset
@@ -15955,12 +15079,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DenyStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/DenyStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/DenyStageRequest'
         required: true
       security:
       - authentik: []
@@ -15975,7 +15093,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/deny/{stage_uuid}/:
+  /stages/deny/{stage_uuid}/:
     get:
       operationId: stages_deny_retrieve
       description: DenyStage Viewset
@@ -16020,12 +15138,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DenyStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/DenyStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/DenyStageRequest'
         required: true
       security:
       - authentik: []
@@ -16056,12 +15168,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedDenyStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedDenyStageRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedDenyStageRequest'
       security:
@@ -16099,7 +15205,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/deny/{stage_uuid}/used_by/:
+  /stages/deny/{stage_uuid}/used_by/:
     get:
       operationId: stages_deny_used_by_list
       description: Get a list of all objects that use this object
@@ -16128,7 +15234,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/dummy/:
+  /stages/dummy/:
     get:
       operationId: stages_dummy_list
       description: DummyStage Viewset
@@ -16191,12 +15297,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DummyStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/DummyStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/DummyStageRequest'
         required: true
       security:
       - authentik: []
@@ -16211,7 +15311,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/dummy/{stage_uuid}/:
+  /stages/dummy/{stage_uuid}/:
     get:
       operationId: stages_dummy_retrieve
       description: DummyStage Viewset
@@ -16256,12 +15356,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DummyStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/DummyStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/DummyStageRequest'
         required: true
       security:
       - authentik: []
@@ -16292,12 +15386,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedDummyStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedDummyStageRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedDummyStageRequest'
       security:
@@ -16335,7 +15423,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/dummy/{stage_uuid}/used_by/:
+  /stages/dummy/{stage_uuid}/used_by/:
     get:
       operationId: stages_dummy_used_by_list
       description: Get a list of all objects that use this object
@@ -16364,7 +15452,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/email/:
+  /stages/email/:
     get:
       operationId: stages_email_list
       description: EmailStage Viewset
@@ -16466,12 +15554,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/EmailStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/EmailStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/EmailStageRequest'
         required: true
       security:
       - authentik: []
@@ -16486,7 +15568,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/email/{stage_uuid}/:
+  /stages/email/{stage_uuid}/:
     get:
       operationId: stages_email_retrieve
       description: EmailStage Viewset
@@ -16531,12 +15613,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/EmailStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/EmailStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/EmailStageRequest'
         required: true
       security:
       - authentik: []
@@ -16567,12 +15643,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedEmailStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedEmailStageRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedEmailStageRequest'
       security:
@@ -16610,7 +15680,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/email/{stage_uuid}/used_by/:
+  /stages/email/{stage_uuid}/used_by/:
     get:
       operationId: stages_email_used_by_list
       description: Get a list of all objects that use this object
@@ -16639,7 +15709,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/email/templates/:
+  /stages/email/templates/:
     get:
       operationId: stages_email_templates_list
       description: Get all available templates, including custom templates
@@ -16660,7 +15730,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/identification/:
+  /stages/identification/:
     get:
       operationId: stages_identification_list
       description: IdentificationStage Viewset
@@ -16741,12 +15811,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/IdentificationStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/IdentificationStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/IdentificationStageRequest'
         required: true
       security:
       - authentik: []
@@ -16761,7 +15825,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/identification/{stage_uuid}/:
+  /stages/identification/{stage_uuid}/:
     get:
       operationId: stages_identification_retrieve
       description: IdentificationStage Viewset
@@ -16806,12 +15870,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/IdentificationStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/IdentificationStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/IdentificationStageRequest'
         required: true
       security:
       - authentik: []
@@ -16842,12 +15900,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedIdentificationStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedIdentificationStageRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedIdentificationStageRequest'
       security:
@@ -16885,7 +15937,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/identification/{stage_uuid}/used_by/:
+  /stages/identification/{stage_uuid}/used_by/:
     get:
       operationId: stages_identification_used_by_list
       description: Get a list of all objects that use this object
@@ -16914,7 +15966,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/invitation/invitations/:
+  /stages/invitation/invitations/:
     get:
       operationId: stages_invitation_invitations_list
       description: Invitation Viewset
@@ -16977,12 +16029,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/InvitationRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/InvitationRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/InvitationRequest'
       security:
       - authentik: []
       responses:
@@ -16996,7 +16042,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/invitation/invitations/{invite_uuid}/:
+  /stages/invitation/invitations/{invite_uuid}/:
     get:
       operationId: stages_invitation_invitations_retrieve
       description: Invitation Viewset
@@ -17041,12 +16087,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/InvitationRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/InvitationRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/InvitationRequest'
       security:
       - authentik: []
       responses:
@@ -17076,12 +16116,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedInvitationRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedInvitationRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedInvitationRequest'
       security:
@@ -17119,7 +16153,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/invitation/invitations/{invite_uuid}/used_by/:
+  /stages/invitation/invitations/{invite_uuid}/used_by/:
     get:
       operationId: stages_invitation_invitations_used_by_list
       description: Get a list of all objects that use this object
@@ -17148,7 +16182,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/invitation/stages/:
+  /stages/invitation/stages/:
     get:
       operationId: stages_invitation_stages_list
       description: InvitationStage Viewset
@@ -17215,12 +16249,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/InvitationStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/InvitationStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/InvitationStageRequest'
         required: true
       security:
       - authentik: []
@@ -17235,7 +16263,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/invitation/stages/{stage_uuid}/:
+  /stages/invitation/stages/{stage_uuid}/:
     get:
       operationId: stages_invitation_stages_retrieve
       description: InvitationStage Viewset
@@ -17280,12 +16308,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/InvitationStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/InvitationStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/InvitationStageRequest'
         required: true
       security:
       - authentik: []
@@ -17316,12 +16338,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedInvitationStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedInvitationStageRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedInvitationStageRequest'
       security:
@@ -17359,7 +16375,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/invitation/stages/{stage_uuid}/used_by/:
+  /stages/invitation/stages/{stage_uuid}/used_by/:
     get:
       operationId: stages_invitation_stages_used_by_list
       description: Get a list of all objects that use this object
@@ -17388,7 +16404,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/password/:
+  /stages/password/:
     get:
       operationId: stages_password_list
       description: PasswordStage Viewset
@@ -17455,12 +16471,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PasswordStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PasswordStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PasswordStageRequest'
         required: true
       security:
       - authentik: []
@@ -17475,7 +16485,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/password/{stage_uuid}/:
+  /stages/password/{stage_uuid}/:
     get:
       operationId: stages_password_retrieve
       description: PasswordStage Viewset
@@ -17520,12 +16530,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PasswordStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PasswordStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PasswordStageRequest'
         required: true
       security:
       - authentik: []
@@ -17556,12 +16560,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedPasswordStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedPasswordStageRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedPasswordStageRequest'
       security:
@@ -17599,7 +16597,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/password/{stage_uuid}/used_by/:
+  /stages/password/{stage_uuid}/used_by/:
     get:
       operationId: stages_password_used_by_list
       description: Get a list of all objects that use this object
@@ -17628,7 +16626,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/prompt/prompts/:
+  /stages/prompt/prompts/:
     get:
       operationId: stages_prompt_prompts_list
       description: Prompt Viewset
@@ -17710,12 +16708,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PromptRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PromptRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PromptRequest'
         required: true
       security:
       - authentik: []
@@ -17730,7 +16722,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/prompt/prompts/{prompt_uuid}/:
+  /stages/prompt/prompts/{prompt_uuid}/:
     get:
       operationId: stages_prompt_prompts_retrieve
       description: Prompt Viewset
@@ -17775,12 +16767,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PromptRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PromptRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PromptRequest'
         required: true
       security:
       - authentik: []
@@ -17811,12 +16797,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedPromptRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedPromptRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedPromptRequest'
       security:
@@ -17854,7 +16834,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/prompt/prompts/{prompt_uuid}/used_by/:
+  /stages/prompt/prompts/{prompt_uuid}/used_by/:
     get:
       operationId: stages_prompt_prompts_used_by_list
       description: Get a list of all objects that use this object
@@ -17883,7 +16863,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/prompt/stages/:
+  /stages/prompt/stages/:
     get:
       operationId: stages_prompt_stages_list
       description: PromptStage Viewset
@@ -17964,12 +16944,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PromptStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PromptStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PromptStageRequest'
         required: true
       security:
       - authentik: []
@@ -17984,7 +16958,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/prompt/stages/{stage_uuid}/:
+  /stages/prompt/stages/{stage_uuid}/:
     get:
       operationId: stages_prompt_stages_retrieve
       description: PromptStage Viewset
@@ -18029,12 +17003,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PromptStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PromptStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PromptStageRequest'
         required: true
       security:
       - authentik: []
@@ -18065,12 +17033,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedPromptStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedPromptStageRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedPromptStageRequest'
       security:
@@ -18108,7 +17070,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/prompt/stages/{stage_uuid}/used_by/:
+  /stages/prompt/stages/{stage_uuid}/used_by/:
     get:
       operationId: stages_prompt_stages_used_by_list
       description: Get a list of all objects that use this object
@@ -18137,7 +17099,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/user_delete/:
+  /stages/user_delete/:
     get:
       operationId: stages_user_delete_list
       description: UserDeleteStage Viewset
@@ -18200,12 +17162,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserDeleteStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserDeleteStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserDeleteStageRequest'
         required: true
       security:
       - authentik: []
@@ -18220,7 +17176,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/user_delete/{stage_uuid}/:
+  /stages/user_delete/{stage_uuid}/:
     get:
       operationId: stages_user_delete_retrieve
       description: UserDeleteStage Viewset
@@ -18265,12 +17221,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserDeleteStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserDeleteStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserDeleteStageRequest'
         required: true
       security:
       - authentik: []
@@ -18301,12 +17251,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedUserDeleteStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedUserDeleteStageRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedUserDeleteStageRequest'
       security:
@@ -18344,7 +17288,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/user_delete/{stage_uuid}/used_by/:
+  /stages/user_delete/{stage_uuid}/used_by/:
     get:
       operationId: stages_user_delete_used_by_list
       description: Get a list of all objects that use this object
@@ -18373,7 +17317,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/user_login/:
+  /stages/user_login/:
     get:
       operationId: stages_user_login_list
       description: UserLoginStage Viewset
@@ -18440,12 +17384,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserLoginStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserLoginStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserLoginStageRequest'
         required: true
       security:
       - authentik: []
@@ -18460,7 +17398,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/user_login/{stage_uuid}/:
+  /stages/user_login/{stage_uuid}/:
     get:
       operationId: stages_user_login_retrieve
       description: UserLoginStage Viewset
@@ -18505,12 +17443,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserLoginStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserLoginStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserLoginStageRequest'
         required: true
       security:
       - authentik: []
@@ -18541,12 +17473,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedUserLoginStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedUserLoginStageRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedUserLoginStageRequest'
       security:
@@ -18584,7 +17510,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/user_login/{stage_uuid}/used_by/:
+  /stages/user_login/{stage_uuid}/used_by/:
     get:
       operationId: stages_user_login_used_by_list
       description: Get a list of all objects that use this object
@@ -18613,7 +17539,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/user_logout/:
+  /stages/user_logout/:
     get:
       operationId: stages_user_logout_list
       description: UserLogoutStage Viewset
@@ -18676,12 +17602,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserLogoutStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserLogoutStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserLogoutStageRequest'
         required: true
       security:
       - authentik: []
@@ -18696,7 +17616,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/user_logout/{stage_uuid}/:
+  /stages/user_logout/{stage_uuid}/:
     get:
       operationId: stages_user_logout_retrieve
       description: UserLogoutStage Viewset
@@ -18741,12 +17661,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserLogoutStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserLogoutStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserLogoutStageRequest'
         required: true
       security:
       - authentik: []
@@ -18777,12 +17691,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedUserLogoutStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedUserLogoutStageRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedUserLogoutStageRequest'
       security:
@@ -18820,7 +17728,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/user_logout/{stage_uuid}/used_by/:
+  /stages/user_logout/{stage_uuid}/used_by/:
     get:
       operationId: stages_user_logout_used_by_list
       description: Get a list of all objects that use this object
@@ -18849,7 +17757,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/user_write/:
+  /stages/user_write/:
     get:
       operationId: stages_user_write_list
       description: UserWriteStage Viewset
@@ -18916,12 +17824,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserWriteStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserWriteStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserWriteStageRequest'
         required: true
       security:
       - authentik: []
@@ -18936,7 +17838,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/user_write/{stage_uuid}/:
+  /stages/user_write/{stage_uuid}/:
     get:
       operationId: stages_user_write_retrieve
       description: UserWriteStage Viewset
@@ -18981,12 +17883,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserWriteStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserWriteStageRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserWriteStageRequest'
         required: true
       security:
       - authentik: []
@@ -19017,12 +17913,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedUserWriteStageRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedUserWriteStageRequest'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedUserWriteStageRequest'
       security:
@@ -19060,7 +17950,7 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /api/v2beta/stages/user_write/{stage_uuid}/used_by/:
+  /stages/user_write/{stage_uuid}/used_by/:
     get:
       operationId: stages_user_write_used_by_list
       description: Get a list of all objects that use this object
@@ -30214,3 +29104,6 @@ components:
       type: apiKey
       in: header
       name: Authorization
+servers:
+- url: http://authentik.tld/api/v3/
+- url: http://authentik.tld/api/v2beta/

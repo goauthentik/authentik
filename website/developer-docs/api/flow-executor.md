@@ -10,13 +10,13 @@ However, any flow can be executed via an API from anywhere, in fact that is what
 Because the flow executor stores its state in the HTTP Session, so you need to ensure cookies between flow executor requests are persisted.
 :::
 
-The main endpoint for flow execution is `/api/v2beta/flows/executor/:slug`.
+The main endpoint for flow execution is `/api/v3/flows/executor/:slug`.
 
 This endpoint accepts a query parameter called `query`, in which the flow executor sends the full Query-string.
 
 To initiate a new flow, execute a GET request.
 
-## `GET /api/v2beta/flows/executor/test-flow/`
+## `GET /api/v3/flows/executor/test-flow/`
 
 Below is the response, for example for an Identification stage.
 
@@ -45,7 +45,7 @@ Below is the response, for example for an Identification stage.
 
 To respond to this challenge, send a response:
 
-## `POST /api/v2beta/flows/executor/test-flow/`
+## `POST /api/v3/flows/executor/test-flow/`
 
 With this body
 
@@ -63,7 +63,7 @@ Depending on the flow, you'll either get a 200 Response with another challenge, 
 
 Depending also on the stage, a response might take longer to be returned (especially with the Duo Authenticator validation).
 
-To see the data layout for every stage possible, see the [API Browser](https://goauthentik.io/api/#get-/api/v2beta/flows/executor/-flow_slug-/)
+To see the data layout for every stage possible, see the [API Browser](https://goauthentik.io/api/#get-/api/v3/flows/executor/-flow_slug-/)
 
 ## Result
 

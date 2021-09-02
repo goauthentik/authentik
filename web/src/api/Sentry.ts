@@ -15,7 +15,7 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
             Sentry.init({
                 dsn: "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8",
                 release: `authentik@${VERSION}`,
-                tunnel: "/api/v2beta/sentry/",
+                tunnel: "/api/v3/sentry/",
                 integrations: [
                     new Integrations.BrowserTracing({
                         tracingOrigins: [window.location.host, "localhost"],

@@ -1,4 +1,4 @@
-"""api v2 urls"""
+"""api v3 urls"""
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from drf_spectacular.views import SpectacularAPIView
@@ -10,8 +10,8 @@ from authentik.admin.api.system import SystemView
 from authentik.admin.api.tasks import TaskViewSet
 from authentik.admin.api.version import VersionView
 from authentik.admin.api.workers import WorkerView
-from authentik.api.v2.config import ConfigView
-from authentik.api.v2.sentry import SentryTunnelView
+from authentik.api.v3.config import ConfigView
+from authentik.api.v3.sentry import SentryTunnelView
 from authentik.api.views import APIBrowserView
 from authentik.core.api.applications import ApplicationViewSet
 from authentik.core.api.authenticated_sessions import AuthenticatedSessionViewSet

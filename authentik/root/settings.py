@@ -150,12 +150,20 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "Making authentication simple.",
     "VERSION": __version__,
     "COMPONENT_SPLIT_REQUEST": True,
+    "SCHEMA_PATH_PREFIX": "/api/v([0-9]+(beta)?)",
+    "SCHEMA_PATH_PREFIX_TRIM": True,
+    "SERVERS": [
+        {
+            "url": "http://authentik.tld/api/v3/",
+        },
+        {
+            "url": "http://authentik.tld/api/v2beta/",
+        },
+    ],
     "CONTACT": {
         "email": "hello@beryju.org",
     },
-    'AUTHENTICATION_WHITELIST': [
-        "authentik.api.authentication.TokenAuthentication"
-    ],
+    "AUTHENTICATION_WHITELIST": ["authentik.api.authentication.TokenAuthentication"],
     "LICENSE": {
         "name": "GNU GPLv3",
         "url": "https://github.com/goauthentik/authentik/blob/master/LICENSE",
@@ -182,6 +190,9 @@ REST_FRAMEWORK = {
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.OrderingFilter",
         "rest_framework.filters.SearchFilter",
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
     ],
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.DjangoObjectPermissions",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
