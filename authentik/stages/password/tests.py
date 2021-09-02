@@ -2,9 +2,9 @@
 from unittest.mock import MagicMock, patch
 
 from django.core.exceptions import PermissionDenied
-from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
+from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
@@ -20,7 +20,7 @@ from authentik.stages.password.models import PasswordStage
 MOCK_BACKEND_AUTHENTICATE = MagicMock(side_effect=PermissionDenied("test"))
 
 
-class TestPasswordStage(TestCase):
+class TestPasswordStage(APITestCase):
     """Password tests"""
 
     def setUp(self):
@@ -29,7 +29,6 @@ class TestPasswordStage(TestCase):
         self.user = User.objects.create_user(
             username="unittest", email="test@beryju.org", password=self.password
         )
-        self.client = Client()
 
         self.flow = Flow.objects.create(
             name="test-password",

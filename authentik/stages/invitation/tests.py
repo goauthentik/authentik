@@ -1,7 +1,6 @@
 """invitation tests"""
 from unittest.mock import MagicMock, patch
 
-from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
 from django.utils.http import urlencode
@@ -21,13 +20,12 @@ from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 
 
-class TestUserLoginStage(TestCase):
+class TestUserLoginStage(APITestCase):
     """Login tests"""
 
     def setUp(self):
         super().setUp()
         self.user = User.objects.create(username="unittest", email="test@beryju.org")
-        self.client = Client()
 
         self.flow = Flow.objects.create(
             name="test-invitation",

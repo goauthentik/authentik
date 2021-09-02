@@ -1,9 +1,9 @@
 """consent tests"""
 from time import sleep
 
-from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
+from rest_framework.test import APITestCase
 
 from authentik.core.models import Application, User
 from authentik.core.tasks import clean_expired_models
@@ -15,7 +15,7 @@ from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.stages.consent.models import ConsentMode, ConsentStage, UserConsent
 
 
-class TestConsentStage(TestCase):
+class TestConsentStage(APITestCase):
     """Consent tests"""
 
     def setUp(self):
@@ -25,7 +25,6 @@ class TestConsentStage(TestCase):
             name="test-application",
             slug="test-application",
         )
-        self.client = Client()
 
     def test_always_required(self):
         """Test always required consent"""

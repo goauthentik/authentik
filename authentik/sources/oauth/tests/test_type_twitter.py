@@ -1,5 +1,5 @@
 """Twitter Type tests"""
-from django.test import Client, TestCase
+from django.test import TestCase
 
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.twitter import TwitterOAuthCallback
@@ -92,7 +92,6 @@ class TestTypeGitHub(TestCase):
     """OAuth Source tests"""
 
     def setUp(self):
-        self.client = Client()
         self.source = OAuthSource.objects.create(
             name="test",
             slug="test",

@@ -1,7 +1,7 @@
 """Password flow tests"""
-from django.test import TestCase
 from django.urls.base import reverse
 from django.utils.encoding import force_str
+from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
@@ -10,7 +10,7 @@ from authentik.policies.password.models import PasswordPolicy
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 
 
-class TestPasswordPolicyFlow(TestCase):
+class TestPasswordPolicyFlow(APITestCase):
     """Test Password Policy"""
 
     def setUp(self) -> None:

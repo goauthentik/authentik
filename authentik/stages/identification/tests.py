@@ -1,7 +1,7 @@
 """identification tests"""
-from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
+from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
@@ -13,7 +13,7 @@ from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordStage
 
 
-class TestIdentificationStage(TestCase):
+class TestIdentificationStage(APITestCase):
     """Identification tests"""
 
     def setUp(self):
@@ -22,7 +22,6 @@ class TestIdentificationStage(TestCase):
         self.user = User.objects.create_user(
             username="unittest", email="test@beryju.org", password=self.password
         )
-        self.client = Client()
 
         # OAuthSource for the login view
         source = OAuthSource.objects.create(name="test", slug="test")

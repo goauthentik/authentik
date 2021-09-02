@@ -1,12 +1,12 @@
 """Test validator stage"""
 from unittest.mock import MagicMock, patch
 
-from django.test import TestCase
 from django.test.client import RequestFactory
 from django.urls.base import reverse
 from django.utils.encoding import force_str
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from rest_framework.exceptions import ValidationError
+from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
@@ -26,7 +26,7 @@ from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
 
-class AuthenticatorValidateStageTests(TestCase):
+class AuthenticatorValidateStageTests(APITestCase):
     """Test validator stage"""
 
     def setUp(self) -> None:

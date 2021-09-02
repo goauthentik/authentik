@@ -1,10 +1,10 @@
 """Prompt tests"""
 from unittest.mock import MagicMock, patch
 
-from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
 from rest_framework.exceptions import ErrorDetail
+from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
@@ -17,13 +17,12 @@ from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT, PromptChallengeResponse
 
 
-class TestPromptStage(TestCase):
+class TestPromptStage(APITestCase):
     """Prompt tests"""
 
     def setUp(self):
         super().setUp()
         self.user = User.objects.create(username="unittest", email="test@beryju.org")
-        self.client = Client()
 
         self.flow = Flow.objects.create(
             name="test-prompt",

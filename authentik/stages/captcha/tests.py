@@ -1,7 +1,7 @@
 """captcha tests"""
-from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
+from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
@@ -16,13 +16,12 @@ RECAPTCHA_PUBLIC_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
 RECAPTCHA_PRIVATE_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
 
 
-class TestCaptchaStage(TestCase):
+class TestCaptchaStage(APITestCase):
     """Captcha tests"""
 
     def setUp(self):
         super().setUp()
         self.user = User.objects.create_user(username="unittest", email="test@beryju.org")
-        self.client = Client()
 
         self.flow = Flow.objects.create(
             name="test-captcha",
