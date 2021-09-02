@@ -61,4 +61,4 @@ export const DEFAULT_CONFIG = new Configuration({
     ],
 });
 
-console.debug(`authentik: version ${VERSION}`);
+console.debug(`authentik(early): version ${VERSION}`);

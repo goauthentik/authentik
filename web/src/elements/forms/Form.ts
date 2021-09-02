@@ -224,9 +224,15 @@ export class Form<T> extends LitElement {
                 throw ex;
             })
             .catch((ex: Error) => {
+                let msg = ex.toString();
+                // Only change the message when we have `detail`.
+                // Everything else is handled in the form.
+                if (ex instanceof APIError && "detail" in ex.response) {
+                    msg = ex.response.detail;
+                }
                 // error is local or not from rest_framework
                 showMessage({
-                    message: ex.toString(),
+                    message: msg,
                     level: MessageLevel.error,
                 });
                 // rethrow the error so the form doesn't close
