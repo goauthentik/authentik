@@ -29105,5 +29105,5 @@ components:
       in: header
       name: Authorization
 servers:
-- url: http://authentik.tld/api/v3/
-- url: http://authentik.tld/api/v2beta/
+- url: /api/v3/
+- url: /api/v2beta/

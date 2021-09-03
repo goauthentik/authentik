@@ -154,10 +154,10 @@ SPECTACULAR_SETTINGS = {
     "SCHEMA_PATH_PREFIX_TRIM": True,
     "SERVERS": [
         {
-            "url": "http://authentik.tld/api/v3/",
+            "url": "/api/v3/",
         },
         {
-            "url": "http://authentik.tld/api/v2beta/",
+            "url": "/api/v2beta/",
         },
     ],
     "CONTACT": {

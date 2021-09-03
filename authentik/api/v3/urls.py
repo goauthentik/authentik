@@ -1,6 +1,6 @@
 """api v3 urls"""
 from django.urls import path
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.cache import cache_page
 from drf_spectacular.views import SpectacularAPIView
 from rest_framework import routers
 
@@ -225,7 +225,7 @@ urlpatterns = (
             FlowExecutorView.as_view(),
             name="flow-executor",
         ),
-        path("sentry/", csrf_exempt(SentryTunnelView.as_view()), name="sentry"),
-        path("schema/", SpectacularAPIView.as_view(), name="schema"),
+        path("sentry/", SentryTunnelView.as_view(), name="sentry"),
+        path("schema/", cache_page(86400)(SpectacularAPIView.as_view()), name="schema"),
     ]
 )
