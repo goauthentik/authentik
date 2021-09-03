@@ -10,7 +10,6 @@ from django.db import models
 from django.http import HttpRequest
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
-from prometheus_client import Gauge
 from requests import RequestException, post
 from structlog.stdlib import get_logger
 
@@ -28,11 +27,6 @@ from authentik.tenants.models import Tenant
 from authentik.tenants.utils import DEFAULT_TENANT
 
 LOGGER = get_logger("authentik.events")
-GAUGE_EVENTS = Gauge(
-    "authentik_events",
-    "Events in authentik",
-    ["action", "user_username", "app", "client_ip"],
-)
 
 
 def default_event_duration():
@@ -182,14 +176,6 @@ class Event(ExpiringModel):
             return
         self.context["geo"] = city
 
-    def _set_prom_metrics(self):
-        GAUGE_EVENTS.labels(
-            action=self.action,
-            user_username=self.user.get("username"),
-            app=self.app,
-            client_ip=self.client_ip,
-        ).set(self.created.timestamp())
-
     def save(self, *args, **kwargs):
         if self._state.adding:
             LOGGER.debug(
@@ -200,7 +186,6 @@ class Event(ExpiringModel):
                 user=self.user,
             )
         super().save(*args, **kwargs)
-        self._set_prom_metrics()
 
     @property
     def summary(self) -> str:
