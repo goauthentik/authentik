@@ -2,6 +2,11 @@ name: authentik-ci-web
 
 on:
   push:
+    branches:
+      - master
+      - next
+      - version-*
+  pull_request:
 
 jobs:
   lint-eslint:
