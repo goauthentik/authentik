@@ -10004,25 +10004,32 @@ paths:
       description: LDAPProvider Viewset
       parameters:
       - in: query
-        name: authorization_flow
+        name: application__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: authorization_flow__slug__iexact
+        schema:
+          type: string
+      - in: query
+        name: base_dn__iexact
+        schema:
+          type: string
+      - in: query
+        name: certificate__kp_uuid__iexact
         schema:
           type: string
           format: uuid
       - in: query
-        name: base_dn
+        name: certificate__name__iexact
         schema:
           type: string
       - in: query
-        name: certificate
-        schema:
-          type: string
-          format: uuid
-      - in: query
-        name: gid_start_number
+        name: gid_start_number__iexact
         schema:
           type: integer
       - in: query
-        name: name
+        name: name__iexact
         schema:
           type: string
       - name: ordering
@@ -10043,15 +10050,6 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
-      - in: query
-        name: property_mappings
-        schema:
-          type: array
-          items:
-            type: string
-            format: uuid
-        explode: true
-        style: form
       - name: search
         required: false
         in: query
@@ -10059,16 +10057,20 @@ paths:
         schema:
           type: string
       - in: query
-        name: search_group
+        name: search_group__group_uuid__iexact
         schema:
           type: string
           format: uuid
       - in: query
-        name: tls_server_name
+        name: search_group__name__iexact
         schema:
           type: string
       - in: query
-        name: uid_start_number
+        name: tls_server_name__iexact
+        schema:
+          type: string
+      - in: query
+        name: uid_start_number__iexact
         schema:
           type: integer
       tags:
@@ -10570,102 +10572,56 @@ paths:
       description: ProxyProvider Viewset
       parameters:
       - in: query
-        name: access_code_validity
+        name: application__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: authorization_flow__slug__iexact
         schema:
           type: string
       - in: query
-        name: authorization_flow
+        name: basic_auth_enabled__iexact
+        schema:
+          type: boolean
+      - in: query
+        name: basic_auth_password_attribute__iexact
+        schema:
+          type: string
+      - in: query
+        name: basic_auth_user_attribute__iexact
+        schema:
+          type: string
+      - in: query
+        name: certificate__kp_uuid__iexact
         schema:
           type: string
           format: uuid
       - in: query
-        name: basic_auth_enabled
+        name: certificate__name__iexact
+        schema:
+          type: string
+      - in: query
+        name: cookie_domain__iexact
+        schema:
+          type: string
+      - in: query
+        name: external_host__iexact
+        schema:
+          type: string
+      - in: query
+        name: internal_host__iexact
+        schema:
+          type: string
+      - in: query
+        name: internal_host_ssl_validation__iexact
         schema:
           type: boolean
       - in: query
-        name: basic_auth_password_attribute
+        name: mode__iexact
         schema:
           type: string
       - in: query
-        name: basic_auth_user_attribute
-        schema:
-          type: string
-      - in: query
-        name: certificate
-        schema:
-          type: string
-          format: uuid
-      - in: query
-        name: client_id
-        schema:
-          type: string
-      - in: query
-        name: client_secret
-        schema:
-          type: string
-      - in: query
-        name: client_type
-        schema:
-          type: string
-          enum:
-          - confidential
-          - public
-        description: |-
-          Confidential clients are capable of maintaining the confidentiality
-              of their credentials. Public clients are incapable.
-      - in: query
-        name: cookie_domain
-        schema:
-          type: string
-      - in: query
-        name: cookie_secret
-        schema:
-          type: string
-      - in: query
-        name: external_host
-        schema:
-          type: string
-      - in: query
-        name: include_claims_in_id_token
-        schema:
-          type: boolean
-      - in: query
-        name: internal_host
-        schema:
-          type: string
-      - in: query
-        name: internal_host_ssl_validation
-        schema:
-          type: boolean
-      - in: query
-        name: issuer_mode
-        schema:
-          type: string
-          enum:
-          - global
-          - per_provider
-        description: Configure how the issuer field of the ID Token should be filled.
-      - in: query
-        name: jwt_alg
-        schema:
-          type: string
-          title: JWT Algorithm
-          enum:
-          - HS256
-          - RS256
-        description: Algorithm used to sign the JWT Token
-      - in: query
-        name: mode
-        schema:
-          type: string
-          enum:
-          - forward_domain
-          - forward_single
-          - proxy
-        description: Enable support for forwardAuth in traefik and nginx auth_request.
-          Exclusive with internal_host.
-      - in: query
-        name: name
+        name: name__iexact
         schema:
           type: string
       - name: ordering
@@ -10687,7 +10643,7 @@ paths:
         schema:
           type: integer
       - in: query
-        name: property_mappings
+        name: property_mappings__iexact
         schema:
           type: array
           items:
@@ -10696,14 +10652,9 @@ paths:
         explode: true
         style: form
       - in: query
-        name: redirect_uris
+        name: redirect_uris__iexact
         schema:
           type: string
-      - in: query
-        name: rsa_key
-        schema:
-          type: string
-          format: uuid
       - name: search
         required: false
         in: query
@@ -10711,22 +10662,7 @@ paths:
         schema:
           type: string
       - in: query
-        name: skip_path_regex
-        schema:
-          type: string
-      - in: query
-        name: sub_mode
-        schema:
-          type: string
-          enum:
-          - hashed_user_id
-          - user_email
-          - user_upn
-          - user_username
-        description: Configure what data should be used as unique User Identifier.
-          For most cases, the default should be fine.
-      - in: query
-        name: token_validity
+        name: skip_path_regex__iexact
         schema:
           type: string
       tags:

@@ -80,7 +80,24 @@ class ProxyProviderViewSet(UsedByMixin, ModelViewSet):
 
     queryset = ProxyProvider.objects.all()
     serializer_class = ProxyProviderSerializer
-    filterset_fields = "__all__"
+    filterset_fields = {
+        "application": ["isnull"],
+        "name": ["iexact"],
+        "authorization_flow__slug": ["iexact"],
+        "property_mappings": ["iexact"],
+        "internal_host": ["iexact"],
+        "external_host": ["iexact"],
+        "internal_host_ssl_validation": ["iexact"],
+        "certificate__kp_uuid": ["iexact"],
+        "certificate__name": ["iexact"],
+        "skip_path_regex": ["iexact"],
+        "basic_auth_enabled": ["iexact"],
+        "basic_auth_password_attribute": ["iexact"],
+        "basic_auth_user_attribute": ["iexact"],
+        "mode": ["iexact"],
+        "redirect_uris": ["iexact"],
+        "cookie_domain": ["iexact"],
+    }
     ordering = ["name"]
 
 
