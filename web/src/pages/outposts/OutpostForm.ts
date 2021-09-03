@@ -56,6 +56,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 return new ProvidersApi(DEFAULT_CONFIG)
                     .providersProxyList({
                         ordering: "pk",
+                        applicationIsnull: false,
                     })
                     .then((providers) => {
                         return providers.results.map((provider) => {
@@ -68,7 +69,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                                 value=${ifDefined(provider.pk)}
                                 ?selected=${selected}
                             >
-                                ${provider.verboseName} ${provider.name}
+                                ${provider.assignedApplicationName} (${provider.name})
                             </option>`;
                         });
                     });
@@ -76,6 +77,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 return new ProvidersApi(DEFAULT_CONFIG)
                     .providersLdapList({
                         ordering: "pk",
+                        applicationIsnull: false,
                     })
                     .then((providers) => {
                         return providers.results.map((provider) => {
@@ -88,7 +90,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                                 value=${ifDefined(provider.pk)}
                                 ?selected=${selected}
                             >
-                                ${provider.verboseName} ${provider.name}
+                                ${provider.assignedApplicationName} (${provider.name})
                             </option>`;
                         });
                     });
@@ -165,7 +167,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Providers`}
+                label=${t`Applications`}
                 ?required=${!this.embedded}
                 name="providers"
             >
