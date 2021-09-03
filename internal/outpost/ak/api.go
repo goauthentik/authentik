@@ -47,7 +47,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	config.Host = akURL.Host
 	config.Scheme = akURL.Scheme
 	config.HTTPClient = &http.Client{
-		Transport: NewTracingTransport(GetTLSTransport()),
+		Transport: NewTracingTransport(context.TODO(), GetTLSTransport()),
 	}
 	config.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
 

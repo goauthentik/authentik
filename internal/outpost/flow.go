@@ -61,7 +61,7 @@ func NewFlowExecutor(ctx context.Context, flowSlug string, refConfig *api.Config
 	config.UserAgent = constants.OutpostUserAgent()
 	config.HTTPClient = &http.Client{
 		Jar:       jar,
-		Transport: ak.NewTracingTransport(ak.GetTLSTransport()),
+		Transport: ak.NewTracingTransport(ctx, ak.GetTLSTransport()),
 	}
 	apiClient := api.NewAPIClient(config)
 	return &FlowExecutor{
