@@ -67,7 +67,7 @@ class ApplicationSerializer(ModelSerializer):
 class ApplicationViewSet(UsedByMixin, ModelViewSet):
     """Application Viewset"""
 
-    queryset = Application.objects.all()
+    queryset = Application.objects.all().prefetch_related("provider")
     serializer_class = ApplicationSerializer
     search_fields = [
         "name",
