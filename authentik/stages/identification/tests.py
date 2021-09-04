@@ -136,6 +136,48 @@ class TestIdentificationStage(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_invalid_no_fields(self):
+        """Test invalid with username (no user fields are enabled)"""
+        self.stage.user_fields = []
+        self.stage.save()
+        form_data = {"uid_field": self.user.username}
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            form_data,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_str(response.content),
+            {
+                "type": ChallengeTypes.NATIVE.value,
+                "component": "ak-stage-identification",
+                "password_fields": False,
+                "primary_action": "Log in",
+                "response_errors": {
+                    "non_field_errors": [
+                        {"code": "invalid", "string": "Failed to " "authenticate."}
+                    ]
+                },
+                "flow_info": {
+                    "background": self.flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": "",
+                },
+                "sources": [
+                    {
+                        "challenge": {
+                            "component": "xak-flow-redirect",
+                            "to": "/source/oauth/login/test/",
+                            "type": ChallengeTypes.REDIRECT.value,
+                        },
+                        "icon_url": "/static/authentik/sources/.svg",
+                        "name": "test",
+                    }
+                ],
+                "user_fields": [],
+            },
+        )
+
     def test_invalid_with_invalid_email(self):
         """Test with invalid email (user doesn't exist) -> Will return to login form"""
         form_data = {"uid_field": self.user.email + "test"}
