@@ -1,6 +1,5 @@
 """Event API tests"""
 
-from authentik.events.api.notification import NotificationSerializer
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
