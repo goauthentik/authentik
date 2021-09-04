@@ -30,23 +30,23 @@ Only settings that have been modified from default have been listed.
 :::
 
 **Protocol Settings**
-- Name: vikjuna
+- Name: Vikunja
 - Client type: Confidential
 - Client ID: Copy and Save this for Later
 - Client Secret: Copy and Save this for later
-- Redirect URIs/Origins: 
+- Redirect URIs/Origins:
 ```
 https://vik.company/auth/openid
-https://vik.company/auth/openid/vikjuna
-```                     
+https://vik.company/auth/openid/Vikunja
+```
 
-![](./vikjuna1.png)
+![](./vikunja1.png)
 
 ### Step 2
 
-Edit/Create you `config.yml` file for Vikjuna
+Edit/Create you `config.yml` file for Vikunja
 
-Incorproate the following example Auth block into your `config.yml`
+Incorporate the following example Auth block into your `config.yml`
 
 ```bash
 auth:
@@ -61,7 +61,7 @@ auth:
   # If the email is not public in those cases, authenticating will fail.
   # **Note 2:** The frontend expects to be redirected after authentication by the third party
   # to <frontend-url>/auth/openid/<auth key>. Please make sure to configure the redirect url with your third party
-  # auth service accordingy if you're using the default vikunja frontend.
+  # auth service accordingly if you're using the default Vikunja frontend.
   # Take a look at the [default config file](https://kolaente.dev/vikunja/api/src/branch/main/config.yml.sample) for more information about how to configure openid authentication.
   openid:
     # Enable or disable OpenID Connect authentication
@@ -72,7 +72,7 @@ auth:
     # A list of enabled providers
     providers:
       # The name of the provider as it will appear in the frontend.
-      - name: vikjuna
+      - name: vikunja
         # The auth url to send users to if they want to authenticate using OpenID Connect.
         authurl: https://authentik.company/application/o/vikunja/
         # The client ID used to authenticate Vikunja at the OpenID Connect provider.
