@@ -176,7 +176,7 @@ export class IdentificationStage extends BaseStage<
 
     renderInput(): TemplateResult {
         let type = "text";
-        if (!this.challenge?.userFields) {
+        if (!this.challenge?.userFields || this.challenge.userFields.length === 0) {
             return html`<p>${t`Select one of the sources below to login.`}</p>`;
         }
         const fields = (this.challenge?.userFields || []).sort();
