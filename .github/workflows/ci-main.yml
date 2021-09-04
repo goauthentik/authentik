@@ -200,9 +200,8 @@ jobs:
       - uses: testspace-com/setup-testspace@v1
         with:
           domain: ${{github.repository_owner}}
-      - name: prepare k3d
-        run: |
-          wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+      - name: Create k8s Kind Cluster
+        uses: helm/kind-action@v1.2.0
       - name: run integration
         run: |
           pipenv run make test-integration

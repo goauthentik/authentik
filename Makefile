@@ -7,8 +7,6 @@ NPM_VERSION = $(shell python -m scripts.npm_version)
 all: lint-fix lint test gen
 
 test-integration:
-	k3d cluster create || exit 0
-	k3d kubeconfig write -o ~/.kube/config --overwrite
 	coverage run manage.py test -v 3 tests/integration
 
 test-e2e:
