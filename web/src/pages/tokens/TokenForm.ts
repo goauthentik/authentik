@@ -62,7 +62,7 @@ export class TokenForm extends ModelForm<Token, string> {
                                 return users.results.map((user) => {
                                     return html`<option
                                         value=${user.pk}
-                                        ?selected=${this.instance?.user === user}
+                                        ?selected=${this.instance?.user === user.pk}
                                     >
                                         ${user.username}
                                     </option>`;
