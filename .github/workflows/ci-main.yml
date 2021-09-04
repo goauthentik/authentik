@@ -239,7 +239,13 @@ jobs:
         run: |
           scripts/ci_prepare.sh
           docker-compose -f tests/e2e/ci.docker-compose.yml up -d
+      - id: cache-web
+        uses: actions/cache@v1
+        with:
+          path: web/dist
+          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/**') }}
       - name: prepare web ui
+        if: steps.cache-web.outputs.cache-hit != 'true'
         run: |
           cd web
           npm i
