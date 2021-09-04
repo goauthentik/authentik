@@ -2,16 +2,12 @@
 from base64 import b64encode
 
 from django.conf import settings
-from django.test import Client, TestCase
+from django.test import TestCase
 from django.urls import reverse
 
 
 class TestRoot(TestCase):
     """Test root application"""
-
-    def setUp(self):
-        super().setUp()
-        self.client = Client()
 
     def test_monitoring_error(self):
         """Test monitoring without any credentials"""

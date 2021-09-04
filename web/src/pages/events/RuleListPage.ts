@@ -8,9 +8,9 @@ import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/ModalForm";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
-import { EventsApi, NotificationRule } from "authentik-api";
+import { EventsApi, NotificationRule } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import "../../elements/forms/DeleteForm";
+import "../../elements/forms/DeleteBulkForm";
 import "./RuleForm";
 
 @customElement("ak-event-rule-list")
@@ -53,17 +53,16 @@ export class RuleListPage extends TablePage<NotificationRule> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`Notification rule`}
-            .usedBy=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Notification rule(s)`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: NotificationRule) => {
                 return new EventsApi(DEFAULT_CONFIG).eventsRulesUsedByList({
                     pbmUuid: item.pk,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: NotificationRule) => {
                 return new EventsApi(DEFAULT_CONFIG).eventsRulesDestroy({
                     pbmUuid: item.pk,
                 });
@@ -72,7 +71,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: NotificationRule): TemplateResult[] {

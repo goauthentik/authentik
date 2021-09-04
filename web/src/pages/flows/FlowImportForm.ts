@@ -1,4 +1,4 @@
-import { Flow, FlowsApi } from "authentik-api";
+import { Flow, FlowsApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";

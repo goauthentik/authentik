@@ -19,7 +19,7 @@ import {
     TITLE_DEFAULT,
 } from "../constants";
 import { DEFAULT_CONFIG, tenant } from "../api/Config";
-import { EventsApi } from "../../api/dist";
+import { EventsApi } from "@goauthentik/api";
 
 @customElement("ak-page-header")
 export class PageHeader extends LitElement {

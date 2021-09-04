@@ -10,7 +10,7 @@ Default fields are exposed through auto-generated Property Mappings, which are p
 | SSO (Redirect binding) | `/application/saml/<application slug>/sso/binding/redirect/`   |
 | SSO (POST binding)     | `/application/saml/<application slug>/sso/binding/post/`       |
 | IdP-initiated login    | `/application/saml/<application slug>/sso/binding/init/`       |
-| Metadata Download      | `/api/v2beta/providers/saml/<provider uid>/metadata/?download/`|
+| Metadata Download      | `/api/v3/providers/saml/<provider uid>/metadata/?download/`|
 
 You can download the metadata through the Webinterface, this link might be handy if your software wants to download the metadata directly.
 

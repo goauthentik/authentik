@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { Provider } from "authentik-api";
+import { Provider } from "@goauthentik/api";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 

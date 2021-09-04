@@ -10,11 +10,11 @@ import {
 } from "lit-element";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
-import { Application, CoreApi } from "authentik-api";
+import { Application, CoreApi } from "@goauthentik/api";
 import { AKResponse } from "../api/Client";
 import { DEFAULT_CONFIG } from "../api/Config";
 import { me } from "../api/Users";
-import { loading } from "../utils";
+import { loading, truncate } from "../utils";
 import "../elements/PageHeader";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -25,6 +25,7 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import AKGlobal from "../authentik.css";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 @customElement("ak-library-app")
 export class LibraryApplication extends LitElement {
@@ -35,10 +36,11 @@ export class LibraryApplication extends LitElement {
         return [
             PFBase,
             PFCard,
+            PFButton,
             PFAvatar,
             AKGlobal,
             css`
-                a {
+                .pf-c-card {
                     height: 100%;
                 }
                 i.pf-icon {
@@ -68,23 +70,24 @@ export class LibraryApplication extends LitElement {
         if (!this.application) {
             return html`<ak-spinner></ak-spinner>`;
         }
-        return html` <a
-            href="${ifDefined(this.application.launchUrl ?? "")}"
-            class="pf-c-card pf-m-hoverable pf-m-compact"
-        >
+        return html` <div class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header">
                 ${this.application.metaIcon
-                    ? html`<img
-                          class="app-icon pf-c-avatar"
-                          src="${ifDefined(this.application.metaIcon)}"
-                          alt="Application Icon"
-                      />`
+                    ? html`<a href="${ifDefined(this.application.launchUrl ?? "")}"
+                          ><img
+                              class="app-icon pf-c-avatar"
+                              src="${ifDefined(this.application.metaIcon)}"
+                              alt="Application Icon"
+                      /></a>`
                     : html`<i class="fas fas fa-share-square"></i>`}
                 ${until(
                     me().then((u) => {
                         if (!u.user.isSuperuser) return html``;
                         return html`
-                            <a href="#/core/applications/${this.application?.slug}">
+                            <a
+                                class="pf-c-button pf-m-control pf-m-small"
+                                href="#/core/applications/${this.application?.slug}"
+                            >
                                 <i class="fas fa-pencil-alt"></i>
                             </a>
                         `;
@@ -92,12 +95,17 @@ export class LibraryApplication extends LitElement {
                 )}
             </div>
             <div class="pf-c-card__title">
-                <p id="card-1-check-label">${this.application.name}</p>
+                <p id="card-1-check-label">
+                    <a href="${ifDefined(this.application.launchUrl ?? "")}"
+                        >${this.application.name}</a
+                    >
+                </p>
                 <div class="pf-c-content">
                     <small>${this.application.metaPublisher}</small>
                 </div>
             </div>
-        </a>`;
+            <div class="pf-c-card__body">${truncate(this.application.metaDescription, 35)}</div>
+        </div>`;
     }
 }
 

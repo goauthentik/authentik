@@ -9,7 +9,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import AKGlobal from "../../../authentik.css";
 import { BaseStage } from "../base";
 import "../../../elements/EmptyState";
-import { EmailChallenge, EmailChallengeResponseRequest } from "authentik-api";
+import { EmailChallenge, EmailChallengeResponseRequest } from "@goauthentik/api";
 
 @customElement("ak-stage-email")
 export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponseRequest> {

@@ -22,7 +22,7 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import { MessageLevel } from "../messages/Message";
 import { IronFormElement } from "@polymer/iron-form/iron-form";
 import { camelToSnake, convertToSlug } from "../../utils";
-import { ValidationError } from "authentik-api";
+import { ValidationError } from "@goauthentik/api";
 import { EVENT_REFRESH } from "../../constants";
 
 export class APIError extends Error {
@@ -136,15 +136,40 @@ export class Form<T> extends LitElement {
                 json[element.name] = values;
             } else if (element.tagName.toLowerCase() === "input" && element.type === "date") {
                 json[element.name] = element.valueAsDate;
+            } else if (
+                element.tagName.toLowerCase() === "input" &&
+                element.type === "datetime-local"
+            ) {
+                json[element.name] = new Date(element.valueAsNumber);
             } else if (element.tagName.toLowerCase() === "input" && element.type === "checkbox") {
                 json[element.name] = element.checked;
             } else {
                 for (let v = 0; v < values.length; v++) {
-                    form._addSerializedElement(json, element.name, values[v]);
+                    this.serializeFieldRecursive(element, values[v], json);
                 }
             }
         });
         return json as unknown as T;
+    }
+
+    private serializeFieldRecursive(
+        element: HTMLInputElement,
+        value: unknown,
+        json: { [key: string]: unknown },
+    ): void {
+        let parent = json;
+        if (!element.name.includes(".")) {
+            parent[element.name] = value;
+            return;
+        }
+        const nameElements = element.name.split(".");
+        for (let index = 0; index < nameElements.length - 1; index++) {
+            const nameEl = nameElements[index];
+            // Ensure all nested structures exist
+            if (!(nameEl in parent)) parent[nameEl] = {};
+            parent = parent[nameEl] as { [key: string]: unknown };
+        }
+        parent[nameElements[nameElements.length - 1]] = value;
     }
 
     submit(ev: Event): Promise<unknown> | undefined {
@@ -199,9 +224,15 @@ export class Form<T> extends LitElement {
                 throw ex;
             })
             .catch((ex: Error) => {
+                let msg = ex.toString();
+                // Only change the message when we have `detail`.
+                // Everything else is handled in the form.
+                if (ex instanceof APIError && "detail" in ex.response) {
+                    msg = ex.response.detail;
+                }
                 // error is local or not from rest_framework
                 showMessage({
-                    message: ex.toString(),
+                    message: msg,
                     level: MessageLevel.error,
                 });
                 // rethrow the error so the form doesn't close

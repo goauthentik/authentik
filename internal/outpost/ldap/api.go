@@ -15,6 +15,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+const (
+	UsersOU         = "users"
+	GroupsOU        = "groups"
+	VirtualGroupsOU = "virtual-groups"
+)
+
 func (ls *LDAPServer) Refresh() error {
 	outposts, _, err := ls.ac.Client.OutpostsApi.OutpostsLdapList(context.Background()).Execute()
 	if err != nil {
@@ -25,11 +31,13 @@ func (ls *LDAPServer) Refresh() error {
 	}
 	providers := make([]*ProviderInstance, len(outposts.Results))
 	for idx, provider := range outposts.Results {
-		userDN := strings.ToLower(fmt.Sprintf("ou=users,%s", *provider.BaseDn))
-		groupDN := strings.ToLower(fmt.Sprintf("ou=groups,%s", *provider.BaseDn))
+		userDN := strings.ToLower(fmt.Sprintf("ou=%s,%s", UsersOU, *provider.BaseDn))
+		groupDN := strings.ToLower(fmt.Sprintf("ou=%s,%s", GroupsOU, *provider.BaseDn))
+		virtualGroupDN := strings.ToLower(fmt.Sprintf("ou=%s,%s", VirtualGroupsOU, *provider.BaseDn))
 		logger := log.WithField("logger", "authentik.outpost.ldap").WithField("provider", provider.Name)
 		providers[idx] = &ProviderInstance{
 			BaseDN:              *provider.BaseDn,
+			VirtualGroupDN:      virtualGroupDN,
 			GroupDN:             groupDN,
 			UserDN:              userDN,
 			appSlug:             provider.ApplicationSlug,

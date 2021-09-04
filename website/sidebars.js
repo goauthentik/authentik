@@ -18,6 +18,7 @@ module.exports = {
                 "installation/beta",
                 "installation/configuration",
                 "installation/reverse-proxy",
+                "installation/automated-install",
             ],
         },
         {
@@ -42,13 +43,14 @@ module.exports = {
             label: "Outposts",
             items: [
                 "outposts/outposts",
+                "outposts/embedded/embedded",
                 {
                     type: "category",
                     label: "Running and upgrading",
                     items: [
-                        "outposts/upgrading",
                         "outposts/manual-deploy-docker-compose",
                         "outposts/manual-deploy-kubernetes",
+                        "outposts/upgrading",
                     ],
                 },
             ],
@@ -86,6 +88,7 @@ module.exports = {
                         "integrations/services/home-assistant/index",
                         "integrations/services/minio/index",
                         "integrations/services/nextcloud/index",
+                        "integrations/services/portainer/index",
                         "integrations/services/rancher/index",
                         "integrations/services/sentry/index",
                         "integrations/services/sonarr/index",
@@ -96,6 +99,7 @@ module.exports = {
                         "integrations/services/vmware-vcenter/index",
                         "integrations/services/wekan/index",
                         "integrations/services/wiki-js/index",
+                        "integrations/services/wordpress/index",
                         "integrations/services/zabbix/index",
                     ],
                 },
@@ -171,6 +175,7 @@ module.exports = {
             type: "category",
             label: "Release Notes",
             items: [
+                "releases/v2021.8",
                 "releases/v2021.7",
                 "releases/v2021.6",
                 "releases/v2021.5",
@@ -200,6 +205,7 @@ module.exports = {
                 "troubleshooting/emails",
                 "troubleshooting/login",
                 "troubleshooting/image_upload_backup",
+                "troubleshooting/missing_permission",
             ],
         },
     ],

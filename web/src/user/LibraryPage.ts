@@ -1,20 +1,14 @@
 import { t } from "@lingui/macro";
-import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { Application, CoreApi } from "authentik-api";
+import { customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { Application, CoreApi } from "@goauthentik/api";
 import { AKResponse } from "../api/Client";
 import { DEFAULT_CONFIG } from "../api/Config";
 import { loading } from "../utils";
 
 @customElement("ak-library")
 export class LibraryPage extends LitElement {
-
-    @property({attribute: false})
+    @property({ attribute: false })
     apps?: AKResponse<Application>;
-
-    static get styles(): CSSResult[] {
-        return [css`
-        `];
-    }
 
     firstUpdated(): void {
         new CoreApi(DEFAULT_CONFIG).coreApplicationsList({}).then((apps) => {
@@ -35,33 +29,15 @@ export class LibraryPage extends LitElement {
     }
 
     renderApps(): TemplateResult {
-        return html`
-        <dds-card-group>
-            ${this.apps?.results.map((app) => html`
-            <dds-card-group-item href="${app.launchUrl || ""}">
-                <dds-card-heading slot="pictogram" class="icon">
-                    <img src="${app.metaIcon ? app.metaIcon : "/static/icons/application.svg"}" alt="app icon" loading="lazy">
-                </dds-card-heading>
-                <dds-card-heading>${app.name}</dds-card-heading>
-                <dds-card-footer slot="footer">
-                    ${app.metaPublisher}
-                </dds-card-footer>
-            </dds-card-group-item>`)}
-        </dds-card-group>`;
+        return html``;
     }
 
     render(): TemplateResult {
-        return html`<div class="bx--grid">
-            <div class="bx--row">
-                <div class="bx--offset-lg-2 bx--col-lg-8">
-                    <dds-content-block-heading>
-                        ${t`My Applications`}
-                    </dds-content-block-heading>
-                    ${loading(this.apps, html`${(this.apps?.results.length || 0) > 0 ?
-                        this.renderApps() :
-                        this.renderEmptyState()}`)}
-                </div>
-            </div>
-        </div>`;
+        return html`${loading(
+            this.apps,
+            html`${(this.apps?.results.length || 0) > 0
+                ? this.renderApps()
+                : this.renderEmptyState()}`,
+        )}`;
     }
 }

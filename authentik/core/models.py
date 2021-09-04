@@ -28,6 +28,7 @@ from authentik.core.signals import password_changed
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.models import Flow
 from authentik.lib.config import CONFIG
+from authentik.lib.generators import generate_id
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 from authentik.lib.utils.http import get_client_ip
 from authentik.managed.models import ManagedModel
@@ -54,7 +55,9 @@ def default_token_duration():
 
 def default_token_key():
     """Default token key"""
-    return uuid4().hex
+    # We use generate_id since the chars in the key should be easy
+    # to use in Emails (for verification) and URLs (for recovery)
+    return generate_id(128)
 
 
 class Group(models.Model):
@@ -408,6 +411,9 @@ class TokenIntents(models.TextChoices):
     # Recovery use for the recovery app
     INTENT_RECOVERY = "recovery"
 
+    # App-specific passwords
+    INTENT_APP_PASSWORD = "app_password"  # nosec
+
 
 class Token(ManagedModel, ExpiringModel):
     """Token used to authenticate the User for API Access or confirm another Stage like Email."""
@@ -426,6 +432,7 @@ class Token(ManagedModel, ExpiringModel):
         from authentik.events.models import Event, EventAction
 
         self.key = default_token_key()
+        self.expires = default_token_duration()
         self.save(*args, **kwargs)
         Event.new(
             action=EventAction.SECRET_ROTATE,

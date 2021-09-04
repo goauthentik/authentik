@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import ReadOnlyField
+from rest_framework.fields import CharField
 from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -49,12 +49,12 @@ class OAuth2ProviderSerializer(ProviderSerializer):
 class OAuth2ProviderSetupURLs(PassiveSerializer):
     """OAuth2 Provider Metadata serializer"""
 
-    issuer = ReadOnlyField()
-    authorize = ReadOnlyField()
-    token = ReadOnlyField()
-    user_info = ReadOnlyField()
-    provider_info = ReadOnlyField()
-    logout = ReadOnlyField()
+    issuer = CharField(read_only=True)
+    authorize = CharField(read_only=True)
+    token = CharField(read_only=True)
+    user_info = CharField(read_only=True)
+    provider_info = CharField(read_only=True)
+    logout = CharField(read_only=True)
 
 
 class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):

@@ -6,9 +6,8 @@
 
 | Version    | Supported          |
 | ---------- | ------------------ |
-| 2021.5.x   | :white_check_mark: |
-| 2021.6.x   | :white_check_mark: |
 | 2021.7.x   | :white_check_mark: |
+| 2021.8.x   | :white_check_mark: |
 
 ## Reporting a Vulnerability
 

@@ -15,7 +15,7 @@ from authentik.core.channels import AuthJsonConsumer
 from authentik.outposts.models import OUTPOST_HELLO_INTERVAL, Outpost, OutpostState
 
 GAUGE_OUTPOSTS_CONNECTED = Gauge(
-    "authentik_outposts_connected", "Currently connected outposts", ["outpost", "uid"]
+    "authentik_outposts_connected", "Currently connected outposts", ["outpost", "uid", "expected"]
 )
 GAUGE_OUTPOSTS_LAST_UPDATE = Gauge(
     "authentik_outposts_last_update",
@@ -76,6 +76,7 @@ class OutpostConsumer(AuthJsonConsumer):
             GAUGE_OUTPOSTS_CONNECTED.labels(
                 outpost=self.outpost.name,
                 uid=self.last_uid,
+                expected=self.outpost.config.kubernetes_replicas,
             ).dec()
         LOGGER.debug(
             "removed outpost instance from cache",
@@ -100,6 +101,7 @@ class OutpostConsumer(AuthJsonConsumer):
             GAUGE_OUTPOSTS_CONNECTED.labels(
                 outpost=self.outpost.name,
                 uid=self.last_uid,
+                expected=self.outpost.config.kubernetes_replicas,
             ).inc()
             LOGGER.debug(
                 "added outpost instace to cache",

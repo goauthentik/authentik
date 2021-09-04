@@ -125,7 +125,7 @@ class Flow(SerializerModel, PolicyBindingModel):
     )
 
     compatibility_mode = models.BooleanField(
-        default=True,
+        default=False,
         help_text=_(
             "Enable compatibility mode, increases compatibility with "
             "password managers on mobile devices."

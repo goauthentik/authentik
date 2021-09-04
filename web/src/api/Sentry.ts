@@ -4,7 +4,7 @@ import { VERSION } from "../constants";
 import { SentryIgnoredError } from "../common/errors";
 import { me } from "./Users";
 import { config } from "./Config";
-import { Config } from "authentik-api";
+import { Config } from "@goauthentik/api";
 
 export const TAG_SENTRY_COMPONENT = "authentik.component";
 export const TAG_SENTRY_CAPABILITIES = "authentik.capabilities";
@@ -15,7 +15,7 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
             Sentry.init({
                 dsn: "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8",
                 release: `authentik@${VERSION}`,
-                tunnel: "/api/v2beta/sentry/",
+                tunnel: "/api/v3/sentry/",
                 integrations: [
                     new Integrations.BrowserTracing({
                         tracingOrigins: [window.location.host, "localhost"],
@@ -32,8 +32,19 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
                             return null;
                         }
                     }
-                    if (hint.originalException instanceof Response) {
+                    if (hint.originalException instanceof Response || hint.originalException instanceof DOMException) {
                         return null;
+                    }
+                    if (event.exception) {
+                        me().then(user => {
+                            Sentry.showReportDialog({
+                                eventId: event.event_id,
+                                user: {
+                                    email: user.user.email,
+                                    name: user.user.name,
+                                }
+                            });
+                        });
                     }
                     return event;
                 },

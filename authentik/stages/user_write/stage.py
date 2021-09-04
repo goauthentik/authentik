@@ -1,7 +1,6 @@
 """Write stage logic"""
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.backends import ModelBackend
 from django.db import transaction
 from django.db.utils import IntegrityError
 from django.http import HttpRequest, HttpResponse
@@ -13,7 +12,7 @@ from authentik.core.models import USER_ATTRIBUTE_SOURCES, User, UserSourceConnec
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView
-from authentik.lib.utils.reflection import class_to_path
+from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from authentik.stages.user_write.signals import user_write
@@ -42,9 +41,7 @@ class UserWriteStageView(StageView):
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = User(
                 is_active=not self.executor.current_stage.create_users_as_inactive
             )
-            self.executor.plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = class_to_path(
-                ModelBackend
-            )
+            self.executor.plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = BACKEND_INBUILT
             LOGGER.debug(
                 "Created new user",
                 flow_slug=self.executor.flow.slug,

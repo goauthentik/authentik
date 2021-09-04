@@ -1,6 +1,7 @@
 """OAuth Source Serializer"""
 from django.urls.base import reverse_lazy
-from drf_spectacular.utils import extend_schema, extend_schema_field
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_field
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, SerializerMethodField
 from rest_framework.request import Request
@@ -12,7 +13,7 @@ from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.sources.oauth.models import OAuthSource
-from authentik.sources.oauth.types.manager import MANAGER
+from authentik.sources.oauth.types.manager import MANAGER, SourceType
 
 
 class SourceTypeSerializer(PassiveSerializer):
@@ -100,11 +101,26 @@ class OAuthSourceViewSet(UsedByMixin, ModelViewSet):
     ]
     ordering = ["name"]
 
-    @extend_schema(responses={200: SourceTypeSerializer(many=True)})
+    @extend_schema(
+        responses={200: SourceTypeSerializer(many=True)},
+        parameters=[
+            OpenApiParameter(
+                name="name",
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.STR,
+            )
+        ],
+    )
     @action(detail=False, pagination_class=None, filter_backends=[])
     def source_types(self, request: Request) -> Response:
-        """Get all creatable source types"""
+        """Get all creatable source types. If ?name is set, only returns the type for <name>.
+        If <name> isn't found, returns the default type."""
         data = []
-        for source_type in MANAGER.get():
-            data.append(SourceTypeSerializer(source_type).data)
+        if "name" in request.query_params:
+            source_type = MANAGER.find_type(request.query_params.get("name"))
+            if source_type.__class__ != SourceType:
+                data.append(SourceTypeSerializer(source_type).data)
+        else:
+            for source_type in MANAGER.get():
+                data.append(SourceTypeSerializer(source_type).data)
         return Response(data)

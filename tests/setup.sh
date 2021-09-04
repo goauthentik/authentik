@@ -7,8 +7,6 @@ sudo chmod +x /usr/local/bin/docker-compose
 # Setup nodejs
 curl -sL https://deb.nodesource.com/setup_15.x | sudo -E bash -
 sudo apt-get install -y nodejs
-# Setup k3d
-curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
 # Setup python
 sudo apt install -y python3.9 python3.9-dev python3-pip libxmlsec1-dev pkg-config
 # Setup docker

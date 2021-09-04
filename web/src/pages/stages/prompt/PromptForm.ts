@@ -1,4 +1,4 @@
-import { Prompt, PromptTypeEnum, StagesApi } from "authentik-api";
+import { Prompt, PromptTypeEnum, StagesApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -157,7 +157,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
             <ak-form-element-horizontal label=${t`Order`} ?required=${true} name="order">
                 <input
                     type="number"
-                    value="${ifDefined(this.instance?.order)}"
+                    value="${first(this.instance?.order, 0)}"
                     class="pf-c-form-control"
                     required
                 />

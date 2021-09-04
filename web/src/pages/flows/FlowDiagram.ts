@@ -1,7 +1,7 @@
 import { customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import FlowChart from "flowchart.js";
 import { loading } from "../../utils";
-import { FlowsApi } from "authentik-api";
+import { FlowsApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { EVENT_REFRESH } from "../../constants";
 

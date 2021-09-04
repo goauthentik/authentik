@@ -2,10 +2,10 @@
 from unittest.mock import MagicMock, PropertyMock, patch
 
 from django.http import HttpRequest, HttpResponse
-from django.test import TestCase
 from django.test.client import RequestFactory
 from django.urls import reverse
 from django.utils.encoding import force_str
+from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
@@ -37,7 +37,7 @@ def to_stage_response(request: HttpRequest, source: HttpResponse):
 TO_STAGE_RESPONSE_MOCK = MagicMock(side_effect=to_stage_response)
 
 
-class TestFlowExecutor(TestCase):
+class TestFlowExecutor(APITestCase):
     """Test views logic"""
 
     def setUp(self):

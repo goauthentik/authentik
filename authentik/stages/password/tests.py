@@ -2,9 +2,9 @@
 from unittest.mock import MagicMock, patch
 
 from django.core.exceptions import PermissionDenied
-from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
+from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
@@ -13,30 +13,29 @@ from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests.test_views import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views import SESSION_KEY_PLAN
-from authentik.providers.oauth2.generators import generate_client_secret
-from authentik.stages.password import BACKEND_DJANGO
+from authentik.lib.generators import generate_key
+from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordStage
 
 MOCK_BACKEND_AUTHENTICATE = MagicMock(side_effect=PermissionDenied("test"))
 
 
-class TestPasswordStage(TestCase):
+class TestPasswordStage(APITestCase):
     """Password tests"""
 
     def setUp(self):
         super().setUp()
-        self.password = generate_client_secret()
+        self.password = generate_key()
         self.user = User.objects.create_user(
             username="unittest", email="test@beryju.org", password=self.password
         )
-        self.client = Client()
 
         self.flow = Flow.objects.create(
             name="test-password",
             slug="test-password",
             designation=FlowDesignation.AUTHENTICATION,
         )
-        self.stage = PasswordStage.objects.create(name="password", backends=[BACKEND_DJANGO])
+        self.stage = PasswordStage.objects.create(name="password", backends=[BACKEND_INBUILT])
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     @patch(
@@ -158,7 +157,7 @@ class TestPasswordStage(TestCase):
         TO_STAGE_RESPONSE_MOCK,
     )
     @patch(
-        "django.contrib.auth.backends.ModelBackend.authenticate",
+        "authentik.core.auth.InbuiltBackend.authenticate",
         MOCK_BACKEND_AUTHENTICATE,
     )
     def test_permission_denied(self):

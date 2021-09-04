@@ -12,11 +12,9 @@ This installation method is for test-setups and small-scale productive setups.
 
 ## Preparation
 
-Download the latest `docker-compose.yml` from [here](https://raw.githubusercontent.com/goauthentik/authentik/version/2021.7.3/docker-compose.yml). Place it in a directory of your choice.
+Download the latest `docker-compose.yml` from [here](https://raw.githubusercontent.com/goauthentik/authentik/version/2021.8.4/docker-compose.yml). Place it in a directory of your choice.
 
-To optionally enable error-reporting, run `echo AUTHENTIK_ERROR_REPORTING__ENABLED=true >> .env`
-
-To optionally deploy a different version run `echo AUTHENTIK_TAG=2021.7.3 >> .env`
+To optionally deploy a different version run `echo AUTHENTIK_TAG=2021.8.4 >> .env`
 
 If this is a fresh authentik install run the following commands to generate a password:
 
@@ -78,7 +76,7 @@ docker-compose pull
 docker-compose up -d
 ```
 
-The compose file statically references the latest version available at the time of downloading the compose file, which can be overridden with the `SERVER_TAG` environment variable.
+The compose file statically references the latest version available at the time of downloading the compose file, which can be overridden with the `AUTHENTIK_TAG` environment variable.
 
 authentik will then be reachable on port 9000 (HTTP) and port 9443 (HTTPS).
 
@@ -94,10 +92,10 @@ The docker-compose project contains the following containers:
 
 - worker
 
-    This container executes backgorund tasks, everything you can see on the *System Tasks* page in the frontend.
+    This container executes background tasks, everything you can see on the *System Tasks* page in the frontend.
 
 - redis & postgresql
 
     Cache and database respectively.
 
-Additionally, if you've enabled GeoIP, there is a container running which regularly updates the GeoIP database.
+Additionally, if you've enabled GeoIP, there is a container running that regularly updates the GeoIP database.

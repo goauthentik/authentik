@@ -4,14 +4,15 @@
 
 ---
 
-[![](https://img.shields.io/discord/809154715984199690?label=Discord&style=for-the-badge)](https://discord.gg/jg33eMhnj6)
-[![CI Build status](https://img.shields.io/azure-devops/build/beryjuorg/authentik/6?style=for-the-badge)](https://dev.azure.com/beryjuorg/authentik/_build?definitionId=6)
-[![Tests](https://img.shields.io/azure-devops/tests/beryjuorg/authentik/6?compact_message&style=for-the-badge)](https://dev.azure.com/beryjuorg/authentik/_build?definitionId=6)
+[![Join Discord](https://img.shields.io/discord/809154715984199690?label=Discord&style=for-the-badge)](https://discord.gg/jg33eMhnj6)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/goauthentik/authentik/authentik-ci-main?label=core%20build&style=for-the-badge)](https://github.com/goauthentik/authentik/actions/workflows/ci-main.yml)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/goauthentik/authentik/authentik-ci-outpost?label=outpost%20build&style=for-the-badge)](https://github.com/goauthentik/authentik/actions/workflows/ci-outpost.yml)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/goauthentik/authentik/authentik-ci-web?label=web%20build&style=for-the-badge)](https://github.com/goauthentik/authentik/actions/workflows/ci-web.yml)
 [![Code Coverage](https://img.shields.io/codecov/c/gh/goauthentik/authentik?style=for-the-badge)](https://codecov.io/gh/goauthentik/authentik)
+[![Testspace tests](https://img.shields.io/testspace/total/goauthentik/goauthentik:authentik/master?style=for-the-badge)](https://goauthentik.testspace.com/)
 ![Docker pulls](https://img.shields.io/docker/pulls/beryju/authentik.svg?style=for-the-badge)
 ![Latest version](https://img.shields.io/docker/v/beryju/authentik?sort=semver&style=for-the-badge)
-![LGTM Grade](https://img.shields.io/lgtm/grade/python/github/goauthentik/authentik?style=for-the-badge)
-[Transifex](https://www.transifex.com/beryjuorg/authentik/)
+[![](https://img.shields.io/badge/Help%20translate-transifex-blue?style=for-the-badge)](https://www.transifex.com/beryjuorg/authentik/)
 
 ## What is authentik?
 

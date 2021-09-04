@@ -10,7 +10,7 @@ import "../policies/BoundPoliciesList";
 import "./ApplicationForm";
 import "./ApplicationCheckAccessForm";
 import "../../elements/PageHeader";
-import { Application, CoreApi } from "authentik-api";
+import { Application, CoreApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";

@@ -5,7 +5,7 @@ import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/SpinnerButton";
-import "../../elements/forms/DeleteForm";
+import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
 import "../../elements/forms/ProxyForm";
 import "./PropertyMappingTestForm";
@@ -15,7 +15,7 @@ import "./PropertyMappingSAMLForm";
 import { TableColumn } from "../../elements/table/Table";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
-import { PropertyMapping, PropertymappingsApi } from "authentik-api";
+import { PropertyMapping, PropertymappingsApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 
@@ -61,17 +61,16 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html` <ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`Property Mapping`}
-            .usedBy=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Property Mapping(s)`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: PropertyMapping) => {
                 return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllUsedByList({
                     pmUuid: item.pk,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: PropertyMapping) => {
                 return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllDestroy({
                     pmUuid: item.pk,
                 });
@@ -80,7 +79,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: PropertyMapping): TemplateResult[] {
@@ -107,7 +106,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                     <span slot="header"> ${t`Test Property Mapping`} </span>
                     <ak-property-mapping-test-form slot="form" .mapping=${item}>
                     </ak-property-mapping-test-form>
-                    <button slot="trigger" class="pf-c-button pf-m-secondary">
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
                         <i class="fas fa-vial" aria-hidden="true"></i>
                     </button>
                 </ak-forms-modal>`,

@@ -23,11 +23,12 @@ type BindRequest struct {
 func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LDAPResultCode, error) {
 	span := sentry.StartSpan(context.TODO(), "authentik.providers.ldap.bind",
 		sentry.TransactionName("authentik.providers.ldap.bind"))
+	rid := uuid.New().String()
+	span.SetTag("request_uid", rid)
 	span.SetTag("user.username", bindDN)
 	defer span.Finish()
 
 	bindDN = strings.ToLower(bindDN)
-	rid := uuid.New().String()
 	req := BindRequest{
 		BindDN: bindDN,
 		BindPW: bindPW,
@@ -47,4 +48,11 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 	}
 	req.log.WithField("request", "bind").Warning("No provider found for request")
 	return ldap.LDAPResultOperationsError, nil
+}
+
+func (ls *LDAPServer) TimerFlowCacheExpiry() {
+	for _, p := range ls.providers {
+		ls.log.WithField("flow", p.flowSlug).Debug("Pre-heating flow cache")
+		p.TimerFlowCacheExpiry()
+	}
 }

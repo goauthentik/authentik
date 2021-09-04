@@ -18,7 +18,7 @@ from yaml import safe_dump
 
 from authentik.core.models import User
 from authentik.flows.models import Flow
-from authentik.providers.oauth2.generators import generate_client_id, generate_client_secret
+from authentik.lib.generators import generate_id, generate_key
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.manager import SourceType
 from authentik.sources.oauth.types.twitter import TwitterOAuthCallback
@@ -53,7 +53,7 @@ class TestSourceOAuth2(SeleniumTestCase):
     container: Container
 
     def setUp(self):
-        self.client_secret = generate_client_secret()
+        self.client_secret = generate_key()
         self.prepare_dex_config()
         super().setUp()
 
@@ -89,7 +89,7 @@ class TestSourceOAuth2(SeleniumTestCase):
             "storage": {"config": {"file": "/tmp/dex.db"}, "type": "sqlite3"},  # nosec
             "web": {"http": "0.0.0.0:5556"},
         }
-        with open(CONFIG_PATH, "w+") as _file:
+        with open(CONFIG_PATH, "w+", encoding="utf8") as _file:
             safe_dump(config, _file)
 
     def get_container_specs(self) -> Optional[dict[str, Any]]:
@@ -118,7 +118,7 @@ class TestSourceOAuth2(SeleniumTestCase):
             slug="dex",
             authentication_flow=authentication_flow,
             enrollment_flow=enrollment_flow,
-            provider_type="openid-connect",
+            provider_type="openidconnect",
             authorization_url="http://127.0.0.1:5556/dex/auth",
             access_token_url="http://127.0.0.1:5556/dex/token",
             profile_url="http://127.0.0.1:5556/dex/userinfo",
@@ -264,8 +264,8 @@ class TestSourceOAuth1(SeleniumTestCase):
     """Test OAuth1 Source"""
 
     def setUp(self) -> None:
-        self.client_id = generate_client_id()
-        self.client_secret = generate_client_secret()
+        self.client_id = generate_id()
+        self.client_secret = generate_key()
         self.source_slug = "oauth1-test"
         super().setUp()
 

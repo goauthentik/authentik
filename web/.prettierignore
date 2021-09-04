@@ -6,4 +6,3 @@ dist
 coverage
 # don't lint generated code
 api/
-azure-pipelines.yml

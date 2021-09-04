@@ -13,7 +13,7 @@ import { BaseStage } from "../base";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import "../../../elements/Divider";
-import { PromptChallenge, PromptChallengeResponseRequest, StagePrompt } from "authentik-api";
+import { PromptChallenge, PromptChallengeResponseRequest, StagePrompt } from "@goauthentik/api";
 
 @customElement("ak-stage-prompt")
 export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeResponseRequest> {
@@ -64,13 +64,6 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
-            case "checkbox":
-                return `<input
-                    type="checkbox"
-                    name="${prompt.fieldKey}"
-                    placeholder="${prompt.placeholder}"
-                    class="pf-c-form-control"
-                    ?required=${prompt.required}>`;
             case "date":
                 return `<input
                     type="date"
@@ -115,6 +108,22 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     }}
                 >
                     ${this.challenge.fields.map((prompt) => {
+                        // Checkbox is rendered differently
+                        if (prompt.type === "checkbox") {
+                            return html`<div class="pf-c-check">
+                                <input
+                                    type="checkbox"
+                                    class="pf-c-check__input"
+                                    name="${prompt.fieldKey}"
+                                    ?checked=${prompt.placeholder !== ""}
+                                    ?required=${prompt.required}
+                                />
+                                <label class="pf-c-check__label">${prompt.label}</label>
+                                ${prompt.required
+                                    ? html`<p class="pf-c-form__helper-text">${t`Required.`}</p>`
+                                    : html``}
+                            </div>`;
+                        }
                         // Special types that aren't rendered in a wrapper
                         if (
                             prompt.type === "static" ||

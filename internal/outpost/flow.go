@@ -61,7 +61,7 @@ func NewFlowExecutor(ctx context.Context, flowSlug string, refConfig *api.Config
 	config.UserAgent = constants.OutpostUserAgent()
 	config.HTTPClient = &http.Client{
 		Jar:       jar,
-		Transport: ak.NewTracingTransport(ak.GetTLSTransport()),
+		Transport: ak.NewTracingTransport(ctx, ak.GetTLSTransport()),
 	}
 	apiClient := api.NewAPIClient(config)
 	return &FlowExecutor{
@@ -118,6 +118,15 @@ func (fe *FlowExecutor) getAnswer(stage StageComponent) string {
 	return ""
 }
 
+// WarmUp Ensure authentik's flow cache is warmed up
+func (fe *FlowExecutor) WarmUp() error {
+	defer fe.sp.Finish()
+	gcsp := sentry.StartSpan(fe.Context, "authentik.outposts.flow_executor.get_challenge")
+	req := fe.api.FlowsApi.FlowsExecutorGet(gcsp.Context(), fe.flowSlug).Query(fe.Params.Encode())
+	_, _, err := req.Execute()
+	return err
+}
+
 func (fe *FlowExecutor) Execute() (bool, error) {
 	return fe.solveFlowChallenge(1)
 }
@@ -143,7 +152,9 @@ func (fe *FlowExecutor) solveFlowChallenge(depth int) (bool, error) {
 	responseReq := fe.api.FlowsApi.FlowsExecutorSolve(scsp.Context(), fe.flowSlug).Query(fe.Params.Encode())
 	switch ch.GetComponent() {
 	case string(StageIdentification):
-		responseReq = responseReq.FlowChallengeResponseRequest(api.IdentificationChallengeResponseRequestAsFlowChallengeResponseRequest(api.NewIdentificationChallengeResponseRequest(fe.getAnswer(StageIdentification))))
+		r := api.NewIdentificationChallengeResponseRequest(fe.getAnswer(StageIdentification))
+		r.SetPassword(fe.getAnswer(StagePassword))
+		responseReq = responseReq.FlowChallengeResponseRequest(api.IdentificationChallengeResponseRequestAsFlowChallengeResponseRequest(r))
 	case string(StagePassword):
 		responseReq = responseReq.FlowChallengeResponseRequest(api.PasswordChallengeResponseRequestAsFlowChallengeResponseRequest(api.NewPasswordChallengeResponseRequest(fe.getAnswer(StagePassword))))
 	case string(StageAuthenticatorValidate):

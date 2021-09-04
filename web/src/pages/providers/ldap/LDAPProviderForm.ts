@@ -5,7 +5,7 @@ import {
     CoreApi,
     FlowsInstancesListDesignationEnum,
     CryptoApi,
-} from "authentik-api";
+} from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -40,6 +40,7 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                 lDAPProviderRequest: data,
             });
         } else {
+            data.tlsServerName = "";
             return new ProvidersApi(DEFAULT_CONFIG).providersLdapCreate({
                 lDAPProviderRequest: data,
             });
@@ -129,16 +130,6 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                             ${t`LDAP DN under which bind requests and search requests can be made.`}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`TLS Server name`} name="tlsServerName">
-                        <input
-                            type="text"
-                            value="${first(this.instance?.tlsServerName, "")}"
-                            class="pf-c-form-control"
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${t`Server name for which this provider's certificate is valid for.`}
-                        </p>
-                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Certificate`} name="certificate">
                         <select class="pf-c-form-control">
                             <option value="" ?selected=${this.instance?.certificate === undefined}>
@@ -163,6 +154,12 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                                 html`<option>${t`Loading...`}</option>`,
                             )}
                         </select>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Due to protocol limitations, this certificate is only used when the outpost has a single provider.`}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`If multiple providers share an outpost, a self-signed certificate is used.`}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`UID start number`}

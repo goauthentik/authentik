@@ -37,9 +37,11 @@ from authentik.core.models import (
     User,
 )
 from authentik.crypto.models import CertificateKeyPair
+from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey
 from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.utils.errors import exception_to_string
 from authentik.managed.models import ManagedModel
 from authentik.outposts.controllers.k8s.utils import get_namespace
 from authentik.outposts.docker_tls import DockerInlineTLS
@@ -54,6 +56,7 @@ class ServiceConnectionInvalid(SentryIgnoredException):
 
 
 @dataclass
+# pylint: disable=too-many-instance-attributes
 class OutpostConfig:
     """Configuration an outpost uses to configure it self"""
 
@@ -65,8 +68,10 @@ class OutpostConfig:
     log_level: str = CONFIG.y("log_level")
     error_reporting_enabled: bool = CONFIG.y_bool("error_reporting.enabled")
     error_reporting_environment: str = CONFIG.y("error_reporting.environment", "customer")
-
     object_naming_template: str = field(default="ak-outpost-%(name)s")
+
+    docker_network: Optional[str] = field(default=None)
+
     kubernetes_replicas: int = field(default=1)
     kubernetes_namespace: str = field(default_factory=get_namespace)
     kubernetes_ingress_annotations: dict[str, str] = field(default_factory=dict)
@@ -358,7 +363,24 @@ class Outpost(ManagedModel):
                     code_name = (
                         f"{model_or_perm._meta.app_label}." f"view_{model_or_perm._meta.model_name}"
                     )
-                    assign_perm(code_name, user, model_or_perm)
+                    try:
+                        assign_perm(code_name, user, model_or_perm)
+                    except (Permission.DoesNotExist, AttributeError) as exc:
+                        LOGGER.warning(
+                            "permission doesn't exist",
+                            code_name=code_name,
+                            user=user,
+                            model=model_or_perm,
+                        )
+                        Event.new(
+                            action=EventAction.SYSTEM_EXCEPTION,
+                            message=(
+                                "While setting the permissions for the service-account, a "
+                                "permission was not found: Check "
+                                "https://goauthentik.io/docs/troubleshooting/missing_permission"
+                            )
+                            + exception_to_string(exc),
+                        ).set_user(user).save()
                 else:
                     app_label, perm = model_or_perm.split(".")
                     permission = Permission.objects.filter(

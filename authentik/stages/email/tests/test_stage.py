@@ -2,10 +2,10 @@
 from unittest.mock import MagicMock, patch
 
 from django.core import mail
-from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
 from django.utils.http import urlencode
+from rest_framework.test import APITestCase
 
 from authentik.core.models import Token, User
 from authentik.flows.challenge import ChallengeTypes
@@ -17,13 +17,12 @@ from authentik.stages.email.models import EmailStage
 from authentik.stages.email.stage import QS_KEY_TOKEN
 
 
-class TestEmailStage(TestCase):
+class TestEmailStage(APITestCase):
     """Email tests"""
 
     def setUp(self):
         super().setUp()
         self.user = User.objects.create_user(username="unittest", email="test@beryju.org")
-        self.client = Client()
 
         self.flow = Flow.objects.create(
             name="test-email",

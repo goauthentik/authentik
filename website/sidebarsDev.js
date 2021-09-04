@@ -5,24 +5,26 @@ module.exports = {
             id: "index",
         },
         {
-            type: "doc",
-            id: "full-dev-environment",
+            type: "category",
+            label: "Setup",
+            items: [
+                "api/api",
+                "api/flow-executor",
+                "api/making-schema-changes",
+                "api/websocket",
+            ],
         },
         {
-            type: "doc",
-            id: "frontend-only-dev-environment",
-        },
-        {
-            type: "doc",
-            id: "api",
+            type: "category",
+            label: "Setup",
+            items: [
+                "setup/full-dev-environment",
+                "setup/frontend-only-dev-environment",
+            ],
         },
         {
             type: "doc",
             id: "translation",
-        },
-        {
-            type: "doc",
-            id: "flow-executor",
         },
     ],
 };

@@ -39,7 +39,7 @@ from authentik.sources.saml.processors.constants import (
 from authentik.sources.saml.processors.request import SESSION_REQUEST_ID
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
-from authentik.stages.user_login.stage import BACKEND_DJANGO
+from authentik.stages.user_login.stage import BACKEND_INBUILT
 
 LOGGER = get_logger()
 if TYPE_CHECKING:
@@ -136,7 +136,7 @@ class ResponseProcessor:
             self._source.authentication_flow,
             **{
                 PLAN_CONTEXT_PENDING_USER: user,
-                PLAN_CONTEXT_AUTHENTICATION_BACKEND: BACKEND_DJANGO,
+                PLAN_CONTEXT_AUTHENTICATION_BACKEND: BACKEND_INBUILT,
             },
         )
 
@@ -199,7 +199,7 @@ class ResponseProcessor:
                 self._source.authentication_flow,
                 **{
                     PLAN_CONTEXT_PENDING_USER: matching_users.first(),
-                    PLAN_CONTEXT_AUTHENTICATION_BACKEND: BACKEND_DJANGO,
+                    PLAN_CONTEXT_AUTHENTICATION_BACKEND: BACKEND_INBUILT,
                     PLAN_CONTEXT_REDIRECT: final_redirect,
                 },
             )

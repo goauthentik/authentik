@@ -13,10 +13,10 @@ import (
 
 func (pi *ProviderInstance) SearchMe(req SearchRequest, f UserFlags) (ldap.ServerSearchResult, error) {
 	if f.UserInfo == nil {
-		u, _, err := pi.s.ac.Client.CoreApi.CoreUsersRetrieve(req.ctx, f.UserInfo.Pk).Execute()
+		u, _, err := pi.s.ac.Client.CoreApi.CoreUsersRetrieve(req.ctx, f.UserPk).Execute()
 		if err != nil {
 			req.log.WithError(err).Warning("Failed to get user info")
-			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Failed to get userinfo")
+			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("failed to get userinfo")
 		}
 		f.UserInfo = &u
 	}
@@ -59,6 +59,10 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: error parsing filter: %s", req.Filter)
 	}
 
+	// Create a custom client to set additional headers
+	c := api.NewAPIClient(pi.s.ac.Client.GetConfig())
+	c.GetConfig().AddDefaultHeader("X-authentik-outpost-ldap-query", req.Filter)
+
 	switch filterEntity {
 	default:
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: unhandled filter type: %s [%s]", filterEntity, req.Filter)
@@ -72,7 +76,12 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 		go func() {
 			defer wg.Done()
 			gapisp := sentry.StartSpan(req.ctx, "authentik.providers.ldap.search.api_group")
-			groups, _, err := parseFilterForGroup(pi.s.ac.Client.CoreApi.CoreGroupsList(gapisp.Context()), parsedFilter).Execute()
+			searchReq, skip := parseFilterForGroup(c.CoreApi.CoreGroupsList(gapisp.Context()), parsedFilter, false)
+			if skip {
+				pi.log.Trace("Skip backend request")
+				return
+			}
+			groups, _, err := searchReq.Execute()
 			gapisp.Finish()
 			if err != nil {
 				req.log.WithError(err).Warning("failed to get groups")
@@ -88,10 +97,15 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 		go func() {
 			defer wg.Done()
 			uapisp := sentry.StartSpan(req.ctx, "authentik.providers.ldap.search.api_user")
-			users, _, err := parseFilterForUser(pi.s.ac.Client.CoreApi.CoreUsersList(uapisp.Context()), parsedFilter).Execute()
+			searchReq, skip := parseFilterForUser(c.CoreApi.CoreUsersList(uapisp.Context()), parsedFilter, false)
+			if skip {
+				pi.log.Trace("Skip backend request")
+				return
+			}
+			users, _, err := searchReq.Execute()
 			uapisp.Finish()
 			if err != nil {
-				req.log.WithError(err).Warning("failed to get groups")
+				req.log.WithError(err).Warning("failed to get users")
 				return
 			}
 
@@ -103,7 +117,12 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 		entries = append(gEntries, uEntries...)
 	case UserObjectClass, "":
 		uapisp := sentry.StartSpan(req.ctx, "authentik.providers.ldap.search.api_user")
-		users, _, err := parseFilterForUser(pi.s.ac.Client.CoreApi.CoreUsersList(uapisp.Context()), parsedFilter).Execute()
+		searchReq, skip := parseFilterForUser(c.CoreApi.CoreUsersList(uapisp.Context()), parsedFilter, false)
+		if skip {
+			pi.log.Trace("Skip backend request")
+			return ldap.ServerSearchResult{Entries: entries, Referrals: []string{}, Controls: []ldap.Control{}, ResultCode: ldap.LDAPResultSuccess}, nil
+		}
+		users, _, err := searchReq.Execute()
 		uapisp.Finish()
 
 		if err != nil {
@@ -120,6 +139,10 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 	attrs := []*ldap.EntryAttribute{
 		{
 			Name:   "cn",
+			Values: []string{u.Username},
+		},
+		{
+			Name:   "sAMAccountName",
 			Values: []string{u.Username},
 		},
 		{
@@ -177,6 +200,10 @@ func (pi *ProviderInstance) GroupEntry(g LDAPGroup) *ldap.Entry {
 		{
 			Name:   "uid",
 			Values: []string{g.uid},
+		},
+		{
+			Name:   "sAMAccountName",
+			Values: []string{g.cn},
 		},
 		{
 			Name:   "gidNumber",

@@ -4,8 +4,8 @@ from unittest.mock import MagicMock, patch
 
 from django.core import mail
 from django.core.mail.backends.locmem import EmailBackend
-from django.test import Client, TestCase
 from django.urls import reverse
+from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
@@ -16,13 +16,12 @@ from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.stages.email.models import EmailStage
 
 
-class TestEmailStageSending(TestCase):
+class TestEmailStageSending(APITestCase):
     """Email tests"""
 
     def setUp(self):
         super().setUp()
         self.user = User.objects.create_user(username="unittest", email="test@beryju.org")
-        self.client = Client()
 
         self.flow = Flow.objects.create(
             name="test-email",

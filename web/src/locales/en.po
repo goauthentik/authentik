@@ -63,6 +63,10 @@ msgstr "ANY, any policy must match to grant access."
 msgid "ANY, any policy must match to include this stage access."
 msgstr "ANY, any policy must match to include this stage access."
 
+#: src/pages/tokens/TokenListPage.ts
+msgid "API Access"
+msgstr "API Access"
+
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "API Hostname"
 msgstr "API Hostname"
@@ -70,6 +74,10 @@ msgstr "API Hostname"
 #: src/elements/notifications/APIDrawer.ts
 msgid "API Requests"
 msgstr "API Requests"
+
+#: src/pages/tokens/TokenForm.ts
+msgid "API Token (can be used to access the API programmatically)"
+msgstr "API Token (can be used to access the API programmatically)"
 
 #: src/elements/messages/Middleware.ts
 msgid "API request failed"
@@ -122,13 +130,19 @@ msgstr "Actions"
 msgid "Actions over the last 24 hours"
 msgstr "Actions over the last 24 hours"
 
+#: src/pages/users/UserListPage.ts
+msgid "Activate"
+msgstr "Activate"
+
 #: src/pages/groups/MemberSelectModal.ts
+#: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Active"
 msgstr "Active"
 
 #: src/pages/groups/MemberSelectModal.ts
+#: src/pages/users/GroupSelectModal.ts
 msgid "Add"
 msgstr "Add"
 
@@ -229,9 +243,16 @@ msgstr "Always require consent"
 msgid "App"
 msgstr "App"
 
+#: src/pages/tokens/TokenListPage.ts
+msgid "App password"
+msgstr "App password"
+
+#: src/pages/tokens/TokenForm.ts
+msgid "App password (can be used to login using a flow executor)"
+msgstr "App password (can be used to login using a flow executor)"
+
 #: src/elements/user/UserConsentList.ts
 #: src/pages/admin-overview/TopApplicationsTable.ts
-#: src/pages/applications/ApplicationListPage.ts
 #: src/pages/providers/ProviderListPage.ts
 msgid "Application"
 msgstr "Application"
@@ -251,6 +272,10 @@ msgstr "Application requires following permissions:"
 #: src/pages/applications/ApplicationForm.ts
 msgid "Application's display Name."
 msgstr "Application's display Name."
+
+#: src/pages/applications/ApplicationListPage.ts
+msgid "Application(s)"
+msgstr "Application(s)"
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/LibraryPage.ts
@@ -277,6 +302,10 @@ msgid ""
 msgstr ""
 "Are you sure you want to clear the policy cache?\n"
 "This will cause all policies to be re-evaluated on their next usage."
+
+#: src/elements/forms/DeleteBulkForm.ts
+msgid "Are you sure you want to delete {0} {1}?"
+msgstr "Are you sure you want to delete {0} {1}?"
 
 #: src/elements/forms/DeleteForm.ts
 msgid "Are you sure you want to delete {0} {objName} ?"
@@ -357,9 +386,13 @@ msgstr "Authenticator"
 msgid "Authorization"
 msgstr "Authorization"
 
+#: 
+#~ msgid "Authorization Code"
+#~ msgstr "Authorization Code"
+
 #: src/elements/oauth/UserCodeList.ts
-msgid "Authorization Code"
-msgstr "Authorization Code"
+msgid "Authorization Code(s)"
+msgstr "Authorization Code(s)"
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
@@ -511,9 +544,11 @@ msgid "Can be in the format of 'unix://' when connecting to a local docker daemo
 msgstr "Can be in the format of 'unix://' when connecting to a local docker daemon, or 'https://:2376' when connecting to a remote system."
 
 #: src/elements/forms/ConfirmationForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
 #: src/elements/forms/ModalForm.ts
 #: src/pages/groups/MemberSelectModal.ts
+#: src/pages/users/GroupSelectModal.ts
 #: src/pages/users/UserActiveForm.ts
 msgid "Cancel"
 msgstr "Cancel"
@@ -544,9 +579,13 @@ msgstr "Certificate Subjet"
 msgid "Certificate used to sign outgoing Responses going to the Service Provider."
 msgstr "Certificate used to sign outgoing Responses going to the Service Provider."
 
+#: 
+#~ msgid "Certificate-Key Pair"
+#~ msgstr "Certificate-Key Pair"
+
 #: src/pages/crypto/CertificateKeyPairListPage.ts
-msgid "Certificate-Key Pair"
-msgstr "Certificate-Key Pair"
+msgid "Certificate-Key Pair(s)"
+msgstr "Certificate-Key Pair(s)"
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Certificate-Key Pairs"
@@ -563,6 +602,10 @@ msgstr "Certificates"
 #: src/pages/user-settings/settings/UserSettingsPassword.ts
 msgid "Change password"
 msgstr "Change password"
+
+#: src/pages/users/UserListPage.ts
+msgid "Change status"
+msgstr "Change status"
 
 #: src/pages/user-settings/settings/UserSettingsPassword.ts
 msgid "Change your password"
@@ -605,6 +648,10 @@ msgstr "Check Username"
 #: src/pages/applications/ApplicationViewPage.ts
 msgid "Check access"
 msgstr "Check access"
+
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
+msgid "Check outposts."
+msgstr "Check outposts."
 
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 msgid "Check status"
@@ -688,6 +735,7 @@ msgid "Client type"
 msgstr "Client type"
 
 #: src/pages/outposts/OutpostDeploymentModal.ts
+#: src/pages/users/UserListPage.ts
 msgid "Close"
 msgstr "Close"
 
@@ -776,6 +824,7 @@ msgid "Connect"
 msgstr "Connect"
 
 #: src/pages/user-settings/settings/SourceSettingsOAuth.ts
+#: src/pages/user-settings/settings/SourceSettingsPlex.ts
 msgid "Connected."
 msgstr "Connected."
 
@@ -788,9 +837,9 @@ msgstr "Connection error, reconnecting..."
 msgid "Connection settings"
 msgstr "Connection settings"
 
-#: src/elements/user/UserConsentList.ts
-msgid "Consent"
-msgstr "Consent"
+#: 
+#~ msgid "Consent"
+#~ msgstr "Consent"
 
 #: src/pages/stages/consent/ConsentStageForm.ts
 msgid "Consent expires in"
@@ -803,6 +852,10 @@ msgstr "Consent expires."
 #: src/pages/stages/consent/ConsentStageForm.ts
 msgid "Consent given last indefinitely"
 msgstr "Consent given last indefinitely"
+
+#: src/elements/user/UserConsentList.ts
+msgid "Consent(s)"
+msgstr "Consent(s)"
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Consider Objects matching this filter to be Groups."
@@ -857,7 +910,6 @@ msgstr "Cookie domain"
 msgid "Copy"
 msgstr "Copy"
 
-#: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
 msgid "Copy Key"
 msgstr "Copy Key"
@@ -865,6 +917,10 @@ msgstr "Copy Key"
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "Copy download URL"
 msgstr "Copy download URL"
+
+#: src/pages/users/UserListPage.ts
+msgid "Copy recovery link"
+msgstr "Copy recovery link"
 
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
@@ -909,12 +965,20 @@ msgstr "Copy download URL"
 #: src/pages/stages/prompt/PromptStageForm.ts
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tenants/TenantListPage.ts
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "Create"
 msgstr "Create"
+
+#: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/pages/user-settings/tokens/UserTokenList.ts
+msgid "Create App password"
+msgstr "Create App password"
 
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/providers/RelatedApplicationButton.ts
@@ -969,6 +1033,11 @@ msgstr "Create Policy"
 msgid "Create Prompt"
 msgstr "Create Prompt"
 
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserListPage.ts
+msgid "Create Service account"
+msgstr "Create Service account"
+
 #: src/pages/flows/BoundStagesList.ts
 msgid "Create Stage"
 msgstr "Create Stage"
@@ -982,6 +1051,8 @@ msgstr "Create Stage binding"
 msgid "Create Tenant"
 msgstr "Create Tenant"
 
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/user-settings/tokens/UserTokenList.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
 msgid "Create Token"
 msgstr "Create Token"
@@ -989,6 +1060,10 @@ msgstr "Create Token"
 #: src/pages/users/UserListPage.ts
 msgid "Create User"
 msgstr "Create User"
+
+#: src/pages/users/ServiceAccountForm.ts
+msgid "Create group"
+msgstr "Create group"
 
 #: src/pages/applications/ApplicationForm.ts
 msgid "Create provider"
@@ -1046,6 +1121,10 @@ msgstr "Date"
 msgid "Date Time"
 msgstr "Date Time"
 
+#: src/pages/users/UserListPage.ts
+msgid "Deactivate"
+msgstr "Deactivate"
+
 #: src/pages/flows/FlowForm.ts
 msgid "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
 msgstr "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
@@ -1066,17 +1145,22 @@ msgstr "Default?"
 msgid "Define how notifications are sent to users, like Email or Webhook."
 msgstr "Define how notifications are sent to users, like Email or Webhook."
 
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
 #: src/elements/oauth/UserCodeList.ts
 #: src/elements/oauth/UserRefreshList.ts
+#: src/elements/user/SessionList.ts
+#: src/elements/user/UserConsentList.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/events/RuleListPage.ts
 #: src/pages/events/TransportListPage.ts
+#: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
+#: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/policies/reputation/IPReputationListPage.ts
 #: src/pages/policies/reputation/UserReputationListPage.ts
@@ -1098,22 +1182,22 @@ msgstr "Delete"
 #~ msgid "Delete Authorization Code"
 #~ msgstr "Delete Authorization Code"
 
-#: src/pages/flows/BoundStagesList.ts
-#: src/pages/policies/BoundPoliciesList.ts
-msgid "Delete Binding"
-msgstr "Delete Binding"
+#: 
+#: 
+#~ msgid "Delete Binding"
+#~ msgstr "Delete Binding"
 
-#: src/elements/user/UserConsentList.ts
-msgid "Delete Consent"
-msgstr "Delete Consent"
+#: 
+#~ msgid "Delete Consent"
+#~ msgstr "Delete Consent"
 
 #: 
 #~ msgid "Delete Refresh Code"
 #~ msgstr "Delete Refresh Code"
 
-#: src/elements/user/SessionList.ts
-msgid "Delete Session"
-msgstr "Delete Session"
+#: 
+#~ msgid "Delete Session"
+#~ msgstr "Delete Session"
 
 #: src/pages/user-settings/UserSelfForm.ts
 msgid "Delete account"
@@ -1139,6 +1223,7 @@ msgstr ""
 "Delete the currently pending user. CAUTION, this stage does not ask for\n"
 "confirmation. Use a consent stage to ensure the user is aware of their actions."
 
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
 msgid "Delete {0}"
 msgstr "Delete {0}"
@@ -1150,6 +1235,7 @@ msgstr "Deny the user access"
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
+#: src/pages/tokens/TokenForm.ts
 #: src/pages/user-settings/tokens/UserTokenForm.ts
 msgid "Description"
 msgstr "Description"
@@ -1204,10 +1290,10 @@ msgstr "Digest algorithm"
 msgid "Digits"
 msgstr "Digits"
 
-#: src/pages/users/UserListPage.ts
-#: src/pages/users/UserListPage.ts
-msgid "Disable"
-msgstr "Disable"
+#: 
+#: 
+#~ msgid "Disable"
+#~ msgstr "Disable"
 
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
 msgid "Disable Duo authenticator"
@@ -1226,6 +1312,7 @@ msgid "Disabled"
 msgstr "Disabled"
 
 #: src/pages/user-settings/settings/SourceSettingsOAuth.ts
+#: src/pages/user-settings/settings/SourceSettingsPlex.ts
 msgid "Disconnect"
 msgstr "Disconnect"
 
@@ -1251,6 +1338,10 @@ msgstr "Download Certificate"
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Download Private key"
 msgstr "Download Private key"
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Due to protocol limitations, this certificate is only used when the outpost has a single provider."
+msgstr "Due to protocol limitations, this certificate is only used when the outpost has a single provider."
 
 #: src/pages/stages/dummy/DummyStageForm.ts
 msgid "Dummy stage used for testing. Shows a simple continue button and always passes."
@@ -1290,7 +1381,6 @@ msgstr "Each provider has a different issuer, based on the application slug."
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 #: src/pages/sources/plex/PlexSourceViewPage.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
-#: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Edit"
 msgstr "Edit"
@@ -1338,18 +1428,30 @@ msgstr "Email address"
 msgid "Email info:"
 msgstr "Email info:"
 
+#: src/pages/users/UserListPage.ts
+msgid "Email recovery link"
+msgstr "Email recovery link"
+
 #: src/pages/events/utils.ts
 msgid "Email sent"
 msgstr "Email sent"
+
+#: src/pages/users/UserResetEmailForm.ts
+msgid "Email stage"
+msgstr "Email stage"
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Email: Text field with Email type."
 msgstr "Email: Text field with Email type."
 
-#: src/pages/users/UserListPage.ts
-#: src/pages/users/UserListPage.ts
-msgid "Enable"
-msgstr "Enable"
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
+msgid "Embedded outpost is not configured correctly."
+msgstr "Embedded outpost is not configured correctly."
+
+#: 
+#: 
+#~ msgid "Enable"
+#~ msgstr "Enable"
 
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
 msgid "Enable Duo authenticator"
@@ -1379,6 +1481,10 @@ msgstr "Enable compatibility mode, increases compatibility with password manager
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Enabled"
 msgstr "Enabled"
+
+#: src/pages/users/ServiceAccountForm.ts
+msgid "Enabling this toggle will create a group named after the user, with the user as member."
+msgstr "Enabling this toggle will create a group named after the user, with the user as member."
 
 #: src/pages/flows/FlowForm.ts
 msgid "Enrollment"
@@ -1491,6 +1597,10 @@ msgstr "Execution logging"
 msgid "Expires"
 msgstr "Expires"
 
+#: src/pages/tokens/TokenForm.ts
+msgid "Expires on"
+msgstr "Expires on"
+
 #: src/pages/tokens/TokenListPage.ts
 msgid "Expires?"
 msgstr "Expires?"
@@ -1500,6 +1610,11 @@ msgstr "Expires?"
 msgid "Expiring"
 msgstr "Expiring"
 
+#: src/pages/tokens/TokenForm.ts
+msgid "Expiring?"
+msgstr "Expiring?"
+
+#: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
 msgid "Expiry"
 msgstr "Expiry"
@@ -1570,6 +1685,7 @@ msgstr "Failed to delete flow cache"
 msgid "Failed to delete policy cache"
 msgstr "Failed to delete policy cache"
 
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
 msgid "Failed to delete {0}: {1}"
 msgstr "Failed to delete {0}: {1}"
@@ -1616,7 +1732,6 @@ msgid "Fields a user can identify themselves with. If no fields are selected, th
 msgstr "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources."
 
 #: src/pages/flows/FlowImportForm.ts
-#: src/pages/flows/FlowListPage.ts
 msgid "Flow"
 msgstr "Flow"
 
@@ -1674,6 +1789,10 @@ msgstr "Flow used to logout. If left empty, the first applicable flow sorted by 
 #: src/pages/providers/saml/SAMLProviderImportForm.ts
 msgid "Flow used when authorizing this provider."
 msgstr "Flow used when authorizing this provider."
+
+#: src/pages/flows/FlowListPage.ts
+msgid "Flow(s)"
+msgstr "Flow(s)"
 
 #: src/interfaces/AdminInterface.ts
 #: src/interfaces/AdminInterface.ts
@@ -1757,7 +1876,6 @@ msgid "Go to previous page"
 msgstr "Go to previous page"
 
 #: src/pages/events/RuleForm.ts
-#: src/pages/groups/GroupListPage.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/providers/ldap/LDAPProviderForm.ts
@@ -1784,9 +1902,14 @@ msgstr "Group users together and give them permissions based on the membership."
 msgid "Group {0}"
 msgstr "Group {0}"
 
+#: src/pages/groups/GroupListPage.ts
+msgid "Group(s)"
+msgstr "Group(s)"
+
 #: src/interfaces/AdminInterface.ts
 #: src/pages/admin-overview/AdminOverviewPage.ts
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/users/UserForm.ts
 msgid "Groups"
 msgstr "Groups"
 
@@ -1831,7 +1954,6 @@ msgid "Hide service-accounts"
 msgstr "Hide service-accounts"
 
 #: src/pages/events/RuleForm.ts
-#: src/pages/groups/GroupForm.ts
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -1851,7 +1973,9 @@ msgstr "Hold control/command to select multiple items."
 msgid "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage."
 msgstr "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage."
 
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
+#: src/pages/users/UserListPage.ts
 msgid "ID"
 msgstr "ID"
 
@@ -1883,6 +2007,7 @@ msgstr "Icon shown in the browser tab."
 
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
+#: src/pages/tokens/TokenForm.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenForm.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
@@ -1902,6 +2027,10 @@ msgstr "If enabled, use the local connection. Required Docker socket/Kubernetes 
 msgid "If left empty, authentik will try to extract the launch URL based on the selected provider."
 msgstr "If left empty, authentik will try to extract the launch URL based on the selected provider."
 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "If multiple providers share an outpost, a self-signed certificate is used."
+msgstr "If multiple providers share an outpost, a self-signed certificate is used."
+
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "If no explicit redirect URIs are specified, any redirect URI is allowed."
 msgstr "If no explicit redirect URIs are specified, any redirect URI is allowed."
@@ -1913,6 +2042,10 @@ msgstr "If set, users are able to unenroll themselves using this flow. If no flo
 #: src/pages/stages/invitation/InvitationStageForm.ts
 msgid "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given."
 msgstr "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given."
+
+#: src/pages/tokens/TokenForm.ts
+msgid "If this is selected, the token will expire. Upon expiration, the token will be rotated."
+msgstr "If this is selected, the token will expire. Upon expiration, the token will be rotated."
 
 #: src/pages/outposts/OutpostDeploymentModal.ts
 msgid "If your authentik Instance is using a self-signed certificate, set this value."
@@ -1947,6 +2080,10 @@ msgstr "Import certificates of external providers or create certificates to sign
 msgid "In case you can't access any other method."
 msgstr "In case you can't access any other method."
 
+#: src/pages/users/UserListPage.ts
+msgid "Inactive"
+msgstr "Inactive"
+
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
 msgstr "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
@@ -1967,6 +2104,12 @@ msgstr "Integration key"
 #: src/interfaces/AdminInterface.ts
 msgid "Integrations"
 msgstr "Integrations"
+
+#: src/pages/tokens/TokenForm.ts
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/user-settings/tokens/UserTokenList.ts
+msgid "Intent"
+msgstr "Intent"
 
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Internal Host"
@@ -1996,13 +2139,17 @@ msgstr "Invalidation"
 msgid "Invalidation flow"
 msgstr "Invalidation flow"
 
-#: src/pages/stages/invitation/InvitationListPage.ts
-msgid "Invitation"
-msgstr "Invitation"
+#: 
+#~ msgid "Invitation"
+#~ msgstr "Invitation"
 
 #: src/pages/events/utils.ts
 msgid "Invitation used"
 msgstr "Invitation used"
+
+#: src/pages/stages/invitation/InvitationListPage.ts
+msgid "Invitation(s)"
+msgstr "Invitation(s)"
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
@@ -2191,7 +2338,6 @@ msgstr "Loading"
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
-#: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
@@ -2215,6 +2361,9 @@ msgstr "Loading"
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
+#: src/pages/tokens/TokenForm.ts
+#: src/pages/users/UserForm.ts
+#: src/pages/users/UserResetEmailForm.ts
 msgid "Loading..."
 msgstr "Loading..."
 
@@ -2227,6 +2376,10 @@ msgstr "Local"
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "Log the currently pending user in."
 msgstr "Log the currently pending user in."
+
+#: src/pages/outposts/OutpostListPage.ts
+msgid "Logging in via {0}."
+msgstr "Logging in via {0}."
 
 #: src/pages/events/utils.ts
 msgid "Login"
@@ -2300,6 +2453,7 @@ msgstr "Maximum age (in days)"
 
 #: src/pages/groups/GroupForm.ts
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/users/GroupSelectModal.ts
 msgid "Members"
 msgstr "Members"
 
@@ -2369,9 +2523,11 @@ msgstr "Monitor"
 msgid "My Applications"
 msgstr "My Applications"
 
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/crypto/CertificateKeyPairForm.ts
+#: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/RuleForm.ts
@@ -2440,6 +2596,7 @@ msgstr "My Applications"
 #: src/pages/stages/user_logout/UserLogoutStageForm.ts
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 #: src/pages/user-settings/UserSelfForm.ts
+#: src/pages/users/GroupSelectModal.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
@@ -2486,6 +2643,7 @@ msgstr "New version available!"
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/pages/users/GroupSelectModal.ts
 #: src/pages/users/UserListPage.ts
 msgid "No"
 msgstr "No"
@@ -2558,6 +2716,7 @@ msgid "Not configured action"
 msgstr "Not configured action"
 
 #: src/pages/user-settings/settings/SourceSettingsOAuth.ts
+#: src/pages/user-settings/settings/SourceSettingsPlex.ts
 msgid "Not connected."
 msgstr "Not connected."
 
@@ -2568,6 +2727,10 @@ msgstr "Not found"
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 msgid "Not synced yet."
 msgstr "Not synced yet."
+
+#: src/elements/forms/DeleteBulkForm.ts
+msgid "Not used by any other object."
+msgstr "Not used by any other object."
 
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
@@ -2594,17 +2757,25 @@ msgstr "Notification Rules"
 msgid "Notification Transports"
 msgstr "Notification Transports"
 
+#: 
+#~ msgid "Notification rule"
+#~ msgstr "Notification rule"
+
 #: src/pages/events/RuleListPage.ts
-msgid "Notification rule"
-msgstr "Notification rule"
+msgid "Notification rule(s)"
+msgstr "Notification rule(s)"
+
+#: src/pages/events/TransportListPage.ts
+msgid "Notification transports(s)"
+msgstr "Notification transports(s)"
 
 #: src/elements/notifications/NotificationDrawer.ts
 msgid "Notifications"
 msgstr "Notifications"
 
-#: src/pages/events/TransportListPage.ts
-msgid "Notifications Transport"
-msgstr "Notifications Transport"
+#: 
+#~ msgid "Notifications Transport"
+#~ msgstr "Notifications Transport"
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Number"
@@ -2704,6 +2875,7 @@ msgstr "Optionally set this to your parent domain, if you want authentication an
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts
 #: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/stages/prompt/PromptForm.ts
 #: src/pages/stages/prompt/PromptListPage.ts
@@ -2718,9 +2890,9 @@ msgstr "Other global settings"
 msgid "Outdated outposts"
 msgstr "Outdated outposts"
 
-#: src/pages/outposts/OutpostListPage.ts
-msgid "Outpost"
-msgstr "Outpost"
+#: 
+#~ msgid "Outpost"
+#~ msgstr "Outpost"
 
 #: src/pages/outposts/OutpostDeploymentModal.ts
 msgid "Outpost Deployment Info"
@@ -2730,13 +2902,21 @@ msgstr "Outpost Deployment Info"
 #~ msgid "Outpost Service-connection"
 #~ msgstr "Outpost Service-connection"
 
+#: 
+#~ msgid "Outpost integration"
+#~ msgstr "Outpost integration"
+
 #: src/pages/outposts/ServiceConnectionListPage.ts
-msgid "Outpost integration"
-msgstr "Outpost integration"
+msgid "Outpost integration(s)"
+msgstr "Outpost integration(s)"
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "Outpost status"
 msgstr "Outpost status"
+
+#: src/pages/outposts/OutpostListPage.ts
+msgid "Outpost(s)"
+msgstr "Outpost(s)"
 
 #: src/interfaces/AdminInterface.ts
 #: src/interfaces/AdminInterface.ts
@@ -2784,6 +2964,7 @@ msgstr "Passing"
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/password/PasswordStage.ts
+#: src/pages/users/ServiceAccountForm.ts
 msgid "Password"
 msgstr "Password"
 
@@ -2831,7 +3012,6 @@ msgstr "Policies"
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
-#: src/pages/policies/PolicyListPage.ts
 msgid "Policy"
 msgstr "Policy"
 
@@ -2840,6 +3020,11 @@ msgstr "Policy"
 msgid "Policy / Group / User Bindings"
 msgstr "Policy / Group / User Bindings"
 
+#: src/pages/policies/PolicyListPage.ts
+msgid "Policy / Policies"
+msgstr "Policy / Policies"
+
+#: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Policy / User / Group"
 msgstr "Policy / User / Group"
@@ -2850,9 +3035,13 @@ msgstr "Policy / User / Group"
 msgid "Policy Bindings"
 msgstr "Policy Bindings"
 
+#: 
+#~ msgid "Policy binding"
+#~ msgstr "Policy binding"
+
 #: src/pages/policies/BoundPoliciesList.ts
-msgid "Policy binding"
-msgstr "Policy binding"
+msgid "Policy binding(s)"
+msgstr "Policy binding(s)"
 
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationViewPage.ts
@@ -2920,26 +3109,34 @@ msgstr "Private key, acquired from https://www.google.com/recaptcha/intro/v3.htm
 msgid "Profile URL"
 msgstr "Profile URL"
 
-#: src/pages/stages/prompt/PromptListPage.ts
-msgid "Prompt"
-msgstr "Prompt"
+#: 
+#~ msgid "Prompt"
+#~ msgstr "Prompt"
 
 #: src/pages/stages/consent/ConsentStageForm.ts
 msgid "Prompt for the user's consent. The consent can either be permanent or expire in a defined amount of time."
 msgstr "Prompt for the user's consent. The consent can either be permanent or expire in a defined amount of time."
+
+#: src/pages/stages/prompt/PromptListPage.ts
+msgid "Prompt(s)"
+msgstr "Prompt(s)"
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 msgid "Prompts"
 msgstr "Prompts"
 
-#: src/pages/property-mappings/PropertyMappingListPage.ts
-msgid "Property Mapping"
-msgstr "Property Mapping"
+#: 
+#~ msgid "Property Mapping"
+#~ msgstr "Property Mapping"
 
 #: src/pages/events/utils.ts
 msgid "Property Mapping exception"
 msgstr "Property Mapping exception"
+
+#: src/pages/property-mappings/PropertyMappingListPage.ts
+msgid "Property Mapping(s)"
+msgstr "Property Mapping(s)"
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
@@ -2980,7 +3177,6 @@ msgstr "Provide support for protocols like SAML and OAuth to assigned applicatio
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
-#: src/pages/providers/ProviderListPage.ts
 msgid "Provider"
 msgstr "Provider"
 
@@ -2989,9 +3185,13 @@ msgstr "Provider"
 msgid "Provider Type"
 msgstr "Provider Type"
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts
-msgid "Provider type"
-msgstr "Provider type"
+#: 
+#~ msgid "Provider type"
+#~ msgstr "Provider type"
+
+#: src/pages/providers/ProviderListPage.ts
+msgid "Provider(s)"
+msgstr "Provider(s)"
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/outposts/OutpostForm.ts
@@ -3074,6 +3274,8 @@ msgid "Receive a push notification on your phone to prove your identity."
 msgstr "Receive a push notification on your phone to prove your identity."
 
 #: src/pages/flows/FlowForm.ts
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/UserListPage.ts
 msgid "Recovery"
 msgstr "Recovery"
 
@@ -3089,6 +3291,10 @@ msgstr "Recovery flow. If left empty, the first applicable flow sorted by the sl
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Recovery keys"
 msgstr "Recovery keys"
+
+#: src/pages/users/UserListPage.ts
+msgid "Recovery link cannot be emailed, user has no email address saved."
+msgstr "Recovery link cannot be emailed, user has no email address saved."
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Redirect"
@@ -3110,9 +3316,13 @@ msgstr "Redirect binding"
 msgid "Refresh"
 msgstr "Refresh"
 
+#: 
+#~ msgid "Refresh Code"
+#~ msgstr "Refresh Code"
+
 #: src/elements/oauth/UserRefreshList.ts
-msgid "Refresh Code"
-msgstr "Refresh Code"
+msgid "Refresh Code(s)"
+msgstr "Refresh Code(s)"
 
 #: src/flows/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage.ts
 msgid "Register device"
@@ -3121,6 +3331,10 @@ msgstr "Register device"
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression."
 msgstr "Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression."
+
+#: src/pages/users/UserListPage.ts
+msgid "Regular user"
+msgstr "Regular user"
 
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/flows/FlowViewPage.ts
@@ -3164,12 +3378,16 @@ msgstr "Request token URL"
 msgid "Required"
 msgstr "Required"
 
+#: src/flows/stages/prompt/PromptStage.ts
+msgid "Required."
+msgstr "Required."
+
 #: src/pages/user-settings/UserSelfForm.ts
+#: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserForm.ts
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 
-#: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Reset Password"
 msgstr "Reset Password"
@@ -3318,13 +3536,21 @@ msgstr "Select a provider that this application should use. Alternatively, creat
 msgid "Select all rows"
 msgstr "Select all rows"
 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
+msgid "Select an authentication method."
+msgstr "Select an authentication method."
+
 #: src/pages/stages/invitation/InvitationListLink.ts
 msgid "Select an enrollment flow"
 msgstr "Select an enrollment flow"
 
-#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
-msgid "Select an identification method."
-msgstr "Select an identification method."
+#: 
+#~ msgid "Select an identification method."
+#~ msgstr "Select an identification method."
+
+#: src/pages/users/GroupSelectModal.ts
+msgid "Select groups to add user to"
+msgstr "Select groups to add user to"
 
 #: src/flows/stages/identification/IdentificationStage.ts
 msgid "Select one of the sources below to login."
@@ -3370,6 +3596,10 @@ msgstr "Selection of backends to test the password against."
 msgid "Send Email again."
 msgstr "Send Email again."
 
+#: src/pages/users/UserListPage.ts
+msgid "Send link"
+msgstr "Send link"
+
 #: src/pages/events/RuleListPage.ts
 msgid "Send notifications whenever a specific Event is created and matched by policies."
 msgstr "Send notifications whenever a specific Event is created and matched by policies."
@@ -3377,6 +3607,10 @@ msgstr "Send notifications whenever a specific Event is created and matched by p
 #: src/pages/events/TransportForm.ts
 msgid "Send once"
 msgstr "Send once"
+
+#: src/pages/users/UserListPage.ts
+msgid "Send recovery link to user"
+msgstr "Send recovery link to user"
 
 #: src/pages/events/RuleListPage.ts
 msgid "Sent to group"
@@ -3395,9 +3629,9 @@ msgstr "Server URI"
 msgid "Server and client are further than 5 seconds apart."
 msgstr "Server and client are further than 5 seconds apart."
 
-#: src/pages/providers/ldap/LDAPProviderForm.ts
-msgid "Server name for which this provider's certificate is valid for."
-msgstr "Server name for which this provider's certificate is valid for."
+#: 
+#~ msgid "Server name for which this provider's certificate is valid for."
+#~ msgstr "Server name for which this provider's certificate is valid for."
 
 #: src/flows/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage.ts
 msgid "Server validation of credential failed: {err}"
@@ -3416,9 +3650,9 @@ msgstr "Service Provider Binding"
 #~ msgid "Service connection"
 #~ msgstr "Service connection"
 
-#: src/elements/user/SessionList.ts
-msgid "Session"
-msgstr "Session"
+#: 
+#~ msgid "Session"
+#~ msgstr "Session"
 
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "Session duration"
@@ -3431,6 +3665,10 @@ msgstr "Session not valid on or after current time + this value (Format: hours=1
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Session valid not on or after"
 msgstr "Session valid not on or after"
+
+#: src/elements/user/SessionList.ts
+msgid "Session(s)"
+msgstr "Session(s)"
 
 #: src/pages/users/UserViewPage.ts
 msgid "Sessions"
@@ -3512,17 +3750,22 @@ msgstr "Slug"
 msgid "Something went wrong! Please try again later."
 msgstr "Something went wrong! Please try again later."
 
-#: src/pages/sources/SourcesListPage.ts
-msgid "Source"
-msgstr "Source"
+#: 
+#~ msgid "Source"
+#~ msgstr "Source"
 
 #: src/pages/events/utils.ts
 msgid "Source linked"
 msgstr "Source linked"
 
 #: src/pages/user-settings/settings/SourceSettingsOAuth.ts
+#: src/pages/user-settings/settings/SourceSettingsPlex.ts
 msgid "Source {0}"
 msgstr "Source {0}"
+
+#: src/pages/sources/SourcesListPage.ts
+msgid "Source(s)"
+msgstr "Source(s)"
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/sources/SourcesListPage.ts
@@ -3530,10 +3773,15 @@ msgstr "Source {0}"
 msgid "Sources"
 msgstr "Sources"
 
-#: src/pages/sources/SourcesListPage.ts
-msgid "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
-msgstr "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
+#: 
+#~ msgid "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
+#~ msgstr "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
 
+#: src/pages/sources/SourcesListPage.ts
+msgid "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves."
+msgstr "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves."
+
+#: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts
 msgid "Stage"
 msgstr "Stage"
@@ -3546,9 +3794,17 @@ msgstr "Stage Bindings"
 msgid "Stage Configuration"
 msgstr "Stage Configuration"
 
+#: 
+#~ msgid "Stage binding"
+#~ msgstr "Stage binding"
+
 #: src/pages/flows/BoundStagesList.ts
-msgid "Stage binding"
-msgstr "Stage binding"
+msgid "Stage binding(s)"
+msgstr "Stage binding(s)"
+
+#: src/pages/flows/BoundStagesList.ts
+msgid "Stage type"
+msgstr "Stage type"
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
@@ -3573,6 +3829,10 @@ msgstr "Stage used to configure a static authenticator (i.e. static tokens). Thi
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Stage used to validate any authenticator. This stage should be used during authentication or authorization flows."
 msgstr "Stage used to validate any authenticator. This stage should be used during authentication or authorization flows."
+
+#: src/pages/stages/StageListPage.ts
+msgid "Stage(s)"
+msgstr "Stage(s)"
 
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
@@ -3768,6 +4028,7 @@ msgstr "Successfully created stage."
 msgid "Successfully created tenant."
 msgstr "Successfully created tenant."
 
+#: src/pages/tokens/TokenForm.ts
 #: src/pages/user-settings/tokens/UserTokenForm.ts
 msgid "Successfully created token."
 msgstr "Successfully created token."
@@ -3776,10 +4037,12 @@ msgstr "Successfully created token."
 msgid "Successfully created transport."
 msgstr "Successfully created transport."
 
+#: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserForm.ts
 msgid "Successfully created user."
 msgstr "Successfully created user."
 
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
 msgid "Successfully deleted {0} {1}"
 msgstr "Successfully deleted {0} {1}"
@@ -3800,6 +4063,10 @@ msgstr "Successfully imported flow."
 #: src/pages/providers/saml/SAMLProviderImportForm.ts
 msgid "Successfully imported provider."
 msgstr "Successfully imported provider."
+
+#: src/pages/users/UserResetEmailForm.ts
+msgid "Successfully sent email."
+msgstr "Successfully sent email."
 
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/policies/PolicyTestForm.ts
@@ -3917,6 +4184,7 @@ msgstr "Successfully updated stage."
 msgid "Successfully updated tenant."
 msgstr "Successfully updated tenant."
 
+#: src/pages/tokens/TokenForm.ts
 #: src/pages/user-settings/tokens/UserTokenForm.ts
 msgid "Successfully updated token."
 msgstr "Successfully updated token."
@@ -3933,6 +4201,8 @@ msgstr "Successfully updated user."
 msgid "Successfully updated {0} {1}"
 msgstr "Successfully updated {0} {1}"
 
+#: src/pages/users/GroupSelectModal.ts
+#: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Superuser"
 msgstr "Superuser"
@@ -3998,9 +4268,9 @@ msgstr "System task execution"
 msgid "TLS Authentication Certificate"
 msgstr "TLS Authentication Certificate"
 
-#: src/pages/providers/ldap/LDAPProviderForm.ts
-msgid "TLS Server name"
-msgstr "TLS Server name"
+#: 
+#~ msgid "TLS Server name"
+#~ msgstr "TLS Server name"
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 msgid "TLS Verification Certificate"
@@ -4027,9 +4297,12 @@ msgid "Template"
 msgstr "Template"
 
 #: src/pages/events/EventListPage.ts
-#: src/pages/tenants/TenantListPage.ts
 msgid "Tenant"
 msgstr "Tenant"
+
+#: src/pages/tenants/TenantListPage.ts
+msgid "Tenant(s)"
+msgstr "Tenant(s)"
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/tenants/TenantListPage.ts
@@ -4066,6 +4339,10 @@ msgstr "The external URL you'll access the application at. Include any non-stand
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "The external URL you'll authenticate at. Can be the same domain as authentik."
 msgstr "The external URL you'll authenticate at. Can be the same domain as authentik."
+
+#: 
+#~ msgid "The following objects use {0}:"
+#~ msgstr "The following objects use {0}:"
 
 #: src/elements/forms/DeleteForm.ts
 msgid "The following objects use {objName}"
@@ -4174,10 +4451,10 @@ msgstr "To"
 msgid "To use SSL instead, use 'ldaps://' and disable this option."
 msgstr "To use SSL instead, use 'ldaps://' and disable this option."
 
-#: src/pages/tokens/TokenListPage.ts
-#: src/pages/user-settings/tokens/UserTokenList.ts
-msgid "Token"
-msgstr "Token"
+#: 
+#: 
+#~ msgid "Token"
+#~ msgstr "Token"
 
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
@@ -4196,12 +4473,23 @@ msgstr "Token expiry"
 msgid "Token validity"
 msgstr "Token validity"
 
-#: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
-#: src/interfaces/AdminInterface.ts
 #: src/pages/tokens/TokenListPage.ts
-#: src/pages/user-settings/UserSettingsPage.ts
+#: src/pages/user-settings/tokens/UserTokenList.ts
+msgid "Token(s)"
+msgstr "Token(s)"
+
+#: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
+#: src/pages/tokens/TokenListPage.ts
 msgid "Tokens"
 msgstr "Tokens"
+
+#: src/interfaces/AdminInterface.ts
+msgid "Tokens & App passwords"
+msgstr "Tokens & App passwords"
+
+#: src/pages/user-settings/UserSettingsPage.ts
+msgid "Tokens and App passwords"
+msgstr "Tokens and App passwords"
 
 #: src/pages/tokens/TokenListPage.ts
 msgid "Tokens are used throughout authentik for Email validation stages, Recovery keys and API access."
@@ -4308,6 +4596,10 @@ msgstr "Unhealthy"
 msgid "Unhealthy outposts"
 msgstr "Unhealthy outposts"
 
+#: src/pages/tokens/TokenForm.ts
+msgid "Unique identifier the token is referenced by."
+msgstr "Unique identifier the token is referenced by."
+
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Unknown"
 msgstr "Unknown"
@@ -4354,6 +4646,7 @@ msgstr "Up-to-date!"
 #: src/pages/stages/StageListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/tenants/TenantListPage.ts
+#: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
@@ -4443,6 +4736,7 @@ msgstr "Update Stage binding"
 msgid "Update Tenant"
 msgstr "Update Tenant"
 
+#: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
 msgid "Update Token"
 msgstr "Update Token"
@@ -4507,6 +4801,10 @@ msgstr "Use the user's email address, but deny enrollment when the email address
 msgid "Use the user's username, but deny enrollment when the username already exists."
 msgstr "Use the user's username, but deny enrollment when the username already exists."
 
+#: src/pages/users/ServiceAccountForm.ts
+msgid "Use the username and password below to authenticate. The password can be retrieved later on the Tokens page."
+msgstr "Use the username and password below to authenticate. The password can be retrieved later on the Tokens page."
+
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /akprox must be routed to the outpost (when using a manged outpost, this is done for you)."
 msgstr "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /akprox must be routed to the outpost (when using a manged outpost, this is done for you)."
@@ -4528,9 +4826,9 @@ msgstr "Use this tenant for each domain that doesn't have a dedicated tenant."
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyTestForm.ts
 #: src/pages/property-mappings/PropertyMappingTestForm.ts
+#: src/pages/tokens/TokenForm.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
-#: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "User"
 msgstr "User"
@@ -4551,6 +4849,18 @@ msgstr "User Reputation"
 #: src/pages/user-settings/UserSettingsPage.ts
 msgid "User Settings"
 msgstr "User Settings"
+
+#: src/pages/stages/password/PasswordStageForm.ts
+msgid "User database + LDAP password"
+msgstr "User database + LDAP password"
+
+#: src/pages/stages/password/PasswordStageForm.ts
+msgid "User database + app passwords"
+msgstr "User database + app passwords"
+
+#: src/pages/stages/password/PasswordStageForm.ts
+msgid "User database + standard password"
+msgstr "User database + standard password"
 
 #: src/pages/user-settings/UserSettingsPage.ts
 msgid "User details"
@@ -4577,6 +4887,10 @@ msgstr "User object filter"
 msgid "User password writeback"
 msgstr "User password writeback"
 
+#: src/pages/users/UserListPage.ts
+msgid "User status"
+msgstr "User status"
+
 #: src/pages/events/utils.ts
 msgid "User was written to"
 msgstr "User was written to"
@@ -4595,6 +4909,10 @@ msgstr "User's avatar"
 msgid "User's display name."
 msgstr "User's display name."
 
+#: src/pages/users/UserListPage.ts
+msgid "User(s)"
+msgstr "User(s)"
+
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "User/Group Attribute used for the password part of the HTTP-Basic Header."
 msgstr "User/Group Attribute used for the password part of the HTTP-Basic Header."
@@ -4611,7 +4929,10 @@ msgstr "Userinfo URL"
 #: src/pages/policies/reputation/UserReputationListPage.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/user-settings/UserSelfForm.ts
+#: src/pages/users/ServiceAccountForm.ts
+#: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserForm.ts
+#: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Username"
 msgstr "Username"
@@ -4662,6 +4983,10 @@ msgstr "Validation Policies"
 msgid "Validity days"
 msgstr "Validity days"
 
+#: src/pages/tokens/TokenListPage.ts
+msgid "Verification"
+msgstr "Verification"
+
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Verification Certificate"
 msgstr "Verification Certificate"
@@ -4700,6 +5025,7 @@ msgstr "Wait (min)"
 
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
 #: src/pages/events/RuleForm.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Warning"
@@ -4712,6 +5038,10 @@ msgstr "Warning: Policy is not assigned."
 #: src/pages/providers/ProviderListPage.ts
 msgid "Warning: Provider not assigned to any application."
 msgstr "Warning: Provider not assigned to any application."
+
+#: src/pages/outposts/OutpostListPage.ts
+msgid "Warning: authentik Domain is not configured, authentication will not work."
+msgstr "Warning: authentik Domain is not configured, authentication will not work."
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "WebAuthn Authenticators"
@@ -4807,6 +5137,7 @@ msgstr "X509 Subject"
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/pages/users/GroupSelectModal.ts
 #: src/pages/users/UserListPage.ts
 msgid "Yes"
 msgstr "Yes"
@@ -4819,30 +5150,37 @@ msgstr "You can only select providers that match the type of the outpost."
 msgid "You're currently impersonating {0}. Click to stop."
 msgstr "You're currently impersonating {0}. Click to stop."
 
-#: src/pages/stages/password/PasswordStageForm.ts
-msgid "authentik Builtin Database"
-msgstr "authentik Builtin Database"
+#: 
+#~ msgid "authentik Builtin Database"
+#~ msgstr "authentik Builtin Database"
 
-#: src/pages/stages/password/PasswordStageForm.ts
-msgid "authentik LDAP Backend"
-msgstr "authentik LDAP Backend"
+#: 
+#~ msgid "authentik LDAP Backend"
+#~ msgstr "authentik LDAP Backend"
 
 #: src/elements/forms/DeleteForm.ts
 msgid "connecting object will be deleted"
 msgstr "connecting object will be deleted"
 
+#: src/elements/forms/DeleteBulkForm.ts
+msgid "connection will be deleted"
+msgstr "connection will be deleted"
+
 #: src/elements/Tabs.ts
 msgid "no tabs defined"
 msgstr "no tabs defined"
 
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
 msgid "object will be DELETED"
 msgstr "object will be DELETED"
 
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
 msgid "reference will be reset to default value"
 msgstr "reference will be reset to default value"
 
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
 msgid "reference will be set to an empty value"
 msgstr "reference will be set to an empty value"
@@ -4860,6 +5198,7 @@ msgstr "{0} (\"{1}\", of type {2})"
 msgid "{0} ({1})"
 msgstr "{0} ({1})"
 
+#: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
 msgid "{0} ({consequence})"
 msgstr "{0} ({consequence})"

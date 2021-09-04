@@ -4,9 +4,9 @@ import { AKResponse } from "../../api/Client";
 import { Table, TableColumn } from "../table/Table";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 
-import "../forms/DeleteForm";
+import "../forms/DeleteBulkForm";
 import { PAGE_SIZE } from "../../constants";
-import { RefreshTokenModel, Oauth2Api } from "authentik-api";
+import { RefreshTokenModel, Oauth2Api, ExpiringBaseGrantModel } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-user-oauth-refresh-list")
@@ -57,17 +57,16 @@ export class UserOAuthRefreshList extends Table<RefreshTokenModel> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`Refresh Code`}
-            .usedBy=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Refresh Code(s)`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: ExpiringBaseGrantModel) => {
                 return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensUsedByList({
                     id: item.pk,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: ExpiringBaseGrantModel) => {
                 return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensDestroy({
                     id: item.pk,
                 });
@@ -76,7 +75,7 @@ export class UserOAuthRefreshList extends Table<RefreshTokenModel> {
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: RefreshTokenModel): TemplateResult[] {

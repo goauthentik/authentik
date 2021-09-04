@@ -1,4 +1,4 @@
-import { AuthenticatorsApi } from "authentik-api";
+import { AuthenticatorsApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";

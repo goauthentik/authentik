@@ -1,4 +1,4 @@
-import { CoreApi, FlowsApi, FlowsInstancesListDesignationEnum, Tenant } from "authentik-api";
+import { CoreApi, FlowsApi, FlowsInstancesListDesignationEnum, Tenant } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";

@@ -1,4 +1,4 @@
-import { Middleware, ResponseContext } from "authentik-api";
+import { Middleware, ResponseContext } from "@goauthentik/api";
 import {
     css,
     CSSResult,

@@ -1,4 +1,4 @@
-import { ScopeMapping, PropertymappingsApi } from "authentik-api";
+import { ScopeMapping, PropertymappingsApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -58,16 +58,11 @@ export class PropertyMappingScopeForm extends ModelForm<ScopeMapping, string> {
                     ${t`Scope which the client can specify to access these properties.`}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${t`Description`}
-                ?required=${true}
-                name="description"
-            >
+            <ak-form-element-horizontal label=${t`Description`} name="description">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.description)}"
                     class="pf-c-form-control"
-                    required
                 />
                 <p class="pf-c-form__helper-text">
                     ${t`Description shown to the user when consenting. If left empty, the user won't be informed.`}

@@ -5,13 +5,13 @@ import { TablePage } from "../../../elements/table/TablePage";
 
 import "../../../elements/buttons/ModalButton";
 import "../../../elements/buttons/SpinnerButton";
-import "../../../elements/forms/DeleteForm";
+import "../../../elements/forms/DeleteBulkForm";
 import "../../../elements/forms/ModalForm";
 import "./InvitationForm";
 import "./InvitationListLink";
 import { TableColumn } from "../../../elements/table/Table";
 import { PAGE_SIZE } from "../../../constants";
-import { Invitation, StagesApi } from "authentik-api";
+import { Invitation, StagesApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 
 @customElement("ak-stage-invitation-list")
@@ -54,17 +54,16 @@ export class InvitationListPage extends TablePage<Invitation> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`Invitation`}
-            .usedBy=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Invitation(s)`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: Invitation) => {
                 return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsUsedByList({
                     inviteUuid: item.pk,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: Invitation) => {
                 return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsDestroy({
                     inviteUuid: item.pk,
                 });
@@ -73,7 +72,7 @@ export class InvitationListPage extends TablePage<Invitation> {
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: Invitation): TemplateResult[] {

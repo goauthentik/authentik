@@ -6,6 +6,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 
+	"goauthentik.io/api"
 	"goauthentik.io/internal/utils/web"
 )
 
@@ -36,10 +37,12 @@ func (ws *WebServer) configureProxy() {
 	ws.m.PathPrefix("/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		host := web.GetHost(r)
 		if ws.ProxyServer != nil {
-			if _, ok := ws.ProxyServer.Handlers[host]; ok {
-				ws.log.WithField("host", host).Trace("routing to proxy outpost")
-				ws.ProxyServer.Handler(rw, r)
-				return
+			if p, ok := ws.ProxyServer.Handlers[host]; ok {
+				if *p.Mode == api.PROXYMODE_PROXY {
+					ws.log.WithField("host", host).Trace("routing to proxy outpost")
+					ws.ProxyServer.Handler(rw, r)
+					return
+				}
 			}
 		}
 		ws.log.WithField("host", host).Trace("routing to application server")

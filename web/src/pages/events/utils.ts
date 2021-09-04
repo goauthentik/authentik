@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { EventActions } from "authentik-api";
+import { EventActions } from "@goauthentik/api";
 
 export function ActionToLabel(action?: EventActions): string {
     if (!action) return "";

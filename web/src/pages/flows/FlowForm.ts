@@ -4,7 +4,7 @@ import {
     PolicyEngineMode,
     FlowsApi,
     CapabilitiesEnum,
-} from "authentik-api";
+} from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -62,7 +62,7 @@ export class FlowForm extends ModelForm<Flow, string> {
                 return writeOp.then((app) => {
                     return new FlowsApi(DEFAULT_CONFIG).flowsInstancesSetBackgroundUrlCreate({
                         slug: app.slug,
-                        setIconURLRequest: {
+                        filePathRequest: {
                             url: data.background || "",
                         },
                     });
@@ -243,7 +243,7 @@ export class FlowForm extends ModelForm<Flow, string> {
                     <input
                         type="checkbox"
                         class="pf-c-check__input"
-                        ?checked=${first(this.instance?.compatibilityMode, true)}
+                        ?checked=${first(this.instance?.compatibilityMode, false)}
                     />
                     <label class="pf-c-check__label"> ${t`Compatibility mode`} </label>
                 </div>

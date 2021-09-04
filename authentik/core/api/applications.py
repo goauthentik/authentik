@@ -4,14 +4,9 @@ from django.db.models import QuerySet
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import (
-    OpenApiParameter,
-    OpenApiResponse,
-    extend_schema,
-    inline_serializer,
-)
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import BooleanField, CharField, FileField, ReadOnlyField
+from rest_framework.fields import ReadOnlyField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -24,6 +19,7 @@ from authentik.admin.api.metrics import CoordinateSerializer, get_events_per_1h
 from authentik.api.decorators import permission_required
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.utils import FilePathSerializer, FileUploadSerializer
 from authentik.core.models import Application, User
 from authentik.events.models import EventAction
 from authentik.policies.api.exec import PolicyTestResultSerializer
@@ -71,7 +67,7 @@ class ApplicationSerializer(ModelSerializer):
 class ApplicationViewSet(UsedByMixin, ModelViewSet):
     """Application Viewset"""
 
-    queryset = Application.objects.all()
+    queryset = Application.objects.all().prefetch_related("provider")
     serializer_class = ApplicationSerializer
     search_fields = [
         "name",
@@ -122,7 +118,10 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         # If the current user is superuser, they can set `for_user`
         for_user = request.user
         if request.user.is_superuser and "for_user" in request.query_params:
-            for_user = get_object_or_404(User, pk=request.query_params.get("for_user"))
+            try:
+                for_user = get_object_or_404(User, pk=request.query_params.get("for_user"))
+            except ValueError:
+                return HttpResponseBadRequest("for_user must be numerical")
         engine = PolicyEngine(application, for_user, request)
         engine.use_cache = False
         engine.build()
@@ -177,13 +176,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
     @permission_required("authentik_core.change_application")
     @extend_schema(
         request={
-            "multipart/form-data": inline_serializer(
-                "SetIcon",
-                fields={
-                    "file": FileField(required=False),
-                    "clear": BooleanField(default=False),
-                },
-            )
+            "multipart/form-data": FileUploadSerializer,
         },
         responses={
             200: OpenApiResponse(description="Success"),
@@ -215,7 +208,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
 
     @permission_required("authentik_core.change_application")
     @extend_schema(
-        request=inline_serializer("SetIconURL", fields={"url": CharField()}),
+        request=FilePathSerializer,
         responses={
             200: OpenApiResponse(description="Success"),
             400: OpenApiResponse(description="Bad request"),

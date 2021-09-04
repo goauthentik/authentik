@@ -2,9 +2,9 @@ import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { Table, TableColumn } from "../../elements/table/Table";
-import { PoliciesApi, PolicyBinding } from "authentik-api";
+import { PoliciesApi, PolicyBinding } from "@goauthentik/api";
 
-import "../../elements/forms/DeleteForm";
+import "../../elements/forms/DeleteBulkForm";
 import "../../elements/Tabs";
 import "../../elements/forms/ProxyForm";
 import "../../elements/buttons/SpinnerButton";
@@ -96,26 +96,31 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`Policy binding`}
-            .usedBy=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Policy binding(s)`}
+            .objects=${this.selectedElements}
+            .metadata=${(item: PolicyBinding) => {
+                return [
+                    { key: t`Order`, value: item.order.toString() },
+                    { key: t`Policy / User / Group`, value: this.getPolicyUserGroupRow(item) },
+                ];
+            }}
+            .usedBy=${(item: PolicyBinding) => {
                 return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsUsedByList({
                     policyBindingUuid: item.pk,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: PolicyBinding) => {
                 return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsDestroy({
                     policyBindingUuid: item.pk,
                 });
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete Binding`}
+                ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: PolicyBinding): TemplateResult[] {

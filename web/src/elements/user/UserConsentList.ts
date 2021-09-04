@@ -3,9 +3,9 @@ import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { Table, TableColumn } from "../table/Table";
 
-import "../forms/DeleteForm";
+import "../forms/DeleteBulkForm";
 import { PAGE_SIZE } from "../../constants";
-import { CoreApi, UserConsent } from "authentik-api";
+import { CoreApi, UserConsent } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-user-consent-list")
@@ -33,26 +33,25 @@ export class UserConsentList extends Table<UserConsent> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`Consent`}
-            .usedBy=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Consent(s)`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: UserConsent) => {
                 return new CoreApi(DEFAULT_CONFIG).coreUserConsentUsedByList({
                     id: item.pk,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: UserConsent) => {
                 return new CoreApi(DEFAULT_CONFIG).coreUserConsentDestroy({
                     id: item.pk,
                 });
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete Consent`}
+                ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: UserConsent): TemplateResult[] {

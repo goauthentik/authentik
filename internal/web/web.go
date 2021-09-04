@@ -30,6 +30,7 @@ type WebServer struct {
 }
 
 func NewWebServer() *WebServer {
+	l := log.WithField("logger", "authentik.g.web")
 	mainHandler := mux.NewRouter()
 	if config.G.ErrorReporting.Enabled {
 		mainHandler.Use(recoveryMiddleware())
@@ -37,14 +38,14 @@ func NewWebServer() *WebServer {
 	mainHandler.Use(handlers.ProxyHeaders)
 	mainHandler.Use(handlers.CompressHandler)
 	logginRouter := mainHandler.NewRoute().Subrouter()
-	logginRouter.Use(loggingMiddleware)
+	logginRouter.Use(loggingMiddleware(l))
 
 	ws := &WebServer{
 		LegacyProxy: true,
 
 		m:   mainHandler,
 		lh:  logginRouter,
-		log: log.WithField("logger", "authentik.g.web"),
+		log: l,
 	}
 	ws.configureStatic()
 	ws.configureProxy()

@@ -9,12 +9,12 @@ from authentik.core.models import Application, User
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
+from authentik.lib.generators import generate_id, generate_key
 from authentik.providers.oauth2.constants import (
     GRANT_TYPE_AUTHORIZATION_CODE,
     GRANT_TYPE_REFRESH_TOKEN,
 )
 from authentik.providers.oauth2.errors import TokenError
-from authentik.providers.oauth2.generators import generate_client_id, generate_client_secret
 from authentik.providers.oauth2.models import AuthorizationCode, OAuth2Provider, RefreshToken
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.views.token import TokenParams
@@ -32,8 +32,8 @@ class TestToken(OAuthTestCase):
         """test request param"""
         provider = OAuth2Provider.objects.create(
             name="test",
-            client_id=generate_client_id(),
-            client_secret=generate_client_secret(),
+            client_id=generate_id(),
+            client_secret=generate_key(),
             authorization_flow=Flow.objects.first(),
             redirect_uris="http://testserver",
             rsa_key=CertificateKeyPair.objects.first(),
@@ -53,14 +53,14 @@ class TestToken(OAuthTestCase):
         params = TokenParams.parse(request, provider, provider.client_id, provider.client_secret)
         self.assertEqual(params.provider, provider)
         with self.assertRaises(TokenError):
-            TokenParams.parse(request, provider, provider.client_id, generate_client_secret())
+            TokenParams.parse(request, provider, provider.client_id, generate_key())
 
     def test_request_auth_code_invalid(self):
         """test request param"""
         provider = OAuth2Provider.objects.create(
             name="test",
-            client_id=generate_client_id(),
-            client_secret=generate_client_secret(),
+            client_id=generate_id(),
+            client_secret=generate_key(),
             authorization_flow=Flow.objects.first(),
             redirect_uris="http://testserver",
             rsa_key=CertificateKeyPair.objects.first(),
@@ -82,8 +82,8 @@ class TestToken(OAuthTestCase):
         """test request param"""
         provider = OAuth2Provider.objects.create(
             name="test",
-            client_id=generate_client_id(),
-            client_secret=generate_client_secret(),
+            client_id=generate_id(),
+            client_secret=generate_key(),
             authorization_flow=Flow.objects.first(),
             redirect_uris="http://local.invalid",
             rsa_key=CertificateKeyPair.objects.first(),
@@ -93,7 +93,7 @@ class TestToken(OAuthTestCase):
         token: RefreshToken = RefreshToken.objects.create(
             provider=provider,
             user=user,
-            refresh_token=generate_client_id(),
+            refresh_token=generate_id(),
         )
         request = self.factory.post(
             "/",
@@ -111,8 +111,8 @@ class TestToken(OAuthTestCase):
         """test request param"""
         provider = OAuth2Provider.objects.create(
             name="test",
-            client_id=generate_client_id(),
-            client_secret=generate_client_secret(),
+            client_id=generate_id(),
+            client_secret=generate_key(),
             authorization_flow=Flow.objects.first(),
             redirect_uris="http://local.invalid",
             rsa_key=CertificateKeyPair.objects.first(),
@@ -153,8 +153,8 @@ class TestToken(OAuthTestCase):
         """test request param"""
         provider = OAuth2Provider.objects.create(
             name="test",
-            client_id=generate_client_id(),
-            client_secret=generate_client_secret(),
+            client_id=generate_id(),
+            client_secret=generate_key(),
             authorization_flow=Flow.objects.first(),
             redirect_uris="http://local.invalid",
             rsa_key=CertificateKeyPair.objects.first(),
@@ -167,7 +167,7 @@ class TestToken(OAuthTestCase):
         token: RefreshToken = RefreshToken.objects.create(
             provider=provider,
             user=user,
-            refresh_token=generate_client_id(),
+            refresh_token=generate_id(),
         )
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -202,8 +202,8 @@ class TestToken(OAuthTestCase):
         """test request param"""
         provider = OAuth2Provider.objects.create(
             name="test",
-            client_id=generate_client_id(),
-            client_secret=generate_client_secret(),
+            client_id=generate_id(),
+            client_secret=generate_key(),
             authorization_flow=Flow.objects.first(),
             redirect_uris="http://local.invalid",
             rsa_key=CertificateKeyPair.objects.first(),
@@ -213,7 +213,7 @@ class TestToken(OAuthTestCase):
         token: RefreshToken = RefreshToken.objects.create(
             provider=provider,
             user=user,
-            refresh_token=generate_client_id(),
+            refresh_token=generate_id(),
         )
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -247,8 +247,8 @@ class TestToken(OAuthTestCase):
         """test request param"""
         provider = OAuth2Provider.objects.create(
             name="test",
-            client_id=generate_client_id(),
-            client_secret=generate_client_secret(),
+            client_id=generate_id(),
+            client_secret=generate_key(),
             authorization_flow=Flow.objects.first(),
             redirect_uris="http://testserver",
             rsa_key=CertificateKeyPair.objects.first(),
@@ -261,7 +261,7 @@ class TestToken(OAuthTestCase):
         token: RefreshToken = RefreshToken.objects.create(
             provider=provider,
             user=user,
-            refresh_token=generate_client_id(),
+            refresh_token=generate_id(),
         )
         # Create initial refresh token
         response = self.client.post(

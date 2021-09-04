@@ -3,7 +3,6 @@ from unittest.mock import MagicMock, Mock, PropertyMock, patch
 
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.core.cache import cache
-from django.http import HttpRequest
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from guardian.shortcuts import get_anonymous_user
@@ -13,6 +12,7 @@ from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableExce
 from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
+from authentik.lib.tests.utils import dummy_get_response
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.policies.types import PolicyResult
@@ -22,11 +22,6 @@ POLICY_RETURN_FALSE = PropertyMock(return_value=PolicyResult(False))
 CACHE_MOCK = Mock(wraps=cache)
 
 POLICY_RETURN_TRUE = MagicMock(return_value=PolicyResult(True))
-
-
-def dummy_get_response(request: HttpRequest):  # pragma: no cover
-    """Dummy get_response for SessionMiddleware"""
-    return None
 
 
 class TestFlowPlanner(TestCase):

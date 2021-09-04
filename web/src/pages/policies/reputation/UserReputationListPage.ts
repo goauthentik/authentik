@@ -5,11 +5,11 @@ import { TablePage } from "../../../elements/table/TablePage";
 
 import "../../../elements/buttons/ModalButton";
 import "../../../elements/buttons/SpinnerButton";
-import "../../../elements/forms/DeleteForm";
+import "../../../elements/forms/DeleteBulkForm";
 import "../../../elements/forms/ModalForm";
 import { TableColumn } from "../../../elements/table/Table";
 import { PAGE_SIZE } from "../../../constants";
-import { UserReputation, PoliciesApi } from "authentik-api";
+import { UserReputation, PoliciesApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 
 @customElement("ak-policy-reputation-user-list")
@@ -46,17 +46,16 @@ export class UserReputationListPage extends TablePage<UserReputation> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
             objectLabel=${t`User Reputation`}
-            .usedBy=${() => {
+            .objects=${this.selectedElements}
+            .usedBy=${(item: UserReputation) => {
                 return new PoliciesApi(DEFAULT_CONFIG).policiesReputationUsersUsedByList({
                     id: item.pk,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: UserReputation) => {
                 return new PoliciesApi(DEFAULT_CONFIG).policiesReputationUsersDestroy({
                     id: item.pk,
                 });
@@ -65,7 +64,7 @@ export class UserReputationListPage extends TablePage<UserReputation> {
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: UserReputation): TemplateResult[] {

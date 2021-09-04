@@ -5,7 +5,7 @@ import {
     Provider,
     PolicyEngineMode,
     CapabilitiesEnum,
-} from "authentik-api";
+} from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { CSSResult, customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -76,7 +76,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
                 return writeOp.then((app) => {
                     return new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconUrlCreate({
                         slug: app.slug,
-                        setIconURLRequest: {
+                        filePathRequest: {
                             url: data.metaIcon || "",
                         },
                     });

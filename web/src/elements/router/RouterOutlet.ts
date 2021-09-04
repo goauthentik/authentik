@@ -44,7 +44,7 @@ export class RouterOutlet extends LitElement {
     @property()
     defaultUrl?: string;
 
-    @property({attribute: false})
+    @property({ attribute: false })
     routes: Route[] = [];
 
     static get styles(): CSSResult[] {
@@ -61,8 +61,6 @@ export class RouterOutlet extends LitElement {
                     }
                 }
                 *:first-child {
-                    height: 100%;
-                    display: flex;
                     flex-direction: column;
                 }
             `,

@@ -9,6 +9,7 @@ from yaml import safe_dump
 
 from authentik import __version__
 from authentik.outposts.controllers.base import BaseController, ControllerException
+from authentik.outposts.managed import MANAGED_OUTPOST
 from authentik.outposts.models import DockerServiceConnection, Outpost, ServiceConnectionInvalid
 
 
@@ -28,7 +29,9 @@ class DockerController(BaseController):
             raise ControllerException from exc
 
     def _get_labels(self) -> dict[str, str]:
-        return {}
+        return {
+            "io.goauthentik.outpost-uuid": self.outpost.pk.hex,
+        }
 
     def _get_env(self) -> dict[str, str]:
         return {
@@ -45,6 +48,17 @@ class DockerController(BaseController):
         for key, expected_value in should_be.items():
             entry = f"{key.upper()}={expected_value}"
             if entry not in container_env:
+                return True
+        return False
+
+    def _comp_labels(self, container: Container) -> bool:
+        """Check if container's labels is equal to what we would set. Return true if container needs
+        to be rebuilt."""
+        should_be = self._get_labels()
+        for key, expected_value in should_be.items():
+            if key not in container.labels:
+                return True
+            if container.labels[key] != expected_value:
                 return True
         return False
 
@@ -91,9 +105,11 @@ class DockerController(BaseController):
                 "environment": self._get_env(),
                 "labels": self._get_labels(),
                 "restart_policy": {"Name": "unless-stopped"},
+                "network": self.outpost.config.docker_network,
             }
             if settings.TEST:
                 del container_args["ports"]
+                del container_args["network"]
                 container_args["network_mode"] = "host"
             return (
                 self.client.containers.create(**container_args),
@@ -101,7 +117,11 @@ class DockerController(BaseController):
             )
 
     # pylint: disable=too-many-return-statements
-    def up(self):
+    def up(self, depth=1):
+        if self.outpost.managed == MANAGED_OUTPOST:
+            return None
+        if depth >= 10:
+            raise ControllerException("Giving up since we exceeded recursion limit.")
         try:
             container, has_been_created = self._get_container()
             if has_been_created:
@@ -117,17 +137,22 @@ class DockerController(BaseController):
                         should=self.get_container_image(),
                     )
                     self.down()
-                    return self.up()
+                    return self.up(depth + 1)
             # Check container's ports
             if self._comp_ports(container):
                 self.logger.info("Container has mis-matched ports, re-creating...")
                 self.down()
-                return self.up()
+                return self.up(depth + 1)
             # Check that container values match our values
             if self._comp_env(container):
                 self.logger.info("Container has outdated config, re-creating...")
                 self.down()
-                return self.up()
+                return self.up(depth + 1)
+            # Check that container values match our values
+            if self._comp_labels(container):
+                self.logger.info("Container has outdated labels, re-creating...")
+                self.down()
+                return self.up(depth + 1)
             if (
                 container.attrs.get("HostConfig", {})
                 .get("RestartPolicy", {})
@@ -137,7 +162,7 @@ class DockerController(BaseController):
             ):
                 self.logger.info("Container has mis-matched restart policy, re-creating...")
                 self.down()
-                return self.up()
+                return self.up(depth + 1)
             # Check that container is healthy
             if (
                 container.status == "running"
@@ -165,6 +190,8 @@ class DockerController(BaseController):
             raise ControllerException(str(exc)) from exc
 
     def down(self):
+        if self.outpost.managed != MANAGED_OUTPOST:
+            return
         try:
             container, _ = self._get_container()
             if container.status == "running":

@@ -2,7 +2,7 @@
 from typing import Optional
 
 from aioredis.errors import ConnectionClosedError, ReplyError
-from billiard.exceptions import WorkerLostError
+from billiard.exceptions import SoftTimeLimitExceeded, WorkerLostError
 from botocore.client import ClientError
 from botocore.exceptions import BotoCoreError
 from celery.exceptions import CeleryError
@@ -45,6 +45,9 @@ class SentryIgnoredException(Exception):
 
 def before_send(event: dict, hint: dict) -> Optional[dict]:
     """Check if error is database error, and ignore if so"""
+    # pylint: disable=no-name-in-module
+    from psycopg2.errors import Error
+
     ignored_classes = (
         # Inbuilt types
         KeyboardInterrupt,
@@ -52,6 +55,7 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
         OSError,
         PermissionError,
         # Django Errors
+        Error,
         ImproperlyConfigured,
         OperationalError,
         InternalError,
@@ -73,6 +77,7 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
         # celery errors
         WorkerLostError,
         CeleryError,
+        SoftTimeLimitExceeded,
         # S3 errors
         BotoCoreError,
         ClientError,

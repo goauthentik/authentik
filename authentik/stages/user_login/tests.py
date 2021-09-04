@@ -2,9 +2,9 @@
 from time import sleep
 from unittest.mock import patch
 
-from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
+from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
@@ -16,13 +16,12 @@ from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.stages.user_login.models import UserLoginStage
 
 
-class TestUserLoginStage(TestCase):
+class TestUserLoginStage(APITestCase):
     """Login tests"""
 
     def setUp(self):
         super().setUp()
         self.user = User.objects.create(username="unittest", email="test@beryju.org")
-        self.client = Client()
 
         self.flow = Flow.objects.create(
             name="test-login",

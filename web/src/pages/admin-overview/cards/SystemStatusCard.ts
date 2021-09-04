@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { customElement, html, TemplateResult } from "lit-element";
-import { AdminApi, System } from "authentik-api";
+import { AdminApi, System } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { AdminStatusCard, AdminStatus } from "./AdminStatusCard";
 
@@ -16,6 +16,14 @@ export class SystemStatusCard extends AdminStatusCard<System> {
     }
 
     getStatus(value: System): Promise<AdminStatus> {
+        if (value.embeddedOutpostHost === "") {
+            this.header = t`Warning`;
+            return Promise.resolve<AdminStatus>({
+                icon: "fa fa-exclamation-triangle pf-m-warning",
+                message: html`${t`Embedded outpost is not configured correctly.`}
+                    <a href="#/outpost/outposts">${t`Check outposts.`}</a>`,
+            });
+        }
         if (!value.httpIsSecure && document.location.protocol === "https:") {
             this.header = t`Warning`;
             return Promise.resolve<AdminStatus>({
@@ -24,7 +32,6 @@ export class SystemStatusCard extends AdminStatusCard<System> {
             });
         }
         const timeDiff = value.serverTime.getTime() - (this.now || new Date()).getTime();
-        console.log(`authentik/: timediff ${timeDiff}`);
         if (timeDiff > 5000 || timeDiff < -5000) {
             this.header = t`Warning`;
             return Promise.resolve<AdminStatus>({

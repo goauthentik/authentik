@@ -8,9 +8,9 @@ import "../../elements/forms/ModalForm";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
-import { EventsApi, NotificationTransport } from "authentik-api";
+import { EventsApi, NotificationTransport } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import "../../elements/forms/DeleteForm";
+import "../../elements/forms/DeleteBulkForm";
 import "./TransportForm";
 
 @customElement("ak-event-transport-list")
@@ -51,17 +51,16 @@ export class TransportListPage extends TablePage<NotificationTransport> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`Notifications Transport`}
-            .usedBy=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Notification transports(s)`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: NotificationTransport) => {
                 return new EventsApi(DEFAULT_CONFIG).eventsTransportsUsedByList({
                     uuid: item.pk,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: NotificationTransport) => {
                 return new EventsApi(DEFAULT_CONFIG).eventsTransportsDestroy({
                     uuid: item.pk,
                 });
@@ -70,7 +69,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: NotificationTransport): TemplateResult[] {

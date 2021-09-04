@@ -31,6 +31,7 @@ class FlowPlanProcess(PROCESS_CLASS):  # pragma: no cover
         self.request = RequestFactory().get("/")
 
     def run(self):
+        """Execute 1000 flow plans"""
         print(f"Proc {self.index} Running")
 
         def test_inner():

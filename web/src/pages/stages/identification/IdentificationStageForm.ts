@@ -5,7 +5,7 @@ import {
     StagesApi,
     FlowsInstancesListDesignationEnum,
     SourcesApi,
-} from "authentik-api";
+} from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -156,11 +156,20 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                                     .sourcesAllList({})
                                     .then((sources) => {
                                         return sources.results.map((source) => {
-                                            const selected = Array.from(
+                                            let selected = Array.from(
                                                 this.instance?.sources || [],
                                             ).some((su) => {
                                                 return su == source.pk;
                                             });
+                                            // Creating a new instance, auto-select built-in source
+                                            // Only when no other sources exist
+                                            if (
+                                                !this.instance &&
+                                                source.component === "" &&
+                                                sources.results.length < 2
+                                            ) {
+                                                selected = true;
+                                            }
                                             return html`<option
                                                 value=${ifDefined(source.pk)}
                                                 ?selected=${selected}

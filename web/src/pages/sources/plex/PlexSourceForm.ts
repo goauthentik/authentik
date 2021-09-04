@@ -4,7 +4,7 @@ import {
     FlowsApi,
     UserMatchingModeEnum,
     FlowsInstancesListDesignationEnum,
-} from "authentik-api";
+} from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -223,7 +223,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.clientId)}"
+                            value="${first(this.instance?.clientId, "")}"
                             class="pf-c-form-control"
                             required
                         />

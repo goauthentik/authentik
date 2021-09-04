@@ -1,4 +1,4 @@
-import { CoreApi, Group, User } from "authentik-api";
+import { CoreApi, Group, User } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -33,7 +33,7 @@ export class GroupForm extends ModelForm<Group, string> {
     send = (data: Group): Promise<Group> => {
         if (this.instance?.pk) {
             return new CoreApi(DEFAULT_CONFIG).coreGroupsUpdate({
-                groupUuid: this.instance.pk || "",
+                groupUuid: this.instance.pk,
                 groupRequest: data,
             });
         } else {
@@ -143,9 +143,6 @@ export class GroupForm extends ModelForm<Group, string> {
                         </ak-chip-group>
                     </div>
                 </div>
-                <p class="pf-c-form__helper-text">
-                    ${t`Hold control/command to select multiple items.`}
-                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Attributes`} ?required=${true} name="attributes">
                 <ak-codemirror

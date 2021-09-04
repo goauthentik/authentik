@@ -4,7 +4,7 @@ import {
     BackendsEnum,
     StagesApi,
     FlowsInstancesListDesignationEnum,
-} from "authentik-api";
+} from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -46,8 +46,11 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
     };
 
     isBackendSelected(field: BackendsEnum): boolean {
+        if (!this.instance) {
+            return true;
+        }
         return (
-            (this.instance?.backends || []).filter((isField) => {
+            this.instance.backends.filter((isField) => {
                 return field === isField;
             }).length > 0
         );
@@ -76,20 +79,28 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
                     >
                         <select name="users" class="pf-c-form-control" multiple>
                             <option
-                                value=${BackendsEnum.DjangoContribAuthBackendsModelBackend}
+                                value=${BackendsEnum.CoreAuthInbuiltBackend}
                                 ?selected=${this.isBackendSelected(
-                                    BackendsEnum.DjangoContribAuthBackendsModelBackend,
+                                    BackendsEnum.CoreAuthInbuiltBackend,
                                 )}
                             >
-                                ${t`authentik Builtin Database`}
+                                ${t`User database + standard password`}
                             </option>
                             <option
-                                value=${BackendsEnum.AuthentikSourcesLdapAuthLdapBackend}
+                                value=${BackendsEnum.CoreAuthTokenBackend}
                                 ?selected=${this.isBackendSelected(
-                                    BackendsEnum.AuthentikSourcesLdapAuthLdapBackend,
+                                    BackendsEnum.CoreAuthTokenBackend,
                                 )}
                             >
-                                ${t`authentik LDAP Backend`}
+                                ${t`User database + app passwords`}
+                            </option>
+                            <option
+                                value=${BackendsEnum.SourcesLdapAuthLdapBackend}
+                                ?selected=${this.isBackendSelected(
+                                    BackendsEnum.SourcesLdapAuthLdapBackend,
+                                )}
+                            >
+                                ${t`User database + LDAP password`}
                             </option>
                         </select>
                         <p class="pf-c-form__helper-text">

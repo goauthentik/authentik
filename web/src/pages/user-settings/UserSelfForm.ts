@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { customElement, html, TemplateResult } from "lit-element";
-import { CoreApi, UserSelf } from "authentik-api";
+import { CoreApi, UserSelf } from "@goauthentik/api";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { DEFAULT_CONFIG, tenant } from "../../api/Config";
 import "../../elements/forms/FormElement";

@@ -1,7 +1,8 @@
-import { Config, Configuration, CoreApi, CurrentTenant, Middleware, ResponseContext, RootApi, Tenant } from "authentik-api";
+import { Config, Configuration, CoreApi, CurrentTenant, Middleware, ResponseContext, RootApi } from "@goauthentik/api";
 import { getCookie } from "../utils";
 import { APIMiddleware } from "../elements/notifications/APIDrawer";
 import { MessageMiddleware } from "../elements/messages/Middleware";
+import { VERSION } from "../constants";
 
 export class LoggingMiddleware implements Middleware {
 
@@ -49,7 +50,7 @@ export function tenant(): Promise<CurrentTenant> {
 }
 
 export const DEFAULT_CONFIG = new Configuration({
-    basePath: "",
+    basePath: "/api/v3",
     headers: {
         "X-CSRFToken": getCookie("authentik_csrf"),
     },
@@ -59,3 +60,5 @@ export const DEFAULT_CONFIG = new Configuration({
         new LoggingMiddleware(),
     ],
 });
+
+console.debug(`authentik(early): version ${VERSION}`);

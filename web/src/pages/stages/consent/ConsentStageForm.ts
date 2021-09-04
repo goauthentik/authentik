@@ -1,4 +1,4 @@
-import { ConsentStage, ConsentStageModeEnum, StagesApi } from "authentik-api";
+import { ConsentStage, ConsentStageModeEnum, StagesApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";

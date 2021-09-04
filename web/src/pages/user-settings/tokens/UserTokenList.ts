@@ -3,16 +3,17 @@ import { CSSResult, customElement, html, property, TemplateResult } from "lit-el
 import { AKResponse } from "../../../api/Client";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import "../../../elements/forms/DeleteForm";
+import "../../../elements/forms/DeleteBulkForm";
 import "../../../elements/forms/ModalForm";
 import "../../../elements/buttons/ModalButton";
 import "../../../elements/buttons/Dropdown";
 import "../../../elements/buttons/TokenCopyButton";
 import { Table, TableColumn } from "../../../elements/table/Table";
 import { PAGE_SIZE } from "../../../constants";
-import { CoreApi, Token } from "authentik-api";
+import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import "./UserTokenForm";
+import { IntentToLabel } from "../../tokens/TokenListPage";
 
 @customElement("ak-user-token-list")
 export class UserTokenList extends Table<Token> {
@@ -48,8 +49,19 @@ export class UserTokenList extends Table<Token> {
             <ak-forms-modal>
                 <span slot="submit"> ${t`Create`} </span>
                 <span slot="header"> ${t`Create Token`} </span>
-                <ak-user-token-form slot="form"> </ak-user-token-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+                <ak-user-token-form intent=${IntentEnum.Api} slot="form"> </ak-user-token-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
+                    ${t`Create Token`}
+                </button>
+            </ak-forms-modal>
+            <ak-forms-modal>
+                <span slot="submit"> ${t`Create`} </span>
+                <span slot="header"> ${t`Create App password`} </span>
+                <ak-user-token-form intent=${IntentEnum.AppPassword} slot="form">
+                </ak-user-token-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
+                    ${t`Create App password`}
+                </button>
             </ak-forms-modal>
             ${super.renderToolbar()}
         `;
@@ -89,6 +101,16 @@ export class UserTokenList extends Table<Token> {
                                 </div>
                             </dd>
                         </div>
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text">${t`Intent`}</span>
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">
+                                    ${IntentToLabel(item.intent || IntentEnum.Api)}
+                                </div>
+                            </dd>
+                        </div>
                     </dl>
                 </div>
             </td>
@@ -96,12 +118,11 @@ export class UserTokenList extends Table<Token> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`Token`}
-            .delete=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Token(s)`}
+            .objects=${this.selectedElements}
+            .delete=${(item: Token) => {
                 return new CoreApi(DEFAULT_CONFIG).coreTokensDestroy({
                     identifier: item.identifier,
                 });
@@ -110,7 +131,7 @@ export class UserTokenList extends Table<Token> {
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: Token): TemplateResult[] {

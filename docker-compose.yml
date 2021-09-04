@@ -10,7 +10,7 @@ services:
     networks:
       - internal
     environment:
-      - POSTGRES_PASSWORD=${PG_PASS:-thisisnotagoodpassword}
+      - POSTGRES_PASSWORD=${PG_PASS:?database password required}
       - POSTGRES_USER=${PG_USER:-authentik}
       - POSTGRES_DB=${PG_DB:-authentik}
     env_file:
@@ -21,7 +21,7 @@ services:
     networks:
       - internal
   server:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2021.7.3}
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2021.8.4}
     restart: unless-stopped
     command: server
     environment:
@@ -44,7 +44,7 @@ services:
       - "0.0.0.0:9000:9000"
       - "0.0.0.0:9443:9443"
   worker:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2021.7.3}
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2021.8.4}
     restart: unless-stopped
     command: worker
     networks:

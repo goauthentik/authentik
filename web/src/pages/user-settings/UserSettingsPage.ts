@@ -13,7 +13,7 @@ import AKGlobal from "../../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import { SourcesApi, StagesApi, UserSetting } from "authentik-api";
+import { SourcesApi, StagesApi, UserSetting } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
@@ -27,6 +27,7 @@ import "./settings/UserSettingsAuthenticatorTOTP";
 import "./settings/UserSettingsAuthenticatorWebAuthn";
 import "./settings/UserSettingsPassword";
 import "./settings/SourceSettingsOAuth";
+import "./settings/SourceSettingsPlex";
 import { EVENT_REFRESH } from "../../constants";
 
 @customElement("ak-user-settings")
@@ -112,6 +113,12 @@ export class UserSettingsPage extends LitElement {
                     .configureUrl=${source.configureUrl}
                 >
                 </ak-user-settings-source-oauth>`;
+            case "ak-user-settings-source-plex":
+                return html`<ak-user-settings-source-plex
+                    objectId=${source.objectUid}
+                    title=${source.title}
+                >
+                </ak-user-settings-source-plex>`;
             default:
                 return html`<p>${t`Error: unsupported source settings: ${source.component}`}</p>`;
         }
@@ -141,7 +148,7 @@ export class UserSettingsPage extends LitElement {
                     </section>
                     <section
                         slot="page-tokens"
-                        data-tab-title="${t`Tokens`}"
+                        data-tab-title="${t`Tokens and App passwords`}"
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
                         <ak-user-token-list></ak-user-token-list>

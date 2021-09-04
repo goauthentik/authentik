@@ -6,12 +6,12 @@ import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
-import "../../elements/forms/DeleteForm";
+import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
 import "../../elements/forms/ProxyForm";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
-import { Source, SourcesApi } from "authentik-api";
+import { Source, SourcesApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "./ldap/LDAPSourceForm";
@@ -25,7 +25,7 @@ export class SourceListPage extends TablePage<Source> {
         return t`Sources`;
     }
     pageDescription(): string | undefined {
-        return t`Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins`;
+        return t`Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves.`;
     }
     pageIcon(): string {
         return "pf-icon pf-icon-middleware";
@@ -53,17 +53,16 @@ export class SourceListPage extends TablePage<Source> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`Source`}
-            .usedBy=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Source(s)`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: Source) => {
                 return new SourcesApi(DEFAULT_CONFIG).sourcesAllUsedByList({
                     slug: item.slug,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: Source) => {
                 return new SourcesApi(DEFAULT_CONFIG).sourcesAllDestroy({
                     slug: item.slug,
                 });
@@ -72,7 +71,7 @@ export class SourceListPage extends TablePage<Source> {
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: Source): TemplateResult[] {

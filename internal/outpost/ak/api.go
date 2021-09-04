@@ -24,10 +24,13 @@ const ConfigErrorReportingEnvironment = "error_reporting_environment"
 
 // APIController main controller which connects to the authentik api via http and ws
 type APIController struct {
-	Client *api.APIClient
-	token  string
+	Client       *api.APIClient
+	Outpost      api.Outpost
+	GlobalConfig api.Config
 
 	Server Outpost
+
+	token string
 
 	logger *log.Entry
 
@@ -44,7 +47,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	config.Host = akURL.Host
 	config.Scheme = akURL.Scheme
 	config.HTTPClient = &http.Client{
-		Transport: NewTracingTransport(GetTLSTransport()),
+		Transport: NewTracingTransport(context.TODO(), GetTLSTransport()),
 	}
 	config.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
 
@@ -58,20 +61,31 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	outposts, _, err := apiClient.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
 
 	if err != nil {
-		log.WithError(err).Error("Failed to fetch configuration")
+		log.WithError(err).Error("Failed to fetch outpost configuration")
 		return nil
 	}
 	outpost := outposts.Results[0]
 	doGlobalSetup(outpost.Config)
 
-	ac := &APIController{
-		Client: apiClient,
-		token:  token,
+	log.WithField("name", outpost.Name).Debug("Fetched outpost configuration")
 
+	akConfig, _, err := apiClient.RootApi.RootConfigRetrieve(context.Background()).Execute()
+	if err != nil {
+		log.WithError(err).Error("Failed to fetch global configuration")
+		return nil
+	}
+	log.Debug("Fetched global configuration")
+
+	ac := &APIController{
+		Client:       apiClient,
+		GlobalConfig: akConfig,
+
+		token:  token,
 		logger: log,
 
 		reloadOffset: time.Duration(rand.Intn(10)) * time.Second,
 		instanceUUID: uuid.New(),
+		Outpost:      outpost,
 	}
 	ac.logger.Debugf("HA Reload offset: %s", ac.reloadOffset)
 	ac.initWS(akURL, strfmt.UUID(outpost.Pk))
@@ -109,6 +123,10 @@ func (a *APIController) StartBackgorundTasks() error {
 	go func() {
 		a.logger.Debug("Starting Interval updater...")
 		a.startIntervalUpdater()
+	}()
+	go func() {
+		a.logger.Debug("Starting periodical timer...")
+		a.startPeriodicalTasks()
 	}()
 	return nil
 }

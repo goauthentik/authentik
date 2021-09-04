@@ -25,6 +25,8 @@ def get_attrs(obj: SerializerModel) -> dict[str, Any]:
         "component",
         "flow_set",
         "promptstage_set",
+        "policybindingmodel_ptr_id",
+        "export_url",
     )
     for to_remove_name in to_remove:
         if to_remove_name in data:

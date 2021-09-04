@@ -17,7 +17,7 @@ import {
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest,
     DeviceChallenge,
-} from "authentik-api";
+} from "@goauthentik/api";
 import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-stage-authenticator-validate-code")

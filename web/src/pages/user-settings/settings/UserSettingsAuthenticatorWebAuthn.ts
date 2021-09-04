@@ -1,6 +1,6 @@
 import { CSSResult, customElement, html, TemplateResult } from "lit-element";
 import { t } from "@lingui/macro";
-import { AuthenticatorsApi, WebAuthnDevice } from "authentik-api";
+import { AuthenticatorsApi, WebAuthnDevice } from "@goauthentik/api";
 import { until } from "lit-html/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { BaseUserSettings } from "./BaseUserSettings";
@@ -51,10 +51,14 @@ export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
                 slot="form"
                 successMessage=${t`Successfully updated device.`}
                 .send=${(data: unknown) => {
-                    return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsWebauthnUpdate({
-                        id: device.pk || 0,
-                        webAuthnDeviceRequest: data as WebAuthnDevice,
-                    });
+                    return new AuthenticatorsApi(DEFAULT_CONFIG)
+                        .authenticatorsWebauthnUpdate({
+                            id: device.pk || 0,
+                            webAuthnDeviceRequest: data as WebAuthnDevice,
+                        })
+                        .then(() => {
+                            this.requestUpdate();
+                        });
                 }}
             >
                 <form class="pf-c-form pf-m-horizontal">

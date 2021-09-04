@@ -96,7 +96,9 @@ class IdentificationChallengeResponse(ChallengeResponse):
             # No password stage select, don't validate the password
             return attrs
 
-        password = attrs["password"]
+        password = attrs.get("password", None)
+        if not password:
+            LOGGER.warning("Password not set for ident+auth attempt")
         try:
             user = authenticate(
                 self.stage.request,
@@ -132,6 +134,9 @@ class IdentificationStageView(ChallengeStageView):
             else:
                 model_field += "__exact"
             query |= Q(**{model_field: uid_value})
+        if not query:
+            LOGGER.debug("Empty user query", query=query)
+            return None
         users = User.objects.filter(query, is_active=True)
         if users.exists():
             LOGGER.debug("Found user", user=users.first(), query=query)

@@ -3,11 +3,11 @@ import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
-import "../../elements/forms/DeleteForm";
+import "../../elements/forms/DeleteBulkForm";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
-import { CoreApi, Group } from "authentik-api";
+import { CoreApi, Group } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/forms/ModalForm";
 import "./GroupForm";
@@ -51,17 +51,16 @@ export class GroupListPage extends TablePage<Group> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`Group`}
-            .usedBy=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Group(s)`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: Group) => {
                 return new CoreApi(DEFAULT_CONFIG).coreGroupsUsedByList({
                     groupUuid: item.pk,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: Group) => {
                 return new CoreApi(DEFAULT_CONFIG).coreGroupsDestroy({
                     groupUuid: item.pk,
                 });
@@ -70,7 +69,7 @@ export class GroupListPage extends TablePage<Group> {
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: Group): TemplateResult[] {

@@ -124,6 +124,9 @@ export abstract class Table<T> extends LitElement {
     selectedElements: T[] = [];
 
     @property({ type: Boolean })
+    paginated = true;
+
+    @property({ type: Boolean })
     expandable = false;
 
     @property({ attribute: false })
@@ -230,6 +233,18 @@ export abstract class Table<T> extends LitElement {
                                           this.selectedElements.splice(index, 1);
                                       }
                                       this.requestUpdate();
+                                      // Unset select-all if selectedElements is empty
+                                      if (this.selectedElements.length < 1) {
+                                          const selectAllCheckbox =
+                                              this.shadowRoot?.querySelector<HTMLInputElement>(
+                                                  "[name=select-all]",
+                                              );
+                                          if (!selectAllCheckbox) {
+                                              return;
+                                          }
+                                          selectAllCheckbox.checked = false;
+                                          this.requestUpdate();
+                                      }
                                   }}
                               />
                           </td>`
@@ -326,6 +341,33 @@ export abstract class Table<T> extends LitElement {
         return html``;
     }
 
+    renderToolbarContainer(): TemplateResult {
+        return html`<div class="pf-c-toolbar">
+            <div class="pf-c-toolbar__content">
+                <div class="pf-m-search-filter">${this.renderSearch()}</div>
+                <div class="pf-c-toolbar__bulk-select">${this.renderToolbar()}</div>
+                <div class="pf-c-toolbar__group">${this.renderToolbarAfter()}</div>
+                <div class="pf-c-toolbar__group">${this.renderToolbarSelected()}</div>
+                ${this.paginated
+                    ? html`<ak-table-pagination
+                          class="pf-c-toolbar__item pf-m-pagination"
+                          .pages=${this.data?.pagination}
+                          .pageChangeHandler=${(page: number) => {
+                              this.page = page;
+                              this.dispatchEvent(
+                                  new CustomEvent(EVENT_REFRESH, {
+                                      bubbles: true,
+                                      composed: true,
+                                  }),
+                              );
+                          }}
+                      >
+                      </ak-table-pagination>`
+                    : html``}
+            </div>
+        </div>`;
+    }
+
     firstUpdated(): void {
         this.fetch();
     }
@@ -338,39 +380,20 @@ export abstract class Table<T> extends LitElement {
                       })}
                   </ak-chip-group>`
                 : html``}
-            <div class="pf-c-toolbar">
-                <div class="pf-c-toolbar__content">
-                    <div class="pf-m-search-filter">${this.renderSearch()}</div>
-                    <div class="pf-c-toolbar__bulk-select">${this.renderToolbar()}</div>
-                    <div class="pf-c-toolbar__group">${this.renderToolbarAfter()}</div>
-                    <div class="pf-c-toolbar__group">${this.renderToolbarSelected()}</div>
-                    <ak-table-pagination
-                        class="pf-c-toolbar__item pf-m-pagination"
-                        .pages=${this.data?.pagination}
-                        .pageChangeHandler=${(page: number) => {
-                            this.page = page;
-                            this.dispatchEvent(
-                                new CustomEvent(EVENT_REFRESH, {
-                                    bubbles: true,
-                                    composed: true,
-                                }),
-                            );
-                        }}
-                    >
-                    </ak-table-pagination>
-                </div>
-            </div>
+            ${this.renderToolbarContainer()}
             <table class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable">
                 <thead>
                     <tr role="row">
                         ${this.checkbox
                             ? html`<td class="pf-c-table__check" role="cell">
                                   <input
+                                      name="select-all"
                                       type="checkbox"
                                       aria-label=${t`Select all rows`}
                                       @input=${(ev: InputEvent) => {
                                           if ((ev.target as HTMLInputElement).checked) {
-                                              this.selectedElements = this.data?.results || [];
+                                              this.selectedElements =
+                                                  this.data?.results.slice(0) || [];
                                           } else {
                                               this.selectedElements = [];
                                           }
@@ -384,22 +407,24 @@ export abstract class Table<T> extends LitElement {
                 </thead>
                 ${this.isLoading || !this.data ? this.renderLoading() : this.renderRows()}
             </table>
-            <div class="pf-c-pagination pf-m-bottom">
-                <ak-table-pagination
-                    class="pf-c-toolbar__item pf-m-pagination"
-                    .pages=${this.data?.pagination}
-                    .pageChangeHandler=${(page: number) => {
-                        this.page = page;
-                        this.dispatchEvent(
-                            new CustomEvent(EVENT_REFRESH, {
-                                bubbles: true,
-                                composed: true,
-                            }),
-                        );
-                    }}
-                >
-                </ak-table-pagination>
-            </div>`;
+            ${this.paginated
+                ? html` <div class="pf-c-pagination pf-m-bottom">
+                      <ak-table-pagination
+                          class="pf-c-toolbar__item pf-m-pagination"
+                          .pages=${this.data?.pagination}
+                          .pageChangeHandler=${(page: number) => {
+                              this.page = page;
+                              this.dispatchEvent(
+                                  new CustomEvent(EVENT_REFRESH, {
+                                      bubbles: true,
+                                      composed: true,
+                                  }),
+                              );
+                          }}
+                      >
+                      </ak-table-pagination>
+                  </div>`
+                : html``}`;
     }
 
     render(): TemplateResult {

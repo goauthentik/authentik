@@ -12,7 +12,7 @@ import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import { PasswordManagerPrefill } from "../identification/IdentificationStage";
 import "../../FormStatic";
-import { PasswordChallenge, PasswordChallengeResponseRequest } from "authentik-api";
+import { PasswordChallenge, PasswordChallengeResponseRequest } from "@goauthentik/api";
 import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-stage-password")

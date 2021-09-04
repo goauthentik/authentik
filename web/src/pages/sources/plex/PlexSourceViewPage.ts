@@ -20,7 +20,7 @@ import "../../../elements/events/ObjectChangelog";
 import "../../../elements/forms/ModalForm";
 import "../../policies/BoundPoliciesList";
 import "./PlexSourceForm";
-import { PlexSource, SourcesApi } from "authentik-api";
+import { PlexSource, SourcesApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";
 

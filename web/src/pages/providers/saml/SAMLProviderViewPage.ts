@@ -21,7 +21,7 @@ import "../../../elements/Tabs";
 import "../../../elements/events/ObjectChangelog";
 import "../RelatedApplicationButton";
 import "./SAMLProviderForm";
-import { ProvidersApi, SAMLProvider } from "authentik-api";
+import { ProvidersApi, SAMLProvider } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";
 import { ifDefined } from "lit-html/directives/if-defined";

@@ -1,7 +1,7 @@
 """deny tests"""
-from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
+from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
@@ -12,13 +12,12 @@ from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.stages.deny.models import DenyStage
 
 
-class TestUserDenyStage(TestCase):
+class TestUserDenyStage(APITestCase):
     """Deny tests"""
 
     def setUp(self):
         super().setUp()
         self.user = User.objects.create(username="unittest", email="test@beryju.org")
-        self.client = Client()
 
         self.flow = Flow.objects.create(
             name="test-logout",

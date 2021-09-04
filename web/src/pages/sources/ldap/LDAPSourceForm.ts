@@ -1,4 +1,4 @@
-import { LDAPSource, SourcesApi, PropertymappingsApi, LDAPSourceRequest } from "authentik-api";
+import { LDAPSource, SourcesApi, PropertymappingsApi, LDAPSourceRequest } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -129,21 +129,19 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             ${t`To use SSL instead, use 'ldaps://' and disable this option.`}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Bind CN`} ?required=${true} name="bindCn">
+                    <ak-form-element-horizontal label=${t`Bind CN`} name="bindCn">
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.bindCn)}"
                             class="pf-c-form-control"
-                            required
                         />
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Bind Password`}
-                        ?required=${true}
                         ?writeOnly=${this.instance !== undefined}
                         name="bindPassword"
                     >
-                        <input type="text" value="" class="pf-c-form-control" required />
+                        <input type="text" value="" class="pf-c-form-control" />
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Base DN`} ?required=${true} name="baseDn">
                         <input
@@ -215,7 +213,7 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             ${until(
                                 new PropertymappingsApi(DEFAULT_CONFIG)
                                     .propertymappingsLdapList({
-                                        ordering: "object_field",
+                                        ordering: "managed,object_field",
                                     })
                                     .then((mappings) => {
                                         return mappings.results.map((mapping) => {

@@ -30,7 +30,7 @@ import {
     EVENT_SIDEBAR_TOGGLE,
     VERSION,
 } from "../constants";
-import { AdminApi } from "authentik-api";
+import { AdminApi, Version } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../api/Config";
 import { WebsocketClient } from "../common/ws";
 
@@ -46,6 +46,8 @@ export class AdminInterface extends LitElement {
     apiDrawerOpen = false;
 
     ws: WebsocketClient;
+
+    private version: Promise<Version>;
 
     static get styles(): CSSResult[] {
         return [
@@ -70,7 +72,6 @@ export class AdminInterface extends LitElement {
     constructor() {
         super();
         this.ws = new WebsocketClient();
-        this.ws.connect();
         this.sidebarOpen = window.innerWidth >= 1280;
         window.addEventListener("resize", () => {
             this.sidebarOpen = window.innerWidth >= 1280;
@@ -84,6 +85,7 @@ export class AdminInterface extends LitElement {
         window.addEventListener(EVENT_API_DRAWER_TOGGLE, () => {
             this.apiDrawerOpen = !this.apiDrawerOpen;
         });
+        this.version = new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
     }
 
     render(): TemplateResult {
@@ -116,13 +118,15 @@ export class AdminInterface extends LitElement {
                         </div>
                         <ak-notification-drawer
                             class="pf-c-drawer__panel pf-m-width-33 ${this.notificationOpen
-                                ? "display-none"
-                                : ""}"
+                                ? ""
+                                : "display-none"}"
+                            ?hidden=${!this.notificationOpen}
                         ></ak-notification-drawer>
                         <ak-api-drawer
                             class="pf-c-drawer__panel pf-m-width-33 ${this.apiDrawerOpen
-                                ? "display-none"
-                                : ""}"
+                                ? ""
+                                : "display-none"}"
+                            ?hidden=${!this.apiDrawerOpen}
                         ></ak-api-drawer>
                     </div>
                 </div>
@@ -136,7 +140,7 @@ export class AdminInterface extends LitElement {
         };
         return html`
             ${until(
-                new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve().then((version) => {
+                this.version.then((version) => {
                     if (version.versionCurrent !== VERSION) {
                         return html`<ak-sidebar-item ?highlight=${true}>
                             <span slot="label"
@@ -271,7 +275,7 @@ export class AdminInterface extends LitElement {
                     <span slot="label">${t`Certificates`}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/core/tokens">
-                    <span slot="label">${t`Tokens`}</span>
+                    <span slot="label">${t`Tokens & App passwords`}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
         `;

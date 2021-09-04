@@ -1,6 +1,6 @@
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { BaseUserSettings } from "./BaseUserSettings";
-import { SourcesApi } from "authentik-api";
+import { SourcesApi } from "@goauthentik/api";
 import { until } from "lit-html/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { t } from "@lingui/macro";
@@ -21,7 +21,7 @@ export class SourceSettingsOAuth extends BaseUserSettings {
     renderInner(): TemplateResult {
         return html`${until(
             new SourcesApi(DEFAULT_CONFIG)
-                .sourcesOauthUserConnectionsList({
+                .sourcesUserConnectionsOauthList({
                     sourceSlug: this.objectId,
                 })
                 .then((connection) => {
@@ -32,7 +32,7 @@ export class SourceSettingsOAuth extends BaseUserSettings {
                                 @click=${() => {
                                     return new SourcesApi(
                                         DEFAULT_CONFIG,
-                                    ).sourcesOauthUserConnectionsDestroy({
+                                    ).sourcesUserConnectionsOauthDestroy({
                                         id: connection.results[0].pk || 0,
                                     });
                                 }}

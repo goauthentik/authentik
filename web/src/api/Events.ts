@@ -1,4 +1,4 @@
-import { Event } from "authentik-api";
+import { Event } from "@goauthentik/api";
 
 export interface EventUser {
     pk: number;

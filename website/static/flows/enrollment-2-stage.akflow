@@ -133,7 +133,7 @@
                 "pk": "34e1e7d5-8eed-4549-bc7a-305069ff7df0",
                 "target": "773c6673-e4a2-423f-8d32-95b7b4a41cf3",
                 "stage": "20375f30-7fa7-4562-8f6e-0f61889f2963",
-                "order": 0
+                "order": 10
             },
             "model": "authentik_flows.flowstagebinding",
             "attrs": {
@@ -145,7 +145,7 @@
                 "pk": "e40467a6-3052-488c-a1b5-1ad7a80fe7b3",
                 "target": "773c6673-e4a2-423f-8d32-95b7b4a41cf3",
                 "stage": "6c342b94-790d-425a-ae31-6196b6570722",
-                "order": 1
+                "order": 11
             },
             "model": "authentik_flows.flowstagebinding",
             "attrs": {
@@ -157,7 +157,7 @@
                 "pk": "76bc594e-2715-49ab-bd40-994abd9a7b70",
                 "target": "773c6673-e4a2-423f-8d32-95b7b4a41cf3",
                 "stage": "a4090add-f483-4ac6-8917-10b493ef843e",
-                "order": 2
+                "order": 20
             },
             "model": "authentik_flows.flowstagebinding",
             "attrs": {
@@ -169,7 +169,7 @@
                 "pk": "2f324f6d-7646-4108-a6e2-e7f90985477f",
                 "target": "773c6673-e4a2-423f-8d32-95b7b4a41cf3",
                 "stage": "77090897-eb3f-40db-81e6-b4074b1998c4",
-                "order": 3
+                "order": 100
             },
             "model": "authentik_flows.flowstagebinding",
             "attrs": {

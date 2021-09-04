@@ -19,8 +19,10 @@ const UserObjectClass = "user"
 type ProviderInstance struct {
 	BaseDN string
 
-	UserDN  string
-	GroupDN string
+	UserDN string
+
+	VirtualGroupDN string
+	GroupDN        string
 
 	appSlug  string
 	flowSlug string
@@ -81,5 +83,6 @@ func NewServer(ac *ak.APIController) *LDAPServer {
 	ls.defaultCert = &defaultCert
 	s.BindFunc("", ls)
 	s.SearchFunc("", ls)
+	s.CloseFunc("", ls)
 	return ls
 }

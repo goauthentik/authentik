@@ -7,7 +7,7 @@ from selenium.webdriver.common.keys import Keys
 
 from authentik.core.models import User
 from authentik.flows.models import Flow, FlowDesignation
-from authentik.providers.oauth2.generators import generate_client_secret
+from authentik.lib.generators import generate_key
 from authentik.stages.password.models import PasswordStage
 from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, retry
 
@@ -33,7 +33,7 @@ class TestFlowsStageSetup(SeleniumTestCase):
         stage.configure_flow = flow
         stage.save()
 
-        new_password = generate_client_secret()
+        new_password = generate_key()
 
         self.driver.get(
             self.url(

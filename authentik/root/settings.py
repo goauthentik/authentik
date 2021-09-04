@@ -32,6 +32,7 @@ from authentik.core.middleware import structlog_add_request_id
 from authentik.lib.config import CONFIG
 from authentik.lib.logging import add_process_id
 from authentik.lib.sentry import before_send
+from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
 
 
 def j_print(event: str, log_level: str = "info", **kwargs):
@@ -74,6 +75,9 @@ SESSION_COOKIE_NAME = f"authentik_session{_cookie_suffix}"
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
+    BACKEND_INBUILT,
+    BACKEND_APP_PASSWORD,
+    BACKEND_LDAP,
     "guardian.backends.ObjectPermissionBackend",
 ]
 
@@ -146,9 +150,20 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "Making authentication simple.",
     "VERSION": __version__,
     "COMPONENT_SPLIT_REQUEST": True,
+    "SCHEMA_PATH_PREFIX": "/api/v([0-9]+(beta)?)",
+    "SCHEMA_PATH_PREFIX_TRIM": True,
+    "SERVERS": [
+        {
+            "url": "/api/v3/",
+        },
+        {
+            "url": "/api/v2beta/",
+        },
+    ],
     "CONTACT": {
         "email": "hello@beryju.org",
     },
+    "AUTHENTICATION_WHITELIST": ["authentik.api.authentication.TokenAuthentication"],
     "LICENSE": {
         "name": "GNU GPLv3",
         "url": "https://github.com/goauthentik/authentik/blob/master/LICENSE",
@@ -176,6 +191,9 @@ REST_FRAMEWORK = {
         "rest_framework.filters.OrderingFilter",
         "rest_framework.filters.SearchFilter",
     ],
+    "DEFAULT_PARSER_CLASSES": [
+        "rest_framework.parsers.JSONParser",
+    ],
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.DjangoObjectPermissions",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "authentik.api.authentication.TokenAuthentication",
@@ -185,6 +203,7 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.JSONRenderer",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }
 
 REDIS_PROTOCOL_PREFIX = "redis://"
@@ -251,7 +270,7 @@ TEMPLATES = [
     },
 ]
 
-ASGI_APPLICATION = "authentik.root.asgi.application"
+ASGI_APPLICATION = "authentik.root.asgi.app.application"
 
 CHANNEL_LAYERS = {
     "default": {
@@ -368,6 +387,7 @@ if CONFIG.y("postgresql.s3_backup"):
         "default_acl": "private",
         "endpoint_url": CONFIG.y("postgresql.s3_backup.host"),
         "location": CONFIG.y("postgresql.s3_backup.location", ""),
+        "verify": not CONFIG.y_bool("postgresql.s3_backup.insecure_skip_verify", False),
     }
     j_print(
         "Database backup to S3 is configured",
@@ -486,6 +506,7 @@ _LOGGING_HANDLER_MAP = {
     "kubernetes": "INFO",
     "asyncio": "WARNING",
     "aioredis": "WARNING",
+    "s3transfer": "WARNING",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false

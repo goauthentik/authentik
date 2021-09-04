@@ -46,6 +46,11 @@ export class ModalButton extends LitElement {
     @property({ type: Boolean })
     open = false;
 
+    @property({ type: Boolean })
+    locked = false;
+
+    handlerBound = false;
+
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -61,17 +66,30 @@ export class ModalButton extends LitElement {
             PFContent,
             AKGlobal,
             MODAL_BUTTON_STYLES,
+            css`
+                .locked {
+                    overflow-y: hidden !important;
+                }
+            `,
         ];
     }
 
-    constructor() {
-        super();
-        window.addEventListener("keyup", (e) => {
-            if (e.code === "Escape") {
-                this.resetForms();
-                this.open = false;
-            }
-        });
+    firstUpdated(): void {
+        if (this.handlerBound) return;
+        window.addEventListener("keyup", this.keyUpHandler);
+        this.handlerBound = true;
+    }
+
+    keyUpHandler = (e: KeyboardEvent): void => {
+        if (e.code === "Escape") {
+            this.resetForms();
+            this.open = false;
+        }
+    };
+
+    disconnectedCallback(): void {
+        super.disconnectedCallback();
+        window.removeEventListener("keyup", this.keyUpHandler);
     }
 
     resetForms(): void {
@@ -98,7 +116,11 @@ export class ModalButton extends LitElement {
     renderModal(): TemplateResult {
         return html`<div class="pf-c-backdrop">
             <div class="pf-l-bullseye">
-                <div class="pf-c-modal-box ${this.size}" role="dialog" aria-modal="true">
+                <div
+                    class="pf-c-modal-box ${this.size} ${this.locked ? "locked" : ""}"
+                    role="dialog"
+                    aria-modal="true"
+                >
                     <button
                         @click=${() => (this.open = false)}
                         class="pf-c-button pf-m-plain"

@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 
-from authentik.core.models import User
+from authentik.core.models import ExpiringModel, User
 from authentik.flows.models import Stage
 
 
@@ -48,7 +48,7 @@ class InvitationStage(Stage):
         verbose_name_plural = _("Invitation Stages")
 
 
-class Invitation(models.Model):
+class Invitation(ExpiringModel):
     """Single-use invitation link"""
 
     invite_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -59,7 +59,6 @@ class Invitation(models.Model):
     )
 
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    expires = models.DateTimeField(default=None, blank=True, null=True)
     fixed_data = models.JSONField(
         default=dict,
         blank=True,

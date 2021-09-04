@@ -3,9 +3,9 @@ import string
 from random import SystemRandom
 from unittest.mock import patch
 
-from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
+from rest_framework.test import APITestCase
 
 from authentik.core.models import USER_ATTRIBUTE_SOURCES, Source, User, UserSourceConnection
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
@@ -19,13 +19,11 @@ from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from authentik.stages.user_write.models import UserWriteStage
 
 
-class TestUserWriteStage(TestCase):
+class TestUserWriteStage(APITestCase):
     """Write tests"""
 
     def setUp(self):
         super().setUp()
-        self.client = Client()
-
         self.flow = Flow.objects.create(
             name="test-write",
             slug="test-write",

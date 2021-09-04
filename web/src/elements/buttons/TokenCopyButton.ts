@@ -1,5 +1,5 @@
 import { customElement, property } from "lit-element";
-import { CoreApi } from "authentik-api";
+import { CoreApi } from "@goauthentik/api";
 import { PRIMARY_CLASS, SUCCESS_CLASS } from "../../constants";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ActionButton } from "./ActionButton";

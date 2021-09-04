@@ -1,5 +1,5 @@
 """flow views tests"""
-from django.test import Client, TestCase
+from django.test import TestCase
 from django.urls import reverse
 
 from authentik.flows.models import Flow, FlowDesignation
@@ -9,9 +9,6 @@ from authentik.flows.views import SESSION_KEY_PLAN
 
 class TestHelperView(TestCase):
     """Test helper views logic"""
-
-    def setUp(self):
-        self.client = Client()
 
     def test_default_view(self):
         """Test that ToDefaultFlow returns the expected URL"""

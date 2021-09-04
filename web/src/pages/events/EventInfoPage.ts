@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { EventsApi } from "authentik-api";
+import { EventsApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { EventWithContext } from "../../api/Events";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";

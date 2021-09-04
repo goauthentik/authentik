@@ -1,28 +1,27 @@
 """identification tests"""
-from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
+from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
-from authentik.providers.oauth2.generators import generate_client_secret
+from authentik.lib.generators import generate_key
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.identification.models import IdentificationStage, UserFields
-from authentik.stages.password import BACKEND_DJANGO
+from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordStage
 
 
-class TestIdentificationStage(TestCase):
+class TestIdentificationStage(APITestCase):
     """Identification tests"""
 
     def setUp(self):
         super().setUp()
-        self.password = generate_client_secret()
+        self.password = generate_key()
         self.user = User.objects.create_user(
             username="unittest", email="test@beryju.org", password=self.password
         )
-        self.client = Client()
 
         # OAuthSource for the login view
         source = OAuthSource.objects.create(name="test", slug="test")
@@ -68,7 +67,7 @@ class TestIdentificationStage(TestCase):
 
     def test_valid_with_password(self):
         """Test with valid email and password in single step"""
-        pw_stage = PasswordStage.objects.create(name="password", backends=[BACKEND_DJANGO])
+        pw_stage = PasswordStage.objects.create(name="password", backends=[BACKEND_INBUILT])
         self.stage.password_stage = pw_stage
         self.stage.save()
         form_data = {"uid_field": self.user.email, "password": self.password}
@@ -86,7 +85,7 @@ class TestIdentificationStage(TestCase):
 
     def test_invalid_with_password(self):
         """Test with valid email and invalid password in single step"""
-        pw_stage = PasswordStage.objects.create(name="password", backends=[BACKEND_DJANGO])
+        pw_stage = PasswordStage.objects.create(name="password", backends=[BACKEND_INBUILT])
         self.stage.password_stage = pw_stage
         self.stage.save()
         form_data = {
@@ -136,6 +135,48 @@ class TestIdentificationStage(TestCase):
             form_data,
         )
         self.assertEqual(response.status_code, 200)
+
+    def test_invalid_no_fields(self):
+        """Test invalid with username (no user fields are enabled)"""
+        self.stage.user_fields = []
+        self.stage.save()
+        form_data = {"uid_field": self.user.username}
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            form_data,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_str(response.content),
+            {
+                "type": ChallengeTypes.NATIVE.value,
+                "component": "ak-stage-identification",
+                "password_fields": False,
+                "primary_action": "Log in",
+                "response_errors": {
+                    "non_field_errors": [
+                        {"code": "invalid", "string": "Failed to " "authenticate."}
+                    ]
+                },
+                "flow_info": {
+                    "background": self.flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": "",
+                },
+                "sources": [
+                    {
+                        "challenge": {
+                            "component": "xak-flow-redirect",
+                            "to": "/source/oauth/login/test/",
+                            "type": ChallengeTypes.REDIRECT.value,
+                        },
+                        "icon_url": "/static/authentik/sources/.svg",
+                        "name": "test",
+                    }
+                ],
+                "user_fields": [],
+            },
+        )
 
     def test_invalid_with_invalid_email(self):
         """Test with invalid email (user doesn't exist) -> Will return to login form"""

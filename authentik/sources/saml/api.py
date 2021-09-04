@@ -53,6 +53,11 @@ class SAMLSourceViewSet(UsedByMixin, ModelViewSet):
         return Response(
             {
                 "metadata": metadata,
-                "download_url": reverse("authentik_sources_saml:metadata"),
+                "download_url": reverse(
+                    "authentik_sources_saml:metadata",
+                    kwargs={
+                        "source_slug": source.slug,
+                    },
+                ),
             }
         )

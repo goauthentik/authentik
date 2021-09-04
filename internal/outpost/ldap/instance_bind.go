@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"strings"
-	"time"
 
 	"github.com/getsentry/sentry-go"
 	goldap "github.com/go-ldap/ldap/v3"
@@ -83,7 +82,6 @@ func (pi *ProviderInstance) Bind(username string, req BindRequest) (ldap.LDAPRes
 	}
 	uisp.Finish()
 	defer pi.boundUsersMutex.Unlock()
-	pi.delayDeleteUserInfo(username)
 	return ldap.LDAPResultSuccess, nil
 }
 
@@ -100,21 +98,13 @@ func (pi *ProviderInstance) SearchAccessCheck(user api.UserSelf) *string {
 	return nil
 }
 
-func (pi *ProviderInstance) delayDeleteUserInfo(dn string) {
-	ticker := time.NewTicker(30 * time.Second)
-	quit := make(chan struct{})
-	go func() {
-		for {
-			select {
-			case <-ticker.C:
-				pi.boundUsersMutex.Lock()
-				delete(pi.boundUsers, dn)
-				pi.boundUsersMutex.Unlock()
-				close(quit)
-			case <-quit:
-				ticker.Stop()
-				return
-			}
-		}
-	}()
+func (pi *ProviderInstance) TimerFlowCacheExpiry() {
+	fe := outpost.NewFlowExecutor(context.Background(), pi.flowSlug, pi.s.ac.Client.GetConfig(), log.Fields{})
+	fe.Params.Add("goauthentik.io/outpost/ldap", "true")
+	fe.Params.Add("goauthentik.io/outpost/ldap-warmup", "true")
+
+	err := fe.WarmUp()
+	if err != nil {
+		pi.log.WithError(err).Warning("failed to warm up flow cache")
+	}
 }

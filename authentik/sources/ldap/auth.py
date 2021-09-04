@@ -2,10 +2,10 @@
 from typing import Optional
 
 import ldap3
-from django.contrib.auth.backends import ModelBackend
 from django.http import HttpRequest
 from structlog.stdlib import get_logger
 
+from authentik.core.auth import InbuiltBackend
 from authentik.core.models import User
 from authentik.sources.ldap.models import LDAPSource
 
@@ -13,7 +13,7 @@ LOGGER = get_logger()
 LDAP_DISTINGUISHED_NAME = "distinguishedName"
 
 
-class LDAPBackend(ModelBackend):
+class LDAPBackend(InbuiltBackend):
     """Authenticate users against LDAP Server"""
 
     def authenticate(self, request: HttpRequest, **kwargs):
@@ -24,6 +24,7 @@ class LDAPBackend(ModelBackend):
             LOGGER.debug("LDAP Auth attempt", source=source)
             user = self.auth_user(source, **kwargs)
             if user:
+                self.set_method("ldap", request, source=source)
                 return user
         return None
 

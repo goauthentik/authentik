@@ -5,12 +5,12 @@ import { TablePage } from "../../../elements/table/TablePage";
 
 import "../../../elements/buttons/ModalButton";
 import "../../../elements/buttons/SpinnerButton";
-import "../../../elements/forms/DeleteForm";
+import "../../../elements/forms/DeleteBulkForm";
 import "../../../elements/forms/ModalForm";
 import "./PromptForm";
 import { TableColumn } from "../../../elements/table/Table";
 import { PAGE_SIZE } from "../../../constants";
-import { Prompt, StagesApi } from "authentik-api";
+import { Prompt, StagesApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 
 @customElement("ak-stage-prompt-list")
@@ -54,17 +54,16 @@ export class PromptListPage extends TablePage<Prompt> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length !== 1;
-        const item = this.selectedElements[0];
-        return html`<ak-forms-delete
-            .obj=${item}
-            objectLabel=${t`Prompt`}
-            .usedBy=${() => {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Prompt(s)`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: Prompt) => {
                 return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsUsedByList({
                     promptUuid: item.pk,
                 });
             }}
-            .delete=${() => {
+            .delete=${(item: Prompt) => {
                 return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsDestroy({
                     promptUuid: item.pk,
                 });
@@ -73,7 +72,7 @@ export class PromptListPage extends TablePage<Prompt> {
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
-        </ak-forms-delete>`;
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: Prompt): TemplateResult[] {

@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import {
     PlexAuthenticationChallenge,
     PlexAuthenticationChallengeResponseRequest,
-} from "authentik-api";
+} from "@goauthentik/api";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -15,7 +15,7 @@ import { html, TemplateResult } from "lit-html";
 import { BaseStage } from "../../stages/base";
 import { PlexAPIClient, popupCenterScreen } from "./API";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { SourcesApi } from "authentik-api";
+import { SourcesApi } from "@goauthentik/api";
 import { showMessage } from "../../../elements/messages/MessageContainer";
 import { MessageLevel } from "../../../elements/messages/Message";
 
