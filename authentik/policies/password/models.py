@@ -70,9 +70,8 @@ class PasswordPolicy(Policy):
             return PolicyResult(False, self.error_message)
         if self.amount_symbols > 0:
             count = 0
-            for symbol in self.symbol_charset.split():
-                if symbol in password:
-                    count += 1
+            for symbol in self.symbol_charset:
+                count += password.count(symbol)
             if count < self.amount_symbols:
                 LOGGER.debug("password failed", reason="amount_symbols")
                 return PolicyResult(False, self.error_message)
