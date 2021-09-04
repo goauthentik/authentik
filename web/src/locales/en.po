@@ -276,6 +276,7 @@ msgstr "Application(s)"
 #: src/interfaces/AdminInterface.ts
 #: src/pages/LibraryPage.ts
 #: src/pages/applications/ApplicationListPage.ts
+#: src/pages/outposts/OutpostForm.ts
 msgid "Applications"
 msgstr "Applications"
 
@@ -685,6 +686,11 @@ msgstr "Clear Flow cache"
 msgid "Clear Policy cache"
 msgstr "Clear Policy cache"
 
+#: src/elements/notifications/NotificationDrawer.ts
+#: src/elements/notifications/NotificationDrawer.ts
+msgid "Clear all"
+msgstr "Clear all"
+
 #: src/pages/flows/FlowForm.ts
 msgid "Clear background image"
 msgstr "Clear background image"
@@ -730,6 +736,7 @@ msgstr "Client Secret"
 msgid "Client type"
 msgstr "Client type"
 
+#: src/elements/notifications/NotificationDrawer.ts
 #: src/pages/outposts/OutpostDeploymentModal.ts
 #: src/pages/users/UserListPage.ts
 msgid "Close"
@@ -3186,7 +3193,6 @@ msgid "Provider(s)"
 msgstr "Provider(s)"
 
 #: src/interfaces/AdminInterface.ts
-#: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/providers/ProviderListPage.ts
 msgid "Providers"
@@ -3909,6 +3915,10 @@ msgstr "Successful"
 #: src/pages/flows/FlowListPage.ts
 msgid "Successfully cleared flow cache"
 msgstr "Successfully cleared flow cache"
+
+#: src/elements/notifications/NotificationDrawer.ts
+msgid "Successfully cleared notifications"
+msgstr "Successfully cleared notifications"
 
 #: src/pages/policies/PolicyListPage.ts
 msgid "Successfully cleared policy cache"

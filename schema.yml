@@ -3903,6 +3903,21 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /events/notifications/mark_all_seen/:
+    post:
+      operationId: events_notifications_mark_all_seen_create
+      description: Mark all the user's notifications as seen
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Marked tasks as read successfully.
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /events/rules/:
     get:
       operationId: events_rules_list
