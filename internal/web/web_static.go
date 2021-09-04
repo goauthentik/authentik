@@ -11,21 +11,32 @@ import (
 
 func (ws *WebServer) configureStatic() {
 	statRouter := ws.lh.NewRoute().Subrouter()
+	statRouter.Use(disableIndex)
 	// Media files, always local
 	fs := http.FileServer(http.Dir(config.G.Paths.Media))
+	var distHandler http.Handler
+	var authentikHandler http.Handler
+	var helpHandler http.Handler
 	if config.G.Debug || config.G.Web.LoadLocalFiles {
 		ws.log.Debug("Using local static files")
-		statRouter.PathPrefix("/static/dist").Handler(http.StripPrefix("/static/dist", http.FileServer(http.Dir("./web/dist"))))
-		statRouter.PathPrefix("/static/authentik").Handler(http.StripPrefix("/static/authentik", http.FileServer(http.Dir("./web/authentik"))))
-		statRouter.PathPrefix("/help").Handler(http.StripPrefix("/help", http.FileServer(http.Dir("./website/help"))))
+		distHandler = http.StripPrefix("/static/dist/", http.FileServer(http.Dir("./web/dist")))
+		authentikHandler = http.StripPrefix("/static/authentik/", http.FileServer(http.Dir("./web/authentik")))
+		helpHandler = http.StripPrefix("/help/", http.FileServer(http.Dir("./website/help")))
 	} else {
 		statRouter.Use(ws.staticHeaderMiddleware)
 		ws.log.Debug("Using packaged static files with aggressive caching")
-		statRouter.PathPrefix("/static/dist").Handler(http.StripPrefix("/static", http.FileServer(http.FS(staticWeb.StaticDist))))
-		statRouter.PathPrefix("/static/authentik").Handler(http.StripPrefix("/static", http.FileServer(http.FS(staticWeb.StaticAuthentik))))
-		statRouter.PathPrefix("/help").Handler(http.FileServer(http.FS(staticDocs.Help)))
+		distHandler = http.StripPrefix("/static", http.FileServer(http.FS(staticWeb.StaticDist)))
+		authentikHandler = http.StripPrefix("/static", http.FileServer(http.FS(staticWeb.StaticAuthentik)))
+		helpHandler = http.FileServer(http.FS(staticDocs.Help))
 	}
-	statRouter.PathPrefix("/media").Handler(http.StripPrefix("/media", fs))
+	statRouter.PathPrefix("/static/dist/").Handler(distHandler)
+	statRouter.PathPrefix("/static/authentik/").Handler(authentikHandler)
+
+	statRouter.PathPrefix("/media/").Handler(http.StripPrefix("/media", fs))
+
+	statRouter.PathPrefix("/if/help/").Handler(helpHandler)
+	statRouter.PathPrefix("/help").Handler(http.RedirectHandler("/if/help/", http.StatusMovedPermanently))
+
 	ws.lh.Path("/robots.txt").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		rw.Header()["Content-Type"] = []string{"text/plain"}
 		rw.WriteHeader(200)
