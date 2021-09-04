@@ -59,19 +59,23 @@ class PasswordPolicy(Policy):
             password = request.context[PLAN_CONTEXT_PROMPT][self.password_field]
 
         if len(password) < self.length_min:
-            LOGGER.debug("password failed", reason="length", p=password)
+            LOGGER.debug("password failed", reason="length")
             return PolicyResult(False, self.error_message)
 
         if self.amount_lowercase > 0 and len(RE_LOWER.findall(password)) < self.amount_lowercase:
-            LOGGER.debug("password failed", reason="amount_lowercase", p=password)
+            LOGGER.debug("password failed", reason="amount_lowercase")
             return PolicyResult(False, self.error_message)
         if self.amount_uppercase > 0 and len(RE_UPPER.findall(password)) < self.amount_lowercase:
-            LOGGER.debug("password failed", reason="amount_uppercase", p=password)
+            LOGGER.debug("password failed", reason="amount_uppercase")
             return PolicyResult(False, self.error_message)
-        regex = re.compile(r"[%s]" % self.symbol_charset)
-        if self.amount_symbols > 0 and len(regex.findall(password)) < self.amount_symbols:
-            LOGGER.debug("password failed", reason="amount_symbols", p=password)
-            return PolicyResult(False, self.error_message)
+        if self.amount_symbols > 0:
+            count = 0
+            for symbol in self.symbol_charset.split():
+                if symbol in password:
+                    count += 1
+            if count < self.amount_symbols:
+                LOGGER.debug("password failed", reason="amount_symbols")
+                return PolicyResult(False, self.error_message)
 
         return PolicyResult(True)
 
