@@ -53,6 +53,10 @@ To use an S3-compatible storage, set the following settings.
 
 ## authentik Settings
 
+### AUTHENTIK_SECRET_KEY
+
+Secret key to authenticate managed outposts.
+
 ### AUTHENTIK_LOG_LEVEL
 
 Log level for the server and worker containers. Possible values: debug, info, warning, error
