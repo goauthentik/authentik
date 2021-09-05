@@ -7,7 +7,7 @@ from rest_framework.fields import ChoiceField, DictField
 from rest_framework.serializers import CharField
 
 from authentik.core.api.utils import PassiveSerializer
-from authentik.flows.transfer.common import DataclassEncoder
+from authentik.managed.transport.common import DataclassEncoder
 
 if TYPE_CHECKING:
     from authentik.flows.stage import StageView

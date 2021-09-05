@@ -5,7 +5,7 @@ from typing import Callable
 
 from django.test import TransactionTestCase
 
-from authentik.flows.transfer.importer import FlowImporter
+from authentik.managed.transport.importer import Importer
 
 
 class TestTransferDocs(TransactionTestCase):
@@ -17,7 +17,7 @@ def pbflow_tester(file_name: str) -> Callable:
 
     def tester(self: TestTransferDocs):
         with open(file_name, "r", encoding="utf8") as flow_json:
-            importer = FlowImporter(flow_json.read())
+            importer = Importer(flow_json.read())
         self.assertTrue(importer.validate())
         self.assertTrue(importer.apply())
 

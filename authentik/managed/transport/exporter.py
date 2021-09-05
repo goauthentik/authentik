@@ -6,12 +6,12 @@ from uuid import UUID
 from django.db.models import Q
 
 from authentik.flows.models import Flow, FlowStageBinding, Stage
-from authentik.flows.transfer.common import DataclassEncoder, FlowBundle, FlowBundleEntry
+from authentik.managed.transport.common import DataclassEncoder, FlowBundle, FlowBundleEntry
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.stages.prompt.models import PromptStage
 
 
-class FlowExporter:
+class Exporter:
     """Export flow with attached stages into json"""
 
     flow: Flow

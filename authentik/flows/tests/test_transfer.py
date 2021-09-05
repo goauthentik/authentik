@@ -4,10 +4,10 @@ from json import dumps
 from django.test import TransactionTestCase
 
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
-from authentik.flows.transfer.common import DataclassEncoder
-from authentik.flows.transfer.exporter import FlowExporter
-from authentik.flows.transfer.importer import FlowImporter, transaction_rollback
 from authentik.lib.generators import generate_id
+from authentik.managed.transport.common import DataclassEncoder
+from authentik.managed.transport.exporter import Exporter
+from authentik.managed.transport.importer import Importer, transaction_rollback
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
@@ -19,9 +19,9 @@ class TestFlowTransfer(TransactionTestCase):
 
     def test_bundle_invalid_format(self):
         """Test bundle with invalid format"""
-        importer = FlowImporter('{"version": 3}')
+        importer = Importer('{"version": 3}')
         self.assertFalse(importer.validate())
-        importer = FlowImporter(
+        importer = Importer(
             (
                 '{"version": 1,"entries":[{"identifiers":{},"attrs":{},'
                 '"model": "authentik_core.User"}]}'
@@ -47,12 +47,12 @@ class TestFlowTransfer(TransactionTestCase):
                 order=0,
             )
 
-            exporter = FlowExporter(flow)
+            exporter = Exporter(flow)
             export = exporter.export()
             self.assertEqual(len(export.entries), 3)
             export_json = exporter.export_to_string()
 
-        importer = FlowImporter(export_json)
+        importer = Importer(export_json)
         self.assertTrue(importer.validate())
         self.assertTrue(importer.apply())
 
@@ -79,12 +79,12 @@ class TestFlowTransfer(TransactionTestCase):
             fsb = FlowStageBinding.objects.create(target=flow, stage=user_login, order=0)
             PolicyBinding.objects.create(policy=flow_policy, target=fsb, order=0)
 
-            exporter = FlowExporter(flow)
+            exporter = Exporter(flow)
             export = exporter.export()
 
             export_json = dumps(export, cls=DataclassEncoder)
 
-        importer = FlowImporter(export_json)
+        importer = Importer(export_json)
         self.assertTrue(importer.validate())
         self.assertTrue(importer.apply())
         self.assertTrue(UserLoginStage.objects.filter(name=stage_name).exists())
@@ -124,11 +124,11 @@ class TestFlowTransfer(TransactionTestCase):
 
             FlowStageBinding.objects.create(target=flow, stage=first_stage, order=0)
 
-            exporter = FlowExporter(flow)
+            exporter = Exporter(flow)
             export = exporter.export()
             export_json = dumps(export, cls=DataclassEncoder)
 
-        importer = FlowImporter(export_json)
+        importer = Importer(export_json)
 
         self.assertTrue(importer.validate())
         self.assertTrue(importer.apply())

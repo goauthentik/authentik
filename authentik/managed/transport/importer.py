@@ -16,8 +16,8 @@ from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.flows.models import Flow, FlowStageBinding, Stage
-from authentik.flows.transfer.common import EntryInvalidError, FlowBundle, FlowBundleEntry
 from authentik.lib.models import SerializerModel
+from authentik.managed.transport.common import EntryInvalidError, FlowBundle, FlowBundleEntry
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.stages.prompt.models import Prompt
 
@@ -33,7 +33,7 @@ def transaction_rollback():
     atomic.__exit__(IntegrityError, None, None)
 
 
-class FlowImporter:
+class Importer:
     """Import Flow from json"""
 
     logger: BoundLogger

@@ -29,11 +29,11 @@ from authentik.core.api.utils import (
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
-from authentik.flows.transfer.common import DataclassEncoder
-from authentik.flows.transfer.exporter import FlowExporter
-from authentik.flows.transfer.importer import FlowImporter
 from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
+from authentik.managed.transport.common import DataclassEncoder
+from authentik.managed.transport.exporter import Exporter
+from authentik.managed.transport.importer import Importer
 
 LOGGER = get_logger()
 
@@ -164,7 +164,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         file = request.FILES.get("file", None)
         if not file:
             return HttpResponseBadRequest()
-        importer = FlowImporter(file.read().decode())
+        importer = Importer(file.read().decode())
         valid = importer.validate()
         if not valid:
             return HttpResponseBadRequest()
@@ -194,7 +194,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
     def export(self, request: Request, slug: str) -> Response:
         """Export flow to .akflow file"""
         flow = self.get_object()
-        exporter = FlowExporter(flow)
+        exporter = Exporter(flow)
         response = JsonResponse(exporter.export(), encoder=DataclassEncoder, safe=False)
         response["Content-Disposition"] = f'attachment; filename="{flow.slug}.akflow"'
         return response
