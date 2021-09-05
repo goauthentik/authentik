@@ -19,5 +19,5 @@ docker-compose exec -it worker ./manage.py test_email [...]
 To run this command with Kubernetes, use
 
 ```
-kubectl exec -it authentik-worker-xxxxx -- ./manage.py test_email [...]
+kubectl exec -it deployment/authentik-worker -c authentik -- ./manage.py test_email [...]
 ```
