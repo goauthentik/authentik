@@ -6,18 +6,22 @@
         "docusaurus": "docusaurus",
         "watch": "docusaurus start",
         "build": "docusaurus build",
+        "build-docs-only": "docusaurus build --config docusaurus.docs-only.js --out-dir help",
         "swizzle": "docusaurus swizzle",
         "deploy": "docusaurus deploy",
         "serve": "docusaurus serve"
     },
     "dependencies": {
-        "@docusaurus/preset-classic": "2.0.0-beta.0",
+        "@docusaurus/plugin-client-redirects": "2.0.0-beta.6",
+        "@docusaurus/preset-classic": "2.0.0-beta.6",
         "@mdx-js/react": "^1.6.22",
+        "@sentry/react": "^6.12.0",
+        "@sentry/tracing": "^6.12.0",
         "clsx": "^1.1.1",
-        "postcss": "^8.3.5",
+        "postcss": "^8.3.6",
         "rapidoc": "^9.0.0",
         "react": "^17.0.2",
-        "react-before-after-slider": "^1.0.4",
+        "react-before-after-slider-component": "^0.7.4",
         "react-dom": "^17.0.2",
         "react-feather": "^2.0.9",
         "react-toggle": "^4.1.2"
@@ -35,6 +39,6 @@
         ]
     },
     "devDependencies": {
-        "prettier": "2.3.1"
+        "prettier": "2.3.2"
     }
 }

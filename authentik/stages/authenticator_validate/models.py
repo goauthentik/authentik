@@ -59,17 +59,13 @@ class AuthenticatorValidateStage(Stage):
 
     @property
     def serializer(self) -> BaseSerializer:
-        from authentik.stages.authenticator_validate.api import (
-            AuthenticatorValidateStageSerializer,
-        )
+        from authentik.stages.authenticator_validate.api import AuthenticatorValidateStageSerializer
 
         return AuthenticatorValidateStageSerializer
 
     @property
     def type(self) -> Type[View]:
-        from authentik.stages.authenticator_validate.stage import (
-            AuthenticatorValidateStageView,
-        )
+        from authentik.stages.authenticator_validate.stage import AuthenticatorValidateStageView
 
         return AuthenticatorValidateStageView
 

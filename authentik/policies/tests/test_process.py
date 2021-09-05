@@ -112,9 +112,7 @@ class TestPolicyProcess(TestCase):
     def test_exception(self):
         """Test policy execution"""
         policy = Policy.objects.create(name="test-execution")
-        binding = PolicyBinding(
-            policy=policy, target=Application.objects.create(name="test")
-        )
+        binding = PolicyBinding(policy=policy, target=Application.objects.create(name="test"))
 
         request = PolicyRequest(self.user)
         response = PolicyProcess(binding, request, None).execute()
@@ -129,9 +127,7 @@ class TestPolicyProcess(TestCase):
             wait_max=1,
             execution_logging=True,
         )
-        binding = PolicyBinding(
-            policy=policy, target=Application.objects.create(name="test")
-        )
+        binding = PolicyBinding(policy=policy, target=Application.objects.create(name="test"))
 
         http_request = self.factory.get("/")
         http_request.user = self.user
@@ -163,9 +159,7 @@ class TestPolicyProcess(TestCase):
             wait_max=1,
             execution_logging=True,
         )
-        binding = PolicyBinding(
-            policy=policy, target=Application.objects.create(name="test")
-        )
+        binding = PolicyBinding(policy=policy, target=Application.objects.create(name="test"))
 
         user = AnonymousUser()
 
@@ -192,9 +186,7 @@ class TestPolicyProcess(TestCase):
 
     def test_raises(self):
         """Test policy that raises error"""
-        policy_raises = ExpressionPolicy.objects.create(
-            name="raises", expression="{{ 0/0 }}"
-        )
+        policy_raises = ExpressionPolicy.objects.create(name="raises", expression="{{ 0/0 }}")
         binding = PolicyBinding(
             policy=policy_raises, target=Application.objects.create(name="test")
         )

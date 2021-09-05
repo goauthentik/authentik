@@ -9,17 +9,26 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import AKGlobal from "../../../authentik.css";
 import { PFSize } from "../../../elements/Spinner";
 import { BaseStage } from "../base";
-import { Assertion, transformCredentialCreateOptions, transformNewAssertionForServer } from "./utils";
-import { AuthenticatorWebAuthnChallenge, AuthenticatorWebAuthnChallengeResponseRequest } from "authentik-api";
+import {
+    Assertion,
+    transformCredentialCreateOptions,
+    transformNewAssertionForServer,
+} from "./utils";
+import {
+    AuthenticatorWebAuthnChallenge,
+    AuthenticatorWebAuthnChallengeResponseRequest,
+} from "@goauthentik/api";
 
 export interface WebAuthnAuthenticatorRegisterChallengeResponse {
     response: Assertion;
 }
 
 @customElement("ak-stage-authenticator-webauthn")
-export class WebAuthnAuthenticatorRegisterStage extends BaseStage<AuthenticatorWebAuthnChallenge, AuthenticatorWebAuthnChallengeResponseRequest> {
-
-    @property({type: Boolean})
+export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
+    AuthenticatorWebAuthnChallenge,
+    AuthenticatorWebAuthnChallengeResponseRequest
+> {
+    @property({ type: Boolean })
     registerRunning = false;
 
     @property()
@@ -35,13 +44,15 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<AuthenticatorW
         }
         // convert certain members of the PublicKeyCredentialCreateOptions into
         // byte arrays as expected by the spec.
-        const publicKeyCredentialCreateOptions = transformCredentialCreateOptions(this.challenge?.registration as PublicKeyCredentialCreationOptions);
+        const publicKeyCredentialCreateOptions = transformCredentialCreateOptions(
+            this.challenge?.registration as PublicKeyCredentialCreationOptions,
+        );
 
         // request the authenticator(s) to create a new credential keypair.
         let credential;
         try {
-            credential = <PublicKeyCredential> await navigator.credentials.create({
-                publicKey: publicKeyCredentialCreateOptions
+            credential = <PublicKeyCredential>await navigator.credentials.create({
+                publicKey: publicKeyCredentialCreateOptions,
             });
             if (!credential) {
                 throw new Error("Credential is empty");
@@ -58,7 +69,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<AuthenticatorW
         // and storing the public key
         try {
             await this.host?.submit({
-                response: newAssertionForServer
+                response: newAssertionForServer,
             });
         } catch (err) {
             throw new Error(t`Server validation of credential failed: ${err}`);
@@ -70,12 +81,14 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<AuthenticatorW
             return;
         }
         this.registerRunning = true;
-        this.register().catch((e) => {
-            console.error(e);
-            this.registerMessage = e.toString();
-        }).finally(() => {
-            this.registerRunning = false;
-        });
+        this.register()
+            .catch((e) => {
+                console.error(e);
+                this.registerMessage = e.toString();
+            })
+            .finally(() => {
+                this.registerRunning = false;
+            });
     }
 
     firstUpdated(): void {
@@ -89,26 +102,32 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<AuthenticatorW
                 </h1>
             </header>
             <div class="pf-c-login__main-body">
-                ${this.registerRunning ?
-                    html`<div class="pf-c-empty-state__content">
-                            <div class="pf-l-bullseye">
-                                <div class="pf-l-bullseye__item">
-                                    <ak-spinner size="${PFSize.XLarge}"></ak-spinner>
-                                </div>
-                            </div>
-                        </div>`:
-                    html`
-                    <div class="pf-c-form__group pf-m-action">
-                        ${this.challenge?.responseErrors ?
-                            html`<p class="pf-m-block">${this.challenge.responseErrors["response"][0].string}</p>`:
-                            html``}
-                        <p class="pf-m-block">${this.registerMessage}</p>
-                        <button class="pf-c-button pf-m-primary pf-m-block" @click=${() => {
-                            this.registerWrapper();
-                        }}>
-                            ${t`Register device`}
-                        </button>
-                    </div>`}
+                ${
+                    this.registerRunning
+                        ? html`<div class="pf-c-empty-state__content">
+                              <div class="pf-l-bullseye">
+                                  <div class="pf-l-bullseye__item">
+                                      <ak-spinner size="${PFSize.XLarge}"></ak-spinner>
+                                  </div>
+                              </div>
+                          </div>`
+                        : html` <div class="pf-c-form__group pf-m-action">
+                              ${this.challenge?.responseErrors
+                                  ? html`<p class="pf-m-block">
+                                        ${this.challenge.responseErrors["response"][0].string}
+                                    </p>`
+                                  : html``}
+                              <p class="pf-m-block">${this.registerMessage}</p>
+                              <button
+                                  class="pf-c-button pf-m-primary pf-m-block"
+                                  @click=${() => {
+                                      this.registerWrapper();
+                                  }}
+                              >
+                                  ${t`Register device`}
+                              </button>
+                          </div>`
+                }
             </div>
         </div>
         <footer class="pf-c-login__main-footer">
@@ -116,5 +135,4 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<AuthenticatorW
             </ul>
         </footer>`;
     }
-
 }

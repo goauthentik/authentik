@@ -11,12 +11,7 @@ from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import User
-from authentik.policies.models import (
-    Policy,
-    PolicyBinding,
-    PolicyBindingModel,
-    PolicyEngineMode,
-)
+from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel, PolicyEngineMode
 from authentik.policies.process import PolicyProcess, cache_key
 from authentik.policies.types import PolicyRequest, PolicyResult
 from authentik.root.monitoring import UpdatingGauge
@@ -42,9 +37,7 @@ class PolicyProcessInfo:
     result: Optional[PolicyResult]
     binding: PolicyBinding
 
-    def __init__(
-        self, process: PolicyProcess, connection: Connection, binding: PolicyBinding
-    ):
+    def __init__(self, process: PolicyProcess, connection: Connection, binding: PolicyBinding):
         self.process = process
         self.connection = connection
         self.binding = binding
@@ -62,15 +55,7 @@ class PolicyEngine:
     # Allow objects with no policies attached to pass
     empty_result: bool
 
-    __pbm: PolicyBindingModel
-    __cached_policies: list[PolicyResult]
-    __processes: list[PolicyProcessInfo]
-
-    __expected_result_count: int
-
-    def __init__(
-        self, pbm: PolicyBindingModel, user: User, request: HttpRequest = None
-    ):
+    def __init__(self, pbm: PolicyBindingModel, user: User, request: HttpRequest = None):
         self.logger = get_logger().bind()
         self.mode = pbm.policy_engine_mode
         # For backwards compatibility, set empty_result to true
@@ -83,8 +68,8 @@ class PolicyEngine:
         self.request.obj = pbm
         if request:
             self.request.set_http_request(request)
-        self.__cached_policies = []
-        self.__processes = []
+        self.__cached_policies: list[PolicyResult] = []
+        self.__processes: list[PolicyProcessInfo] = []
         self.use_cache = True
         self.__expected_result_count = 0
 
@@ -129,15 +114,11 @@ class PolicyEngine:
                     )
                     self.__cached_policies.append(cached_policy)
                     continue
-                self.logger.debug(
-                    "P_ENG: Evaluating policy", binding=binding, request=self.request
-                )
+                self.logger.debug("P_ENG: Evaluating policy", binding=binding, request=self.request)
                 our_end, task_end = Pipe(False)
                 task = PolicyProcess(binding, self.request, task_end)
                 task.daemon = False
-                self.logger.debug(
-                    "P_ENG: Starting Process", binding=binding, request=self.request
-                )
+                self.logger.debug("P_ENG: Starting Process", binding=binding, request=self.request)
                 if not CURRENT_PROCESS._config.get("daemon"):
                     task.run()
                 else:
@@ -157,9 +138,7 @@ class PolicyEngine:
     @property
     def result(self) -> PolicyResult:
         """Get policy-checking result"""
-        process_results: list[PolicyResult] = [
-            x.result for x in self.__processes if x.result
-        ]
+        process_results: list[PolicyResult] = [x.result for x in self.__processes if x.result]
         all_results = list(process_results + self.__cached_policies)
         if len(all_results) < self.__expected_result_count:  # pragma: no cover
             raise AssertionError("Got less results than polices")

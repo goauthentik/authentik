@@ -14,9 +14,7 @@ from prometheus_client import Gauge
 # Arguments: user: User, password: str
 password_changed = Signal()
 
-GAUGE_MODELS = Gauge(
-    "authentik_models", "Count of various objects", ["model_name", "app"]
-)
+GAUGE_MODELS = Gauge("authentik_models", "Count of various objects", ["model_name", "app"])
 
 if TYPE_CHECKING:
     from authentik.core.models import AuthenticatedSession, User
@@ -60,15 +58,11 @@ def user_logged_out_session(sender, request: HttpRequest, user: "User", **_):
     """Delete AuthenticatedSession if it exists"""
     from authentik.core.models import AuthenticatedSession
 
-    AuthenticatedSession.objects.filter(
-        session_key=request.session.session_key
-    ).delete()
+    AuthenticatedSession.objects.filter(session_key=request.session.session_key).delete()
 
 
 @receiver(pre_delete)
-def authenticated_session_delete(
-    sender: Type[Model], instance: "AuthenticatedSession", **_
-):
+def authenticated_session_delete(sender: Type[Model], instance: "AuthenticatedSession", **_):
     """Delete session when authenticated session is deleted"""
     from authentik.core.models import AuthenticatedSession
 

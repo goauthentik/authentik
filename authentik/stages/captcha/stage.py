@@ -49,9 +49,7 @@ class CaptchaChallengeResponse(ChallengeResponse):
             response.raise_for_status()
             data = response.json()
             if not data.get("success", False):
-                raise ValidationError(
-                    f"Failed to validate token: {data.get('error-codes', '')}"
-                )
+                raise ValidationError(f"Failed to validate token: {data.get('error-codes', '')}")
         except RequestException as exc:
             raise ValidationError("Failed to validate token") from exc
         return token

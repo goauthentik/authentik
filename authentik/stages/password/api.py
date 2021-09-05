@@ -24,3 +24,9 @@ class PasswordStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = PasswordStage.objects.all()
     serializer_class = PasswordStageSerializer
+    filterset_fields = [
+        "name",
+        "configure_flow",
+        "failed_attempts_before_cancel",
+    ]
+    ordering = ["name"]

@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"net"
 
+	"github.com/pires/go-proxyproto"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/crypto"
 )
@@ -23,10 +24,14 @@ func (ws *WebServer) listenTLS() {
 	ln, err := net.Listen("tcp", config.G.Web.ListenTLS)
 	if err != nil {
 		ws.log.WithError(err).Fatalf("failed to listen")
+		return
 	}
 	ws.log.WithField("addr", config.G.Web.ListenTLS).Info("Running")
 
-	tlsListener := tls.NewListener(tcpKeepAliveListener{ln.(*net.TCPListener)}, tlsConfig)
+	proxyListener := &proxyproto.Listener{Listener: tcpKeepAliveListener{ln.(*net.TCPListener)}}
+	defer proxyListener.Close()
+
+	tlsListener := tls.NewListener(proxyListener, tlsConfig)
 	ws.serve(tlsListener)
 	ws.log.Printf("closing %s", tlsListener.Addr())
 }

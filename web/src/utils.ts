@@ -26,12 +26,9 @@ export function convertToSlug(text: string): string {
 }
 
 export function convertToTitle(text: string): string {
-    return text.replace(
-        /\w\S*/g,
-        function (txt) {
-            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-        }
-    );
+    return text.replace(/\w\S*/g, function (txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
 }
 
 export function truncate(input?: string, max = 10): string {
@@ -44,10 +41,7 @@ export function truncate(input?: string, max = 10): string {
 
 export function loading<T>(v: T, actual: TemplateResult): TemplateResult {
     if (!v) {
-        return html`<ak-empty-state
-            ?loading="${true}"
-            header=${t`Loading`}>
-        </ak-empty-state>`;
+        return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
     }
     return actual;
 }
@@ -59,7 +53,7 @@ export function camelToSnake(key: string): string {
 
 export function groupBy<T>(objects: T[], callback: (obj: T) => string): Array<[string, T[]]> {
     const m = new Map<string, T[]>();
-    objects.forEach(obj => {
+    objects.forEach((obj) => {
         const group = callback(obj);
         if (!m.has(group)) {
             m.set(group, []);

@@ -20,13 +20,13 @@ export class Spinner extends LitElement {
 
     render(): TemplateResult {
         return html`<span
-                class="pf-c-spinner ${this.size.toString()}"
-                role="progressbar"
-                aria-valuetext="${t`Loading...`}">
-                <span class="pf-c-spinner__clipper"></span>
-                <span class="pf-c-spinner__lead-ball"></span>
-                <span class="pf-c-spinner__tail-ball"></span>
-            </span>`;
+            class="pf-c-spinner ${this.size.toString()}"
+            role="progressbar"
+            aria-valuetext="${t`Loading...`}"
+        >
+            <span class="pf-c-spinner__clipper"></span>
+            <span class="pf-c-spinner__lead-ball"></span>
+            <span class="pf-c-spinner__tail-ball"></span>
+        </span>`;
     }
-
 }

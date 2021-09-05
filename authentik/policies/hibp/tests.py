@@ -2,9 +2,9 @@
 from django.test import TestCase
 from guardian.shortcuts import get_anonymous_user
 
+from authentik.lib.generators import generate_key
 from authentik.policies.hibp.models import HaveIBeenPwendPolicy
 from authentik.policies.types import PolicyRequest, PolicyResult
-from authentik.providers.oauth2.generators import generate_client_secret
 
 
 class TestHIBPPolicy(TestCase):
@@ -37,7 +37,7 @@ class TestHIBPPolicy(TestCase):
             name="test_true",
         )
         request = PolicyRequest(get_anonymous_user())
-        request.context["password"] = generate_client_secret()
+        request.context["password"] = generate_key()
         result: PolicyResult = policy.passes(request)
         self.assertTrue(result.passing)
         self.assertEqual(result.messages, tuple())

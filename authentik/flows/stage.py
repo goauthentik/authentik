@@ -16,7 +16,8 @@ from authentik.flows.challenge import (
     HttpChallengeResponse,
     WithUserInfoChallenge,
 )
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
+from authentik.flows.models import InvalidResponseAction
+from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
 from authentik.flows.views import FlowExecutorView
 
 PLAN_CONTEXT_PENDING_USER_IDENTIFIER = "pending_user_identifier"
@@ -41,14 +42,9 @@ class StageView(View):
         other things besides the form display.
 
         If no user is pending, returns request.user"""
-        if (
-            PLAN_CONTEXT_PENDING_USER_IDENTIFIER in self.executor.plan.context
-            and for_display
-        ):
+        if PLAN_CONTEXT_PENDING_USER_IDENTIFIER in self.executor.plan.context and for_display:
             return User(
-                username=self.executor.plan.context.get(
-                    PLAN_CONTEXT_PENDING_USER_IDENTIFIER
-                ),
+                username=self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER_IDENTIFIER),
                 email="",
             )
         if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
@@ -69,7 +65,13 @@ class ChallengeStageView(StageView):
         """Return a challenge for the frontend to solve"""
         challenge = self._get_challenge(*args, **kwargs)
         if not challenge.is_valid():
-            LOGGER.warning(challenge.errors, stage_view=self, challenge=challenge)
+            LOGGER.warning(
+                "f(ch): Invalid challenge",
+                binding=self.executor.current_binding,
+                errors=challenge.errors,
+                stage_view=self,
+                challenge=challenge,
+            )
         return HttpChallengeResponse(challenge)
 
     # pylint: disable=unused-argument
@@ -77,15 +79,36 @@ class ChallengeStageView(StageView):
         """Handle challenge response"""
         challenge: ChallengeResponse = self.get_response_instance(data=request.data)
         if not challenge.is_valid():
+            if self.executor.current_binding.invalid_response_action in [
+                InvalidResponseAction.RESTART,
+                InvalidResponseAction.RESTART_WITH_CONTEXT,
+            ]:
+                keep_context = (
+                    self.executor.current_binding.invalid_response_action
+                    == InvalidResponseAction.RESTART_WITH_CONTEXT
+                )
+                LOGGER.debug(
+                    "f(ch): Invalid response, restarting flow",
+                    binding=self.executor.current_binding,
+                    stage_view=self,
+                    keep_context=keep_context,
+                )
+                return self.executor.restart_flow(keep_context)
             return self.challenge_invalid(challenge)
         return self.challenge_valid(challenge)
+
+    def format_title(self) -> str:
+        """Allow usage of placeholder in flow title."""
+        return self.executor.flow.title % {
+            "app": self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION, "")
+        }
 
     def _get_challenge(self, *args, **kwargs) -> Challenge:
         challenge = self.get_challenge(*args, **kwargs)
         if "flow_info" not in challenge.initial_data:
             flow_info = ContextualFlowInfo(
                 data={
-                    "title": self.executor.flow.title,
+                    "title": self.format_title(),
                     "background": self.executor.flow.background_url,
                     "cancel_url": reverse("authentik_flows:cancel"),
                 }
@@ -126,5 +149,10 @@ class ChallengeStageView(StageView):
                 )
         challenge_response.initial_data["response_errors"] = full_errors
         if not challenge_response.is_valid():
-            LOGGER.warning(challenge_response.errors)
+            LOGGER.warning(
+                "f(ch): invalid challenge response",
+                binding=self.executor.current_binding,
+                errors=challenge_response.errors,
+                stage_view=self,
+            )
         return HttpChallengeResponse(challenge_response)

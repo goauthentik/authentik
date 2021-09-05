@@ -38,7 +38,5 @@ class TestEvents(TestCase):
         event = Event.new("unittest", model=temp_model)
         event.save()  # We save to ensure nothing is un-saveable
         model_content_type = ContentType.objects.get_for_model(temp_model)
-        self.assertEqual(
-            event.context.get("model").get("app"), model_content_type.app_label
-        )
+        self.assertEqual(event.context.get("model").get("app"), model_content_type.app_label)
         self.assertEqual(event.context.get("model").get("pk"), temp_model.pk.hex)

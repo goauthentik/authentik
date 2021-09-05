@@ -29,12 +29,7 @@ class FieldTypes(models.TextChoices):
     # Same as text, but has autocomplete for password managers
     USERNAME = (
         "username",
-        _(
-            (
-                "Username: Same as Text input, but checks for "
-                "and prevents duplicate usernames."
-            )
-        ),
+        _(("Username: Same as Text input, but checks for " "and prevents duplicate usernames.")),
     )
     EMAIL = "email", _("Email: Text field with Email type.")
     PASSWORD = (

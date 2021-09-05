@@ -30,9 +30,7 @@ class Migration(migrations.Migration):
                 ("provider_type", models.CharField(max_length=255)),
                 (
                     "request_token_url",
-                    models.CharField(
-                        blank=True, max_length=255, verbose_name="Request Token URL"
-                    ),
+                    models.CharField(blank=True, max_length=255, verbose_name="Request Token URL"),
                 ),
                 (
                     "authorization_url",

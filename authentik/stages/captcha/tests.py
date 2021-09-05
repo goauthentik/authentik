@@ -1,7 +1,7 @@
 """captcha tests"""
-from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
+from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
@@ -16,15 +16,12 @@ RECAPTCHA_PUBLIC_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
 RECAPTCHA_PRIVATE_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
 
 
-class TestCaptchaStage(TestCase):
+class TestCaptchaStage(APITestCase):
     """Captcha tests"""
 
     def setUp(self):
         super().setUp()
-        self.user = User.objects.create_user(
-            username="unittest", email="test@beryju.org"
-        )
-        self.client = Client()
+        self.user = User.objects.create_user(username="unittest", email="test@beryju.org")
 
         self.flow = Flow.objects.create(
             name="test-captcha",
@@ -36,20 +33,16 @@ class TestCaptchaStage(TestCase):
             public_key=RECAPTCHA_PUBLIC_KEY,
             private_key=RECAPTCHA_PRIVATE_KEY,
         )
-        FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
+        self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     def test_valid(self):
         """Test valid captcha"""
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
         response = self.client.post(
-            reverse(
-                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            ),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             {"token": "PASSED"},
         )
         self.assertEqual(response.status_code, 200)

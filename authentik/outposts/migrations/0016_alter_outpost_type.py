@@ -13,8 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="outpost",
             name="type",
-            field=models.TextField(
-                choices=[("proxy", "Proxy"), ("ldap", "Ldap")], default="proxy"
-            ),
+            field=models.TextField(choices=[("proxy", "Proxy"), ("ldap", "Ldap")], default="proxy"),
         ),
     ]

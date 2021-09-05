@@ -41,9 +41,7 @@ class VersionSerializer(PassiveSerializer):
 
     def get_outdated(self, instance) -> bool:
         """Check if we're running the latest version"""
-        return parse(self.get_version_current(instance)) < parse(
-            self.get_version_latest(instance)
-        )
+        return parse(self.get_version_current(instance)) < parse(self.get_version_latest(instance))
 
 
 class VersionView(APIView):

@@ -7,8 +7,8 @@ from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 import authentik.core.models
+import authentik.lib.generators
 import authentik.lib.utils.time
-import authentik.providers.oauth2.generators
 
 
 class Migration(migrations.Migration):
@@ -22,12 +22,8 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunSQL(
-            "DROP TABLE IF EXISTS authentik_providers_oauth_oauth2provider CASCADE;"
-        ),
-        migrations.RunSQL(
-            "DROP TABLE IF EXISTS authentik_providers_oidc_openidprovider CASCADE;"
-        ),
+        migrations.RunSQL("DROP TABLE IF EXISTS authentik_providers_oauth_oauth2provider CASCADE;"),
+        migrations.RunSQL("DROP TABLE IF EXISTS authentik_providers_oidc_openidprovider CASCADE;"),
         migrations.CreateModel(
             name="OAuth2Provider",
             fields=[
@@ -59,7 +55,7 @@ class Migration(migrations.Migration):
                 (
                     "client_id",
                     models.CharField(
-                        default=authentik.providers.oauth2.generators.generate_client_id,
+                        default=authentik.lib.generators.generate_id,
                         max_length=255,
                         unique=True,
                         verbose_name="Client ID",
@@ -69,7 +65,7 @@ class Migration(migrations.Migration):
                     "client_secret",
                     models.CharField(
                         blank=True,
-                        default=authentik.providers.oauth2.generators.generate_client_secret,
+                        default=authentik.lib.generators.generate_key,
                         max_length=255,
                         verbose_name="Client Secret",
                     ),
@@ -109,6 +105,7 @@ class Migration(migrations.Migration):
                     "redirect_uris",
                     models.TextField(
                         default="",
+                        blank=True,
                         help_text="Enter each URI on a new line.",
                         verbose_name="Redirect URIs",
                     ),
@@ -135,9 +132,7 @@ class Migration(migrations.Migration):
                     models.TextField(
                         default="minutes=10",
                         help_text="Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).",
-                        validators=[
-                            authentik.lib.utils.time.timedelta_string_validator
-                        ],
+                        validators=[authentik.lib.utils.time.timedelta_string_validator],
                     ),
                 ),
                 (
@@ -201,23 +196,17 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "expires",
-                    models.DateTimeField(
-                        default=authentik.core.models.default_token_duration
-                    ),
+                    models.DateTimeField(default=authentik.core.models.default_token_duration),
                 ),
                 ("expiring", models.BooleanField(default=True)),
                 ("_scope", models.TextField(default="", verbose_name="Scopes")),
                 (
                     "access_token",
-                    models.CharField(
-                        max_length=255, unique=True, verbose_name="Access Token"
-                    ),
+                    models.CharField(max_length=255, unique=True, verbose_name="Access Token"),
                 ),
                 (
                     "refresh_token",
-                    models.CharField(
-                        max_length=255, unique=True, verbose_name="Refresh Token"
-                    ),
+                    models.CharField(max_length=255, unique=True, verbose_name="Refresh Token"),
                 ),
                 ("_id_token", models.TextField(verbose_name="ID Token")),
                 (
@@ -255,9 +244,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "expires",
-                    models.DateTimeField(
-                        default=authentik.core.models.default_token_duration
-                    ),
+                    models.DateTimeField(default=authentik.core.models.default_token_duration),
                 ),
                 ("expiring", models.BooleanField(default=True)),
                 ("_scope", models.TextField(default="", verbose_name="Scopes")),
@@ -267,21 +254,15 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nonce",
-                    models.CharField(
-                        blank=True, default="", max_length=255, verbose_name="Nonce"
-                    ),
+                    models.CharField(blank=True, default="", max_length=255, verbose_name="Nonce"),
                 ),
                 (
                     "is_open_id",
-                    models.BooleanField(
-                        default=False, verbose_name="Is Authentication?"
-                    ),
+                    models.BooleanField(default=False, verbose_name="Is Authentication?"),
                 ),
                 (
                     "code_challenge",
-                    models.CharField(
-                        max_length=255, null=True, verbose_name="Code Challenge"
-                    ),
+                    models.CharField(max_length=255, null=True, verbose_name="Code Challenge"),
                 ),
                 (
                     "code_challenge_method",

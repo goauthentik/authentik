@@ -3,17 +3,20 @@ import { EVENT_REFRESH } from "../../constants";
 import { Form } from "./Form";
 
 export abstract class ModelForm<T, PKT extends string | number> extends Form<T> {
+    viewportCheck = true;
 
     abstract loadInstance(pk: PKT): Promise<T>;
 
-    @property({attribute: false})
+    @property({ attribute: false })
     set instancePk(value: PKT) {
         this._instancePk = value;
-        if (this.isInViewport) {
-            this.loadInstance(value).then(instance => {
-                this.instance = instance;
-            });
+        if (this.viewportCheck && !this.isInViewport) {
+            return;
         }
+        this.loadInstance(value).then((instance) => {
+            this.instance = instance;
+            this.requestUpdate();
+        });
     }
 
     private _instancePk?: PKT;
@@ -31,10 +34,15 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this._instancePk) return;
-            this.loadInstance(this._instancePk).then(instance => {
+            this.loadInstance(this._instancePk).then((instance) => {
                 this.instance = instance;
             });
         });
+    }
+
+    resetForm(): void {
+        this.instance = undefined;
+        this._initialLoad = false;
     }
 
     render(): TemplateResult {
@@ -45,5 +53,4 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
         }
         return super.render();
     }
-
 }

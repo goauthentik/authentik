@@ -8,9 +8,9 @@ import "../../elements/forms/ModalForm";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
-import { EventsApi, NotificationTransport } from "authentik-api";
+import { EventsApi, NotificationTransport } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import "../../elements/forms/DeleteForm";
+import "../../elements/forms/DeleteBulkForm";
 import "./TransportForm";
 
 @customElement("ak-event-transport-list")
@@ -28,6 +28,8 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         return "pf-icon pf-icon-export";
     }
 
+    checkbox = true;
+
     @property()
     order = "name";
 
@@ -44,72 +46,67 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         return [
             new TableColumn(t`Name`, "name"),
             new TableColumn(t`Mode`, "mode"),
-            new TableColumn(""),
+            new TableColumn(t`Actions`),
         ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Notification transports(s)`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: NotificationTransport) => {
+                return new EventsApi(DEFAULT_CONFIG).eventsTransportsUsedByList({
+                    uuid: item.pk,
+                });
+            }}
+            .delete=${(item: NotificationTransport) => {
+                return new EventsApi(DEFAULT_CONFIG).eventsTransportsDestroy({
+                    uuid: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: NotificationTransport): TemplateResult[] {
         return [
             html`${item.name}`,
             html`${item.modeVerbose}`,
-            html`
-            <ak-action-button
-                .apiRequest=${() => {
-                    return new EventsApi(DEFAULT_CONFIG).eventsTransportsTestCreate({
-                        uuid: item.pk || "",
-                    });
-                }}>
-                ${t`Test`}
-            </ak-action-button>
-            <ak-forms-modal>
-                <span slot="submit">
-                    ${t`Update`}
-                </span>
-                <span slot="header">
-                    ${t`Update Notification Transport`}
-                </span>
-                <ak-event-transport-form slot="form" .instancePk=${item.pk}>
-                </ak-event-transport-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${t`Edit`}
-                </button>
-            </ak-forms-modal>
-            <ak-forms-delete
-                .obj=${item}
-                objectLabel=${t`Notifications Transport`}
-                .usedBy=${() => {
-                    return new EventsApi(DEFAULT_CONFIG).eventsTransportsUsedByList({
-                        uuid: item.pk
-                    });
-                }}
-                .delete=${() => {
-                    return new EventsApi(DEFAULT_CONFIG).eventsTransportsDestroy({
-                        uuid: item.pk
-                    });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete`}
-                </button>
-            </ak-forms-delete>`,
+            html`<ak-forms-modal>
+                    <span slot="submit"> ${t`Update`} </span>
+                    <span slot="header"> ${t`Update Notification Transport`} </span>
+                    <ak-event-transport-form slot="form" .instancePk=${item.pk}>
+                    </ak-event-transport-form>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </ak-forms-modal>
+                <ak-action-button
+                    class="pf-m-plain"
+                    .apiRequest=${() => {
+                        return new EventsApi(DEFAULT_CONFIG).eventsTransportsTestCreate({
+                            uuid: item.pk || "",
+                        });
+                    }}
+                >
+                    <i class="fas fa-vial" aria-hidden="true"></i>
+                </ak-action-button>`,
         ];
     }
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-forms-modal>
-            <span slot="submit">
-                ${t`Create`}
-            </span>
-            <span slot="header">
-                ${t`Create Notification Transport`}
-            </span>
-            <ak-event-transport-form slot="form">
-            </ak-event-transport-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${t`Create`}
-            </button>
-        </ak-forms-modal>
-        ${super.renderToolbar()}
+            <ak-forms-modal>
+                <span slot="submit"> ${t`Create`} </span>
+                <span slot="header"> ${t`Create Notification Transport`} </span>
+                <ak-event-transport-form slot="form"> </ak-event-transport-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+            </ak-forms-modal>
+            ${super.renderToolbar()}
         `;
     }
 }

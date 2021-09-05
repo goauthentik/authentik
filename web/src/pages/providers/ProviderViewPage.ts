@@ -8,18 +8,19 @@ import "./saml/SAMLProviderViewPage";
 import "./oauth2/OAuth2ProviderViewPage";
 import "./proxy/ProxyProviderViewPage";
 import "./ldap/LDAPProviderViewPage";
-import { Provider, ProvidersApi } from "authentik-api";
+import { Provider, ProvidersApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-provider-view")
 export class ProviderViewPage extends LitElement {
-
-    @property({type: Number})
+    @property({ type: Number })
     set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG).providersAllRetrieve({
-            id: value,
-        }).then((prov) => (this.provider = prov));
+        new ProvidersApi(DEFAULT_CONFIG)
+            .providersAllRetrieve({
+                id: value,
+            })
+            .then((prov) => (this.provider = prov));
     }
 
     @property({ attribute: false })
@@ -31,13 +32,21 @@ export class ProviderViewPage extends LitElement {
         }
         switch (this.provider?.component) {
             case "ak-provider-saml-form":
-                return html`<ak-provider-saml-view providerID=${ifDefined(this.provider.pk)}></ak-provider-saml-view>`;
+                return html`<ak-provider-saml-view
+                    providerID=${ifDefined(this.provider.pk)}
+                ></ak-provider-saml-view>`;
             case "ak-provider-oauth2-form":
-                return html`<ak-provider-oauth2-view providerID=${ifDefined(this.provider.pk)}></ak-provider-oauth2-view>`;
+                return html`<ak-provider-oauth2-view
+                    providerID=${ifDefined(this.provider.pk)}
+                ></ak-provider-oauth2-view>`;
             case "ak-provider-proxy-form":
-                return html`<ak-provider-proxy-view providerID=${ifDefined(this.provider.pk)}></ak-provider-proxy-view>`;
+                return html`<ak-provider-proxy-view
+                    providerID=${ifDefined(this.provider.pk)}
+                ></ak-provider-proxy-view>`;
             case "ak-provider-ldap-form":
-                return html`<ak-provider-ldap-view providerID=${ifDefined(this.provider.pk)}></ak-provider-ldap-view>`;
+                return html`<ak-provider-ldap-view
+                    providerID=${ifDefined(this.provider.pk)}
+                ></ak-provider-ldap-view>`;
             default:
                 return html`<p>Invalid provider type ${this.provider?.component}</p>`;
         }
@@ -45,10 +54,11 @@ export class ProviderViewPage extends LitElement {
 
     render(): TemplateResult {
         return html`<ak-page-header
-            icon="pf-icon pf-icon-integration"
-            header=${ifDefined(this.provider?.name)}
-            description=${ifDefined(this.provider?.verboseName)}>
-        </ak-page-header>
-        ${this.renderProvider()}`;
+                icon="pf-icon pf-icon-integration"
+                header=${ifDefined(this.provider?.name)}
+                description=${ifDefined(this.provider?.verboseName)}
+            >
+            </ak-page-header>
+            ${this.renderProvider()}`;
     }
 }

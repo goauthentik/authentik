@@ -26,6 +26,8 @@ class ConsentStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = ConsentStage.objects.all()
     serializer_class = ConsentStageSerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]
 
 
 class UserConsentSerializer(StageSerializer):

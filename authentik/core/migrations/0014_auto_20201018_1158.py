@@ -42,9 +42,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name="token",
-            index=models.Index(
-                fields=["identifier"], name="authentik_co_identif_1a34a8_idx"
-            ),
+            index=models.Index(fields=["identifier"], name="authentik_co_identif_1a34a8_idx"),
         ),
         migrations.RunPython(set_default_token_key),
     ]

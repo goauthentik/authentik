@@ -3,13 +3,15 @@ from typing import TYPE_CHECKING, Generic, TypeVar
 
 from django.utils.text import slugify
 from kubernetes.client import V1ObjectMeta
+from kubernetes.client.exceptions import ApiException, OpenApiException
 from kubernetes.client.models.v1_deployment import V1Deployment
 from kubernetes.client.models.v1_pod import V1Pod
-from kubernetes.client.rest import ApiException
 from structlog.stdlib import get_logger
+from urllib3.exceptions import HTTPError
 
 from authentik import __version__
 from authentik.lib.sentry import SentryIgnoredException
+from authentik.outposts.managed import MANAGED_OUTPOST
 
 if TYPE_CHECKING:
     from authentik.outposts.controllers.kubernetes import KubernetesController
@@ -41,6 +43,11 @@ class KubernetesObjectReconciler(Generic[T]):
         self.logger = get_logger().bind(type=self.__class__.__name__)
 
     @property
+    def is_embedded(self) -> bool:
+        """Return true if the current outpost is embedded"""
+        return self.controller.outpost.managed == MANAGED_OUTPOST
+
+    @property
     def noop(self) -> bool:
         """Return true if this object should not be created/updated/deleted in this cluster"""
         return False
@@ -66,8 +73,9 @@ class KubernetesObjectReconciler(Generic[T]):
         try:
             try:
                 current = self.retrieve()
-            except ApiException as exc:
-                if exc.status == 404:
+            except (OpenApiException, HTTPError) as exc:
+                # pylint: disable=no-member
+                if isinstance(exc, ApiException) and exc.status == 404:
                     self.logger.debug("Failed to get current, triggering recreate")
                     raise NeedsRecreate from exc
                 self.logger.debug("Other unhandled error", exc=exc)
@@ -98,8 +106,9 @@ class KubernetesObjectReconciler(Generic[T]):
             current = self.retrieve()
             self.delete(current)
             self.logger.debug("Removing")
-        except ApiException as exc:
-            if exc.status == 404:
+        except (OpenApiException, HTTPError) as exc:
+            # pylint: disable=no-member
+            if isinstance(exc, ApiException) and exc.status == 404:
                 self.logger.debug("Failed to get current, assuming non-existant")
                 return
             self.logger.debug("Other unhandled error", exc=exc)

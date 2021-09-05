@@ -1,4 +1,4 @@
-import { CoreApi, User } from "authentik-api";
+import { CoreApi, Group, User } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -6,16 +6,17 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
 import "../../elements/CodeMirror";
+import "./GroupSelectModal";
 import YAML from "yaml";
 import { first } from "../../utils";
 import { ModelForm } from "../../elements/forms/ModelForm";
+import { until } from "lit-html/directives/until";
 
 @customElement("ak-user-form")
 export class UserForm extends ModelForm<User, number> {
-
     loadInstance(pk: number): Promise<User> {
         return new CoreApi(DEFAULT_CONFIG).coreUsersRetrieve({
-            id: pk
+            id: pk,
         });
     }
 
@@ -28,59 +29,128 @@ export class UserForm extends ModelForm<User, number> {
     }
 
     send = (data: User): Promise<User> => {
-        if (this.instance) {
+        if (this.instance?.pk) {
             return new CoreApi(DEFAULT_CONFIG).coreUsersUpdate({
-                id: this.instance.pk || 0,
-                userRequest: data
+                id: this.instance.pk,
+                userRequest: data,
             });
         } else {
             return new CoreApi(DEFAULT_CONFIG).coreUsersCreate({
-                userRequest: data
+                userRequest: data,
             });
         }
     };
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal
-                label=${t`Username`}
-                ?required=${true}
-                name="username">
-                <input type="text" value="${ifDefined(this.instance?.username)}" class="pf-c-form-control" required>
-                <p class="pf-c-form__helper-text">${t`Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.`}</p>
+            <ak-form-element-horizontal label=${t`Username`} ?required=${true} name="username">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.username)}"
+                    class="pf-c-form-control"
+                    required
+                />
+                <p class="pf-c-form__helper-text">
+                    ${t`Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.`}
+                </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${t`Name`}
-                ?required=${true}
-                name="name">
-                <input type="text" value="${ifDefined(this.instance?.name)}" class="pf-c-form-control" required>
+            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.name)}"
+                    class="pf-c-form-control"
+                    required
+                />
                 <p class="pf-c-form__helper-text">${t`User's display name.`}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${t`Email`}
-                ?required=${true}
-                name="email">
-                <input type="email" autocomplete="off" value="${ifDefined(this.instance?.email)}" class="pf-c-form-control" required>
+            <ak-form-element-horizontal label=${t`Email`} name="email">
+                <input
+                    type="email"
+                    autocomplete="off"
+                    value="${ifDefined(this.instance?.email)}"
+                    class="pf-c-form-control"
+                />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                name="isActive">
+            <ak-form-element-horizontal name="isActive">
                 <div class="pf-c-check">
-                    <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.isActive, true)}>
-                    <label class="pf-c-check__label">
-                        ${t`Is active`}
-                    </label>
+                    <input
+                        type="checkbox"
+                        class="pf-c-check__input"
+                        ?checked=${first(this.instance?.isActive, true)}
+                    />
+                    <label class="pf-c-check__label"> ${t`Is active`} </label>
                 </div>
-                <p class="pf-c-form__helper-text">${t`Designates whether this user should be treated as active. Unselect this instead of deleting accounts.`}</p>
+                <p class="pf-c-form__helper-text">
+                    ${t`Designates whether this user should be treated as active. Unselect this instead of deleting accounts.`}
+                </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${t`Attributes`}
-                ?required=${true}
-                name="attributes">
-                <ak-codemirror mode="yaml" value="${YAML.stringify(first(this.instance?.attributes, {}))}">
+            <ak-form-element-horizontal label=${t`Groups`} name="groups">
+                <div class="pf-c-input-group">
+                    <ak-user-group-select-table
+                        .confirm=${(items: Group[]) => {
+                            // Because the model only has the IDs, map the group list to IDs
+                            const ids = items.map((g) => g.pk);
+                            if (!this.instance) this.instance = {} as User;
+                            this.instance.groups = Array.from(this.instance?.groups || []).concat(
+                                ids,
+                            );
+                            this.requestUpdate();
+                            return Promise.resolve();
+                        }}
+                    >
+                        <button slot="trigger" class="pf-c-button pf-m-control" type="button">
+                            <i class="fas fa-plus" aria-hidden="true"></i>
+                        </button>
+                    </ak-user-group-select-table>
+                    <div class="pf-c-form-control">
+                        <ak-chip-group>
+                            ${until(
+                                new CoreApi(DEFAULT_CONFIG)
+                                    .coreGroupsList({
+                                        ordering: "name",
+                                    })
+                                    .then((groups) => {
+                                        return groups.results.map((group) => {
+                                            const selected = Array.from(
+                                                this.instance?.groups || [],
+                                            ).some((sg) => {
+                                                return sg == group.pk;
+                                            });
+                                            if (!selected) return;
+                                            return html`<ak-chip
+                                                .removable=${true}
+                                                value=${ifDefined(group.pk)}
+                                                @remove=${() => {
+                                                    if (!this.instance) return;
+                                                    const groups = Array.from(
+                                                        this.instance?.groups || [],
+                                                    );
+                                                    const idx = groups.indexOf(group.pk);
+                                                    groups.splice(idx, 1);
+                                                    this.instance.groups = groups;
+                                                    this.requestUpdate();
+                                                }}
+                                            >
+                                                ${group.name}
+                                            </ak-chip>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
+                        </ak-chip-group>
+                    </div>
+                </div>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${t`Attributes`} ?required=${true} name="attributes">
+                <ak-codemirror
+                    mode="yaml"
+                    value="${YAML.stringify(first(this.instance?.attributes, {}))}"
+                >
                 </ak-codemirror>
-                <p class="pf-c-form__helper-text">${t`Set custom attributes using YAML or JSON.`}</p>
+                <p class="pf-c-form__helper-text">
+                    ${t`Set custom attributes using YAML or JSON.`}
+                </p>
             </ak-form-element-horizontal>
         </form>`;
     }
-
 }

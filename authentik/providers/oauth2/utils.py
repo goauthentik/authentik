@@ -10,6 +10,7 @@ from django.http.response import HttpResponseRedirect
 from django.utils.cache import patch_vary_headers
 from structlog.stdlib import get_logger
 
+from authentik.events.models import Event, EventAction
 from authentik.providers.oauth2.errors import BearerTokenError
 from authentik.providers.oauth2.models import RefreshToken
 
@@ -50,7 +51,7 @@ def cors_allow(request: HttpRequest, response: HttpResponse, *allowed_origins: s
     if not allowed:
         LOGGER.warning(
             "CORS: Origin is not an allowed origin",
-            requested=origin,
+            requested=received_origin,
             allowed=allowed_origins,
         )
         return response
@@ -102,8 +103,8 @@ def extract_client_auth(request: HttpRequest) -> tuple[str, str]:
     if re.compile(r"^Basic\s{1}.+$").match(auth_header):
         b64_user_pass = auth_header.split()[1]
         try:
-            user_pass = b64decode(b64_user_pass).decode("utf-8").split(":")
-            client_id, client_secret = user_pass
+            user_pass = b64decode(b64_user_pass).decode("utf-8").partition(":")
+            client_id, _, client_secret = user_pass
         except (ValueError, Error):
             client_id = client_secret = ""  # nosec
     else:
@@ -132,22 +133,29 @@ def protected_resource_view(scopes: list[str]):
                     raise BearerTokenError("invalid_token")
 
                 try:
-                    kwargs["token"] = RefreshToken.objects.get(
-                        access_token=access_token
-                    )
+                    token: RefreshToken = RefreshToken.objects.get(access_token=access_token)
                 except RefreshToken.DoesNotExist:
                     LOGGER.debug("Token does not exist", access_token=access_token)
                     raise BearerTokenError("invalid_token")
 
-                if kwargs["token"].is_expired:
+                if token.is_expired:
                     LOGGER.debug("Token has expired", access_token=access_token)
                     raise BearerTokenError("invalid_token")
 
-                if not set(scopes).issubset(set(kwargs["token"].scope)):
+                if token.revoked:
+                    LOGGER.warning("Revoked token was used", access_token=access_token)
+                    Event.new(
+                        action=EventAction.SUSPICIOUS_REQUEST,
+                        message="Revoked refresh token was used",
+                        token=access_token,
+                    ).from_http(request)
+                    raise BearerTokenError("invalid_token")
+
+                if not set(scopes).issubset(set(token.scope)):
                     LOGGER.warning(
                         "Scope missmatch.",
                         required=set(scopes),
-                        token_has=set(kwargs["token"].scope),
+                        token_has=set(token.scope),
                     )
                     raise BearerTokenError("insufficient_scope")
             except BearerTokenError as error:
@@ -156,7 +164,7 @@ def protected_resource_view(scopes: list[str]):
                     "WWW-Authenticate"
                 ] = f'error="{error.code}", error_description="{error.description}"'
                 return response
-
+            kwargs["token"] = token
             return view(request, *args, **kwargs)
 
         return view_wrapper

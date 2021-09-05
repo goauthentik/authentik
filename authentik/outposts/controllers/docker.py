@@ -9,11 +9,8 @@ from yaml import safe_dump
 
 from authentik import __version__
 from authentik.outposts.controllers.base import BaseController, ControllerException
-from authentik.outposts.models import (
-    DockerServiceConnection,
-    Outpost,
-    ServiceConnectionInvalid,
-)
+from authentik.outposts.managed import MANAGED_OUTPOST
+from authentik.outposts.models import DockerServiceConnection, Outpost, ServiceConnectionInvalid
 
 
 class DockerController(BaseController):
@@ -32,12 +29,14 @@ class DockerController(BaseController):
             raise ControllerException from exc
 
     def _get_labels(self) -> dict[str, str]:
-        return {}
+        return {
+            "io.goauthentik.outpost-uuid": self.outpost.pk.hex,
+        }
 
     def _get_env(self) -> dict[str, str]:
         return {
-            "AUTHENTIK_HOST": self.outpost.config.authentik_host,
-            "AUTHENTIK_INSECURE": str(self.outpost.config.authentik_host_insecure),
+            "AUTHENTIK_HOST": self.outpost.config.authentik_host.lower(),
+            "AUTHENTIK_INSECURE": str(self.outpost.config.authentik_host_insecure).lower(),
             "AUTHENTIK_TOKEN": self.outpost.token.key,
         }
 
@@ -45,11 +44,21 @@ class DockerController(BaseController):
         """Check if container's env is equal to what we would set. Return true if container needs
         to be rebuilt."""
         should_be = self._get_env()
-        container_env = container.attrs.get("Config", {}).get("Env", {})
+        container_env = container.attrs.get("Config", {}).get("Env", [])
         for key, expected_value in should_be.items():
-            if key not in container_env:
-                continue
-            if container_env[key] != expected_value:
+            entry = f"{key.upper()}={expected_value}"
+            if entry not in container_env:
+                return True
+        return False
+
+    def _comp_labels(self, container: Container) -> bool:
+        """Check if container's labels is equal to what we would set. Return true if container needs
+        to be rebuilt."""
+        should_be = self._get_labels()
+        for key, expected_value in should_be.items():
+            if key not in container.labels:
+                return True
+            if container.labels[key] != expected_value:
                 return True
         return False
 
@@ -62,14 +71,17 @@ class DockerController(BaseController):
         # When the container isn't running, the API doesn't report any port mappings
         if container.status != "running":
             return False
-        # {'6379/tcp': [{'HostIp': '127.0.0.1', 'HostPort': '6379'}]}
+        # {'3389/tcp': [
+        #   {'HostIp': '0.0.0.0', 'HostPort': '389'},
+        #   {'HostIp': '::', 'HostPort': '389'}
+        # ]}
         for port in self.deployment_ports:
             key = f"{port.inner_port or port.port}/{port.protocol.lower()}"
             if key not in container.ports:
                 return True
             host_matching = False
             for host_port in container.ports[key]:
-                host_matching = host_port.get("HostPort") == port.port
+                host_matching = host_port.get("HostPort") == str(port.port)
             if not host_matching:
                 return True
         return False
@@ -79,7 +91,7 @@ class DockerController(BaseController):
         try:
             return self.client.containers.get(container_name), False
         except NotFound:
-            self.logger.info("Container does not exist, creating")
+            self.logger.info("(Re-)creating container...")
             image_name = self.get_container_image()
             self.client.images.pull(image_name)
             container_args = {
@@ -93,9 +105,11 @@ class DockerController(BaseController):
                 "environment": self._get_env(),
                 "labels": self._get_labels(),
                 "restart_policy": {"Name": "unless-stopped"},
+                "network": self.outpost.config.docker_network,
             }
             if settings.TEST:
                 del container_args["ports"]
+                del container_args["network"]
                 container_args["network_mode"] = "host"
             return (
                 self.client.containers.create(**container_args),
@@ -103,10 +117,15 @@ class DockerController(BaseController):
             )
 
     # pylint: disable=too-many-return-statements
-    def up(self):
+    def up(self, depth=1):
+        if self.outpost.managed == MANAGED_OUTPOST:
+            return None
+        if depth >= 10:
+            raise ControllerException("Giving up since we exceeded recursion limit.")
         try:
             container, has_been_created = self._get_container()
             if has_been_created:
+                container.start()
                 return None
             # Check if the container is out of date, delete it and retry
             if len(container.image.tags) > 0:
@@ -118,17 +137,22 @@ class DockerController(BaseController):
                         should=self.get_container_image(),
                     )
                     self.down()
-                    return self.up()
+                    return self.up(depth + 1)
             # Check container's ports
             if self._comp_ports(container):
                 self.logger.info("Container has mis-matched ports, re-creating...")
                 self.down()
-                return self.up()
+                return self.up(depth + 1)
             # Check that container values match our values
             if self._comp_env(container):
                 self.logger.info("Container has outdated config, re-creating...")
                 self.down()
-                return self.up()
+                return self.up(depth + 1)
+            # Check that container values match our values
+            if self._comp_labels(container):
+                self.logger.info("Container has outdated labels, re-creating...")
+                self.down()
+                return self.up(depth + 1)
             if (
                 container.attrs.get("HostConfig", {})
                 .get("RestartPolicy", {})
@@ -136,11 +160,9 @@ class DockerController(BaseController):
                 .lower()
                 != "unless-stopped"
             ):
-                self.logger.info(
-                    "Container has mis-matched restart policy, re-creating..."
-                )
+                self.logger.info("Container has mis-matched restart policy, re-creating...")
                 self.down()
-                return self.up()
+                return self.up(depth + 1)
             # Check that container is healthy
             if (
                 container.status == "running"
@@ -152,9 +174,7 @@ class DockerController(BaseController):
                 if has_been_created:
                     # Since we've just created the container, give it some time to start.
                     # If its still not up by then, restart it
-                    self.logger.info(
-                        "Container is unhealthy and new, giving it time to boot."
-                    )
+                    self.logger.info("Container is unhealthy and new, giving it time to boot.")
                     sleep(60)
                 self.logger.info("Container is unhealthy, restarting...")
                 container.restart()
@@ -164,11 +184,14 @@ class DockerController(BaseController):
                 self.logger.info("Container is not running, restarting...")
                 container.start()
                 return None
+            self.logger.info("Container is running")
             return None
         except DockerException as exc:
             raise ControllerException(str(exc)) from exc
 
     def down(self):
+        if self.outpost.managed != MANAGED_OUTPOST:
+            return
         try:
             container, _ = self._get_container()
             if container.status == "running":
@@ -192,9 +215,7 @@ class DockerController(BaseController):
                     "ports": ports,
                     "environment": {
                         "AUTHENTIK_HOST": self.outpost.config.authentik_host,
-                        "AUTHENTIK_INSECURE": str(
-                            self.outpost.config.authentik_host_insecure
-                        ),
+                        "AUTHENTIK_INSECURE": str(self.outpost.config.authentik_host_insecure),
                         "AUTHENTIK_TOKEN": self.outpost.token.key,
                     },
                     "labels": self._get_labels(),

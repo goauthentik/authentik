@@ -43,6 +43,13 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = AuthenticatorDuoStage.objects.all()
     serializer_class = AuthenticatorDuoStageSerializer
+    filterset_fields = [
+        "name",
+        "configure_flow",
+        "client_id",
+        "api_hostname",
+    ]
+    ordering = ["name"]
 
     @extend_schema(
         request=OpenApiTypes.NONE,

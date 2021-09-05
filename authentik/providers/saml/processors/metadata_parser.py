@@ -11,11 +11,7 @@ from structlog.stdlib import get_logger
 
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
-from authentik.providers.saml.models import (
-    SAMLBindings,
-    SAMLPropertyMapping,
-    SAMLProvider,
-)
+from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.utils.encoding import PEM_FOOTER, PEM_HEADER
 from authentik.sources.saml.processors.constants import (
     NS_MAP,
@@ -68,14 +64,10 @@ class ServiceProviderMetadata:
             self.signing_keypair.save()
             provider.verification_kp = self.signing_keypair
         if self.assertion_signed:
-            provider.signing_kp = CertificateKeyPair.objects.exclude(
-                key_data__iexact=""
-            ).first()
+            provider.signing_kp = CertificateKeyPair.objects.exclude(key_data__iexact="").first()
         # Set all auto-generated Property-mappings as defaults
         # They should provide a sane default for most applications:
-        provider.property_mappings.set(
-            SAMLPropertyMapping.objects.exclude(managed__isnull=True)
-        )
+        provider.property_mappings.set(SAMLPropertyMapping.objects.exclude(managed__isnull=True))
         provider.save()
         return provider
 
@@ -101,9 +93,7 @@ class ServiceProviderMetadataParser:
     def check_signature(self, root: etree.Element, keypair: CertificateKeyPair):
         """If Metadata is signed, check validity of signature"""
         xmlsec.tree.add_ids(root, ["ID"])
-        signature_nodes = root.xpath(
-            "/md:EntityDescriptor/ds:Signature", namespaces=NS_MAP
-        )
+        signature_nodes = root.xpath("/md:EntityDescriptor/ds:Signature", namespaces=NS_MAP)
         if len(signature_nodes) != 1:
             # No Signature
             return
@@ -134,14 +124,15 @@ class ServiceProviderMetadataParser:
         # For now we'll only look at the first descriptor.
         # Even if multiple descriptors exist, we can only configure one
         descriptor = sp_sso_descriptors[0]
-        auth_n_request_signed = (
-            descriptor.attrib["AuthnRequestsSigned"].lower() == "true"
-        )
-        assertion_signed = descriptor.attrib["WantAssertionsSigned"].lower() == "true"
+        auth_n_request_signed = False
+        if "AuthnRequestsSigned" in descriptor.attrib:
+            auth_n_request_signed = descriptor.attrib["AuthnRequestsSigned"].lower() == "true"
 
-        acs_services = descriptor.findall(
-            f"{{{NS_SAML_METADATA}}}AssertionConsumerService"
-        )
+        assertion_signed = False
+        if "WantAssertionsSigned" in descriptor.attrib:
+            assertion_signed = descriptor.attrib["WantAssertionsSigned"].lower() == "true"
+
+        acs_services = descriptor.findall(f"{{{NS_SAML_METADATA}}}AssertionConsumerService")
         if len(acs_services) < 1:
             raise ValueError("No AssertionConsumerService found.")
 

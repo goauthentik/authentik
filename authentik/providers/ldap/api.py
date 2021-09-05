@@ -17,6 +17,10 @@ class LDAPProviderSerializer(ProviderSerializer):
         fields = ProviderSerializer.Meta.fields + [
             "base_dn",
             "search_group",
+            "certificate",
+            "tls_server_name",
+            "uid_start_number",
+            "gid_start_number",
         ]
 
 
@@ -25,6 +29,19 @@ class LDAPProviderViewSet(UsedByMixin, ModelViewSet):
 
     queryset = LDAPProvider.objects.all()
     serializer_class = LDAPProviderSerializer
+    filterset_fields = {
+        "application": ["isnull"],
+        "name": ["iexact"],
+        "authorization_flow__slug": ["iexact"],
+        "base_dn": ["iexact"],
+        "search_group__group_uuid": ["iexact"],
+        "search_group__name": ["iexact"],
+        "certificate__kp_uuid": ["iexact"],
+        "certificate__name": ["iexact"],
+        "tls_server_name": ["iexact"],
+        "uid_start_number": ["iexact"],
+        "gid_start_number": ["iexact"],
+    }
     ordering = ["name"]
 
 
@@ -44,6 +61,10 @@ class LDAPOutpostConfigSerializer(ModelSerializer):
             "bind_flow_slug",
             "application_slug",
             "search_group",
+            "certificate",
+            "tls_server_name",
+            "uid_start_number",
+            "gid_start_number",
         ]
 
 

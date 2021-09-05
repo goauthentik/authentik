@@ -1,10 +1,10 @@
 """Prompt tests"""
 from unittest.mock import MagicMock, patch
 
-from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
 from rest_framework.exceptions import ErrorDetail
+from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
@@ -17,13 +17,12 @@ from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT, PromptChallengeResponse
 
 
-class TestPromptStage(TestCase):
+class TestPromptStage(APITestCase):
     """Prompt tests"""
 
     def setUp(self):
         super().setUp()
         self.user = User.objects.create(username="unittest", email="test@beryju.org")
-        self.client = Client()
 
         self.flow = Flow.objects.create(
             name="test-prompt",
@@ -78,6 +77,12 @@ class TestPromptStage(TestCase):
             required=True,
             placeholder="HIDDEN_PLACEHOLDER",
         )
+        static_prompt = Prompt.objects.create(
+            field_key="static_prompt",
+            type=FieldTypes.STATIC,
+            required=True,
+            placeholder="static",
+        )
         self.stage = PromptStage.objects.create(name="prompt-stage")
         self.stage.fields.set(
             [
@@ -88,9 +93,9 @@ class TestPromptStage(TestCase):
                 password2_prompt,
                 number_prompt,
                 hidden_prompt,
+                static_prompt,
             ]
         )
-        self.stage.save()
 
         self.prompt_data = {
             username_prompt.field_key: "test-username",
@@ -100,15 +105,14 @@ class TestPromptStage(TestCase):
             password2_prompt.field_key: "test",
             number_prompt.field_key: 3,
             hidden_prompt.field_key: hidden_prompt.placeholder,
+            static_prompt.field_key: static_prompt.placeholder,
         }
 
-        FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
+        self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     def test_render(self):
         """Test render of form, check if all prompts are rendered correctly"""
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -124,13 +128,9 @@ class TestPromptStage(TestCase):
 
     def test_valid_challenge_with_policy(self) -> PromptChallengeResponse:
         """Test challenge_response validation"""
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         expr = "return request.context['password_prompt'] == request.context['password2_prompt']"
-        expr_policy = ExpressionPolicy.objects.create(
-            name="validate-form", expression=expr
-        )
+        expr_policy = ExpressionPolicy.objects.create(name="validate-form", expression=expr)
         self.stage.validation_policies.set([expr_policy])
         self.stage.save()
         challenge_response = PromptChallengeResponse(
@@ -141,13 +141,9 @@ class TestPromptStage(TestCase):
 
     def test_invalid_challenge(self) -> PromptChallengeResponse:
         """Test challenge_response validation"""
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         expr = "False"
-        expr_policy = ExpressionPolicy.objects.create(
-            name="validate-form", expression=expr
-        )
+        expr_policy = ExpressionPolicy.objects.create(name="validate-form", expression=expr)
         self.stage.validation_policies.set([expr_policy])
         self.stage.save()
         challenge_response = PromptChallengeResponse(
@@ -158,9 +154,7 @@ class TestPromptStage(TestCase):
 
     def test_valid_challenge_request(self):
         """Test a request with valid challenge_response data"""
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -195,9 +189,7 @@ class TestPromptStage(TestCase):
 
     def test_invalid_password(self):
         """Test challenge_response validation"""
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         self.prompt_data["password2_prompt"] = "qwerqwerqr"
         challenge_response = PromptChallengeResponse(
             None, stage=self.stage, plan=plan, data=self.prompt_data
@@ -205,18 +197,12 @@ class TestPromptStage(TestCase):
         self.assertEqual(challenge_response.is_valid(), False)
         self.assertEqual(
             challenge_response.errors,
-            {
-                "non_field_errors": [
-                    ErrorDetail(string="Passwords don't match.", code="invalid")
-                ]
-            },
+            {"non_field_errors": [ErrorDetail(string="Passwords don't match.", code="invalid")]},
         )
 
     def test_invalid_username(self):
         """Test challenge_response validation"""
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         self.prompt_data["username_prompt"] = "akadmin"
         challenge_response = PromptChallengeResponse(
             None, stage=self.stage, plan=plan, data=self.prompt_data
@@ -224,9 +210,17 @@ class TestPromptStage(TestCase):
         self.assertEqual(challenge_response.is_valid(), False)
         self.assertEqual(
             challenge_response.errors,
-            {
-                "username_prompt": [
-                    ErrorDetail(string="Username is already taken.", code="invalid")
-                ]
-            },
+            {"username_prompt": [ErrorDetail(string="Username is already taken.", code="invalid")]},
         )
+
+    def test_static_hidden_overwrite(self):
+        """Test that static and hidden fields ignore any value sent to them"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        self.prompt_data["hidden_prompt"] = "foo"
+        self.prompt_data["static_prompt"] = "foo"
+        challenge_response = PromptChallengeResponse(
+            None, stage=self.stage, plan=plan, data=self.prompt_data
+        )
+        self.assertEqual(challenge_response.is_valid(), True)
+        self.assertNotEqual(challenge_response.validated_data["hidden_prompt"], "foo")
+        self.assertNotEqual(challenge_response.validated_data["static_prompt"], "foo")

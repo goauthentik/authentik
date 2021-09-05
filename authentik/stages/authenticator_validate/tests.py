@@ -1,26 +1,20 @@
 """Test validator stage"""
 from unittest.mock import MagicMock, patch
 
-from django.contrib.sessions.middleware import SessionMiddleware
-from django.test import TestCase
 from django.test.client import RequestFactory
 from django.urls.base import reverse
 from django.utils.encoding import force_str
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from rest_framework.exceptions import ValidationError
+from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import Flow, FlowStageBinding, NotConfiguredAction
-from authentik.flows.tests.test_planner import dummy_get_response
-from authentik.providers.oauth2.generators import (
-    generate_client_id,
-    generate_client_secret,
-)
+from authentik.lib.generators import generate_id, generate_key
+from authentik.lib.tests.utils import get_request
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
-from authentik.stages.authenticator_validate.api import (
-    AuthenticatorValidateStageSerializer,
-)
+from authentik.stages.authenticator_validate.api import AuthenticatorValidateStageSerializer
 from authentik.stages.authenticator_validate.challenge import (
     get_challenge_for_device,
     validate_challenge_code,
@@ -32,7 +26,7 @@ from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
 
-class AuthenticatorValidateStageTests(TestCase):
+class AuthenticatorValidateStageTests(APITestCase):
     """Test validator stage"""
 
     def setUp(self) -> None:
@@ -95,20 +89,15 @@ class AuthenticatorValidateStageTests(TestCase):
     def test_device_challenge_totp(self):
         """Test device challenge"""
         request = self.request_factory.get("/")
-        totp_device = TOTPDevice.objects.create(
-            user=self.user, confirmed=True, digits=6
-        )
+        totp_device = TOTPDevice.objects.create(user=self.user, confirmed=True, digits=6)
         self.assertEqual(get_challenge_for_device(request, totp_device), {})
         with self.assertRaises(ValidationError):
             validate_challenge_code("1234", request, self.user)
 
     def test_device_challenge_webauthn(self):
         """Test webauthn"""
-        request = self.request_factory.get("/")
+        request = get_request("/")
         request.user = self.user
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
 
         webauthn_device = WebAuthnDevice.objects.create(
             user=self.user,
@@ -143,8 +132,8 @@ class AuthenticatorValidateStageTests(TestCase):
         request = self.request_factory.get("/")
         stage = AuthenticatorDuoStage.objects.create(
             name="test",
-            client_id=generate_client_id(),
-            client_secret=generate_client_secret(),
+            client_id=generate_id(),
+            client_secret=generate_key(),
             api_hostname="",
         )
         duo_device = DuoDevice.objects.create(

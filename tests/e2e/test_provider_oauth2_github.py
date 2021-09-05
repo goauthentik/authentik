@@ -10,12 +10,9 @@ from selenium.webdriver.support import expected_conditions as ec
 
 from authentik.core.models import Application
 from authentik.flows.models import Flow
+from authentik.lib.generators import generate_id, generate_key
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
-from authentik.providers.oauth2.generators import (
-    generate_client_id,
-    generate_client_secret,
-)
 from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider
 from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, retry
 
@@ -25,8 +22,8 @@ class TestProviderOAuth2Github(SeleniumTestCase):
     """test OAuth Provider flow"""
 
     def setUp(self):
-        self.client_id = generate_client_id()
-        self.client_secret = generate_client_secret()
+        self.client_id = generate_id()
+        self.client_secret = generate_key()
         super().setUp()
 
     def get_container_specs(self) -> Optional[dict[str, Any]]:
@@ -53,9 +50,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
                 "GF_AUTH_GITHUB_TOKEN_URL": self.url(
                     "authentik_providers_oauth2_github:github-access-token"
                 ),
-                "GF_AUTH_GITHUB_API_URL": self.url(
-                    "authentik_providers_oauth2_github:github-user"
-                ),
+                "GF_AUTH_GITHUB_API_URL": self.url("authentik_providers_oauth2_github:github-user"),
                 "GF_LOG_LEVEL": "debug",
             },
         }
@@ -97,21 +92,15 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             USER().username,
         )
         self.assertEqual(
-            self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute(
-                "value"
-            ),
+            self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute("value"),
             USER().username,
         )
         self.assertEqual(
-            self.driver.find_element(
-                By.CSS_SELECTOR, "input[name=email]"
-            ).get_attribute("value"),
+            self.driver.find_element(By.CSS_SELECTOR, "input[name=email]").get_attribute("value"),
             USER().email,
         )
         self.assertEqual(
-            self.driver.find_element(
-                By.CSS_SELECTOR, "input[name=login]"
-            ).get_attribute("value"),
+            self.driver.find_element(By.CSS_SELECTOR, "input[name=login]").get_attribute("value"),
             USER().username,
         )
 
@@ -146,9 +135,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         self.login()
 
         sleep(3)
-        self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor"))
-        )
+        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor")))
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
         consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
@@ -159,9 +146,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         )
         self.assertEqual(
             "GitHub Compatibility: Access you Email addresses",
-            consent_stage.find_element(
-                By.CSS_SELECTOR, "[data-permission-code='user:email']"
-            ).text,
+            consent_stage.find_element(By.CSS_SELECTOR, "[data-permission-code='user:email']").text,
         )
         consent_stage.find_element(
             By.CSS_SELECTOR,
@@ -175,21 +160,15 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             USER().username,
         )
         self.assertEqual(
-            self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute(
-                "value"
-            ),
+            self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute("value"),
             USER().username,
         )
         self.assertEqual(
-            self.driver.find_element(
-                By.CSS_SELECTOR, "input[name=email]"
-            ).get_attribute("value"),
+            self.driver.find_element(By.CSS_SELECTOR, "input[name=email]").get_attribute("value"),
             USER().email,
         )
         self.assertEqual(
-            self.driver.find_element(
-                By.CSS_SELECTOR, "input[name=login]"
-            ).get_attribute("value"),
+            self.driver.find_element(By.CSS_SELECTOR, "input[name=login]").get_attribute("value"),
             USER().username,
         )
 
@@ -228,9 +207,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         self.driver.find_element(By.CLASS_NAME, "btn-service--github").click()
         self.login()
 
-        self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, "header > h1"))
-        )
+        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "header > h1")))
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "header > h1").text,
             "Permission denied",

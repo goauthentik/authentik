@@ -7,25 +7,25 @@ from django.http.response import HttpResponseBadRequest, JsonResponse
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import BooleanField, FileField, ReadOnlyField
+from rest_framework.fields import ReadOnlyField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import (
-    CharField,
-    ModelSerializer,
-    Serializer,
-    SerializerMethodField,
-)
+from rest_framework.serializers import CharField, ModelSerializer, Serializer, SerializerMethodField
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import CacheSerializer, LinkSerializer
+from authentik.core.api.utils import (
+    CacheSerializer,
+    FilePathSerializer,
+    FileUploadSerializer,
+    LinkSerializer,
+)
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
@@ -152,11 +152,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         ],
     )
     @extend_schema(
-        request={
-            "multipart/form-data": inline_serializer(
-                "SetIcon", fields={"file": FileField()}
-            )
-        },
+        request={"multipart/form-data": FileUploadSerializer},
         responses={
             204: OpenApiResponse(description="Successfully imported flow"),
             400: OpenApiResponse(description="Bad request"),
@@ -221,9 +217,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
             .order_by("order")
         ):
             for p_index, policy_binding in enumerate(
-                get_objects_for_user(
-                    request.user, "authentik_policies.view_policybinding"
-                )
+                get_objects_for_user(request.user, "authentik_policies.view_policybinding")
                 .filter(target=stage_binding)
                 .exclude(policy__isnull=True)
                 .order_by("order")
@@ -256,33 +250,21 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
                 element: DiagramElement = body[index]
                 if element.type == "condition":
                     # Policy passes, link policy yes to next stage
-                    footer.append(
-                        f"{element.identifier}(yes, right)->{body[index + 1].identifier}"
-                    )
+                    footer.append(f"{element.identifier}(yes, right)->{body[index + 1].identifier}")
                     # Policy doesn't pass, go to stage after next stage
                     no_element = body[index + 1]
                     if no_element.type != "end":
                         no_element = body[index + 2]
-                    footer.append(
-                        f"{element.identifier}(no, bottom)->{no_element.identifier}"
-                    )
+                    footer.append(f"{element.identifier}(no, bottom)->{no_element.identifier}")
                 elif element.type == "operation":
-                    footer.append(
-                        f"{element.identifier}(bottom)->{body[index + 1].identifier}"
-                    )
+                    footer.append(f"{element.identifier}(bottom)->{body[index + 1].identifier}")
         diagram = "\n".join([str(x) for x in header + body + footer])
         return Response({"diagram": diagram})
 
     @permission_required("authentik_flows.change_flow")
     @extend_schema(
         request={
-            "multipart/form-data": inline_serializer(
-                "SetIcon",
-                fields={
-                    "file": FileField(required=False),
-                    "clear": BooleanField(default=False),
-                },
-            )
+            "multipart/form-data": FileUploadSerializer,
         },
         responses={
             200: OpenApiResponse(description="Success"),
@@ -318,7 +300,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
 
     @permission_required("authentik_core.change_application")
     @extend_schema(
-        request=inline_serializer("SetIconURL", fields={"url": CharField()}),
+        request=FilePathSerializer,
         responses={
             200: OpenApiResponse(description="Success"),
             400: OpenApiResponse(description="Bad request"),

@@ -37,6 +37,10 @@
 }
 
 
+.before-after-slider img {
+    max-width: none;
+}
+
 table {
     display: table;
 }

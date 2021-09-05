@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import ReadOnlyField
+from rest_framework.fields import CharField
 from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -22,13 +22,8 @@ class OAuth2ProviderSerializer(ProviderSerializer):
 
     def validate_jwt_alg(self, value):
         """Ensure that when RS256 is selected, a certificate-key-pair is selected"""
-        if (
-            self.initial_data.get("rsa_key", None) is None
-            and value == JWTAlgorithms.RS256
-        ):
-            raise ValidationError(
-                _("RS256 requires a Certificate-Key-Pair to be selected.")
-            )
+        if self.initial_data.get("rsa_key", None) is None and value == JWTAlgorithms.RS256:
+            raise ValidationError(_("RS256 requires a Certificate-Key-Pair to be selected."))
         return value
 
     class Meta:
@@ -54,12 +49,12 @@ class OAuth2ProviderSerializer(ProviderSerializer):
 class OAuth2ProviderSetupURLs(PassiveSerializer):
     """OAuth2 Provider Metadata serializer"""
 
-    issuer = ReadOnlyField()
-    authorize = ReadOnlyField()
-    token = ReadOnlyField()
-    user_info = ReadOnlyField()
-    provider_info = ReadOnlyField()
-    logout = ReadOnlyField()
+    issuer = CharField(read_only=True)
+    authorize = CharField(read_only=True)
+    token = CharField(read_only=True)
+    user_info = CharField(read_only=True)
+    provider_info = CharField(read_only=True)
+    logout = CharField(read_only=True)
 
 
 class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
@@ -67,6 +62,25 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
 
     queryset = OAuth2Provider.objects.all()
     serializer_class = OAuth2ProviderSerializer
+    filterset_fields = [
+        "name",
+        "authorization_flow",
+        "property_mappings",
+        "application",
+        "authorization_flow",
+        "client_type",
+        "client_id",
+        "access_code_validity",
+        "token_validity",
+        "include_claims_in_id_token",
+        "jwt_alg",
+        "rsa_key",
+        "redirect_uris",
+        "sub_mode",
+        "property_mappings",
+        "issuer_mode",
+    ]
+    ordering = ["name"]
 
     @extend_schema(
         responses={

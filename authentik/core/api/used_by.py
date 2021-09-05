@@ -79,9 +79,7 @@ class UsedByMixin:
             ).all():
                 # Only merge shadows on first object
                 if first_object:
-                    shadows += getattr(
-                        manager.model._meta, "authentik_used_by_shadows", []
-                    )
+                    shadows += getattr(manager.model._meta, "authentik_used_by_shadows", [])
                 first_object = False
                 serializer = UsedBySerializer(
                     data={

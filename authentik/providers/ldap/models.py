@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Group, Provider
+from authentik.crypto.models import CertificateKeyPair
 from authentik.outposts.models import OutpostModel
 
 
@@ -28,6 +29,36 @@ class LDAPProvider(OutpostModel, Provider):
         ),
     )
 
+    tls_server_name = models.TextField(
+        default="",
+        blank=True,
+    )
+    certificate = models.ForeignKey(
+        CertificateKeyPair,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+
+    uid_start_number = models.IntegerField(
+        default=2000,
+        help_text=_(
+            "The start for uidNumbers, this number is added to the user.Pk to make sure that the "
+            "numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't "
+            "collide with local users uidNumber"
+        ),
+    )
+
+    gid_start_number = models.IntegerField(
+        default=4000,
+        help_text=_(
+            "The start for gidNumbers, this number is added to a number generated from the "
+            "group.Pk to make sure that the numbers aren't too low for POSIX groups. Default "
+            "is 4000 to ensure that we don't collide with local groups or users "
+            "primary groups gidNumber"
+        ),
+    )
+
     @property
     def launch_url(self) -> Optional[str]:
         """LDAP never has a launch URL"""
@@ -47,7 +78,10 @@ class LDAPProvider(OutpostModel, Provider):
         return f"LDAP Provider {self.name}"
 
     def get_required_objects(self) -> Iterable[Union[models.Model, str]]:
-        return [self, "authentik_core.view_user", "authentik_core.view_group"]
+        required_models = [self, "authentik_core.view_user", "authentik_core.view_group"]
+        if self.certificate is not None:
+            required_models.append(self.certificate)
+        return required_models
 
     class Meta:
 

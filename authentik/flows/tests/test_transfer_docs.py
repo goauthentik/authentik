@@ -16,7 +16,7 @@ def pbflow_tester(file_name: str) -> Callable:
     """This is used instead of subTest for better visibility"""
 
     def tester(self: TestTransferDocs):
-        with open(file_name, "r") as flow_json:
+        with open(file_name, "r", encoding="utf8") as flow_json:
             importer = FlowImporter(flow_json.read())
         self.assertTrue(importer.validate())
         self.assertTrue(importer.apply())

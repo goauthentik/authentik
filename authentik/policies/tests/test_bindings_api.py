@@ -37,11 +37,7 @@ class TestBindingsAPI(APITestCase):
         )
         self.assertJSONEqual(
             response.content.decode(),
-            {
-                "non_field_errors": [
-                    "Only one of 'policy', 'group' or 'user' can be set."
-                ]
-            },
+            {"non_field_errors": ["Only one of 'policy', 'group' or 'user' can be set."]},
         )
 
     def test_invalid_too_little(self):

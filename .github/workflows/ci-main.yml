@@ -1,0 +1,315 @@
+name: authentik-ci-main
+
+on:
+  push:
+    branches:
+      - master
+      - next
+      - version-*
+    paths-ignore:
+      - website
+  pull_request:
+
+env:
+  POSTGRES_DB: authentik
+  POSTGRES_USER: authentik
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+
+jobs:
+  lint-pylint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - id: cache-pipenv
+        uses: actions/cache@v1
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+      - name: prepare
+        env:
+          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+        run: scripts/ci_prepare.sh
+      - name: run pylint
+        run: pipenv run pylint authentik tests lifecycle
+  lint-black:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - id: cache-pipenv
+        uses: actions/cache@v1
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+      - name: prepare
+        env:
+          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+        run: scripts/ci_prepare.sh
+      - name: run black
+        run: pipenv run black --check authentik tests lifecycle
+  lint-isort:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - id: cache-pipenv
+        uses: actions/cache@v1
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+      - name: prepare
+        env:
+          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+        run: scripts/ci_prepare.sh
+      - name: run isort
+        run: pipenv run isort --check authentik tests lifecycle
+  lint-bandit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - id: cache-pipenv
+        uses: actions/cache@v1
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+      - name: prepare
+        env:
+          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+        run: scripts/ci_prepare.sh
+      - name: run bandit
+        run: pipenv run bandit -r authentik tests lifecycle
+  lint-pyright:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: prepare
+        run: |
+          scripts/ci_prepare.sh
+          npm install -g pyright@1.1.136
+      - name: run bandit
+        run: pipenv run pyright e2e lifecycle
+  test-migrations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - id: cache-pipenv
+        uses: actions/cache@v1
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+      - name: prepare
+        env:
+          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+        run: scripts/ci_prepare.sh
+      - name: run migrations
+        run: pipenv run python -m lifecycle.migrate
+  test-migrations-from-stable:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: checkout stable
+        run: |
+          # Copy current, latest config to local
+          cp authentik/lib/default.yml local.env.yml
+          git checkout $(git describe --abbrev=0 --match 'version/*')
+      - id: cache-pipenv
+        uses: actions/cache@v1
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+      - name: prepare
+        env:
+          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+        run: scripts/ci_prepare.sh
+      - name: run migrations to stable
+        run: pipenv run python -m lifecycle.migrate
+      - name: checkout current code
+        run: |
+          set -x
+          git checkout $GITHUB_REF
+          pipenv sync --dev
+      - name: migrate to latest
+        run: pipenv run python -m lifecycle.migrate
+  test-unittest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - id: cache-pipenv
+        uses: actions/cache@v1
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+      - name: prepare
+        env:
+          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+        run: scripts/ci_prepare.sh
+      - uses: testspace-com/setup-testspace@v1
+        with:
+          domain: ${{github.repository_owner}}
+      - name: run unittest
+        run: |
+          pipenv run make test
+          pipenv run coverage xml
+      - name: run testspace
+        if: ${{ always() }}
+        run: |
+          testspace unittest.xml ?add
+      - if: ${{ always() }}
+        uses: codecov/codecov-action@v2
+  test-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - id: cache-pipenv
+        uses: actions/cache@v1
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+      - name: prepare
+        env:
+          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+        run: scripts/ci_prepare.sh
+      - uses: testspace-com/setup-testspace@v1
+        with:
+          domain: ${{github.repository_owner}}
+      - name: Create k8s Kind Cluster
+        uses: helm/kind-action@v1.2.0
+      - name: run integration
+        run: |
+          pipenv run make test-integration
+          pipenv run coverage xml
+      - name: run testspace
+        if: ${{ always() }}
+        run: |
+          testspace unittest.xml ?add
+      - if: ${{ always() }}
+        uses: codecov/codecov-action@v2
+  test-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
+      - uses: testspace-com/setup-testspace@v1
+        with:
+          domain: ${{github.repository_owner}}
+      - id: cache-pipenv
+        uses: actions/cache@v1
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+      - name: prepare
+        env:
+          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+        run: |
+          scripts/ci_prepare.sh
+          docker-compose -f tests/e2e/ci.docker-compose.yml up -d
+      - id: cache-web
+        uses: actions/cache@v1
+        with:
+          path: web/dist
+          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/**') }}
+      - name: prepare web ui
+        if: steps.cache-web.outputs.cache-hit != 'true'
+        run: |
+          cd web
+          npm i
+          npm run build
+      - name: run e2e
+        run: |
+          pipenv run make test-e2e
+          pipenv run coverage xml
+      - name: run testspace
+        if: ${{ always() }}
+        run: |
+          testspace unittest.xml ?add
+      - if: ${{ always() }}
+        uses: codecov/codecov-action@v2
+  report:
+    if: ${{ always() }}
+    needs:
+      - test-unittest
+      - test-integration
+      - test-e2e
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: testspace-com/setup-testspace@v1
+        with:
+          domain: ${{github.repository_owner}}
+      - name: finish testspace
+        run: |
+          testspace ?finish
+  build:
+    needs:
+      - lint-pylint
+      - lint-black
+      - lint-isort
+      - lint-bandit
+      - lint-pyright
+      - test-migrations
+      - test-migrations-from-stable
+      - test-unittest
+      - test-integration
+      - test-e2e
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: prepare variables
+        id: ev
+        env:
+          DOCKER_USERNAME: ${{ secrets.HARBOR_USERNAME }}
+        run: |
+          python ./scripts/gh_do_set_branch.py
+      - name: Login to Container Registry
+        uses: docker/login-action@v1
+        if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
+        with:
+          registry: beryju.org
+          username: ${{ secrets.HARBOR_USERNAME }}
+          password: ${{ secrets.HARBOR_PASSWORD }}
+      - name: Building Docker Image
+        uses: docker/build-push-action@v2
+        with:
+          push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
+          tags: |
+            beryju.org/authentik/server:gh-${{ steps.ev.outputs.branchName }}
+            beryju.org/authentik/server:gh-${{ steps.ev.outputs.branchName }}-${{ steps.ev.outputs.timestamp }}
+          build-args: |
+            GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}

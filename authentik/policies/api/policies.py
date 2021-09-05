@@ -15,11 +15,7 @@ from structlog.stdlib import get_logger
 from authentik.api.decorators import permission_required
 from authentik.core.api.applications import user_app_cache_key
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import (
-    CacheSerializer,
-    MetaNameSerializer,
-    TypeCreateSerializer,
-)
+from authentik.core.api.utils import CacheSerializer, MetaNameSerializer, TypeCreateSerializer
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.api.exec import PolicyTestResultSerializer, PolicyTestSerializer
 from authentik.policies.models import Policy, PolicyBinding
@@ -58,9 +54,7 @@ class PolicySerializer(ModelSerializer, MetaNameSerializer):
         # pyright: reportGeneralTypeIssues=false
         if instance.__class__ == Policy or not self._resolve_inheritance:
             return super().to_representation(instance)
-        return dict(
-            instance.serializer(instance=instance, resolve_inheritance=False).data
-        )
+        return dict(instance.serializer(instance=instance, resolve_inheritance=False).data)
 
     class Meta:
 
@@ -95,9 +89,7 @@ class PolicyViewSet(
     search_fields = ["name"]
 
     def get_queryset(self):  # pragma: no cover
-        return Policy.objects.select_subclasses().prefetch_related(
-            "bindings", "promptstage_set"
-        )
+        return Policy.objects.select_subclasses().prefetch_related("bindings", "promptstage_set")
 
     @extend_schema(responses={200: TypeCreateSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])

@@ -15,6 +15,18 @@
         },
         {
             "identifiers": {
+                "pk": "7db93f1e-788b-4af6-8dc6-5cdeb59d8be7"
+            },
+            "model": "authentik_policies_expression.expressionpolicy",
+            "attrs": {
+                "name": "test-not-app-password",
+                "execution_logging": false,
+                "bound_to": 1,
+                "expression": "return context[\"auth_method\"] != \"app_password\""
+            }
+        },
+        {
+            "identifiers": {
                 "pk": "69d41125-3987-499b-8d74-ef27b54b88c8",
                 "name": "default-authentication-login"
             },
@@ -39,7 +51,7 @@
         {
             "identifiers": {
                 "pk": "37f709c3-8817-45e8-9a93-80a925d293c2",
-                "name": "default-authentication-flow-totp"
+                "name": "default-authentication-flow-mfa"
             },
             "model": "authentik_stages_authenticator_validate.AuthenticatorValidateStage",
             "attrs": {}
@@ -52,7 +64,8 @@
             "model": "authentik_stages_password.passwordstage",
             "attrs": {
                 "backends": [
-                    "django.contrib.auth.backends.ModelBackend",
+                    "authentik.core.auth.InbuiltBackend",
+                    "authentik.core.auth.TokenBackend",
                     "authentik.sources.ldap.auth.LDAPBackend"
                 ]
             }
@@ -62,7 +75,7 @@
                 "pk": "a3056482-b692-4e3a-93f1-7351c6a351c7",
                 "target": "563ece21-e9a4-47e5-a264-23ffd923e393",
                 "stage": "5f594f27-0def-488d-9855-fe604eb13de5",
-                "order": 0
+                "order": 10
             },
             "model": "authentik_flows.flowstagebinding",
             "attrs": {
@@ -74,7 +87,7 @@
                 "pk": "4e8538cf-3e18-4a68-82ae-6df6725fa2e6",
                 "target": "563ece21-e9a4-47e5-a264-23ffd923e393",
                 "stage": "d8affa62-500c-4c5c-a01f-5835e1ffdf40",
-                "order": 1
+                "order": 20
             },
             "model": "authentik_flows.flowstagebinding",
             "attrs": {
@@ -86,7 +99,22 @@
                 "pk": "688aec6f-5622-42c6-83a5-d22072d7e798",
                 "target": "563ece21-e9a4-47e5-a264-23ffd923e393",
                 "stage": "37f709c3-8817-45e8-9a93-80a925d293c2",
-                "order": 2
+                "order": 30
+            },
+            "model": "authentik_flows.flowstagebinding",
+            "attrs": {
+                "evaluate_on_plan": false,
+                "re_evaluate_policies": true,
+                "policy_engine_mode": "any",
+                "invalid_response_action": "retry"
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "f3fede3a-a9b5-4232-9ec7-be7ff4194b27",
+                "target": "563ece21-e9a4-47e5-a264-23ffd923e393",
+                "stage": "69d41125-3987-499b-8d74-ef27b54b88c8",
+                "order": 100
             },
             "model": "authentik_flows.flowstagebinding",
             "attrs": {
@@ -95,14 +123,16 @@
         },
         {
             "identifiers": {
-                "pk": "f3fede3a-a9b5-4232-9ec7-be7ff4194b27",
-                "target": "563ece21-e9a4-47e5-a264-23ffd923e393",
-                "stage": "69d41125-3987-499b-8d74-ef27b54b88c8",
-                "order": 3
+                "pk": "6e40ae4d-a4ed-4bd7-a784-27b1fe5859d2",
+                "policy": "7db93f1e-788b-4af6-8dc6-5cdeb59d8be7",
+                "target": "688aec6f-5622-42c6-83a5-d22072d7e798",
+                "order": 0
             },
-            "model": "authentik_flows.flowstagebinding",
+            "model": "authentik_policies.policybinding",
             "attrs": {
-                "re_evaluate_policies": false
+                "negate": false,
+                "enabled": true,
+                "timeout": 30
             }
         }
     ]

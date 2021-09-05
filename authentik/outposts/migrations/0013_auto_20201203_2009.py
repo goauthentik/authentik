@@ -11,9 +11,7 @@ def remove_pb_prefix_users(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     Outpost = apps.get_model("authentik_outposts", "Outpost")
 
     for outpost in Outpost.objects.using(alias).all():
-        matching = User.objects.using(alias).filter(
-            username=f"pb-outpost-{outpost.uuid.hex}"
-        )
+        matching = User.objects.using(alias).filter(username=f"pb-outpost-{outpost.uuid.hex}")
         if matching.exists():
             matching.delete()
 
