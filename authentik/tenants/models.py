@@ -3,12 +3,14 @@ from uuid import uuid4
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from rest_framework.serializers import Serializer
 
 from authentik.flows.models import Flow
+from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 
 
-class Tenant(models.Model):
+class Tenant(SerializerModel):
     """Single tenant"""
 
     tenant_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -50,6 +52,12 @@ class Tenant(models.Model):
             )
         ),
     )
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.tenants.api import TenantSerializer
+
+        return TenantSerializer
 
     def __str__(self) -> str:
         if self.default:

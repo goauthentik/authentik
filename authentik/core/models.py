@@ -60,7 +60,7 @@ def default_token_key():
     return generate_id(128)
 
 
-class Group(models.Model):
+class Group(SerializerModel):
     """Custom Group model which supports a basic hierarchy"""
 
     group_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -78,6 +78,12 @@ class Group(models.Model):
         related_name="children",
     )
     attributes = models.JSONField(default=dict, blank=True)
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.core.api.groups import GroupSerializer
+
+        return GroupSerializer
 
     def __str__(self):
         return f"Group {self.name}"
@@ -100,7 +106,7 @@ class UserManager(DjangoUserManager):
         return self._create_user(username, email, password, **extra_fields)
 
 
-class User(GuardianUserMixin, AbstractUser):
+class User(SerializerModel, GuardianUserMixin, AbstractUser):
     """Custom User model to allow easier adding of user-based settings"""
 
     uuid = models.UUIDField(default=uuid4, editable=False)
@@ -122,6 +128,12 @@ class User(GuardianUserMixin, AbstractUser):
             always_merger.merge(final_attributes, group.attributes)
         always_merger.merge(final_attributes, self.attributes)
         return final_attributes
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.core.api.users import UserSerializer
+
+        return UserSerializer
 
     @cached_property
     def is_superuser(self) -> bool:
@@ -211,7 +223,7 @@ class Provider(SerializerModel):
         return self.name
 
 
-class Application(PolicyBindingModel):
+class Application(SerializerModel, PolicyBindingModel):
     """Every Application which uses authentik for authentication/identification/authorization
     needs an Application record. Other authentication types can subclass this Model to
     add custom fields and other properties"""
@@ -234,6 +246,12 @@ class Application(PolicyBindingModel):
     )
     meta_description = models.TextField(default="", blank=True)
     meta_publisher = models.TextField(default="", blank=True)
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.core.api.applications import ApplicationSerializer
+
+        return ApplicationSerializer
 
     @property
     def get_meta_icon(self) -> Optional[str]:
@@ -415,7 +433,7 @@ class TokenIntents(models.TextChoices):
     INTENT_APP_PASSWORD = "app_password"  # nosec
 
 
-class Token(ManagedModel, ExpiringModel):
+class Token(SerializerModel, ManagedModel, ExpiringModel):
     """Token used to authenticate the User for API Access or confirm another Stage like Email."""
 
     token_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -426,6 +444,12 @@ class Token(ManagedModel, ExpiringModel):
     )
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="+")
     description = models.TextField(default="", blank=True)
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.core.api.tokens import TokenSerializer
+
+        return TokenSerializer
 
     def expire_action(self, *args, **kwargs):
         """Handler which is called when this object is expired."""

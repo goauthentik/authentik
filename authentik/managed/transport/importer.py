@@ -15,13 +15,32 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import BoundLogger, get_logger
 
-from authentik.flows.models import Flow, FlowStageBinding, Stage
+from authentik.core.models import (
+    AuthenticatedSession,
+    PropertyMapping,
+    Provider,
+    Source,
+    UserSourceConnection,
+)
+from authentik.flows.models import Stage
 from authentik.lib.models import SerializerModel
 from authentik.managed.transport.common import EntryInvalidError, FlowBundle, FlowBundleEntry
-from authentik.policies.models import Policy, PolicyBinding
-from authentik.stages.prompt.models import Prompt
+from authentik.outposts.models import OutpostServiceConnection
+from authentik.policies.models import Policy, PolicyBindingModel
 
-ALLOWED_MODELS = (Flow, FlowStageBinding, Stage, Policy, PolicyBinding, Prompt)
+EXCLUDED_MODELS = (
+    # Base classes
+    Provider,
+    Source,
+    PropertyMapping,
+    UserSourceConnection,
+    Stage,
+    OutpostServiceConnection,
+    Policy,
+    PolicyBindingModel,
+    # Classes that have other dependencies
+    AuthenticatedSession,
+)
 
 
 @contextmanager
@@ -88,7 +107,7 @@ class Importer:
         """Validate a single entry"""
         model_app_label, model_name = entry.model.split(".")
         model: Type[SerializerModel] = apps.get_model(model_app_label, model_name)
-        if not isinstance(model(), ALLOWED_MODELS):
+        if isinstance(model(), EXCLUDED_MODELS):
             raise EntryInvalidError(f"Model {model} not allowed")
 
         # If we try to validate without referencing a possible instance

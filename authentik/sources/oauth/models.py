@@ -10,6 +10,7 @@ from rest_framework.serializers import Serializer
 from authentik.core.models import Source, UserSourceConnection
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.challenge import ChallengeTypes, RedirectChallenge
+from authentik.lib.models import SerializerModel
 
 if TYPE_CHECKING:
     from authentik.sources.oauth.types.manager import SourceType
@@ -173,11 +174,19 @@ class OpenIDOAuthSource(OAuthSource):
         verbose_name_plural = _("OpenID OAuth Sources")
 
 
-class UserOAuthSourceConnection(UserSourceConnection):
+class UserOAuthSourceConnection(SerializerModel, UserSourceConnection):
     """Authorized remote OAuth provider."""
 
     identifier = models.CharField(max_length=255)
     access_token = models.TextField(blank=True, null=True, default=None)
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.sources.oauth.api.source_connection import (
+            UserOAuthSourceConnectionSerializer,
+        )
+
+        return UserOAuthSourceConnectionSerializer
 
     def save(self, *args, **kwargs):
         self.access_token = self.access_token or None

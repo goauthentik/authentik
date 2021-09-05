@@ -8,14 +8,14 @@ from django.test import TransactionTestCase
 from authentik.managed.transport.importer import Importer
 
 
-class TestTransferDocs(TransactionTestCase):
+class TestTransportDocs(TransactionTestCase):
     """Empty class, test methods are added dynamically"""
 
 
 def pbflow_tester(file_name: str) -> Callable:
     """This is used instead of subTest for better visibility"""
 
-    def tester(self: TestTransferDocs):
+    def tester(self: TestTransportDocs):
         with open(file_name, "r", encoding="utf8") as flow_json:
             importer = Importer(flow_json.read())
         self.assertTrue(importer.validate())
@@ -26,4 +26,4 @@ def pbflow_tester(file_name: str) -> Callable:
 
 for flow_file in glob("website/static/flows/*.akflow"):
     method_name = Path(flow_file).stem.replace("-", "_").replace(".", "_")
-    setattr(TestTransferDocs, f"test_flow_{method_name}", pbflow_tester(flow_file))
+    setattr(TestTransportDocs, f"test_flow_{method_name}", pbflow_tester(flow_file))

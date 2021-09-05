@@ -2,9 +2,10 @@
 from django.core.cache import cache
 from django.db import models
 from django.utils.translation import gettext as _
-from rest_framework.serializers import BaseSerializer
+from rest_framework.serializers import BaseSerializer, Serializer
 from structlog import get_logger
 
+from authentik.lib.models import SerializerModel
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
@@ -55,23 +56,35 @@ class ReputationPolicy(Policy):
         verbose_name_plural = _("Reputation Policies")
 
 
-class IPReputation(models.Model):
+class IPReputation(SerializerModel):
     """Store score coming from the same IP"""
 
     ip = models.GenericIPAddressField(unique=True)
     score = models.IntegerField(default=0)
     updated = models.DateTimeField(auto_now=True)
 
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.policies.reputation.api import IPReputationSerializer
+
+        return IPReputationSerializer
+
     def __str__(self):
         return f"IPReputation for {self.ip} @ {self.score}"
 
 
-class UserReputation(models.Model):
+class UserReputation(SerializerModel):
     """Store score attempting to log in as the same username"""
 
     username = models.TextField()
     score = models.IntegerField(default=0)
     updated = models.DateTimeField(auto_now=True)
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.policies.reputation.api import UserReputationSerializer
+
+        return UserReputationSerializer
 
     def __str__(self):
         return f"UserReputation for {self.username} @ {self.score}"

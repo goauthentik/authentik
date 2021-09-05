@@ -4,10 +4,11 @@ from typing import Type
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from rest_framework.serializers import BaseSerializer
+from rest_framework.serializers import BaseSerializer, Serializer
 
 from authentik.core.models import Application, ExpiringModel, User
 from authentik.flows.models import Stage
+from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 
 
@@ -54,11 +55,17 @@ class ConsentStage(Stage):
         verbose_name_plural = _("Consent Stages")
 
 
-class UserConsent(ExpiringModel):
+class UserConsent(SerializerModel, ExpiringModel):
     """Consent given by a user for an application"""
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     application = models.ForeignKey(Application, on_delete=models.CASCADE)
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.stages.consent.api import UserConsentSerializer
+
+        return UserConsentSerializer
 
     def __str__(self):
         return f"User Consent {self.application} by {self.user}"

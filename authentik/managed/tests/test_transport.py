@@ -1,4 +1,4 @@
-"""Test flow transfer"""
+"""Test flow Transport"""
 from json import dumps
 
 from django.test import TransactionTestCase
@@ -14,8 +14,8 @@ from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from authentik.stages.user_login.models import UserLoginStage
 
 
-class TestFlowTransfer(TransactionTestCase):
-    """Test flow transfer"""
+class TestFlowTransport(TransactionTestCase):
+    """Test flow Transport"""
 
     def test_bundle_invalid_format(self):
         """Test bundle with invalid format"""

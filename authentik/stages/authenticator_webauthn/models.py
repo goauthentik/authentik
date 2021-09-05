@@ -7,10 +7,11 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django_otp.models import Device
-from rest_framework.serializers import BaseSerializer
+from rest_framework.serializers import BaseSerializer, Serializer
 
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, Stage
+from authentik.lib.models import SerializerModel
 
 
 class AuthenticateWebAuthnStage(ConfigurableStage, Stage):
@@ -50,7 +51,7 @@ class AuthenticateWebAuthnStage(ConfigurableStage, Stage):
         verbose_name_plural = _("WebAuthn Authenticator Setup Stages")
 
 
-class WebAuthnDevice(Device):
+class WebAuthnDevice(SerializerModel, Device):
     """WebAuthn Device for a single user"""
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
@@ -69,6 +70,12 @@ class WebAuthnDevice(Device):
         self.sign_count = sign_count
         self.last_used_on = now()
         self.save()
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.stages.authenticator_webauthn.api import WebAuthnDeviceSerializer
+
+        return WebAuthnDeviceSerializer
 
     def __str__(self):
         return self.name or str(self.user)
