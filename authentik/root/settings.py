@@ -372,7 +372,7 @@ CELERY_RESULT_BACKEND = (
 # Database backup
 DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
 DBBACKUP_STORAGE_OPTIONS = {"location": "./backups" if DEBUG else "/backups"}
-DBBACKUP_FILENAME_TEMPLATE = "authentik-backup-{datetime}.sql"
+DBBACKUP_FILENAME_TEMPLATE = f"authentik-backup-{__version__}-{{datetime}}.sql"
 DBBACKUP_CONNECTOR_MAPPING = {
     "django_prometheus.db.backends.postgresql": "dbbackup.db.postgresql.PgDumpConnector",
 }
