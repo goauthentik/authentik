@@ -5,9 +5,7 @@ from django.test import TestCase
 
 from authentik.flows.models import Flow
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping
-from authentik.providers.saml.processors.metadata_parser import (
-    ServiceProviderMetadataParser,
-)
+from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
 
 METADATA_SIMPLE = """<?xml version="1.0"?>
 <md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
@@ -85,12 +83,8 @@ class TestServiceProviderMetadataParser(TestCase):
         """Test Metadata with signing cert"""
         metadata = ServiceProviderMetadataParser().parse(METADATA_CERT)
         provider = metadata.to_provider("test", self.flow)
-        self.assertEqual(
-            provider.acs_url, "http://localhost:8080/apps/user_saml/saml/acs"
-        )
-        self.assertEqual(
-            provider.issuer, "http://localhost:8080/apps/user_saml/saml/metadata"
-        )
+        self.assertEqual(provider.acs_url, "http://localhost:8080/apps/user_saml/saml/acs")
+        self.assertEqual(provider.issuer, "http://localhost:8080/apps/user_saml/saml/metadata")
         self.assertEqual(provider.sp_binding, SAMLBindings.POST)
         self.assertEqual(provider.verification_kp.certificate_data, CERT)
         self.assertIsNotNone(provider.signing_kp)
@@ -99,6 +93,4 @@ class TestServiceProviderMetadataParser(TestCase):
     def test_with_signing_cert_invalid_signature(self):
         """Test Metadata with signing cert (invalid signature)"""
         with self.assertRaises(ValueError):
-            ServiceProviderMetadataParser().parse(
-                METADATA_CERT.replace("/apps/user_saml", "")
-            )
+            ServiceProviderMetadataParser().parse(METADATA_CERT.replace("/apps/user_saml", ""))

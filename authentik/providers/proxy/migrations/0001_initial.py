@@ -31,21 +31,13 @@ class Migration(migrations.Migration):
                 (
                     "internal_host",
                     models.TextField(
-                        validators=[
-                            django.core.validators.URLValidator(
-                                schemes=("http", "https")
-                            )
-                        ]
+                        validators=[django.core.validators.URLValidator(schemes=("http", "https"))]
                     ),
                 ),
                 (
                     "external_host",
                     models.TextField(
-                        validators=[
-                            django.core.validators.URLValidator(
-                                schemes=("http", "https")
-                            )
-                        ]
+                        validators=[django.core.validators.URLValidator(schemes=("http", "https"))]
                     ),
                 ),
             ],

@@ -1,4 +1,12 @@
-import { LitElement, html, customElement, property, CSSResult, TemplateResult, css } from "lit-element";
+import {
+    LitElement,
+    html,
+    customElement,
+    property,
+    CSSResult,
+    TemplateResult,
+    css,
+} from "lit-element";
 import { ifDefined } from "lit-html/directives/if-defined";
 import PFTabs from "@patternfly/patternfly/components/Tabs/tabs.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
@@ -11,24 +19,29 @@ export class Tabs extends LitElement {
     @property()
     currentPage?: string;
 
-    @property({type: Boolean})
+    @property({ type: Boolean })
     vertical = false;
 
     static get styles(): CSSResult[] {
-        return [PFGlobal, PFTabs, AKGlobal, css`
-            ::slotted(*) {
-                flex-grow: 2;
-            }
-            :host([vertical]) {
-                display: flex;
-            }
-            :host([vertical]) .pf-c-tabs {
-                width: auto !important;
-            }
-            :host([vertical]) .pf-c-tabs__list {
-                height: 100%;
-            }
-        `];
+        return [
+            PFGlobal,
+            PFTabs,
+            AKGlobal,
+            css`
+                ::slotted(*) {
+                    flex-grow: 2;
+                }
+                :host([vertical]) {
+                    display: flex;
+                }
+                :host([vertical]) .pf-c-tabs {
+                    width: auto !important;
+                }
+                :host([vertical]) .pf-c-tabs__list {
+                    height: 100%;
+                }
+            `,
+        ];
     }
 
     observer: MutationObserver;
@@ -42,7 +55,11 @@ export class Tabs extends LitElement {
 
     connectedCallback(): void {
         super.connectedCallback();
-        this.observer.observe(this, { attributes: true, childList: true, subtree: true });
+        this.observer.observe(this, {
+            attributes: true,
+            childList: true,
+            subtree: true,
+        });
     }
 
     disconnectedCallback(): void {
@@ -61,9 +78,7 @@ export class Tabs extends LitElement {
         const slot = page.attributes.getNamedItem("slot")?.value;
         return html` <li class="pf-c-tabs__item ${slot === this.currentPage ? CURRENT_CLASS : ""}">
             <button class="pf-c-tabs__link" @click=${() => this.onClick(slot)}>
-                <span class="pf-c-tabs__item-text">
-                    ${page.getAttribute("data-tab-title")}
-                </span>
+                <span class="pf-c-tabs__item-text"> ${page.getAttribute("data-tab-title")} </span>
             </button>
         </li>`;
     }

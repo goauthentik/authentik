@@ -1,0 +1,290 @@
+---
+title: Forward auth
+---
+
+Using forward auth uses your existing reverse proxy to do the proxying, and only uses the
+authentik outpost to check authentication and authoirzation.
+
+To use forward auth instead of proxying, you have to change a couple of settings.
+In the Proxy Provider, make sure to use one of the Forward auth modes.
+
+## Single application
+
+Single application mode works for a single application hosted on its dedicated subdomain. This
+has the advantage that you can still do per-application access policies in authentik.
+
+## Domain level
+
+To use forward auth instead of proxying, you have to change a couple of settings.
+In the Proxy Provider, make sure to use the *Forward auth (domain level)* mode.
+
+This mode differs from the *Forward auth (single application)* mode in the following points:
+- You don't have to configure an application in authentik for each domain
+- Users don't have to authorize multiple times
+
+There are however also some downsides, mainly the fact that you **can't** restrict individual
+applications to different users.
+
+The only configuration difference between single application and domain level is the host you specify.
+
+For single application, you'd use the domain which the application is running on, and only /akprox
+is redirect to the outpost.
+
+For domain level, you'd use the same domain as authentik.
+
+:::info
+*example-outpost* is used as a placeholder for the outpost name.
+:::
+
+## Nginx
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs
+  defaultValue="standalone-nginx"
+  values={[
+    {label: 'Standalone nginx', value: 'standalone-nginx'},
+    {label: 'Ingress', value: 'ingress'},
+  ]}>
+  <TabItem value="standalone-nginx">
+
+```
+server {
+    # SSL and VHost configuration
+    listen                  443 ssl http2;
+    server_name             _;
+
+    ssl_certificate         /etc/ssl/certs/ssl-cert-snakeoil.pem;
+    ssl_certificate_key     /etc/ssl/private/ssl-cert-snakeoil.key;
+
+    # Increase buffer size for large headers
+    # This is needed only if you get 'upstream sent too big header while reading response header from upstream' error when trying to access an application protected by goauthentik
+    proxy_buffers 8 16k;
+    proxy_buffer_size 32k;
+    fastcgi_buffers 16 16k;
+    fastcgi_buffer_size 32k;
+
+    location / {
+        # Put your proxy_pass to your application here
+        # proxy_pass          http://localhost:5000;
+
+        # authentik-specific config
+        auth_request        /akprox/auth;
+        error_page          401 = @akprox_signin;
+        # translate headers from the outposts back to the actual upstream
+        auth_request_set    $username    $upstream_http_x_auth_username;
+        auth_request_set    $email       $upstream_http_X_Forwarded_Email;
+        proxy_set_header    X-Auth-Username   $username;
+        proxy_set_header    X-Forwarded-Email $email;
+    }
+
+    # all requests to /akprox must be accessible without authentication
+    location /akprox {
+        proxy_pass          http://*ip or hostname of the authentik OUTPOST*:4180;
+        # ensure the host of this vserver matches your external URL you've configured
+        # in authentik
+        proxy_set_header    Host $host;
+        add_header          Set-Cookie $auth_cookie;
+        auth_request_set    $auth_cookie $upstream_http_set_cookie;
+    }
+
+    # Special location for when the /auth endpoint returns a 401,
+    # redirect to the /start URL which initiates SSO
+    location @akprox_signin {
+        internal;
+        add_header Set-Cookie $auth_cookie;
+        return 302 /akprox/start?rd=$request_uri;
+    }
+}
+```
+
+  </TabItem>
+  <TabItem value="ingress">
+Create a new ingress for the outpost
+
+```yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: authentik-outpost
+spec:
+  rules:
+  - host: *external host that you configured in authentik*
+    http:
+      paths:
+      - backend:
+          serviceName: authentik-outpost-example-outpost
+          servicePort: 4180
+        path: /akprox
+```
+
+This ingress handles authentication requests, and the sign-in flow.
+
+Add these annotations to the ingress you want to protect
+
+```yaml
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/auth-url: https://*external host that you configured in authentik*/akprox/auth?nginx
+    nginx.ingress.kubernetes.io/auth-signin: https://*external host that you configured in authentik*/akprox/start?rd=$escaped_request_uri
+    nginx.ingress.kubernetes.io/auth-response-headers: X-Auth-Username,X-Forwarded-Email,X-Forwarded-Preferred-Username,X-Forwarded-User,X-Auth-Groups
+    nginx.ingress.kubernetes.io/auth-snippet: |
+       proxy_set_header X-Forwarded-Host $http_host;
+```
+  </TabItem>
+</Tabs>
+
+## Traefik
+
+<Tabs
+  defaultValue="standalone-traefik"
+  values={[
+    {label: 'Standalone traefik', value: 'standalone-traefik'},
+    {label: 'docker-compose', value: 'docker-compose'},
+    {label: 'Ingress', value: 'ingress'},
+  ]}>
+  <TabItem value="standalone-traefik">
+
+```yaml
+http:
+  middlewares:
+    authentik:
+      forwardAuth:
+        address: http://authentik-outpost-example-outpost:4180/akprox/auth?traefik
+        trustForwardHeader: true
+        authResponseHeaders:
+          - Set-Cookie
+          - X-Auth-Username
+          - X-Auth-Groups
+          - X-Forwarded-Email
+          - X-Forwarded-Preferred-Username
+          - X-Forwarded-User
+  routers:
+    default-router:
+      rule: "Host(`*external host that you configured in authentik*`)"
+      middlewares:
+        - name: authentik
+      priority: 10
+      services: # Unchanged
+    default-router-auth
+      match: "Host(`*external host that you configured in authentik*`) && PathPrefix(`/akprox/`)"
+      priority: 15
+      services: http://*ip of your outpost*:4180/akprox
+```
+  </TabItem>
+  <TabItem value="docker-compose">
+
+```yaml
+version: '3.7'
+services:
+  traefik:
+    image: traefik:v2.2
+    container_name: traefik
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      traefik.enable: true
+      traefik.http.routers.api.rule: Host(`traefik.example.com`)
+      traefik.http.routers.api.entrypoints: https
+      traefik.http.routers.api.service: api@internal
+      traefik.http.routers.api.tls: true
+    ports:
+      - 80:80
+      - 443:443
+    command:
+      - '--api'
+      - '--log=true'
+      - '--log.level=DEBUG'
+      - '--log.filepath=/var/log/traefik.log'
+      - '--providers.docker=true'
+      - '--providers.docker.exposedByDefault=false'
+      - '--entrypoints.http=true'
+      - '--entrypoints.http.address=:80'
+      - '--entrypoints.http.http.redirections.entrypoint.to=https'
+      - '--entrypoints.http.http.redirections.entrypoint.scheme=https'
+      - '--entrypoints.https=true'
+      - '--entrypoints.https.address=:443'
+
+  authentik_proxy:
+    image: ghcr.io/goauthentik/proxy:2021.5.1
+    ports:
+      - 4180:4180
+      - 4443:4443
+    environment:
+      AUTHENTIK_HOST: https://your-authentik.tld
+      AUTHENTIK_INSECURE: "false"
+      AUTHENTIK_TOKEN: token-generated-by-authentik
+    labels:
+      traefik.enable: true
+      traefik.port: 4180
+      traefik.http.routers.authentik.rule: Host(`*external host that you configured in authentik*`) && PathPrefix(`/akprox/`)
+      traefik.http.routers.authentik.entrypoints: https
+      traefik.http.routers.authentik.tls: true
+      traefik.http.middlewares.authentik.forwardauth.address: http://authentik_proxy:4180/akprox/auth?traefik
+      traefik.http.middlewares.authentik.forwardauth.trustForwardHeader: true
+      traefik.http.middlewares.authentik.forwardauth.authResponseHeaders: Set-Cookie,X-Auth-Username,X-Auth-Groups,X-Forwarded-Email,X-Forwarded-Preferred-Username,X-Forwarded-User
+    restart: unless-stopped
+
+  whoami:
+    image: containous/whoami
+    labels:
+      traefik.enable: true
+      traefik.http.routers.whoami.rule: Host(`*external host that you configured in authentik*`)
+      traefik.http.routers.whoami.entrypoints: https
+      traefik.http.routers.whoami.tls: true
+      traefik.http.routers.whoami.middlewares: authentik@docker
+    restart: unless-stopped
+```
+
+  </TabItem>
+  <TabItem value="ingress">
+Create a middleware:
+
+```yaml
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: authentik
+spec:
+  forwardAuth:
+    address: http://authentik-outpost-example-outpost:4180/akprox/auth?traefik
+    trustForwardHeader: true
+    authResponseHeaders:
+      - Set-Cookie
+      - X-Auth-Username
+      - X-Auth-Groups
+      - X-Forwarded-Email
+      - X-Forwarded-Preferred-Username
+      - X-Forwarded-User
+```
+
+Add the following settings to your IngressRoute
+
+:::warning
+By default traefik does not allow cross-namespace references for middlewares:
+
+See [here](https://doc.traefik.io/traefik/v2.4/providers/kubernetes-crd/#allowcrossnamespace) to enable it.
+:::
+
+```yaml
+spec:
+  routes:
+    - kind: Rule
+      match: "Host(`*external host that you configured in authentik*`)"
+      middlewares:
+        - name: authentik
+          namespace: authentik
+      priority: 10
+      services: # Unchanged
+    # This part is only required for single-app setups
+    - kind: Rule
+      match: "Host(`*external host that you configured in authentik*`) && PathPrefix(`/akprox/`)"
+      priority: 15
+      services:
+        - kind: Service
+          name: authentik-outpost-example-outpost
+          port: 4180
+```
+  </TabItem>
+</Tabs>

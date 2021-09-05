@@ -2,11 +2,7 @@
 from threading import Thread
 from typing import Any, Optional
 
-from django.contrib.auth.signals import (
-    user_logged_in,
-    user_logged_out,
-    user_login_failed,
-)
+from django.contrib.auth.signals import user_logged_in, user_logged_out, user_login_failed
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.http import HttpRequest
@@ -19,6 +15,7 @@ from authentik.flows.planner import PLAN_CONTEXT_SOURCE, FlowPlan
 from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.stages.invitation.models import Invitation
 from authentik.stages.invitation.signals import invitation_used
+from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 from authentik.stages.user_write.signals import user_write
 
 
@@ -30,9 +27,7 @@ class EventNewThread(Thread):
     kwargs: dict[str, Any]
     user: Optional[User] = None
 
-    def __init__(
-        self, action: str, request: HttpRequest, user: Optional[User] = None, **kwargs
-    ):
+    def __init__(self, action: str, request: HttpRequest, user: Optional[User] = None, **kwargs):
         super().__init__()
         self.action = action
         self.request = request
@@ -52,7 +47,13 @@ def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
         flow_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
         if PLAN_CONTEXT_SOURCE in flow_plan.context:
             # Login request came from an external source, save it in the context
-            thread.kwargs["using_source"] = flow_plan.context[PLAN_CONTEXT_SOURCE]
+            thread.kwargs[PLAN_CONTEXT_SOURCE] = flow_plan.context[PLAN_CONTEXT_SOURCE]
+        if PLAN_CONTEXT_METHOD in flow_plan.context:
+            thread.kwargs[PLAN_CONTEXT_METHOD] = flow_plan.context[PLAN_CONTEXT_METHOD]
+            # Save the login method used
+            thread.kwargs[PLAN_CONTEXT_METHOD_ARGS] = flow_plan.context.get(
+                PLAN_CONTEXT_METHOD_ARGS, {}
+            )
     thread.user = user
     thread.run()
 
@@ -68,9 +69,7 @@ def on_user_logged_out(sender, request: HttpRequest, user: User, **_):
 
 @receiver(user_write)
 # pylint: disable=unused-argument
-def on_user_write(
-    sender, request: HttpRequest, user: User, data: dict[str, Any], **kwargs
-):
+def on_user_write(sender, request: HttpRequest, user: User, data: dict[str, Any], **kwargs):
     """Log User write"""
     thread = EventNewThread(EventAction.USER_WRITE, request, **data)
     thread.kwargs["created"] = kwargs.get("created", False)
@@ -80,9 +79,7 @@ def on_user_write(
 
 @receiver(user_login_failed)
 # pylint: disable=unused-argument
-def on_user_login_failed(
-    sender, credentials: dict[str, str], request: HttpRequest, **_
-):
+def on_user_login_failed(sender, credentials: dict[str, str], request: HttpRequest, **_):
     """Failed Login"""
     thread = EventNewThread(EventAction.LOGIN_FAILED, request, **credentials)
     thread.run()

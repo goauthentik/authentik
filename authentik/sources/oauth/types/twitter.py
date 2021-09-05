@@ -30,7 +30,4 @@ class TwitterType(SourceType):
     request_token_url = "https://api.twitter.com/oauth/request_token"  # nosec
     authorization_url = "https://api.twitter.com/oauth/authenticate"
     access_token_url = "https://api.twitter.com/oauth/access_token"  # nosec
-    profile_url = (
-        "https://api.twitter.com/1.1/account/"
-        "verify_credentials.json?include_email=true"
-    )
+    profile_url = "https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true"

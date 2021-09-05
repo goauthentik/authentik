@@ -27,3 +27,5 @@ class PasswordPolicyViewSet(UsedByMixin, ModelViewSet):
 
     queryset = PasswordPolicy.objects.all()
     serializer_class = PasswordPolicySerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]

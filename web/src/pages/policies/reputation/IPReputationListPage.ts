@@ -5,11 +5,11 @@ import { TablePage } from "../../../elements/table/TablePage";
 
 import "../../../elements/buttons/ModalButton";
 import "../../../elements/buttons/SpinnerButton";
-import "../../../elements/forms/DeleteForm";
+import "../../../elements/forms/DeleteBulkForm";
 import "../../../elements/forms/ModalForm";
 import { TableColumn } from "../../../elements/table/Table";
 import { PAGE_SIZE } from "../../../constants";
-import { IPReputation, PoliciesApi } from "authentik-api";
+import { IPReputation, PoliciesApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 
 @customElement("ak-policy-reputation-ip-list")
@@ -30,6 +30,8 @@ export class IPReputationListPage extends TablePage<IPReputation> {
     @property()
     order = "ip";
 
+    checkbox = true;
+
     apiEndpoint(page: number): Promise<AKResponse<IPReputation>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesReputationIpsList({
             ordering: this.order,
@@ -43,33 +45,33 @@ export class IPReputationListPage extends TablePage<IPReputation> {
         return [
             new TableColumn(t`IP`, "ip"),
             new TableColumn(t`Score`, "score"),
-            new TableColumn(""),
+            new TableColumn(t`Actions`),
         ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`IP Reputation`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: IPReputation) => {
+                return new PoliciesApi(DEFAULT_CONFIG).policiesReputationIpsUsedByList({
+                    id: item.pk,
+                });
+            }}
+            .delete=${(item: IPReputation) => {
+                return new PoliciesApi(DEFAULT_CONFIG).policiesReputationIpsDestroy({
+                    id: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: IPReputation): TemplateResult[] {
-        return [
-            html`${item.ip}`,
-            html`${item.score}`,
-            html`
-            <ak-forms-delete
-                .obj=${item}
-                objectLabel=${t`IP Reputation`}
-                .usedBy=${() => {
-                    return new PoliciesApi(DEFAULT_CONFIG).policiesReputationIpsUsedByList({
-                        id: item.pk
-                    });
-                }}
-                .delete=${() => {
-                    return new PoliciesApi(DEFAULT_CONFIG).policiesReputationIpsDestroy({
-                        id: item.pk,
-                    });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete`}
-                </button>
-            </ak-forms-delete>`,
-        ];
+        return [html`${item.ip}`, html`${item.score}`];
     }
-
 }

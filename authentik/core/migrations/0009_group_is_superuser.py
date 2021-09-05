@@ -40,9 +40,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="user",
             name="pb_groups",
-            field=models.ManyToManyField(
-                related_name="users", to="authentik_core.Group"
-            ),
+            field=models.ManyToManyField(related_name="users", to="authentik_core.Group"),
         ),
         migrations.AddField(
             model_name="group",

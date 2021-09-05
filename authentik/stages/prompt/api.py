@@ -27,6 +27,8 @@ class PromptStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = PromptStage.objects.all()
     serializer_class = PromptStageSerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]
 
 
 class PromptSerializer(ModelSerializer):

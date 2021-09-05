@@ -10,7 +10,7 @@ from authentik.crypto.api import CertificateKeyPairSerializer
 from authentik.crypto.builder import CertificateBuilder
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
-from authentik.providers.oauth2.generators import generate_client_secret
+from authentik.lib.generators import generate_key
 from authentik.providers.oauth2.models import OAuth2Provider
 
 
@@ -103,7 +103,7 @@ class TestCrypto(TestCase):
         provider = OAuth2Provider.objects.create(
             name="test",
             client_id="test",
-            client_secret=generate_client_secret(),
+            client_secret=generate_key(),
             authorization_flow=Flow.objects.first(),
             redirect_uris="http://localhost",
             rsa_key=CertificateKeyPair.objects.first(),

@@ -17,6 +17,7 @@ class AuthentikOutpostConfig(AppConfig):
 
     def ready(self):
         import_module("authentik.outposts.signals")
+        import_module("authentik.outposts.managed")
         try:
             from authentik.outposts.tasks import outpost_local_connection
 

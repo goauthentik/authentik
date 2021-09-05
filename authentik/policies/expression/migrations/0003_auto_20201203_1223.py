@@ -6,18 +6,14 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 
 def replace_pb_prefix(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    ExpressionPolicy = apps.get_model(
-        "authentik_policies_expression", "ExpressionPolicy"
-    )
+    ExpressionPolicy = apps.get_model("authentik_policies_expression", "ExpressionPolicy")
 
     db_alias = schema_editor.connection.alias
 
     for policy in ExpressionPolicy.objects.using(db_alias).all():
         # Because the previous migration had a broken replace, we have to replace here again
         policy.expression = policy.expression.replace("pb_flow_plan.", "context.")
-        policy.expression = policy.expression.replace(
-            "pb_is_sso_flow", "ak_is_sso_flow"
-        )
+        policy.expression = policy.expression.replace("pb_is_sso_flow", "ak_is_sso_flow")
         policy.save()
 
 

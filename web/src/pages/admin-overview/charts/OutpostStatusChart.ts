@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
-import { OutpostsApi } from "authentik-api";
+import { OutpostsApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import "../../../elements/forms/ConfirmationForm";
 import { AKChart } from "../../../elements/charts/Chart";
@@ -14,7 +14,6 @@ interface OutpostStats {
 
 @customElement("ak-admin-status-chart-outpost")
 export class OutpostStatusChart extends AKChart<OutpostStats> {
-
     getChartType(): string {
         return "doughnut";
     }
@@ -36,52 +35,41 @@ export class OutpostStatusChart extends AKChart<OutpostStats> {
         let healthy = 0;
         let outdated = 0;
         let unhealthy = 0;
-        await Promise.all(outposts.results.map(async (element) => {
-            const health = await api.outpostsInstancesHealthList({
-                uuid: element.pk || "",
-            });
-            if (health.length === 0) {
-                unhealthy += 1;
-            }
-            health.forEach(h => {
-                if (h.versionOutdated) {
-                    outdated += 1;
-                } else {
-                    healthy += 1;
+        await Promise.all(
+            outposts.results.map(async (element) => {
+                const health = await api.outpostsInstancesHealthList({
+                    uuid: element.pk || "",
+                });
+                if (health.length === 0) {
+                    unhealthy += 1;
                 }
-            });
-        }));
+                health.forEach((h) => {
+                    if (h.versionOutdated) {
+                        outdated += 1;
+                    } else {
+                        healthy += 1;
+                    }
+                });
+            }),
+        );
         this.centerText = outposts.pagination.count.toString();
         return {
             healthy: outposts.pagination.count === 0 ? -1 : healthy,
             outdated,
-            unhealthy
+            unhealthy,
         };
     }
 
     getChartData(data: OutpostStats): ChartData {
         return {
-            labels: [
-                t`Healthy outposts`,
-                t`Outdated outposts`,
-                t`Unhealthy outposts`,
-            ],
+            labels: [t`Healthy outposts`, t`Outdated outposts`, t`Unhealthy outposts`],
             datasets: [
                 {
-                    backgroundColor: [
-                        "#3e8635",
-                        "#f0ab00",
-                        "#C9190B",
-                    ],
+                    backgroundColor: ["#3e8635", "#f0ab00", "#C9190B"],
                     spanGaps: true,
-                    data: [
-                        data.healthy,
-                        data.outdated,
-                        data.unhealthy
-                    ],
+                    data: [data.healthy, data.outdated, data.unhealthy],
                 },
-            ]
+            ],
         };
     }
-
 }

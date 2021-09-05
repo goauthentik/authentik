@@ -7,12 +7,14 @@ from boto3.exceptions import Boto3Error
 from botocore.exceptions import BotoCoreError, ClientError
 from dbbackup.db.exceptions import CommandConnectorError
 from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.contrib.sessions.backends.cache import KEY_PREFIX
 from django.core import management
+from django.core.cache import cache
 from django.utils.timezone import now
 from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
 from structlog.stdlib import get_logger
 
-from authentik.core.models import ExpiringModel
+from authentik.core.models import AuthenticatedSession, ExpiringModel
 from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.lib.config import CONFIG
 from authentik.root.celery import CELERY_APP
@@ -26,14 +28,24 @@ def clean_expired_models(self: MonitoredTask):
     messages = []
     for cls in ExpiringModel.__subclasses__():
         cls: ExpiringModel
-        amount, _ = (
-            cls.objects.all()
-            .exclude(expiring=False)
-            .exclude(expiring=True, expires__gt=now())
-            .delete()
+        objects = (
+            cls.objects.all().exclude(expiring=False).exclude(expiring=True, expires__gt=now())
         )
-        LOGGER.debug("Deleted expired models", model=cls, amount=amount)
-        messages.append(f"Deleted {amount} expired {cls._meta.verbose_name_plural}")
+        for obj in objects:
+            obj.expire_action()
+        amount = objects.count()
+        LOGGER.debug("Expired models", model=cls, amount=amount)
+        messages.append(f"Expired {amount} {cls._meta.verbose_name_plural}")
+    # Special case
+    amount = 0
+    for session in AuthenticatedSession.objects.all():
+        cache_key = f"{KEY_PREFIX}{session.session_key}"
+        value = cache.get(cache_key)
+        if not value:
+            session.delete()
+            amount += 1
+    LOGGER.debug("Expired sessions", model=AuthenticatedSession, amount=amount)
+    messages.append(f"Expired {amount} {AuthenticatedSession._meta.verbose_name_plural}")
     self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, messages))
 
 

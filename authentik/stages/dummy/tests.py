@@ -1,7 +1,7 @@
 """dummy tests"""
-from django.test import TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
+from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
@@ -9,7 +9,7 @@ from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.stages.dummy.models import DummyStage
 
 
-class TestDummyStage(TestCase):
+class TestDummyStage(APITestCase):
     """Dummy tests"""
 
     def setUp(self):
@@ -39,9 +39,7 @@ class TestDummyStage(TestCase):
 
     def test_post(self):
         """Test with valid email, check that URL redirects back to itself"""
-        url = reverse(
-            "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
-        )
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.post(url, {})
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(

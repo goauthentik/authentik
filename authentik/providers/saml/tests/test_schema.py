@@ -1,18 +1,16 @@
 """Test Requests and Responses against schema"""
 from base64 import b64encode
 
-from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import RequestFactory, TestCase
-from guardian.utils import get_anonymous_user
 from lxml import etree  # nosec
 
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
+from authentik.lib.tests.utils import get_request
 from authentik.managed.manager import ObjectManager
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.request_parser import AuthNRequestParser
-from authentik.providers.saml.tests.test_auth_n_request import dummy_get_response
 from authentik.sources.saml.models import SAMLSource
 from authentik.sources.saml.processors.request import RequestProcessor
 
@@ -37,19 +35,13 @@ class TestSchema(TestCase):
             slug="provider",
             issuer="authentik",
             signing_kp=cert,
-            pre_authentication_flow=Flow.objects.get(
-                slug="default-source-pre-authentication"
-            ),
+            pre_authentication_flow=Flow.objects.get(slug="default-source-pre-authentication"),
         )
         self.factory = RequestFactory()
 
     def test_request_schema(self):
         """Test generated AuthNRequest against Schema"""
-        http_request = self.factory.get("/")
-
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(http_request)
-        http_request.session.save()
+        http_request = get_request("/")
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -57,19 +49,12 @@ class TestSchema(TestCase):
 
         metadata = etree.fromstring(request)  # nosec
 
-        schema = etree.XMLSchema(
-            etree.parse("xml/saml-schema-protocol-2.0.xsd")
-        )  # nosec
+        schema = etree.XMLSchema(etree.parse("xml/saml-schema-protocol-2.0.xsd"))  # nosec
         self.assertTrue(schema.validate(metadata))
 
     def test_response_schema(self):
         """Test generated AuthNRequest against Schema"""
-        http_request = self.factory.get("/")
-        http_request.user = get_anonymous_user()
-
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(http_request)
-        http_request.session.save()
+        http_request = get_request("/")
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")

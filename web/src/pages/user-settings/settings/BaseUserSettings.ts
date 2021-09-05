@@ -7,7 +7,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 
 export abstract class BaseUserSettings extends LitElement {
-
     @property()
     objectId!: string;
 
@@ -18,4 +17,3 @@ export abstract class BaseUserSettings extends LitElement {
         return [PFBase, PFCard, PFButton, PFForm, PFFormControl, AKGlobal];
     }
 }
-

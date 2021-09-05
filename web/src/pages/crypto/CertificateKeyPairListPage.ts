@@ -4,11 +4,11 @@ import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { CryptoApi, CertificateKeyPair } from "authentik-api";
+import { CryptoApi, CertificateKeyPair } from "@goauthentik/api";
 
 import "../../elements/forms/ModalForm";
 import "../../elements/buttons/SpinnerButton";
-import "../../elements/forms/DeleteForm";
+import "../../elements/forms/DeleteBulkForm";
 import "./CertificateKeyPairForm";
 import "./CertificateGenerateForm";
 import { TableColumn } from "../../elements/table/Table";
@@ -18,6 +18,7 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 @customElement("ak-crypto-certificate-list")
 export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     expandable = true;
+    checkbox = true;
 
     searchEnabled(): boolean {
         return true;
@@ -53,8 +54,36 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             new TableColumn(t`Name`, "name"),
             new TableColumn(t`Private key available?`),
             new TableColumn(t`Expiry date`),
-            new TableColumn(""),
+            new TableColumn(t`Actions`),
         ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Certificate-Key Pair(s)`}
+            .objects=${this.selectedElements}
+            .metadata=${(item: CertificateKeyPair) => {
+                return [
+                    { key: t`Name`, value: item.name },
+                    { key: t`Expiry`, value: item.certExpiry.toLocaleString() },
+                ];
+            }}
+            .usedBy=${(item: CertificateKeyPair) => {
+                return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsUsedByList({
+                    kpUuid: item.pk,
+                });
+            }}
+            .delete=${(item: CertificateKeyPair) => {
+                return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsDestroy({
+                    kpUuid: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: CertificateKeyPair): TemplateResult[] {
@@ -62,114 +91,104 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             html`${item.name}`,
             html`${item.privateKeyAvailable ? t`Yes` : t`No`}`,
             html`${item.certExpiry?.toLocaleString()}`,
-            html`
-            <ak-forms-modal>
-                <span slot="submit">
-                    ${t`Update`}
-                </span>
-                <span slot="header">
-                    ${t`Update Certificate-Key Pair`}
-                </span>
+            html` <ak-forms-modal>
+                <span slot="submit"> ${t`Update`} </span>
+                <span slot="header"> ${t`Update Certificate-Key Pair`} </span>
                 <ak-crypto-certificate-form slot="form" .instancePk=${item.pk}>
                 </ak-crypto-certificate-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${t`Edit`}
+                <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <i class="fas fa-edit"></i>
                 </button>
-            </ak-forms-modal>
-            <ak-forms-delete
-                .obj=${item}
-                objectLabel=${t`Certificate-Key Pair`}
-                .usedBy=${() => {
-                    return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsUsedByList({
-                        kpUuid: item.pk
-                    });
-                }}
-                .delete=${() => {
-                    return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsDestroy({
-                        kpUuid: item.pk
-                    });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete`}
-                </button>
-            </ak-forms-delete>`,
+            </ak-forms-modal>`,
         ];
     }
 
     renderExpanded(item: CertificateKeyPair): TemplateResult {
-        return html`
-        <td role="cell" colspan="3">
-            <div class="pf-c-table__expandable-row-content">
-                <dl class="pf-c-description-list pf-m-horizontal">
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${t`Certificate Fingerprint`}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">${item.fingerprint}</div>
-                        </dd>
-                    </div>
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${t`Certificate Subjet`}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">${item.certSubject}</div>
-                        </dd>
-                    </div>
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${t`Download`}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                <a class="pf-c-button pf-m-secondary" target="_blank"
-                                    href=${item.certificateDownloadUrl}>
-                                    ${t`Download Certificate`}
-                                </a>
-                                ${item.privateKeyAvailable ? html`<a class="pf-c-button pf-m-secondary" target="_blank"
-                                    href=${item.privateKeyDownloadUrl}>
-                                    ${t`Download Private key`}
-                                </a>` : html``}
-                            </div>
-                        </dd>
-                    </div>
-                </dl>
-            </div>
-        </td>
-        <td></td>
-        <td></td>`;
+        return html`<td role="cell" colspan="3">
+                <div class="pf-c-table__expandable-row-content">
+                    <dl class="pf-c-description-list pf-m-horizontal">
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text"
+                                    >${t`Certificate Fingerprint (SHA1)`}</span
+                                >
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">
+                                    ${item.fingerprintSha1}
+                                </div>
+                            </dd>
+                        </div>
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text"
+                                    >${t`Certificate Fingerprint (SHA256)`}</span
+                                >
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">
+                                    ${item.fingerprintSha256}
+                                </div>
+                            </dd>
+                        </div>
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text"
+                                    >${t`Certificate Subjet`}</span
+                                >
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">${item.certSubject}</div>
+                            </dd>
+                        </div>
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text">${t`Download`}</span>
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">
+                                    <a
+                                        class="pf-c-button pf-m-secondary"
+                                        target="_blank"
+                                        href=${item.certificateDownloadUrl}
+                                    >
+                                        ${t`Download Certificate`}
+                                    </a>
+                                    ${item.privateKeyAvailable
+                                        ? html`<a
+                                              class="pf-c-button pf-m-secondary"
+                                              target="_blank"
+                                              href=${item.privateKeyDownloadUrl}
+                                          >
+                                              ${t`Download Private key`}
+                                          </a>`
+                                        : html``}
+                                </div>
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+            </td>
+            <td></td>
+            <td></td>`;
     }
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-forms-modal>
-            <span slot="submit">
-                ${t`Create`}
-            </span>
-            <span slot="header">
-                ${t`Create Certificate-Key Pair`}
-            </span>
-            <ak-crypto-certificate-form slot="form">
-            </ak-crypto-certificate-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${t`Create`}
-            </button>
-        </ak-forms-modal>
-        <ak-forms-modal>
-            <span slot="submit">
-                ${t`Generate`}
-            </span>
-            <span slot="header">
-                ${t`Generate Certificate-Key Pair`}
-            </span>
-            <ak-crypto-certificate-generate-form slot="form">
-            </ak-crypto-certificate-generate-form>
-            <button slot="trigger" class="pf-c-button pf-m-secondary">
-                ${t`Generate`}
-            </button>
-        </ak-forms-modal>
-        ${super.renderToolbar()}
+            <ak-forms-modal>
+                <span slot="submit"> ${t`Create`} </span>
+                <span slot="header"> ${t`Create Certificate-Key Pair`} </span>
+                <ak-crypto-certificate-form slot="form"> </ak-crypto-certificate-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+            </ak-forms-modal>
+            <ak-forms-modal>
+                <span slot="submit"> ${t`Generate`} </span>
+                <span slot="header"> ${t`Generate Certificate-Key Pair`} </span>
+                <ak-crypto-certificate-generate-form slot="form">
+                </ak-crypto-certificate-generate-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Generate`}</button>
+            </ak-forms-modal>
+            ${super.renderToolbar()}
         `;
     }
 }

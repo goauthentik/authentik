@@ -32,7 +32,7 @@ authentik:
   outposts:
     docker_image_base: beryju.org/authentik/outpost-%(type)s:gh-%(build_hash)s
 image:
-  name: beryju.org/authentik/server
+  repository: beryju.org/authentik/server
   tag: gh-next
   # pullPolicy: Always to ensure you always get the latest version
   pullPolicy: Always

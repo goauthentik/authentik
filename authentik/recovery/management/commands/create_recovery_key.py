@@ -25,9 +25,7 @@ class Command(BaseCommand):
             action="store",
             help="How long the token is valid for (in years).",
         )
-        parser.add_argument(
-            "user", action="store", help="Which user the Token gives access to."
-        )
+        parser.add_argument("user", action="store", help="Which user the Token gives access to.")
 
     def get_url(self, token: Token) -> str:
         """Get full recovery link"""
@@ -47,9 +45,6 @@ class Command(BaseCommand):
             identifier=f"ak-recovery-{user}-{_now}",
         )
         self.stdout.write(
-            (
-                f"Store this link safely, as it will allow"
-                f" anyone to access authentik as {user}."
-            )
+            (f"Store this link safely, as it will allow" f" anyone to access authentik as {user}.")
         )
         self.stdout.write(self.get_url(token))

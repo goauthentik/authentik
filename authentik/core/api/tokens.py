@@ -1,7 +1,10 @@
 """Tokens API Viewset"""
+from typing import Any
+
 from django.http.response import Http404
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -12,7 +15,7 @@ from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import PassiveSerializer
-from authentik.core.models import Token, TokenIntents
+from authentik.core.models import USER_ATTRIBUTE_TOKEN_EXPIRING, Token, TokenIntents
 from authentik.events.models import Event, EventAction
 from authentik.managed.api import ManagedSerializer
 
@@ -20,7 +23,16 @@ from authentik.managed.api import ManagedSerializer
 class TokenSerializer(ManagedSerializer, ModelSerializer):
     """Token Serializer"""
 
-    user = UserSerializer(required=False)
+    user_obj = UserSerializer(required=False, source="user")
+
+    def validate(self, attrs: dict[Any, str]) -> dict[Any, str]:
+        """Ensure only API or App password tokens are created."""
+        request: Request = self.context["request"]
+        attrs.setdefault("user", request.user)
+        attrs.setdefault("intent", TokenIntents.INTENT_API)
+        if attrs.get("intent") not in [TokenIntents.INTENT_API, TokenIntents.INTENT_APP_PASSWORD]:
+            raise ValidationError(f"Invalid intent {attrs.get('intent')}")
+        return attrs
 
     class Meta:
 
@@ -31,11 +43,14 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
             "identifier",
             "intent",
             "user",
+            "user_obj",
             "description",
             "expires",
             "expiring",
         ]
-        depth = 2
+        extra_kwargs = {
+            "user": {"required": False},
+        }
 
 
 class TokenViewSerializer(PassiveSerializer):
@@ -48,7 +63,7 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
     """Token Viewset"""
 
     lookup_field = "identifier"
-    queryset = Token.filter_not_expired()
+    queryset = Token.objects.all()
     serializer_class = TokenSerializer
     search_fields = [
         "identifier",
@@ -61,11 +76,16 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
         "intent",
         "user__username",
         "description",
+        "expires",
+        "expiring",
     ]
     ordering = ["expires"]
 
     def perform_create(self, serializer: TokenSerializer):
-        serializer.save(user=self.request.user, intent=TokenIntents.INTENT_API)
+        serializer.save(
+            user=self.request.user,
+            expiring=self.request.user.attributes.get(USER_ATTRIBUTE_TOKEN_EXPIRING, True),
+        )
 
     @permission_required("authentik_core.view_token_key")
     @extend_schema(
@@ -81,7 +101,5 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
         token: Token = self.get_object()
         if token.is_expired:
             raise Http404
-        Event.new(EventAction.SECRET_VIEW, secret=token).from_http(  # noqa # nosec
-            request
-        )
+        Event.new(EventAction.SECRET_VIEW, secret=token).from_http(request)  # noqa # nosec
         return Response(TokenViewSerializer({"key": token.key}).data)

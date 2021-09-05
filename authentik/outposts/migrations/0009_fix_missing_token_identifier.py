@@ -10,9 +10,7 @@ def fix_missing_token_identifier(apps: Apps, schema_editor: BaseDatabaseSchemaEd
     Token = apps.get_model("authentik_core", "Token")
     from authentik.outposts.models import Outpost
 
-    for outpost in (
-        Outpost.objects.using(schema_editor.connection.alias).all().only("pk")
-    ):
+    for outpost in Outpost.objects.using(schema_editor.connection.alias).all().only("pk"):
         user_identifier = outpost.user_identifier
         users = User.objects.filter(username=user_identifier)
         if not users.exists():

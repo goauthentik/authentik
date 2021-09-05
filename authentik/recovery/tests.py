@@ -28,14 +28,10 @@ class TestRecovery(TestCase):
         out = StringIO()
         call_command("create_recovery_key", "1", self.user.username, stdout=out)
         token = Token.objects.get(intent=TokenIntents.INTENT_RECOVERY, user=self.user)
-        self.client.get(
-            reverse("authentik_recovery:use-token", kwargs={"key": token.key})
-        )
+        self.client.get(reverse("authentik_recovery:use-token", kwargs={"key": token.key}))
         self.assertEqual(int(self.client.session["_auth_user_id"]), token.user.pk)
 
     def test_recovery_view_invalid(self):
         """Test recovery view with invalid token"""
-        response = self.client.get(
-            reverse("authentik_recovery:use-token", kwargs={"key": "abc"})
-        )
+        response = self.client.get(reverse("authentik_recovery:use-token", kwargs={"key": "abc"}))
         self.assertEqual(response.status_code, 404)

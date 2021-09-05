@@ -3,3 +3,6 @@ static
 htmlcov
 *.env.yml
 **/node_modules
+dist/**
+build/**
+build_docs/**

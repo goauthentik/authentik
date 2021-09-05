@@ -8,9 +8,7 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 def assign_sources(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     db_alias = schema_editor.connection.alias
 
-    IdentificationStage = apps.get_model(
-        "authentik_stages_identification", "identificationstage"
-    )
+    IdentificationStage = apps.get_model("authentik_stages_identification", "identificationstage")
     Source = apps.get_model("authentik_core", "source")
 
     sources = Source.objects.all()

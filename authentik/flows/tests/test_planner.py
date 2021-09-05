@@ -3,7 +3,6 @@ from unittest.mock import MagicMock, Mock, PropertyMock, patch
 
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.core.cache import cache
-from django.http import HttpRequest
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from guardian.shortcuts import get_anonymous_user
@@ -13,6 +12,7 @@ from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableExce
 from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
+from authentik.lib.tests.utils import dummy_get_response
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.policies.types import PolicyResult
@@ -22,11 +22,6 @@ POLICY_RETURN_FALSE = PropertyMock(return_value=PolicyResult(False))
 CACHE_MOCK = Mock(wraps=cache)
 
 POLICY_RETURN_TRUE = MagicMock(return_value=PolicyResult(True))
-
-
-def dummy_get_response(request: HttpRequest):  # pragma: no cover
-    """Dummy get_response for SessionMiddleware"""
-    return None
 
 
 class TestFlowPlanner(TestCase):
@@ -89,14 +84,10 @@ class TestFlowPlanner(TestCase):
 
         planner = FlowPlanner(flow)
         planner.plan(request)
-        self.assertEqual(
-            CACHE_MOCK.set.call_count, 1
-        )  # Ensure plan is written to cache
+        self.assertEqual(CACHE_MOCK.set.call_count, 1)  # Ensure plan is written to cache
         planner = FlowPlanner(flow)
         planner.plan(request)
-        self.assertEqual(
-            CACHE_MOCK.set.call_count, 1
-        )  # Ensure nothing is written to cache
+        self.assertEqual(CACHE_MOCK.set.call_count, 1)  # Ensure nothing is written to cache
         self.assertEqual(CACHE_MOCK.get.call_count, 2)  # Get is called twice
 
     def test_planner_default_context(self):
@@ -176,14 +167,12 @@ class TestFlowPlanner(TestCase):
         request.session.save()
 
         # Here we patch the dummy policy to evaluate to true so the stage is included
-        with patch(
-            "authentik.policies.dummy.models.DummyPolicy.passes", POLICY_RETURN_TRUE
-        ):
+        with patch("authentik.policies.dummy.models.DummyPolicy.passes", POLICY_RETURN_TRUE):
             planner = FlowPlanner(flow)
             plan = planner.plan(request)
 
-            self.assertEqual(plan.stages[0], binding.stage)
-            self.assertEqual(plan.stages[1], binding2.stage)
+            self.assertEqual(plan.bindings[0], binding)
+            self.assertEqual(plan.bindings[1], binding2)
 
             self.assertIsInstance(plan.markers[0], StageMarker)
             self.assertIsInstance(plan.markers[1], ReevaluateMarker)

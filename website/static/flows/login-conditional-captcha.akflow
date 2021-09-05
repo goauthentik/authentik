@@ -55,7 +55,8 @@
             "model": "authentik_stages_password.passwordstage",
             "attrs": {
                 "backends": [
-                    "django.contrib.auth.backends.ModelBackend",
+                    "authentik.core.auth.InbuiltBackend",
+                    "authentik.core.auth.TokenBackend",
                     "authentik.sources.ldap.auth.LDAPBackend"
                 ]
             }
@@ -65,7 +66,7 @@
                 "pk": "a3056482-b692-4e3a-93f1-7351c6a351c7",
                 "target": "563ece21-e9a4-47e5-a264-23ffd923e393",
                 "stage": "5f594f27-0def-488d-9855-fe604eb13de5",
-                "order": 0
+                "order": 10
             },
             "model": "authentik_flows.flowstagebinding",
             "attrs": {
@@ -77,7 +78,7 @@
                 "pk": "4e8538cf-3e18-4a68-82ae-6df6725fa2e6",
                 "target": "563ece21-e9a4-47e5-a264-23ffd923e393",
                 "stage": "d8affa62-500c-4c5c-a01f-5835e1ffdf40",
-                "order": 1
+                "order": 20
             },
             "model": "authentik_flows.flowstagebinding",
             "attrs": {
@@ -89,7 +90,7 @@
                 "pk": "3bcd6af0-48a6-4e18-87f3-d251a1a58226",
                 "target": "563ece21-e9a4-47e5-a264-23ffd923e393",
                 "stage": "a368cafc-1494-45e9-b75b-b5e7ac2bd3e4",
-                "order": 2
+                "order": 30
             },
             "model": "authentik_flows.flowstagebinding",
             "attrs": {
@@ -102,7 +103,7 @@
                 "pk": "f3fede3a-a9b5-4232-9ec7-be7ff4194b27",
                 "target": "563ece21-e9a4-47e5-a264-23ffd923e393",
                 "stage": "69d41125-3987-499b-8d74-ef27b54b88c8",
-                "order": 3
+                "order": 100
             },
             "model": "authentik_flows.flowstagebinding",
             "attrs": {

@@ -63,9 +63,7 @@ class TestOutpostServiceConnectionsAPI(APITestCase):
         provider = ProxyProvider.objects.create(
             name="test", authorization_flow=Flow.objects.first()
         )
-        invalid = OutpostSerializer(
-            data={"name": "foo", "providers": [provider.pk], "config": {}}
-        )
+        invalid = OutpostSerializer(data={"name": "foo", "providers": [provider.pk], "config": ""})
         self.assertFalse(invalid.is_valid())
         self.assertIn("config", invalid.errors)
         valid = OutpostSerializer(

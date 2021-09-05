@@ -42,6 +42,11 @@ object_naming_template: ak-outpost-%(name)s
 ########################################
 # Kubernetes outpost specific settings
 ########################################
+# Network the outpost container should be connected to
+docker_network: null
+########################################
+# Kubernetes outpost specific settings
+########################################
 # Replica count for the deployment of the outpost
 kubernetes_replicas: 1
 # Namespace to deploy in, defaults to the same namespace authentik is deployed in (if available)

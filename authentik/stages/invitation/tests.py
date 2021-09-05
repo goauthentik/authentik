@@ -1,7 +1,6 @@
 """invitation tests"""
 from unittest.mock import MagicMock, patch
 
-from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
 from django.utils.http import urlencode
@@ -17,17 +16,16 @@ from authentik.flows.tests.test_views import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.stages.invitation.models import Invitation, InvitationStage
 from authentik.stages.invitation.stage import INVITATION_TOKEN_KEY, PLAN_CONTEXT_PROMPT
-from authentik.stages.password import BACKEND_DJANGO
+from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 
 
-class TestUserLoginStage(TestCase):
+class TestUserLoginStage(APITestCase):
     """Login tests"""
 
     def setUp(self):
         super().setUp()
         self.user = User.objects.create(username="unittest", email="test@beryju.org")
-        self.client = Client()
 
         self.flow = Flow.objects.create(
             name="test-invitation",
@@ -35,7 +33,7 @@ class TestUserLoginStage(TestCase):
             designation=FlowDesignation.AUTHENTICATION,
         )
         self.stage = InvitationStage.objects.create(name="invitation")
-        FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
+        self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     @patch(
         "authentik.flows.views.to_stage_response",
@@ -43,11 +41,9 @@ class TestUserLoginStage(TestCase):
     )
     def test_without_invitation_fail(self):
         """Test without any invitation, continue_flow_without_invitation not set."""
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = BACKEND_DJANGO
+        plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = BACKEND_INBUILT
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -74,11 +70,9 @@ class TestUserLoginStage(TestCase):
         """Test without any invitation, continue_flow_without_invitation is set."""
         self.stage.continue_flow_without_invitation = True
         self.stage.save()
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = BACKEND_DJANGO
+        plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = BACKEND_INBUILT
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -102,22 +96,16 @@ class TestUserLoginStage(TestCase):
 
     def test_with_invitation_get(self):
         """Test with invitation, check data in session"""
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
         data = {"foo": "bar"}
-        invite = Invitation.objects.create(
-            created_by=get_anonymous_user(), fixed_data=data
-        )
+        invite = Invitation.objects.create(created_by=get_anonymous_user(), fixed_data=data)
 
         with patch("authentik.flows.views.FlowExecutorView.cancel", MagicMock()):
-            base_url = reverse(
-                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            )
+            base_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
             args = urlencode({INVITATION_TOKEN_KEY: invite.pk.hex})
             response = self.client.get(base_url + f"?query={args}")
 
@@ -142,23 +130,21 @@ class TestUserLoginStage(TestCase):
             created_by=get_anonymous_user(), fixed_data=data, single_use=True
         )
 
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PROMPT] = {INVITATION_TOKEN_KEY: invite.pk.hex}
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
         with patch("authentik.flows.views.FlowExecutorView.cancel", MagicMock()):
-            base_url = reverse(
-                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            )
-            response = self.client.get(base_url)
+            base_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+            response = self.client.get(base_url, follow=True)
 
         session = self.client.session
         plan: FlowPlan = session[SESSION_KEY_PLAN]
-        self.assertEqual(plan.context[PLAN_CONTEXT_PROMPT], data)
+        self.assertEqual(
+            plan.context[PLAN_CONTEXT_PROMPT], data | plan.context[PLAN_CONTEXT_PROMPT]
+        )
 
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(

@@ -1,8 +1,10 @@
 """authentik api urls"""
 from django.urls import include, path
 
-from authentik.api.v2.urls import urlpatterns as v2_urls
+from authentik.api.v3.urls import urlpatterns as v3_urls
 
 urlpatterns = [
-    path("v2beta/", include(v2_urls)),
+    # Remove in 2022.1
+    path("v2beta/", include(v3_urls)),
+    path("v3/", include(v3_urls)),
 ]

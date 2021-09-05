@@ -2,12 +2,11 @@
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
+NPM_VERSION = $(shell python -m scripts.npm_version)
 
 all: lint-fix lint test gen
 
 test-integration:
-	k3d cluster create || exit 0
-	k3d kubeconfig write -o ~/.kube/config --overwrite
 	coverage run manage.py test -v 3 tests/integration
 
 test-e2e:
@@ -32,7 +31,7 @@ gen-build:
 
 gen-clean:
 	rm -rf web/api/src/
-	rm -rf outpost/api/
+	rm -rf api/
 
 gen-web:
 	docker run \
@@ -41,9 +40,13 @@ gen-web:
 		openapitools/openapi-generator-cli generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
-		-o /local/web/api \
-		--additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
-	cd web/api && npx tsc
+		-o /local/web-api \
+		--additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=@goauthentik/api,npmVersion=${NPM_VERSION}
+	mkdir -p web/node_modules/@goauthentik/api
+	python -m scripts.web_api_esm
+	\cp -fv scripts/web_api_readme.md web-api/README.md
+	cd web-api && npm i
+	\cp -rfv web-api/* web/node_modules/@goauthentik/api
 
 gen-outpost:
 	docker run \
@@ -55,11 +58,14 @@ gen-outpost:
 		--git-user-id api \
 		-i /local/schema.yml \
 		-g go \
-		-o /local/outpost/api \
-		--additional-properties=packageName=api,enumClassPrefix=true,useOneOfDiscriminatorLookup=true
-	rm -f outpost/api/go.mod outpost/api/go.sum
+		-o /local/api \
+		--additional-properties=packageName=api,enumClassPrefix=true,useOneOfDiscriminatorLookup=true,disallowAdditionalPropertiesIfNotPresent=false
+	rm -f api/go.mod api/go.sum
 
 gen: gen-build gen-clean gen-web gen-outpost
+
+migrate:
+	python -m lifecycle.migrate
 
 run:
 	go run -v cmd/server/main.go

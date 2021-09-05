@@ -200,3 +200,5 @@ media/
 *mmdb
 
 .idea/
+/api/
+/web-api/

@@ -23,9 +23,7 @@ class AccessDeniedResponse(TemplateResponse):
         super().__init__(request, template)
         self.title = _("Access denied")
 
-    def resolve_context(
-        self, context: Optional[dict[str, Any]]
-    ) -> Optional[dict[str, Any]]:
+    def resolve_context(self, context: Optional[dict[str, Any]]) -> Optional[dict[str, Any]]:
         if not context:
             context = {}
         context["title"] = self.title
@@ -35,11 +33,8 @@ class AccessDeniedResponse(TemplateResponse):
         # either superuser or has USER_ATTRIBUTE_DEBUG set
         if self.policy_result:
             if self._request.user and self._request.user.is_authenticated:
-                if (
-                    self._request.user.is_superuser
-                    or self._request.user.group_attributes().get(
-                        USER_ATTRIBUTE_DEBUG, False
-                    )
+                if self._request.user.is_superuser or self._request.user.group_attributes().get(
+                    USER_ATTRIBUTE_DEBUG, False
                 ):
                     context["policy_result"] = self.policy_result
         return context

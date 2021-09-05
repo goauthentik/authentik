@@ -1,0 +1,22 @@
+{
+    "cSpell.words": [
+        "asgi",
+        "authentik",
+        "authn",
+        "goauthentik",
+        "jwks",
+        "oidc",
+        "openid",
+        "plex",
+        "saml",
+        "totp",
+        "webauthn"
+    ],
+    "python.linting.pylintEnabled": true,
+    "todo-tree.tree.showCountsInTree": true,
+    "todo-tree.tree.showBadges": true,
+    "python.formatting.provider": "black",
+    "files.associations": {
+        "*.akflow": "json"
+    }
+}

@@ -20,6 +20,7 @@ class TestSAMLProviderAPI(APITestCase):
 
     def test_metadata(self):
         """Test metadata export (normal)"""
+        self.client.logout()
         provider = SAMLProvider.objects.create(
             name="test",
             authorization_flow=Flow.objects.get(
@@ -34,6 +35,7 @@ class TestSAMLProviderAPI(APITestCase):
 
     def test_metadata_download(self):
         """Test metadata export (download)"""
+        self.client.logout()
         provider = SAMLProvider.objects.create(
             name="test",
             authorization_flow=Flow.objects.get(
@@ -50,6 +52,7 @@ class TestSAMLProviderAPI(APITestCase):
 
     def test_metadata_invalid(self):
         """Test metadata export (invalid)"""
+        self.client.logout()
         # Provider without application
         provider = SAMLProvider.objects.create(
             name="test",
@@ -61,6 +64,10 @@ class TestSAMLProviderAPI(APITestCase):
             reverse("authentik_api:samlprovider-metadata", kwargs={"pk": provider.pk}),
         )
         self.assertEqual(200, response.status_code)
+        response = self.client.get(
+            reverse("authentik_api:samlprovider-metadata", kwargs={"pk": "abc"}),
+        )
+        self.assertEqual(404, response.status_code)
 
     def test_import_success(self):
         """Test metadata import (success case)"""

@@ -1,4 +1,4 @@
-import { CoreApi, SessionUser } from "authentik-api";
+import { CoreApi, SessionUser } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "./Config";
 
 let globalMePromise: Promise<SessionUser>;
@@ -9,6 +9,7 @@ export function me(): Promise<SessionUser> {
                 user: {
                     pk: -1,
                     isSuperuser: false,
+                    isActive: true,
                     groups: [],
                     avatar: "",
                     uid: "",

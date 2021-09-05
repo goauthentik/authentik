@@ -11,7 +11,7 @@ class Command(BaseCommand):  # pragma: no cover
     def handle(self, *args, **options):
         """Apply all flows in order, abort when one fails to import"""
         for flow_path in options.get("flows", []):
-            with open(flow_path, "r") as flow_file:
+            with open(flow_path, "r", encoding="utf8") as flow_file:
                 importer = FlowImporter(flow_file.read())
                 valid = importer.validate()
                 if not valid:

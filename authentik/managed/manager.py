@@ -1,5 +1,5 @@
 """Managed objects manager"""
-from typing import Type
+from typing import Callable, Optional, Type
 
 from structlog.stdlib import get_logger
 
@@ -28,14 +28,28 @@ class EnsureOp:
 class EnsureExists(EnsureOp):
     """Ensure object exists, with kwargs as given values"""
 
+    created_callback: Optional[Callable]
+
+    def __init__(
+        self,
+        obj: Type[ManagedModel],
+        managed_uid: str,
+        created_callback: Optional[Callable] = None,
+        **kwargs,
+    ) -> None:
+        super().__init__(obj, managed_uid, **kwargs)
+        self.created_callback = created_callback
+
     def run(self):
         self._kwargs.setdefault("managed", self._managed_uid)
-        self._obj.objects.update_or_create(
+        obj, created = self._obj.objects.update_or_create(
             **{
                 "managed": self._managed_uid,
                 "defaults": self._kwargs,
             }
         )
+        if created and self.created_callback is not None:
+            self.created_callback(obj)
 
 
 class ObjectManager:

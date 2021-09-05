@@ -1,13 +1,16 @@
-import { Config, Configuration, CoreApi, CurrentTenant, Middleware, ResponseContext, RootApi, Tenant } from "authentik-api";
+import { Config, Configuration, CoreApi, CurrentTenant, Middleware, ResponseContext, RootApi } from "@goauthentik/api";
 import { getCookie } from "../utils";
-import { API_DRAWER_MIDDLEWARE } from "../elements/notifications/APIDrawer";
+import { APIMiddleware } from "../elements/notifications/APIDrawer";
 import { MessageMiddleware } from "../elements/messages/Middleware";
+import { VERSION } from "../constants";
 
 export class LoggingMiddleware implements Middleware {
 
     post(context: ResponseContext): Promise<Response | void> {
         tenant().then(tenant => {
-            console.debug(`authentik/api[${tenant.matchedDomain}]: ${context.response.status} ${context.init.method} ${context.url}`);
+            let msg = `authentik/api[${tenant.matchedDomain}]: `;
+            msg += `${context.response.status} ${context.init.method} ${context.url}`;
+            console.debug(msg);
         });
         return Promise.resolve(context.response);
     }
@@ -47,13 +50,15 @@ export function tenant(): Promise<CurrentTenant> {
 }
 
 export const DEFAULT_CONFIG = new Configuration({
-    basePath: "",
+    basePath: "/api/v3",
     headers: {
         "X-CSRFToken": getCookie("authentik_csrf"),
     },
     middleware: [
-        API_DRAWER_MIDDLEWARE,
+        new APIMiddleware(),
         new MessageMiddleware(),
         new LoggingMiddleware(),
     ],
 });
+
+console.debug(`authentik(early): version ${VERSION}`);

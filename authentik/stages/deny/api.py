@@ -20,3 +20,5 @@ class DenyStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = DenyStage.objects.all()
     serializer_class = DenyStageSerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]

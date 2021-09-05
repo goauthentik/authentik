@@ -37,18 +37,14 @@ def _set_prom_info():
 def update_latest_version(self: MonitoredTask):
     """Update latest version info"""
     try:
-        response = get(
-            "https://api.github.com/repos/goauthentik/authentik/releases/latest"
-        )
+        response = get("https://api.github.com/repos/goauthentik/authentik/releases/latest")
         response.raise_for_status()
         data = response.json()
         tag_name = data.get("tag_name")
         upstream_version = tag_name.split("/")[1]
         cache.set(VERSION_CACHE_KEY, upstream_version, VERSION_CACHE_TIMEOUT)
         self.set_status(
-            TaskResult(
-                TaskResultStatus.SUCCESSFUL, ["Successfully updated latest Version"]
-            )
+            TaskResult(TaskResultStatus.SUCCESSFUL, ["Successfully updated latest Version"])
         )
         _set_prom_info()
         # Check if upstream version is newer than what we're running,

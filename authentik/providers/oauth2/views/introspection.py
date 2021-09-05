@@ -45,10 +45,7 @@ class TokenIntrospectionParams:
         client_id, client_secret = extract_client_auth(request)
         if client_id == client_secret == "":
             return False
-        if (
-            client_id != self.provider.client_id
-            or client_secret != self.provider.client_secret
-        ):
+        if client_id != self.provider.client_id or client_secret != self.provider.client_secret:
             LOGGER.debug("(basic) Provider for basic auth does not exist")
             raise TokenIntrospectionError()
         return True
@@ -58,9 +55,7 @@ class TokenIntrospectionParams:
         body_token = extract_access_token(request)
         if not body_token:
             return False
-        tokens = RefreshToken.objects.filter(access_token=body_token).select_related(
-            "provider"
-        )
+        tokens = RefreshToken.objects.filter(access_token=body_token).select_related("provider")
         if not tokens.exists():
             LOGGER.debug("(bearer) Token does not exist")
             raise TokenIntrospectionError()
@@ -89,10 +84,8 @@ class TokenIntrospectionParams:
             raise TokenIntrospectionError()
 
         params = TokenIntrospectionParams(token=token)
-        if not any(
-            [params.authenticate_basic(request), params.authenticate_bearer(request)]
-        ):
-            LOGGER.debug("Not authenticated")
+        if not any([params.authenticate_basic(request), params.authenticate_bearer(request)]):
+            LOGGER.warning("Not authenticated")
             raise TokenIntrospectionError()
         return params
 

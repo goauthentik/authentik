@@ -63,9 +63,7 @@ def postprocess_schema_responses(result, generator, **kwargs):  # noqa: W0613
             method["responses"].setdefault("400", validation_error.ref)
             method["responses"].setdefault("403", generic_error.ref)
 
-    result["components"] = generator.registry.build(
-        spectacular_settings.APPEND_COMPONENTS
-    )
+    result["components"] = generator.registry.build(spectacular_settings.APPEND_COMPONENTS)
 
     # This is a workaround for authentik/stages/prompt/stage.py
     # since the serializer PromptChallengeResponse

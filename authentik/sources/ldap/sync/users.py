@@ -61,9 +61,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                     dn=user_dn,
                 ).save()
             else:
-                self._logger.debug(
-                    "Synced User", user=ak_user.username, created=created
-                )
+                self._logger.debug("Synced User", user=ak_user.username, created=created)
                 user_count += 1
                 pwd_last_set: datetime = attributes.get("pwdLastSet", datetime.now())
                 pwd_last_set = pwd_last_set.replace(tzinfo=UTC)

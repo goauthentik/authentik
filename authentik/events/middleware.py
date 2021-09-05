@@ -3,6 +3,7 @@ from functools import partial
 from typing import Callable
 
 from django.conf import settings
+from django.core.exceptions import SuspiciousOperation
 from django.db.models import Model
 from django.db.models.signals import post_save, pre_delete
 from django.http import HttpRequest, HttpResponse
@@ -28,12 +29,8 @@ class AuditMiddleware:
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
         # Connect signal for automatic logging
-        if hasattr(request, "user") and getattr(
-            request.user, "is_authenticated", False
-        ):
-            post_save_handler = partial(
-                self.post_save_handler, user=request.user, request=request
-            )
+        if hasattr(request, "user") and getattr(request.user, "is_authenticated", False):
+            post_save_handler = partial(self.post_save_handler, user=request.user, request=request)
             pre_delete_handler = partial(
                 self.pre_delete_handler, user=request.user, request=request
             )
@@ -63,7 +60,15 @@ class AuditMiddleware:
 
         if settings.DEBUG:
             return
-        if before_send({}, {"exc_info": (None, exception, None)}) is not None:
+        # Special case for SuspiciousOperation, we have a special event action for that
+        if isinstance(exception, SuspiciousOperation):
+            thread = EventNewThread(
+                EventAction.SUSPICIOUS_REQUEST,
+                request,
+                message=str(exception),
+            )
+            thread.run()
+        elif before_send({}, {"exc_info": (None, exception, None)}) is not None:
             thread = EventNewThread(
                 EventAction.SYSTEM_EXCEPTION,
                 request,
@@ -85,13 +90,9 @@ class AuditMiddleware:
 
     @staticmethod
     # pylint: disable=unused-argument
-    def pre_delete_handler(
-        user: User, request: HttpRequest, sender, instance: Model, **_
-    ):
+    def pre_delete_handler(user: User, request: HttpRequest, sender, instance: Model, **_):
         """Signal handler for all object's pre_delete"""
-        if isinstance(
-            instance, (Event, Notification, UserObjectPermission)
-        ):  # pragma: no cover
+        if isinstance(instance, (Event, Notification, UserObjectPermission)):  # pragma: no cover
             return
 
         EventNewThread(

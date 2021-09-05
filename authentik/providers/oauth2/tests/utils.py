@@ -2,11 +2,7 @@
 from django.test import TestCase
 from jwt import decode
 
-from authentik.providers.oauth2.models import (
-    JWTAlgorithms,
-    OAuth2Provider,
-    RefreshToken,
-)
+from authentik.providers.oauth2.models import JWTAlgorithms, OAuth2Provider, RefreshToken
 
 
 class OAuthTestCase(TestCase):

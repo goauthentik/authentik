@@ -25,9 +25,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name="token",
-            index=models.Index(
-                fields=["identifier"], name="authentik_c_identif_d9d032_idx"
-            ),
+            index=models.Index(fields=["identifier"], name="authentik_c_identif_d9d032_idx"),
         ),
         migrations.AddIndex(
             model_name="token",

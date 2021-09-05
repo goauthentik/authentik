@@ -55,7 +55,7 @@ class TestTypeGitHub(TestCase):
         self.source = OAuthSource.objects.create(
             name="test",
             slug="test",
-            provider_type="openid-connect",
+            provider_type="openidconnect",
             authorization_url="",
             profile_url="",
             consumer_key="",

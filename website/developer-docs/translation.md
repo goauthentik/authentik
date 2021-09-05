@@ -6,9 +6,21 @@ Translation in authentik is done in two places. Most of the text is defined in t
 
 The frontend uses [lingui](https://lingui.js.org/), and the backend uses the built-in django translation tools.
 
-## Frontend
+## Online translation
 
-If you want to translate the frontend to a new language, ensure the language code is in the `package.json` file in `web/`:
+To simplify translation you can use https://www.transifex.com/beryjuorg/authentik/, which has no local requirements.
+
+## Local translation
+
+### Prerequisites
+
+- Node (any recent version should work, we use 16.x to build)
+- Make (again, any recent version should work)
+- Docker
+
+Run `npm i` in the `/web` folder to install all dependencies.
+
+Ensure the language code is in the `package.json` file in `web/`:
 
 ```json
     // [...]

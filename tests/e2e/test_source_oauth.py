@@ -18,10 +18,7 @@ from yaml import safe_dump
 
 from authentik.core.models import User
 from authentik.flows.models import Flow
-from authentik.providers.oauth2.generators import (
-    generate_client_id,
-    generate_client_secret,
-)
+from authentik.lib.generators import generate_id, generate_key
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.manager import SourceType
 from authentik.sources.oauth.types.twitter import TwitterOAuthCallback
@@ -56,7 +53,7 @@ class TestSourceOAuth2(SeleniumTestCase):
     container: Container
 
     def setUp(self):
-        self.client_secret = generate_client_secret()
+        self.client_secret = generate_key()
         self.prepare_dex_config()
         super().setUp()
 
@@ -92,7 +89,7 @@ class TestSourceOAuth2(SeleniumTestCase):
             "storage": {"config": {"file": "/tmp/dex.db"}, "type": "sqlite3"},  # nosec
             "web": {"http": "0.0.0.0:5556"},
         }
-        with open(CONFIG_PATH, "w+") as _file:
+        with open(CONFIG_PATH, "w+", encoding="utf8") as _file:
             safe_dump(config, _file)
 
     def get_container_specs(self) -> Optional[dict[str, Any]]:
@@ -121,7 +118,7 @@ class TestSourceOAuth2(SeleniumTestCase):
             slug="dex",
             authentication_flow=authentication_flow,
             enrollment_flow=enrollment_flow,
-            provider_type="openid-connect",
+            provider_type="openidconnect",
             authorization_url="http://127.0.0.1:5556/dex/auth",
             access_token_url="http://127.0.0.1:5556/dex/token",
             profile_url="http://127.0.0.1:5556/dex/userinfo",
@@ -145,9 +142,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.driver.get(self.live_server_url)
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        identification_stage = self.get_shadow_root(
-            "ak-stage-identification", flow_executor
-        )
+        identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
         wait.until(
@@ -166,9 +161,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
         # Wait until we're logged in
-        self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, "button[type=submit]"))
-        )
+        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "button[type=submit]")))
         self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 
         # At this point we've been redirected back
@@ -177,12 +170,8 @@ class TestSourceOAuth2(SeleniumTestCase):
         prompt_stage = self.get_shadow_root("ak-stage-prompt", flow_executor)
 
         prompt_stage.find_element(By.CSS_SELECTOR, "input[name=username]").click()
-        prompt_stage.find_element(By.CSS_SELECTOR, "input[name=username]").send_keys(
-            "foo"
-        )
-        prompt_stage.find_element(By.CSS_SELECTOR, "input[name=username]").send_keys(
-            Keys.ENTER
-        )
+        prompt_stage.find_element(By.CSS_SELECTOR, "input[name=username]").send_keys("foo")
+        prompt_stage.find_element(By.CSS_SELECTOR, "input[name=username]").send_keys(Keys.ENTER)
 
         # Wait until we've logged in
         self.wait_for_url(self.if_admin_url("/library"))
@@ -205,9 +194,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.driver.get(self.live_server_url)
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        identification_stage = self.get_shadow_root(
-            "ak-stage-identification", flow_executor
-        )
+        identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
         wait.until(
@@ -226,9 +213,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
         # Wait until we're logged in
-        self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, "button[type=submit]"))
-        )
+        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "button[type=submit]")))
         self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 
     @retry()
@@ -245,9 +230,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.driver.get(self.url("authentik_flows:default-invalidation"))
         sleep(1)
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        identification_stage = self.get_shadow_root(
-            "ak-stage-identification", flow_executor
-        )
+        identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
         wait.until(
@@ -266,9 +249,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
         # Wait until we're logged in
-        self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, "button[type=submit]"))
-        )
+        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "button[type=submit]")))
         self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 
         # Wait until we've logged in
@@ -283,8 +264,8 @@ class TestSourceOAuth1(SeleniumTestCase):
     """Test OAuth1 Source"""
 
     def setUp(self) -> None:
-        self.client_id = generate_client_id()
-        self.client_secret = generate_client_secret()
+        self.client_id = generate_id()
+        self.client_secret = generate_key()
         self.source_slug = "oauth1-test"
         super().setUp()
 
@@ -342,9 +323,7 @@ class TestSourceOAuth1(SeleniumTestCase):
         self.driver.get(self.live_server_url)
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        identification_stage = self.get_shadow_root(
-            "ak-stage-identification", flow_executor
-        )
+        identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
         wait.until(
@@ -363,9 +342,7 @@ class TestSourceOAuth1(SeleniumTestCase):
         sleep(2)
 
         # Wait until we're logged in
-        self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, "[name='confirm']"))
-        )
+        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "[name='confirm']")))
         self.driver.find_element(By.CSS_SELECTOR, "[name='confirm']").click()
 
         # Wait until we've loaded the user info page
@@ -374,6 +351,4 @@ class TestSourceOAuth1(SeleniumTestCase):
         self.wait_for_url(self.if_admin_url("/library"))
         self.driver.get(self.if_admin_url("/user"))
 
-        self.assert_user(
-            User(username="example-user", name="test name", email="foo@example.com")
-        )
+        self.assert_user(User(username="example-user", name="test name", email="foo@example.com"))

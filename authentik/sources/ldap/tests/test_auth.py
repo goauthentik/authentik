@@ -5,15 +5,15 @@ from django.db.models import Q
 from django.test import TestCase
 
 from authentik.core.models import User
+from authentik.lib.generators import generate_key
 from authentik.managed.manager import ObjectManager
-from authentik.providers.oauth2.generators import generate_client_secret
 from authentik.sources.ldap.auth import LDAPBackend
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 from authentik.sources.ldap.tests.mock_slapd import mock_slapd_connection
 
-LDAP_PASSWORD = generate_client_secret()
+LDAP_PASSWORD = generate_key()
 
 
 class LDAPSyncTests(TestCase):
@@ -51,9 +51,7 @@ class LDAPSyncTests(TestCase):
             ):
                 backend = LDAPBackend()
                 self.assertEqual(
-                    backend.authenticate(
-                        None, username="user0_sn", password=LDAP_PASSWORD
-                    ),
+                    backend.authenticate(None, username="user0_sn", password=LDAP_PASSWORD),
                     user,
                 )
 
@@ -80,8 +78,6 @@ class LDAPSyncTests(TestCase):
             ):
                 backend = LDAPBackend()
                 self.assertEqual(
-                    backend.authenticate(
-                        None, username="user0_sn", password=LDAP_PASSWORD
-                    ),
+                    backend.authenticate(None, username="user0_sn", password=LDAP_PASSWORD),
                     user,
                 )

@@ -33,9 +33,7 @@ class TestReputationPolicy(TestCase):
     def test_ip_reputation(self):
         """test IP reputation"""
         # Trigger negative reputation
-        authenticate(
-            self.request, username=self.test_username, password=self.test_username
-        )
+        authenticate(self.request, username=self.test_username, password=self.test_username)
         # Test value in cache
         self.assertEqual(cache.get(CACHE_KEY_IP_PREFIX + self.test_ip), -1)
         # Save cache and check db values
@@ -45,16 +43,12 @@ class TestReputationPolicy(TestCase):
     def test_user_reputation(self):
         """test User reputation"""
         # Trigger negative reputation
-        authenticate(
-            self.request, username=self.test_username, password=self.test_username
-        )
+        authenticate(self.request, username=self.test_username, password=self.test_username)
         # Test value in cache
         self.assertEqual(cache.get(CACHE_KEY_USER_PREFIX + self.test_username), -1)
         # Save cache and check db values
         save_user_reputation.delay().get()
-        self.assertEqual(
-            UserReputation.objects.get(username=self.test_username).score, -1
-        )
+        self.assertEqual(UserReputation.objects.get(username=self.test_username).score, -1)
 
     def test_policy(self):
         """Test Policy"""

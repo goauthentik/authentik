@@ -16,9 +16,7 @@ class TestPropertyMappings(TestCase):
 
     def test_expression(self):
         """Test expression"""
-        mapping = PropertyMapping.objects.create(
-            name="test", expression="return 'test'"
-        )
+        mapping = PropertyMapping.objects.create(name="test", expression="return 'test'")
         self.assertEqual(mapping.evaluate(None, None), "test")
 
     def test_expression_syntax(self):
@@ -31,7 +29,7 @@ class TestPropertyMappings(TestCase):
         """Test expression error"""
         expr = "return aaa"
         mapping = PropertyMapping.objects.create(name="test", expression=expr)
-        with self.assertRaises(NameError):
+        with self.assertRaises(PropertyMappingExpressionException):
             mapping.evaluate(None, None)
         events = Event.objects.filter(
             action=EventAction.PROPERTY_MAPPING_EXCEPTION, context__expression=expr
@@ -44,7 +42,7 @@ class TestPropertyMappings(TestCase):
         expr = "return aaa"
         request = self.factory.get("/")
         mapping = PropertyMapping.objects.create(name="test", expression=expr)
-        with self.assertRaises(NameError):
+        with self.assertRaises(PropertyMappingExpressionException):
             mapping.evaluate(get_anonymous_user(), request)
         events = Event.objects.filter(
             action=EventAction.PROPERTY_MAPPING_EXCEPTION, context__expression=expr
