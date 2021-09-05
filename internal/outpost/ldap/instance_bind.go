@@ -11,6 +11,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api"
 	"goauthentik.io/internal/outpost"
+	"goauthentik.io/internal/utils"
 )
 
 const ContextUserKey = "ak_user"
@@ -36,7 +37,7 @@ func (pi *ProviderInstance) getUsername(dn string) (string, error) {
 func (pi *ProviderInstance) Bind(username string, req BindRequest) (ldap.LDAPResultCode, error) {
 	fe := outpost.NewFlowExecutor(req.ctx, pi.flowSlug, pi.s.ac.Client.GetConfig(), log.Fields{
 		"bindDN":    req.BindDN,
-		"client":    req.conn.RemoteAddr().String(),
+		"client":    utils.GetIP(req.conn.RemoteAddr()),
 		"requestId": req.id,
 	})
 	fe.DelegateClientIP(req.conn.RemoteAddr())

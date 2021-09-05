@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/nmcclain/ldap"
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/utils"
 )
 
 type BindRequest struct {
@@ -33,7 +34,7 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 		BindDN: bindDN,
 		BindPW: bindPW,
 		conn:   conn,
-		log:    ls.log.WithField("bindDN", bindDN).WithField("requestId", rid).WithField("client", conn.RemoteAddr().String()),
+		log:    ls.log.WithField("bindDN", bindDN).WithField("requestId", rid).WithField("client", utils.GetIP(conn.RemoteAddr())),
 		id:     rid,
 		ctx:    span.Context(),
 	}

@@ -11,6 +11,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/nmcclain/ldap"
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/utils"
 )
 
 type SearchRequest struct {
@@ -35,7 +36,7 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 		SearchRequest: searchReq,
 		BindDN:        bindDN,
 		conn:          conn,
-		log:           ls.log.WithField("bindDN", bindDN).WithField("requestId", rid).WithField("client", conn.RemoteAddr().String()).WithField("filter", searchReq.Filter).WithField("baseDN", searchReq.BaseDN),
+		log:           ls.log.WithField("bindDN", bindDN).WithField("requestId", rid).WithField("client", utils.GetIP(conn.RemoteAddr())).WithField("filter", searchReq.Filter).WithField("baseDN", searchReq.BaseDN),
 		id:            rid,
 		ctx:           span.Context(),
 	}
