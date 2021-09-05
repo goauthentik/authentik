@@ -30,6 +30,7 @@ from authentik.flows.api.bindings import FlowStageBindingViewSet
 from authentik.flows.api.flows import FlowViewSet
 from authentik.flows.api.stages import StageViewSet
 from authentik.flows.views import FlowExecutorView
+from authentik.managed.api import ConfigFileViewSet
 from authentik.outposts.api.outposts import OutpostViewSet
 from authentik.outposts.api.service_connections import (
     DockerServiceConnectionViewSet,
@@ -101,6 +102,7 @@ router = routers.DefaultRouter()
 
 router.register("admin/system_tasks", TaskViewSet, basename="admin_system_tasks")
 router.register("admin/apps", AppsViewSet, basename="apps")
+router.register("admin/config_files", ConfigFileViewSet, basename="admin_config_files")
 
 router.register("core/authenticated_sessions", AuthenticatedSessionViewSet)
 router.register("core/applications", ApplicationViewSet)

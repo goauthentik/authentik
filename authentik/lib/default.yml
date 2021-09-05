@@ -54,6 +54,7 @@ outposts:
   # %(build_hash)s: Build hash if you're running a beta version
   docker_image_base: "ghcr.io/goauthentik/%(type)s:%(version)s"
 
+config_file_dir: "/config"
 avatars: env://AUTHENTIK_AUTHENTIK__AVATARS?gravatar
 geoip: "./GeoLite2-City.mmdb"
 

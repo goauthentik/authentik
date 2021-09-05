@@ -1,5 +1,9 @@
 """authentik Managed app"""
+from os import makedirs
+
 from django.apps import AppConfig
+
+from authentik.lib.config import CONFIG
 
 
 class AuthentikManagedConfig(AppConfig):
@@ -14,3 +18,4 @@ class AuthentikManagedConfig(AppConfig):
 
         # pyright: reportGeneralTypeIssues=false
         managed_reconcile()  # pylint: disable=no-value-for-parameter
+        makedirs(CONFIG.y("config_file_dir"), exist_ok=True)

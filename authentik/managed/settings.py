@@ -7,4 +7,9 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(minute="*/5"),
         "options": {"queue": "authentik_scheduled"},
     },
+    "managed_config_file_discovery": {
+        "task": "authentik.managed.tasks.config_file_discovery",
+        "schedule": crontab(minute="*/5"),
+        "options": {"queue": "authentik_scheduled"},
+    },
 }

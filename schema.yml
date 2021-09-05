@@ -30,6 +30,54 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /admin/config_files/:
+    get:
+      operationId: admin_config_files_list
+      description: List config files
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ConfigFile'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /admin/config_files/{id}/:
+    get:
+      operationId: admin_config_files_retrieve
+      description: Get a single config file
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigFile'
+          description: ''
+        '404':
+          description: Config file not found
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /admin/metrics/:
     get:
       operationId: admin_metrics_retrieve
@@ -19018,6 +19066,28 @@ components:
       - error_reporting_enabled
       - error_reporting_environment
       - error_reporting_send_pii
+    ConfigFile:
+      type: object
+      description: Info about a single configuration file
+      properties:
+        name:
+          type: string
+          readOnly: true
+        last_applied:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          type: string
+          readOnly: true
+        message:
+          type: string
+          readOnly: true
+      required:
+      - last_applied
+      - message
+      - name
+      - status
     ConsentChallenge:
       type: object
       description: Challenge info for consent screens
