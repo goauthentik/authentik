@@ -3,7 +3,7 @@ import { Route } from "./Route";
 
 export class RouteMatch {
     route: Route;
-    arguments: { [key: string]: string; };
+    arguments: { [key: string]: string };
     fullUrl?: string;
 
     constructor(route: Route) {
@@ -16,6 +16,8 @@ export class RouteMatch {
     }
 
     toString(): string {
-        return `<RouteMatch url=${this.fullUrl} route=${this.route} arguments=${JSON.stringify(this.arguments)}>`;
+        return `<RouteMatch url=${this.fullUrl} route=${this.route} arguments=${JSON.stringify(
+            this.arguments,
+        )}>`;
     }
 }

@@ -16,22 +16,14 @@ class Migration(migrations.Migration):
             model_name="proxyprovider",
             name="external_host",
             field=models.TextField(
-                validators=[
-                    authentik.lib.models.DomainlessURLValidator(
-                        schemes=("http", "https")
-                    )
-                ]
+                validators=[authentik.lib.models.DomainlessURLValidator(schemes=("http", "https"))]
             ),
         ),
         migrations.AlterField(
             model_name="proxyprovider",
             name="internal_host",
             field=models.TextField(
-                validators=[
-                    authentik.lib.models.DomainlessURLValidator(
-                        schemes=("http", "https")
-                    )
-                ]
+                validators=[authentik.lib.models.DomainlessURLValidator(schemes=("http", "https"))]
             ),
         ),
     ]

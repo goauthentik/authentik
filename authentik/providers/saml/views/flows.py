@@ -54,19 +54,13 @@ class SAMLFlowFinalView(ChallengeStageView):
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         application: Application = self.executor.plan.context[PLAN_CONTEXT_APPLICATION]
-        provider: SAMLProvider = get_object_or_404(
-            SAMLProvider, pk=application.provider_id
-        )
+        provider: SAMLProvider = get_object_or_404(SAMLProvider, pk=application.provider_id)
         if SESSION_KEY_AUTH_N_REQUEST not in self.request.session:
             return self.executor.stage_invalid()
 
-        auth_n_request: AuthNRequest = self.request.session.pop(
-            SESSION_KEY_AUTH_N_REQUEST
-        )
+        auth_n_request: AuthNRequest = self.request.session.pop(SESSION_KEY_AUTH_N_REQUEST)
         try:
-            response = AssertionProcessor(
-                provider, request, auth_n_request
-            ).build_response()
+            response = AssertionProcessor(provider, request, auth_n_request).build_response()
         except SAMLException as exc:
             Event.new(
                 EventAction.CONFIGURATION_ERROR,

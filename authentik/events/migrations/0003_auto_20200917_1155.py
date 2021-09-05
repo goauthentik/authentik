@@ -14,9 +14,7 @@ def convert_user_to_json(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         event.delete()
         # Because event objects cannot be updated, we have to re-create them
         event.pk = None
-        event.user_json = (
-            authentik.events.models.get_user(event.user) if event.user else {}
-        )
+        event.user_json = authentik.events.models.get_user(event.user) if event.user else {}
         event._state.adding = True
         event.save()
 
@@ -58,7 +56,5 @@ class Migration(migrations.Migration):
             model_name="event",
             name="user",
         ),
-        migrations.RenameField(
-            model_name="event", old_name="user_json", new_name="user"
-        ),
+        migrations.RenameField(model_name="event", old_name="user_json", new_name="user"),
     ]

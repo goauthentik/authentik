@@ -27,10 +27,9 @@ class GeoIPDict(TypedDict):
 class GeoIPReader:
     """Slim wrapper around GeoIP API"""
 
-    __reader: Optional[Reader] = None
-    __last_mtime: float = 0.0
-
     def __init__(self):
+        self.__reader: Optional[Reader] = None
+        self.__last_mtime: float = 0.0
         self.__open()
 
     def __open(self):

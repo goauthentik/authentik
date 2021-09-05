@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { CoreApi, User } from "authentik-api";
+import { CoreApi, User } from "@goauthentik/api";
 import { customElement, property } from "lit-element";
 import { TemplateResult, html } from "lit-html";
 import { AKResponse } from "../../api/Client";
@@ -13,6 +13,7 @@ import { first } from "../../utils";
 @customElement("ak-group-member-select-table")
 export class MemberSelectTable extends TableModal<User> {
     checkbox = true;
+    checkboxChip = true;
 
     searchEnabled(): boolean {
         return true;
@@ -27,7 +28,7 @@ export class MemberSelectTable extends TableModal<User> {
         return new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ordering: this.order,
             page: page,
-            pageSize: PAGE_SIZE /2,
+            pageSize: PAGE_SIZE / 2,
             search: this.search || "",
         });
     }
@@ -57,33 +58,30 @@ export class MemberSelectTable extends TableModal<User> {
 
     renderModalInner(): TemplateResult {
         return html`<section class="pf-c-page__main-section pf-m-light">
-            <div class="pf-c-content">
-                <h1 class="pf-c-title pf-m-2xl">
-                    ${t`Select users to add`}
-                </h1>
-            </div>
-        </section>
-        <section class="pf-c-page__main-section pf-m-light">
-            ${this.renderTable()}
-        </section>
-        <footer class="pf-c-modal-box__footer">
-            <ak-spinner-button
-                .callAction=${() => {
-                    return this.confirm(this.selectedElements).then(() => {
+                <div class="pf-c-content">
+                    <h1 class="pf-c-title pf-m-2xl">${t`Select users to add`}</h1>
+                </div>
+            </section>
+            <section class="pf-c-page__main-section pf-m-light">${this.renderTable()}</section>
+            <footer class="pf-c-modal-box__footer">
+                <ak-spinner-button
+                    .callAction=${() => {
+                        return this.confirm(this.selectedElements).then(() => {
+                            this.open = false;
+                        });
+                    }}
+                    class="pf-m-primary"
+                >
+                    ${t`Add`} </ak-spinner-button
+                >&nbsp;
+                <ak-spinner-button
+                    .callAction=${async () => {
                         this.open = false;
-                    });
-                }}
-                class="pf-m-primary">
-                ${t`Add`}
-            </ak-spinner-button>&nbsp;
-            <ak-spinner-button
-                .callAction=${async () => {
-                this.open = false;
-            }}
-                class="pf-m-secondary">
-                ${t`Cancel`}
-            </ak-spinner-button>
-        </footer>`;
+                    }}
+                    class="pf-m-secondary"
+                >
+                    ${t`Cancel`}
+                </ak-spinner-button>
+            </footer>`;
     }
-
 }

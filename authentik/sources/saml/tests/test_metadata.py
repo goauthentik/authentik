@@ -21,17 +21,13 @@ class TestMetadataProcessor(TestCase):
             slug="provider",
             issuer="authentik",
             signing_kp=CertificateKeyPair.objects.first(),
-            pre_authentication_flow=Flow.objects.get(
-                slug="default-source-pre-authentication"
-            ),
+            pre_authentication_flow=Flow.objects.get(slug="default-source-pre-authentication"),
         )
         request = self.factory.get("/")
         xml = MetadataProcessor(source, request).build_entity_descriptor()
         metadata = etree.fromstring(xml)  # nosec
 
-        schema = etree.XMLSchema(
-            etree.parse("xml/saml-schema-metadata-2.0.xsd")
-        )  # nosec
+        schema = etree.XMLSchema(etree.parse("xml/saml-schema-metadata-2.0.xsd"))  # nosec
         self.assertTrue(schema.validate(metadata))
 
     def test_metadata(self):
@@ -40,9 +36,7 @@ class TestMetadataProcessor(TestCase):
             slug="provider",
             issuer="authentik",
             signing_kp=CertificateKeyPair.objects.first(),
-            pre_authentication_flow=Flow.objects.get(
-                slug="default-source-pre-authentication"
-            ),
+            pre_authentication_flow=Flow.objects.get(slug="default-source-pre-authentication"),
         )
         request = self.factory.get("/")
         xml = MetadataProcessor(source, request).build_entity_descriptor()
@@ -54,9 +48,7 @@ class TestMetadataProcessor(TestCase):
         source = SAMLSource.objects.create(
             slug="provider",
             issuer="authentik",
-            pre_authentication_flow=Flow.objects.get(
-                slug="default-source-pre-authentication"
-            ),
+            pre_authentication_flow=Flow.objects.get(slug="default-source-pre-authentication"),
         )
         request = self.factory.get("/")
         xml = MetadataProcessor(source, request).build_entity_descriptor()

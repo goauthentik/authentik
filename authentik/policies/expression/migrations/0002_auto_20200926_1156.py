@@ -6,9 +6,7 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 
 def remove_pb_flow_plan(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    ExpressionPolicy = apps.get_model(
-        "authentik_policies_expression", "ExpressionPolicy"
-    )
+    ExpressionPolicy = apps.get_model("authentik_policies_expression", "ExpressionPolicy")
 
     db_alias = schema_editor.connection.alias
 

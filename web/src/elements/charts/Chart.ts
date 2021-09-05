@@ -6,7 +6,7 @@ import { ArcElement, BarElement } from "chart.js";
 import { TimeScale, LinearScale } from "chart.js";
 import "chartjs-adapter-moment";
 import { FONT_COLOUR_DARK_MODE, FONT_COLOUR_LIGHT_MODE } from "../../pages/flows/FlowDiagram";
-import {EVENT_REFRESH} from "../../constants";
+import { EVENT_REFRESH } from "../../constants";
 
 Chart.register(Legend, Tooltip);
 Chart.register(LineController, BarController, DoughnutController);
@@ -14,7 +14,6 @@ Chart.register(ArcElement, BarElement);
 Chart.register(TimeScale, LinearScale);
 
 export abstract class AKChart<T> extends LitElement {
-
     abstract apiRequest(): Promise<T>;
     abstract getChartData(data: T): ChartData;
 
@@ -26,15 +25,17 @@ export abstract class AKChart<T> extends LitElement {
     fontColour = FONT_COLOUR_LIGHT_MODE;
 
     static get styles(): CSSResult[] {
-        return [css`
-            .container {
-                height: 100%;
-            }
-            canvas {
-                width: 100px;
-                height: 100px;
-            }
-        `];
+        return [
+            css`
+                .container {
+                    height: 100%;
+                }
+                canvas {
+                    width: 100px;
+                    height: 100px;
+                }
+            `,
+        ];
     }
 
     constructor() {
@@ -99,12 +100,14 @@ export abstract class AKChart<T> extends LitElement {
                     chart.ctx.textBaseline = "middle";
                     chart.ctx.fillStyle = this.fontColour;
 
-                    const textX = Math.round((width - chart.ctx.measureText(this.centerText).width) / 2);
+                    const textX = Math.round(
+                        (width - chart.ctx.measureText(this.centerText).width) / 2,
+                    );
                     const textY = height / 2;
 
                     chart.ctx.fillText(this.centerText, textX, textY);
-                }
-            }
+                },
+            },
         ];
     }
 
@@ -116,8 +119,12 @@ export abstract class AKChart<T> extends LitElement {
                     type: "time",
                     display: true,
                     ticks: {
-                        callback: function (tickValue: string | number, index: number, ticks: Tick[]): string {
-                            const valueStamp = (ticks[index]);
+                        callback: function (
+                            tickValue: string | number,
+                            index: number,
+                            ticks: Tick[],
+                        ): string {
+                            const valueStamp = ticks[index];
                             const delta = Date.now() - valueStamp.value;
                             const ago = Math.round(delta / 1000 / 3600);
                             return `${ago} Hours ago`;
@@ -129,7 +136,7 @@ export abstract class AKChart<T> extends LitElement {
                     grid: {
                         color: "rgba(0, 0, 0, 0)",
                     },
-                    offset: true
+                    offset: true,
                 },
                 y: {
                     type: "linear",
@@ -138,7 +145,7 @@ export abstract class AKChart<T> extends LitElement {
                     grid: {
                         color: "rgba(0, 0, 0, 0)",
                     },
-                }
+                },
             },
         } as ChartOptions;
     }

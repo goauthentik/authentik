@@ -5,9 +5,7 @@ from django.db import migrations, models
 
 
 def set_default_group_mappings(apps: Apps, schema_editor):
-    LDAPPropertyMapping = apps.get_model(
-        "authentik_sources_ldap", "LDAPPropertyMapping"
-    )
+    LDAPPropertyMapping = apps.get_model("authentik_sources_ldap", "LDAPPropertyMapping")
     LDAPSource = apps.get_model("authentik_sources_ldap", "LDAPSource")
     db_alias = schema_editor.connection.alias
 

@@ -2,19 +2,16 @@
 from xml.etree.ElementTree import ParseError  # nosec
 
 from defusedxml.ElementTree import fromstring
-from django.http.response import HttpResponse
+from django.http.response import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django_filters.filters import AllValuesMultipleFilter
+from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import (
-    CharField,
-    FileField,
-    ReadOnlyField,
-    SerializerMethodField,
-)
+from rest_framework.fields import CharField, FileField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny
 from rest_framework.relations import SlugRelatedField
@@ -33,9 +30,7 @@ from authentik.core.models import Provider
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.metadata import MetadataProcessor
-from authentik.providers.saml.processors.metadata_parser import (
-    ServiceProviderMetadataParser,
-)
+from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
 
 LOGGER = get_logger()
 
@@ -48,8 +43,7 @@ class SAMLProviderSerializer(ProviderSerializer):
     def get_metadata_download_url(self, instance: SAMLProvider) -> str:
         """Get metadata download URL"""
         return (
-            reverse("authentik_api:samlprovider-metadata", kwargs={"pk": instance.pk})
-            + "?download"
+            reverse("authentik_api:samlprovider-metadata", kwargs={"pk": instance.pk}) + "?download"
         )
 
     class Meta:
@@ -76,8 +70,8 @@ class SAMLProviderSerializer(ProviderSerializer):
 class SAMLMetadataSerializer(PassiveSerializer):
     """SAML Provider Metadata serializer"""
 
-    metadata = ReadOnlyField()
-    download_url = ReadOnlyField(required=False)
+    metadata = CharField(read_only=True)
+    download_url = CharField(read_only=True, required=False)
 
 
 class SAMLProviderImportSerializer(PassiveSerializer):
@@ -97,6 +91,8 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
 
     queryset = SAMLProvider.objects.all()
     serializer_class = SAMLProviderSerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]
 
     @extend_schema(
         responses={
@@ -116,7 +112,10 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
     def metadata(self, request: Request, pk: int) -> Response:
         """Return metadata as XML string"""
         # We don't use self.get_object() on purpose as this view is un-authenticated
-        provider = get_object_or_404(SAMLProvider, pk=pk)
+        try:
+            provider = get_object_or_404(SAMLProvider, pk=pk)
+        except ValueError:
+            raise Http404
         try:
             metadata = MetadataProcessor(provider, request).build_entity_descriptor()
             if "download" in request._request.GET:
@@ -165,7 +164,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
             )
         except ValueError as exc:  # pragma: no cover
             LOGGER.warning(str(exc))
-            return ValidationError(
+            raise ValidationError(
                 _("Failed to import Metadata: %(message)s" % {"message": str(exc)}),
             )
         return Response(status=204)
@@ -183,8 +182,20 @@ class SAMLPropertyMappingSerializer(PropertyMappingSerializer):
         ]
 
 
+class SAMLPropertyMappingFilter(FilterSet):
+    """Filter for SAMLPropertyMapping"""
+
+    managed = AllValuesMultipleFilter(field_name="managed")
+
+    class Meta:
+        model = SAMLPropertyMapping
+        fields = "__all__"
+
+
 class SAMLPropertyMappingViewSet(UsedByMixin, ModelViewSet):
     """SAMLPropertyMapping Viewset"""
 
     queryset = SAMLPropertyMapping.objects.all()
     serializer_class = SAMLPropertyMappingSerializer
+    filterset_class = SAMLPropertyMappingFilter
+    ordering = ["name"]

@@ -19,7 +19,8 @@ export abstract class TablePage<T> extends Table<T> {
         return html`<ak-page-header
                 icon=${this.pageIcon()}
                 header=${this.pageTitle()}
-                description=${ifDefined(this.pageDescription())}>
+                description=${ifDefined(this.pageDescription())}
+            >
             </ak-page-header>
             <section class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-card">${this.renderTable()}</div>

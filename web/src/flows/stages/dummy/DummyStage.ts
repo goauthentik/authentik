@@ -10,29 +10,28 @@ import AKGlobal from "../../../authentik.css";
 import { BaseStage } from "../base";
 import "../../../elements/EmptyState";
 import "../../FormStatic";
-import { DummyChallenge, DummyChallengeResponseRequest } from "authentik-api";
+import { DummyChallenge, DummyChallengeResponseRequest } from "@goauthentik/api";
 
 @customElement("ak-stage-dummy")
 export class DummyStage extends BaseStage<DummyChallenge, DummyChallengeResponseRequest> {
-
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
     }
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state
-                ?loading="${true}"
-                header=${t`Loading`}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">
-                    ${this.challenge.flowInfo?.title}
-                </h1>
+                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
             <div class="pf-c-login__main-body">
-                <form class="pf-c-form" @submit=${(e: Event) => { this.submitForm(e); }}>
+                <form
+                    class="pf-c-form"
+                    @submit=${(e: Event) => {
+                        this.submitForm(e);
+                    }}
+                >
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                             ${t`Continue`}
@@ -41,9 +40,7 @@ export class DummyStage extends BaseStage<DummyChallenge, DummyChallengeResponse
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links">
-                </ul>
+                <ul class="pf-c-login__main-footer-links"></ul>
             </footer>`;
     }
-
 }

@@ -1,8 +1,16 @@
 import { t } from "@lingui/macro";
-import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import {
+    css,
+    CSSResult,
+    customElement,
+    html,
+    LitElement,
+    property,
+    TemplateResult,
+} from "lit-element";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
-import { Application, CoreApi } from "authentik-api";
+import { Application, CoreApi } from "@goauthentik/api";
 import { AKResponse } from "../api/Client";
 import { DEFAULT_CONFIG } from "../api/Config";
 import { me } from "../api/Users";
@@ -17,16 +25,22 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import AKGlobal from "../authentik.css";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 @customElement("ak-library-app")
 export class LibraryApplication extends LitElement {
-    @property({attribute: false})
+    @property({ attribute: false })
     application?: Application;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFCard, PFAvatar, AKGlobal,
+        return [
+            PFBase,
+            PFCard,
+            PFButton,
+            PFAvatar,
+            AKGlobal,
             css`
-                a {
+                .pf-c-card {
                     height: 100%;
                 }
                 i.pf-icon {
@@ -48,7 +62,7 @@ export class LibraryApplication extends LitElement {
                     justify-content: center;
                     margin-right: 0.25em;
                 }
-            `
+            `,
         ];
     }
 
@@ -56,35 +70,48 @@ export class LibraryApplication extends LitElement {
         if (!this.application) {
             return html`<ak-spinner></ak-spinner>`;
         }
-        return html` <a href="${ifDefined(this.application.launchUrl ?? "")}" class="pf-c-card pf-m-hoverable pf-m-compact">
+        return html` <div class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header">
                 ${this.application.metaIcon
-                    ? html`<img class="app-icon pf-c-avatar" src="${ifDefined(this.application.metaIcon)}" alt="Application Icon"/>`
+                    ? html`<a href="${ifDefined(this.application.launchUrl ?? "")}"
+                          ><img
+                              class="app-icon pf-c-avatar"
+                              src="${ifDefined(this.application.metaIcon)}"
+                              alt="Application Icon"
+                      /></a>`
                     : html`<i class="fas fas fa-share-square"></i>`}
-                ${until(me().then((u) => {
-                    if (!u.user.isSuperuser) return html``;
-                    return html`
-                        <a href="#/core/applications/${this.application?.slug}">
-                            <i class="fas fa-pencil-alt"></i>
-                        </a>
-                    `;
-                }))}
+                ${until(
+                    me().then((u) => {
+                        if (!u.user.isSuperuser) return html``;
+                        return html`
+                            <a
+                                class="pf-c-button pf-m-control pf-m-small"
+                                href="#/core/applications/${this.application?.slug}"
+                            >
+                                <i class="fas fa-pencil-alt"></i>
+                            </a>
+                        `;
+                    }),
+                )}
             </div>
             <div class="pf-c-card__title">
-                <p id="card-1-check-label">${this.application.name}</p>
+                <p id="card-1-check-label">
+                    <a href="${ifDefined(this.application.launchUrl ?? "")}"
+                        >${this.application.name}</a
+                    >
+                </p>
                 <div class="pf-c-content">
                     <small>${this.application.metaPublisher}</small>
                 </div>
             </div>
             <div class="pf-c-card__body">${truncate(this.application.metaDescription, 35)}</div>
-        </a>`;
+        </div>`;
     }
-
 }
 
 @customElement("ak-library")
 export class LibraryPage extends LitElement {
-    @property({attribute: false})
+    @property({ attribute: false })
     apps?: AKResponse<Application>;
 
     pageTitle(): string {
@@ -120,20 +147,23 @@ export class LibraryPage extends LitElement {
 
     renderApps(): TemplateResult {
         return html`<div class="pf-l-gallery pf-m-gutter">
-            ${this.apps?.results.map((app) => html`<ak-library-app .application=${app}></ak-library-app>`)}
+            ${this.apps?.results.map(
+                (app) => html`<ak-library-app .application=${app}></ak-library-app>`,
+            )}
         </div>`;
     }
 
     render(): TemplateResult {
         return html`<main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
-            <ak-page-header
-                icon="pf-icon pf-icon-applications"
-                header=${t`Applications`}>
+            <ak-page-header icon="pf-icon pf-icon-applications" header=${t`Applications`}>
             </ak-page-header>
             <section class="pf-c-page__main-section">
-            ${loading(this.apps, html`${(this.apps?.results.length || 0) > 0 ?
-                this.renderApps() :
-                this.renderEmptyState()}`)}
+                ${loading(
+                    this.apps,
+                    html`${(this.apps?.results.length || 0) > 0
+                        ? this.renderApps()
+                        : this.renderEmptyState()}`,
+                )}
             </section>
         </main>`;
     }

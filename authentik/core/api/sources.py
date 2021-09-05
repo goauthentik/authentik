@@ -74,6 +74,8 @@ class SourceViewSet(
         for subclass in all_subclasses(self.queryset.model):
             subclass: Source
             component = ""
+            if len(subclass.__subclasses__()) > 0:
+                continue
             if subclass._meta.abstract:
                 component = subclass.__bases__[0]().component
             else:
@@ -93,9 +95,7 @@ class SourceViewSet(
     @action(detail=False, pagination_class=None, filter_backends=[])
     def user_settings(self, request: Request) -> Response:
         """Get all sources the user can configure"""
-        _all_sources: Iterable[Source] = Source.objects.filter(
-            enabled=True
-        ).select_subclasses()
+        _all_sources: Iterable[Source] = Source.objects.filter(enabled=True).select_subclasses()
         matching_sources: list[UserSettingSerializer] = []
         for source in _all_sources:
             user_settings = source.ui_user_settings

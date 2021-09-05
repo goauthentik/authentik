@@ -1,4 +1,9 @@
-import { FlowsApi, FlowsInstancesListDesignationEnum, ProvidersApi, SAMLProvider } from "authentik-api";
+import {
+    FlowsApi,
+    FlowsInstancesListDesignationEnum,
+    ProvidersApi,
+    SAMLProvider,
+} from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -9,7 +14,6 @@ import "../../../elements/forms/HorizontalFormElement";
 
 @customElement("ak-provider-saml-import-form")
 export class SAMLProviderImportForm extends Form<SAMLProvider> {
-
     getSuccessMessage(): string {
         return t`Successfully imported provider.`;
     }
@@ -29,35 +33,39 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal
-                label=${t`Name`}
-                ?required=${true}
-                name="name">
-                <input type="text" class="pf-c-form-control" required>
+            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+                <input type="text" class="pf-c-form-control" required />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Authorization flow`}
                 ?required=${true}
-                name="authorizationFlow">
+                name="authorizationFlow"
+            >
                 <select class="pf-c-form-control">
-                    ${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
-                        ordering: "pk",
-                        designation: FlowsInstancesListDesignationEnum.Authorization,
-                    }).then(flows => {
-                        return flows.results.map(flow => {
-                            return html`<option value=${flow.slug}>${flow.name} (${flow.slug})</option>`;
-                        });
-                    }), html`<option>${t`Loading...`}</option>`)}
+                    ${until(
+                        new FlowsApi(DEFAULT_CONFIG)
+                            .flowsInstancesList({
+                                ordering: "pk",
+                                designation: FlowsInstancesListDesignationEnum.Authorization,
+                            })
+                            .then((flows) => {
+                                return flows.results.map((flow) => {
+                                    return html`<option value=${flow.slug}>
+                                        ${flow.name} (${flow.slug})
+                                    </option>`;
+                                });
+                            }),
+                        html`<option>${t`Loading...`}</option>`,
+                    )}
                 </select>
-                <p class="pf-c-form__helper-text">${t`Flow used when authorizing this provider.`}</p>
+                <p class="pf-c-form__helper-text">
+                    ${t`Flow used when authorizing this provider.`}
+                </p>
             </ak-form-element-horizontal>
 
-            <ak-form-element-horizontal
-                label=${t`Metadata`}
-                name="flow">
-                <input type="file" value="" class="pf-c-form-control">
+            <ak-form-element-horizontal label=${t`Metadata`} name="flow">
+                <input type="file" value="" class="pf-c-form-control" />
             </ak-form-element-horizontal>
         </form>`;
     }
-
 }

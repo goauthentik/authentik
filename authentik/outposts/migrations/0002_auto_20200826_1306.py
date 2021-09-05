@@ -15,9 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="outpost",
             name="_config",
-            field=models.JSONField(
-                default=authentik.outposts.models.default_outpost_config
-            ),
+            field=models.JSONField(default=authentik.outposts.models.default_outpost_config),
         ),
         migrations.AddField(
             model_name="outpost",

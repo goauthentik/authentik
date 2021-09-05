@@ -3,7 +3,7 @@
 import django.contrib.postgres.fields
 from django.db import migrations, models
 
-import authentik.providers.oauth2.generators
+import authentik.lib.generators
 
 
 class Migration(migrations.Migration):
@@ -24,9 +24,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="plexsource",
             name="plex_token",
-            field=models.TextField(
-                default="", help_text="Plex token used to check firends"
-            ),
+            field=models.TextField(default="", help_text="Plex token used to check firends"),
         ),
         migrations.AlterField(
             model_name="plexsource",

@@ -40,15 +40,14 @@ if __name__ == "__main__":
         user=CONFIG.y("postgresql.user"),
         password=CONFIG.y("postgresql.password"),
         host=CONFIG.y("postgresql.host"),
+        port=int(CONFIG.y("postgresql.port")),
     )
     curr = conn.cursor()
     # lock an advisory lock to prevent multiple instances from migrating at once
     LOGGER.info("waiting to acquire database lock")
     curr.execute("SELECT pg_advisory_lock(%s)", (ADV_LOCK_UID,))
     try:
-        for migration in (
-            Path(__file__).parent.absolute().glob("system_migrations/*.py")
-        ):
+        for migration in Path(__file__).parent.absolute().glob("system_migrations/*.py"):
             spec = spec_from_file_location("lifecycle.system_migrations", migration)
             mod = module_from_spec(spec)
             # pyright: reportGeneralTypeIssues=false

@@ -46,8 +46,6 @@ class Migration(BaseMigration):
         self.system_crit("./manage.py migrate passbook_stages_prompt")
         self.system_crit("./manage.py migrate passbook_flows 0008_default_flows --fake")
         self.system_crit("./manage.py migrate passbook_flows 0009_source_flows --fake")
-        self.system_crit(
-            "./manage.py migrate passbook_flows 0010_provider_flows --fake"
-        )
+        self.system_crit("./manage.py migrate passbook_flows 0010_provider_flows --fake")
         self.system_crit("./manage.py migrate passbook_flows")
         self.system_crit("./manage.py migrate passbook_stages_password --fake")

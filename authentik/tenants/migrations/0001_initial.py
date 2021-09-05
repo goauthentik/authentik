@@ -37,9 +37,7 @@ class Migration(migrations.Migration):
                 ("branding_title", models.TextField(default="authentik")),
                 (
                     "branding_logo",
-                    models.TextField(
-                        default="/static/dist/assets/icons/icon_left_brand.svg"
-                    ),
+                    models.TextField(default="/static/dist/assets/icons/icon_left_brand.svg"),
                 ),
                 (
                     "flow_authentication",

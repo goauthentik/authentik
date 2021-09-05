@@ -88,6 +88,9 @@ module.exports = {
             indexName: 'goauthentik',
         },
     },
+    clientModules: [
+        require.resolve('./src/sentry.jsx'),
+    ],
     presets: [
         [
             "@docusaurus/preset-classic",

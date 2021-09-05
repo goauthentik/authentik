@@ -4,14 +4,9 @@ from django.db.models import QuerySet
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import (
-    OpenApiParameter,
-    OpenApiResponse,
-    extend_schema,
-    inline_serializer,
-)
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import BooleanField, CharField, FileField, ReadOnlyField
+from rest_framework.fields import ReadOnlyField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -24,6 +19,7 @@ from authentik.admin.api.metrics import CoordinateSerializer, get_events_per_1h
 from authentik.api.decorators import permission_required
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.utils import FilePathSerializer, FileUploadSerializer
 from authentik.core.models import Application, User
 from authentik.events.models import EventAction
 from authentik.policies.api.exec import PolicyTestResultSerializer
@@ -71,7 +67,7 @@ class ApplicationSerializer(ModelSerializer):
 class ApplicationViewSet(UsedByMixin, ModelViewSet):
     """Application Viewset"""
 
-    queryset = Application.objects.all()
+    queryset = Application.objects.all().prefetch_related("provider")
     serializer_class = ApplicationSerializer
     search_fields = [
         "name",
@@ -114,23 +110,26 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, methods=["GET"])
-    # pylint: disable=unused-argument
     def check_access(self, request: Request, slug: str) -> Response:
         """Check access to a single application by slug"""
         # Don't use self.get_object as that checks for view_application permission
         # which the user might not have, even if they have access
         application = get_object_or_404(Application, slug=slug)
         # If the current user is superuser, they can set `for_user`
-        for_user = self.request.user
-        if self.request.user.is_superuser and "for_user" in request.data:
-            for_user = get_object_or_404(User, pk=request.data.get("for_user"))
-        engine = PolicyEngine(application, for_user, self.request)
+        for_user = request.user
+        if request.user.is_superuser and "for_user" in request.query_params:
+            try:
+                for_user = get_object_or_404(User, pk=request.query_params.get("for_user"))
+            except ValueError:
+                return HttpResponseBadRequest("for_user must be numerical")
+        engine = PolicyEngine(application, for_user, request)
+        engine.use_cache = False
         engine.build()
         result = engine.result
         response = PolicyTestResultSerializer(PolicyResult(False))
         if result.passing:
             response = PolicyTestResultSerializer(PolicyResult(True))
-        if self.request.user.is_superuser:
+        if request.user.is_superuser:
             response = PolicyTestResultSerializer(result)
         return Response(response.data)
 
@@ -145,18 +144,18 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
     )
     def list(self, request: Request) -> Response:
         """Custom list method that checks Policy based access instead of guardian"""
+        should_cache = request.GET.get("search", "") == ""
+
+        superuser_full_list = str(request.GET.get("superuser_full_list", "false")).lower() == "true"
+        if superuser_full_list and request.user.is_superuser:
+            return super().list(request)
+
+        # To prevent the user from having to double login when prompt is set to login
+        # and the user has just signed it. This session variable is set in the UserLoginStage
+        # and is (quite hackily) removed from the session in applications's API's List method
         self.request.session.pop(USER_LOGIN_AUTHENTICATED, None)
         queryset = self._filter_queryset_for_list(self.get_queryset())
         self.paginate_queryset(queryset)
-
-        should_cache = request.GET.get("search", "") == ""
-
-        superuser_full_list = (
-            str(request.GET.get("superuser_full_list", "false")).lower() == "true"
-        )
-        if superuser_full_list and request.user.is_superuser:
-            serializer = self.get_serializer(queryset, many=True)
-            return self.get_paginated_response(serializer.data)
 
         allowed_applications = []
         if not should_cache:
@@ -177,13 +176,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
     @permission_required("authentik_core.change_application")
     @extend_schema(
         request={
-            "multipart/form-data": inline_serializer(
-                "SetIcon",
-                fields={
-                    "file": FileField(required=False),
-                    "clear": BooleanField(default=False),
-                },
-            )
+            "multipart/form-data": FileUploadSerializer,
         },
         responses={
             200: OpenApiResponse(description="Success"),
@@ -215,7 +208,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
 
     @permission_required("authentik_core.change_application")
     @extend_schema(
-        request=inline_serializer("SetIconURL", fields={"url": CharField()}),
+        request=FilePathSerializer,
         responses={
             200: OpenApiResponse(description="Success"),
             400: OpenApiResponse(description="Bad request"),
@@ -238,9 +231,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         app.save()
         return Response({})
 
-    @permission_required(
-        "authentik_core.view_application", ["authentik_events.view_event"]
-    )
+    @permission_required("authentik_core.view_application", ["authentik_events.view_event"])
     @extend_schema(responses={200: CoordinateSerializer(many=True)})
     @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=unused-argument

@@ -17,8 +17,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="application",
             name="meta_icon",
-            field=models.FileField(
-                blank=True, default="", upload_to="application-icons/"
-            ),
+            field=models.FileField(blank=True, default="", upload_to="application-icons/"),
         ),
     ]

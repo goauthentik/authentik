@@ -35,9 +35,7 @@ def create_default_setup_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEdito
         target=flow, stage=stage, defaults={"order": 0}
     )
 
-    for stage in AuthenticatorTOTPStage.objects.using(db_alias).filter(
-        configure_flow=None
-    ):
+    for stage in AuthenticatorTOTPStage.objects.using(db_alias).filter(configure_flow=None):
         stage.configure_flow = flow
         stage.save()
 

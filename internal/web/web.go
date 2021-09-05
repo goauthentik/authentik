@@ -5,12 +5,13 @@ import (
 	"errors"
 	"net"
 	"net/http"
-	"sync"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"github.com/pires/go-proxyproto"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/config"
+	"goauthentik.io/internal/outpost/proxy"
 )
 
 type WebServer struct {
@@ -21,12 +22,15 @@ type WebServer struct {
 
 	stop chan struct{} // channel for waiting shutdown
 
+	ProxyServer *proxy.Server
+
 	m   *mux.Router
 	lh  *mux.Router
 	log *log.Entry
 }
 
 func NewWebServer() *WebServer {
+	l := log.WithField("logger", "authentik.g.web")
 	mainHandler := mux.NewRouter()
 	if config.G.ErrorReporting.Enabled {
 		mainHandler.Use(recoveryMiddleware())
@@ -34,32 +38,27 @@ func NewWebServer() *WebServer {
 	mainHandler.Use(handlers.ProxyHeaders)
 	mainHandler.Use(handlers.CompressHandler)
 	logginRouter := mainHandler.NewRoute().Subrouter()
-	logginRouter.Use(loggingMiddleware)
+	logginRouter.Use(loggingMiddleware(l))
 
 	ws := &WebServer{
 		LegacyProxy: true,
 
 		m:   mainHandler,
 		lh:  logginRouter,
-		log: log.WithField("logger", "authentik.g.web"),
+		log: l,
 	}
 	ws.configureStatic()
 	ws.configureProxy()
 	return ws
 }
 
-func (ws *WebServer) Run() {
-	wg := sync.WaitGroup{}
-	wg.Add(2)
-	go func() {
-		defer wg.Done()
-		ws.listenPlain()
-	}()
-	go func() {
-		defer wg.Done()
-		ws.listenTLS()
-	}()
-	wg.Done()
+func (ws *WebServer) Start() {
+	go ws.listenPlain()
+	go ws.listenTLS()
+}
+
+func (ws *WebServer) Shutdown() {
+	ws.stop <- struct{}{}
 }
 
 func (ws *WebServer) listenPlain() {
@@ -69,10 +68,16 @@ func (ws *WebServer) listenPlain() {
 	}
 	ws.log.WithField("addr", config.G.Web.Listen).Info("Running")
 
-	ws.serve(ln)
+	proxyListener := &proxyproto.Listener{Listener: ln}
+	defer proxyListener.Close()
+
+	ws.serve(proxyListener)
 
 	ws.log.WithField("addr", config.G.Web.Listen).Info("Running")
-	http.ListenAndServe(config.G.Web.Listen, ws.m)
+	err = http.ListenAndServe(config.G.Web.Listen, ws.m)
+	if err != nil && !errors.Is(err, http.ErrServerClosed) {
+		ws.log.Errorf("ERROR: http.Serve() - %s", err)
+	}
 }
 
 func (ws *WebServer) serve(listener net.Listener) {

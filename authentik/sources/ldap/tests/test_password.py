@@ -4,12 +4,12 @@ from unittest.mock import PropertyMock, patch
 from django.test import TestCase
 
 from authentik.core.models import User
-from authentik.providers.oauth2.generators import generate_client_secret
+from authentik.lib.generators import generate_key
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 from authentik.sources.ldap.password import LDAPPasswordChanger
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 
-LDAP_PASSWORD = generate_client_secret()
+LDAP_PASSWORD = generate_key()
 LDAP_CONNECTION_PATCH = PropertyMock(return_value=mock_ad_connection(LDAP_PASSWORD))
 
 
@@ -46,9 +46,5 @@ class LDAPPasswordTests(TestCase):
         self.assertFalse(pwc.ad_password_complexity("test", user))  # 1 category
         self.assertFalse(pwc.ad_password_complexity("test1", user))  # 2 categories
         self.assertTrue(pwc.ad_password_complexity("test1!", user))  # 2 categories
-        self.assertFalse(
-            pwc.ad_password_complexity("erin!qewrqewr", user)
-        )  # displayName token
-        self.assertFalse(
-            pwc.ad_password_complexity("hagens!qewrqewr", user)
-        )  # displayName token
+        self.assertFalse(pwc.ad_password_complexity("erin!qewrqewr", user))  # displayName token
+        self.assertFalse(pwc.ad_password_complexity("hagens!qewrqewr", user))  # displayName token

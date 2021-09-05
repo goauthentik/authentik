@@ -26,9 +26,7 @@ def config_loggers(*args, **kwags):
 def after_task_publish_hook(sender=None, headers=None, body=None, **kwargs):
     """Log task_id after it was published"""
     info = headers if "task" in headers else body
-    LOGGER.debug(
-        "Task published", task_id=info.get("id", ""), task_name=info.get("task", "")
-    )
+    LOGGER.debug("Task published", task_id=info.get("id", ""), task_name=info.get("task", ""))
 
 
 # pylint: disable=unused-argument

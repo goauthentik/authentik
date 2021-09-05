@@ -102,9 +102,7 @@ class PolicyAccessView(AccessMixin, View):
     def user_has_access(self, user: Optional[User] = None) -> PolicyResult:
         """Check if user has access to application."""
         user = user or self.request.user
-        policy_engine = PolicyEngine(
-            self.application, user or self.request.user, self.request
-        )
+        policy_engine = PolicyEngine(self.application, user or self.request.user, self.request)
         policy_engine.use_cache = False
         policy_engine.build()
         result = policy_engine.result

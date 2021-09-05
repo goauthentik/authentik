@@ -36,9 +36,7 @@ class MetadataProcessor:
             key_descriptor.attrib["use"] = "signing"
             key_info = SubElement(key_descriptor, f"{{{NS_SIGNATURE}}}KeyInfo")
             x509_data = SubElement(key_info, f"{{{NS_SIGNATURE}}}X509Data")
-            x509_certificate = SubElement(
-                x509_data, f"{{{NS_SIGNATURE}}}X509Certificate"
-            )
+            x509_certificate = SubElement(x509_data, f"{{{NS_SIGNATURE}}}X509Certificate")
             x509_certificate.text = strip_pem_header(
                 self.source.signing_kp.certificate_data.replace("\r", "")
             ).replace("\n", "")
@@ -61,14 +59,10 @@ class MetadataProcessor:
 
     def build_entity_descriptor(self) -> str:
         """Build full EntityDescriptor"""
-        entity_descriptor = Element(
-            f"{{{NS_SAML_METADATA}}}EntityDescriptor", nsmap=NS_MAP
-        )
+        entity_descriptor = Element(f"{{{NS_SAML_METADATA}}}EntityDescriptor", nsmap=NS_MAP)
         entity_descriptor.attrib["entityID"] = self.source.get_issuer(self.http_request)
 
-        sp_sso_descriptor = SubElement(
-            entity_descriptor, f"{{{NS_SAML_METADATA}}}SPSSODescriptor"
-        )
+        sp_sso_descriptor = SubElement(entity_descriptor, f"{{{NS_SAML_METADATA}}}SPSSODescriptor")
         sp_sso_descriptor.attrib[
             "protocolSupportEnumeration"
         ] = "urn:oasis:names:tc:SAML:2.0:protocol"

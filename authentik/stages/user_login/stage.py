@@ -8,7 +8,7 @@ from structlog.stdlib import get_logger
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.stages.password import BACKEND_DJANGO
+from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 
 LOGGER = get_logger()
@@ -26,7 +26,7 @@ class UserLoginStageView(StageView):
             LOGGER.debug(message)
             return self.executor.stage_invalid()
         backend = self.executor.plan.context.get(
-            PLAN_CONTEXT_AUTHENTICATION_BACKEND, BACKEND_DJANGO
+            PLAN_CONTEXT_AUTHENTICATION_BACKEND, BACKEND_INBUILT
         )
         login(
             self.request,
@@ -40,6 +40,7 @@ class UserLoginStageView(StageView):
             self.request.session.set_expiry(delta)
         LOGGER.debug(
             "Logged in",
+            backend=backend,
             user=self.executor.plan.context[PLAN_CONTEXT_PENDING_USER],
             flow_slug=self.executor.flow.slug,
             session_duration=self.executor.current_stage.session_duration,

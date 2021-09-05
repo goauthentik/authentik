@@ -32,16 +32,12 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     "expires",
-                    models.DateTimeField(
-                        default=authentik.core.models.default_token_duration
-                    ),
+                    models.DateTimeField(default=authentik.core.models.default_token_duration),
                 ),
                 ("expiring", models.BooleanField(default=True)),
                 (
                     "uuid",
-                    models.UUIDField(
-                        default=uuid.uuid4, primary_key=True, serialize=False
-                    ),
+                    models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False),
                 ),
                 ("session_key", models.CharField(max_length=40)),
                 ("last_ip", models.TextField()),

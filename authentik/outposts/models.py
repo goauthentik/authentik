@@ -28,12 +28,21 @@ from structlog.stdlib import get_logger
 from urllib3.exceptions import HTTPError
 
 from authentik import ENV_GIT_HASH_KEY, __version__
-from authentik.core.models import USER_ATTRIBUTE_SA, Provider, Token, TokenIntents, User
+from authentik.core.models import (
+    USER_ATTRIBUTE_CAN_OVERRIDE_IP,
+    USER_ATTRIBUTE_SA,
+    Provider,
+    Token,
+    TokenIntents,
+    User,
+)
 from authentik.crypto.models import CertificateKeyPair
+from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey
 from authentik.lib.sentry import SentryIgnoredException
-from authentik.lib.utils.http import USER_ATTRIBUTE_CAN_OVERRIDE_IP
+from authentik.lib.utils.errors import exception_to_string
+from authentik.managed.models import ManagedModel
 from authentik.outposts.controllers.k8s.utils import get_namespace
 from authentik.outposts.docker_tls import DockerInlineTLS
 
@@ -47,21 +56,22 @@ class ServiceConnectionInvalid(SentryIgnoredException):
 
 
 @dataclass
+# pylint: disable=too-many-instance-attributes
 class OutpostConfig:
     """Configuration an outpost uses to configure it self"""
 
     # update website/docs/outposts/outposts.md
 
-    authentik_host: str
+    authentik_host: str = ""
     authentik_host_insecure: bool = False
 
     log_level: str = CONFIG.y("log_level")
     error_reporting_enabled: bool = CONFIG.y_bool("error_reporting.enabled")
-    error_reporting_environment: str = CONFIG.y(
-        "error_reporting.environment", "customer"
-    )
-
+    error_reporting_environment: str = CONFIG.y("error_reporting.environment", "customer")
     object_naming_template: str = field(default="ak-outpost-%(name)s")
+
+    docker_network: Optional[str] = field(default=None)
+
     kubernetes_replicas: int = field(default=1)
     kubernetes_namespace: str = field(default_factory=get_namespace)
     kubernetes_ingress_annotations: dict[str, str] = field(default_factory=dict)
@@ -257,9 +267,7 @@ class KubernetesServiceConnection(OutpostServiceConnection):
             client = self.client()
             api_instance = VersionApi(client)
             version: VersionInfo = api_instance.get_code()
-            return OutpostServiceConnectionState(
-                version=version.git_version, healthy=True
-            )
+            return OutpostServiceConnectionState(version=version.git_version, healthy=True)
         except (OpenApiException, HTTPError, ServiceConnectionInvalid):
             return OutpostServiceConnectionState(version="", healthy=False)
 
@@ -281,7 +289,7 @@ class KubernetesServiceConnection(OutpostServiceConnection):
         verbose_name_plural = _("Kubernetes Service-Connections")
 
 
-class Outpost(models.Model):
+class Outpost(ManagedModel):
     """Outpost instance which manages a service user and token"""
 
     uuid = models.UUIDField(default=uuid4, editable=False, primary_key=True)
@@ -337,12 +345,13 @@ class Outpost(models.Model):
         users = User.objects.filter(username=self.user_identifier)
         if not users.exists():
             user: User = User.objects.create(username=self.user_identifier)
-            user.attributes[USER_ATTRIBUTE_SA] = True
-            user.attributes[USER_ATTRIBUTE_CAN_OVERRIDE_IP] = True
             user.set_unusable_password()
             user.save()
         else:
             user = users.first()
+        user.attributes[USER_ATTRIBUTE_SA] = True
+        user.attributes[USER_ATTRIBUTE_CAN_OVERRIDE_IP] = True
+        user.save()
         # To ensure the user only has the correct permissions, we delete all of them and re-add
         # the ones the user needs
         with transaction.atomic():
@@ -352,10 +361,26 @@ class Outpost(models.Model):
                 if isinstance(model_or_perm, models.Model):
                     model_or_perm: models.Model
                     code_name = (
-                        f"{model_or_perm._meta.app_label}."
-                        f"view_{model_or_perm._meta.model_name}"
+                        f"{model_or_perm._meta.app_label}." f"view_{model_or_perm._meta.model_name}"
                     )
-                    assign_perm(code_name, user, model_or_perm)
+                    try:
+                        assign_perm(code_name, user, model_or_perm)
+                    except (Permission.DoesNotExist, AttributeError) as exc:
+                        LOGGER.warning(
+                            "permission doesn't exist",
+                            code_name=code_name,
+                            user=user,
+                            model=model_or_perm,
+                        )
+                        Event.new(
+                            action=EventAction.SYSTEM_EXCEPTION,
+                            message=(
+                                "While setting the permissions for the service-account, a "
+                                "permission was not found: Check "
+                                "https://goauthentik.io/docs/troubleshooting/missing_permission"
+                            )
+                            + exception_to_string(exc),
+                        ).set_user(user).save()
                 else:
                     app_label, perm = model_or_perm.split(".")
                     permission = Permission.objects.filter(
@@ -405,10 +430,11 @@ class Outpost(models.Model):
 
     def get_required_objects(self) -> Iterable[Union[models.Model, str]]:
         """Get an iterator of all objects the user needs read access to"""
-        objects: list[Union[models.Model, str]] = [self]
-        for provider in (
-            Provider.objects.filter(outpost=self).select_related().select_subclasses()
-        ):
+        objects: list[Union[models.Model, str]] = [
+            self,
+            "authentik_events.add_event",
+        ]
+        for provider in Provider.objects.filter(outpost=self).select_related().select_subclasses():
             if isinstance(provider, OutpostModel):
                 objects.extend(provider.get_required_objects())
             else:

@@ -1,26 +1,40 @@
 """Test AuthN Request generator and parser"""
 from base64 import b64encode
 
-from django.contrib.sessions.middleware import SessionMiddleware
 from django.http.request import QueryDict
 from django.test import RequestFactory, TestCase
-from guardian.utils import get_anonymous_user
 
+from authentik.core.models import User
 from authentik.crypto.models import CertificateKeyPair
+from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
-from authentik.flows.tests.test_planner import dummy_get_response
+from authentik.lib.tests.utils import get_request
+from authentik.managed.manager import ObjectManager
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.request_parser import AuthNRequestParser
 from authentik.sources.saml.exceptions import MismatchedRequestID
 from authentik.sources.saml.models import SAMLSource
-from authentik.sources.saml.processors.constants import SAML_NAME_ID_FORMAT_UNSPECIFIED
-from authentik.sources.saml.processors.request import (
-    SESSION_REQUEST_ID,
-    RequestProcessor,
+from authentik.sources.saml.processors.constants import (
+    SAML_NAME_ID_FORMAT_EMAIL,
+    SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
+from authentik.sources.saml.processors.request import SESSION_REQUEST_ID, RequestProcessor
 from authentik.sources.saml.processors.response import ResponseProcessor
 
+POST_REQUEST = (
+    "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c2FtbDJwOkF1dGhuUmVxdWVzdCB4bWxuczpzYW1sMn"
+    "A9InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDpwcm90b2NvbCIgQXNzZXJ0aW9uQ29uc3VtZXJTZXJ2aWNlVVJMPSJo"
+    "dHRwczovL2V1LWNlbnRyYWwtMS5zaWduaW4uYXdzLmFtYXpvbi5jb20vcGxhdGZvcm0vc2FtbC9hY3MvMmQ3MzdmOTYtNT"
+    "VmYi00MDM1LTk1M2UtNWUyNDEzNGViNzc4IiBEZXN0aW5hdGlvbj0iaHR0cHM6Ly9pZC5iZXJ5anUub3JnL2FwcGxpY2F0"
+    "aW9uL3NhbWwvYXdzLXNzby9zc28vYmluZGluZy9wb3N0LyIgSUQ9ImF3c19MRHhMR2V1YnBjNWx4MTJneENnUzZ1UGJpeD"
+    "F5ZDVyZSIgSXNzdWVJbnN0YW50PSIyMDIxLTA3LTA2VDE0OjIzOjA2LjM4OFoiIFByb3RvY29sQmluZGluZz0idXJuOm9h"
+    "c2lzOm5hbWVzOnRjOlNBTUw6Mi4wOmJpbmRpbmdzOkhUVFAtUE9TVCIgVmVyc2lvbj0iMi4wIj48c2FtbDI6SXNzdWVyIH"
+    "htbG5zOnNhbWwyPSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6YXNzZXJ0aW9uIj5odHRwczovL2V1LWNlbnRyYWwt"
+    "MS5zaWduaW4uYXdzLmFtYXpvbi5jb20vcGxhdGZvcm0vc2FtbC9kLTk5NjcyZjgyNzg8L3NhbWwyOklzc3Vlcj48c2FtbD"
+    "JwOk5hbWVJRFBvbGljeSBGb3JtYXQ9InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjEuMTpuYW1laWQtZm9ybWF0OmVtYWls"
+    "QWRkcmVzcyIvPjwvc2FtbDJwOkF1dGhuUmVxdWVzdD4="
+)
 REDIRECT_REQUEST = (
     "fZLNbsIwEIRfJfIdbKeFgEUipXAoEm0jSHvopTLJplhK7NTr9Oft6yRUKhekPdk73+yOdoWyqVuRdu6k9/DRAbrgu6k1iu"
     "EjJp3VwkhUKLRsAIUrxCF92IlwykRrjTOFqUmQIoJ1yui10dg1YA9gP1UBz/tdTE7OtSgo5WzKQzYditGeP8GW9rSQZk+H"
@@ -35,9 +49,7 @@ REDIRECT_SIGNATURE = (
     "jVvPdh96AhBFj2HCuGZhP0CGotafTciu6YlsiwUpuBkIYgZmNWYa3FR9LS4Q=="
 )
 REDIRECT_SIG_ALG = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
-REDIRECT_RELAY_STATE = (
-    "ss:mem:7a054b4af44f34f89dd2d973f383c250b6b076e7f06cfa8276008a6504eaf3c7"
-)
+REDIRECT_RELAY_STATE = "ss:mem:7a054b4af44f34f89dd2d973f383c250b6b076e7f06cfa8276008a6504eaf3c7"
 REDIRECT_CERT = """-----BEGIN CERTIFICATE-----
 MIIDCDCCAfCgAwIBAgIRAM5s+bhOHk4ChSpPkGSh0NswDQYJKoZIhvcNAQELBQAw
 KzEpMCcGA1UEAwwgcGFzc2Jvb2sgU2VsZi1zaWduZWQgQ2VydGlmaWNhdGUwHhcN
@@ -63,6 +75,7 @@ class TestAuthNRequest(TestCase):
     """Test AuthN Request generator and parser"""
 
     def setUp(self):
+        ObjectManager().run()
         cert = CertificateKeyPair.objects.first()
         self.provider: SAMLProvider = SAMLProvider.objects.create(
             authorization_flow=Flow.objects.get(
@@ -77,20 +90,14 @@ class TestAuthNRequest(TestCase):
         self.source = SAMLSource.objects.create(
             slug="provider",
             issuer="authentik",
-            pre_authentication_flow=Flow.objects.get(
-                slug="default-source-pre-authentication"
-            ),
+            pre_authentication_flow=Flow.objects.get(slug="default-source-pre-authentication"),
             signing_kp=cert,
         )
         self.factory = RequestFactory()
 
     def test_signed_valid(self):
         """Test generated AuthNRequest with valid signature"""
-        http_request = self.factory.get("/")
-
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(http_request)
-        http_request.session.save()
+        http_request = get_request("/")
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -104,12 +111,7 @@ class TestAuthNRequest(TestCase):
 
     def test_request_full_signed(self):
         """Test full SAML Request/Response flow, fully signed"""
-        http_request = self.factory.get("/")
-        http_request.user = get_anonymous_user()
-
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(http_request)
-        http_request.session.save()
+        http_request = get_request("/")
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -132,12 +134,7 @@ class TestAuthNRequest(TestCase):
 
     def test_request_id_invalid(self):
         """Test generated AuthNRequest with invalid request ID"""
-        http_request = self.factory.get("/")
-        http_request.user = get_anonymous_user()
-
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(http_request)
-        http_request.session.save()
+        http_request = get_request("/")
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -166,11 +163,7 @@ class TestAuthNRequest(TestCase):
 
     def test_signed_valid_detached(self):
         """Test generated AuthNRequest with valid signature (detached)"""
-        http_request = self.factory.get("/")
-
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(http_request)
-        http_request.session.save()
+        http_request = get_request("/")
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -208,3 +201,67 @@ class TestAuthNRequest(TestCase):
         self.assertEqual(parsed_request.id, "_dcf55fcd27a887e60a7ef9ee6fd3adab")
         self.assertEqual(parsed_request.name_id_policy, SAML_NAME_ID_FORMAT_UNSPECIFIED)
         self.assertEqual(parsed_request.relay_state, REDIRECT_RELAY_STATE)
+
+    def test_signed_static(self):
+        """Test post request with static request"""
+        provider = SAMLProvider(
+            name="aws",
+            authorization_flow=Flow.objects.get(
+                slug="default-provider-authorization-implicit-consent"
+            ),
+            acs_url=(
+                "https://eu-central-1.signin.aws.amazon.com/platform/"
+                "saml/acs/2d737f96-55fb-4035-953e-5e24134eb778"
+            ),
+            audience="https://10.120.20.200/saml-sp/SAML2/POST",
+            issuer="https://10.120.20.200/saml-sp/SAML2/POST",
+            signing_kp=CertificateKeyPair.objects.first(),
+        )
+        parsed_request = AuthNRequestParser(provider).parse(POST_REQUEST)
+        self.assertEqual(parsed_request.id, "aws_LDxLGeubpc5lx12gxCgS6uPbix1yd5re")
+        self.assertEqual(parsed_request.name_id_policy, SAML_NAME_ID_FORMAT_EMAIL)
+
+    def test_request_attributes(self):
+        """Test full SAML Request/Response flow, fully signed"""
+        http_request = get_request("/", user=User.objects.get(username="akadmin"))
+
+        # First create an AuthNRequest
+        request_proc = RequestProcessor(self.source, http_request, "test_state")
+        request = request_proc.build_auth_n()
+
+        # To get an assertion we need a parsed request (parsed by provider)
+        parsed_request = AuthNRequestParser(self.provider).parse(
+            b64encode(request.encode()).decode(), "test_state"
+        )
+        # Now create a response and convert it to string (provider)
+        response_proc = AssertionProcessor(self.provider, http_request, parsed_request)
+        self.assertIn("akadmin", response_proc.build_response())
+
+    def test_request_attributes_invalid(self):
+        """Test full SAML Request/Response flow, fully signed"""
+        http_request = get_request("/", user=User.objects.get(username="akadmin"))
+
+        # First create an AuthNRequest
+        request_proc = RequestProcessor(self.source, http_request, "test_state")
+        request = request_proc.build_auth_n()
+
+        # Create invalid PropertyMapping
+        scope = SAMLPropertyMapping.objects.create(name="test", saml_name="test", expression="q")
+        self.provider.property_mappings.add(scope)
+
+        # To get an assertion we need a parsed request (parsed by provider)
+        parsed_request = AuthNRequestParser(self.provider).parse(
+            b64encode(request.encode()).decode(), "test_state"
+        )
+        # Now create a response and convert it to string (provider)
+        response_proc = AssertionProcessor(self.provider, http_request, parsed_request)
+        self.assertIn("akadmin", response_proc.build_response())
+
+        events = Event.objects.filter(
+            action=EventAction.CONFIGURATION_ERROR,
+        )
+        self.assertTrue(events.exists())
+        self.assertEqual(
+            events.first().context["message"],
+            "Failed to evaluate property-mapping: name 'q' is not defined",
+        )

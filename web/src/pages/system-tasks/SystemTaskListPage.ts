@@ -7,7 +7,7 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/ActionButton";
 import { TableColumn } from "../../elements/table/Table";
-import { AdminApi, Task, StatusEnum } from "authentik-api";
+import { AdminApi, Task, StatusEnum } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { PFColor } from "../../elements/Label";
 
@@ -56,7 +56,7 @@ export class SystemTaskListPage extends TablePage<Task> {
             new TableColumn(t`Description`),
             new TableColumn(t`Last run`),
             new TableColumn(t`Status`),
-            new TableColumn(""),
+            new TableColumn(t`Actions`),
         ];
     }
 
@@ -74,27 +74,26 @@ export class SystemTaskListPage extends TablePage<Task> {
     }
 
     renderExpanded(item: Task): TemplateResult {
-        return html`
-        <td role="cell" colspan="3">
-            <div class="pf-c-table__expandable-row-content">
-                <dl class="pf-c-description-list pf-m-horizontal">
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${t`Messages`}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                ${item.messages.map(m => {
-                                    return html`<li>${m}</li>`;
-                                })}
-                            </div>
-                        </dd>
-                    </div>
-                </dl>
-            </div>
-        </td>
-        <td></td>
-        <td></td>`;
+        return html` <td role="cell" colspan="3">
+                <div class="pf-c-table__expandable-row-content">
+                    <dl class="pf-c-description-list pf-m-horizontal">
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text">${t`Messages`}</span>
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">
+                                    ${item.messages.map((m) => {
+                                        return html`<li>${m}</li>`;
+                                    })}
+                                </div>
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+            </td>
+            <td></td>
+            <td></td>`;
     }
 
     row(item: Task): TemplateResult[] {
@@ -108,10 +107,10 @@ export class SystemTaskListPage extends TablePage<Task> {
                     return new AdminApi(DEFAULT_CONFIG).adminSystemTasksRetryCreate({
                         id: item.taskName,
                     });
-                }}>
+                }}
+            >
                 ${t`Retry Task`}
             </ak-action-button>`,
         ];
     }
-
 }

@@ -20,3 +20,5 @@ class UserLogoutStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = UserLogoutStage.objects.all()
     serializer_class = UserLogoutStageSerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]

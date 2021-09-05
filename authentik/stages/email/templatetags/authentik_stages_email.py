@@ -14,7 +14,7 @@ def inline_static_ascii(path: str) -> str:
     If no file could be found, original path is returned"""
     result = Path(finders.find(path))
     if result:
-        with open(result) as _file:
+        with open(result, encoding="utf8") as _file:
             return _file.read()
     return path
 
@@ -25,7 +25,7 @@ def inline_static_binary(path: str) -> str:
     path is returned."""
     result = Path(finders.find(path))
     if result and result.is_file():
-        with open(result) as _file:
+        with open(result, encoding="utf8") as _file:
             b64content = b64encode(_file.read().encode())
             return f"data:image/{result.suffix};base64,{b64content.decode('utf-8')}"
     return path

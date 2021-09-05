@@ -22,18 +22,13 @@ class ConsentMode(models.TextChoices):
 class ConsentStage(Stage):
     """Prompt the user for confirmation."""
 
-    mode = models.TextField(
-        choices=ConsentMode.choices, default=ConsentMode.ALWAYS_REQUIRE
-    )
+    mode = models.TextField(choices=ConsentMode.choices, default=ConsentMode.ALWAYS_REQUIRE)
     consent_expire_in = models.TextField(
         validators=[timedelta_string_validator],
         default="weeks=4",
         verbose_name="Consent expires in",
         help_text=_(
-            (
-                "Offset after which consent expires. "
-                "(Format: hours=1;minutes=2;seconds=3)."
-            )
+            ("Offset after which consent expires. " "(Format: hours=1;minutes=2;seconds=3).")
         ),
     )
 

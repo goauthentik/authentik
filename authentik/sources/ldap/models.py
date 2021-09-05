@@ -17,8 +17,8 @@ class LDAPSource(Source):
         validators=[DomainlessURLValidator(schemes=["ldap", "ldaps"])],
         verbose_name=_("Server URI"),
     )
-    bind_cn = models.TextField(verbose_name=_("Bind CN"))
-    bind_password = models.TextField()
+    bind_cn = models.TextField(verbose_name=_("Bind CN"), blank=True)
+    bind_password = models.TextField(blank=True)
     start_tls = models.BooleanField(default=False, verbose_name=_("Enable Start TLS"))
 
     base_dn = models.TextField(verbose_name=_("Base DN"))
@@ -64,7 +64,6 @@ class LDAPSource(Source):
                 "This can only be enabled on a single LDAP source."
             )
         ),
-        unique=True,
     )
     sync_groups = models.BooleanField(default=True)
     sync_parent_group = models.ForeignKey(

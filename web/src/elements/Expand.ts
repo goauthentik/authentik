@@ -4,7 +4,6 @@ import PFExpandableSection from "../../node_modules/@patternfly/patternfly/compo
 
 @customElement("ak-expand")
 export class Expand extends LitElement {
-
     @property({ type: Boolean })
     expanded = false;
 
@@ -20,16 +19,22 @@ export class Expand extends LitElement {
 
     render(): TemplateResult {
         return html`<div class="pf-c-expandable-section ${this.expanded ? "pf-m-expanded" : ""}">
-            <button type="button" class="pf-c-expandable-section__toggle" aria-expanded="${this.expanded}" @click=${() => {
-                this.expanded = !this.expanded;
-            }}>
+            <button
+                type="button"
+                class="pf-c-expandable-section__toggle"
+                aria-expanded="${this.expanded}"
+                @click=${() => {
+                    this.expanded = !this.expanded;
+                }}
+            >
                 <span class="pf-c-expandable-section__toggle-icon">
                     <i class="fas fa-angle-right" aria-hidden="true"></i>
                 </span>
-                <span class="pf-c-expandable-section__toggle-text">${this.expanded ? t`${this.textOpen}` : t`${this.textClosed}`}</span>
+                <span class="pf-c-expandable-section__toggle-text"
+                    >${this.expanded ? t`${this.textOpen}` : t`${this.textClosed}`}</span
+                >
             </button>
             <slot ?hidden=${!this.expanded} class="pf-c-expandable-section__content"></slot>
         </div>`;
     }
-
 }

@@ -5,14 +5,13 @@ from typing import Any, Optional, Type
 from urllib.parse import urlencode
 from uuid import uuid4
 
-import django.db.models.options as options
 from deepmerge import always_merger
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.core import validators
 from django.db import models
-from django.db.models import Q, QuerySet
+from django.db.models import Q, QuerySet, options
 from django.http import HttpRequest
 from django.templatetags.static import static
 from django.utils.functional import cached_property
@@ -29,6 +28,7 @@ from authentik.core.signals import password_changed
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.models import Flow
 from authentik.lib.config import CONFIG
+from authentik.lib.generators import generate_id
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 from authentik.lib.utils.http import get_client_ip
 from authentik.managed.models import ManagedModel
@@ -38,6 +38,8 @@ LOGGER = get_logger()
 USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
 USER_ATTRIBUTE_SA = "goauthentik.io/user/service-account"
 USER_ATTRIBUTE_SOURCES = "goauthentik.io/user/sources"
+USER_ATTRIBUTE_TOKEN_EXPIRING = "goauthentik.io/user/token-expires"  # nosec
+USER_ATTRIBUTE_CAN_OVERRIDE_IP = "goauthentik.io/user/override-ips"
 
 GRAVATAR_URL = "https://secure.gravatar.com"
 DEFAULT_AVATAR = static("dist/assets/images/user_default.png")
@@ -53,7 +55,9 @@ def default_token_duration():
 
 def default_token_key():
     """Default token key"""
-    return uuid4().hex
+    # We use generate_id since the chars in the key should be easy
+    # to use in Emails (for verification) and URLs (for recovery)
+    return generate_id(128)
 
 
 class Group(models.Model):
@@ -153,9 +157,7 @@ class User(GuardianUserMixin, AbstractUser):
                 ("s", "158"),
                 ("r", "g"),
             ]
-            gravatar_url = (
-                f"{GRAVATAR_URL}/avatar/{mail_hash}?{urlencode(parameters, doseq=True)}"
-            )
+            gravatar_url = f"{GRAVATAR_URL}/avatar/{mail_hash}?{urlencode(parameters, doseq=True)}"
             return escape(gravatar_url)
         return mode % {
             "username": self.username,
@@ -185,9 +187,7 @@ class Provider(SerializerModel):
         related_name="provider_authorization",
     )
 
-    property_mappings = models.ManyToManyField(
-        "PropertyMapping", default=None, blank=True
-    )
+    property_mappings = models.ManyToManyField("PropertyMapping", default=None, blank=True)
 
     objects = InheritanceManager()
 
@@ -217,9 +217,7 @@ class Application(PolicyBindingModel):
     add custom fields and other properties"""
 
     name = models.TextField(help_text=_("Application's display Name."))
-    slug = models.SlugField(
-        help_text=_("Internal application name, used in URLs."), unique=True
-    )
+    slug = models.SlugField(help_text=_("Internal application name, used in URLs."), unique=True)
     provider = models.OneToOneField(
         "Provider", null=True, blank=True, default=None, on_delete=models.SET_DEFAULT
     )
@@ -229,7 +227,10 @@ class Application(PolicyBindingModel):
     )
     # For template applications, this can be set to /static/authentik/applications/*
     meta_icon = models.FileField(
-        upload_to="application-icons/", default=None, null=True
+        upload_to="application-icons/",
+        default=None,
+        null=True,
+        max_length=500,
     )
     meta_description = models.TextField(default="", blank=True)
     meta_publisher = models.TextField(default="", blank=True)
@@ -240,9 +241,7 @@ class Application(PolicyBindingModel):
         it is returned as-is"""
         if not self.meta_icon:
             return None
-        if self.meta_icon.name.startswith("http") or self.meta_icon.name.startswith(
-            "/static"
-        ):
+        if self.meta_icon.name.startswith("http") or self.meta_icon.name.startswith("/static"):
             return self.meta_icon.name
         return self.meta_icon.url
 
@@ -297,14 +296,10 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
     name = models.TextField(help_text=_("Source's display Name."))
-    slug = models.SlugField(
-        help_text=_("Internal source name, used in URLs."), unique=True
-    )
+    slug = models.SlugField(help_text=_("Internal source name, used in URLs."), unique=True)
 
     enabled = models.BooleanField(default=True)
-    property_mappings = models.ManyToManyField(
-        "PropertyMapping", default=None, blank=True
-    )
+    property_mappings = models.ManyToManyField("PropertyMapping", default=None, blank=True)
 
     authentication_flow = models.ForeignKey(
         Flow,
@@ -378,6 +373,13 @@ class ExpiringModel(models.Model):
     expires = models.DateTimeField(default=default_token_duration)
     expiring = models.BooleanField(default=True)
 
+    def expire_action(self, *args, **kwargs):
+        """Handler which is called when this object is expired. By
+        default the object is deleted. This is less efficient compared
+        to bulk deleting objects, but classes like Token() need to change
+        values instead of being deleted."""
+        return self.delete(*args, **kwargs)
+
     @classmethod
     def filter_not_expired(cls, **kwargs) -> QuerySet:
         """Filer for tokens which are not expired yet or are not expiring,
@@ -409,6 +411,9 @@ class TokenIntents(models.TextChoices):
     # Recovery use for the recovery app
     INTENT_RECOVERY = "recovery"
 
+    # App-specific passwords
+    INTENT_APP_PASSWORD = "app_password"  # nosec
+
 
 class Token(ManagedModel, ExpiringModel):
     """Token used to authenticate the User for API Access or confirm another Stage like Email."""
@@ -421,6 +426,19 @@ class Token(ManagedModel, ExpiringModel):
     )
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="+")
     description = models.TextField(default="", blank=True)
+
+    def expire_action(self, *args, **kwargs):
+        """Handler which is called when this object is expired."""
+        from authentik.events.models import Event, EventAction
+
+        self.key = default_token_key()
+        self.expires = default_token_duration()
+        self.save(*args, **kwargs)
+        Event.new(
+            action=EventAction.SECRET_ROTATE,
+            token=self,
+            message=f"Token {self.identifier}'s secret was rotated.",
+        ).save()
 
     def __str__(self):
         description = f"{self.identifier}"
@@ -458,9 +476,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         """Get serializer for this model"""
         raise NotImplementedError
 
-    def evaluate(
-        self, user: Optional[User], request: Optional[HttpRequest], **kwargs
-    ) -> Any:
+    def evaluate(self, user: Optional[User], request: Optional[HttpRequest], **kwargs) -> Any:
         """Evaluate `self.expression` using `**kwargs` as Context."""
         from authentik.core.expression import PropertyMappingEvaluator
 
@@ -468,8 +484,8 @@ class PropertyMapping(SerializerModel, ManagedModel):
         evaluator.set_context(user, request, self, **kwargs)
         try:
             return evaluator.evaluate(self.expression)
-        except (ValueError, SyntaxError) as exc:
-            raise PropertyMappingExpressionException from exc
+        except Exception as exc:
+            raise PropertyMappingExpressionException(str(exc)) from exc
 
     def __str__(self):
         return f"Property Mapping {self.name}"
@@ -499,9 +515,7 @@ class AuthenticatedSession(ExpiringModel):
     last_used = models.DateTimeField(auto_now=True)
 
     @staticmethod
-    def from_request(
-        request: HttpRequest, user: User
-    ) -> Optional["AuthenticatedSession"]:
+    def from_request(request: HttpRequest, user: User) -> Optional["AuthenticatedSession"]:
         """Create a new session from a http request"""
         if not hasattr(request, "session") or not request.session.session_key:
             return None
@@ -512,3 +526,8 @@ class AuthenticatedSession(ExpiringModel):
             last_user_agent=request.META.get("HTTP_USER_AGENT", ""),
             expires=request.session.get_expiry_date(),
         )
+
+    class Meta:
+
+        verbose_name = _("Authenticated Session")
+        verbose_name_plural = _("Authenticated Sessions")

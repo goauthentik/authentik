@@ -2,9 +2,8 @@ import { t } from "@lingui/macro";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { Table, TableColumn } from "../table/Table";
-import { Event, EventsApi } from "authentik-api";
+import { Event, EventsApi } from "@goauthentik/api";
 
-import "../forms/DeleteForm";
 import "../Tabs";
 import "../buttons/ModalButton";
 import "../buttons/SpinnerButton";
@@ -29,7 +28,7 @@ export class ObjectChangelog extends Table<Event> {
             page: page,
             ordering: this.order,
             pageSize: PAGE_SIZE / 2,
-            username: this.targetUser
+            username: this.targetUser,
         });
     }
 
@@ -46,32 +45,28 @@ export class ObjectChangelog extends Table<Event> {
         return [
             html`${item.action}`,
             html`<div>${item.user?.username}</div>
-            ${item.user.on_behalf_of ? html`<small>
-                ${t`On behalf of ${item.user.on_behalf_of.username}`}
-            </small>` : html``}`,
+                ${item.user.on_behalf_of
+                    ? html`<small> ${t`On behalf of ${item.user.on_behalf_of.username}`} </small>`
+                    : html``}`,
             html`<span>${item.created?.toLocaleString()}</span>`,
             html`<span>${item.clientIp || "-"}</span>`,
         ];
     }
 
     renderExpanded(item: Event): TemplateResult {
-        return html`
-        <td role="cell" colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <ak-event-info .event=${item as EventWithContext}></ak-event-info>
-            </div>
-        </td>
-        <td></td>
-        <td></td>
-        <td></td>`;
+        return html` <td role="cell" colspan="4">
+                <div class="pf-c-table__expandable-row-content">
+                    <ak-event-info .event=${item as EventWithContext}></ak-event-info>
+                </div>
+            </td>
+            <td></td>
+            <td></td>
+            <td></td>`;
     }
 
     renderEmpty(): TemplateResult {
         return super.renderEmpty(html`<ak-empty-state header=${t`No Events found.`}>
-            <div slot="body">
-                ${t`No matching events could be found.`}
-            </div>
+            <div slot="body">${t`No matching events could be found.`}</div>
         </ak-empty-state>`);
     }
-
 }

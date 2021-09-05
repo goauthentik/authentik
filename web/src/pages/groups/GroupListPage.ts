@@ -3,17 +3,18 @@ import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
-import "../../elements/forms/DeleteForm";
+import "../../elements/forms/DeleteBulkForm";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
-import { CoreApi, Group } from "authentik-api";
+import { CoreApi, Group } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/forms/ModalForm";
 import "./GroupForm";
 
 @customElement("ak-group-list")
 export class GroupListPage extends TablePage<Group> {
+    checkbox = true;
     searchEnabled(): boolean {
         return true;
     }
@@ -45,8 +46,30 @@ export class GroupListPage extends TablePage<Group> {
             new TableColumn(t`Parent`, "parent"),
             new TableColumn(t`Members`),
             new TableColumn(t`Superuser privileges?`),
-            new TableColumn(""),
+            new TableColumn(t`Actions`),
         ];
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${t`Group(s)`}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: Group) => {
+                return new CoreApi(DEFAULT_CONFIG).coreGroupsUsedByList({
+                    groupUuid: item.pk,
+                });
+            }}
+            .delete=${(item: Group) => {
+                return new CoreApi(DEFAULT_CONFIG).coreGroupsDestroy({
+                    groupUuid: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${t`Delete`}
+            </button>
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: Group): TemplateResult[] {
@@ -55,56 +78,26 @@ export class GroupListPage extends TablePage<Group> {
             html`${item.parent || "-"}`,
             html`${Array.from(item.users || []).length}`,
             html`${item.isSuperuser ? t`Yes` : t`No`}`,
-            html`
-            <ak-forms-modal>
-                <span slot="submit">
-                    ${t`Update`}
-                </span>
-                <span slot="header">
-                    ${t`Update Group`}
-                </span>
-                <ak-group-form slot="form" .instancePk=${item.pk}>
-                </ak-group-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${t`Edit`}
+            html` <ak-forms-modal>
+                <span slot="submit"> ${t`Update`} </span>
+                <span slot="header"> ${t`Update Group`} </span>
+                <ak-group-form slot="form" .instancePk=${item.pk}> </ak-group-form>
+                <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <i class="fas fa-edit"></i>
                 </button>
-            </ak-forms-modal>
-            <ak-forms-delete
-                .obj=${item}
-                objectLabel=${t`Group`}
-                .usedBy=${() => {
-                    return new CoreApi(DEFAULT_CONFIG).coreGroupsUsedByList({
-                        groupUuid: item.pk
-                    });
-                }}
-                .delete=${() => {
-                    return new CoreApi(DEFAULT_CONFIG).coreGroupsDestroy({
-                        groupUuid: item.pk
-                    });
-                }}>
-                <button slot="trigger" class="pf-c-button pf-m-danger">
-                    ${t`Delete`}
-                </button>
-            </ak-forms-delete>`,
+            </ak-forms-modal>`,
         ];
     }
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-forms-modal>
-            <span slot="submit">
-                ${t`Create`}
-            </span>
-            <span slot="header">
-                ${t`Create Group`}
-            </span>
-            <ak-group-form slot="form">
-            </ak-group-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${t`Create`}
-            </button>
-        </ak-forms-modal>
-        ${super.renderToolbar()}
+            <ak-forms-modal>
+                <span slot="submit"> ${t`Create`} </span>
+                <span slot="header"> ${t`Create Group`} </span>
+                <ak-group-form slot="form"> </ak-group-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+            </ak-forms-modal>
+            ${super.renderToolbar()}
         `;
     }
 }

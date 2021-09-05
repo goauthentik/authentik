@@ -26,10 +26,9 @@ class ConfigLoader:
 
     loaded_file = []
 
-    __config = {}
-
     def __init__(self):
         super().__init__()
+        self.__config = {}
         base_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), "../.."))
         for path in SEARCH_PATHS:
             # Check if path is relative, and if so join with base_dir
@@ -80,7 +79,7 @@ class ConfigLoader:
             value = os.getenv(url.netloc, url.query)
         if url.scheme == "file":
             try:
-                with open(url.path, "r") as _file:
+                with open(url.path, "r", encoding="utf8") as _file:
                     value = _file.read()
             except OSError:
                 self._log("error", f"Failed to read config value from {url.path}")
@@ -90,7 +89,7 @@ class ConfigLoader:
     def update_from_file(self, path: str):
         """Update config from file contents"""
         try:
-            with open(path) as file:
+            with open(path, encoding="utf8") as file:
                 try:
                     self.update(self.__config, yaml.safe_load(file))
                     self._log("debug", "Loaded config", file=path)
@@ -116,9 +115,7 @@ class ConfigLoader:
         for key, value in os.environ.items():
             if not key.startswith(ENV_PREFIX):
                 continue
-            relative_key = (
-                key.replace(f"{ENV_PREFIX}_", "", 1).replace("__", ".").lower()
-            )
+            relative_key = key.replace(f"{ENV_PREFIX}_", "", 1).replace("__", ".").lower()
             # Recursively convert path from a.b.c into outer[a][b][c]
             current_obj = outer
             dot_parts = relative_key.split(".")

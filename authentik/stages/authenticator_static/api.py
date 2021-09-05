@@ -27,6 +27,8 @@ class AuthenticatorStaticStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = AuthenticatorStaticStage.objects.all()
     serializer_class = AuthenticatorStaticStageSerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]
 
 
 class StaticDeviceTokenSerializer(ModelSerializer):

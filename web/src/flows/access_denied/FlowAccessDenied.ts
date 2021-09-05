@@ -1,4 +1,4 @@
-import { AccessDeniedChallenge, FlowChallengeResponseRequest } from "authentik-api";
+import { AccessDeniedChallenge, FlowChallengeResponseRequest } from "@goauthentik/api";
 import { CSSResult, customElement, html, TemplateResult } from "lit-element";
 import { BaseStage } from "../stages/base";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -13,23 +13,20 @@ import { t } from "@lingui/macro";
 import "../../elements/EmptyState";
 
 @customElement("ak-stage-access-denied")
-export class FlowAccessDenied extends BaseStage<AccessDeniedChallenge, FlowChallengeResponseRequest> {
-
+export class FlowAccessDenied extends BaseStage<
+    AccessDeniedChallenge,
+    FlowChallengeResponseRequest
+> {
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFForm, PFList, PFFormControl, PFTitle, AKGlobal];
     }
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state
-                ?loading="${true}"
-                header=${t`Loading`}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">
-                    ${this.challenge.flowInfo?.title}
-                </h1>
+                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
             <div class="pf-c-login__main-body">
                 <form method="POST" class="pf-c-form">
@@ -39,15 +36,13 @@ export class FlowAccessDenied extends BaseStage<AccessDeniedChallenge, FlowChall
                             ${t`Request has been denied.`}
                         </p>
                         ${this.challenge?.errorMessage &&
-                            html`<hr>
+                        html`<hr />
                             <p>${this.challenge.errorMessage}</p>`}
                     </div>
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links">
-                </ul>
+                <ul class="pf-c-login__main-footer-links"></ul>
             </footer>`;
     }
-
 }

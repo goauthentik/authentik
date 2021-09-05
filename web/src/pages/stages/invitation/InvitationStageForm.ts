@@ -1,4 +1,4 @@
-import { InvitationStage, StagesApi } from "authentik-api";
+import { InvitationStage, StagesApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -11,7 +11,6 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-stage-invitation-form")
 export class InvitationStageForm extends ModelForm<InvitationStage, string> {
-
     loadInstance(pk: string): Promise<InvitationStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesRetrieve({
             stageUuid: pk,
@@ -30,11 +29,11 @@ export class InvitationStageForm extends ModelForm<InvitationStage, string> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesUpdate({
                 stageUuid: this.instance.pk || "",
-                invitationStageRequest: data
+                invitationStageRequest: data,
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesCreate({
-                invitationStageRequest: data
+                invitationStageRequest: data,
             });
         }
     };
@@ -44,29 +43,37 @@ export class InvitationStageForm extends ModelForm<InvitationStage, string> {
             <div class="form-help-text">
                 ${t`This stage can be included in enrollment flows to accept invitations.`}
             </div>
-            <ak-form-element-horizontal
-                label=${t`Name`}
-                ?required=${true}
-                name="name">
-                <input type="text" value="${ifDefined(this.instance?.name || "")}" class="pf-c-form-control" required>
+            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.name || "")}"
+                    class="pf-c-form-control"
+                    required
+                />
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header">
-                    ${t`Stage-specific settings`}
-                </span>
+                <span slot="header"> ${t`Stage-specific settings`} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="continueFlowWithoutInvitation">
                         <div class="pf-c-check">
-                            <input type="checkbox" class="pf-c-check__input" ?checked=${first(this.instance?.continueFlowWithoutInvitation, true)}>
+                            <input
+                                type="checkbox"
+                                class="pf-c-check__input"
+                                ?checked=${first(
+                                    this.instance?.continueFlowWithoutInvitation,
+                                    true,
+                                )}
+                            />
                             <label class="pf-c-check__label">
                                 ${t`Continue flow without invitation`}
                             </label>
                         </div>
-                        <p class="pf-c-form__helper-text">${t`If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.`}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.`}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
         </form>`;
     }
-
 }

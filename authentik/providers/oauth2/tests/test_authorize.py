@@ -7,15 +7,8 @@ from authentik.core.models import Application, User
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import Flow
-from authentik.providers.oauth2.errors import (
-    AuthorizeError,
-    ClientIdError,
-    RedirectUriError,
-)
-from authentik.providers.oauth2.generators import (
-    generate_client_id,
-    generate_client_secret,
-)
+from authentik.lib.generators import generate_id, generate_key
+from authentik.providers.oauth2.errors import AuthorizeError, ClientIdError, RedirectUriError
 from authentik.providers.oauth2.models import (
     AuthorizationCode,
     GrantTypes,
@@ -42,9 +35,7 @@ class TestAuthorize(OAuthTestCase):
     def test_invalid_client_id(self):
         """Test invalid client ID"""
         with self.assertRaises(ClientIdError):
-            request = self.factory.get(
-                "/", data={"response_type": "code", "client_id": "invalid"}
-            )
+            request = self.factory.get("/", data={"response_type": "code", "client_id": "invalid"})
             OAuthAuthorizationParams.from_request(request)
 
     def test_request(self):
@@ -67,7 +58,7 @@ class TestAuthorize(OAuthTestCase):
             )
             OAuthAuthorizationParams.from_request(request)
 
-    def test_redirect_uri(self):
+    def test_invalid_redirect_uri(self):
         """test missing/invalid redirect URI"""
         OAuth2Provider.objects.create(
             name="test",
@@ -76,9 +67,7 @@ class TestAuthorize(OAuthTestCase):
             redirect_uris="http://local.invalid",
         )
         with self.assertRaises(RedirectUriError):
-            request = self.factory.get(
-                "/", data={"response_type": "code", "client_id": "test"}
-            )
+            request = self.factory.get("/", data={"response_type": "code", "client_id": "test"})
             OAuthAuthorizationParams.from_request(request)
         with self.assertRaises(RedirectUriError):
             request = self.factory.get(
@@ -90,6 +79,26 @@ class TestAuthorize(OAuthTestCase):
                 },
             )
             OAuthAuthorizationParams.from_request(request)
+
+    def test_empty_redirect_uri(self):
+        """test empty redirect URI (configure in provider)"""
+        OAuth2Provider.objects.create(
+            name="test",
+            client_id="test",
+            authorization_flow=Flow.objects.first(),
+        )
+        with self.assertRaises(RedirectUriError):
+            request = self.factory.get("/", data={"response_type": "code", "client_id": "test"})
+            OAuthAuthorizationParams.from_request(request)
+        request = self.factory.get(
+            "/",
+            data={
+                "response_type": "code",
+                "client_id": "test",
+                "redirect_uri": "http://localhost",
+            },
+        )
+        OAuthAuthorizationParams.from_request(request)
 
     def test_response_type(self):
         """test response_type"""
@@ -174,7 +183,7 @@ class TestAuthorize(OAuthTestCase):
             redirect_uris="foo://localhost",
         )
         Application.objects.create(name="app", slug="app", provider=provider)
-        state = generate_client_id()
+        state = generate_id()
         user = User.objects.get(username="akadmin")
         self.client.force_login(user)
         # Step 1, initiate params and get redirect to flow
@@ -206,13 +215,13 @@ class TestAuthorize(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name="test",
             client_id="test",
-            client_secret=generate_client_secret(),
+            client_secret=generate_key(),
             authorization_flow=flow,
             redirect_uris="http://localhost",
             rsa_key=CertificateKeyPair.objects.first(),
         )
         Application.objects.create(name="app", slug="app", provider=provider)
-        state = generate_client_id()
+        state = generate_id()
         user = User.objects.get(username="akadmin")
         self.client.force_login(user)
         # Step 1, initiate params and get redirect to flow

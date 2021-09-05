@@ -12,9 +12,7 @@ def managed_reconcile(self: MonitoredTask):
     try:
         ObjectManager().run()
         self.set_status(
-            TaskResult(
-                TaskResultStatus.SUCCESSFUL, ["Successfully updated managed models."]
-            )
+            TaskResult(TaskResultStatus.SUCCESSFUL, ["Successfully updated managed models."])
         )
     except DatabaseError as exc:
         self.set_status(TaskResult(TaskResultStatus.WARNING, [str(exc)]))

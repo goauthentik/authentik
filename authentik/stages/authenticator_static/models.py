@@ -17,17 +17,13 @@ class AuthenticatorStaticStage(ConfigurableStage, Stage):
 
     @property
     def serializer(self) -> BaseSerializer:
-        from authentik.stages.authenticator_static.api import (
-            AuthenticatorStaticStageSerializer,
-        )
+        from authentik.stages.authenticator_static.api import AuthenticatorStaticStageSerializer
 
         return AuthenticatorStaticStageSerializer
 
     @property
     def type(self) -> Type[View]:
-        from authentik.stages.authenticator_static.stage import (
-            AuthenticatorStaticStageView,
-        )
+        from authentik.stages.authenticator_static.stage import AuthenticatorStaticStageView
 
         return AuthenticatorStaticStageView
 

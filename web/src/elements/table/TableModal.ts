@@ -19,7 +19,16 @@ export abstract class TableModal<T> extends Table<T> {
     open = false;
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(PFModalBox, PFBullseye, PFContent, PFBackdrop, PFPage, PFStack, AKGlobal, MODAL_BUTTON_STYLES);
+        return super.styles.concat(
+            PFModalBox,
+            PFBullseye,
+            PFContent,
+            PFBackdrop,
+            PFPage,
+            PFStack,
+            AKGlobal,
+            MODAL_BUTTON_STYLES,
+        );
     }
 
     constructor() {
@@ -33,7 +42,7 @@ export abstract class TableModal<T> extends Table<T> {
     }
 
     resetForms(): void {
-        this.querySelectorAll<HTMLFormElement>("[slot=form]").forEach(form => {
+        this.querySelectorAll<HTMLFormElement>("[slot=form]").forEach((form) => {
             if ("resetForm" in form) {
                 form?.resetForm();
             }
@@ -42,7 +51,7 @@ export abstract class TableModal<T> extends Table<T> {
 
     onClick(): void {
         this.open = true;
-        this.querySelectorAll("*").forEach(child => {
+        this.querySelectorAll("*").forEach((child) => {
             if ("requestUpdate" in child) {
                 (child as LitElement).requestUpdate();
             }
@@ -56,11 +65,7 @@ export abstract class TableModal<T> extends Table<T> {
     renderModal(): TemplateResult {
         return html`<div class="pf-c-backdrop">
             <div class="pf-l-bullseye">
-                <div
-                    class="pf-c-modal-box ${this.size}"
-                    role="dialog"
-                    aria-modal="true"
-                >
+                <div class="pf-c-modal-box ${this.size}" role="dialog" aria-modal="true">
                     <button
                         @click=${() => (this.open = false)}
                         class="pf-c-button pf-m-plain"

@@ -2,10 +2,10 @@
 from unittest.mock import MagicMock, patch
 
 from django.core import mail
-from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
 from django.utils.http import urlencode
+from rest_framework.test import APITestCase
 
 from authentik.core.models import Token, User
 from authentik.flows.challenge import ChallengeTypes
@@ -17,15 +17,12 @@ from authentik.stages.email.models import EmailStage
 from authentik.stages.email.stage import QS_KEY_TOKEN
 
 
-class TestEmailStage(TestCase):
+class TestEmailStage(APITestCase):
     """Email tests"""
 
     def setUp(self):
         super().setUp()
-        self.user = User.objects.create_user(
-            username="unittest", email="test@beryju.org"
-        )
-        self.client = Client()
+        self.user = User.objects.create_user(username="unittest", email="test@beryju.org")
 
         self.flow = Flow.objects.create(
             name="test-email",
@@ -35,55 +32,41 @@ class TestEmailStage(TestCase):
         self.stage = EmailStage.objects.create(
             name="email",
         )
-        FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
+        self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     def test_rendering(self):
         """Test with pending user"""
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
-        url = reverse(
-            "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
-        )
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_without_user(self):
         """Test without pending user"""
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
-        url = reverse(
-            "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
-        )
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_pending_user(self):
         """Test with pending user"""
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
-        url = reverse(
-            "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
-        )
-        with self.settings(
-            EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend"
-        ):
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        with self.settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend"):
             response = self.client.post(url)
             self.assertEqual(response.status_code, 200)
             self.assertEqual(len(mail.outbox), 1)
@@ -101,9 +84,7 @@ class TestEmailStage(TestCase):
         """Test with token"""
         # Make sure token exists
         self.test_pending_user()
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
-        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
