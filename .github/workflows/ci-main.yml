@@ -24,7 +24,7 @@ jobs:
         with:
           python-version: '3.9'
       - id: cache-pipenv
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
@@ -42,7 +42,7 @@ jobs:
         with:
           python-version: '3.9'
       - id: cache-pipenv
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
@@ -60,7 +60,7 @@ jobs:
         with:
           python-version: '3.9'
       - id: cache-pipenv
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
@@ -78,7 +78,7 @@ jobs:
         with:
           python-version: '3.9'
       - id: cache-pipenv
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
@@ -112,7 +112,7 @@ jobs:
         with:
           python-version: '3.9'
       - id: cache-pipenv
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
@@ -135,7 +135,7 @@ jobs:
           cp authentik/lib/default.yml local.env.yml
           git checkout $(git describe --abbrev=0 --match 'version/*')
       - id: cache-pipenv
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
@@ -160,7 +160,7 @@ jobs:
         with:
           python-version: '3.9'
       - id: cache-pipenv
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
@@ -189,7 +189,7 @@ jobs:
         with:
           python-version: '3.9'
       - id: cache-pipenv
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
@@ -228,7 +228,7 @@ jobs:
         with:
           domain: ${{github.repository_owner}}
       - id: cache-pipenv
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
@@ -239,7 +239,7 @@ jobs:
           scripts/ci_prepare.sh
           docker-compose -f tests/e2e/ci.docker-compose.yml up -d
       - id: cache-web
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.6
         with:
           path: web/dist
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/**') }}
