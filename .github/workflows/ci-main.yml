@@ -178,7 +178,7 @@ jobs:
       - name: run testspace
         if: ${{ always() }}
         run: |
-          testspace unittest.xml ?add
+          testspace [unittest]unittest.xml --link=codecov
       - if: ${{ always() }}
         uses: codecov/codecov-action@v2
   test-integration:
@@ -209,7 +209,7 @@ jobs:
       - name: run testspace
         if: ${{ always() }}
         run: |
-          testspace unittest.xml ?add
+          testspace [integration]unittest.xml --link=codecov
       - if: ${{ always() }}
         uses: codecov/codecov-action@v2
   test-e2e:
@@ -256,24 +256,9 @@ jobs:
       - name: run testspace
         if: ${{ always() }}
         run: |
-          testspace unittest.xml ?add
+          testspace [e2e]unittest.xml --link=codecov
       - if: ${{ always() }}
         uses: codecov/codecov-action@v2
-  report:
-    if: ${{ always() }}
-    needs:
-      - test-unittest
-      - test-integration
-      - test-e2e
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: testspace-com/setup-testspace@v1
-        with:
-          domain: ${{github.repository_owner}}
-      - name: finish testspace
-        run: |
-          testspace ?finish
   build:
     needs:
       - lint-pylint
