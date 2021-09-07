@@ -173,6 +173,7 @@ export class NotificationDrawer extends LitElement {
                                         level: MessageLevel.success,
                                         message: t`Successfully cleared notifications`,
                                     });
+                                    this.firstUpdated();
                                 });
                         }}
                         class="pf-c-button pf-m-secondary pf-m-block"
