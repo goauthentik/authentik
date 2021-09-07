@@ -1,12 +1,11 @@
-import resolve from "@rollup/plugin-replace";
-import commonjs from "@rollup/plugin-commonjs";
-import babel from "@rollup/plugin-babel";
-import replace from "@rollup/plugin-replace";
-
+import resolve from "rollup-plugin-node-resolve";
+import commonjs from "rollup-plugin-commonjs";
 import { terser } from "rollup-plugin-terser";
 import sourcemaps from "rollup-plugin-sourcemaps";
 import cssimport from "rollup-plugin-cssimport";
 import copy from "rollup-plugin-copy";
+import babel from "@rollup/plugin-babel";
+import replace from "@rollup/plugin-replace";
 
 const extensions = [".js", ".jsx", ".ts", ".tsx"];
 
