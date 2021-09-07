@@ -22,6 +22,7 @@ import (
 	"github.com/oauth2-proxy/oauth2-proxy/providers"
 	"goauthentik.io/api"
 	"goauthentik.io/internal/utils/web"
+	staticWeb "goauthentik.io/web"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -255,9 +256,16 @@ func (p *OAuthProxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		p.AuthenticateOnly(rw, req)
 	case path == p.UserInfoPath:
 		p.UserInfo(rw, req)
+	case strings.HasPrefix(path, fmt.Sprintf("%s/static", p.ProxyPrefix)):
+		p.ServeStatic(rw, req)
 	default:
 		p.Proxy(rw, req)
 	}
+}
+
+func (p *OAuthProxy) ServeStatic(rw http.ResponseWriter, req *http.Request) {
+	staticFs := http.FileServer(http.FS(staticWeb.StaticDist))
+	http.StripPrefix(fmt.Sprintf("%s/static", p.ProxyPrefix), staticFs).ServeHTTP(rw, req)
 }
 
 //UserInfo endpoint outputs session email and preferred username in JSON format

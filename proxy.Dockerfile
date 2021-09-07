@@ -13,12 +13,24 @@ RUN	docker-entrypoint.sh generate \
     --additional-properties=packageName=api,enumClassPrefix=true,useOneOfDiscriminatorLookup=true && \
     rm -f /local/api/go.mod /local/api/go.sum
 
+# Stage 2: Build website
+FROM node as web-builder
+
+COPY ./web /static/
+
+ENV NODE_ENV=production
+RUN cd /static && npm i && npm run build
+
 # Stage 2: Build
 FROM golang:1.17.0 AS builder
 
 WORKDIR /go/src/goauthentik.io
 
 COPY . .
+COPY --from=web-builder /static/robots.txt /work/web/robots.txt
+COPY --from=web-builder /static/security.txt /work/web/security.txt
+COPY --from=web-builder /static/dist/ /work/web/dist/
+COPY --from=web-builder /static/authentik/ /work/web/authentik/
 COPY --from=api-builder /local/api api
 
 RUN go build -o /go/proxy ./cmd/proxy
