@@ -203,7 +203,7 @@ ${this.instance?.redirectUris}</textarea
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.tokenValidity, "minutes=10")}"
+                            value="${first(this.instance?.tokenValidity, "days=30")}"
                             class="pf-c-form-control"
                             required
                         />
