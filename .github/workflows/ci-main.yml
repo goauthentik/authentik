@@ -9,6 +9,8 @@ on:
     paths-ignore:
       - website
   pull_request:
+    branches:
+      - master
 
 env:
   POSTGRES_DB: authentik
