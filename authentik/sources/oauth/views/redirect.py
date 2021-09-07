@@ -43,5 +43,5 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
                 raise Http404(f"source {slug} is not enabled.")
             client = self.get_client(source, callback=self.get_callback_url(source))
             params = self.get_additional_parameters(source)
-            FlowExecutorView().cancel()
+            FlowExecutorView(request=self.request).cancel()
             return client.get_redirect_url(params)
