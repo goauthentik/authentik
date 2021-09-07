@@ -192,7 +192,7 @@ func buildSessionChain(opts *options.Options, sessionStore sessionsapi.SessionSt
 func (p *OAuthProxy) RobotsTxt(rw http.ResponseWriter) {
 	_, err := fmt.Fprintf(rw, "User-agent: *\nDisallow: /")
 	if err != nil {
-		p.logger.Printf("Error writing robots.txt: %v", err)
+		p.logger.Errorf("Error writing robots.txt: %v", err)
 		p.ErrorPage(rw, http.StatusInternalServerError, "Internal Server Error", err.Error())
 		return
 	}
@@ -287,7 +287,7 @@ func (p *OAuthProxy) UserInfo(rw http.ResponseWriter, req *http.Request) {
 	rw.WriteHeader(http.StatusOK)
 	err = json.NewEncoder(rw).Encode(userInfo)
 	if err != nil {
-		p.logger.Printf("Error encoding user info: %v", err)
+		p.logger.Errorf("Error encoding user info: %v", err)
 		p.ErrorPage(rw, http.StatusInternalServerError, "Internal Server Error", err.Error())
 	}
 }

@@ -195,13 +195,13 @@ func (p *OAuthProxy) OAuthCallback(rw http.ResponseWriter, req *http.Request) {
 	redirect := s[1]
 	c, err := req.Cookie(p.CSRFCookieName)
 	if err != nil {
-		p.logger.WithField("user", session.Email).WithField("status", "AuthFailure").Info("Invalid authentication via OAuth2: unable to obtain CSRF cookie")
+		p.logger.WithField("user", session.Email).WithField("status", "AuthFailure").Errorf("Invalid authentication via OAuth2: unable to obtain CSRF cookie")
 		p.ErrorPage(rw, http.StatusForbidden, "Permission Denied", err.Error())
 		return
 	}
 	p.ClearCSRFCookie(rw, req)
 	if c.Value != nonce {
-		p.logger.WithField("is", c.Value).WithField("should", nonce).WithField("user", session.Email).WithField("status", "AuthFailure").Info("Invalid authentication via OAuth2: CSRF token mismatch, potential attack")
+		p.logger.WithField("is", c.Value).WithField("should", nonce).WithField("user", session.Email).WithField("status", "AuthFailure").Errorf("Invalid authentication via OAuth2: CSRF token mismatch, potential attack")
 		p.ErrorPage(rw, http.StatusForbidden, "Permission Denied", "CSRF Failed")
 		return
 	}
@@ -215,13 +215,13 @@ func (p *OAuthProxy) OAuthCallback(rw http.ResponseWriter, req *http.Request) {
 		p.logger.WithField("user", session.Email).WithField("status", "AuthFailure").Infof("Authenticated via OAuth2: %s", session)
 		err := p.SaveSession(rw, req, session)
 		if err != nil {
-			p.logger.Printf("Error saving session state for client %v", err)
+			p.logger.Errorf("Error saving session state for client %v", err)
 			p.ErrorPage(rw, http.StatusInternalServerError, "Internal Server Error", err.Error())
 			return
 		}
 		http.Redirect(rw, req, redirect, http.StatusFound)
 	} else {
-		p.logger.WithField("user", session.Email).WithField("status", "AuthFailure").Info("Invalid authentication via OAuth2: unauthorized")
+		p.logger.WithField("user", session.Email).WithField("status", "AuthFailure").Errorf("Invalid authentication via OAuth2: unauthorized")
 		p.ErrorPage(rw, http.StatusForbidden, "Permission Denied", "Invalid Account")
 	}
 }
