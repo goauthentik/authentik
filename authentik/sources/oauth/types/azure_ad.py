@@ -36,7 +36,6 @@ class AzureADClient(OAuth2Client):
                 profile_url,
                 headers={"Authorization": f"{token['token_type']} {token['access_token']}"},
             )
-            LOGGER.debug(response.text)
             response.raise_for_status()
         except RequestException as exc:
             LOGGER.warning("Unable to fetch user profile", exc=exc)
