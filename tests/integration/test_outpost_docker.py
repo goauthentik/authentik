@@ -16,6 +16,7 @@ from authentik.outposts.controllers.docker import DockerController
 from authentik.outposts.models import DockerServiceConnection, Outpost, OutpostType
 from authentik.outposts.tasks import outpost_local_connection
 from authentik.providers.proxy.models import ProxyProvider
+from tests.e2e.utils import get_docker_tag
 
 
 class OutpostDockerTests(TestCase):
@@ -107,5 +108,5 @@ class OutpostDockerTests(TestCase):
         self.assertEqual(compose["version"], "3.5")
         self.assertEqual(
             compose["services"]["authentik_proxy"]["image"],
-            "beryju.org/authentik/outpost-proxy:gh-master",
+            f"beryju.org/authentik/outpost-proxy:{get_docker_tag()}",
         )

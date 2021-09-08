@@ -2,6 +2,7 @@
 from django.conf import settings
 
 from authentik.lib.config import CONFIG
+from tests.e2e.utils import get_docker_tag
 
 
 class PytestTestRunner:  # pragma: no cover
@@ -17,7 +18,7 @@ class PytestTestRunner:  # pragma: no cover
         CONFIG.y_set("authentik.geoip", "tests/GeoLite2-City-Test.mmdb")
         CONFIG.y_set(
             "outposts.docker_image_base",
-            "beryju.org/authentik/outpost-%(type)s:gh-master",
+            f"beryju.org/authentik/outpost-%(type)s:{get_docker_tag()}",
         )
 
     def run_tests(self, test_labels):
