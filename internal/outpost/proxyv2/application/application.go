@@ -48,18 +48,30 @@ func akProviderToEndpoint(p api.ProxyOutpostConfig, authentikHost string) oauth2
 		host := os.Getenv("AUTHENTIK_HOST")
 		authUrl = strings.ReplaceAll(authUrl, host, browserHost)
 	}
-	if strings.HasPrefix(authUrl, "http://localhost:8000") {
-		if authentikHost == "" {
-			log.Warning("Outpost has localhost/blank API Connection but no authentik_host is configured.")
-		} else {
-			authUrl = strings.ReplaceAll(authUrl, "http://localhost:8000", authentikHost)
-		}
-	}
-	return oauth2.Endpoint{
+	ep := oauth2.Endpoint{
 		AuthURL:   authUrl,
 		TokenURL:  p.OidcConfiguration.TokenEndpoint,
 		AuthStyle: oauth2.AuthStyleInParams,
 	}
+	u, err := url.Parse(authUrl)
+	if err != nil {
+		return ep
+	}
+	if u.Host != "localhost:8000" {
+		return ep
+	}
+	if authentikHost == "" {
+		log.Warning("Outpost has localhost/blank API Connection but no authentik_host is configured.")
+		return ep
+	}
+	aku, err := url.Parse(authentikHost)
+	if err != nil {
+		return ep
+	}
+	u.Host = aku.Host
+	u.Scheme = aku.Scheme
+	ep.AuthURL = u.String()
+	return ep
 }
 
 func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore, akHost string) *Application {
