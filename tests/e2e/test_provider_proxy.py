@@ -80,7 +80,7 @@ class TestProviderProxy(SeleniumTestCase):
                 slug="default-provider-authorization-implicit-consent"
             ),
             internal_host="http://localhost",
-            external_host="http://localhost:4180",
+            external_host="http://localhost:9000",
         )
         # Ensure OAuth2 Params are set
         proxy.set_oauth_defaults()
@@ -107,7 +107,7 @@ class TestProviderProxy(SeleniumTestCase):
             healthcheck_retries += 1
             sleep(0.5)
 
-        self.driver.get("http://localhost:4180")
+        self.driver.get("http://localhost:9000")
         self.login()
         sleep(1)
 
@@ -115,7 +115,7 @@ class TestProviderProxy(SeleniumTestCase):
         self.assertIn("X-Forwarded-Preferred-Username: akadmin", full_body_text)
         self.assertIn("X-Foo: bar", full_body_text)
 
-        self.driver.get("http://localhost:4180/akprox/sign_out")
+        self.driver.get("http://localhost:9000/akprox/sign_out")
         sleep(2)
         full_body_text = self.driver.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
         self.assertIn("You've logged out of proxy.", full_body_text)
@@ -141,7 +141,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
                 slug="default-provider-authorization-implicit-consent"
             ),
             internal_host="http://localhost",
-            external_host="http://localhost:4180",
+            external_host="http://localhost:9000",
         )
         # Ensure OAuth2 Params are set
         proxy.set_oauth_defaults()

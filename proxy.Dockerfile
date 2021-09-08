@@ -43,6 +43,6 @@ ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
 COPY --from=builder /go/proxy /
 
-HEALTHCHECK CMD [ "wget", "--spider", "http://localhost:4180/akprox/ping" ]
+HEALTHCHECK CMD [ "wget", "--spider", "http://localhost:9000/akprox/ping" ]
 
 ENTRYPOINT ["/proxy"]
