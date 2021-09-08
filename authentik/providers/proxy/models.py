@@ -139,12 +139,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
             ]
         )
         self.property_mappings.set(scopes)
-        self.redirect_uris = "\n".join(
-            [
-                _get_callback_url(self.external_host),
-                _get_callback_url(self.internal_host),
-            ]
-        )
+        self.redirect_uris = _get_callback_url(self.external_host)
 
     def __str__(self):
         return f"Proxy Provider {self.name}"
