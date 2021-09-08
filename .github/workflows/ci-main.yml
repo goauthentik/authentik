@@ -302,6 +302,6 @@ jobs:
           push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
           tags: |
             beryju.org/authentik/server:gh-${{ steps.ev.outputs.branchName }}
-            beryju.org/authentik/server:gh-${{ steps.ev.outputs.branchName }}-${{ steps.ev.outputs.timestamp }}
+            beryju.org/authentik/server:gh-${{ steps.ev.outputs.branchName }}-${{ steps.ev.outputs.timestamp }}-${{ steps.ev.outputs.sha }}
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
