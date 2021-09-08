@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 	"regexp"
 	"strings"
 	"time"
@@ -42,8 +43,13 @@ type Application struct {
 }
 
 func akProviderToEndpoint(p api.ProxyOutpostConfig) oauth2.Endpoint {
+	authUrl := p.OidcConfiguration.AuthorizationEndpoint
+	if browserHost, found := os.LookupEnv("AUTHENTIK_HOST_BROWSER"); found {
+		host := os.Getenv("AUTHENTIK_HOST")
+		authUrl = strings.ReplaceAll(authUrl, host, browserHost)
+	}
 	return oauth2.Endpoint{
-		AuthURL:   p.OidcConfiguration.AuthorizationEndpoint,
+		AuthURL:   authUrl,
 		TokenURL:  p.OidcConfiguration.TokenEndpoint,
 		AuthStyle: oauth2.AuthStyleInParams,
 	}

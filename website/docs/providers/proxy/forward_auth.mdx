@@ -215,6 +215,9 @@ services:
       AUTHENTIK_HOST: https://your-authentik.tld
       AUTHENTIK_INSECURE: "false"
       AUTHENTIK_TOKEN: token-generated-by-authentik
+      # Starting with 2021.10, you can optionally set this too
+      # when authentik_host for internal communication doesn't match the public URL
+      # AUTHENTIK_HOST_BROWSER: https://external-domain.tld
     labels:
       traefik.enable: true
       traefik.port: 4180

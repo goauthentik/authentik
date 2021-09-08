@@ -2058,6 +2058,10 @@ msgstr "If this is selected, the token will expire. Upon expiration, the token w
 msgid "If your authentik Instance is using a self-signed certificate, set this value."
 msgstr "If your authentik Instance is using a self-signed certificate, set this value."
 
+#: src/pages/outposts/OutpostDeploymentModal.ts
+msgid "If your authentik_host setting does not match the URL you want to login with, add this setting."
+msgstr "If your authentik_host setting does not match the URL you want to login with, add this setting."
+
 #: src/pages/users/UserListPage.ts
 msgid "Impersonate"
 msgstr "Impersonate"
