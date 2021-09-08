@@ -54,7 +54,7 @@ func NewProxyServer(ac *ak.APIController) *ProxyServer {
 	globalMux.Use(web.NewLoggingHandler(l.WithField("logger", "authentik.outpost.proxyv2.http"), nil))
 	s := &ProxyServer{
 		Listen:     "0.0.0.0:%d",
-		PortOffset: 100,
+		PortOffset: 0,
 
 		cryptoStore: ak.NewCryptoStore(ac.Client.CryptoApi),
 		apps:        make(map[string]*application.Application),
