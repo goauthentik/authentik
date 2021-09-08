@@ -1,7 +1,7 @@
 package application
 
 type ProxyClaims struct {
-	UserAttributes map[string]interface{}
+	UserAttributes map[string]interface{} `json:"user_attributes"`
 }
 
 type Claims struct {

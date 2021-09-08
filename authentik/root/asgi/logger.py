@@ -64,7 +64,7 @@ class ASGILogger:
             return
         return await self.app(scope, receive, send_hooked)
 
-    def _get_ip(self, headers: dict[str, str], scope: Scope) -> str:
+    def _get_ip(self, headers: dict[bytes, bytes], scope: Scope) -> str:
         client_ip = None
         for header in ASGI_IP_HEADERS:
             if header in headers:
