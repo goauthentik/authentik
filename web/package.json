@@ -48,7 +48,7 @@
         "@fortawesome/fontawesome-free": "^5.15.4",
         "@goauthentik/api": "^2021.8.4-1630786118",
         "@lingui/cli": "^3.11.1",
-        "@lingui/core": "^3.10.4",
+        "@lingui/core": "^3.11.1",
         "@lingui/macro": "^3.11.1",
         "@patternfly/patternfly": "^4.132.2",
         "@polymer/iron-form": "^3.0.1",
