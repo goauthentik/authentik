@@ -42,11 +42,18 @@ type Application struct {
 	mux *mux.Router
 }
 
-func akProviderToEndpoint(p api.ProxyOutpostConfig) oauth2.Endpoint {
+func akProviderToEndpoint(p api.ProxyOutpostConfig, authentikHost string) oauth2.Endpoint {
 	authUrl := p.OidcConfiguration.AuthorizationEndpoint
 	if browserHost, found := os.LookupEnv("AUTHENTIK_HOST_BROWSER"); found {
 		host := os.Getenv("AUTHENTIK_HOST")
 		authUrl = strings.ReplaceAll(authUrl, host, browserHost)
+	}
+	if strings.HasPrefix(authUrl, "http://localhost:8000") {
+		if authentikHost == "" {
+			log.Warning("Outpost has localhost/blank API Connection but no authentik_host is configured.")
+		} else {
+			authUrl = strings.ReplaceAll(authUrl, "http://localhost:8000", authentikHost)
+		}
 	}
 	return oauth2.Endpoint{
 		AuthURL:   authUrl,
@@ -55,7 +62,7 @@ func akProviderToEndpoint(p api.ProxyOutpostConfig) oauth2.Endpoint {
 	}
 }
 
-func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore) *Application {
+func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore, akHost string) *Application {
 	gob.Register(Claims{})
 
 	externalHost, err := url.Parse(p.ExternalHost)
@@ -83,7 +90,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		ClientID:     *p.ClientId,
 		ClientSecret: *p.ClientSecret,
 		RedirectURL:  fmt.Sprintf("%s/akprox/callback", p.ExternalHost),
-		Endpoint:     akProviderToEndpoint(p),
+		Endpoint:     akProviderToEndpoint(p, akHost),
 		Scopes:       []string{oidc.ScopeOpenID, "profile", "email", "ak_proxy"},
 	}
 	mux := mux.NewRouter()
