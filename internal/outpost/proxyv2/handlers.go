@@ -15,10 +15,12 @@ func (ps *ProxyServer) HandlePing(rw http.ResponseWriter, r *http.Request) {
 	rw.WriteHeader(204)
 	after := time.Since(before)
 	metrics.Requests.With(prometheus.Labels{
-		"type":   "ping",
 		"method": r.Method,
+		"schema": r.URL.Scheme,
 		"path":   r.URL.Path,
 		"host":   web.GetHost(r),
+		"type":   "ping",
+		"user":   "",
 	}).Observe(float64(after))
 }
 
@@ -28,10 +30,12 @@ func (ps *ProxyServer) HandleStatic(rw http.ResponseWriter, r *http.Request) {
 	http.StripPrefix("/akprox/static", staticFs).ServeHTTP(rw, r)
 	after := time.Since(before)
 	metrics.Requests.With(prometheus.Labels{
-		"type":   "static",
 		"method": r.Method,
+		"schema": r.URL.Scheme,
 		"path":   r.URL.Path,
 		"host":   web.GetHost(r),
+		"type":   "ping",
+		"user":   "",
 	}).Observe(float64(after))
 }
 
