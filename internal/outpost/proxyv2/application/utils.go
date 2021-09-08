@@ -16,7 +16,7 @@ func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
 // getClaims Get claims which are currently in session
 // Returns an error if the session can't be loaded or the claims can't be parsed/type-cast
 func (a *Application) getClaims(r *http.Request) (*Claims, error) {
-	s, err := a.sessions.Get(r, "authentik_proxy")
+	s, err := a.sessions.Get(r, constants.SeesionName)
 	if err != nil {
 		// err == user has no session/session is not valid, reject
 		return nil, fmt.Errorf("invalid session")

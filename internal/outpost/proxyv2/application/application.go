@@ -193,7 +193,7 @@ func (a *Application) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {
 	// TODO: Token revocation
-	s, err := a.sessions.Get(r, "authentik_proxy")
+	s, err := a.sessions.Get(r, constants.SeesionName)
 	if err != nil {
 		http.Redirect(rw, r, a.proxyConfig.OidcConfiguration.EndSessionEndpoint, http.StatusFound)
 		return

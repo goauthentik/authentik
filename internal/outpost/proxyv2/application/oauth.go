@@ -10,7 +10,7 @@ import (
 
 func (a *Application) handleRedirect(rw http.ResponseWriter, r *http.Request) {
 	state := base64.RawStdEncoding.EncodeToString(securecookie.GenerateRandomKey(32))
-	s, _ := a.sessions.Get(r, "authentik_proxy")
+	s, _ := a.sessions.Get(r, constants.SeesionName)
 	s.Values[constants.SessionOAuthState] = state
 	err := s.Save(r, rw)
 	if err != nil {
@@ -20,7 +20,7 @@ func (a *Application) handleRedirect(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (a *Application) handleCallback(rw http.ResponseWriter, r *http.Request) {
-	s, _ := a.sessions.Get(r, "authentik_proxy")
+	s, _ := a.sessions.Get(r, constants.SeesionName)
 	state, ok := s.Values[constants.SessionOAuthState]
 	if !ok {
 		a.log.Warning("No state saved in session")
