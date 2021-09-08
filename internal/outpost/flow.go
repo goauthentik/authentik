@@ -59,10 +59,9 @@ func NewFlowExecutor(ctx context.Context, flowSlug string, refConfig *api.Config
 	config := api.NewConfiguration()
 	config.Host = refConfig.Host
 	config.Scheme = refConfig.Scheme
-	config.UserAgent = constants.OutpostUserAgent()
 	config.HTTPClient = &http.Client{
 		Jar:       jar,
-		Transport: ak.NewTracingTransport(ctx, ak.GetTLSTransport()),
+		Transport: ak.NewUserAgentTransport(constants.OutpostUserAgent(), ak.NewTracingTransport(ctx, ak.GetTLSTransport())),
 	}
 	token := strings.Split(refConfig.DefaultHeader["Authorization"], " ")[1]
 	config.AddDefaultHeader(HeaderAuthentikOutpostToken, token)

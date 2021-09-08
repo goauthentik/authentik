@@ -9,7 +9,7 @@ import (
 
 	"goauthentik.io/internal/common"
 	"goauthentik.io/internal/outpost/ak"
-	"goauthentik.io/internal/outpost/proxy"
+	"goauthentik.io/internal/outpost/proxyv2"
 )
 
 const helpMessage = `authentik proxy
@@ -46,7 +46,7 @@ func main() {
 
 	ac := ak.NewAPIController(*akURLActual, akToken)
 
-	ac.Server = proxy.NewServer(ac)
+	ac.Server = proxyv2.NewProxyServer(ac)
 
 	err = ac.Start()
 	if err != nil {

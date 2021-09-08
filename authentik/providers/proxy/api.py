@@ -72,6 +72,7 @@ class ProxyProviderSerializer(ProviderSerializer):
             "mode",
             "redirect_uris",
             "cookie_domain",
+            "token_validity",
         ]
 
 

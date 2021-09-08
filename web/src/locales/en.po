@@ -15,6 +15,7 @@ msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "(Format: hours=-1;minutes=-2;seconds=-3)."
@@ -793,6 +794,10 @@ msgstr "Configure how long access codes are valid for."
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure how long refresh tokens and their id_tokens are valid for."
 msgstr "Configure how long refresh tokens and their id_tokens are valid for."
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Configure how long tokens are valid for."
+msgstr "Configure how long tokens are valid for."
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected."
@@ -4472,6 +4477,7 @@ msgid "Token expiry"
 msgstr "Token expiry"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Token validity"
 msgstr "Token validity"
 

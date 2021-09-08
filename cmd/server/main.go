@@ -12,7 +12,7 @@ import (
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/gounicorn"
 	"goauthentik.io/internal/outpost/ak"
-	"goauthentik.io/internal/outpost/proxy"
+	"goauthentik.io/internal/outpost/proxyv2"
 	"goauthentik.io/internal/web"
 )
 
@@ -99,7 +99,7 @@ func attemptProxyStart(ws *web.WebServer, u *url.URL) {
 			}
 			continue
 		}
-		srv := proxy.NewServer(ac)
+		srv := proxyv2.NewProxyServer(ac)
 		ws.ProxyServer = srv
 		ac.Server = srv
 		log.WithField("logger", "authentik").Debug("attempting to start outpost")

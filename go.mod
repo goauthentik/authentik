@@ -6,6 +6,7 @@ require (
 	github.com/Netflix/go-env v0.0.0-20210215222557-e437a7e7f9fb
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
 	github.com/coreos/go-oidc v2.2.1+incompatible
+	github.com/garyburd/redigo v1.6.2 // indirect
 	github.com/getsentry/sentry-go v0.11.0
 	github.com/go-ldap/ldap/v3 v3.4.1
 	github.com/go-openapi/analysis v0.20.1 // indirect
@@ -15,10 +16,13 @@ require (
 	github.com/go-openapi/swag v0.19.15 // indirect
 	github.com/go-openapi/validate v0.20.2 // indirect
 	github.com/go-redis/redis/v7 v7.4.0 // indirect
+	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
+	github.com/gorilla/securecookie v1.1.1 // indirect
+	github.com/gorilla/sessions v1.2.1 // indirect
 	github.com/gorilla/websocket v1.4.2
 	github.com/imdario/mergo v0.3.12
 	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a
@@ -33,6 +37,7 @@ require (
 	github.com/pires/go-proxyproto v0.6.0
 	github.com/pkg/errors v0.9.1
 	github.com/pquerna/cachecontrol v0.0.0-20201205024021-ac21108117ac // indirect
+	github.com/prometheus/client_golang v1.11.0 // indirect
 	github.com/recws-org/recws v1.3.1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/afero v1.6.0 // indirect
@@ -44,8 +49,8 @@ require (
 	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2 // indirect
 	golang.org/x/net v0.0.0-20210510120150-4163338589ed // indirect
 	golang.org/x/oauth2 v0.0.0-20210323180902-22b0adad7558 // indirect
-	golang.org/x/sys v0.0.0-20210514084401-e8d321eab015 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
+	gopkg.in/boj/redistore.v1 v1.0.0-20160128113310-fc113767cd6b // indirect
 	gopkg.in/ini.v1 v1.62.0 // indirect
 	gopkg.in/square/go-jose.v2 v2.5.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0

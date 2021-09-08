@@ -25930,6 +25930,10 @@ components:
             Exclusive with internal_host.
         cookie_domain:
           type: string
+        token_validity:
+          type: string
+          description: 'Tokens not valid on or after current time + this value (Format:
+            hours=1;minutes=2;seconds=3).'
     PatchedReputationPolicyRequest:
       type: object
       description: Reputation Policy Serializer
@@ -27135,6 +27139,10 @@ components:
           readOnly: true
         cookie_domain:
           type: string
+        token_validity:
+          type: string
+          description: 'Tokens not valid on or after current time + this value (Format:
+            hours=1;minutes=2;seconds=3).'
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -27200,6 +27208,10 @@ components:
             Exclusive with internal_host.
         cookie_domain:
           type: string
+        token_validity:
+          type: string
+          description: 'Tokens not valid on or after current time + this value (Format:
+            hours=1;minutes=2;seconds=3).'
       required:
       - authorization_flow
       - external_host

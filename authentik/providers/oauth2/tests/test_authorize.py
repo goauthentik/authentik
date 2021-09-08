@@ -247,7 +247,7 @@ class TestAuthorize(OAuthTestCase):
                 "to": (
                     f"http://localhost#access_token={token.access_token}"
                     f"&id_token={provider.encode(token.id_token.to_dict())}&token_type=bearer"
-                    f"&expires_in=600&state={state}"
+                    f"&expires_in=2592000&state={state}"
                 ),
             },
         )
