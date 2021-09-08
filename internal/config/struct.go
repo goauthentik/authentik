@@ -31,6 +31,7 @@ type WebConfig struct {
 	ListenTLS              string `yaml:"listen_tls"`
 	LoadLocalFiles         bool   `yaml:"load_local_files" env:"AUTHENTIK_WEB_LOAD_LOCAL_FILES"`
 	DisableEmbeddedOutpost bool   `yaml:"disable_embedded_outpost" env:"AUTHENTIK_WEB__DISABLE_EMBEDDED_OUTPOST"`
+	OutpostPortOffset      int    `yaml:"outpost_port_offset"`
 }
 
 type PathsConfig struct {
