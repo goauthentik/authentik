@@ -11,6 +11,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/recws-org/recws"
 	"goauthentik.io/api"
 	"goauthentik.io/internal/constants"
@@ -43,11 +44,10 @@ type APIController struct {
 // NewAPIController initialise new API Controller instance from URL and API token
 func NewAPIController(akURL url.URL, token string) *APIController {
 	config := api.NewConfiguration()
-	config.UserAgent = constants.OutpostUserAgent()
 	config.Host = akURL.Host
 	config.Scheme = akURL.Scheme
 	config.HTTPClient = &http.Client{
-		Transport: NewTracingTransport(context.TODO(), GetTLSTransport()),
+		Transport: NewUserAgentTransport(constants.OutpostUserAgent(), NewTracingTransport(context.TODO(), GetTLSTransport())),
 	}
 	config.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
 
@@ -89,6 +89,13 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	}
 	ac.logger.Debugf("HA Reload offset: %s", ac.reloadOffset)
 	ac.initWS(akURL, strfmt.UUID(outpost.Pk))
+
+	OutpostInfo.With(prometheus.Labels{
+		"uuid":    ac.instanceUUID.String(),
+		"name":    outpost.Name,
+		"version": constants.VERSION,
+		"build":   constants.BUILD(),
+	}).Set(1)
 	return ac
 }
 
@@ -111,6 +118,13 @@ func (a *APIController) StartBackgorundTasks() error {
 	err := a.Server.Refresh()
 	if err != nil {
 		return errors.Wrap(err, "failed to run initial refresh")
+	} else {
+		LastUpdate.With(prometheus.Labels{
+			"uuid":    a.instanceUUID.String(),
+			"name":    a.Outpost.Name,
+			"version": constants.VERSION,
+			"build":   constants.BUILD(),
+		}).SetToCurrentTime()
 	}
 	go func() {
 		a.logger.Debug("Starting WS Handler...")

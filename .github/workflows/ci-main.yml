@@ -147,10 +147,15 @@ jobs:
         run: scripts/ci_prepare.sh
       - name: run migrations to stable
         run: pipenv run python -m lifecycle.migrate
+      - name: prepare variables
+        id: ev
+        run: |
+          python ./scripts/gh_do_set_branch.py
       - name: checkout current code
         run: |
           set -x
-          git checkout $GITHUB_REF
+          git fetch
+          git checkout ${{ steps.ev.outputs.branchName }}
           pipenv sync --dev
       - name: migrate to latest
         run: pipenv run python -m lifecycle.migrate

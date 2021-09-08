@@ -16,7 +16,14 @@ from authentik.flows.models import Flow
 from authentik.outposts.models import DockerServiceConnection, Outpost, OutpostConfig, OutpostType
 from authentik.outposts.tasks import outpost_local_connection
 from authentik.providers.proxy.models import ProxyProvider
-from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, object_manager, retry
+from tests.e2e.utils import (
+    USER,
+    SeleniumTestCase,
+    apply_migration,
+    get_docker_tag,
+    object_manager,
+    retry,
+)
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -42,7 +49,7 @@ class TestProviderProxy(SeleniumTestCase):
         """Start proxy container based on outpost created"""
         client: DockerClient = from_env()
         container = client.containers.run(
-            image="beryju.org/authentik/outpost-proxy:gh-master",
+            image=f"beryju.org/authentik/outpost-proxy:{get_docker_tag()}",
             detach=True,
             network_mode="host",
             auto_remove=True,
@@ -73,7 +80,7 @@ class TestProviderProxy(SeleniumTestCase):
                 slug="default-provider-authorization-implicit-consent"
             ),
             internal_host="http://localhost",
-            external_host="http://localhost:4180",
+            external_host="http://localhost:9000",
         )
         # Ensure OAuth2 Params are set
         proxy.set_oauth_defaults()
@@ -100,7 +107,7 @@ class TestProviderProxy(SeleniumTestCase):
             healthcheck_retries += 1
             sleep(0.5)
 
-        self.driver.get("http://localhost:4180")
+        self.driver.get("http://localhost:9000")
         self.login()
         sleep(1)
 
@@ -108,7 +115,7 @@ class TestProviderProxy(SeleniumTestCase):
         self.assertIn("X-Forwarded-Preferred-Username: akadmin", full_body_text)
         self.assertIn("X-Foo: bar", full_body_text)
 
-        self.driver.get("http://localhost:4180/akprox/sign_out")
+        self.driver.get("http://localhost:9000/akprox/sign_out")
         sleep(2)
         full_body_text = self.driver.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
         self.assertIn("You've logged out of proxy.", full_body_text)
@@ -134,7 +141,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
                 slug="default-provider-authorization-implicit-consent"
             ),
             internal_host="http://localhost",
-            external_host="http://localhost:4180",
+            external_host="http://localhost:9000",
         )
         # Ensure OAuth2 Params are set
         proxy.set_oauth_defaults()

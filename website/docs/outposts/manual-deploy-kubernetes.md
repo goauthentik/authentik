@@ -34,11 +34,11 @@ metadata:
 spec:
   ports:
     - name: http
-      port: 4180
+      port: 9000
       protocol: TCP
       targetPort: http
     - name: https
-      port: 4443
+      port: 9443s
       protocol: TCP
       targetPort: https
   type: ClusterIP
@@ -91,10 +91,10 @@ spec:
         image: ghcr.io/goauthentik/proxy:2021.8.4
         name: proxy
         ports:
-          - containerPort: 4180
+          - containerPort: 9000
             name: http
             protocol: TCP
-          - containerPort: 4443
+          - containerPort: 9443
             name: https
             protocol: TCP
 ---

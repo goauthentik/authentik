@@ -11,6 +11,7 @@ import (
 
 	"github.com/go-openapi/strfmt"
 	"github.com/gorilla/websocket"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/recws-org/recws"
 	"goauthentik.io/internal/constants"
 )
@@ -74,17 +75,32 @@ func (ac *APIController) startWSHandler() {
 		var wsMsg websocketMessage
 		err := ac.wsConn.ReadJSON(&wsMsg)
 		if err != nil {
+			ConnectionStatus.With(prometheus.Labels{
+				"uuid": ac.instanceUUID.String(),
+				"name": ac.Outpost.Name,
+			}).Set(0)
 			logger.WithError(err).Warning("ws write error, reconnecting")
 			ac.wsConn.CloseAndReconnect()
 			time.Sleep(time.Second * 5)
 			continue
 		}
+		ConnectionStatus.With(prometheus.Labels{
+			"uuid": ac.instanceUUID.String(),
+			"name": ac.Outpost.Name,
+		}).Set(1)
 		if wsMsg.Instruction == WebsocketInstructionTriggerUpdate {
 			time.Sleep(ac.reloadOffset)
 			logger.Debug("Got update trigger...")
 			err := ac.Server.Refresh()
 			if err != nil {
 				logger.WithError(err).Debug("Failed to update")
+			} else {
+				LastUpdate.With(prometheus.Labels{
+					"uuid":    ac.instanceUUID.String(),
+					"name":    ac.Outpost.Name,
+					"version": constants.VERSION,
+					"build":   constants.BUILD(),
+				}).SetToCurrentTime()
 			}
 		}
 	}
@@ -110,6 +126,11 @@ func (ac *APIController) startWSHealth() {
 			ac.logger.WithField("loop", "ws-health").WithError(err).Warning("ws write error, reconnecting")
 			ac.wsConn.CloseAndReconnect()
 			continue
+		} else {
+			ConnectionStatus.With(prometheus.Labels{
+				"uuid": ac.instanceUUID.String(),
+				"name": ac.Outpost.Name,
+			}).Set(1)
 		}
 	}
 }
@@ -121,6 +142,13 @@ func (ac *APIController) startIntervalUpdater() {
 		err := ac.Server.Refresh()
 		if err != nil {
 			logger.WithError(err).Debug("Failed to update")
+		} else {
+			LastUpdate.With(prometheus.Labels{
+				"uuid":    ac.instanceUUID.String(),
+				"name":    ac.Outpost.Name,
+				"version": constants.VERSION,
+				"build":   constants.BUILD(),
+			}).SetToCurrentTime()
 		}
 	}
 }

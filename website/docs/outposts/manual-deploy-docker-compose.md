@@ -13,12 +13,15 @@ services:
   authentik_proxy:
     image: ghcr.io/goauthentik/proxy:2021.8.4
     ports:
-      - 4180:4180
-      - 4443:4443
+      - 9000:9000
+      - 9443:9443
     environment:
       AUTHENTIK_HOST: https://your-authentik.tld
       AUTHENTIK_INSECURE: "false"
       AUTHENTIK_TOKEN: token-generated-by-authentik
+      # Starting with 2021.10, you can optionally set this too
+      # when authentik_host for internal communication doesn't match the public URL
+      # AUTHENTIK_HOST_BROWSER: https://external-domain.tld
   # Or, for the LDAP Outpost
   authentik_proxy:
     image: ghcr.io/goauthentik/ldap:2021.8.4

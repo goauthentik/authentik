@@ -81,7 +81,7 @@ server {
 
     # all requests to /akprox must be accessible without authentication
     location /akprox {
-        proxy_pass          http://*ip or hostname of the authentik OUTPOST*:4180;
+        proxy_pass          http://*ip or hostname of the authentik OUTPOST*:9000;
         # ensure the host of this vserver matches your external URL you've configured
         # in authentik
         proxy_set_header    Host $host;
@@ -115,7 +115,7 @@ spec:
       paths:
       - backend:
           serviceName: authentik-outpost-example-outpost
-          servicePort: 4180
+          servicePort: 9000
         path: /akprox
 ```
 
@@ -151,7 +151,7 @@ http:
   middlewares:
     authentik:
       forwardAuth:
-        address: http://authentik-outpost-example-outpost:4180/akprox/auth?traefik
+        address: http://authentik-outpost-example-outpost:9000/akprox/auth?traefik
         trustForwardHeader: true
         authResponseHeaders:
           - Set-Cookie
@@ -170,7 +170,7 @@ http:
     default-router-auth
       match: "Host(`*external host that you configured in authentik*`) && PathPrefix(`/akprox/`)"
       priority: 15
-      services: http://*ip of your outpost*:4180/akprox
+      services: http://*ip of your outpost*:9000/akprox
 ```
   </TabItem>
   <TabItem value="docker-compose">
@@ -209,19 +209,22 @@ services:
   authentik_proxy:
     image: ghcr.io/goauthentik/proxy:2021.5.1
     ports:
-      - 4180:4180
-      - 4443:4443
+      - 9000:9000
+      - 9443:9443
     environment:
       AUTHENTIK_HOST: https://your-authentik.tld
       AUTHENTIK_INSECURE: "false"
       AUTHENTIK_TOKEN: token-generated-by-authentik
+      # Starting with 2021.10, you can optionally set this too
+      # when authentik_host for internal communication doesn't match the public URL
+      # AUTHENTIK_HOST_BROWSER: https://external-domain.tld
     labels:
       traefik.enable: true
-      traefik.port: 4180
+      traefik.port: 9000
       traefik.http.routers.authentik.rule: Host(`*external host that you configured in authentik*`) && PathPrefix(`/akprox/`)
       traefik.http.routers.authentik.entrypoints: https
       traefik.http.routers.authentik.tls: true
-      traefik.http.middlewares.authentik.forwardauth.address: http://authentik_proxy:4180/akprox/auth?traefik
+      traefik.http.middlewares.authentik.forwardauth.address: http://authentik_proxy:9000/akprox/auth?traefik
       traefik.http.middlewares.authentik.forwardauth.trustForwardHeader: true
       traefik.http.middlewares.authentik.forwardauth.authResponseHeaders: Set-Cookie,X-Auth-Username,X-Auth-Groups,X-Forwarded-Email,X-Forwarded-Preferred-Username,X-Forwarded-User
     restart: unless-stopped
@@ -248,7 +251,7 @@ metadata:
   name: authentik
 spec:
   forwardAuth:
-    address: http://authentik-outpost-example-outpost:4180/akprox/auth?traefik
+    address: http://authentik-outpost-example-outpost:9000/akprox/auth?traefik
     trustForwardHeader: true
     authResponseHeaders:
       - Set-Cookie
@@ -284,7 +287,7 @@ spec:
       services:
         - kind: Service
           name: authentik-outpost-example-outpost
-          port: 4180
+          port: 9000
 ```
   </TabItem>
 </Tabs>

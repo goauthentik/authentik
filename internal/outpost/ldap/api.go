@@ -66,7 +66,7 @@ func (ls *LDAPServer) Refresh() error {
 }
 
 func (ls *LDAPServer) StartHTTPServer() error {
-	listen := "0.0.0.0:4180" // same port as proxy
+	listen := "0.0.0.0:9000" // same port as proxy
 	m := http.NewServeMux()
 	m.HandleFunc("/akprox/ping", func(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(204)

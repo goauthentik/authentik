@@ -64,9 +64,8 @@ class ASGILogger:
             return
         return await self.app(scope, receive, send_hooked)
 
-    def _get_ip(self, scope: Scope) -> str:
+    def _get_ip(self, headers: dict[bytes, bytes], scope: Scope) -> str:
         client_ip = None
-        headers = dict(scope.get("headers", []))
         for header in ASGI_IP_HEADERS:
             if header in headers:
                 client_ip = headers[header].decode()
@@ -77,7 +76,8 @@ class ASGILogger:
 
     def log(self, scope: Scope, content_length: int, runtime: float, status_code: int, **kwargs):
         """Outpot access logs in a structured format"""
-        host = self._get_ip(scope)
+        headers = dict(scope.get("headers", []))
+        host = self._get_ip(headers, scope)
         query_string = ""
         if scope.get("query_string", b"") != b"":
             query_string = f"?{scope.get('query_string').decode()}"
@@ -89,5 +89,6 @@ class ASGILogger:
             status=status_code,
             size=content_length / 1000 if content_length > 0 else 0,
             runtime=runtime,
+            user_agent=headers.get(b"user-agent", b"").decode(),
             **kwargs,
         )

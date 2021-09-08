@@ -12,8 +12,8 @@ class ProxyKubernetesController(KubernetesController):
     def __init__(self, outpost: Outpost, connection: KubernetesServiceConnection):
         super().__init__(outpost, connection)
         self.deployment_ports = [
-            DeploymentPort(4180, "http", "tcp"),
-            DeploymentPort(4443, "https", "tcp"),
+            DeploymentPort(9000, "http", "tcp"),
+            DeploymentPort(9443, "https", "tcp"),
         ]
         self.reconcilers["ingress"] = IngressReconciler
         self.reconcilers["traefik middleware"] = TraefikMiddlewareReconciler

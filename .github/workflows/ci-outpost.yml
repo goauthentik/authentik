@@ -44,8 +44,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1.2.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: prepare variables
@@ -70,6 +68,5 @@ jobs:
             beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchName }}-${{ steps.ev.outputs.timestamp }}
             beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ steps.ev.outputs.sha }}
           file: ${{ matrix.type }}.Dockerfile
-          platforms: linux/amd64,linux/arm64
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}

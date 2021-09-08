@@ -9,7 +9,7 @@ import (
 
 	"goauthentik.io/internal/common"
 	"goauthentik.io/internal/outpost/ak"
-	"goauthentik.io/internal/outpost/proxy"
+	"goauthentik.io/internal/outpost/proxyv2"
 )
 
 const helpMessage = `authentik proxy
@@ -17,7 +17,10 @@ const helpMessage = `authentik proxy
 Required environment variables:
 - AUTHENTIK_HOST: URL to connect to (format "http://authentik.company")
 - AUTHENTIK_TOKEN: Token to authenticate with
-- AUTHENTIK_INSECURE: Skip SSL Certificate verification`
+- AUTHENTIK_INSECURE: Skip SSL Certificate verification
+
+Optionally, you can set these:
+- AUTHENTIK_HOST_BROWSER: URL to use in the browser, when it differs from AUTHENTIK_HOST`
 
 func main() {
 	log.SetLevel(log.DebugLevel)
@@ -46,7 +49,7 @@ func main() {
 
 	ac := ak.NewAPIController(*akURLActual, akToken)
 
-	ac.Server = proxy.NewServer(ac)
+	ac.Server = proxyv2.NewProxyServer(ac)
 
 	err = ac.Start()
 	if err != nil {

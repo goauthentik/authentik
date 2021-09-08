@@ -141,7 +141,7 @@ class TestToken(OAuthTestCase):
                 "access_token": new_token.access_token,
                 "refresh_token": new_token.refresh_token,
                 "token_type": "bearer",
-                "expires_in": 600,
+                "expires_in": 2592000,
                 "id_token": provider.encode(
                     new_token.id_token.to_dict(),
                 ),
@@ -190,7 +190,7 @@ class TestToken(OAuthTestCase):
                 "access_token": new_token.access_token,
                 "refresh_token": new_token.refresh_token,
                 "token_type": "bearer",
-                "expires_in": 600,
+                "expires_in": 2592000,
                 "id_token": provider.encode(
                     new_token.id_token.to_dict(),
                 ),
@@ -236,7 +236,7 @@ class TestToken(OAuthTestCase):
                 "access_token": new_token.access_token,
                 "refresh_token": new_token.refresh_token,
                 "token_type": "bearer",
-                "expires_in": 600,
+                "expires_in": 2592000,
                 "id_token": provider.encode(
                     new_token.id_token.to_dict(),
                 ),
