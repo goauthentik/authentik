@@ -33,7 +33,7 @@ COPY --from=web-builder /static/dist/ /work/web/dist/
 COPY --from=web-builder /static/authentik/ /work/web/authentik/
 COPY --from=api-builder /local/api api
 
-RUN go build -o /go/proxy ./cmd/proxyv2
+RUN go build -o /go/proxy ./cmd/proxy
 
 # Stage 3: Run
 FROM gcr.io/distroless/base-debian10:debug
