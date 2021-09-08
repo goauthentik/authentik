@@ -2,6 +2,7 @@ package application
 
 import (
 	"fmt"
+	"net/http"
 	"strconv"
 
 	"github.com/gorilla/sessions"
@@ -18,10 +19,12 @@ func GetStore(p api.ProxyOutpostConfig) sessions.Store {
 			panic(err)
 		}
 		rs.Options.Domain = *p.CookieDomain
+		rs.Options.SameSite = http.SameSiteNoneMode
 		store = rs
 	} else {
 		cs := sessions.NewCookieStore([]byte(*p.CookieSecret))
 		cs.Options.Domain = *p.CookieDomain
+		cs.Options.SameSite = http.SameSiteNoneMode
 		store = cs
 	}
 	return store
