@@ -50,5 +50,10 @@ func (a *Application) handleCallback(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(400)
 		return
 	}
-	http.Redirect(rw, r, a.proxyConfig.ExternalHost, http.StatusFound)
+	redirect := a.proxyConfig.ExternalHost
+	redirectR, ok := s.Values[constants.SessionRedirect]
+	if ok {
+		redirect = redirectR.(string)
+	}
+	http.Redirect(rw, r, redirect, http.StatusFound)
 }

@@ -3,9 +3,9 @@ package application
 import (
 	"fmt"
 	"net/http"
-	"net/url"
 
 	"goauthentik.io/api"
+	"goauthentik.io/internal/outpost/proxyv2/constants"
 	"goauthentik.io/internal/utils/web"
 )
 
@@ -34,31 +34,32 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 	}
 	host := ""
 	// Optional suffix, which is appended to the URL
-	suffix := ""
 	if *a.proxyConfig.Mode == api.PROXYMODE_FORWARD_SINGLE {
 		host = web.GetHost(r)
 	} else if *a.proxyConfig.Mode == api.PROXYMODE_FORWARD_DOMAIN {
 		host = a.proxyConfig.ExternalHost
-		// set the ?rd flag to the current URL we have, since we redirect
+		// set the redirect flag to the current URL we have, since we redirect
 		// to a (possibly) different domain, but we want to be redirected back
 		// to the application
-		v := url.Values{
-			// see https://doc.traefik.io/traefik/middlewares/forwardauth/
-			// X-Forwarded-Uri is only the path, so we need to build the entire URL
-			"rd": []string{fmt.Sprintf(
-				"%s://%s%s",
-				r.Header.Get("X-Forwarded-Proto"),
-				r.Header.Get("X-Forwarded-Host"),
-				r.Header.Get("X-Forwarded-Uri"),
-			)},
+		s, _ := a.sessions.Get(r, constants.SeesionName)
+		// see https://doc.traefik.io/traefik/middlewares/forwardauth/
+		// X-Forwarded-Uri is only the path, so we need to build the entire URL
+		s.Values[constants.SessionRedirect] = fmt.Sprintf(
+			"%s://%s%s",
+			r.Header.Get("X-Forwarded-Proto"),
+			r.Header.Get("X-Forwarded-Host"),
+			r.Header.Get("X-Forwarded-Uri"),
+		)
+		err := s.Save(r, rw)
+		if err != nil {
+			a.log.WithError(err).Warning("failed to save session before redirect")
 		}
-		suffix = fmt.Sprintf("?%s", v.Encode())
 	}
 	proto := r.Header.Get("X-Forwarded-Proto")
 	if proto != "" {
 		proto = proto + ":"
 	}
-	rdFinal := fmt.Sprintf("%s//%s%s%s", proto, host, "/akprox/start", suffix)
+	rdFinal := fmt.Sprintf("%s//%s%s", proto, host, "/akprox/start")
 	a.log.WithField("url", rdFinal).Debug("Redirecting to login")
 	http.Redirect(rw, r, rdFinal, http.StatusTemporaryRedirect)
 }
@@ -68,6 +69,7 @@ func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request
 	if claims != nil && err == nil {
 		a.addHeaders(r, claims)
 		copyHeadersToResponse(rw, r)
+		rw.WriteHeader(200)
 		return
 	} else if claims == nil && a.IsAllowlisted(r) {
 		a.log.Trace("path can be accessed without authentication")
