@@ -26,7 +26,7 @@ func RunServer() {
 		rw.WriteHeader(204)
 	})
 	m.Path("/metrics").Handler(promhttp.Handler())
-	err := http.ListenAndServe("localhost:9300", m)
+	err := http.ListenAndServe("0.0.0.0:9300", m)
 	if err != nil {
 		panic(err)
 	}

@@ -5,7 +5,9 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"time"
 
+	"github.com/prometheus/client_golang/prometheus"
 	"goauthentik.io/internal/utils/web"
 )
 
@@ -28,18 +30,29 @@ func (ws *WebServer) configureProxy() {
 	rp.ModifyResponse = ws.proxyModifyResponse
 	ws.m.PathPrefix("/akprox").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		if ws.ProxyServer != nil {
+			before := time.Now()
 			ws.ProxyServer.Handle(rw, r)
+			Requests.With(prometheus.Labels{
+				"dest": "embedded_outpost",
+			}).Observe(float64(time.Since(before)))
 			return
 		}
 		ws.proxyErrorHandler(rw, r, fmt.Errorf("proxy not running"))
 	})
 	ws.m.PathPrefix("/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		host := web.GetHost(r)
+		before := time.Now()
 		if ws.ProxyServer != nil {
 			if ws.ProxyServer.HandleHost(host, rw, r) {
+				Requests.With(prometheus.Labels{
+					"dest": "embedded_outpost",
+				}).Observe(float64(time.Since(before)))
 				return
 			}
 		}
+		Requests.With(prometheus.Labels{
+			"dest": "py",
+		}).Observe(float64(time.Since(before)))
 		ws.log.WithField("host", host).Trace("routing to application server")
 		rp.ServeHTTP(rw, r)
 	})

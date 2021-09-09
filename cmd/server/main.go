@@ -57,6 +57,7 @@ func main() {
 	ws := web.NewWebServer()
 	defer g.Kill()
 	defer ws.Shutdown()
+	go web.RunMetricsServer()
 	for {
 		go attemptStartBackend(g)
 		ws.Start()
