@@ -11,13 +11,13 @@ import (
 
 var (
 	Requests = promauto.NewHistogramVec(prometheus.HistogramOpts{
-		Name: "authentik_outpost_proxy_requests",
+		Name: "authentik_outpost_ldap_requests",
 		Help: "The total number of configured providers",
-	}, []string{"method", "scheme", "path", "host", "type", "user"})
-	UpstreamTiming = promauto.NewHistogramVec(prometheus.HistogramOpts{
-		Name: "authentik_outpost_proxy_upstream_time",
-		Help: "A summary of the duration we wait for the upstream reply",
-	}, []string{"method", "scheme", "path", "host", "upstream_host", "user"})
+	}, []string{"type", "dn", "filter", "client"})
+	RequestsRejected = promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "authentik_outpost_ldap_requests_rejected",
+		Help: "Total number of rejected requests",
+	}, []string{"type", "reason", "dn", "client"})
 )
 
 func RunServer() {

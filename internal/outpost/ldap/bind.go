@@ -8,7 +8,9 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/google/uuid"
 	"github.com/nmcclain/ldap"
+	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/outpost/ldap/metrics"
 	"goauthentik.io/internal/utils"
 )
 
@@ -27,7 +29,6 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 	rid := uuid.New().String()
 	span.SetTag("request_uid", rid)
 	span.SetTag("user.username", bindDN)
-	defer span.Finish()
 
 	bindDN = strings.ToLower(bindDN)
 	req := BindRequest{
@@ -38,7 +39,16 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 		id:     rid,
 		ctx:    span.Context(),
 	}
-	req.log.Info("Bind request")
+	defer func() {
+		span.Finish()
+		metrics.Requests.With(prometheus.Labels{
+			"type":   "bind",
+			"filter": "",
+			"dn":     req.BindDN,
+			"client": utils.GetIP(req.conn.RemoteAddr()),
+		}).Observe(float64(span.EndTime.Sub(span.StartTime)))
+		req.log.WithField("took-ms", span.EndTime.Sub(span.StartTime).Milliseconds()).Info("Bind request")
+	}()
 	for _, instance := range ls.providers {
 		username, err := instance.getUsername(bindDN)
 		if err == nil {
@@ -48,6 +58,12 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 		}
 	}
 	req.log.WithField("request", "bind").Warning("No provider found for request")
+	metrics.RequestsRejected.With(prometheus.Labels{
+		"type":   "bind",
+		"reason": "no_provider",
+		"dn":     bindDN,
+		"client": utils.GetIP(conn.RemoteAddr()),
+	}).Inc()
 	return ldap.LDAPResultOperationsError, nil
 }
 

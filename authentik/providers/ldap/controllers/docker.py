@@ -12,4 +12,5 @@ class LDAPDockerController(DockerController):
         self.deployment_ports = [
             DeploymentPort(389, "ldap", "tcp", 3389),
             DeploymentPort(636, "ldaps", "tcp", 6636),
+            DeploymentPort(9100, "http-metrics", "tcp", 9100),
         ]

@@ -10,7 +10,9 @@ import (
 	goldap "github.com/go-ldap/ldap/v3"
 	"github.com/google/uuid"
 	"github.com/nmcclain/ldap"
+	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/outpost/ldap/metrics"
 	"goauthentik.io/internal/utils"
 )
 
@@ -43,6 +45,12 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 
 	defer func() {
 		span.Finish()
+		metrics.Requests.With(prometheus.Labels{
+			"type":   "search",
+			"filter": req.Filter,
+			"dn":     req.BindDN,
+			"client": utils.GetIP(req.conn.RemoteAddr()),
+		}).Observe(float64(span.EndTime.Sub(span.StartTime)))
 		req.log.WithField("took-ms", span.EndTime.Sub(span.StartTime).Milliseconds()).Info("Search request")
 	}()
 
