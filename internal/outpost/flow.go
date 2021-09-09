@@ -12,6 +12,8 @@ import (
 	"strings"
 
 	"github.com/getsentry/sentry-go"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api"
 	"goauthentik.io/internal/constants"
@@ -20,6 +22,17 @@ import (
 )
 
 type StageComponent string
+
+var (
+	FlowTimingGet = promauto.NewHistogramVec(prometheus.HistogramOpts{
+		Name: "authentik_outpost_flow_timing_get",
+		Help: "Duration it took to get a challenge",
+	}, []string{"stage", "flow", "client", "user"})
+	FlowTimingPost = promauto.NewHistogramVec(prometheus.HistogramOpts{
+		Name: "authentik_outpost_flow_timing_post",
+		Help: "Duration it took to send a challenge",
+	}, []string{"stage", "flow", "client", "user"})
+)
 
 const (
 	StageIdentification        = StageComponent("ak-stage-identification")
@@ -38,6 +51,7 @@ type FlowExecutor struct {
 	Answers map[StageComponent]string
 	Context context.Context
 
+	cip      string
 	api      *api.APIClient
 	flowSlug string
 	log      *log.Entry
@@ -75,6 +89,7 @@ func NewFlowExecutor(ctx context.Context, flowSlug string, refConfig *api.Config
 		log:      l,
 		token:    token,
 		sp:       rsp,
+		cip:      "",
 	}
 }
 
@@ -89,7 +104,8 @@ type ChallengeInt interface {
 }
 
 func (fe *FlowExecutor) DelegateClientIP(a net.Addr) {
-	fe.api.GetConfig().AddDefaultHeader(HeaderAuthentikRemoteIP, utils.GetIP(a))
+	fe.cip = utils.GetIP(a)
+	fe.api.GetConfig().AddDefaultHeader(HeaderAuthentikRemoteIP, fe.cip)
 }
 
 func (fe *FlowExecutor) CheckApplicationAccess(appSlug string) (bool, error) {
@@ -142,6 +158,12 @@ func (fe *FlowExecutor) solveFlowChallenge(depth int) (bool, error) {
 	gcsp.SetTag("ak_challenge", string(ch.GetType()))
 	gcsp.SetTag("ak_component", ch.GetComponent())
 	gcsp.Finish()
+	FlowTimingGet.With(prometheus.Labels{
+		"stage":  ch.GetComponent(),
+		"flow":   fe.flowSlug,
+		"client": fe.cip,
+		"user":   fe.Answers[StageIdentification],
+	}).Observe(float64(gcsp.EndTime.Sub(gcsp.StartTime)))
 
 	// Resole challenge
 	scsp := sentry.StartSpan(fe.Context, "authentik.outposts.flow_executor.solve_challenge")
@@ -202,6 +224,13 @@ func (fe *FlowExecutor) solveFlowChallenge(depth int) (bool, error) {
 			}
 		}
 	}
+	FlowTimingPost.With(prometheus.Labels{
+		"stage":  ch.GetComponent(),
+		"flow":   fe.flowSlug,
+		"client": fe.cip,
+		"user":   fe.Answers[StageIdentification],
+	}).Observe(float64(scsp.EndTime.Sub(scsp.StartTime)))
+
 	if depth >= 10 {
 		return false, errors.New("exceeded stage recursion depth")
 	}
