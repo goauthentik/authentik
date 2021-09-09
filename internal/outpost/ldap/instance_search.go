@@ -8,7 +8,10 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	"github.com/nmcclain/ldap"
+	"github.com/prometheus/client_golang/prometheus"
 	"goauthentik.io/api"
+	"goauthentik.io/internal/outpost/ldap/metrics"
+	"goauthentik.io/internal/utils"
 )
 
 func (pi *ProviderInstance) SearchMe(req SearchRequest, f UserFlags) (ldap.ServerSearchResult, error) {
@@ -32,12 +35,30 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 	entries := []*ldap.Entry{}
 	filterEntity, err := ldap.GetFilterObjectClass(req.Filter)
 	if err != nil {
+		metrics.RequestsRejected.With(prometheus.Labels{
+			"type":   "search",
+			"reason": "filter_parse_fail",
+			"dn":     req.BindDN,
+			"client": utils.GetIP(req.conn.RemoteAddr()),
+		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: error parsing filter: %s", req.Filter)
 	}
 	if len(req.BindDN) < 1 {
+		metrics.RequestsRejected.With(prometheus.Labels{
+			"type":   "search",
+			"reason": "empty_bind_dn",
+			"dn":     req.BindDN,
+			"client": utils.GetIP(req.conn.RemoteAddr()),
+		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: Anonymous BindDN not allowed %s", req.BindDN)
 	}
 	if !strings.HasSuffix(req.BindDN, baseDN) {
+		metrics.RequestsRejected.With(prometheus.Labels{
+			"type":   "search",
+			"reason": "invalid_bind_dn",
+			"dn":     req.BindDN,
+			"client": utils.GetIP(req.conn.RemoteAddr()),
+		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: BindDN %s not in our BaseDN %s", req.BindDN, pi.BaseDN)
 	}
 
@@ -46,6 +67,12 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 	pi.boundUsersMutex.RUnlock()
 	if !ok {
 		pi.log.Debug("User info not cached")
+		metrics.RequestsRejected.With(prometheus.Labels{
+			"type":   "search",
+			"reason": "user_info_not_cached",
+			"dn":     req.BindDN,
+			"client": utils.GetIP(req.conn.RemoteAddr()),
+		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, errors.New("access denied")
 	}
 	if !flags.CanSearch {
@@ -56,6 +83,12 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 
 	parsedFilter, err := ldap.CompileFilter(req.Filter)
 	if err != nil {
+		metrics.RequestsRejected.With(prometheus.Labels{
+			"type":   "search",
+			"reason": "filter_parse_fail",
+			"dn":     req.BindDN,
+			"client": utils.GetIP(req.conn.RemoteAddr()),
+		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: error parsing filter: %s", req.Filter)
 	}
 
@@ -65,6 +98,12 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 
 	switch filterEntity {
 	default:
+		metrics.RequestsRejected.With(prometheus.Labels{
+			"type":   "search",
+			"reason": "unhandled_filter_type",
+			"dn":     req.BindDN,
+			"client": utils.GetIP(req.conn.RemoteAddr()),
+		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: unhandled filter type: %s [%s]", filterEntity, req.Filter)
 	case GroupObjectClass:
 		wg := sync.WaitGroup{}

@@ -8,9 +8,11 @@ import (
 	"github.com/getsentry/sentry-go"
 	goldap "github.com/go-ldap/ldap/v3"
 	"github.com/nmcclain/ldap"
+	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api"
 	"goauthentik.io/internal/outpost"
+	"goauthentik.io/internal/outpost/ldap/metrics"
 	"goauthentik.io/internal/utils"
 )
 
@@ -48,9 +50,21 @@ func (pi *ProviderInstance) Bind(username string, req BindRequest) (ldap.LDAPRes
 
 	passed, err := fe.Execute()
 	if !passed {
+		metrics.RequestsRejected.With(prometheus.Labels{
+			"type":   "bind",
+			"reason": "invalid_credentials",
+			"dn":     req.BindDN,
+			"client": utils.GetIP(req.conn.RemoteAddr()),
+		}).Inc()
 		return ldap.LDAPResultInvalidCredentials, nil
 	}
 	if err != nil {
+		metrics.RequestsRejected.With(prometheus.Labels{
+			"type":   "bind",
+			"reason": "flow_error",
+			"dn":     req.BindDN,
+			"client": utils.GetIP(req.conn.RemoteAddr()),
+		}).Inc()
 		req.log.WithError(err).Warning("failed to execute flow")
 		return ldap.LDAPResultOperationsError, nil
 	}
@@ -58,9 +72,21 @@ func (pi *ProviderInstance) Bind(username string, req BindRequest) (ldap.LDAPRes
 	access, err := fe.CheckApplicationAccess(pi.appSlug)
 	if !access {
 		req.log.Info("Access denied for user")
+		metrics.RequestsRejected.With(prometheus.Labels{
+			"type":   "bind",
+			"reason": "access_denied",
+			"dn":     req.BindDN,
+			"client": utils.GetIP(req.conn.RemoteAddr()),
+		}).Inc()
 		return ldap.LDAPResultInsufficientAccessRights, nil
 	}
 	if err != nil {
+		metrics.RequestsRejected.With(prometheus.Labels{
+			"type":   "bind",
+			"reason": "access_check_fail",
+			"dn":     req.BindDN,
+			"client": utils.GetIP(req.conn.RemoteAddr()),
+		}).Inc()
 		req.log.WithError(err).Warning("failed to check access")
 		return ldap.LDAPResultOperationsError, nil
 	}
@@ -69,6 +95,12 @@ func (pi *ProviderInstance) Bind(username string, req BindRequest) (ldap.LDAPRes
 	// Get user info to store in context
 	userInfo, _, err := fe.ApiClient().CoreApi.CoreUsersMeRetrieve(context.Background()).Execute()
 	if err != nil {
+		metrics.RequestsRejected.With(prometheus.Labels{
+			"type":   "bind",
+			"reason": "user_info_fail",
+			"dn":     req.BindDN,
+			"client": utils.GetIP(req.conn.RemoteAddr()),
+		}).Inc()
 		req.log.WithError(err).Warning("failed to get user info")
 		return ldap.LDAPResultOperationsError, nil
 	}
