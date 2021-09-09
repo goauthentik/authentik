@@ -49,12 +49,8 @@ export class MessageContainer extends LitElement {
         }) as EventListener);
     }
 
-    // add a new message, but only if the message isn't currently shown.
     addMessage(message: APIMessage): void {
-        const matchingMessages = this.messages.filter((m) => m.message == message.message);
-        if (matchingMessages.length < 1) {
-            this.messages.push(message);
-        }
+        this.messages.push(message);
     }
 
     render(): TemplateResult {
