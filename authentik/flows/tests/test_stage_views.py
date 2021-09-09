@@ -13,14 +13,14 @@ class TestViews(TestCase):
 
     def setUp(self) -> None:
         self.factory = RequestFactory()
-        self.exec = FlowExecutorView(self.factory.request("/"))
+        self.exec = FlowExecutorView(request=self.factory.get("/"))
 
 
-def view_tester_factory(view: Type[StageView]) -> Callable:
+def view_tester_factory(view_class: Type[StageView]) -> Callable:
     """Test a form"""
 
     def tester(self: TestViews):
-        model_class = view(self.exec)
+        model_class = view_class(self.exec)
         self.assertIsNotNone(model_class.post)
         self.assertIsNotNone(model_class.get)
 
