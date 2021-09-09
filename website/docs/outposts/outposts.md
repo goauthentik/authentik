@@ -61,6 +61,7 @@ kubernetes_service_type: ClusterIP
 # - 'secret'
 # - 'deployment'
 # - 'service'
+# - 'prometheus servicemonitor'
 # - 'ingress'
 # - 'traefik middleware'
 kubernetes_disabled_components: []
