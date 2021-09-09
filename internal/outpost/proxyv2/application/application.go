@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"os"
 	"regexp"
 	"strings"
 	"time"
@@ -31,6 +30,7 @@ type Application struct {
 	Cert                 *tls.Certificate
 	UnauthenticatedRegex []*regexp.Regexp
 
+	endpint       OIDCEndpoint
 	oauthConfig   oauth2.Config
 	tokenVerifier *oidc.IDTokenVerifier
 
@@ -40,38 +40,6 @@ type Application struct {
 
 	log *log.Entry
 	mux *mux.Router
-}
-
-func akProviderToEndpoint(p api.ProxyOutpostConfig, authentikHost string) oauth2.Endpoint {
-	authUrl := p.OidcConfiguration.AuthorizationEndpoint
-	if browserHost, found := os.LookupEnv("AUTHENTIK_HOST_BROWSER"); found {
-		host := os.Getenv("AUTHENTIK_HOST")
-		authUrl = strings.ReplaceAll(authUrl, host, browserHost)
-	}
-	ep := oauth2.Endpoint{
-		AuthURL:   authUrl,
-		TokenURL:  p.OidcConfiguration.TokenEndpoint,
-		AuthStyle: oauth2.AuthStyleInParams,
-	}
-	u, err := url.Parse(authUrl)
-	if err != nil {
-		return ep
-	}
-	if u.Host != "localhost:8000" {
-		return ep
-	}
-	if authentikHost == "" {
-		log.Warning("Outpost has localhost/blank API Connection but no authentik_host is configured.")
-		return ep
-	}
-	aku, err := url.Parse(authentikHost)
-	if err != nil {
-		return ep
-	}
-	u.Host = aku.Host
-	u.Scheme = aku.Scheme
-	ep.AuthURL = u.String()
-	return ep
 }
 
 func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore, akHost string) *Application {
@@ -98,17 +66,19 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 	})
 
 	// Configure an OpenID Connect aware OAuth2 client.
+	endpoint := GetOIDCEndpoint(p, akHost)
 	oauth2Config := oauth2.Config{
 		ClientID:     *p.ClientId,
 		ClientSecret: *p.ClientSecret,
 		RedirectURL:  fmt.Sprintf("%s/akprox/callback", p.ExternalHost),
-		Endpoint:     akProviderToEndpoint(p, akHost),
+		Endpoint:     endpoint.Endpoint,
 		Scopes:       []string{oidc.ScopeOpenID, "profile", "email", "ak_proxy"},
 	}
 	mux := mux.NewRouter()
 	a := &Application{
 		Host:          externalHost.Host,
 		log:           log.WithField("logger", "authentik.outpost.proxy.bundle").WithField("provider", p.Name),
+		endpint:       endpoint,
 		oauthConfig:   oauth2Config,
 		tokenVerifier: verifier,
 		sessions:      GetStore(p),
@@ -214,14 +184,14 @@ func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {
 	// TODO: Token revocation
 	s, err := a.sessions.Get(r, constants.SeesionName)
 	if err != nil {
-		http.Redirect(rw, r, a.proxyConfig.OidcConfiguration.EndSessionEndpoint, http.StatusFound)
+		http.Redirect(rw, r, a.endpint.EndSessionEndpoint, http.StatusFound)
 		return
 	}
 	s.Options.MaxAge = -1
 	err = s.Save(r, rw)
 	if err != nil {
-		http.Redirect(rw, r, a.proxyConfig.OidcConfiguration.EndSessionEndpoint, http.StatusFound)
+		http.Redirect(rw, r, a.endpint.EndSessionEndpoint, http.StatusFound)
 		return
 	}
-	http.Redirect(rw, r, a.proxyConfig.OidcConfiguration.EndSessionEndpoint, http.StatusFound)
+	http.Redirect(rw, r, a.endpint.EndSessionEndpoint, http.StatusFound)
 }
