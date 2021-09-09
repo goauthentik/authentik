@@ -99,7 +99,7 @@ func attemptProxyStart(ws *web.WebServer, u *url.URL) {
 			}
 			continue
 		}
-		srv := proxyv2.NewProxyServer(ac)
+		srv := proxyv2.NewProxyServer(ac, 0)
 		ws.ProxyServer = srv
 		ac.Server = srv
 		log.WithField("logger", "authentik").Debug("attempting to start outpost")

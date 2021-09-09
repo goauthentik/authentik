@@ -14,7 +14,6 @@ import (
 	"github.com/pires/go-proxyproto"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api"
-	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/crypto"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2/application"
@@ -36,7 +35,7 @@ type ProxyServer struct {
 	akAPI       *ak.APIController
 }
 
-func NewProxyServer(ac *ak.APIController) *ProxyServer {
+func NewProxyServer(ac *ak.APIController, portOffset int) *ProxyServer {
 	l := log.WithField("logger", "authentik.outpost.proxyv2")
 	defaultCert, err := crypto.GenerateSelfSignedCert()
 	if err != nil {
@@ -55,7 +54,7 @@ func NewProxyServer(ac *ak.APIController) *ProxyServer {
 	globalMux.Use(web.NewLoggingHandler(l.WithField("logger", "authentik.outpost.proxyv2.http"), nil))
 	s := &ProxyServer{
 		Listen:     "0.0.0.0:%d",
-		PortOffset: config.G.Web.OutpostPortOffset,
+		PortOffset: portOffset,
 
 		cryptoStore: ak.NewCryptoStore(ac.Client.CryptoApi),
 		apps:        make(map[string]*application.Application),
