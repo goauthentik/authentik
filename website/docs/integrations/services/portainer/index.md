@@ -49,7 +49,7 @@ In Portainer, under _Settings_, _Authentication_, Select _OAuth_ and _Custom_
 - Resource URL: `https://authentik.company/application/o/userinfo/`
 - Logout URL: `https://authentik.company/application/o/portainer/end-session/`
 - User Identifier: `email`
-- Scopes: `email opennid profile`
+- Scopes: `email openid profile`
 
 :::note
 Portainer by default shows commas between each item in the Scopes field.  Do **NOT** use commas.  Use a _space_
