@@ -91,7 +91,7 @@ func (ac *APIController) startWSHandler() {
 		if wsMsg.Instruction == WebsocketInstructionTriggerUpdate {
 			time.Sleep(ac.reloadOffset)
 			logger.Debug("Got update trigger...")
-			err := ac.Server.Refresh()
+			err := ac.OnRefresh()
 			if err != nil {
 				logger.WithError(err).Debug("Failed to update")
 			} else {
@@ -139,7 +139,7 @@ func (ac *APIController) startIntervalUpdater() {
 	logger := ac.logger.WithField("loop", "interval-updater")
 	ticker := time.NewTicker(5 * time.Minute)
 	for ; true; <-ticker.C {
-		err := ac.Server.Refresh()
+		err := ac.OnRefresh()
 		if err != nil {
 			logger.WithError(err).Debug("Failed to update")
 		} else {
