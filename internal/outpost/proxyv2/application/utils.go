@@ -3,13 +3,24 @@ package application
 import (
 	"fmt"
 	"net/http"
+	"net/url"
+	"path"
 	"strconv"
 
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 )
 
+func urlJoin(originalUrl string, newPath string) string {
+	u, err := url.Parse(originalUrl)
+	if err != nil {
+		return originalUrl
+	}
+	u.Path = path.Join(u.Path, newPath)
+	return u.String()
+}
+
 func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
-	authUrl := fmt.Sprintf("%s/akprox/start", a.proxyConfig.ExternalHost)
+	authUrl := urlJoin(a.proxyConfig.ExternalHost, "/akprox/start")
 	http.Redirect(rw, r, authUrl, http.StatusFound)
 }
 

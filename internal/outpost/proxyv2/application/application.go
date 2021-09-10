@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/gob"
-	"fmt"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -70,7 +69,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 	oauth2Config := oauth2.Config{
 		ClientID:     *p.ClientId,
 		ClientSecret: *p.ClientSecret,
-		RedirectURL:  fmt.Sprintf("%s/akprox/callback", p.ExternalHost),
+		RedirectURL:  urlJoin(p.ExternalHost, "/akprox/callback"),
 		Endpoint:     endpoint.Endpoint,
 		Scopes:       []string{oidc.ScopeOpenID, "profile", "email", "ak_proxy"},
 	}
