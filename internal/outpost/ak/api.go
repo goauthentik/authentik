@@ -107,8 +107,24 @@ func (a *APIController) Start() error {
 	return nil
 }
 
+func (a *APIController) OnRefresh() error {
+	// Because we don't know the outpost UUID, we simply do a list and pick the first
+	// The service account this token belongs to should only have access to a single outpost
+	outposts, _, err := a.Client.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
+
+	if err != nil {
+		log.WithError(err).Error("Failed to fetch outpost configuration")
+		return err
+	}
+	outpost := outposts.Results[0]
+	doGlobalSetup(outpost.Config)
+
+	log.WithField("name", outpost.Name).Debug("Fetched outpost configuration")
+	return a.Server.Refresh()
+}
+
 func (a *APIController) StartBackgorundTasks() error {
-	err := a.Server.Refresh()
+	err := a.OnRefresh()
 	if err != nil {
 		return errors.Wrap(err, "failed to run initial refresh")
 	}
