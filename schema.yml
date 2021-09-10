@@ -9169,12 +9169,6 @@ paths:
           type: array
           items:
             type: string
-            nullable: true
-            title: Managed by authentik
-        description: Objects which are managed by authentik. These objects are created
-          and updated automatically. This is flag only indicates that an object can
-          be overwritten by migrations. You can still modify the objects via the API,
-          but expect changes to be overwritten in a later update.
         explode: true
         style: form
       - in: query
@@ -9413,12 +9407,6 @@ paths:
           type: array
           items:
             type: string
-            nullable: true
-            title: Managed by authentik
-        description: Objects which are managed by authentik. These objects are created
-          and updated automatically. This is flag only indicates that an object can
-          be overwritten by migrations. You can still modify the objects via the API,
-          but expect changes to be overwritten in a later update.
         explode: true
         style: form
       - in: query
@@ -9649,12 +9637,6 @@ paths:
           type: array
           items:
             type: string
-            nullable: true
-            title: Managed by authentik
-        description: Objects which are managed by authentik. These objects are created
-          and updated automatically. This is flag only indicates that an object can
-          be overwritten by migrations. You can still modify the objects via the API,
-          but expect changes to be overwritten in a later update.
         explode: true
         style: form
       - in: query
