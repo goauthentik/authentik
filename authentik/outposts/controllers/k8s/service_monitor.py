@@ -73,7 +73,7 @@ class PrometheusServiceMonitorReconciler(KubernetesObjectReconciler[PrometheusSe
 
     @property
     def noop(self) -> bool:
-        return not self._crd_exists()
+        return (not self._crd_exists()) or (self.is_embedded)
 
     def _crd_exists(self) -> bool:
         """Check if the Prometheus ServiceMonitor exists"""
