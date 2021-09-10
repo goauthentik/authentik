@@ -11,7 +11,7 @@ version: "3.5"
 
 services:
   authentik_proxy:
-    image: ghcr.io/goauthentik/proxy:2021.8.4
+    image: ghcr.io/goauthentik/proxy:2021.8.5
     ports:
       - 9000:9000
       - 9443:9443
@@ -24,7 +24,7 @@ services:
       # AUTHENTIK_HOST_BROWSER: https://external-domain.tld
   # Or, for the LDAP Outpost
   authentik_proxy:
-    image: ghcr.io/goauthentik/ldap:2021.8.4
+    image: ghcr.io/goauthentik/ldap:2021.8.5
     ports:
       - 389:3389
     environment:
