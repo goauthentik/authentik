@@ -33,27 +33,27 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 		return
 	}
 	host := ""
+	s, _ := a.sessions.Get(r, constants.SeesionName)
 	// Optional suffix, which is appended to the URL
 	if *a.proxyConfig.Mode == api.PROXYMODE_FORWARD_SINGLE {
 		host = web.GetHost(r)
 	} else if *a.proxyConfig.Mode == api.PROXYMODE_FORWARD_DOMAIN {
 		host = a.proxyConfig.ExternalHost
-		// set the redirect flag to the current URL we have, since we redirect
-		// to a (possibly) different domain, but we want to be redirected back
-		// to the application
-		s, _ := a.sessions.Get(r, constants.SeesionName)
-		// see https://doc.traefik.io/traefik/middlewares/forwardauth/
-		// X-Forwarded-Uri is only the path, so we need to build the entire URL
-		s.Values[constants.SessionRedirect] = fmt.Sprintf(
-			"%s://%s%s",
-			r.Header.Get("X-Forwarded-Proto"),
-			r.Header.Get("X-Forwarded-Host"),
-			r.Header.Get("X-Forwarded-Uri"),
-		)
-		err := s.Save(r, rw)
-		if err != nil {
-			a.log.WithError(err).Warning("failed to save session before redirect")
-		}
+	}
+	// set the redirect flag to the current URL we have, since we redirect
+	// to a (possibly) different domain, but we want to be redirected back
+	// to the application
+	// see https://doc.traefik.io/traefik/middlewares/forwardauth/
+	// X-Forwarded-Uri is only the path, so we need to build the entire URL
+	s.Values[constants.SessionRedirect] = fmt.Sprintf(
+		"%s://%s%s",
+		r.Header.Get("X-Forwarded-Proto"),
+		r.Header.Get("X-Forwarded-Host"),
+		r.Header.Get("X-Forwarded-Uri"),
+	)
+	err = s.Save(r, rw)
+	if err != nil {
+		a.log.WithError(err).Warning("failed to save session before redirect")
 	}
 	proto := r.Header.Get("X-Forwarded-Proto")
 	if proto != "" {
