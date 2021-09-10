@@ -13585,6 +13585,43 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /stages/authenticator/duo/{stage_uuid}/import_devices/:
+    post:
+      operationId: stages_authenticator_duo_import_devices_create
+      description: Import duo devices into authentik
+      parameters:
+      - in: query
+        name: duo_user_id
+        schema:
+          type: string
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Duo Authenticator Setup Stage.
+        required: true
+      - in: query
+        name: username
+        schema:
+          type: string
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticatorDuoStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Enrollment successful
+        '400':
+          description: Device exists already
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /stages/authenticator/duo/{stage_uuid}/used_by/:
     get:
       operationId: stages_authenticator_duo_used_by_list
@@ -29004,8 +29041,6 @@ components:
         code:
           type: string
       additionalProperties: {}
-      required:
-      - detail
     Version:
       type: object
       description: Get running and latest version.

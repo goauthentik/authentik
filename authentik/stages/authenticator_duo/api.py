@@ -1,7 +1,8 @@
 """AuthenticatorDuoStage API Views"""
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -12,6 +13,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
+from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
@@ -70,6 +72,43 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
         if status == "success":
             return Response(status=204)
         return Response(status=420)
+
+    @permission_required(
+        "", ["authentik_stages_authenticator_duo.add_duodevice", "authentik_core.view_user"]
+    )
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="duo_user_id", type=OpenApiTypes.STR, location=OpenApiParameter.QUERY
+            ),
+            OpenApiParameter(
+                name="username", type=OpenApiTypes.STR, location=OpenApiParameter.QUERY
+            ),
+        ],
+        responses={
+            204: OpenApiResponse(description="Enrollment successful"),
+            400: OpenApiResponse(description="Device exists already"),
+        },
+    )
+    @action(methods=["POST"], detail=True)
+    # pylint: disable=invalid-name,unused-argument
+    def import_devices(self, request: Request, pk: str) -> Response:
+        """Import duo devices into authentik"""
+        stage: AuthenticatorDuoStage = self.get_object()
+        users = get_objects_for_user(request.user, "authentik_core.view_user").filter(
+            username=request.query_params.get("username", "")
+        )
+        if not users.exists():
+            return Response(data={"non_field_errors": ["user does not exist"]}, status=400)
+        devices = DuoDevice.objects.filter(
+            duo_user_id=request.query_params.get("duo_user_id"), user=users.first(), stage=stage
+        )
+        if devices.exists():
+            return Response(data={"non_field_errors": ["device exists already"]}, status=400)
+        DuoDevice.objects.create(
+            duo_user_id=request.query_params.get("duo_user_id"), user=users.first(), stage=stage
+        )
+        return Response(status=204)
 
 
 class DuoDeviceSerializer(ModelSerializer):
