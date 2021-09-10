@@ -6,7 +6,6 @@ from django.urls import reverse
 from django.views.generic import RedirectView
 from structlog.stdlib import get_logger
 
-from authentik.flows.views import FlowExecutorView
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.views.base import OAuthClientMixin
 
@@ -43,5 +42,4 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
                 raise Http404(f"source {slug} is not enabled.")
             client = self.get_client(source, callback=self.get_callback_url(source))
             params = self.get_additional_parameters(source)
-            FlowExecutorView(request=self.request).cancel()
             return client.get_redirect_url(params)
