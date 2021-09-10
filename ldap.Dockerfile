@@ -1,29 +1,13 @@
-# Stage 1: Generate API Client
-FROM openapitools/openapi-generator-cli as api-builder
-
-COPY ./schema.yml /local/schema.yml
-
-RUN	docker-entrypoint.sh generate \
-    --git-host goauthentik.io \
-    --git-repo-id outpost \
-    --git-user-id api \
-    -i /local/schema.yml \
-    -g go \
-    -o /local/api \
-    --additional-properties=packageName=api,enumClassPrefix=true,useOneOfDiscriminatorLookup=true && \
-    rm -f /local/api/go.mod /local/api/go.sum
-
-# Stage 2: Build
+# Stage 1: Build
 FROM golang:1.17.1 AS builder
 
 WORKDIR /go/src/goauthentik.io
 
 COPY . .
-COPY --from=api-builder /local/api api
 
 RUN go build -o /go/ldap ./cmd/ldap
 
-# Stage 3: Run
+# Stage 2: Run
 FROM gcr.io/distroless/base-debian10:debug
 
 ARG GIT_BUILD_HASH
