@@ -106,7 +106,7 @@ class TraefikMiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware])
             ),
             spec=TraefikMiddlewareSpec(
                 forwardAuth=TraefikMiddlewareSpecForwardAuth(
-                    address=f"http://{self.name}.{self.namespace}:9000/akprox/auth?traefik",
+                    address=f"http://{self.name}.{self.namespace}:9000/akprox/auth/traefik",
                     authResponseHeaders=[
                         "Set-Cookie",
                         "X-Auth-Username",
