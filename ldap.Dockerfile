@@ -14,7 +14,7 @@ RUN	docker-entrypoint.sh generate \
     rm -f /local/api/go.mod /local/api/go.sum
 
 # Stage 2: Build
-FROM golang:1.17.0 AS builder
+FROM golang:1.17.1 AS builder
 
 WORKDIR /go/src/goauthentik.io
 
