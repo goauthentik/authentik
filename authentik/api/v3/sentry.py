@@ -4,7 +4,6 @@ from json import loads
 from django.conf import settings
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse
-from requests import post
 from requests.exceptions import RequestException
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.parsers import BaseParser
@@ -14,6 +13,9 @@ from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 
 from authentik.lib.config import CONFIG
+from authentik.lib.utils.http import get_http_session
+
+SENTRY_SESSION = get_http_session()
 
 
 class PlainTextParser(BaseParser):
@@ -54,10 +56,12 @@ class SentryTunnelView(APIView):
         dsn = header.get("dsn", "")
         if dsn != settings.SENTRY_DSN:
             return HttpResponse(status=400)
-        response = post(
+        response = SENTRY_SESSION.post(
             "https://sentry.beryju.org/api/8/envelope/",
             data=full_body,
-            headers={"Content-Type": "application/octet-stream"},
+            headers={
+                "Content-Type": "application/octet-stream",
+            },
         )
         try:
             response.raise_for_status()

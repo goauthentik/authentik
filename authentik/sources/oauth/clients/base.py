@@ -8,8 +8,8 @@ from requests.exceptions import RequestException
 from requests.models import Response
 from structlog.stdlib import get_logger
 
-from authentik import __version__
 from authentik.events.models import Event, EventAction
+from authentik.lib.utils.http import get_http_session
 from authentik.sources.oauth.models import OAuthSource
 
 LOGGER = get_logger()
@@ -27,10 +27,9 @@ class BaseOAuthClient:
 
     def __init__(self, source: OAuthSource, request: HttpRequest, callback: Optional[str] = None):
         self.source = source
-        self.session = Session()
+        self.session = get_http_session()
         self.request = request
         self.callback = callback
-        self.session.headers.update({"User-Agent": f"authentik {__version__}"})
 
     def get_access_token(self, **request_kwargs) -> Optional[dict[str, Any]]:
         "Fetch access token from callback request."

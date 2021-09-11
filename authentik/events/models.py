@@ -10,7 +10,7 @@ from django.db import models
 from django.http import HttpRequest
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
-from requests import RequestException, post
+from requests import RequestException
 from structlog.stdlib import get_logger
 
 from authentik import __version__
@@ -19,7 +19,7 @@ from authentik.core.models import ExpiringModel, Group, User
 from authentik.events.geo import GEOIP_READER
 from authentik.events.utils import cleanse_dict, get_user, model_to_dict, sanitize_dict
 from authentik.lib.sentry import SentryIgnoredException
-from authentik.lib.utils.http import get_client_ip
+from authentik.lib.utils.http import get_client_ip, get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -240,7 +240,7 @@ class NotificationTransport(models.Model):
     def send_webhook(self, notification: "Notification") -> list[str]:
         """Send notification to generic webhook"""
         try:
-            response = post(
+            response = get_http_session().post(
                 self.webhook_url,
                 json={
                     "body": notification.body,
@@ -297,7 +297,7 @@ class NotificationTransport(models.Model):
         if notification.event:
             body["attachments"][0]["title"] = notification.event.action
         try:
-            response = post(self.webhook_url, json=body)
+            response = get_http_session().post(self.webhook_url, json=body)
             response.raise_for_status()
         except RequestException as exc:
             text = exc.response.text if exc.response else str(exc)

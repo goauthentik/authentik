@@ -1,8 +1,12 @@
 """http helpers"""
+from os import environ
 from typing import Any, Optional
 
 from django.http import HttpRequest
+from requests.sessions import Session
 from structlog.stdlib import get_logger
+
+from authentik import ENV_GIT_HASH_KEY, __version__
 
 OUTPOST_REMOTE_IP_HEADER = "HTTP_X_AUTHENTIK_REMOTE_IP"
 OUTPOST_TOKEN_HEADER = "HTTP_X_AUTHENTIK_OUTPOST_TOKEN"  # nosec
@@ -60,3 +64,16 @@ def get_client_ip(request: Optional[HttpRequest]) -> str:
     if override:
         return override
     return _get_client_ip_from_meta(request.META)
+
+
+def authentik_user_agent() -> str:
+    """Get a common user agent"""
+    build = environ.get(ENV_GIT_HASH_KEY, "tagged")
+    return f"authentik@{__version__} (build={build})"
+
+
+def get_http_session() -> Session:
+    """Get a requests session with common headers"""
+    session = Session()
+    session.headers["User-Agent"] = authentik_user_agent()
+    return session

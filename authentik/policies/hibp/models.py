@@ -3,10 +3,10 @@ from hashlib import sha1
 
 from django.db import models
 from django.utils.translation import gettext as _
-from requests import get
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
+from authentik.lib.utils.http import get_http_session
 from authentik.policies.models import Policy, PolicyResult
 from authentik.policies.types import PolicyRequest
 
@@ -49,7 +49,7 @@ class HaveIBeenPwendPolicy(Policy):
 
         pw_hash = sha1(password.encode("utf-8")).hexdigest()  # nosec
         url = f"https://api.pwnedpasswords.com/range/{pw_hash[:5]}"
-        result = get(url).text
+        result = get_http_session().get(url).text
         final_count = 0
         for line in result.split("\r\n"):
             full_hash, count = line.split(":")
