@@ -1,4 +1,9 @@
-import { EventsApi, NotificationTransport, NotificationTransportModeEnum } from "@goauthentik/api";
+import {
+    EventsApi,
+    NotificationTransport,
+    NotificationTransportModeEnum,
+    PropertymappingsApi,
+} from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -7,6 +12,7 @@ import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
 import { first } from "../../utils";
 import { ModelForm } from "../../elements/forms/ModelForm";
+import { until } from "lit-html/directives/until";
 
 @customElement("ak-event-transport-form")
 export class TransportForm extends ModelForm<NotificationTransport, string> {
@@ -111,6 +117,32 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                     value="${ifDefined(this.instance?.webhookUrl)}"
                     class="pf-c-form-control"
                 />
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                ?hidden=${!this.showWebhook}
+                label=${t`Webhook Mapping`}
+                name="webhookMapping"
+            >
+                <select class="pf-c-form-control">
+                    <option value="" ?selected=${this.instance?.webhookMapping === undefined}>
+                        ---------
+                    </option>
+                    ${until(
+                        new PropertymappingsApi(DEFAULT_CONFIG)
+                            .propertymappingsNotificationList({})
+                            .then((mappings) => {
+                                return mappings.results.map((mapping) => {
+                                    return html`<option
+                                        value=${ifDefined(mapping.pk)}
+                                        ?selected=${this.instance?.webhookMapping === mapping.pk}
+                                    >
+                                        ${mapping.name}
+                                    </option>`;
+                                });
+                            }),
+                        html`<option>${t`Loading...`}</option>`,
+                    )}
+                </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="sendOnce">
                 <div class="pf-c-check">

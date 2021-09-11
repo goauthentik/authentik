@@ -1646,6 +1646,7 @@ msgstr "Export flow"
 #: src/pages/events/EventInfo.ts
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts
+#: src/pages/property-mappings/PropertyMappingNotification.ts
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts
 msgid "Expression"
@@ -1653,6 +1654,7 @@ msgstr "Expression"
 
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts
+#: src/pages/property-mappings/PropertyMappingNotification.ts
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts
 msgid "Expression using Python."
@@ -2316,6 +2318,7 @@ msgstr "Loading"
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/events/RuleForm.ts
 #: src/pages/events/RuleForm.ts
+#: src/pages/events/TransportForm.ts
 #: src/pages/flows/StageBindingForm.ts
 #: src/pages/flows/StageBindingForm.ts
 #: src/pages/groups/GroupForm.ts
@@ -2564,6 +2567,7 @@ msgstr "My Applications"
 #: src/pages/policies/reputation/ReputationPolicyForm.ts
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
+#: src/pages/property-mappings/PropertyMappingNotification.ts
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts
 #: src/pages/providers/ProviderListPage.ts
@@ -3530,6 +3534,7 @@ msgstr "Secret:"
 
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts
+#: src/pages/property-mappings/PropertyMappingNotification.ts
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts
 msgid "See documentation for a list of all variables."
@@ -3968,6 +3973,7 @@ msgid "Successfully created invitation."
 msgstr "Successfully created invitation."
 
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts
+#: src/pages/property-mappings/PropertyMappingNotification.ts
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts
 msgid "Successfully created mapping."
@@ -4124,6 +4130,7 @@ msgid "Successfully updated invitation."
 msgstr "Successfully updated invitation."
 
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts
+#: src/pages/property-mappings/PropertyMappingNotification.ts
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts
 msgid "Successfully updated mapping."
@@ -5070,6 +5077,10 @@ msgstr "Webhook (Slack/Discord)"
 #: src/pages/events/TransportForm.ts
 msgid "Webhook (generic)"
 msgstr "Webhook (generic)"
+
+#: src/pages/events/TransportForm.ts
+msgid "Webhook Mapping"
+msgstr "Webhook Mapping"
 
 #: src/pages/events/TransportForm.ts
 msgid "Webhook URL"

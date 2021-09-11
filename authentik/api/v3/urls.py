@@ -24,6 +24,7 @@ from authentik.core.api.users import UserViewSet
 from authentik.crypto.api import CertificateKeyPairViewSet
 from authentik.events.api.event import EventViewSet
 from authentik.events.api.notification import NotificationViewSet
+from authentik.events.api.notification_mapping import NotificationWebhookMappingViewSet
 from authentik.events.api.notification_rule import NotificationRuleViewSet
 from authentik.events.api.notification_transport import NotificationTransportViewSet
 from authentik.flows.api.bindings import FlowStageBindingViewSet
@@ -159,6 +160,7 @@ router.register("propertymappings/all", PropertyMappingViewSet)
 router.register("propertymappings/ldap", LDAPPropertyMappingViewSet)
 router.register("propertymappings/saml", SAMLPropertyMappingViewSet)
 router.register("propertymappings/scope", ScopeMappingViewSet)
+router.register("propertymappings/notification", NotificationWebhookMappingViewSet)
 
 router.register("authenticators/duo", DuoDeviceViewSet)
 router.register("authenticators/static", StaticDeviceViewSet)

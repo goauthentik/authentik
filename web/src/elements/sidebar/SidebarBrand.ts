@@ -15,9 +15,9 @@ import AKGlobal from "../../authentik.css";
 
 import { configureSentry } from "../../api/Sentry";
 import { CurrentTenant } from "@goauthentik/api";
-import { ifDefined } from "lit-html/directives/if-defined";
 import { EVENT_SIDEBAR_TOGGLE } from "../../constants";
 import { tenant } from "../../api/Config";
+import { first } from "../../utils";
 
 // If the viewport is wider than MIN_WIDTH, the sidebar
 // is shown besides the content, and not overlayed.
@@ -99,7 +99,7 @@ export class SidebarBrand extends LitElement {
             <a href="#/" class="pf-c-page__header-brand-link">
                 <div class="pf-c-brand ak-brand">
                     <img
-                        src="${ifDefined(this.tenant.brandingLogo)}"
+                        src="${first(this.tenant.brandingLogo, DefaultTenant.brandingLogo)}"
                         alt="authentik icon"
                         loading="lazy"
                     />

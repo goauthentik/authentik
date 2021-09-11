@@ -45,11 +45,12 @@ import {
     ShellChallenge,
 } from "@goauthentik/api";
 import { DEFAULT_CONFIG, tenant } from "../api/Config";
-import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
 import { TITLE_DEFAULT } from "../constants";
 import { configureSentry } from "../api/Sentry";
 import { WebsocketClient } from "../common/ws";
+import { first } from "../utils";
+import { DefaultTenant } from "../elements/sidebar/SidebarBrand";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement implements StageHost {
@@ -342,7 +343,10 @@ export class FlowExecutor extends LitElement implements StageHost {
                     <header class="pf-c-login__header">
                         <div class="pf-c-brand ak-brand">
                             <img
-                                src="${ifDefined(this.tenant?.brandingLogo)}"
+                                src="${first(
+                                    this.tenant?.brandingLogo,
+                                    DefaultTenant.brandingLogo,
+                                )}"
                                 alt="authentik icon"
                             />
                         </div>

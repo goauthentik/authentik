@@ -12,6 +12,7 @@ import "./PropertyMappingTestForm";
 import "./PropertyMappingScopeForm";
 import "./PropertyMappingLDAPForm";
 import "./PropertyMappingSAMLForm";
+import "./PropertyMappingNotification";
 import { TableColumn } from "../../elements/table/Table";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
