@@ -1,16 +1,25 @@
 package application
 
 import (
+	"context"
+	"crypto/tls"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
 	"goauthentik.io/internal/outpost/proxyv2/templates"
 	"goauthentik.io/internal/utils/web"
 )
+
+func (a *Application) getUpstreamTransport() http.RoundTripper {
+	return &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: *a.proxyConfig.InternalHostSslValidation},
+	}
+}
 
 func (a *Application) configureProxy() error {
 	// Reverse proxy to the application server
@@ -19,6 +28,7 @@ func (a *Application) configureProxy() error {
 		return err
 	}
 	rp := &httputil.ReverseProxy{Director: a.proxyModifyRequest(u)}
+	rp.Transport = ak.NewTracingTransport(context.TODO(), a.getUpstreamTransport())
 	rp.ErrorHandler = NewProxyErrorHandler(templates.GetTemplates())
 	rp.ModifyResponse = a.proxyModifyResponse
 	a.mux.PathPrefix("/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
