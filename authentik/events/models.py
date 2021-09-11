@@ -2,7 +2,7 @@
 from datetime import timedelta
 from inspect import getmodule, stack
 from smtplib import SMTPException
-from typing import Optional, Union
+from typing import TYPE_CHECKING, Optional, Type, Union
 from uuid import uuid4
 
 from django.conf import settings
@@ -15,7 +15,7 @@ from structlog.stdlib import get_logger
 
 from authentik import __version__
 from authentik.core.middleware import SESSION_IMPERSONATE_ORIGINAL_USER, SESSION_IMPERSONATE_USER
-from authentik.core.models import ExpiringModel, Group, User
+from authentik.core.models import ExpiringModel, Group, PropertyMapping, User
 from authentik.events.geo import GEOIP_READER
 from authentik.events.utils import cleanse_dict, get_user, model_to_dict, sanitize_dict
 from authentik.lib.sentry import SentryIgnoredException
@@ -27,6 +27,8 @@ from authentik.tenants.models import Tenant
 from authentik.tenants.utils import DEFAULT_TENANT
 
 LOGGER = get_logger("authentik.events")
+if TYPE_CHECKING:
+    from rest_framework.serializers import Serializer
 
 
 def default_event_duration():
@@ -220,6 +222,9 @@ class NotificationTransport(models.Model):
     mode = models.TextField(choices=TransportMode.choices)
 
     webhook_url = models.TextField(blank=True)
+    webhook_mapping = models.ForeignKey(
+        "NotificationWebhookMapping", on_delete=models.SET_DEFAULT, null=True, default=None
+    )
     send_once = models.BooleanField(
         default=False,
         help_text=_(
@@ -239,15 +244,22 @@ class NotificationTransport(models.Model):
 
     def send_webhook(self, notification: "Notification") -> list[str]:
         """Send notification to generic webhook"""
+        default_body = {
+            "body": notification.body,
+            "severity": notification.severity,
+            "user_email": notification.user.email,
+            "user_username": notification.user.username,
+        }
+        if self.webhook_mapping:
+            default_body = self.webhook_mapping.evaluate(
+                user=notification.user,
+                request=None,
+                notification=notification,
+            )
         try:
             response = get_http_session().post(
                 self.webhook_url,
-                json={
-                    "body": notification.body,
-                    "severity": notification.severity,
-                    "user_email": notification.user.email,
-                    "user_username": notification.user.username,
-                },
+                json=default_body,
             )
             response.raise_for_status()
         except RequestException as exc:
@@ -414,3 +426,25 @@ class NotificationRule(PolicyBindingModel):
 
         verbose_name = _("Notification Rule")
         verbose_name_plural = _("Notification Rules")
+
+
+class NotificationWebhookMapping(PropertyMapping):
+    """Modify the schema and layout of the webhook being sent"""
+
+    @property
+    def component(self) -> str:
+        return "ak-property-mapping-notification-form"
+
+    @property
+    def serializer(self) -> Type["Serializer"]:
+        from authentik.events.api.notification_mapping import NotificationWebhookMappingSerializer
+
+        return NotificationWebhookMappingSerializer
+
+    def __str__(self):
+        return f"Notification Webhook Mapping {self.name}"
+
+    class Meta:
+
+        verbose_name = _("Notification Webhook Mapping")
+        verbose_name_plural = _("Notification Webhook Mappings")
