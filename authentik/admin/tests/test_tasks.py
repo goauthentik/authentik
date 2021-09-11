@@ -32,8 +32,12 @@ REQUEST_MOCK_VALID = Mock(
     return_value=MockResponse(
         200,
         """{
-            "tag_name": "version/99999999.9999999",
-            "body": "https://goauthentik.io/test"
+            "$schema": "https://version.goauthentik.io/schema.json",
+            "stable": {
+                "version": "99999999.9999999",
+                "changelog": "See https://goauthentik.io/test",
+                "reason": "bugfix"
+            }
         }""",
     )
 )
