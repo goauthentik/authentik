@@ -68,4 +68,4 @@ migrate:
 	python -m lifecycle.migrate
 
 run:
-	go run -v cmd/server/main.go
+	WORKERS=1 go run -v cmd/server/main.go

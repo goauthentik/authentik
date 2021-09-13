@@ -5,7 +5,6 @@ import (
 	"os/exec"
 
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/internal/config"
 )
 
 type GoUnicorn struct {
@@ -29,10 +28,6 @@ func NewGoUnicorn() *GoUnicorn {
 func (g *GoUnicorn) initCmd() {
 	command := "gunicorn"
 	args := []string{"-c", "./lifecycle/gunicorn.conf.py", "authentik.root.asgi.app:application"}
-	if config.G.Debug {
-		command = "python"
-		args = []string{"manage.py", "runserver", "localhost:8000"}
-	}
 	g.log.WithField("args", args).WithField("cmd", command).Debug("Starting gunicorn")
 	g.p = exec.Command(command, args...)
 	g.p.Env = os.Environ()
