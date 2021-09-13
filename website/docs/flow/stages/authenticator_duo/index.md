@@ -17,7 +17,7 @@ Due to the way the Duo API works, authentik cannot automatically import existing
 :::
 
 :::info
-This API requires version 2021.10.1 or later
+This API requires version 2021.9.1 or later
 :::
 
 You can call the `/api/v3/stages/authenticator/duo/{stage_uuid}/import_devices/` endpoint ([see here](https://goauthentik.io/api/#post-/stages/authenticator/duo/-stage_uuid-/import_devices/)) using the following parameters:
