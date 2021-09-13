@@ -13,8 +13,11 @@ services:
   authentik_proxy:
     image: ghcr.io/goauthentik/proxy:2021.8.5
     ports:
-      - 9000:9000
-      - 9443:9443
+      - 4180:4180
+      - 4443:4443
+      # Starting in authentik 2021.9, use the ports below
+      # - 9000:9000
+      # - 9443:9443
     environment:
       AUTHENTIK_HOST: https://your-authentik.tld
       AUTHENTIK_INSECURE: "false"
