@@ -51,7 +51,10 @@ class SentryTunnelView(APIView):
             return HttpResponse(status=400)
         # Body is 2 json objects separated by \n
         full_body = request.body
-        header = loads(full_body.splitlines()[0])
+        lines = full_body.splitlines()
+        if len(lines) < 1:
+            return HttpResponse(status=400)
+        header = loads(lines[0])
         # Check that the DSN is what we expect
         dsn = header.get("dsn", "")
         if dsn != settings.SENTRY_DSN:
