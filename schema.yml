@@ -20470,9 +20470,6 @@ components:
           type: string
           format: date-time
           nullable: true
-        is_superuser:
-          type: boolean
-          readOnly: true
         email:
           type: string
           format: email
@@ -20489,7 +20486,6 @@ components:
           readOnly: true
       required:
       - avatar
-      - is_superuser
       - name
       - pk
       - uid
