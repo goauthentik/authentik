@@ -20,9 +20,10 @@ def get_tenant_for_request(request: HttpRequest) -> Tenant:
         .filter(Q(host_domain__iendswith=F("domain")) | _q_default)
         .order_by("default")
     )
-    if not db_tenants.exists():
+    tenants = list(db_tenants.all())
+    if len(tenants) < 1:
         return DEFAULT_TENANT
-    return db_tenants.first()
+    return tenants[0]
 
 
 def context_processor(request: HttpRequest) -> dict[str, Any]:
