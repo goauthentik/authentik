@@ -69,7 +69,7 @@
         "chart.js": "^3.5.1",
         "chartjs-adapter-moment": "^1.0.0",
         "codemirror": "^5.62.3",
-        "construct-style-sheets-polyfill": "^2.4.16",
+        "construct-style-sheets-polyfill": "^3.0.1",
         "eslint": "^7.32.0",
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-custom-elements": "0.0.2",
