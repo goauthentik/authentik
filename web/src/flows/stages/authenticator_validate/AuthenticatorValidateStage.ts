@@ -48,7 +48,6 @@ export class AuthenticatorValidateStage
             .authenticator-button {
                 display: flex;
                 align-items: center;
-                width: 100%;
             }
             i {
                 font-size: 1.5rem;
