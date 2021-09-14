@@ -90,7 +90,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         value="${first(
                             this.instance?.authorizationUrl,
                             this.providerType.authorizationUrl,
-                            ""
+                            "",
                         )}"
                         class="pf-c-form-control"
                         required
@@ -109,7 +109,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         value="${first(
                             this.instance?.accessTokenUrl,
                             this.providerType.accessTokenUrl,
-                            ""
+                            "",
                         )}"
                         class="pf-c-form-control"
                         required
@@ -125,7 +125,11 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                 >
                     <input
                         type="text"
-                        value="${first(this.instance?.profileUrl, this.providerType.profileUrl, "")}"
+                        value="${first(
+                            this.instance?.profileUrl,
+                            this.providerType.profileUrl,
+                            "",
+                        )}"
                         class="pf-c-form-control"
                         required
                     />
