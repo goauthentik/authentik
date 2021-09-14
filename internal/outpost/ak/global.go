@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/getsentry/sentry-go"
 	httptransport "github.com/go-openapi/runtime/client"
@@ -35,23 +34,31 @@ func doGlobalSetup(config map[string]interface{}) {
 	}
 	log.WithField("buildHash", constants.BUILD()).WithField("version", constants.VERSION).Info("Starting authentik outpost")
 
-	env := config[ConfigErrorReportingEnvironment].(string)
+	sentryEnv := "customer-outpost"
+	sentryEnable := true
+	if cSentryEnv, ok := config[ConfigErrorReportingEnvironment]; ok {
+		if ccSentryEnv, ok := cSentryEnv.(string); ok {
+			sentryEnv = ccSentryEnv
+		}
+	}
 	var dsn string
-	if config[ConfigErrorReportingEnabled].(bool) {
+	if cSentryEnable, ok := config[ConfigErrorReportingEnabled]; ok {
+		if ccSentryEnable, ok := cSentryEnable.(bool); ok {
+			sentryEnable = ccSentryEnable
+		}
+	}
+	if sentryEnable {
 		dsn = "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8"
-		log.WithField("env", env).Debug("Error reporting enabled")
+		log.WithField("env", sentryEnv).Debug("Error reporting enabled")
+		err := sentry.Init(sentry.ClientOptions{
+			Dsn:              dsn,
+			Environment:      sentryEnv,
+			TracesSampleRate: 1,
+		})
+		if err != nil {
+			log.Fatalf("sentry.Init: %s", err)
+		}
 	}
-
-	err := sentry.Init(sentry.ClientOptions{
-		Dsn:              dsn,
-		Environment:      env,
-		TracesSampleRate: 1,
-	})
-	if err != nil {
-		log.Fatalf("sentry.Init: %s", err)
-	}
-
-	defer sentry.Flush(2 * time.Second)
 }
 
 // GetTLSTransport Get a TLS transport instance, that skips verification if configured via environment variables.
