@@ -108,16 +108,18 @@ export class TokenListPage extends TablePage<Token> {
             html`${item.expiring ? item.expires?.toLocaleString() : "-"}`,
             html`${IntentToLabel(item.intent || IntentEnum.Api)}`,
             html`
-                ${item.managed
-                    ? html``
-                    : html`<ak-forms-modal>
-                          <span slot="submit"> ${t`Update`} </span>
-                          <span slot="header"> ${t`Update Token`} </span>
-                          <ak-token-form slot="form" .instancePk=${item.identifier}></ak-token-form>
-                          <button slot="trigger" class="pf-c-button pf-m-plain">
-                              <i class="fas fa-edit"></i>
-                          </button>
-                      </ak-forms-modal>`}
+                <ak-forms-modal>
+                    <span slot="submit"> ${t`Update`} </span>
+                    <span slot="header"> ${t`Update Token`} </span>
+                    <ak-token-form slot="form" .instancePk=${item.identifier}></ak-token-form>
+                    <button
+                        ?disabled=${item.managed !== null}
+                        slot="trigger"
+                        class="pf-c-button pf-m-plain"
+                    >
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </ak-forms-modal>
                 <ak-token-copy-button identifier="${item.identifier}">
                     <i class="fas fa-copy"></i>
                 </ak-token-copy-button>
