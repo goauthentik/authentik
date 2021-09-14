@@ -92,6 +92,8 @@ class UserWriteStageView(StageView):
         try:
             with transaction.atomic():
                 user.save()
+                if self.executor.current_stage.create_users_group:
+                    user.ak_groups.add(self.executor.current_stage.create_users_group)
         except IntegrityError as exc:
             LOGGER.warning("Failed to save user", exc=exc)
             return self.executor.stage_invalid()

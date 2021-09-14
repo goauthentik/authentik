@@ -62,7 +62,7 @@ gen-outpost:
 		--additional-properties=packageName=api,enumClassPrefix=true,useOneOfDiscriminatorLookup=true,disallowAdditionalPropertiesIfNotPresent=false
 	rm -f api/go.mod api/go.sum
 
-gen: gen-build gen-clean gen-web gen-outpost
+gen: gen-build gen-clean gen-web
 
 migrate:
 	python -m lifecycle.migrate

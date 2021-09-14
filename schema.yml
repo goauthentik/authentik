@@ -17950,6 +17950,11 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: create_users_group
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: name
         schema:
           type: string
@@ -26628,6 +26633,11 @@ components:
         create_users_as_inactive:
           type: boolean
           description: When set, newly created users are inactive and cannot login.
+        create_users_group:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optionally add newly created users to this group.
     PatchedWebAuthnDeviceRequest:
       type: object
       description: Serializer for WebAuthn authenticator devices
@@ -29283,6 +29293,11 @@ components:
         create_users_as_inactive:
           type: boolean
           description: When set, newly created users are inactive and cannot login.
+        create_users_group:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optionally add newly created users to this group.
       required:
       - component
       - name
@@ -29302,6 +29317,11 @@ components:
         create_users_as_inactive:
           type: boolean
           description: When set, newly created users are inactive and cannot login.
+        create_users_group:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optionally add newly created users to this group.
       required:
       - name
     ValidationError:

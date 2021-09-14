@@ -1,4 +1,4 @@
-import { UserWriteStage, StagesApi } from "@goauthentik/api";
+import { UserWriteStage, StagesApi, CoreApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -8,6 +8,7 @@ import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
 import { ModelForm } from "../../../elements/forms/ModelForm";
 import { first } from "../../../utils";
+import { until } from "lit-html/directives/until";
 
 @customElement("ak-stage-user-write-form")
 export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
@@ -68,6 +69,33 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                         </div>
                         <p class="pf-c-form__helper-text">
                             ${t`Mark newly created users as inactive.`}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${t`Group`} name="searchGroup">
+                        <select class="pf-c-form-control">
+                            <option
+                                value=""
+                                ?selected=${this.instance?.createUsersGroup === undefined}
+                            >
+                                ---------
+                            </option>
+                            ${until(
+                                new CoreApi(DEFAULT_CONFIG).coreGroupsList({}).then((groups) => {
+                                    return groups.results.map((group) => {
+                                        return html`<option
+                                            value=${ifDefined(group.pk)}
+                                            ?selected=${this.instance?.createUsersGroup ===
+                                            group.pk}
+                                        >
+                                            ${group.name}
+                                        </option>`;
+                                    });
+                                }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Newly created users are added to this group, if a group is selected.`}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

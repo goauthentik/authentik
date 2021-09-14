@@ -1880,6 +1880,7 @@ msgstr ""
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/providers/ldap/LDAPProviderForm.ts
+#: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Group"
 msgstr ""
 
@@ -2363,6 +2364,7 @@ msgstr ""
 #: src/pages/stages/password/PasswordStageForm.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
+#: src/pages/stages/user_write/UserWriteStageForm.ts
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
@@ -2634,6 +2636,10 @@ msgstr ""
 
 #: src/pages/events/EventInfo.ts
 msgid "New version available!"
+msgstr ""
+
+#: src/pages/stages/user_write/UserWriteStageForm.ts
+msgid "Newly created users are added to this group, if a group is selected."
 msgstr ""
 
 #: src/elements/oauth/UserRefreshList.ts

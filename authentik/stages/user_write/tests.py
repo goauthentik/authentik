@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.utils.encoding import force_str
 from rest_framework.test import APITestCase
 
-from authentik.core.models import USER_ATTRIBUTE_SOURCES, Source, User, UserSourceConnection
+from authentik.core.models import USER_ATTRIBUTE_SOURCES, Group, Source, User, UserSourceConnection
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.markers import StageMarker
@@ -29,7 +29,10 @@ class TestUserWriteStage(APITestCase):
             slug="test-write",
             designation=FlowDesignation.AUTHENTICATION,
         )
-        self.stage = UserWriteStage.objects.create(name="write")
+        self.group = Group.objects.create(name="test-group")
+        self.stage = UserWriteStage.objects.create(
+            name="write", create_users_as_inactive=True, create_users_group=self.group
+        )
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
         self.source = Source.objects.create(name="fake_source")
 
@@ -67,6 +70,7 @@ class TestUserWriteStage(APITestCase):
         user_qs = User.objects.filter(username=plan.context[PLAN_CONTEXT_PROMPT]["username"])
         self.assertTrue(user_qs.exists())
         self.assertTrue(user_qs.first().check_password(password))
+        self.assertEqual(list(user_qs.first().ak_groups.all()), [self.group])
         self.assertEqual(user_qs.first().attributes, {USER_ATTRIBUTE_SOURCES: [self.source.name]})
 
     def test_user_update(self):

@@ -1888,6 +1888,7 @@ msgstr "Go to previous page"
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/providers/ldap/LDAPProviderForm.ts
+#: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Group"
 msgstr "Group"
 
@@ -2371,6 +2372,7 @@ msgstr "Loading"
 #: src/pages/stages/password/PasswordStageForm.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
+#: src/pages/stages/user_write/UserWriteStageForm.ts
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
@@ -2643,6 +2645,10 @@ msgstr "Negates the outcome of the binding. Messages are unaffected."
 #: src/pages/events/EventInfo.ts
 msgid "New version available!"
 msgstr "New version available!"
+
+#: src/pages/stages/user_write/UserWriteStageForm.ts
+msgid "Newly created users are added to this group, if a group is selected."
+msgstr "Newly created users are added to this group, if a group is selected."
 
 #: src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
