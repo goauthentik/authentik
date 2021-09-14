@@ -77,7 +77,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
         if (!this.providerType?.urlsCustomizable) {
             return html``;
         }
-        return html` <ak-form-group>
+        return html` <ak-form-group .expanded=${true}>
             <span slot="header"> ${t`URL settings`} </span>
             <div slot="body" class="pf-c-form">
                 <ak-form-element-horizontal
@@ -90,6 +90,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         value="${first(
                             this.instance?.authorizationUrl,
                             this.providerType.authorizationUrl,
+                            ""
                         )}"
                         class="pf-c-form-control"
                         required
@@ -108,6 +109,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         value="${first(
                             this.instance?.accessTokenUrl,
                             this.providerType.accessTokenUrl,
+                            ""
                         )}"
                         class="pf-c-form-control"
                         required
@@ -123,7 +125,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                 >
                     <input
                         type="text"
-                        value="${first(this.instance?.profileUrl, this.providerType.profileUrl)}"
+                        value="${first(this.instance?.profileUrl, this.providerType.profileUrl, "")}"
                         class="pf-c-form-control"
                         required
                     />
