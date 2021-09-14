@@ -113,4 +113,4 @@ class OAuth2Client(BaseOAuthClient):
 
     @property
     def session_key(self):
-        return "oauth-client-{0}-request-state".format(self.source.name)
+        return f"oauth-client-{self.source.name}-request-state"
