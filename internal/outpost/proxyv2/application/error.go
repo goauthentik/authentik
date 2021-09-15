@@ -10,7 +10,7 @@ import (
 // NewProxyErrorHandler creates a ProxyErrorHandler using the template given.
 func NewProxyErrorHandler(errorTemplate *template.Template) func(http.ResponseWriter, *http.Request, error) {
 	return func(rw http.ResponseWriter, req *http.Request, proxyErr error) {
-		log.Errorf("Error proxying to upstream server: %v", proxyErr)
+		log.WithError(proxyErr).Warning("Error proxying to upstream server")
 		rw.WriteHeader(http.StatusBadGateway)
 		data := struct {
 			Title       string
