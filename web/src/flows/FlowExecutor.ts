@@ -374,7 +374,7 @@ export class FlowExecutor extends LitElement implements StageHost {
                             ${this.challenge?.flowInfo?.background?.startsWith("/static")
                                 ? html`
                                       <li>
-                                          <a href="https://unsplash.com/@wckd_official"
+                                          <a href="https://unsplash.com/@introspectivedsgn"
                                               >${t`Background image`}</a
                                           >
                                       </li>
