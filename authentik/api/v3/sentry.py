@@ -4,7 +4,6 @@ from json import loads
 from django.conf import settings
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse
-from requests.exceptions import RequestException
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.parsers import BaseParser
 from rest_framework.permissions import AllowAny
@@ -12,10 +11,8 @@ from rest_framework.request import Request
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 
+from authentik.api.tasks import sentry_proxy
 from authentik.lib.config import CONFIG
-from authentik.lib.utils.http import get_http_session
-
-SENTRY_SESSION = get_http_session()
 
 
 class PlainTextParser(BaseParser):
@@ -59,16 +56,5 @@ class SentryTunnelView(APIView):
         dsn = header.get("dsn", "")
         if dsn != settings.SENTRY_DSN:
             return HttpResponse(status=400)
-        response = SENTRY_SESSION.post(
-            "https://sentry.beryju.org/api/8/envelope/",
-            data=full_body,
-            headers={
-                "Content-Type": "application/octet-stream",
-            },
-            timeout=5,
-        )
-        try:
-            response.raise_for_status()
-        except RequestException:
-            return HttpResponse(status=500)
-        return HttpResponse(status=response.status_code)
+        sentry_proxy.delay(full_body)
+        return HttpResponse(status=204)
