@@ -8,6 +8,7 @@ from uuid import uuid4
 from django.conf import settings
 from django.db import models
 from django.http import HttpRequest
+from django.http.request import QueryDict
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from requests import RequestException
@@ -139,8 +140,9 @@ class Event(ExpiringModel):
         `user` arguments optionally overrides user from requests."""
         if request:
             self.context["http_request"] = {
-                "path": request.get_full_path(),
+                "path": request.path,
                 "method": request.method,
+                "args": QueryDict(request.META.get("QUERY_STRING", "")),
             }
         if hasattr(request, "tenant"):
             tenant: Tenant = request.tenant
