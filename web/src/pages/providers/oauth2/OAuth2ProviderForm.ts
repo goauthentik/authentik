@@ -179,7 +179,7 @@ ${this.instance?.redirectUris}</textarea
                 <span slot="header"> ${t`Advanced protocol settings`} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Access code validity`}
+                        label=${t`Access token validity`}
                         ?required=${true}
                         name="accessCodeValidity"
                     >
@@ -190,7 +190,10 @@ ${this.instance?.redirectUris}</textarea
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Configure how long access codes are valid for.`}
+                            ${t`Configure how long access tokens are valid for.`}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`If you are using an Implicit, client-side flow (where the token-endpoint isn't used), you probably want to increase this time.`}
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${t`(Format: hours=-1;minutes=-2;seconds=-3).`}
