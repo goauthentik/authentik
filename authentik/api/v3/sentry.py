@@ -65,6 +65,7 @@ class SentryTunnelView(APIView):
             headers={
                 "Content-Type": "application/octet-stream",
             },
+            timeout=5,
         )
         try:
             response.raise_for_status()
