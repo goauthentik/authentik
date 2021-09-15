@@ -56,5 +56,5 @@ class SentryTunnelView(APIView):
         dsn = header.get("dsn", "")
         if dsn != settings.SENTRY_DSN:
             return HttpResponse(status=400)
-        sentry_proxy.delay(full_body)
+        sentry_proxy.delay(full_body.decode())
         return HttpResponse(status=204)

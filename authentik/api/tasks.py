@@ -6,7 +6,7 @@ from authentik.root.celery import CELERY_APP
 SENTRY_SESSION = get_http_session()
 
 
-@CELERY_APP.task(bind=True)
+@CELERY_APP.task()
 def sentry_proxy(payload: str):
     """Relay data to sentry"""
     SENTRY_SESSION.post(
