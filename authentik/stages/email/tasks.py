@@ -54,7 +54,16 @@ def send_mail(self: MonitoredTask, message: dict[Any, Any], email_stage_pk: Opti
         if not email_stage_pk:
             stage: EmailStage = EmailStage(use_global_settings=True)
         else:
-            stage: EmailStage = EmailStage.objects.get(pk=email_stage_pk)
+            stages = EmailStage.objects.filter(pk=email_stage_pk)
+            if not stages.exists():
+                self.set_status(
+                    TaskResult(
+                        TaskResultStatus.WARNING,
+                        messages=["Email stage does not exist anymore. Discarding message."],
+                    )
+                )
+                return
+            stage: EmailStage = stages.first()
         try:
             backend = stage.backend
         except ValueError as exc:
