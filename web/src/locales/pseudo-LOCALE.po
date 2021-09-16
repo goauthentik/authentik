@@ -1918,12 +1918,20 @@ msgstr ""
 msgid "Generate Certificate-Key Pair"
 msgstr ""
 
+#: src/interfaces/UserInterface.ts
+msgid "Go to admin interface"
+msgstr ""
+
 #: src/elements/table/TablePagination.ts
 msgid "Go to next page"
 msgstr ""
 
 #: src/elements/table/TablePagination.ts
 msgid "Go to previous page"
+msgstr ""
+
+#: src/interfaces/AdminInterface.ts
+msgid "Go to user interface"
 msgstr ""
 
 #: src/pages/events/RuleForm.ts
@@ -2311,7 +2319,6 @@ msgstr ""
 msgid "Let the user identify themselves with their username or Email address."
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts
 #: src/interfaces/UserInterface.ts
 msgid "Library"
 msgstr ""
@@ -2580,9 +2587,9 @@ msgstr ""
 msgid "Model updated"
 msgstr ""
 
-#: src/interfaces/AdminInterface.ts
-msgid "Monitor"
-msgstr ""
+#: 
+#~ msgid "Monitor"
+#~ msgstr ""
 
 #: src/pages/LibraryPage.ts
 #: src/user/LibraryPage.ts

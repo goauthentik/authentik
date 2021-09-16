@@ -111,7 +111,7 @@ export class AdminInterface extends LitElement {
                                         class="pf-c-page__main"
                                         tabindex="-1"
                                         id="main-content"
-                                        defaultUrl="/library"
+                                        defaultUrl="/administration/overview"
                                         .routes=${ROUTES}
                                     >
                                     </ak-router-outlet>
@@ -171,17 +171,14 @@ export class AdminInterface extends LitElement {
                     return html``;
                 }),
             )}
-            <ak-sidebar-item path="/if/user/" ?isAbsoluteLink=${true}>
-                <span slot="label">${t`Library`}</span>
+            <ak-sidebar-item path="/if/user/" ?isAbsoluteLink=${true} ?highlight=${true}>
+                <span slot="label">${t`Go to user interface`}</span>
             </ak-sidebar-item>
-            <ak-sidebar-item>
-                <span slot="label">${t`Monitor`}</span>
-                <ak-sidebar-item path="/administration/overview">
-                    <span slot="label">${t`Overview`}</span>
-                </ak-sidebar-item>
-                <ak-sidebar-item path="/administration/system-tasks">
-                    <span slot="label">${t`System Tasks`}</span>
-                </ak-sidebar-item>
+            <ak-sidebar-item path="/administration/overview">
+                <span slot="label">${t`Overview`}</span>
+            </ak-sidebar-item>
+            <ak-sidebar-item path="/administration/system-tasks">
+                <span slot="label">${t`System Tasks`}</span>
             </ak-sidebar-item>
             <ak-sidebar-item>
                 <span slot="label">${t`Resources`}</span>

@@ -35,8 +35,8 @@ import "./pages/users/UserViewPage";
 
 export const ROUTES: Route[] = [
     // Prevent infinite Shell loops
-    new Route(new RegExp("^/$")).redirect("/library"),
-    new Route(new RegExp("^#.*")).redirect("/library"),
+    new Route(new RegExp("^/$")).redirect("/administration/overview"),
+    new Route(new RegExp("^#.*")).redirect("/administration/overview"),
     new Route(new RegExp("^/library$"), html`<ak-library></ak-library>`),
     new Route(
         new RegExp("^/administration/overview$"),
