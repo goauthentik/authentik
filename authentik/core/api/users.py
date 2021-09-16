@@ -1,4 +1,5 @@
 """User API Views"""
+from datetime import timedelta
 from json import loads
 from typing import Optional
 
@@ -7,6 +8,7 @@ from django.db.transaction import atomic
 from django.db.utils import IntegrityError
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
+from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django_filters.filters import BooleanFilter, CharFilter, ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
@@ -274,6 +276,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                     identifier=f"service-account-{username}-password",
                     intent=TokenIntents.INTENT_APP_PASSWORD,
                     user=user,
+                    expires=now() + timedelta(days=360),
                 )
                 return Response({"username": user.username, "token": token.key})
             except (IntegrityError) as exc:
