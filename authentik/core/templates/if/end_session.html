@@ -21,7 +21,7 @@ You've logged out of {{ application }}.
         {% endblocktrans %}
     </p>
 
-    <a id="ak-back-home" href="{% url 'authentik_core:if-admin' %}" class="pf-c-button pf-m-primary">{% trans 'Go back to overview' %}</a>
+    <a id="ak-back-home" href="{% url 'authentik_core:root-redirect' %}" class="pf-c-button pf-m-primary">{% trans 'Go back to overview' %}</a>
 
     <a id="logout" href="{% url 'authentik_flows:default-invalidation' %}" class="pf-c-button pf-m-secondary">{% trans 'Log out of authentik' %}</a>
 
