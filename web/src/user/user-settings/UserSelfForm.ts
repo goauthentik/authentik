@@ -77,7 +77,7 @@ export class UserSelfForm extends ModelForm<UserSelf, number> {
                             }}
                             class="pf-c-button pf-m-primary"
                         >
-                            ${t`Update`}
+                            ${t`Save`}
                         </button>
                         ${until(
                             tenant().then((tenant) => {

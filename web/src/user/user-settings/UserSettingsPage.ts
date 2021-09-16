@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
 
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -14,10 +14,14 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import "../../elements/Tabs";
+import "../../elements/user/SessionList";
+import "../../elements/user/UserConsentList";
 import "./tokens/UserTokenList";
 import "./UserSelfForm";
 import "./sources/SourceSettings";
 import "./stages/StageSettings";
+import { until } from "lit-html/directives/until";
+import { me } from "../../api/Users";
 
 @customElement("ak-user-settings")
 export class UserSettingsPage extends LitElement {
@@ -53,6 +57,32 @@ export class UserSettingsPage extends LitElement {
                                 <ak-user-self-form .instancePk=${1}></ak-user-self-form>
                             </div>
                         </div>
+                    </section>
+                    <section
+                        slot="page-sessions"
+                        data-tab-title="${t`Sessions`}"
+                        class="pf-c-page__main-section pf-m-no-padding-mobile"
+                    >
+                        ${until(
+                            me().then((u) => {
+                                return html`<ak-user-session-list
+                                    targetUser=${u.user.username}
+                                ></ak-user-session-list>`;
+                            }),
+                        )}
+                    </section>
+                    <section
+                        slot="page-consents"
+                        data-tab-title="${t`Consent`}"
+                        class="pf-c-page__main-section pf-m-no-padding-mobile"
+                    >
+                        ${until(
+                            me().then((u) => {
+                                return html`<ak-user-consent-list
+                                    userId=${u.user.pk}
+                                ></ak-user-consent-list>`;
+                            }),
+                        )}
                     </section>
                     <section
                         slot="page-stages"
