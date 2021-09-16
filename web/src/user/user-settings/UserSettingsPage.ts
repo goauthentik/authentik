@@ -13,21 +13,11 @@ import AKGlobal from "../../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import { SourcesApi, StagesApi, UserSetting } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { until } from "lit-html/directives/until";
-import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/Tabs";
 import "./tokens/UserTokenList";
 import "./UserSelfForm";
-import "./stages/UserSettingsAuthenticatorDuo";
-import "./stages/UserSettingsAuthenticatorStatic";
-import "./stages/UserSettingsAuthenticatorTOTP";
-import "./stages/UserSettingsAuthenticatorWebAuthn";
-import "./stages/UserSettingsPassword";
-import "./sources/SourceSettingsOAuth";
-import "./sources/SourceSettingsPlex";
-import { EVENT_REFRESH } from "../../constants";
+import "./SourceSettings";
+import "./StageSettings";
 
 @customElement("ak-user-settings")
 export class UserSettingsPage extends LitElement {
@@ -48,81 +38,6 @@ export class UserSettingsPage extends LitElement {
         ];
     }
 
-    @property({ attribute: false })
-    userSettings?: Promise<UserSetting[]>;
-
-    @property({ attribute: false })
-    sourceSettings?: Promise<UserSetting[]>;
-
-    constructor() {
-        super();
-        this.addEventListener(EVENT_REFRESH, () => {
-            this.firstUpdated();
-        });
-    }
-
-    firstUpdated(): void {
-        this.userSettings = new StagesApi(DEFAULT_CONFIG).stagesAllUserSettingsList();
-        this.sourceSettings = new SourcesApi(DEFAULT_CONFIG).sourcesAllUserSettingsList();
-    }
-
-    renderStageSettings(stage: UserSetting): TemplateResult {
-        switch (stage.component) {
-            case "ak-user-settings-authenticator-webauthn":
-                return html`<ak-user-settings-authenticator-webauthn
-                    objectId=${stage.objectUid}
-                    .configureUrl=${stage.configureUrl}
-                >
-                </ak-user-settings-authenticator-webauthn>`;
-            case "ak-user-settings-password":
-                return html`<ak-user-settings-password
-                    objectId=${stage.objectUid}
-                    .configureUrl=${stage.configureUrl}
-                >
-                </ak-user-settings-password>`;
-            case "ak-user-settings-authenticator-totp":
-                return html`<ak-user-settings-authenticator-totp
-                    objectId=${stage.objectUid}
-                    .configureUrl=${stage.configureUrl}
-                >
-                </ak-user-settings-authenticator-totp>`;
-            case "ak-user-settings-authenticator-static":
-                return html`<ak-user-settings-authenticator-static
-                    objectId=${stage.objectUid}
-                    .configureUrl=${stage.configureUrl}
-                >
-                </ak-user-settings-authenticator-static>`;
-            case "ak-user-settings-authenticator-duo":
-                return html`<ak-user-settings-authenticator-duo
-                    objectId=${stage.objectUid}
-                    .configureUrl=${stage.configureUrl}
-                >
-                </ak-user-settings-authenticator-duo>`;
-            default:
-                return html`<p>${t`Error: unsupported stage settings: ${stage.component}`}</p>`;
-        }
-    }
-
-    renderSourceSettings(source: UserSetting): TemplateResult {
-        switch (source.component) {
-            case "ak-user-settings-source-oauth":
-                return html`<ak-user-settings-source-oauth
-                    objectId=${source.objectUid}
-                    title=${source.title}
-                    .configureUrl=${source.configureUrl}
-                >
-                </ak-user-settings-source-oauth>`;
-            case "ak-user-settings-source-plex":
-                return html`<ak-user-settings-source-plex
-                    objectId=${source.objectUid}
-                    title=${source.title}
-                >
-                </ak-user-settings-source-plex>`;
-            default:
-                return html`<p>${t`Error: unsupported source settings: ${source.component}`}</p>`;
-        }
-    }
-
     render(): TemplateResult {
         return html`<div class="pf-c-page">
             <main role="main" class="pf-c-page__main" tabindex="-1">
@@ -140,38 +55,26 @@ export class UserSettingsPage extends LitElement {
                         </div>
                     </section>
                     <section
+                        slot="page-stages"
+                        data-tab-title="${t`Password, 2FA, etc`}"
+                        class="pf-c-page__main-section pf-m-no-padding-mobile"
+                    >
+                        <ak-user-settings-stage></ak-user-settings-stage>
+                    </section>
+                    <section
+                        slot="page-sources"
+                        data-tab-title="${t`Connected services`}"
+                        class="pf-c-page__main-section pf-m-no-padding-mobile"
+                    >
+                        <ak-user-settings-source></ak-user-settings-source>
+                    </section>
+                    <section
                         slot="page-tokens"
                         data-tab-title="${t`Tokens and App passwords`}"
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
                         <ak-user-token-list></ak-user-token-list>
                     </section>
-                    ${until(
-                        this.userSettings?.then((stages) => {
-                            return stages.map((stage) => {
-                                return html`<section
-                                    slot="page-${stage.objectUid}"
-                                    data-tab-title="${ifDefined(stage.title)}"
-                                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                                >
-                                    ${this.renderStageSettings(stage)}
-                                </section>`;
-                            });
-                        }),
-                    )}
-                    ${until(
-                        this.sourceSettings?.then((source) => {
-                            return source.map((stage) => {
-                                return html`<section
-                                    slot="page-${stage.objectUid}"
-                                    data-tab-title="${ifDefined(stage.title)}"
-                                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                                >
-                                    ${this.renderSourceSettings(stage)}
-                                </section>`;
-                            });
-                        }),
-                    )}
                 </ak-tabs>
             </main>
         </div>`;

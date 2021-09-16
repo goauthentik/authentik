@@ -77,7 +77,7 @@ export class UserTokenList extends Table<Token> {
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
-                                    ${item.user?.username}
+                                    ${item.userObj?.username}
                                 </div>
                             </dd>
                         </div>
