@@ -42,10 +42,11 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 	defer func() {
 		span.Finish()
 		metrics.Requests.With(prometheus.Labels{
-			"type":   "bind",
-			"filter": "",
-			"dn":     req.BindDN,
-			"client": utils.GetIP(req.conn.RemoteAddr()),
+			"outpost_name": ls.ac.Outpost.Name,
+			"type":         "bind",
+			"filter":       "",
+			"dn":           req.BindDN,
+			"client":       utils.GetIP(req.conn.RemoteAddr()),
 		}).Observe(float64(span.EndTime.Sub(span.StartTime)))
 		req.log.WithField("took-ms", span.EndTime.Sub(span.StartTime).Milliseconds()).Info("Bind request")
 	}()
@@ -59,10 +60,11 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 	}
 	req.log.WithField("request", "bind").Warning("No provider found for request")
 	metrics.RequestsRejected.With(prometheus.Labels{
-		"type":   "bind",
-		"reason": "no_provider",
-		"dn":     bindDN,
-		"client": utils.GetIP(conn.RemoteAddr()),
+		"outpost_name": ls.ac.Outpost.Name,
+		"type":         "bind",
+		"reason":       "no_provider",
+		"dn":           bindDN,
+		"client":       utils.GetIP(conn.RemoteAddr()),
 	}).Inc()
 	return ldap.LDAPResultOperationsError, nil
 }

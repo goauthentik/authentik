@@ -46,10 +46,11 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 	defer func() {
 		span.Finish()
 		metrics.Requests.With(prometheus.Labels{
-			"type":   "search",
-			"filter": req.Filter,
-			"dn":     req.BindDN,
-			"client": utils.GetIP(req.conn.RemoteAddr()),
+			"outpost_name": ls.ac.Outpost.Name,
+			"type":         "search",
+			"filter":       req.Filter,
+			"dn":           req.BindDN,
+			"client":       utils.GetIP(req.conn.RemoteAddr()),
 		}).Observe(float64(span.EndTime.Sub(span.StartTime)))
 		req.log.WithField("took-ms", span.EndTime.Sub(span.StartTime).Milliseconds()).Info("Search request")
 	}()

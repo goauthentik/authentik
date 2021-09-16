@@ -24,7 +24,7 @@ func (ps *ProxyServer) Refresh() error {
 		hc := &http.Client{
 			Transport: ak.NewUserAgentTransport(constants.OutpostUserAgent()+ua, ak.NewTracingTransport(context.TODO(), ak.GetTLSTransport())),
 		}
-		a := application.NewApplication(provider, hc, ps.cryptoStore, ps.akAPI.Outpost.Config["authentik_host"].(string))
+		a := application.NewApplication(provider, hc, ps.cryptoStore, ps.akAPI)
 		apps[a.Host] = a
 	}
 	ps.apps = apps

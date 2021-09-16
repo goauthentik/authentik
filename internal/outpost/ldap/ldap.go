@@ -29,9 +29,9 @@ type ProviderInstance struct {
 	s        *LDAPServer
 	log      *log.Entry
 
-	tlsServerName *string
-	cert          *tls.Certificate
-
+	tlsServerName       *string
+	cert                *tls.Certificate
+	outpostName         string
 	searchAllowedGroups []*strfmt.UUID
 	boundUsersMutex     sync.RWMutex
 	boundUsers          map[string]UserFlags

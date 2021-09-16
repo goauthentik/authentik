@@ -31,6 +31,7 @@ type Application struct {
 	endpint       OIDCEndpoint
 	oauthConfig   oauth2.Config
 	tokenVerifier *oidc.IDTokenVerifier
+	outpostName   string
 
 	sessions    sessions.Store
 	proxyConfig api.ProxyOutpostConfig
@@ -40,7 +41,7 @@ type Application struct {
 	mux *mux.Router
 }
 
-func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore, akHost string) *Application {
+func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore, ak *ak.APIController) *Application {
 	gob.Register(Claims{})
 
 	externalHost, err := url.Parse(p.ExternalHost)
@@ -56,7 +57,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 	})
 
 	// Configure an OpenID Connect aware OAuth2 client.
-	endpoint := GetOIDCEndpoint(p, akHost)
+	endpoint := GetOIDCEndpoint(p, ak.Outpost.Config["authentik_host"].(string))
 	oauth2Config := oauth2.Config{
 		ClientID:     *p.ClientId,
 		ClientSecret: *p.ClientSecret,
@@ -68,6 +69,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 	a := &Application{
 		Host:          externalHost.Host,
 		log:           log.WithField("logger", "authentik.outpost.proxy.bundle").WithField("provider", p.Name),
+		outpostName:   ak.Outpost.Name,
 		endpint:       endpoint,
 		oauthConfig:   oauth2Config,
 		tokenVerifier: verifier,
@@ -103,12 +105,13 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 			inner.ServeHTTP(rw, r)
 			after := time.Since(before)
 			metrics.Requests.With(prometheus.Labels{
-				"type":   "app",
-				"scheme": r.URL.Scheme,
-				"method": r.Method,
-				"path":   r.URL.Path,
-				"host":   web.GetHost(r),
-				"user":   user,
+				"outpost_name": a.outpostName,
+				"type":         "app",
+				"scheme":       r.URL.Scheme,
+				"method":       r.Method,
+				"path":         r.URL.Path,
+				"host":         web.GetHost(r),
+				"user":         user,
 			}).Observe(float64(after))
 		})
 	})

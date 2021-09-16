@@ -50,6 +50,7 @@ func (ls *LDAPServer) Refresh() error {
 			tlsServerName:       provider.TlsServerName,
 			uidStartNumber:      *provider.UidStartNumber,
 			gidStartNumber:      *provider.GidStartNumber,
+			outpostName:         ls.ac.Outpost.Name,
 		}
 		if provider.Certificate.Get() != nil {
 			kp := provider.Certificate.Get()

@@ -50,6 +50,7 @@ func (a *Application) configureProxy() error {
 			user = claims.Email
 		}
 		metrics.UpstreamTiming.With(prometheus.Labels{
+			"outpost_name":  a.outpostName,
 			"upstream_host": u.String(),
 			"scheme":        r.URL.Scheme,
 			"method":        r.Method,

@@ -44,15 +44,6 @@ func (a *Application) getClaims(r *http.Request) (*Claims, error) {
 	return &c, nil
 }
 
-func contains(s []string, e string) bool {
-	for _, a := range s {
-		if a == e {
-			return true
-		}
-	}
-	return false
-}
-
 // toString Generic to string function, currently supports actual strings and integers
 func toString(in interface{}) string {
 	switch v := in.(type) {
