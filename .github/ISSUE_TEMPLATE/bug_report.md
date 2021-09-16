@@ -27,7 +27,7 @@ If applicable, add screenshots to help explain your problem.
 Output of docker-compose logs or kubectl logs respectively
 
 **Version and Deployment (please complete the following information):**
- - authentik version: [e.g. 0.10.0-stable]
+ - authentik version: [e.g. 2021.8.5]
  - Deployment: [e.g. docker-compose, helm]
 
 **Additional context**
