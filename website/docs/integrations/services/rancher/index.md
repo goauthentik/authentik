@@ -30,6 +30,7 @@ Create an application in authentik. Create a SAML provider with the following pa
 - Audience: `https://rancher.company/v1-saml/adfs/saml/metadata`
 - Issuer: `authentik`
 - Property mappings: Select all default mappings and the mapping you've created above.
+- Signing Certificate: Select the authentik self-signed certificate.
 
 You can of course use a custom signing certificate, and adjust durations.
 
