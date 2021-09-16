@@ -1,7 +1,6 @@
 """consent tests"""
 from time import sleep
 
-from django.http.response import HttpResponse
 from django.urls import reverse
 from django.utils.encoding import force_str
 from rest_framework.test import APITestCase
@@ -41,12 +40,14 @@ class TestConsentStage(APITestCase):
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
-        response: HttpResponse = self.client.post(
+        response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             {},
         )
+        # pylint: disable=no-member
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
+            # pylint: disable=no-member
             force_str(response.content),
             {
                 "component": "xak-flow-redirect",
