@@ -9,13 +9,13 @@ var (
 	OutpostInfo = promauto.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "authentik_outpost_info",
 		Help: "Outpost info",
-	}, []string{"uuid", "name", "version", "build"})
+	}, []string{"outpost_name", "outpost_type", "uuid", "version", "build"})
 	LastUpdate = promauto.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "authentik_outpost_last_update",
 		Help: "Time of last update",
-	}, []string{"uuid", "name", "version", "build"})
+	}, []string{"outpost_name", "outpost_type", "uuid", "version", "build"})
 	ConnectionStatus = promauto.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "authentik_outpost_connection",
 		Help: "Connection status",
-	}, []string{"uuid", "name"})
+	}, []string{"outpost_name", "outpost_type", "uuid"})
 )

@@ -79,6 +79,10 @@ func (ps *ProxyServer) HandleHost(host string, rw http.ResponseWriter, r *http.R
 	return false
 }
 
+func (ps *ProxyServer) Type() string {
+	return "proxy"
+}
+
 func (ps *ProxyServer) TimerFlowCacheExpiry() {}
 
 func (ps *ProxyServer) getCertificates(info *tls.ClientHelloInfo) (*tls.Certificate, error) {

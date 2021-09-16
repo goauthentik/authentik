@@ -86,3 +86,7 @@ func NewServer(ac *ak.APIController) *LDAPServer {
 	s.CloseFunc("", ls)
 	return ls
 }
+
+func (ls *LDAPServer) Type() string {
+	return "ldap"
+}

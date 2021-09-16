@@ -87,20 +87,20 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		instanceUUID: uuid.New(),
 		Outpost:      outpost,
 	}
-	ac.logger.Debugf("HA Reload offset: %s", ac.reloadOffset)
+	ac.logger.WithField("offset", ac.reloadOffset).Debug("HA Reload offset")
 	ac.initWS(akURL, strfmt.UUID(outpost.Pk))
-
-	OutpostInfo.With(prometheus.Labels{
-		"uuid":    ac.instanceUUID.String(),
-		"name":    outpost.Name,
-		"version": constants.VERSION,
-		"build":   constants.BUILD(),
-	}).Set(1)
 	return ac
 }
 
 // Start Starts all handlers, non-blocking
 func (a *APIController) Start() error {
+	OutpostInfo.With(prometheus.Labels{
+		"outpost_name": a.Outpost.Name,
+		"outpost_type": a.Server.Type(),
+		"uuid":         a.instanceUUID.String(),
+		"version":      constants.VERSION,
+		"build":        constants.BUILD(),
+	}).Set(1)
 	err := a.StartBackgorundTasks()
 	if err != nil {
 		return err
@@ -136,10 +136,11 @@ func (a *APIController) StartBackgorundTasks() error {
 		return errors.Wrap(err, "failed to run initial refresh")
 	} else {
 		LastUpdate.With(prometheus.Labels{
-			"uuid":    a.instanceUUID.String(),
-			"name":    a.Outpost.Name,
-			"version": constants.VERSION,
-			"build":   constants.BUILD(),
+			"uuid":         a.instanceUUID.String(),
+			"outpost_name": a.Outpost.Name,
+			"outpost_type": a.Server.Type(),
+			"version":      constants.VERSION,
+			"build":        constants.BUILD(),
 		}).SetToCurrentTime()
 	}
 	go func() {

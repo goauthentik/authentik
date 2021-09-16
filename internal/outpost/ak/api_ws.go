@@ -76,8 +76,9 @@ func (ac *APIController) startWSHandler() {
 		err := ac.wsConn.ReadJSON(&wsMsg)
 		if err != nil {
 			ConnectionStatus.With(prometheus.Labels{
-				"uuid": ac.instanceUUID.String(),
-				"name": ac.Outpost.Name,
+				"outpost_name": ac.Outpost.Name,
+				"outpost_type": ac.Server.Type(),
+				"uuid":         ac.instanceUUID.String(),
 			}).Set(0)
 			logger.WithError(err).Warning("ws write error, reconnecting")
 			ac.wsConn.CloseAndReconnect()
@@ -85,8 +86,9 @@ func (ac *APIController) startWSHandler() {
 			continue
 		}
 		ConnectionStatus.With(prometheus.Labels{
-			"uuid": ac.instanceUUID.String(),
-			"name": ac.Outpost.Name,
+			"outpost_name": ac.Outpost.Name,
+			"outpost_type": ac.Server.Type(),
+			"uuid":         ac.instanceUUID.String(),
 		}).Set(1)
 		if wsMsg.Instruction == WebsocketInstructionTriggerUpdate {
 			time.Sleep(ac.reloadOffset)
@@ -96,10 +98,11 @@ func (ac *APIController) startWSHandler() {
 				logger.WithError(err).Debug("Failed to update")
 			} else {
 				LastUpdate.With(prometheus.Labels{
-					"uuid":    ac.instanceUUID.String(),
-					"name":    ac.Outpost.Name,
-					"version": constants.VERSION,
-					"build":   constants.BUILD(),
+					"outpost_name": ac.Outpost.Name,
+					"outpost_type": ac.Server.Type(),
+					"uuid":         ac.instanceUUID.String(),
+					"version":      constants.VERSION,
+					"build":        constants.BUILD(),
 				}).SetToCurrentTime()
 			}
 		}
@@ -128,8 +131,9 @@ func (ac *APIController) startWSHealth() {
 			continue
 		} else {
 			ConnectionStatus.With(prometheus.Labels{
-				"uuid": ac.instanceUUID.String(),
-				"name": ac.Outpost.Name,
+				"outpost_name": ac.Outpost.Name,
+				"outpost_type": ac.Server.Type(),
+				"uuid":         ac.instanceUUID.String(),
 			}).Set(1)
 		}
 	}
@@ -144,10 +148,11 @@ func (ac *APIController) startIntervalUpdater() {
 			logger.WithError(err).Debug("Failed to update")
 		} else {
 			LastUpdate.With(prometheus.Labels{
-				"uuid":    ac.instanceUUID.String(),
-				"name":    ac.Outpost.Name,
-				"version": constants.VERSION,
-				"build":   constants.BUILD(),
+				"outpost_name": ac.Outpost.Name,
+				"outpost_type": ac.Server.Type(),
+				"uuid":         ac.instanceUUID.String(),
+				"version":      constants.VERSION,
+				"build":        constants.BUILD(),
 			}).SetToCurrentTime()
 		}
 	}
