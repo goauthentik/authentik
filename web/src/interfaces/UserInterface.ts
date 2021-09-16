@@ -14,31 +14,37 @@ import "../elements/sidebar/SidebarItem";
 import { t } from "@lingui/macro";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
+import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import AKGlobal from "../authentik.css";
 
+import "../elements/buttons/Dropdown";
 import "../elements/router/RouterOutlet";
 import "../elements/messages/MessageContainer";
 import "../elements/notifications/NotificationDrawer";
 import "../elements/sidebar/Sidebar";
-import { until } from "lit-html/directives/until";
-import {
-    EVENT_API_DRAWER_TOGGLE,
-    EVENT_NOTIFICATION_DRAWER_TOGGLE,
-    EVENT_SIDEBAR_TOGGLE,
-    VERSION,
-} from "../constants";
-import { AdminApi, Version } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../api/Config";
+import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "../constants";
+import { CurrentTenant, EventsApi } from "@goauthentik/api";
+import { DEFAULT_CONFIG, tenant } from "../api/Config";
 import { WebsocketClient } from "../common/ws";
 import { ROUTES } from "../routesUser";
+import { first } from "../utils";
+import { DefaultTenant } from "../elements/sidebar/SidebarBrand";
+import { until } from "lit-html/directives/until";
+
+export const UIConfig = {
+    enabledFeatures: {
+        apiDrawer: true,
+        notificationDrawer: true,
+        settings: true,
+    },
+};
 
 @customElement("ak-interface-user")
 export class UserInterface extends LitElement {
-    @property({ type: Boolean })
-    sidebarOpen = true;
-
     @property({ type: Boolean })
     notificationOpen = false;
 
@@ -47,14 +53,21 @@ export class UserInterface extends LitElement {
 
     ws: WebsocketClient;
 
-    private version: Promise<Version>;
+    @property({ attribute: false })
+    tenant: CurrentTenant = DefaultTenant;
+
+    @property({ type: Boolean })
+    hasNotifications = false;
 
     static get styles(): CSSResult[] {
         return [
             PFBase,
+            PFBrand,
             PFPage,
+            PFAvatar,
             PFButton,
             PFDrawer,
+            PFDropdown,
             AKGlobal,
             css`
                 .pf-c-page__main,
@@ -65,6 +78,12 @@ export class UserInterface extends LitElement {
                 .display-none {
                     display: none;
                 }
+                .pf-c-brand {
+                    min-height: 48px;
+                }
+                .has-notifications {
+                    color: #2b9af3;
+                }
             `,
         ];
     }
@@ -72,29 +91,110 @@ export class UserInterface extends LitElement {
     constructor() {
         super();
         this.ws = new WebsocketClient();
-        this.sidebarOpen = window.innerWidth >= 1280;
-        window.addEventListener("resize", () => {
-            this.sidebarOpen = window.innerWidth >= 1280;
-        });
-        window.addEventListener(EVENT_SIDEBAR_TOGGLE, () => {
-            this.sidebarOpen = !this.sidebarOpen;
-        });
         window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, () => {
             this.notificationOpen = !this.notificationOpen;
         });
         window.addEventListener(EVENT_API_DRAWER_TOGGLE, () => {
             this.apiDrawerOpen = !this.apiDrawerOpen;
         });
-        this.version = new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
+        tenant().then((tenant) => (this.tenant = tenant));
+        new EventsApi(DEFAULT_CONFIG)
+            .eventsNotificationsList({
+                seen: false,
+                ordering: "-created",
+                pageSize: 1,
+            })
+            .then((r) => {
+                this.hasNotifications = r.pagination.count > 0;
+            });
     }
 
     render(): TemplateResult {
         return html` <div class="pf-c-page">
-            <ak-sidebar
-                class="pf-c-page__sidebar ${this.sidebarOpen ? "pf-m-expanded" : "pf-m-collapsed"}"
-            >
-                ${this.renderSidebarItems()}
-            </ak-sidebar>
+            <header class="pf-c-page__header">
+                <div class="pf-c-page__header-brand">
+                    <a href="#/" class="pf-c-page__header-brand-link">
+                        <img
+                            class="pf-c-brand"
+                            src="${first(this.tenant.brandingLogo, DefaultTenant.brandingLogo)}"
+                            alt="${(this.tenant.brandingTitle, DefaultTenant.brandingTitle)}"
+                        />
+                    </a>
+                </div>
+                <div class="pf-c-page__header-tools">
+                    <div class="pf-c-page__header-tools-group">
+                        ${UIConfig.enabledFeatures.apiDrawer ?
+                        html`<div
+                            class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg"
+                        >
+                            <button
+                                class="pf-c-button pf-m-plain"
+                                type="button"
+                                @click=${() => {
+                                    this.apiDrawerOpen = !this.apiDrawerOpen;
+                                }}
+                            >
+                                <i class="fas fa-code" aria-hidden="true"></i>
+                            </button>
+                        </div>`:html``}
+                        ${UIConfig.enabledFeatures.notificationDrawer ? html`
+                        <div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg">
+                            <button
+                                class="pf-c-button pf-m-plain ${this.hasNotifications
+                                    ? "has-notifications"
+                                    : ""}"
+                                type="button"
+                                @click=${() => {
+                                    this.notificationOpen = !this.notificationOpen;
+                                }}
+                            >
+                                <i class="fas fa-bell" aria-hidden="true"></i>
+                            </button>
+                        </div>`:html``}
+                    </div>
+                    <div class="pf-c-page__header-tools-group">
+                        <div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-md">
+                            <ak-dropdown class="pf-c-dropdown">
+                                <button class="pf-m-plain pf-c-dropdown__toggle" type="button">
+                                    <span class="pf-c-dropdown__toggle-text"
+                                        >${until(
+                                            me().then((me) => {
+                                                return me.user.username;
+                                            }),
+                                        )}</span
+                                    >
+                                    <span class="pf-c-dropdown__toggle-icon">
+                                        <i class="fas fa-caret-down" aria-hidden="true"></i>
+                                    </span>
+                                </button>
+                                <ul class="pf-c-dropdown__menu" hidden>
+                                    ${UIConfig.enabledFeatures.settings ? html`
+                                    <li>
+                                        <a class="pf-c-dropdown__menu-item" href="#/user">
+                                            ${t`Settings`}
+                                        </a>
+                                    </li>
+                                    ` : html``}
+                                    <li>
+                                        <a class="pf-c-dropdown__menu-item" href="/flows/-/default/invalidation/">
+                                            ${t`Sign out`}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </ak-dropdown>
+                        </div>
+                    </div>
+                    ${until(
+                        me().then((me) => {
+                            return html`<img
+                                class="pf-c-avatar"
+                                src=${me.user.avatar}
+                                alt="${t`Avatar image`}"
+                            />`;
+                        }),
+                    )}
+                </div>
+            </header>
             <div class="pf-c-page__drawer">
                 <div
                     class="pf-c-drawer ${this.notificationOpen || this.apiDrawerOpen
@@ -107,7 +207,7 @@ export class UserInterface extends LitElement {
                                 <main class="pf-c-page__main">
                                     <ak-router-outlet
                                         role="main"
-                                        class="pf-c-page__main"
+                                        class="pf-l-bullseye__item pf-c-page__main"
                                         tabindex="-1"
                                         id="main-content"
                                         defaultUrl="/library"
@@ -133,44 +233,5 @@ export class UserInterface extends LitElement {
                 </div>
             </div>
         </div>`;
-    }
-
-    renderSidebarItems(): TemplateResult {
-        return html`
-            ${until(
-                this.version.then((version) => {
-                    if (version.versionCurrent !== VERSION) {
-                        return html`<ak-sidebar-item ?highlight=${true}>
-                            <span slot="label"
-                                >${t`A newer version of the frontend is available.`}</span
-                            >
-                        </ak-sidebar-item>`;
-                    }
-                    return html``;
-                }),
-            )}
-            ${until(
-                me().then((u) => {
-                    if (u.original) {
-                        return html`<ak-sidebar-item
-                            ?highlight=${true}
-                            ?isAbsoluteLink=${true}
-                            path=${`/-/impersonation/end/?back=${window.location.pathname}%23${window.location.hash}`}
-                        >
-                            <span slot="label"
-                                >${t`You're currently impersonating ${u.user.username}. Click to stop.`}</span
-                            >
-                        </ak-sidebar-item>`;
-                    }
-                    return html``;
-                }),
-            )}
-            <ak-sidebar-item path="/if/admin" ?isAbsoluteLink=${true} ?highlight=${true}>
-                <span slot="label">${t`Go to admin interface`}</span>
-            </ak-sidebar-item>
-            <ak-sidebar-item path="/library">
-                <span slot="label">${t`Library`}</span>
-            </ak-sidebar-item>
-        `;
     }
 }
