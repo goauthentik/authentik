@@ -238,6 +238,10 @@ class OAuthFulfillmentStage(StageView):
         parsed = urlparse(uri)
         return HttpResponseRedirectScheme(uri, allowed_schemes=[parsed.scheme])
 
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Wrapper when this stage gets hit with a post request"""
+        return self.get(request, *args, **kwargs)
+
     # pylint: disable=unused-argument
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """final Stage of an OAuth2 Flow"""
