@@ -29,7 +29,7 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v1-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
@@ -47,7 +47,7 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v1-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
@@ -65,7 +65,7 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v1-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
@@ -83,7 +83,7 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v1-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
@@ -117,7 +117,7 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v1-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
@@ -128,12 +128,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v2
         with:
           python-version: '3.9'
       - name: checkout stable
         run: |
-          git fetch
           # Copy current, latest config to local
           cp authentik/lib/default.yml local.env.yml
           git checkout $(git describe --abbrev=0 --match 'version/*')
@@ -141,7 +142,7 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v1-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
@@ -171,7 +172,7 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v1-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
@@ -200,7 +201,7 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v1-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
@@ -239,7 +240,7 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v1-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
