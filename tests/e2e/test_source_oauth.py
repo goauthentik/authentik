@@ -175,7 +175,7 @@ class TestSourceOAuth2(SeleniumTestCase):
 
         # Wait until we've logged in
         self.wait_for_url(self.if_user_url("/library"))
-        self.driver.get(self.if_user_url("/user"))
+        self.driver.get(self.if_user_url("/settings"))
 
         self.assert_user(User(username="foo", name="admin", email="admin@example.com"))
 
@@ -254,7 +254,7 @@ class TestSourceOAuth2(SeleniumTestCase):
 
         # Wait until we've logged in
         self.wait_for_url(self.if_user_url("/library"))
-        self.driver.get(self.if_user_url("/user"))
+        self.driver.get(self.if_user_url("/settings"))
 
         self.assert_user(User(username="foo", name="admin", email="admin@example.com"))
 
@@ -349,6 +349,6 @@ class TestSourceOAuth1(SeleniumTestCase):
         sleep(2)
         # Wait until we've logged in
         self.wait_for_url(self.if_user_url("/library"))
-        self.driver.get(self.if_user_url("/user"))
+        self.driver.get(self.if_user_url("/settings"))
 
         self.assert_user(User(username="example-user", name="test name", email="foo@example.com"))

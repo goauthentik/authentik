@@ -154,7 +154,7 @@ class TestSourceSAML(SeleniumTestCase):
 
         # Wait until we're logged in
         self.wait_for_url(self.if_user_url("/library"))
-        self.driver.get(self.if_user_url("/user"))
+        self.driver.get(self.if_user_url("/settings"))
 
         self.assert_user(
             User.objects.exclude(username="akadmin")
@@ -234,7 +234,7 @@ class TestSourceSAML(SeleniumTestCase):
 
         # Wait until we're logged in
         self.wait_for_url(self.if_user_url("/library"))
-        self.driver.get(self.if_user_url("/user"))
+        self.driver.get(self.if_user_url("/settings"))
 
         self.assert_user(
             User.objects.exclude(username="akadmin")
@@ -301,7 +301,7 @@ class TestSourceSAML(SeleniumTestCase):
 
         # Wait until we're logged in
         self.wait_for_url(self.if_user_url("/library"))
-        self.driver.get(self.if_user_url("/user"))
+        self.driver.get(self.if_user_url("/settings"))
 
         self.assert_user(
             User.objects.exclude(username="akadmin")
