@@ -3,7 +3,7 @@ import { t } from "@lingui/macro";
 import { AuthenticatorsApi, WebAuthnDevice } from "@goauthentik/api";
 import { until } from "lit-html/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { BaseUserSettings } from "./BaseUserSettings";
+import { BaseUserSettings } from "../BaseUserSettings";
 import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";
 import "../../../elements/buttons/ModalButton";
 import "../../../elements/buttons/SpinnerButton";

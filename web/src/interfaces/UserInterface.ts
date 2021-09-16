@@ -14,31 +14,30 @@ import "../elements/sidebar/SidebarItem";
 import { t } from "@lingui/macro";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
+import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
 import AKGlobal from "../authentik.css";
 
 import "../elements/router/RouterOutlet";
 import "../elements/messages/MessageContainer";
 import "../elements/notifications/NotificationDrawer";
 import "../elements/sidebar/Sidebar";
-import { until } from "lit-html/directives/until";
-import {
-    EVENT_API_DRAWER_TOGGLE,
-    EVENT_NOTIFICATION_DRAWER_TOGGLE,
-    EVENT_SIDEBAR_TOGGLE,
-    VERSION,
-} from "../constants";
-import { AdminApi, Version } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../api/Config";
+import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "../constants";
+import { CurrentTenant, EventsApi } from "@goauthentik/api";
+import { DEFAULT_CONFIG, tenant } from "../api/Config";
 import { WebsocketClient } from "../common/ws";
 import { ROUTES } from "../routesUser";
+import { first } from "../utils";
+import { DefaultTenant } from "../elements/sidebar/SidebarBrand";
+import { until } from "lit-html/directives/until";
+import { uiConfig } from "../user/config";
 
 @customElement("ak-interface-user")
 export class UserInterface extends LitElement {
-    @property({ type: Boolean })
-    sidebarOpen = true;
-
     @property({ type: Boolean })
     notificationOpen = false;
 
@@ -47,14 +46,22 @@ export class UserInterface extends LitElement {
 
     ws: WebsocketClient;
 
-    private version: Promise<Version>;
+    @property({ attribute: false })
+    tenant: CurrentTenant = DefaultTenant;
+
+    @property({ type: Number })
+    notificationsCount = -1;
 
     static get styles(): CSSResult[] {
         return [
             PFBase,
+            PFBrand,
             PFPage,
+            PFAvatar,
             PFButton,
             PFDrawer,
+            PFDropdown,
+            PFNotificationBadge,
             AKGlobal,
             css`
                 .pf-c-page__main,
@@ -65,6 +72,12 @@ export class UserInterface extends LitElement {
                 .display-none {
                     display: none;
                 }
+                .pf-c-brand {
+                    min-height: 48px;
+                }
+                .has-notifications {
+                    color: #2b9af3;
+                }
             `,
         ];
     }
@@ -72,29 +85,152 @@ export class UserInterface extends LitElement {
     constructor() {
         super();
         this.ws = new WebsocketClient();
-        this.sidebarOpen = window.innerWidth >= 1280;
-        window.addEventListener("resize", () => {
-            this.sidebarOpen = window.innerWidth >= 1280;
-        });
-        window.addEventListener(EVENT_SIDEBAR_TOGGLE, () => {
-            this.sidebarOpen = !this.sidebarOpen;
-        });
         window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, () => {
             this.notificationOpen = !this.notificationOpen;
         });
         window.addEventListener(EVENT_API_DRAWER_TOGGLE, () => {
             this.apiDrawerOpen = !this.apiDrawerOpen;
         });
-        this.version = new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
+        tenant().then((tenant) => (this.tenant = tenant));
+        new EventsApi(DEFAULT_CONFIG)
+            .eventsNotificationsList({
+                seen: false,
+                ordering: "-created",
+                pageSize: 1,
+            })
+            .then((r) => {
+                this.notificationsCount = r.pagination.count;
+            });
     }
 
     render(): TemplateResult {
         return html` <div class="pf-c-page">
-            <ak-sidebar
-                class="pf-c-page__sidebar ${this.sidebarOpen ? "pf-m-expanded" : "pf-m-collapsed"}"
-            >
-                ${this.renderSidebarItems()}
-            </ak-sidebar>
+            <header class="pf-c-page__header">
+                <div class="pf-c-page__header-brand">
+                    <a href="#/" class="pf-c-page__header-brand-link">
+                        <img
+                            class="pf-c-brand"
+                            src="${first(this.tenant.brandingLogo, DefaultTenant.brandingLogo)}"
+                            alt="${(this.tenant.brandingTitle, DefaultTenant.brandingTitle)}"
+                        />
+                    </a>
+                </div>
+                <div class="pf-c-page__header-tools">
+                    <div class="pf-c-page__header-tools-group">
+                        ${until(
+                            uiConfig().then((config) => {
+                                if (!config.enabledFeatures.apiDrawer) {
+                                    return html``;
+                                }
+                                return html`<div
+                                    class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg"
+                                >
+                                    <button
+                                        class="pf-c-button pf-m-plain"
+                                        type="button"
+                                        @click=${() => {
+                                            this.apiDrawerOpen = !this.apiDrawerOpen;
+                                        }}
+                                    >
+                                        <i class="fas fa-code" aria-hidden="true"></i>
+                                    </button>
+                                </div>`;
+                            }),
+                        )}
+                        ${until(
+                            uiConfig().then((config) => {
+                                if (!config.enabledFeatures.notificationDrawer) {
+                                    return html``;
+                                }
+                                return html`
+                                    <button
+                                        class="pf-c-button pf-m-plain"
+                                        type="button"
+                                        aria-label="${t`Unread notifications`}"
+                                        @click=${() => {
+                                            this.notificationOpen = !this.notificationOpen;
+                                        }}
+                                    >
+                                        <span
+                                            class="pf-c-notification-badge ${this
+                                                .notificationsCount > 0
+                                                ? html`pf-m-unread`
+                                                : html``}"
+                                        >
+                                            <i class="pf-icon-bell" aria-hidden="true"></i>
+                                            <span class="pf-c-notification-badge__count"
+                                                >${this.notificationsCount}</span
+                                            >
+                                        </span>
+                                    </button>
+                                `;
+                            }),
+                        )}
+                        ${until(
+                            uiConfig().then((config) => {
+                                if (!config.enabledFeatures.settings) {
+                                    return html``;
+                                }
+                                return html` <div
+                                    class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg"
+                                >
+                                    <a
+                                        class="pf-c-button pf-m-plain"
+                                        type="button"
+                                        href="#/settings"
+                                    >
+                                        <i class="fas fa-cog" aria-hidden="true"></i>
+                                    </a>
+                                </div>`;
+                            }),
+                        )}
+                        <a href="/flows/-/default/invalidation/" class="pf-c-button pf-m-plain">
+                            <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                        </a>
+                        ${until(
+                            me().then((u) => {
+                                if (!u.user.isSuperuser) return html``;
+                                return html`
+                                    <a class="pf-c-button pf-m-primary pf-m-small" href="/if/admin">
+                                        ${t`Admin interface`}
+                                    </a>
+                                `;
+                            }),
+                        )}
+                    </div>
+                    <div class="pf-c-page__header-tools-group">
+                        <div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-md">
+                            <span class="pf-c-dropdown__toggle-text"
+                                >${until(
+                                    uiConfig().then((config) => {
+                                        return me().then((me) => {
+                                            switch (config.navbar.userDisplay) {
+                                                case "username":
+                                                    return me.user.username;
+                                                case "name":
+                                                    return me.user.name;
+                                                case "email":
+                                                    return me.user.email;
+                                                default:
+                                                    return me.user.username;
+                                            }
+                                        });
+                                    }),
+                                )}
+                            </span>
+                        </div>
+                    </div>
+                    ${until(
+                        me().then((me) => {
+                            return html`<img
+                                class="pf-c-avatar"
+                                src=${me.user.avatar}
+                                alt="${t`Avatar image`}"
+                            />`;
+                        }),
+                    )}
+                </div>
+            </header>
             <div class="pf-c-page__drawer">
                 <div
                     class="pf-c-drawer ${this.notificationOpen || this.apiDrawerOpen
@@ -107,7 +243,7 @@ export class UserInterface extends LitElement {
                                 <main class="pf-c-page__main">
                                     <ak-router-outlet
                                         role="main"
-                                        class="pf-c-page__main"
+                                        class="pf-l-bullseye__item pf-c-page__main"
                                         tabindex="-1"
                                         id="main-content"
                                         defaultUrl="/library"
@@ -133,44 +269,5 @@ export class UserInterface extends LitElement {
                 </div>
             </div>
         </div>`;
-    }
-
-    renderSidebarItems(): TemplateResult {
-        return html`
-            ${until(
-                this.version.then((version) => {
-                    if (version.versionCurrent !== VERSION) {
-                        return html`<ak-sidebar-item ?highlight=${true}>
-                            <span slot="label"
-                                >${t`A newer version of the frontend is available.`}</span
-                            >
-                        </ak-sidebar-item>`;
-                    }
-                    return html``;
-                }),
-            )}
-            ${until(
-                me().then((u) => {
-                    if (u.original) {
-                        return html`<ak-sidebar-item
-                            ?highlight=${true}
-                            ?isAbsoluteLink=${true}
-                            path=${`/-/impersonation/end/?back=${window.location.pathname}%23${window.location.hash}`}
-                        >
-                            <span slot="label"
-                                >${t`You're currently impersonating ${u.user.username}. Click to stop.`}</span
-                            >
-                        </ak-sidebar-item>`;
-                    }
-                    return html``;
-                }),
-            )}
-            <ak-sidebar-item path="/if/admin" ?isAbsoluteLink=${true} ?highlight=${true}>
-                <span slot="label">${t`Go to admin interface`}</span>
-            </ak-sidebar-item>
-            <ak-sidebar-item path="/library">
-                <span slot="label">${t`Library`}</span>
-            </ak-sidebar-item>
-        `;
     }
 }

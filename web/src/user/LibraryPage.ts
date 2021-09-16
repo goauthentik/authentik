@@ -15,17 +15,16 @@ import { AKResponse } from "../api/Client";
 import { DEFAULT_CONFIG } from "../api/Config";
 import { me } from "../api/Users";
 import { loading, truncate } from "../utils";
-import "../elements/PageHeader";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import AKGlobal from "../authentik.css";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
-import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
+import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import { uiConfig } from "./config";
 
 @customElement("ak-library-app")
 export class LibraryApplication extends LitElement {
@@ -81,16 +80,21 @@ export class LibraryApplication extends LitElement {
                       /></a>`
                     : html`<i class="fas fas fa-share-square"></i>`}
                 ${until(
-                    me().then((u) => {
-                        if (!u.user.isSuperuser) return html``;
-                        return html`
-                            <a
-                                class="pf-c-button pf-m-control pf-m-small"
-                                href="#/core/applications/${this.application?.slug}"
-                            >
-                                <i class="fas fa-pencil-alt"></i>
-                            </a>
-                        `;
+                    uiConfig().then((config) => {
+                        if (!config.enabledFeatures.applicationEdit) {
+                            return html``;
+                        }
+                        return me().then((u) => {
+                            if (!u.user.isSuperuser) return html``;
+                            return html`
+                                <a
+                                    class="pf-c-button pf-m-control pf-m-small"
+                                    href="#/core/applications/${this.application?.slug}"
+                                >
+                                    <i class="fas fa-pencil-alt"></i>
+                                </a>
+                            `;
+                        });
                     }),
                 )}
             </div>
@@ -119,10 +123,11 @@ export class LibraryPage extends LitElement {
     }
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFEmptyState, PFTitle, PFPage, PFContent, PFGallery, AKGlobal].concat(css`
+        return [PFBase, PFEmptyState, PFPage, PFContent, PFGallery, AKGlobal].concat(css`
             :host,
             main {
                 height: 100%;
+                padding: 3% 5%;
             }
         `);
     }
@@ -147,16 +152,17 @@ export class LibraryPage extends LitElement {
 
     renderApps(): TemplateResult {
         return html`<div class="pf-l-gallery pf-m-gutter">
-            ${this.apps?.results.map(
-                (app) => html`<ak-library-app .application=${app}></ak-library-app>`,
-            )}
+            ${this.apps?.results
+                .filter((app) => app.launchUrl)
+                .map((app) => html`<ak-library-app .application=${app}></ak-library-app>`)}
         </div>`;
     }
 
     render(): TemplateResult {
         return html`<main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
-            <ak-page-header icon="pf-icon pf-icon-applications" header=${t`Applications`}>
-            </ak-page-header>
+            <div class="pf-c-content">
+                <h1>${t`My applications`}</h1>
+            </div>
             <section class="pf-c-page__main-section">
                 ${loading(
                     this.apps,

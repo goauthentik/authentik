@@ -172,7 +172,7 @@ export class AdminInterface extends LitElement {
                 }),
             )}
             <ak-sidebar-item path="/if/user/" ?isAbsoluteLink=${true} ?highlight=${true}>
-                <span slot="label">${t`Go to user interface`}</span>
+                <span slot="label">${t`User interface`}</span>
             </ak-sidebar-item>
             <ak-sidebar-item path="/administration/overview">
                 <span slot="label">${t`Overview`}</span>

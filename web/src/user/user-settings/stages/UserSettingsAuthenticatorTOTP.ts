@@ -1,52 +1,33 @@
 import { AuthenticatorsApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, TemplateResult } from "lit-element";
+import { customElement, html, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { STATIC_TOKEN_STYLE } from "../../../flows/stages/authenticator_static/AuthenticatorStaticStage";
-import { BaseUserSettings } from "./BaseUserSettings";
+import { BaseUserSettings } from "../BaseUserSettings";
 import { EVENT_REFRESH } from "../../../constants";
 
-@customElement("ak-user-settings-authenticator-static")
-export class UserSettingsAuthenticatorStatic extends BaseUserSettings {
-    static get styles(): CSSResult[] {
-        return super.styles.concat(STATIC_TOKEN_STYLE);
-    }
-
+@customElement("ak-user-settings-authenticator-totp")
+export class UserSettingsAuthenticatorTOTP extends BaseUserSettings {
     renderEnabled(): TemplateResult {
         return html`<div class="pf-c-card__body">
                 <p>
                     ${t`Status: Enabled`}
                     <i class="pf-icon pf-icon-ok"></i>
                 </p>
-                <ul class="ak-otp-tokens">
-                    ${until(
-                        new AuthenticatorsApi(DEFAULT_CONFIG)
-                            .authenticatorsStaticList({})
-                            .then((devices) => {
-                                if (devices.results.length < 1) {
-                                    return;
-                                }
-                                return devices.results[0].tokenSet?.map((token) => {
-                                    return html`<li>${token.token}</li>`;
-                                });
-                            }),
-                    )}
-                </ul>
             </div>
             <div class="pf-c-card__footer">
                 <button
                     class="pf-c-button pf-m-danger"
                     @click=${() => {
                         return new AuthenticatorsApi(DEFAULT_CONFIG)
-                            .authenticatorsStaticList({})
+                            .authenticatorsTotpList({})
                             .then((devices) => {
                                 if (devices.results.length < 1) {
                                     return;
                                 }
                                 // TODO: Handle multiple devices, currently we assume only one TOTP Device
                                 return new AuthenticatorsApi(DEFAULT_CONFIG)
-                                    .authenticatorsStaticDestroy({
+                                    .authenticatorsTotpDestroy({
                                         id: devices.results[0].pk || 0,
                                     })
                                     .then(() => {
@@ -60,7 +41,7 @@ export class UserSettingsAuthenticatorStatic extends BaseUserSettings {
                             });
                     }}
                 >
-                    ${t`Disable Static Tokens`}
+                    ${t`Disable Time-based OTP`}
                 </button>
             </div>`;
     }
@@ -77,7 +58,7 @@ export class UserSettingsAuthenticatorStatic extends BaseUserSettings {
                     ? html`<a
                           href="${this.configureUrl}?next=/%23%2Fuser"
                           class="pf-c-button pf-m-primary"
-                          >${t`Enable Static Tokens`}
+                          >${t`Enable TOTP`}
                       </a>`
                     : html``}
             </div>`;
@@ -85,15 +66,13 @@ export class UserSettingsAuthenticatorStatic extends BaseUserSettings {
 
     render(): TemplateResult {
         return html`<div class="pf-c-card">
-            <div class="pf-c-card__title">${t`Static tokens`}</div>
+            <div class="pf-c-card__title">${t`Time-based One-Time Passwords`}</div>
             ${until(
-                new AuthenticatorsApi(DEFAULT_CONFIG)
-                    .authenticatorsStaticList({})
-                    .then((devices) => {
-                        return devices.results.length > 0
-                            ? this.renderEnabled()
-                            : this.renderDisabled();
-                    }),
+                new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsTotpList({}).then((devices) => {
+                    return devices.results.length > 0
+                        ? this.renderEnabled()
+                        : this.renderDisabled();
+                }),
             )}
         </div>`;
     }

@@ -9,5 +9,5 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/$")).redirect("/library"),
     new Route(new RegExp("^#.*")).redirect("/library"),
     new Route(new RegExp("^/library$"), html`<ak-library></ak-library>`),
-    new Route(new RegExp("^/user$"), html`<ak-user-settings></ak-user-settings>`),
+    new Route(new RegExp("^/settings$"), html`<ak-user-settings></ak-user-settings>`),
 ];

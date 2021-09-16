@@ -3,11 +3,11 @@ import { t } from "@lingui/macro";
 import { customElement, html, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { BaseUserSettings } from "./BaseUserSettings";
+import { BaseUserSettings } from "../BaseUserSettings";
 import { EVENT_REFRESH } from "../../../constants";
 
-@customElement("ak-user-settings-authenticator-totp")
-export class UserSettingsAuthenticatorTOTP extends BaseUserSettings {
+@customElement("ak-user-settings-authenticator-duo")
+export class UserSettingsAuthenticatorDuo extends BaseUserSettings {
     renderEnabled(): TemplateResult {
         return html`<div class="pf-c-card__body">
                 <p>
@@ -20,14 +20,14 @@ export class UserSettingsAuthenticatorTOTP extends BaseUserSettings {
                     class="pf-c-button pf-m-danger"
                     @click=${() => {
                         return new AuthenticatorsApi(DEFAULT_CONFIG)
-                            .authenticatorsTotpList({})
+                            .authenticatorsDuoList({})
                             .then((devices) => {
                                 if (devices.results.length < 1) {
                                     return;
                                 }
                                 // TODO: Handle multiple devices, currently we assume only one TOTP Device
                                 return new AuthenticatorsApi(DEFAULT_CONFIG)
-                                    .authenticatorsTotpDestroy({
+                                    .authenticatorsDuoDestroy({
                                         id: devices.results[0].pk || 0,
                                     })
                                     .then(() => {
@@ -41,7 +41,7 @@ export class UserSettingsAuthenticatorTOTP extends BaseUserSettings {
                             });
                     }}
                 >
-                    ${t`Disable Time-based OTP`}
+                    ${t`Disable Duo authenticator`}
                 </button>
             </div>`;
     }
@@ -58,7 +58,7 @@ export class UserSettingsAuthenticatorTOTP extends BaseUserSettings {
                     ? html`<a
                           href="${this.configureUrl}?next=/%23%2Fuser"
                           class="pf-c-button pf-m-primary"
-                          >${t`Enable TOTP`}
+                          >${t`Enable Duo authenticator`}
                       </a>`
                     : html``}
             </div>`;
@@ -66,9 +66,9 @@ export class UserSettingsAuthenticatorTOTP extends BaseUserSettings {
 
     render(): TemplateResult {
         return html`<div class="pf-c-card">
-            <div class="pf-c-card__title">${t`Time-based One-Time Passwords`}</div>
+            <div class="pf-c-card__title">${t`Duo`}</div>
             ${until(
-                new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsTotpList({}).then((devices) => {
+                new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsDuoList({}).then((devices) => {
                     return devices.results.length > 0
                         ? this.renderEnabled()
                         : this.renderDisabled();
