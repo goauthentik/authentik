@@ -12,7 +12,7 @@ from authentik.core.views.session import EndSessionView
 urlpatterns = [
     path(
         "",
-        login_required(RedirectView.as_view(pattern_name="authentik_core:if-admin")),
+        login_required(RedirectView.as_view(pattern_name="authentik_core:if-user")),
         name="root-redirect",
     ),
     # Impersonation
