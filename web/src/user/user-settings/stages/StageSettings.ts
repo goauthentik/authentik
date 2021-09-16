@@ -2,16 +2,16 @@ import { StagesApi, UserSetting } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { EVENT_REFRESH } from "../../constants";
+import { DEFAULT_CONFIG } from "../../../api/Config";
+import { EVENT_REFRESH } from "../../../constants";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 
-import "../../elements/EmptyState";
-import "./stages/UserSettingsAuthenticatorDuo";
-import "./stages/UserSettingsAuthenticatorStatic";
-import "./stages/UserSettingsAuthenticatorTOTP";
-import "./stages/UserSettingsAuthenticatorWebAuthn";
-import "./stages/UserSettingsPassword";
+import "../../../elements/EmptyState";
+import "./UserSettingsAuthenticatorDuo";
+import "./UserSettingsAuthenticatorStatic";
+import "./UserSettingsAuthenticatorTOTP";
+import "./UserSettingsAuthenticatorWebAuthn";
+import "./UserSettingsPassword";
 
 @customElement("ak-user-settings-stage")
 export class UserStageSettingsPage extends LitElement {

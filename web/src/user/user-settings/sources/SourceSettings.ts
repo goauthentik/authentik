@@ -2,13 +2,13 @@ import { SourcesApi, UserSetting } from "@goauthentik/api";
 import { t } from "@lingui/macro";
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { EVENT_REFRESH } from "../../constants";
+import { DEFAULT_CONFIG } from "../../../api/Config";
+import { EVENT_REFRESH } from "../../../constants";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
-import "../../elements/EmptyState";
-import "./sources/SourceSettingsOAuth";
-import "./sources/SourceSettingsPlex";
+import "../../../elements/EmptyState";
+import "./SourceSettingsOAuth";
+import "./SourceSettingsPlex";
 
 @customElement("ak-user-settings-source")
 export class UserSourceSettingsPage extends LitElement {

@@ -16,8 +16,8 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import "../../elements/Tabs";
 import "./tokens/UserTokenList";
 import "./UserSelfForm";
-import "./SourceSettings";
-import "./StageSettings";
+import "./sources/SourceSettings";
+import "./stages/StageSettings";
 
 @customElement("ak-user-settings")
 export class UserSettingsPage extends LitElement {

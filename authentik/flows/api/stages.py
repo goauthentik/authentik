@@ -86,7 +86,7 @@ class StageViewSet(
     @action(detail=False, pagination_class=None, filter_backends=[])
     def user_settings(self, request: Request) -> Response:
         """Get all stages the user can configure"""
-        _all_stages: Iterable[Stage] = Stage.objects.all().select_subclasses()
+        _all_stages: Iterable[Stage] = Stage.objects.all().select_subclasses().order_by("name")
         matching_stages: list[dict] = []
         for stage in _all_stages:
             user_settings = stage.ui_user_settings
