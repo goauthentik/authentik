@@ -18,7 +18,6 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/Tabs";
-import "../../elements/PageHeader";
 import "./tokens/UserTokenList";
 import "./UserSelfForm";
 import "./settings/UserSettingsAuthenticatorDuo";
@@ -127,13 +126,7 @@ export class UserSettingsPage extends LitElement {
     render(): TemplateResult {
         return html`<div class="pf-c-page">
             <main role="main" class="pf-c-page__main" tabindex="-1">
-                <ak-page-header
-                    icon="pf-icon pf-icon-user"
-                    header=${t`User Settings`}
-                    description=${t`Configure settings relevant to your user profile.`}
-                >
-                </ak-page-header>
-                <ak-tabs ?vertical="${true}" style="height: 100%;">
+                <ak-tabs ?vertical="${true}">
                     <section
                         slot="page-details"
                         data-tab-title="${t`User details`}"

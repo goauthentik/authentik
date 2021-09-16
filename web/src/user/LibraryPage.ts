@@ -24,6 +24,7 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import { uiConfig } from "./config";
 
 @customElement("ak-library-app")
 export class LibraryApplication extends LitElement {
@@ -79,16 +80,21 @@ export class LibraryApplication extends LitElement {
                       /></a>`
                     : html`<i class="fas fas fa-share-square"></i>`}
                 ${until(
-                    me().then((u) => {
-                        if (!u.user.isSuperuser) return html``;
-                        return html`
-                            <a
-                                class="pf-c-button pf-m-control pf-m-small"
-                                href="#/core/applications/${this.application?.slug}"
-                            >
-                                <i class="fas fa-pencil-alt"></i>
-                            </a>
-                        `;
+                    uiConfig().then((config) => {
+                        if (!config.enabledFeatures.applicationEdit) {
+                            return html``;
+                        }
+                        return me().then((u) => {
+                            if (!u.user.isSuperuser) return html``;
+                            return html`
+                                <a
+                                    class="pf-c-button pf-m-control pf-m-small"
+                                    href="#/core/applications/${this.application?.slug}"
+                                >
+                                    <i class="fas fa-pencil-alt"></i>
+                                </a>
+                            `;
+                        });
                     }),
                 )}
             </div>
@@ -146,9 +152,9 @@ export class LibraryPage extends LitElement {
 
     renderApps(): TemplateResult {
         return html`<div class="pf-l-gallery pf-m-gutter">
-            ${this.apps?.results.filter((app) => app.launchUrl).map(
-                (app) => html`<ak-library-app .application=${app}></ak-library-app>`,
-            )}
+            ${this.apps?.results
+                .filter((app) => app.launchUrl)
+                .map((app) => html`<ak-library-app .application=${app}></ak-library-app>`)}
         </div>`;
     }
 

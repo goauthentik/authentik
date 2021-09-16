@@ -21,7 +21,6 @@ import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import AKGlobal from "../authentik.css";
 
-import "../elements/buttons/Dropdown";
 import "../elements/router/RouterOutlet";
 import "../elements/messages/MessageContainer";
 import "../elements/notifications/NotificationDrawer";
@@ -34,14 +33,7 @@ import { ROUTES } from "../routesUser";
 import { first } from "../utils";
 import { DefaultTenant } from "../elements/sidebar/SidebarBrand";
 import { until } from "lit-html/directives/until";
-
-export const UIConfig = {
-    enabledFeatures: {
-        apiDrawer: true,
-        notificationDrawer: true,
-        settings: true,
-    },
-};
+import { uiConfig } from "../user/config";
 
 @customElement("ak-interface-user")
 export class UserInterface extends LitElement {
@@ -123,65 +115,75 @@ export class UserInterface extends LitElement {
                 </div>
                 <div class="pf-c-page__header-tools">
                     <div class="pf-c-page__header-tools-group">
-                        ${UIConfig.enabledFeatures.apiDrawer ?
-                        html`<div
-                            class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg"
-                        >
-                            <button
-                                class="pf-c-button pf-m-plain"
-                                type="button"
-                                @click=${() => {
-                                    this.apiDrawerOpen = !this.apiDrawerOpen;
-                                }}
-                            >
-                                <i class="fas fa-code" aria-hidden="true"></i>
-                            </button>
-                        </div>`:html``}
-                        ${UIConfig.enabledFeatures.notificationDrawer ? html`
-                        <div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg">
-                            <button
-                                class="pf-c-button pf-m-plain ${this.hasNotifications
-                                    ? "has-notifications"
-                                    : ""}"
-                                type="button"
-                                @click=${() => {
-                                    this.notificationOpen = !this.notificationOpen;
-                                }}
-                            >
-                                <i class="fas fa-bell" aria-hidden="true"></i>
-                            </button>
-                        </div>`:html``}
+                        ${until(
+                            uiConfig().then((config) => {
+                                if (!config.enabledFeatures.apiDrawer) {
+                                    return html``;
+                                }
+                                return html`<div
+                                    class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg"
+                                >
+                                    <button
+                                        class="pf-c-button pf-m-plain"
+                                        type="button"
+                                        @click=${() => {
+                                            this.apiDrawerOpen = !this.apiDrawerOpen;
+                                        }}
+                                    >
+                                        <i class="fas fa-code" aria-hidden="true"></i>
+                                    </button>
+                                </div>`;
+                            }),
+                        )}
+                        ${until(
+                            uiConfig().then((config) => {
+                                if (!config.enabledFeatures.notificationDrawer) {
+                                    return html``;
+                                }
+                                return html` <div
+                                    class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg"
+                                >
+                                    <button
+                                        class="pf-c-button pf-m-plain ${this.hasNotifications
+                                            ? "has-notifications"
+                                            : ""}"
+                                        type="button"
+                                        @click=${() => {
+                                            this.notificationOpen = !this.notificationOpen;
+                                        }}
+                                    >
+                                        <i class="fas fa-bell" aria-hidden="true"></i>
+                                    </button>
+                                </div>`;
+                            }),
+                        )}
+                        ${until(
+                            uiConfig().then((config) => {
+                                if (!config.enabledFeatures.settings) {
+                                    return html``;
+                                }
+                                return html` <div
+                                    class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg"
+                                >
+                                    <a class="pf-c-button pf-m-plain" type="button" href="#/user">
+                                        <i class="fas fa-cog" aria-hidden="true"></i>
+                                    </a>
+                                </div>`;
+                            }),
+                        )}
+                        <a href="/flows/-/default/invalidation/" class="pf-c-button pf-m-plain">
+                            <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                        </a>
                     </div>
                     <div class="pf-c-page__header-tools-group">
                         <div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-md">
-                            <ak-dropdown class="pf-c-dropdown">
-                                <button class="pf-m-plain pf-c-dropdown__toggle" type="button">
-                                    <span class="pf-c-dropdown__toggle-text"
-                                        >${until(
-                                            me().then((me) => {
-                                                return me.user.username;
-                                            }),
-                                        )}</span
-                                    >
-                                    <span class="pf-c-dropdown__toggle-icon">
-                                        <i class="fas fa-caret-down" aria-hidden="true"></i>
-                                    </span>
-                                </button>
-                                <ul class="pf-c-dropdown__menu" hidden>
-                                    ${UIConfig.enabledFeatures.settings ? html`
-                                    <li>
-                                        <a class="pf-c-dropdown__menu-item" href="#/user">
-                                            ${t`Settings`}
-                                        </a>
-                                    </li>
-                                    ` : html``}
-                                    <li>
-                                        <a class="pf-c-dropdown__menu-item" href="/flows/-/default/invalidation/">
-                                            ${t`Sign out`}
-                                        </a>
-                                    </li>
-                                </ul>
-                            </ak-dropdown>
+                            <span class="pf-c-dropdown__toggle-text"
+                                >${until(
+                                    me().then((me) => {
+                                        return me.user.username;
+                                    }),
+                                )}
+                            </span>
                         </div>
                     </div>
                     ${until(
