@@ -110,5 +110,4 @@ export const ROUTES: Route[] = [
         new RegExp("^/crypto/certificates$"),
         html`<ak-crypto-certificate-list></ak-crypto-certificate-list>`,
     ),
-    new Route(new RegExp("^/user$"), html`<ak-user-settings></ak-user-settings>`),
 ];

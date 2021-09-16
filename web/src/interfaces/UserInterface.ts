@@ -187,6 +187,16 @@ export class UserInterface extends LitElement {
                         <a href="/flows/-/default/invalidation/" class="pf-c-button pf-m-plain">
                             <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
                         </a>
+                        ${until(
+                            me().then((u) => {
+                                if (!u.user.isSuperuser) return html``;
+                                return html`
+                                    <a class="pf-c-button pf-m-primary pf-m-small" href="/if/admin">
+                                        ${t`Admin interface`}
+                                    </a>
+                                `;
+                            }),
+                        )}
                     </div>
                     <div class="pf-c-page__header-tools-group">
                         <div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-md">
