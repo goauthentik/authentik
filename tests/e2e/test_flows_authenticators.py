@@ -52,7 +52,7 @@ class TestFlowsAuthenticator(SeleniumTestCase):
 
         code_stage.find_element(By.CSS_SELECTOR, "input[name=code]").send_keys(totp.token())
         code_stage.find_element(By.CSS_SELECTOR, "input[name=code]").send_keys(Keys.ENTER)
-        self.wait_for_url(self.if_admin_url("/library"))
+        self.wait_for_url(self.if_user_url("/library"))
         self.assert_user(USER())
 
     @retry()
@@ -67,7 +67,7 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         self.driver.get(self.url("authentik_core:if-flow", flow_slug=flow.slug))
         self.login()
 
-        self.wait_for_url(self.if_admin_url("/library"))
+        self.wait_for_url(self.if_user_url("/library"))
         self.assert_user(USER())
 
         self.driver.get(
@@ -112,7 +112,7 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         self.driver.get(self.url("authentik_core:if-flow", flow_slug=flow.slug))
         self.login()
 
-        self.wait_for_url(self.if_admin_url("/library"))
+        self.wait_for_url(self.if_user_url("/library"))
         self.assert_user(USER())
 
         self.driver.get(
