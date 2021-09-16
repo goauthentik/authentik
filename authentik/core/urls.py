@@ -12,7 +12,7 @@ from authentik.core.views.session import EndSessionView
 urlpatterns = [
     path(
         "",
-        login_required(RedirectView.as_view(pattern_name="authentik_core:if-admin")),
+        login_required(RedirectView.as_view(pattern_name="authentik_core:if-user")),
         name="root-redirect",
     ),
     # Impersonation
@@ -31,6 +31,11 @@ urlpatterns = [
         "if/admin/",
         ensure_csrf_cookie(TemplateView.as_view(template_name="if/admin.html")),
         name="if-admin",
+    ),
+    path(
+        "if/user/",
+        ensure_csrf_cookie(TemplateView.as_view(template_name="if/user.html")),
+        name="if-user",
     ),
     path(
         "if/flow/<slug:flow_slug>/",

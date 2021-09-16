@@ -87,7 +87,40 @@ export default [
             clearScreen: false,
         },
     },
-    // Main Application
+    // Flow interface
+    {
+        input: "./src/interfaces/FlowInterface.ts",
+        context: "window",
+        output: [
+            {
+                format: "es",
+                dir: "dist",
+                sourcemap: true,
+                manualChunks: manualChunks,
+                chunkFileNames: "flow-[name].js",
+            },
+        ],
+        plugins: [
+            cssimport(),
+            resolve({ extensions, browser: true }),
+            commonjs(),
+            babel({
+                extensions,
+                babelHelpers: "runtime",
+                include: ["src/**/*"],
+            }),
+            replace({
+                "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
+                "preventAssignment": true,
+            }),
+            sourcemaps(),
+            isProdBuild && terser(),
+        ].filter((p) => p),
+        watch: {
+            clearScreen: false,
+        },
+    },
+    // Admin interface
     {
         input: "./src/interfaces/AdminInterface.ts",
         context: "window",
@@ -120,9 +153,9 @@ export default [
             clearScreen: false,
         },
     },
-    // Flow executor
+    // User interface
     {
-        input: "./src/interfaces/FlowInterface.ts",
+        input: "./src/interfaces/UserInterface.ts",
         context: "window",
         output: [
             {
@@ -130,7 +163,7 @@ export default [
                 dir: "dist",
                 sourcemap: true,
                 manualChunks: manualChunks,
-                chunkFileNames: "flow-[name].js",
+                chunkFileNames: "user-[name].js",
             },
         ],
         plugins: [

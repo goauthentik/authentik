@@ -126,9 +126,9 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         """reverse `view` with `**kwargs` into full URL using live_server_url"""
         return self.live_server_url + reverse(view, kwargs=kwargs)
 
-    def if_admin_url(self, view) -> str:
+    def if_user_url(self, view) -> str:
         """same as self.url() but show URL in shell"""
-        return f"{self.live_server_url}/if/admin/#{view}"
+        return f"{self.live_server_url}/if/user/#{view}"
 
     def get_shadow_root(self, selector: str, container: Optional[WebElement] = None) -> WebElement:
         """Get shadow root element's inner shadowRoot"""

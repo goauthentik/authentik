@@ -8,7 +8,6 @@ import {
     TemplateResult,
 } from "lit-element";
 import { Route } from "./Route";
-import { ROUTES } from "../../routes";
 import { RouteMatch } from "./RouteMatch";
 import AKGlobal from "../../authentik.css";
 
@@ -45,6 +44,9 @@ export class RouterOutlet extends LitElement {
     @property()
     defaultUrl?: string;
 
+    @property({ attribute: false })
+    routes: Route[] = [];
+
     static get styles(): CSSResult[] {
         return [
             AKGlobal,
@@ -59,8 +61,6 @@ export class RouterOutlet extends LitElement {
                     }
                 }
                 *:first-child {
-                    height: 100%;
-                    display: flex;
                     flex-direction: column;
                 }
             `,
@@ -90,7 +90,7 @@ export class RouterOutlet extends LitElement {
             return;
         }
         let matchedRoute: RouteMatch | null = null;
-        ROUTES.some((route) => {
+        this.routes.some((route) => {
             const match = route.url.exec(activeUrl);
             if (match != null) {
                 matchedRoute = new RouteMatch(route);

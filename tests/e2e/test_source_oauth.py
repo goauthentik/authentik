@@ -174,8 +174,8 @@ class TestSourceOAuth2(SeleniumTestCase):
         prompt_stage.find_element(By.CSS_SELECTOR, "input[name=username]").send_keys(Keys.ENTER)
 
         # Wait until we've logged in
-        self.wait_for_url(self.if_admin_url("/library"))
-        self.driver.get(self.if_admin_url("/user"))
+        self.wait_for_url(self.if_user_url("/library"))
+        self.driver.get(self.if_user_url("/user"))
 
         self.assert_user(User(username="foo", name="admin", email="admin@example.com"))
 
@@ -253,8 +253,8 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 
         # Wait until we've logged in
-        self.wait_for_url(self.if_admin_url("/library"))
-        self.driver.get(self.if_admin_url("/user"))
+        self.wait_for_url(self.if_user_url("/library"))
+        self.driver.get(self.if_user_url("/user"))
 
         self.assert_user(User(username="foo", name="admin", email="admin@example.com"))
 
@@ -348,7 +348,7 @@ class TestSourceOAuth1(SeleniumTestCase):
         # Wait until we've loaded the user info page
         sleep(2)
         # Wait until we've logged in
-        self.wait_for_url(self.if_admin_url("/library"))
-        self.driver.get(self.if_admin_url("/user"))
+        self.wait_for_url(self.if_user_url("/library"))
+        self.driver.get(self.if_user_url("/user"))
 
         self.assert_user(User(username="example-user", name="test name", email="foo@example.com"))

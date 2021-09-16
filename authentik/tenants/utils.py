@@ -5,7 +5,6 @@ from django.db.models import F, Q
 from django.db.models import Value as V
 from django.http.request import HttpRequest
 
-from authentik import __version__
 from authentik.lib.config import CONFIG
 from authentik.tenants.models import Tenant
 
@@ -31,6 +30,5 @@ def context_processor(request: HttpRequest) -> dict[str, Any]:
     tenant = getattr(request, "tenant", DEFAULT_TENANT)
     return {
         "tenant": tenant,
-        "ak_version": __version__,
         "footer_links": CONFIG.y("footer_links"),
     }
