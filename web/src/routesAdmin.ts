@@ -12,7 +12,6 @@ import "./pages/events/TransportListPage";
 import "./pages/flows/FlowListPage";
 import "./pages/flows/FlowViewPage";
 import "./pages/groups/GroupListPage";
-import "./user/LibraryPage";
 import "./pages/outposts/OutpostListPage";
 import "./pages/outposts/ServiceConnectionListPage";
 import "./pages/policies/PolicyListPage";
@@ -29,7 +28,6 @@ import "./pages/stages/StageListPage";
 import "./pages/system-tasks/SystemTaskListPage";
 import "./pages/tenants/TenantListPage";
 import "./pages/tokens/TokenListPage";
-import "./pages/user-settings/UserSettingsPage";
 import "./pages/users/UserListPage";
 import "./pages/users/UserViewPage";
 
@@ -37,7 +35,7 @@ export const ROUTES: Route[] = [
     // Prevent infinite Shell loops
     new Route(new RegExp("^/$")).redirect("/administration/overview"),
     new Route(new RegExp("^#.*")).redirect("/administration/overview"),
-    new Route(new RegExp("^/library$"), html`<ak-library></ak-library>`),
+    new Route(new RegExp("^/library$")).redirectRaw("/if/user/"),
     new Route(
         new RegExp("^/administration/overview$"),
         html`<ak-admin-overview></ak-admin-overview>`,

@@ -1,6 +1,6 @@
 import { customElement, html, TemplateResult } from "lit-element";
 import { t } from "@lingui/macro";
-import { BaseUserSettings } from "./BaseUserSettings";
+import { BaseUserSettings } from "../BaseUserSettings";
 import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-user-settings-password")

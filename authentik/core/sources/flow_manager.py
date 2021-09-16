@@ -243,9 +243,9 @@ class SourceFlowManager:
             return self.handle_auth_user(connection)
         return redirect(
             reverse(
-                "authentik_core:if-admin",
+                "authentik_core:if-user",
             )
-            + f"#/user;page-{self.source.slug}"
+            + f"#/settings;page-{self.source.slug}"
         )
 
     def handle_enroll(

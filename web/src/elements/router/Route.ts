@@ -28,6 +28,15 @@ export class Route {
         return this;
     }
 
+    redirectRaw(to: string): Route {
+        this.callback = () => {
+            console.debug(`authentik/router: redirecting ${to}`);
+            window.location.hash = `${to}`;
+            return html``;
+        };
+        return this;
+    }
+
     then(render: (args: RouteArgs) => TemplateResult): Route {
         this.callback = render;
         return this;

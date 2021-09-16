@@ -21,12 +21,12 @@ import "../../elements/Tabs";
 import "./tokens/UserTokenList";
 import "./UserSelfForm";
 import "./stages/UserSettingsAuthenticatorDuo";
-import "./settings/UserSettingsAuthenticatorStatic";
-import "./settings/UserSettingsAuthenticatorTOTP";
-import "./settings/UserSettingsAuthenticatorWebAuthn";
-import "./settings/UserSettingsPassword";
+import "./stages/UserSettingsAuthenticatorStatic";
+import "./stages/UserSettingsAuthenticatorTOTP";
+import "./stages/UserSettingsAuthenticatorWebAuthn";
+import "./stages/UserSettingsPassword";
 import "./sources/SourceSettingsOAuth";
-import "./settings/SourceSettingsPlex";
+import "./sources/SourceSettingsPlex";
 import { EVENT_REFRESH } from "../../constants";
 
 @customElement("ak-user-settings")

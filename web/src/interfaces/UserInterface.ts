@@ -165,7 +165,11 @@ export class UserInterface extends LitElement {
                                 return html` <div
                                     class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg"
                                 >
-                                    <a class="pf-c-button pf-m-plain" type="button" href="#/user">
+                                    <a
+                                        class="pf-c-button pf-m-plain"
+                                        type="button"
+                                        href="#/settings"
+                                    >
                                         <i class="fas fa-cog" aria-hidden="true"></i>
                                     </a>
                                 </div>`;
@@ -179,8 +183,19 @@ export class UserInterface extends LitElement {
                         <div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-md">
                             <span class="pf-c-dropdown__toggle-text"
                                 >${until(
-                                    me().then((me) => {
-                                        return me.user.username;
+                                    uiConfig().then((config) => {
+                                        return me().then((me) => {
+                                            switch (config.navbar.userDisplay) {
+                                                case "username":
+                                                    return me.user.username;
+                                                case "name":
+                                                    return me.user.name;
+                                                case "email":
+                                                    return me.user.email;
+                                                default:
+                                                    return me.user.username;
+                                            }
+                                        });
                                     }),
                                 )}
                             </span>

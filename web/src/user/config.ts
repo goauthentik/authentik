@@ -9,6 +9,9 @@ export interface UIConfig {
         // Application edit in library (only shown when user is superuser)
         applicationEdit: boolean;
     };
+    navbar: {
+        userDisplay: "username" | "name" | "email";
+    };
 }
 
 export const DefaultUIConfig: UIConfig = {
@@ -17,6 +20,9 @@ export const DefaultUIConfig: UIConfig = {
         notificationDrawer: true,
         settings: true,
         applicationEdit: true,
+    },
+    navbar: {
+        userDisplay: "name",
     },
 };
 

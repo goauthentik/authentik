@@ -4,7 +4,7 @@ import { CSSResult, customElement, html, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { STATIC_TOKEN_STYLE } from "../../../flows/stages/authenticator_static/AuthenticatorStaticStage";
-import { BaseUserSettings } from "./BaseUserSettings";
+import { BaseUserSettings } from "../BaseUserSettings";
 import { EVENT_REFRESH } from "../../../constants";
 
 @customElement("ak-user-settings-authenticator-static")
