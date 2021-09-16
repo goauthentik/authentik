@@ -17,27 +17,26 @@ Local backups can be created by running the following command in your authentik 
 ```
 docker-compose run --rm worker backup
 # Or for kubernetes
-kubectl exec -it authentik-worker-.... -- ./lifecycle/bootstrap.sh backup
+kubectl exec -it deployment/authentik-worker -c authentik -- ak backup
 ```
 
 This will dump the current database into the `./backups` folder. By defaults, the last 10 Backups are kept.
 
 ### Restore
 
+:::warning
+Currently, it is only supported to restore backups into the same version they have been taken from. Different versions *might* work, but this is not guarantee.
+Instead, install the version the backup was taken with, restore the backup and then upgrade.
+:::
+
 Run this command in your authentik installation directory
 
-```
-docker-compose run --rm worker restore
-# Or for kubernetes
-kubectl exec -it authentik-worker-.... -- ./lifecycle/bootstrap.sh restore
-```
-
-This will prompt you to restore from your last backup. If you want to restore from a specific file, use the `-i` flag with the filename:
+The filename can be found by either looking into the `./backups` directory or using S3.
 
 ```
 docker-compose run --rm worker restore -i default-2020-10-03-115557.psql
 # Or for kubernetes
-kubectl exec -it authentik-worker-.... -- ./lifecycle/bootstrap.sh restore -i default-2020-10-03-115557.psql
+kubectl exec -it deployment/authentik-worker -c authentik -- ak restore -i default-2020-10-03-115557.psql
 ```
 
 After you've restored the backup, it is recommended to restart all services with `docker-compose restart` or `kubectl restart deployment --all`.

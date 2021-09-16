@@ -2,7 +2,7 @@
 from django.db.models.query import QuerySet
 from django_filters.filters import ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
-from rest_framework.fields import BooleanField, CharField, JSONField
+from rest_framework.fields import CharField, JSONField
 from rest_framework.serializers import ListSerializer, ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_guardian.filters import ObjectPermissionsFilter
@@ -15,7 +15,6 @@ from authentik.core.models import Group, User
 class GroupMemberSerializer(ModelSerializer):
     """Stripped down user serializer to show relevant users for groups"""
 
-    is_superuser = BooleanField(read_only=True)
     avatar = CharField(read_only=True)
     attributes = JSONField(validators=[is_dict], required=False)
     uid = CharField(read_only=True)
@@ -29,7 +28,6 @@ class GroupMemberSerializer(ModelSerializer):
             "name",
             "is_active",
             "last_login",
-            "is_superuser",
             "email",
             "avatar",
             "attributes",

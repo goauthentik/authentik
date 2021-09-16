@@ -1,6 +1,5 @@
 """AzureAD OAuth2 Views"""
 from typing import Any, Optional
-from uuid import UUID
 
 from requests.exceptions import RequestException
 from structlog.stdlib import get_logger
@@ -36,7 +35,6 @@ class AzureADClient(OAuth2Client):
                 profile_url,
                 headers={"Authorization": f"{token['token_type']} {token['access_token']}"},
             )
-            LOGGER.debug(response.text)
             response.raise_for_status()
         except RequestException as exc:
             LOGGER.warning("Unable to fetch user profile", exc=exc)
@@ -49,12 +47,6 @@ class AzureADOAuthCallback(OAuthCallback):
     """AzureAD OAuth2 Callback"""
 
     client_class = AzureADClient
-
-    def get_user_id(self, info: dict[str, Any]) -> Optional[str]:
-        try:
-            return str(UUID(info.get("id")).int)
-        except TypeError:
-            return None
 
     def get_user_enroll_context(
         self,

@@ -23,6 +23,10 @@ INVITATION = "invitation"
 class InvitationStageView(StageView):
     """Finalise Authentication flow by logging the user in"""
 
+    def post(self, request: HttpRequest) -> HttpResponse:
+        """Wrapper for post requests"""
+        return self.get(request)
+
     def get_token(self) -> Optional[str]:
         """Get token from saved get-arguments or prompt_data"""
         if INVITATION_TOKEN_KEY in self.request.session.get(SESSION_KEY_GET, {}):

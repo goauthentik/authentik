@@ -81,11 +81,11 @@ class PolicyEngine:
             .iterator()
         )
 
-    def _check_policy_type(self, policy: Policy):
+    def _check_policy_type(self, binding: PolicyBinding):
         """Check policy type, make sure it's not the root class as that has no logic implemented"""
         # pyright: reportGeneralTypeIssues=false
-        if policy.__class__ == Policy:
-            raise TypeError(f"Policy '{policy}' is root type")
+        if binding.policy is not None and binding.policy.__class__ == Policy:
+            raise TypeError(f"Policy '{binding.policy}' is root type")
 
     def build(self) -> "PolicyEngine":
         """Build wrapper which monitors performance"""
@@ -102,7 +102,7 @@ class PolicyEngine:
             for binding in self._iter_bindings():
                 self.__expected_result_count += 1
 
-                self._check_policy_type(binding.policy)
+                self._check_policy_type(binding)
                 key = cache_key(binding, self.request)
                 cached_policy = cache.get(key, None)
                 if cached_policy and self.use_cache:

@@ -31,7 +31,7 @@ VALIDATION_ERROR = build_object_type(
         "non_field_errors": build_array_type(build_standard_type(OpenApiTypes.STR)),
         "code": build_standard_type(OpenApiTypes.STR),
     },
-    required=["detail"],
+    required=[],
     additionalProperties={},
 )
 

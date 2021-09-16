@@ -100,7 +100,7 @@ def outpost_controller(
     if from_cache:
         outpost: Outpost = cache.get(CACHE_KEY_OUTPOST_DOWN % outpost_pk)
     else:
-        outpost: Outpost = Outpost.objects.get(pk=outpost_pk)
+        outpost: Outpost = Outpost.objects.filter(pk=outpost_pk).first()
     if not outpost:
         return
     self.set_uid(slugify(outpost.name))
@@ -148,10 +148,7 @@ def outpost_post_save(model_class: str, model_pk: Any):
         return
 
     if isinstance(instance, Outpost):
-        LOGGER.debug("Ensuring token and permissions for outpost", instance=instance)
-        _ = instance.token
-        _ = instance.user
-        LOGGER.debug("Trigger reconcile for outpost")
+        LOGGER.debug("Trigger reconcile for outpost", instance=instance)
         outpost_controller.delay(instance.pk)
 
     if isinstance(instance, (OutpostModel, Outpost)):

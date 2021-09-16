@@ -10,7 +10,10 @@ import (
 	goldap "github.com/go-ldap/ldap/v3"
 	"github.com/google/uuid"
 	"github.com/nmcclain/ldap"
+	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/outpost/ldap/metrics"
+	"goauthentik.io/internal/utils"
 )
 
 type SearchRequest struct {
@@ -35,13 +38,20 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 		SearchRequest: searchReq,
 		BindDN:        bindDN,
 		conn:          conn,
-		log:           ls.log.WithField("bindDN", bindDN).WithField("requestId", rid).WithField("client", conn.RemoteAddr().String()).WithField("filter", searchReq.Filter).WithField("baseDN", searchReq.BaseDN),
+		log:           ls.log.WithField("bindDN", bindDN).WithField("requestId", rid).WithField("client", utils.GetIP(conn.RemoteAddr())).WithField("filter", searchReq.Filter).WithField("baseDN", searchReq.BaseDN),
 		id:            rid,
 		ctx:           span.Context(),
 	}
 
 	defer func() {
 		span.Finish()
+		metrics.Requests.With(prometheus.Labels{
+			"outpost_name": ls.ac.Outpost.Name,
+			"type":         "search",
+			"filter":       req.Filter,
+			"dn":           req.BindDN,
+			"client":       utils.GetIP(req.conn.RemoteAddr()),
+		}).Observe(float64(span.EndTime.Sub(span.StartTime)))
 		req.log.WithField("took-ms", span.EndTime.Sub(span.StartTime).Milliseconds()).Info("Search request")
 	}()
 

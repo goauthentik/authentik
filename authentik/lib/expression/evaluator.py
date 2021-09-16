@@ -4,13 +4,13 @@ from textwrap import indent
 from typing import Any, Iterable, Optional
 
 from django.core.exceptions import FieldError
-from requests import Session
 from rest_framework.serializers import ValidationError
 from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
+from authentik.lib.utils.http import get_http_session
 
 LOGGER = get_logger()
 
@@ -35,7 +35,7 @@ class BaseEvaluator:
             "ak_is_group_member": BaseEvaluator.expr_is_group_member,
             "ak_user_by": BaseEvaluator.expr_user_by,
             "ak_logger": get_logger(),
-            "requests": Session(),
+            "requests": get_http_session(),
         }
         self._context = {}
         self._filename = "BaseEvalautor"

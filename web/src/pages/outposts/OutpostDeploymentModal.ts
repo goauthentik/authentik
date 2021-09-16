@@ -1,4 +1,4 @@
-import { Outpost } from "@goauthentik/api";
+import { Outpost, OutpostTypeEnum } from "@goauthentik/api";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { t } from "@lingui/macro";
 import { ifDefined } from "lit-html/directives/if-defined";
@@ -53,6 +53,26 @@ export class OutpostDeploymentModal extends ModalButton {
                         </label>
                         <input class="pf-c-form-control" readonly type="text" value="true" />
                     </div>
+                    ${this.outpost?.type == OutpostTypeEnum.Proxy
+                        ? html`
+                              <h3>
+                                  ${t`If your authentik_host setting does not match the URL you want to login with, add this setting.`}
+                              </h3>
+                              <div class="pf-c-form__group">
+                                  <label class="pf-c-form__label" for="help-text-simple-form-name">
+                                      <span class="pf-c-form__label-text"
+                                          >AUTHENTIK_HOST_BROWSER</span
+                                      >
+                                  </label>
+                                  <input
+                                      class="pf-c-form-control"
+                                      readonly
+                                      type="text"
+                                      value="${document.location.origin}"
+                                  />
+                              </div>
+                          `
+                        : html``}
                 </form>
             </div>
             <footer class="pf-c-modal-box__footer pf-m-align-left">

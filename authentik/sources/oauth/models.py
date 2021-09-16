@@ -163,7 +163,7 @@ class AzureADOAuthSource(OAuthSource):
         verbose_name_plural = _("Azure AD OAuth Sources")
 
 
-class OpenIDOAuthSource(OAuthSource):
+class OpenIDConnectOAuthSource(OAuthSource):
     """Login using a Generic OpenID-Connect compliant provider."""
 
     class Meta:

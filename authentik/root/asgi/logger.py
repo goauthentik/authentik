@@ -19,22 +19,24 @@ class ASGILogger:
 
     app: ASGIApp
 
-    status_code: int
-    start: float
-
     def __init__(self, app: ASGIApp):
         self.app = app
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         content_length = 0
+        status_code = 0
         request_id = ""
+        location = ""
+        start = time()
 
         async def send_hooked(message: Message) -> None:
             """Hooked send method, which records status code and content-length, and for the final
             requests logs it"""
+
             headers = dict(message.get("headers", []))
             if "status" in message:
-                self.status_code = message["status"]
+                nonlocal status_code
+                status_code = message["status"]
 
             if b"Content-Length" in headers:
                 nonlocal content_length
@@ -43,23 +45,27 @@ class ASGILogger:
             if message["type"] == "http.response.start":
                 response_headers = dict(message["headers"])
                 nonlocal request_id
+                nonlocal location
                 request_id = response_headers.get(RESPONSE_HEADER_ID.encode(), b"").decode()
+                location = response_headers.get(b"Location", b"").decode()
 
             if message["type"] == "http.response.body" and not message.get("more_body", True):
-                runtime = int((time() - self.start) * 1000)
-                self.log(scope, runtime, content_length, request_id=request_id)
+                nonlocal start
+                runtime = int((time() - start) * 1000)
+                kwargs = {"request_id": request_id}
+                if location != "":
+                    kwargs["location"] = location
+                self.log(scope, runtime, content_length, status_code, **kwargs)
             await send(message)
 
-        self.start = time()
         if scope["type"] == "lifespan":
             # https://code.djangoproject.com/ticket/31508
             # https://github.com/encode/uvicorn/issues/266
             return
         return await self.app(scope, receive, send_hooked)
 
-    def _get_ip(self, scope: Scope) -> str:
+    def _get_ip(self, headers: dict[bytes, bytes], scope: Scope) -> str:
         client_ip = None
-        headers = dict(scope.get("headers", []))
         for header in ASGI_IP_HEADERS:
             if header in headers:
                 client_ip = headers[header].decode()
@@ -68,9 +74,10 @@ class ASGILogger:
         # Check if header has multiple values, and use the first one
         return client_ip.split(", ")[0]
 
-    def log(self, scope: Scope, content_length: int, runtime: float, **kwargs):
+    def log(self, scope: Scope, content_length: int, runtime: float, status_code: int, **kwargs):
         """Outpot access logs in a structured format"""
-        host = self._get_ip(scope)
+        headers = dict(scope.get("headers", []))
+        host = self._get_ip(headers, scope)
         query_string = ""
         if scope.get("query_string", b"") != b"":
             query_string = f"?{scope.get('query_string').decode()}"
@@ -79,8 +86,9 @@ class ASGILogger:
             host=host,
             method=scope.get("method", ""),
             scheme=scope.get("scheme", ""),
-            status=self.status_code,
+            status=status_code,
             size=content_length / 1000 if content_length > 0 else 0,
             runtime=runtime,
+            user_agent=headers.get(b"user-agent", b"").decode(),
             **kwargs,
         )

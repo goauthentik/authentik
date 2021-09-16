@@ -5,7 +5,8 @@ from django.http.response import Http404
 from django.utils.text import slugify
 from django_filters.filters import AllValuesMultipleFilter
 from django_filters.filterset import FilterSet
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_field
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
@@ -122,7 +123,7 @@ class LDAPPropertyMappingSerializer(PropertyMappingSerializer):
 class LDAPPropertyMappingFilter(FilterSet):
     """Filter for LDAPPropertyMapping"""
 
-    managed = AllValuesMultipleFilter(field_name="managed")
+    managed = extend_schema_field(OpenApiTypes.STR)(AllValuesMultipleFilter(field_name="managed"))
 
     class Meta:
         model = LDAPPropertyMapping

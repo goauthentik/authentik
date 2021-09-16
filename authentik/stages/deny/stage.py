@@ -13,3 +13,7 @@ class DenyStageView(StageView):
     def get(self, request: HttpRequest) -> HttpResponse:
         """Cancells the current flow"""
         return self.executor.stage_invalid()
+
+    def post(self, request: HttpRequest) -> HttpResponse:
+        """Wrapper for post requests"""
+        return self.get(request)

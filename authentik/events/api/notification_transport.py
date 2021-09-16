@@ -38,6 +38,7 @@ class NotificationTransportSerializer(ModelSerializer):
             "mode",
             "mode_verbose",
             "webhook_url",
+            "webhook_mapping",
             "send_once",
         ]
 

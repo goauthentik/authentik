@@ -18,7 +18,7 @@ If you enable *Set HTTP-Basic Authentication* option, the HTTP Authorization hea
 
 # HTTPS
 
-The outpost listens on both 4180 for HTTP and 4443 for HTTPS.
+The outpost listens on both 9000 for HTTP and 9443 for HTTPS.
 
 :::info
 If your upstream host is HTTPS, and you're not using forward auth, you need to access the outpost over HTTPS too.

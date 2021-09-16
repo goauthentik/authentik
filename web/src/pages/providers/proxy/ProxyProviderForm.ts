@@ -302,6 +302,17 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                 </div>
                 <div class="pf-c-card__footer">${this.renderSettings()}</div>
             </div>
+            <ak-form-element-horizontal label=${t`Token validity`} name="tokenValidity">
+                <input
+                    type="text"
+                    value="${first(this.instance?.tokenValidity, "hours=24")}"
+                    class="pf-c-form-control"
+                />
+                <p class="pf-c-form__helper-text">${t`Configure how long tokens are valid for.`}</p>
+                <p class="pf-c-form__helper-text">
+                    ${t`(Format: hours=-1;minutes=-2;seconds=-3).`}
+                </p>
+            </ak-form-element-horizontal>
 
             <ak-form-group>
                 <span slot="header"> ${t`Advanced protocol settings`} </span>

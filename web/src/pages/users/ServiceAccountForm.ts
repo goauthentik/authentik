@@ -74,6 +74,9 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                         value=${ifDefined(this.result?.token)}
                         class="pf-c-form-control"
                     />
+                    <p class="pf-c-form__helper-text">
+                        ${t`Valid for 360 days, after which the password will automatically rotate. You can copy the password from the Token List.`}
+                    </p>
                 </ak-form-element-horizontal>
             </form>`;
     }

@@ -1,5 +1,6 @@
 """authentik e2e testing utilities"""
 import json
+import os
 from functools import lru_cache, wraps
 from os import environ, makedirs
 from time import sleep, time
@@ -34,6 +35,17 @@ RETRIES = int(environ.get("RETRIES", "5"))
 def USER() -> User:  # noqa
     """Cached function that always returns akadmin"""
     return User.objects.get(username="akadmin")
+
+
+def get_docker_tag() -> str:
+    """Get docker-tag based off of CI variables"""
+    env_pr_branch = "GITHUB_HEAD_REF"
+    default_branch = "GITHUB_REF"
+    branch_name = os.environ.get(default_branch, "master")
+    if os.environ.get(env_pr_branch, "") != "":
+        branch_name = os.environ[env_pr_branch]
+    branch_name = branch_name.replace("refs/heads/", "").replace("/", "-")
+    return f"gh-{branch_name}"
 
 
 class SeleniumTestCase(StaticLiveServerTestCase):

@@ -6,13 +6,13 @@ import (
 	"errors"
 	"fmt"
 	"net"
-	"net/http"
 	"strings"
 	"sync"
 
 	"github.com/go-openapi/strfmt"
 	"github.com/pires/go-proxyproto"
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/outpost/ldap/metrics"
 )
 
 const (
@@ -50,6 +50,7 @@ func (ls *LDAPServer) Refresh() error {
 			tlsServerName:       provider.TlsServerName,
 			uidStartNumber:      *provider.UidStartNumber,
 			gidStartNumber:      *provider.GidStartNumber,
+			outpostName:         ls.ac.Outpost.Name,
 		}
 		if provider.Certificate.Get() != nil {
 			kp := provider.Certificate.Get()
@@ -63,16 +64,6 @@ func (ls *LDAPServer) Refresh() error {
 	ls.providers = providers
 	ls.log.Info("Update providers")
 	return nil
-}
-
-func (ls *LDAPServer) StartHTTPServer() error {
-	listen := "0.0.0.0:4180" // same port as proxy
-	m := http.NewServeMux()
-	m.HandleFunc("/akprox/ping", func(rw http.ResponseWriter, r *http.Request) {
-		rw.WriteHeader(204)
-	})
-	ls.log.WithField("listen", listen).Info("Starting http server")
-	return http.ListenAndServe(listen, m)
 }
 
 func (ls *LDAPServer) StartLDAPServer() error {
@@ -126,10 +117,7 @@ func (ls *LDAPServer) Start() error {
 	wg.Add(3)
 	go func() {
 		defer wg.Done()
-		err := ls.StartHTTPServer()
-		if err != nil {
-			panic(err)
-		}
+		metrics.RunServer()
 	}()
 	go func() {
 		defer wg.Done()

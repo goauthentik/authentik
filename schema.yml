@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2021.8.4
+  version: 2021.9.1-rc1
   description: Making authentication simple.
   contact:
     email: hello@beryju.org
@@ -3899,6 +3899,21 @@ paths:
                 items:
                   $ref: '#/components/schemas/UsedBy'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /events/notifications/mark_all_seen/:
+    post:
+      operationId: events_notifications_mark_all_seen_create
+      description: Mark all the user's notifications as seen
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Marked tasks as read successfully.
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -9154,12 +9169,6 @@ paths:
           type: array
           items:
             type: string
-            nullable: true
-            title: Managed by authentik
-        description: Objects which are managed by authentik. These objects are created
-          and updated automatically. This is flag only indicates that an object can
-          be overwritten by migrations. You can still modify the objects via the API,
-          but expect changes to be overwritten in a later update.
         explode: true
         style: form
       - in: query
@@ -9379,6 +9388,219 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /propertymappings/notification/:
+    get:
+      operationId: propertymappings_notification_list
+      description: NotificationWebhookMapping Viewset
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNotificationWebhookMappingList'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    post:
+      operationId: propertymappings_notification_create
+      description: NotificationWebhookMapping Viewset
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationWebhookMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationWebhookMapping'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /propertymappings/notification/{pm_uuid}/:
+    get:
+      operationId: propertymappings_notification_retrieve
+      description: NotificationWebhookMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification Webhook Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationWebhookMapping'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    put:
+      operationId: propertymappings_notification_update
+      description: NotificationWebhookMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification Webhook Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationWebhookMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationWebhookMapping'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    patch:
+      operationId: propertymappings_notification_partial_update
+      description: NotificationWebhookMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification Webhook Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationWebhookMappingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationWebhookMapping'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    delete:
+      operationId: propertymappings_notification_destroy
+      description: NotificationWebhookMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification Webhook Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /propertymappings/notification/{pm_uuid}/used_by/:
+    get:
+      operationId: propertymappings_notification_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification Webhook Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /propertymappings/saml/:
     get:
       operationId: propertymappings_saml_list
@@ -9398,12 +9620,6 @@ paths:
           type: array
           items:
             type: string
-            nullable: true
-            title: Managed by authentik
-        description: Objects which are managed by authentik. These objects are created
-          and updated automatically. This is flag only indicates that an object can
-          be overwritten by migrations. You can still modify the objects via the API,
-          but expect changes to be overwritten in a later update.
         explode: true
         style: form
       - in: query
@@ -9634,12 +9850,6 @@ paths:
           type: array
           items:
             type: string
-            nullable: true
-            title: Managed by authentik
-        description: Objects which are managed by authentik. These objects are created
-          and updated automatically. This is flag only indicates that an object can
-          be overwritten by migrations. You can still modify the objects via the API,
-          but expect changes to be overwritten in a later update.
         explode: true
         style: form
       - in: query
@@ -13568,6 +13778,43 @@ paths:
           description: Enrollment pending/failed
         '400':
           $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /stages/authenticator/duo/{stage_uuid}/import_devices/:
+    post:
+      operationId: stages_authenticator_duo_import_devices_create
+      description: Import duo devices into authentik
+      parameters:
+      - in: query
+        name: duo_user_id
+        schema:
+          type: string
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Duo Authenticator Setup Stage.
+        required: true
+      - in: query
+        name: username
+        schema:
+          type: string
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticatorDuoStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Enrollment successful
+        '400':
+          description: Device exists already
         '403':
           $ref: '#/components/schemas/GenericError'
   /stages/authenticator/duo/{stage_uuid}/used_by/:
@@ -17703,6 +17950,11 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: create_users_group
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: name
         schema:
           type: string
@@ -20223,9 +20475,6 @@ components:
           type: string
           format: date-time
           nullable: true
-        is_superuser:
-          type: boolean
-          readOnly: true
         email:
           type: string
           format: email
@@ -20242,7 +20491,6 @@ components:
           readOnly: true
       required:
       - avatar
-      - is_superuser
       - name
       - pk
       - uid
@@ -21334,6 +21582,10 @@ components:
           readOnly: true
         webhook_url:
           type: string
+        webhook_mapping:
+          type: string
+          format: uuid
+          nullable: true
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -21359,6 +21611,10 @@ components:
           $ref: '#/components/schemas/NotificationTransportModeEnum'
         webhook_url:
           type: string
+        webhook_mapping:
+          type: string
+          format: uuid
+          nullable: true
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -21376,6 +21632,34 @@ components:
             type: string
       required:
       - messages
+    NotificationWebhookMapping:
+      type: object
+      description: NotificationWebhookMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        name:
+          type: string
+        expression:
+          type: string
+      required:
+      - expression
+      - name
+      - pk
+    NotificationWebhookMappingRequest:
+      type: object
+      description: NotificationWebhookMapping Serializer
+      properties:
+        name:
+          type: string
+        expression:
+          type: string
+      required:
+      - expression
+      - name
     OAuth2Provider:
       type: object
       description: OAuth2Provider Serializer
@@ -23146,6 +23430,41 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/NotificationTransport'
+      required:
+      - pagination
+      - results
+    PaginatedNotificationWebhookMappingList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationWebhookMapping'
       required:
       - pagination
       - results
@@ -25491,10 +25810,22 @@ components:
           $ref: '#/components/schemas/NotificationTransportModeEnum'
         webhook_url:
           type: string
+        webhook_mapping:
+          type: string
+          format: uuid
+          nullable: true
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
             into a chat channel.
+    PatchedNotificationWebhookMappingRequest:
+      type: object
+      description: NotificationWebhookMapping Serializer
+      properties:
+        name:
+          type: string
+        expression:
+          type: string
     PatchedOAuth2ProviderRequest:
       type: object
       description: OAuth2Provider Serializer
@@ -25915,6 +26246,10 @@ components:
             Exclusive with internal_host.
         cookie_domain:
           type: string
+        token_validity:
+          type: string
+          description: 'Tokens not valid on or after current time + this value (Format:
+            hours=1;minutes=2;seconds=3).'
     PatchedReputationPolicyRequest:
       type: object
       description: Reputation Policy Serializer
@@ -26298,6 +26633,11 @@ components:
         create_users_as_inactive:
           type: boolean
           description: When set, newly created users are inactive and cannot login.
+        create_users_group:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optionally add newly created users to this group.
     PatchedWebAuthnDeviceRequest:
       type: object
       description: Serializer for WebAuthn authenticator devices
@@ -27120,6 +27460,10 @@ components:
           readOnly: true
         cookie_domain:
           type: string
+        token_validity:
+          type: string
+          description: 'Tokens not valid on or after current time + this value (Format:
+            hours=1;minutes=2;seconds=3).'
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -27185,6 +27529,10 @@ components:
             Exclusive with internal_host.
         cookie_domain:
           type: string
+        token_validity:
+          type: string
+          description: 'Tokens not valid on or after current time + this value (Format:
+            hours=1;minutes=2;seconds=3).'
       required:
       - authorization_flow
       - external_host
@@ -28945,6 +29293,11 @@ components:
         create_users_as_inactive:
           type: boolean
           description: When set, newly created users are inactive and cannot login.
+        create_users_group:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optionally add newly created users to this group.
       required:
       - component
       - name
@@ -28964,6 +29317,11 @@ components:
         create_users_as_inactive:
           type: boolean
           description: When set, newly created users are inactive and cannot login.
+        create_users_group:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optionally add newly created users to this group.
       required:
       - name
     ValidationError:
@@ -28977,8 +29335,6 @@ components:
         code:
           type: string
       additionalProperties: {}
-      required:
-      - detail
     Version:
       type: object
       description: Get running and latest version.

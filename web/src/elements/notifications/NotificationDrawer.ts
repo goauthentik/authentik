@@ -19,6 +19,8 @@ import AKGlobal from "../../authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import { EVENT_NOTIFICATION_DRAWER_TOGGLE } from "../../constants";
 import { ActionToLabel } from "../../pages/events/utils";
+import { showMessage } from "../messages/MessageContainer";
+import { MessageLevel } from "../messages/Message";
 
 @customElement("ak-notification-drawer")
 export class NotificationDrawer extends LitElement {
@@ -31,6 +33,12 @@ export class NotificationDrawer extends LitElement {
     static get styles(): CSSResult[] {
         return [PFBase, PFButton, PFNotificationDrawer, PFContent, PFDropdown, AKGlobal].concat(
             css`
+                .pf-c-drawer__body {
+                    height: 100%;
+                }
+                .pf-c-notification-drawer__body {
+                    flex-grow: 1;
+                }
                 .pf-c-notification-drawer__header {
                     height: 114px;
                     align-items: center;
@@ -143,7 +151,7 @@ export class NotificationDrawer extends LitElement {
                                 }}
                                 class="pf-c-button pf-m-plain"
                                 type="button"
-                                aria-label="Close"
+                                aria-label=${t`Close`}
                             >
                                 <i class="fas fa-times" aria-hidden="true"></i>
                             </button>
@@ -154,6 +162,26 @@ export class NotificationDrawer extends LitElement {
                     <ul class="pf-c-notification-drawer__list">
                         ${this.notifications.results.map((n) => this.renderItem(n))}
                     </ul>
+                </div>
+                <div class="pf-c-notification-drawer__footer">
+                    <button
+                        @click=${() => {
+                            new EventsApi(DEFAULT_CONFIG)
+                                .eventsNotificationsMarkAllSeenCreate()
+                                .then(() => {
+                                    showMessage({
+                                        level: MessageLevel.success,
+                                        message: t`Successfully cleared notifications`,
+                                    });
+                                    this.firstUpdated();
+                                });
+                        }}
+                        class="pf-c-button pf-m-secondary pf-m-block"
+                        type="button"
+                        aria-label=${t`Clear all`}
+                    >
+                        ${t`Clear all`}
+                    </button>
                 </div>
             </div>
         </div>`;

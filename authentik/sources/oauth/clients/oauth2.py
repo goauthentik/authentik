@@ -65,7 +65,6 @@ class OAuth2Client(BaseOAuthClient):
                 data=args,
                 headers=self._default_headers,
             )
-            LOGGER.debug(response.text)
             response.raise_for_status()
         except RequestException as exc:
             LOGGER.warning("Unable to fetch access token", exc=exc)
@@ -114,4 +113,4 @@ class OAuth2Client(BaseOAuthClient):
 
     @property
     def session_key(self):
-        return "oauth-client-{0}-request-state".format(self.source.name)
+        return f"oauth-client-{self.source.name}-request-state"
