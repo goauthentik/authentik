@@ -35,7 +35,7 @@ import { WebsocketClient } from "../common/ws";
 import { ROUTES } from "../routesUser";
 
 @customElement("ak-interface-user")
-export class AdminInterface extends LitElement {
+export class UserInterface extends LitElement {
     @property({ type: Boolean })
     sidebarOpen = true;
 

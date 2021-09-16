@@ -96,8 +96,8 @@ class TestFlowsEnroll(SeleniumTestCase):
 
         self.initial_stages()
 
-        interface_admin = self.get_shadow_root("ak-interface-admin")
-        wait = WebDriverWait(interface_admin, self.wait_timeout)
+        interface_user = self.get_shadow_root("ak-interface-user")
+        wait = WebDriverWait(interface_user, self.wait_timeout)
 
         wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-sidebar")))
         self.driver.get(self.if_user_url("/user"))
@@ -195,7 +195,7 @@ class TestFlowsEnroll(SeleniumTestCase):
 
         sleep(2)
         # We're now logged in
-        wait = WebDriverWait(self.get_shadow_root("ak-interface-admin"), self.wait_timeout)
+        wait = WebDriverWait(self.get_shadow_root("ak-interface-user"), self.wait_timeout)
 
         wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-sidebar")))
         self.driver.get(self.if_user_url("/user"))
