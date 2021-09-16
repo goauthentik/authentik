@@ -87,9 +87,9 @@ export default [
             clearScreen: false,
         },
     },
-    // Main Application
+    // Flow interface
     {
-        input: "./src/interfaces/AdminInterface.ts",
+        input: "./src/interfaces/FlowInterface.ts",
         context: "window",
         output: [
             {
@@ -97,7 +97,7 @@ export default [
                 dir: "dist",
                 sourcemap: true,
                 manualChunks: manualChunks,
-                chunkFileNames: "admin-[name].js",
+                chunkFileNames: "flow-[name].js",
             },
         ],
         plugins: [
@@ -120,9 +120,9 @@ export default [
             clearScreen: false,
         },
     },
-    // Flow executor
+    // Admin interface
     {
-        input: "./src/interfaces/FlowInterface.ts",
+        input: "./src/interfaces/AdminInterface.ts",
         context: "window",
         output: [
             {
@@ -130,7 +130,7 @@ export default [
                 dir: "dist",
                 sourcemap: true,
                 manualChunks: manualChunks,
-                chunkFileNames: "flow-[name].js",
+                chunkFileNames: "admin-[name].js",
             },
         ],
         plugins: [

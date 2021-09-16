@@ -34,6 +34,7 @@ msgid "8 digits, not compatible with apps like Google Authenticator"
 msgstr "8 digits, not compatible with apps like Google Authenticator"
 
 #: src/interfaces/AdminInterface.ts
+#: src/interfaces/UserInterface.ts
 msgid "A newer version of the frontend is available."
 msgstr "A newer version of the frontend is available."
 
@@ -167,9 +168,9 @@ msgstr "Additional group DN, prepended to the Base DN."
 msgid "Additional user DN, prepended to the Base DN."
 msgstr "Additional user DN, prepended to the Base DN."
 
-#: src/interfaces/UserInterface.ts
-msgid "Admin"
-msgstr "Admin"
+#: 
+#~ msgid "Admin"
+#~ msgstr "Admin"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
@@ -286,6 +287,7 @@ msgstr "Application(s)"
 #: src/pages/LibraryPage.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/outposts/OutpostForm.ts
+#: src/user/LibraryPage.ts
 msgid "Applications"
 msgstr "Applications"
 
@@ -385,6 +387,7 @@ msgstr "Authentication flow"
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
 msgid "Authenticator"
 msgstr "Authenticator"
 
@@ -606,6 +609,7 @@ msgid "Certificates"
 msgstr "Certificates"
 
 #: src/pages/user-settings/settings/UserSettingsPassword.ts
+#: src/user/user-settings/settings/UserSettingsPassword.ts
 msgid "Change password"
 msgstr "Change password"
 
@@ -614,6 +618,7 @@ msgid "Change status"
 msgstr "Change status"
 
 #: src/pages/user-settings/settings/UserSettingsPassword.ts
+#: src/user/user-settings/settings/UserSettingsPassword.ts
 msgid "Change your password"
 msgstr "Change your password"
 
@@ -792,6 +797,7 @@ msgid "Configuration stage"
 msgstr "Configuration stage"
 
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
 msgid "Configure WebAuthn"
 msgstr "Configure WebAuthn"
 
@@ -824,6 +830,7 @@ msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr "Configure how the issuer field of the ID Token should be filled."
 
 #: src/pages/user-settings/UserSettingsPage.ts
+#: src/user/user-settings/UserSettingsPage.ts
 msgid "Configure settings relevant to your user profile."
 msgstr "Configure settings relevant to your user profile."
 
@@ -840,11 +847,14 @@ msgid "Configure what data should be used as unique User Identifier. For most ca
 msgstr "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
 
 #: src/pages/user-settings/settings/SourceSettingsOAuth.ts
+#: src/user/user-settings/settings/SourceSettingsOAuth.ts
 msgid "Connect"
 msgstr "Connect"
 
 #: src/pages/user-settings/settings/SourceSettingsOAuth.ts
 #: src/pages/user-settings/settings/SourceSettingsPlex.ts
+#: src/user/user-settings/settings/SourceSettingsOAuth.ts
+#: src/user/user-settings/settings/SourceSettingsPlex.ts
 msgid "Connected."
 msgstr "Connected."
 
@@ -931,6 +941,7 @@ msgid "Copy"
 msgstr "Copy"
 
 #: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Copy Key"
 msgstr "Copy Key"
 
@@ -992,11 +1003,15 @@ msgstr "Copy recovery link"
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
+#: src/user/user-settings/tokens/UserTokenList.ts
+#: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Create"
 msgstr "Create"
 
 #: src/pages/user-settings/tokens/UserTokenList.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/user/user-settings/tokens/UserTokenList.ts
+#: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Create App password"
 msgstr "Create App password"
 
@@ -1074,6 +1089,8 @@ msgstr "Create Tenant"
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/user/user-settings/tokens/UserTokenList.ts
+#: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Create Token"
 msgstr "Create Token"
 
@@ -1110,6 +1127,7 @@ msgid "Created by"
 msgstr "Created by"
 
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
 msgid "Created {0}"
 msgstr "Created {0}"
 
@@ -1195,6 +1213,8 @@ msgstr "Define how notifications are sent to users, like Email or Webhook."
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
 #: src/pages/users/UserListPage.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
+#: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Delete"
 msgstr "Delete"
 
@@ -1220,6 +1240,7 @@ msgstr "Delete"
 #~ msgstr "Delete Session"
 
 #: src/pages/user-settings/UserSelfForm.ts
+#: src/user/user-settings/UserSelfForm.ts
 msgid "Delete account"
 msgstr "Delete account"
 
@@ -1257,6 +1278,7 @@ msgstr "Deny the user access"
 #: src/pages/system-tasks/SystemTaskListPage.ts
 #: src/pages/tokens/TokenForm.ts
 #: src/pages/user-settings/tokens/UserTokenForm.ts
+#: src/user/user-settings/tokens/UserTokenForm.ts
 msgid "Description"
 msgstr "Description"
 
@@ -1298,6 +1320,7 @@ msgid "Device classes which can be used to authenticate."
 msgstr "Device classes which can be used to authenticate."
 
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
 msgid "Device name"
 msgstr "Device name"
 
@@ -1316,14 +1339,17 @@ msgstr "Digits"
 #~ msgstr "Disable"
 
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorDuo.ts
 msgid "Disable Duo authenticator"
 msgstr "Disable Duo authenticator"
 
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorStatic.ts
 msgid "Disable Static Tokens"
 msgstr "Disable Static Tokens"
 
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorTOTP.ts
 msgid "Disable Time-based OTP"
 msgstr "Disable Time-based OTP"
 
@@ -1333,6 +1359,8 @@ msgstr "Disabled"
 
 #: src/pages/user-settings/settings/SourceSettingsOAuth.ts
 #: src/pages/user-settings/settings/SourceSettingsPlex.ts
+#: src/user/user-settings/settings/SourceSettingsOAuth.ts
+#: src/user/user-settings/settings/SourceSettingsPlex.ts
 msgid "Disconnect"
 msgstr "Disconnect"
 
@@ -1368,6 +1396,7 @@ msgid "Dummy stage used for testing. Shows a simple continue button and always p
 msgstr "Dummy stage used for testing. Shows a simple continue button and always passes."
 
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorDuo.ts
 msgid "Duo"
 msgstr "Duo"
 
@@ -1437,6 +1466,7 @@ msgstr "Either no applications are defined, or you don't have access to any."
 #: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserViewPage.ts
+#: src/user/user-settings/UserSelfForm.ts
 msgid "Email"
 msgstr "Email"
 
@@ -1474,6 +1504,7 @@ msgstr "Embedded outpost is not configured correctly."
 #~ msgstr "Enable"
 
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorDuo.ts
 msgid "Enable Duo authenticator"
 msgstr "Enable Duo authenticator"
 
@@ -1482,10 +1513,12 @@ msgid "Enable StartTLS"
 msgstr "Enable StartTLS"
 
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorStatic.ts
 msgid "Enable Static Tokens"
 msgstr "Enable Static Tokens"
 
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorTOTP.ts
 msgid "Enable TOTP"
 msgstr "Enable TOTP"
 
@@ -1538,10 +1571,12 @@ msgid "Error when validating assertion on server: {err}"
 msgstr "Error when validating assertion on server: {err}"
 
 #: src/pages/user-settings/UserSettingsPage.ts
+#: src/user/user-settings/UserSettingsPage.ts
 msgid "Error: unsupported source settings: {0}"
 msgstr "Error: unsupported source settings: {0}"
 
 #: src/pages/user-settings/UserSettingsPage.ts
+#: src/user/user-settings/UserSettingsPage.ts
 msgid "Error: unsupported stage settings: {0}"
 msgstr "Error: unsupported stage settings: {0}"
 
@@ -1627,6 +1662,8 @@ msgstr "Expires?"
 
 #: src/pages/user-settings/tokens/UserTokenList.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/user/user-settings/tokens/UserTokenList.ts
+#: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Expiring"
 msgstr "Expiring"
 
@@ -2034,6 +2071,8 @@ msgstr "Icon shown in the browser tab."
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenForm.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/user/user-settings/tokens/UserTokenForm.ts
+#: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Identifier"
 msgstr "Identifier"
 
@@ -2139,6 +2178,7 @@ msgstr "Integrations"
 #: src/pages/tokens/TokenForm.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Intent"
 msgstr "Intent"
 
@@ -2280,6 +2320,7 @@ msgid "Let the user identify themselves with their username or Email address."
 msgstr "Let the user identify themselves with their username or Email address."
 
 #: src/interfaces/AdminInterface.ts
+#: src/interfaces/UserInterface.ts
 msgid "Library"
 msgstr "Library"
 
@@ -2327,6 +2368,7 @@ msgstr "Load servers"
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/user-settings/UserSelfForm.ts
+#: src/user/user-settings/UserSelfForm.ts
 #: src/utils.ts
 msgid "Loading"
 msgstr "Loading"
@@ -2439,7 +2481,6 @@ msgstr "Logins over the last 24 hours"
 msgid "Logo"
 msgstr "Logo"
 
-#: src/interfaces/UserInterface.ts
 #: src/pages/events/utils.ts
 msgid "Logout"
 msgstr "Logout"
@@ -2634,6 +2675,7 @@ msgstr "My Applications"
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
+#: src/user/user-settings/UserSelfForm.ts
 msgid "Name"
 msgstr "Name"
 
@@ -2683,6 +2725,7 @@ msgstr "Newly created users are added to this group, if a group is selected."
 #: src/pages/user-settings/tokens/UserTokenList.ts
 #: src/pages/users/GroupSelectModal.ts
 #: src/pages/users/UserListPage.ts
+#: src/user/user-settings/tokens/UserTokenList.ts
 msgid "No"
 msgstr "No"
 
@@ -2755,6 +2798,8 @@ msgstr "Not configured action"
 
 #: src/pages/user-settings/settings/SourceSettingsOAuth.ts
 #: src/pages/user-settings/settings/SourceSettingsPlex.ts
+#: src/user/user-settings/settings/SourceSettingsOAuth.ts
+#: src/user/user-settings/settings/SourceSettingsPlex.ts
 msgid "Not connected."
 msgstr "Not connected."
 
@@ -3422,6 +3467,7 @@ msgstr "Required."
 #: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserForm.ts
+#: src/user/user-settings/UserSelfForm.ts
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 
@@ -3798,6 +3844,8 @@ msgstr "Source linked"
 
 #: src/pages/user-settings/settings/SourceSettingsOAuth.ts
 #: src/pages/user-settings/settings/SourceSettingsPlex.ts
+#: src/user/user-settings/settings/SourceSettingsOAuth.ts
+#: src/user/user-settings/settings/SourceSettingsPlex.ts
 msgid "Source {0}"
 msgstr "Source {0}"
 
@@ -3908,6 +3956,7 @@ msgid "Static Tokens"
 msgstr "Static Tokens"
 
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorStatic.ts
 msgid "Static tokens"
 msgstr "Static tokens"
 
@@ -3926,12 +3975,18 @@ msgstr "Status"
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorDuo.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorStatic.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorTOTP.ts
 msgid "Status: Disabled"
 msgstr "Status: Disabled"
 
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorDuo.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorStatic.ts
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorDuo.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorStatic.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorTOTP.ts
 msgid "Status: Enabled"
 msgstr "Status: Enabled"
 
@@ -4073,6 +4128,7 @@ msgstr "Successfully created tenant."
 
 #: src/pages/tokens/TokenForm.ts
 #: src/pages/user-settings/tokens/UserTokenForm.ts
+#: src/user/user-settings/tokens/UserTokenForm.ts
 msgid "Successfully created token."
 msgstr "Successfully created token."
 
@@ -4131,10 +4187,12 @@ msgid "Successfully updated certificate-key pair."
 msgstr "Successfully updated certificate-key pair."
 
 #: src/pages/user-settings/UserSelfForm.ts
+#: src/user/user-settings/UserSelfForm.ts
 msgid "Successfully updated details."
 msgstr "Successfully updated details."
 
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
 msgid "Successfully updated device."
 msgstr "Successfully updated device."
 
@@ -4230,6 +4288,7 @@ msgstr "Successfully updated tenant."
 
 #: src/pages/tokens/TokenForm.ts
 #: src/pages/user-settings/tokens/UserTokenForm.ts
+#: src/user/user-settings/tokens/UserTokenForm.ts
 msgid "Successfully updated token."
 msgstr "Successfully updated token."
 
@@ -4473,6 +4532,7 @@ msgid "Time offset when temporary users should be deleted. This only applies if 
 msgstr "Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3)."
 
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorTOTP.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorTOTP.ts
 msgid "Time-based One-Time Passwords"
 msgstr "Time-based One-Time Passwords"
 
@@ -4520,6 +4580,7 @@ msgstr "Token validity"
 
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Token(s)"
 msgstr "Token(s)"
 
@@ -4533,6 +4594,7 @@ msgid "Tokens & App passwords"
 msgstr "Tokens & App passwords"
 
 #: src/pages/user-settings/UserSettingsPage.ts
+#: src/user/user-settings/UserSettingsPage.ts
 msgid "Tokens and App passwords"
 msgstr "Tokens and App passwords"
 
@@ -4700,6 +4762,11 @@ msgstr "Up-to-date!"
 #: src/pages/users/UserActiveForm.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
+#: src/user/user-settings/UserSelfForm.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
+#: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Update"
 msgstr "Update"
 
@@ -4783,6 +4850,7 @@ msgstr "Update Tenant"
 
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
+#: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Update Token"
 msgstr "Update Token"
 
@@ -4797,6 +4865,7 @@ msgid "Update available"
 msgstr "Update available"
 
 #: src/pages/user-settings/UserSettingsPage.ts
+#: src/user/user-settings/UserSettingsPage.ts
 msgid "Update details"
 msgstr "Update details"
 
@@ -4875,6 +4944,7 @@ msgstr "Use this tenant for each domain that doesn't have a dedicated tenant."
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/user-settings/tokens/UserTokenList.ts
 #: src/pages/users/UserListPage.ts
+#: src/user/user-settings/tokens/UserTokenList.ts
 msgid "User"
 msgstr "User"
 
@@ -4892,6 +4962,7 @@ msgid "User Reputation"
 msgstr "User Reputation"
 
 #: src/pages/user-settings/UserSettingsPage.ts
+#: src/user/user-settings/UserSettingsPage.ts
 msgid "User Settings"
 msgstr "User Settings"
 
@@ -4908,6 +4979,7 @@ msgid "User database + standard password"
 msgstr "User database + standard password"
 
 #: src/pages/user-settings/UserSettingsPage.ts
+#: src/user/user-settings/UserSettingsPage.ts
 msgid "User details"
 msgstr "User details"
 
@@ -4951,6 +5023,7 @@ msgstr "User's avatar"
 
 #: src/pages/user-settings/UserSelfForm.ts
 #: src/pages/users/UserForm.ts
+#: src/user/user-settings/UserSelfForm.ts
 msgid "User's display name."
 msgstr "User's display name."
 
@@ -4979,6 +5052,7 @@ msgstr "Userinfo URL"
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
+#: src/user/user-settings/UserSelfForm.ts
 msgid "Username"
 msgstr "Username"
 
@@ -5007,6 +5081,10 @@ msgstr "Using flow"
 #: src/pages/events/EventInfo.ts
 msgid "Using source"
 msgstr "Using source"
+
+#: src/pages/users/ServiceAccountForm.ts
+msgid "Valid for 360 days, after which the password will automatically rotate. You can copy the password from the Token List."
+msgstr "Valid for 360 days, after which the password will automatically rotate. You can copy the password from the Token List."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows."
@@ -5093,6 +5171,7 @@ msgid "WebAuthn Authenticators"
 msgstr "WebAuthn Authenticators"
 
 #: src/pages/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
+#: src/user/user-settings/settings/UserSettingsAuthenticatorWebAuthn.ts
 msgid "WebAuthn Devices"
 msgstr "WebAuthn Devices"
 
@@ -5188,6 +5267,7 @@ msgstr "X509 Subject"
 #: src/pages/user-settings/tokens/UserTokenList.ts
 #: src/pages/users/GroupSelectModal.ts
 #: src/pages/users/UserListPage.ts
+#: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Yes"
 msgstr "Yes"
 
@@ -5196,6 +5276,7 @@ msgid "You can only select providers that match the type of the outpost."
 msgstr "You can only select providers that match the type of the outpost."
 
 #: src/interfaces/AdminInterface.ts
+#: src/interfaces/UserInterface.ts
 msgid "You're currently impersonating {0}. Click to stop."
 msgstr "You're currently impersonating {0}. Click to stop."
 

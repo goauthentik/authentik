@@ -2,6 +2,7 @@ import { html } from "lit-html";
 import { Route } from "./elements/router/Route";
 
 import "./user/LibraryPage";
+import "./user/user-settings/UserSettingsPage";
 
 export const ROUTES: Route[] = [
     // Prevent infinite Shell loops

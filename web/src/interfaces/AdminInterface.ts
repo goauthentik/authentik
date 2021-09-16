@@ -33,6 +33,7 @@ import {
 import { AdminApi, Version } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../api/Config";
 import { WebsocketClient } from "../common/ws";
+import { ROUTES } from "../routesAdmin";
 
 @customElement("ak-interface-admin")
 export class AdminInterface extends LitElement {
@@ -111,6 +112,7 @@ export class AdminInterface extends LitElement {
                                         tabindex="-1"
                                         id="main-content"
                                         defaultUrl="/library"
+                                        .routes=${ROUTES}
                                     >
                                     </ak-router-outlet>
                                 </main>

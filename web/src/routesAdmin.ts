@@ -12,7 +12,7 @@ import "./pages/events/TransportListPage";
 import "./pages/flows/FlowListPage";
 import "./pages/flows/FlowViewPage";
 import "./pages/groups/GroupListPage";
-import "./pages/LibraryPage";
+import "./user/LibraryPage";
 import "./pages/outposts/OutpostListPage";
 import "./pages/outposts/ServiceConnectionListPage";
 import "./pages/policies/PolicyListPage";
