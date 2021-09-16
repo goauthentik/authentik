@@ -20,12 +20,12 @@ import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/Tabs";
 import "./tokens/UserTokenList";
 import "./UserSelfForm";
-import "./settings/UserSettingsAuthenticatorDuo";
+import "./stages/UserSettingsAuthenticatorDuo";
 import "./settings/UserSettingsAuthenticatorStatic";
 import "./settings/UserSettingsAuthenticatorTOTP";
 import "./settings/UserSettingsAuthenticatorWebAuthn";
 import "./settings/UserSettingsPassword";
-import "./settings/SourceSettingsOAuth";
+import "./sources/SourceSettingsOAuth";
 import "./settings/SourceSettingsPlex";
 import { EVENT_REFRESH } from "../../constants";
 

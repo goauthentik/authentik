@@ -3,7 +3,7 @@ import { t } from "@lingui/macro";
 import { customElement, html, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { BaseUserSettings } from "./BaseUserSettings";
+import { BaseUserSettings } from "../BaseUserSettings";
 import { EVENT_REFRESH } from "../../../constants";
 
 @customElement("ak-user-settings-authenticator-duo")
