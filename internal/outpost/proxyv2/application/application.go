@@ -1,7 +1,6 @@
 package application
 
 import (
-	"context"
 	"crypto/tls"
 	"encoding/gob"
 	"net/http"
@@ -49,15 +48,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		log.WithError(err).Warning("Failed to parse URL, skipping provider")
 	}
 
-	// Support for RS256, new proxy providers will use HS256 but old ones
-	// might not, and this makes testing easier
-	var ks oidc.KeySet
-	if contains(p.OidcConfiguration.IdTokenSigningAlgValuesSupported, "HS256") {
-		ks = hs256.NewKeySet(*p.ClientSecret)
-	} else {
-		ctx := context.WithValue(context.Background(), oauth2.HTTPClient, c)
-		oidc.NewRemoteKeySet(ctx, p.OidcConfiguration.JwksUri)
-	}
+	ks := hs256.NewKeySet(*p.ClientSecret)
 
 	var verifier = oidc.NewVerifier(p.OidcConfiguration.Issuer, ks, &oidc.Config{
 		ClientID:             *p.ClientId,
