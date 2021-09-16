@@ -136,9 +136,6 @@ export class AdminInterface extends LitElement {
     }
 
     renderSidebarItems(): TemplateResult {
-        const superUserCondition = () => {
-            return me().then((u) => u.user.isSuperuser || false);
-        };
         return html`
             ${until(
                 this.version.then((version) => {
