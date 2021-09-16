@@ -19,6 +19,7 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
 import AKGlobal from "../authentik.css";
 
 import "../elements/router/RouterOutlet";
@@ -48,8 +49,8 @@ export class UserInterface extends LitElement {
     @property({ attribute: false })
     tenant: CurrentTenant = DefaultTenant;
 
-    @property({ type: Boolean })
-    hasNotifications = false;
+    @property({ type: Number })
+    notificationsCount = -1;
 
     static get styles(): CSSResult[] {
         return [
@@ -60,6 +61,7 @@ export class UserInterface extends LitElement {
             PFButton,
             PFDrawer,
             PFDropdown,
+            PFNotificationBadge,
             AKGlobal,
             css`
                 .pf-c-page__main,
@@ -97,7 +99,7 @@ export class UserInterface extends LitElement {
                 pageSize: 1,
             })
             .then((r) => {
-                this.hasNotifications = r.pagination.count > 0;
+                this.notificationsCount = r.pagination.count;
             });
     }
 
@@ -140,21 +142,28 @@ export class UserInterface extends LitElement {
                                 if (!config.enabledFeatures.notificationDrawer) {
                                     return html``;
                                 }
-                                return html` <div
-                                    class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg"
-                                >
+                                return html`
                                     <button
-                                        class="pf-c-button pf-m-plain ${this.hasNotifications
-                                            ? "has-notifications"
-                                            : ""}"
+                                        class="pf-c-button pf-m-plain"
                                         type="button"
+                                        aria-label="${t`Unread notifications`}"
                                         @click=${() => {
                                             this.notificationOpen = !this.notificationOpen;
                                         }}
                                     >
-                                        <i class="fas fa-bell" aria-hidden="true"></i>
+                                        <span
+                                            class="pf-c-notification-badge ${this
+                                                .notificationsCount > 0
+                                                ? html`pf-m-unread`
+                                                : html``}"
+                                        >
+                                            <i class="pf-icon-bell" aria-hidden="true"></i>
+                                            <span class="pf-c-notification-badge__count"
+                                                >${this.notificationsCount}</span
+                                            >
+                                        </span>
                                     </button>
-                                </div>`;
+                                `;
                             }),
                         )}
                         ${until(
