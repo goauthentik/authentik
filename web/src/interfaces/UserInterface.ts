@@ -136,6 +136,9 @@ export class AdminInterface extends LitElement {
     }
 
     renderSidebarItems(): TemplateResult {
+        const superUserCondition = () => {
+            return me().then((u) => u.user.isSuperuser || false);
+        };
         return html`
             ${until(
                 this.version.then((version) => {
@@ -165,6 +168,9 @@ export class AdminInterface extends LitElement {
                     return html``;
                 }),
             )}
+            <ak-sidebar-item path="/if/admin" ?isAbsoluteLink=${true} ?highlight=${true}>
+                <span slot="label">${t`Go to admin interface`}</span>
+            </ak-sidebar-item>
             <ak-sidebar-item path="/library">
                 <span slot="label">${t`Library`}</span>
             </ak-sidebar-item>

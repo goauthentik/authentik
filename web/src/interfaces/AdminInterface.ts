@@ -137,9 +137,11 @@ export class AdminInterface extends LitElement {
     }
 
     renderSidebarItems(): TemplateResult {
-        const superUserCondition = () => {
-            return me().then((u) => u.user.isSuperuser || false);
-        };
+        me().then((u) => {
+            if (!u.user.isSuperuser) {
+                window.location.assign("/if/user");
+            }
+        });
         return html`
             ${until(
                 this.version.then((version) => {
@@ -169,10 +171,10 @@ export class AdminInterface extends LitElement {
                     return html``;
                 }),
             )}
-            <ak-sidebar-item path="/library">
+            <ak-sidebar-item path="/if/user/" ?isAbsoluteLink=${true}>
                 <span slot="label">${t`Library`}</span>
             </ak-sidebar-item>
-            <ak-sidebar-item .condition=${superUserCondition}>
+            <ak-sidebar-item>
                 <span slot="label">${t`Monitor`}</span>
                 <ak-sidebar-item path="/administration/overview">
                     <span slot="label">${t`Overview`}</span>
@@ -181,7 +183,7 @@ export class AdminInterface extends LitElement {
                     <span slot="label">${t`System Tasks`}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
-            <ak-sidebar-item .condition=${superUserCondition}>
+            <ak-sidebar-item>
                 <span slot="label">${t`Resources`}</span>
                 <ak-sidebar-item
                     path="/core/applications"
@@ -205,7 +207,7 @@ export class AdminInterface extends LitElement {
                     <span slot="label">${t`Tenants`}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
-            <ak-sidebar-item .condition=${superUserCondition}>
+            <ak-sidebar-item>
                 <span slot="label">${t`Outposts`}</span>
                 <ak-sidebar-item path="/outpost/outposts">
                     <span slot="label">${t`Outposts`}</span>
@@ -214,7 +216,7 @@ export class AdminInterface extends LitElement {
                     <span slot="label">${t`Integrations`}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
-            <ak-sidebar-item .condition=${superUserCondition}>
+            <ak-sidebar-item>
                 <span slot="label">${t`Events`}</span>
                 <ak-sidebar-item
                     path="/events/log"
@@ -229,7 +231,7 @@ export class AdminInterface extends LitElement {
                     <span slot="label">${t`Notification Transports`}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
-            <ak-sidebar-item .condition=${superUserCondition}>
+            <ak-sidebar-item>
                 <span slot="label">${t`Customisation`}</span>
                 <ak-sidebar-item path="/policy/policies">
                     <span slot="label">${t`Policies`}</span>
@@ -244,7 +246,7 @@ export class AdminInterface extends LitElement {
                     <span slot="label">${t`Property Mappings`}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
-            <ak-sidebar-item .condition=${superUserCondition}>
+            <ak-sidebar-item>
                 <span slot="label">${t`Flows`}</span>
                 <ak-sidebar-item
                     path="/flow/flows"
@@ -262,7 +264,7 @@ export class AdminInterface extends LitElement {
                     <span slot="label">${t`Invitations`}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
-            <ak-sidebar-item .condition=${superUserCondition}>
+            <ak-sidebar-item>
                 <span slot="label">${t`Identity & Cryptography`}</span>
                 <ak-sidebar-item
                     path="/identity/users"
