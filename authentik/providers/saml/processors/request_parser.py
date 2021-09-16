@@ -59,6 +59,10 @@ class AuthNRequestParser:
     ) -> AuthNRequest:
         root = ElementTree.fromstring(decoded_xml)
 
+        if "AssertionConsumerServiceURL" not in root.attrib:
+            msg = "Missing 'AssertionConsumerServiceURL' attribute"
+            LOGGER.warning(msg)
+            raise CannotHandleAssertion(msg)
         request_acs_url = root.attrib["AssertionConsumerServiceURL"]
 
         if self.provider.acs_url.lower() != request_acs_url.lower():
@@ -66,7 +70,7 @@ class AuthNRequestParser:
                 f"ACS URL of {request_acs_url} doesn't match Provider "
                 f"ACS URL of {self.provider.acs_url}."
             )
-            LOGGER.info(msg)
+            LOGGER.warning(msg)
             raise CannotHandleAssertion(msg)
 
         auth_n_request = AuthNRequest(id=root.attrib["ID"], relay_state=relay_state)
