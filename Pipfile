@@ -49,9 +49,6 @@ ua-parser = "*"
 deepmerge = "*"
 colorama = "*"
 
-[requires]
-python_version = "3.9"
-
 [dev-packages]
 bandit = "*"
 black = "==21.5b1"
