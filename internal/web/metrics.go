@@ -22,7 +22,7 @@ var (
 func RunMetricsServer() {
 	m := mux.NewRouter()
 	m.Path("/metrics").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-		defer promhttp.InstrumentMetricHandler(
+		promhttp.InstrumentMetricHandler(
 			prometheus.DefaultRegisterer, promhttp.HandlerFor(prometheus.DefaultGatherer, promhttp.HandlerOpts{
 				DisableCompression: true,
 			}),

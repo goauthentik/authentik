@@ -133,6 +133,7 @@ jobs:
           python-version: '3.9'
       - name: checkout stable
         run: |
+          git fetch
           # Copy current, latest config to local
           cp authentik/lib/default.yml local.env.yml
           git checkout $(git describe --abbrev=0 --match 'version/*')

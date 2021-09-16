@@ -94,13 +94,6 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 
 // Start Starts all handlers, non-blocking
 func (a *APIController) Start() error {
-	OutpostInfo.With(prometheus.Labels{
-		"outpost_name": a.Outpost.Name,
-		"outpost_type": a.Server.Type(),
-		"uuid":         a.instanceUUID.String(),
-		"version":      constants.VERSION,
-		"build":        constants.BUILD(),
-	}).Set(1)
 	err := a.StartBackgorundTasks()
 	if err != nil {
 		return err
@@ -131,6 +124,13 @@ func (a *APIController) OnRefresh() error {
 }
 
 func (a *APIController) StartBackgorundTasks() error {
+	OutpostInfo.With(prometheus.Labels{
+		"outpost_name": a.Outpost.Name,
+		"outpost_type": a.Server.Type(),
+		"uuid":         a.instanceUUID.String(),
+		"version":      constants.VERSION,
+		"build":        constants.BUILD(),
+	}).Set(1)
 	err := a.OnRefresh()
 	if err != nil {
 		return errors.Wrap(err, "failed to run initial refresh")

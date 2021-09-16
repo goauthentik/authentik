@@ -106,6 +106,7 @@ func attemptProxyStart(ws *web.WebServer, u *url.URL) {
 		log.WithField("logger", "authentik").Debug("attempting to start outpost")
 		err := ac.StartBackgorundTasks()
 		if err != nil {
+			log.WithField("logger", "authentik").WithError(err).Warning("outpost failed to start")
 			attempt += 1
 			time.Sleep(15 * time.Second)
 			if attempt > maxTries {
