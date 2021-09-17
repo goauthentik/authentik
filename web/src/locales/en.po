@@ -869,9 +869,9 @@ msgstr "Connection error, reconnecting..."
 msgid "Connection settings"
 msgstr "Connection settings"
 
-#: 
-#~ msgid "Consent"
-#~ msgstr "Consent"
+#: src/user/user-settings/UserSettingsPage.ts
+msgid "Consent"
+msgstr "Consent"
 
 #: src/pages/stages/consent/ConsentStageForm.ts
 msgid "Consent expires in"
@@ -1548,11 +1548,11 @@ msgstr "Error when creating credential: {err}"
 msgid "Error when validating assertion on server: {err}"
 msgstr "Error when validating assertion on server: {err}"
 
-#: src/user/user-settings/SourceSettings.ts
+#: src/user/user-settings/sources/SourceSettings.ts
 msgid "Error: unsupported source settings: {0}"
 msgstr "Error: unsupported source settings: {0}"
 
-#: src/user/user-settings/StageSettings.ts
+#: src/user/user-settings/stages/StageSettings.ts
 msgid "Error: unsupported stage settings: {0}"
 msgstr "Error: unsupported stage settings: {0}"
 
@@ -2345,9 +2345,9 @@ msgstr "Load servers"
 #: src/flows/stages/prompt/PromptStage.ts
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
-#: src/user/user-settings/SourceSettings.ts
-#: src/user/user-settings/StageSettings.ts
 #: src/user/user-settings/UserSelfForm.ts
+#: src/user/user-settings/sources/SourceSettings.ts
+#: src/user/user-settings/stages/StageSettings.ts
 #: src/utils.ts
 msgid "Loading"
 msgstr "Loading"
@@ -3545,6 +3545,10 @@ msgstr "SSO URL"
 msgid "Same identifier is used for all providers"
 msgstr "Same identifier is used for all providers"
 
+#: src/user/user-settings/UserSelfForm.ts
+msgid "Save"
+msgstr "Save"
+
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts
 msgid "Scope name"
 msgstr "Scope name"
@@ -3735,6 +3739,7 @@ msgid "Session(s)"
 msgstr "Session(s)"
 
 #: src/pages/users/UserViewPage.ts
+#: src/user/user-settings/UserSettingsPage.ts
 msgid "Sessions"
 msgstr "Sessions"
 
@@ -3960,6 +3965,10 @@ msgstr "Status: Disabled"
 #: src/user/user-settings/stages/UserSettingsAuthenticatorTOTP.ts
 msgid "Status: Enabled"
 msgstr "Status: Enabled"
+
+#: src/interfaces/UserInterface.ts
+msgid "Stop impersonation"
+msgstr "Stop impersonation"
 
 #: src/pages/events/EventInfo.ts
 #: src/pages/stages/email/EmailStageForm.ts
@@ -4725,7 +4734,6 @@ msgstr "Up-to-date!"
 #: src/pages/users/UserActiveForm.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
-#: src/user/user-settings/UserSelfForm.ts
 #: src/user/user-settings/stages/UserSettingsAuthenticatorWebAuthn.ts
 #: src/user/user-settings/stages/UserSettingsAuthenticatorWebAuthn.ts
 #: src/user/user-settings/stages/UserSettingsAuthenticatorWebAuthn.ts

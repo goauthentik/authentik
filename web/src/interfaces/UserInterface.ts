@@ -198,26 +198,41 @@ export class UserInterface extends LitElement {
                             }),
                         )}
                     </div>
+                    ${until(
+                        me().then((u) => {
+                            if (u.original) {
+                                return html`<div class="pf-c-page__header-tools">
+                                    <div class="pf-c-page__header-tools-group">
+                                        <a
+                                            class="pf-c-button pf-m-warning pf-m-small"
+                                            href=${`/-/impersonation/end/?back=${window.location.pathname}%23${window.location.hash}`}
+                                        >
+                                            ${t`Stop impersonation`}
+                                        </a>
+                                    </div>
+                                </div>`;
+                            }
+                            return html``;
+                        }),
+                    )}
                     <div class="pf-c-page__header-tools-group">
                         <div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-md">
-                            <span class="pf-c-dropdown__toggle-text"
-                                >${until(
-                                    uiConfig().then((config) => {
-                                        return me().then((me) => {
-                                            switch (config.navbar.userDisplay) {
-                                                case "username":
-                                                    return me.user.username;
-                                                case "name":
-                                                    return me.user.name;
-                                                case "email":
-                                                    return me.user.email;
-                                                default:
-                                                    return me.user.username;
-                                            }
-                                        });
-                                    }),
-                                )}
-                            </span>
+                            ${until(
+                                uiConfig().then((config) => {
+                                    return me().then((me) => {
+                                        switch (config.navbar.userDisplay) {
+                                            case "username":
+                                                return me.user.username;
+                                            case "name":
+                                                return me.user.name;
+                                            case "email":
+                                                return me.user.email;
+                                            default:
+                                                return me.user.username;
+                                        }
+                                    });
+                                }),
+                            )}
                         </div>
                     </div>
                     ${until(
