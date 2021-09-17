@@ -8,6 +8,10 @@ This feature is still in technical preview, so please report any Bugs you run in
 
 You can configure an LDAP Provider for applications that don't support any newer protocols or require LDAP.
 
+:::info
+Note: This provider requires the deployment of the [LDAP Outpost](../outposts/outposts.md)
+:::
+
 All users and groups in authentik's database are searchable. Currently, there is a limited support for filters (you can only search for objectClass), but this will be expanded in further releases.
 
 Binding against the LDAP Server uses a flow in the background. This allows you to use the same policies and flows as you do for web-based logins. The only limitation is that currently only identification and password stages are supported, due to how LDAP works.
