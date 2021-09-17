@@ -12018,7 +12018,7 @@ paths:
           $ref: '#/components/schemas/GenericError'
   /sources/ldap/{slug}/sync_status/:
     get:
-      operationId: sources_ldap_sync_status_retrieve
+      operationId: sources_ldap_sync_status_list
       description: Get source's sync status
       parameters:
       - in: path
@@ -12036,10 +12036,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Task'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
           description: ''
-        '404':
-          description: Task not found
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':

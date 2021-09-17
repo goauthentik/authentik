@@ -3464,7 +3464,6 @@ msgstr "Resources"
 msgid "Result"
 msgstr "Result"
 
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Retry Task"
 msgstr "Retry Task"
@@ -3490,6 +3489,10 @@ msgstr "Return to device picker"
 #: src/elements/oauth/UserRefreshList.ts
 msgid "Revoked?"
 msgstr "Revoked?"
+
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts
+msgid "Run sync again"
+msgstr "Run sync again"
 
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 msgid "SAML Attribute Name"

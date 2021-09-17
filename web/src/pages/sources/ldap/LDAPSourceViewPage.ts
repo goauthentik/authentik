@@ -12,6 +12,7 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import AKGlobal from "../../../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 
 import "../../../elements/buttons/SpinnerButton";
 import "../../../elements/buttons/ActionButton";
@@ -53,6 +54,7 @@ export class LDAPSourceViewPage extends LitElement {
             PFCard,
             PFDescriptionList,
             PFSizing,
+            PFList,
             AKGlobal,
         ];
     }
@@ -168,35 +170,34 @@ export class LDAPSourceViewPage extends LitElement {
                             <div class="pf-c-card__body">
                                 ${until(
                                     new SourcesApi(DEFAULT_CONFIG)
-                                        .sourcesLdapSyncStatusRetrieve({
+                                        .sourcesLdapSyncStatusList({
                                             slug: this.source.slug,
                                         })
-                                        .then((ls) => {
-                                            let header = html``;
-                                            if (ls.status === StatusEnum.Warning) {
-                                                header = html`<p>
-                                                    ${t`Task finished with warnings`}
-                                                </p>`;
-                                            } else if (status === StatusEnum.Error) {
-                                                header = html`<p>
-                                                    ${t`Task finished with errors`}
-                                                </p>`;
-                                            } else {
-                                                header = html`<p>
-                                                    ${t`Last sync: ${ls.taskFinishTimestamp.toLocaleString()}`}
-                                                </p>`;
+                                        .then((tasks) => {
+                                            if (tasks.length < 1) {
+                                                return html`<p>${t`Not synced yet.`}</p>`;
                                             }
-                                            return html`
-                                                ${header}
-                                                <ul>
-                                                    ${ls.messages.map((m) => {
-                                                        return html`<li>${m}</li>`;
-                                                    })}
-                                                </ul>
-                                            `;
-                                        })
-                                        .catch(() => {
-                                            return html`<p>${t`Not synced yet.`}</p>`;
+                                            return html`<ul class="pf-c-list">
+                                                ${tasks.map((task) => {
+                                                    let header = "";
+                                                    if (task.status === StatusEnum.Warning) {
+                                                        header = t`Task finished with warnings`;
+                                                    } else if (task.status === StatusEnum.Error) {
+                                                        header = t`Task finished with errors`;
+                                                    } else {
+                                                        header = t`Last sync: ${task.taskFinishTimestamp.toLocaleString()}`;
+                                                    }
+                                                    return html`<li>
+                                                        <p>${task.taskName}</p>
+                                                        <ul class="pf-c-list">
+                                                            <li>${header}</li>
+                                                            ${task.messages.map((m) => {
+                                                                return html`<li>${m}</li>`;
+                                                            })}
+                                                        </ul>
+                                                    </li> `;
+                                                })}
+                                            </ul>`;
                                         }),
                                     "loading",
                                 )}
@@ -212,7 +213,7 @@ export class LDAPSourceViewPage extends LitElement {
                                         });
                                     }}
                                 >
-                                    ${t`Retry Task`}
+                                    ${t`Run sync again`}
                                 </ak-action-button>
                             </div>
                         </div>

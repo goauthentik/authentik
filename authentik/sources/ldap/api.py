@@ -1,12 +1,11 @@
 """Source API Views"""
 from typing import Any
 
-from django.http.response import Http404
 from django.utils.text import slugify
 from django_filters.filters import AllValuesMultipleFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_field
+from drf_spectacular.utils import extend_schema, extend_schema_field
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
@@ -19,6 +18,9 @@ from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.events.monitored_tasks import TaskInfo
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
+from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
+from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
+from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 
 
 class LDAPSourceSerializer(SourceSerializer):
@@ -95,19 +97,24 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
 
     @extend_schema(
         responses={
-            200: TaskSerializer(many=False),
-            404: OpenApiResponse(description="Task not found"),
+            200: TaskSerializer(many=True),
         }
     )
-    @action(methods=["GET"], detail=True)
+    @action(methods=["GET"], detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=unused-argument
     def sync_status(self, request: Request, slug: str) -> Response:
         """Get source's sync status"""
         source = self.get_object()
-        task = TaskInfo.by_name(f"ldap_sync_{slugify(source.name)}")
-        if not task:
-            raise Http404
-        return Response(TaskSerializer(task, many=False).data)
+        results = []
+        for sync_class in [
+            UserLDAPSynchronizer,
+            GroupLDAPSynchronizer,
+            MembershipLDAPSynchronizer,
+        ]:
+            task = TaskInfo.by_name(f"ldap_sync_{slugify(source.name)}-{sync_class.__name__}")
+            if task:
+                results.append(task)
+        return Response(TaskSerializer(results, many=True).data)
 
 
 class LDAPPropertyMappingSerializer(PropertyMappingSerializer):

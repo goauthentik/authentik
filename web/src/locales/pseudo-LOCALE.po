@@ -3456,7 +3456,6 @@ msgstr ""
 msgid "Result"
 msgstr ""
 
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Retry Task"
 msgstr ""
@@ -3481,6 +3480,10 @@ msgstr ""
 
 #: src/elements/oauth/UserRefreshList.ts
 msgid "Revoked?"
+msgstr ""
+
+#: src/pages/sources/ldap/LDAPSourceViewPage.ts
+msgid "Run sync again"
 msgstr ""
 
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
