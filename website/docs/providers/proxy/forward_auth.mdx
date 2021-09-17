@@ -34,6 +34,7 @@ For domain level, you'd use the same domain as authentik.
 
 :::info
 *example-outpost* is used as a placeholder for the outpost name.
+*authentik.company* is used as a placeholder for the authentik install.
 :::
 
 ## Nginx
@@ -72,6 +73,9 @@ server {
         # authentik-specific config
         auth_request        /akprox/auth;
         error_page          401 = @akprox_signin;
+        # For domain level, use the below error_page to redirect to your Authentik server with the full redirect path
+        # error_page          401 =302 https://id.xcii.cc/akprox/start?rd=$scheme://$http_host$request_uri;
+
         # translate headers from the outposts back to the actual upstream
         auth_request_set    $username    $upstream_http_x_auth_username;
         auth_request_set    $email       $upstream_http_X_Forwarded_Email;
