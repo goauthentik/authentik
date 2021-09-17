@@ -38,19 +38,21 @@ export class LDAPSyncStatusChart extends AKChart<LDAPSyncStats> {
         await Promise.all(
             sources.results.map(async (element) => {
                 try {
-                    const health = await api.sourcesLdapSyncStatusRetrieve({
+                    const health = await api.sourcesLdapSyncStatusList({
                         slug: element.slug,
                     });
-                    if (health.status !== StatusEnum.Successful) {
-                        failed += 1;
-                    }
-                    const now = new Date().getTime();
-                    const maxDelta = 3600000; // 1 hour
-                    if (!health || now - health.taskFinishTimestamp.getTime() > maxDelta) {
-                        unsynced += 1;
-                    } else {
-                        healthy += 1;
-                    }
+                    health.forEach(task => {
+                        if (task.status !== StatusEnum.Successful) {
+                            failed += 1;
+                        }
+                        const now = new Date().getTime();
+                        const maxDelta = 3600000; // 1 hour
+                        if (!health || now - task.taskFinishTimestamp.getTime() > maxDelta) {
+                            unsynced += 1;
+                        } else {
+                            healthy += 1;
+                        }
+                    })
                 } catch {
                     unsynced += 1;
                 }
