@@ -32,7 +32,7 @@ export class SidebarUser extends LitElement {
 
     render(): TemplateResult {
         return html`
-            <a href="/if/user/#settings" class="pf-c-nav__link user-avatar" id="user-settings">
+            <a href="/if/user/#/settings" class="pf-c-nav__link user-avatar" id="user-settings">
                 ${until(
                     me().then((u) => {
                         return html`<img
