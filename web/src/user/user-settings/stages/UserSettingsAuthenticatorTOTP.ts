@@ -56,7 +56,7 @@ export class UserSettingsAuthenticatorTOTP extends BaseUserSettings {
             <div class="pf-c-card__footer">
                 ${this.configureUrl
                     ? html`<a
-                          href="${this.configureUrl}?next=/%23%2Fuser"
+                          href="${this.configureUrl}?next=/${encodeURIComponent("#/settings")}"
                           class="pf-c-button pf-m-primary"
                           >${t`Enable TOTP`}
                       </a>`
