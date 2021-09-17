@@ -3,9 +3,19 @@ import os
 from logging.config import dictConfig
 
 from celery import Celery
-from celery.signals import after_task_publish, setup_logging, task_postrun, task_prerun
+from celery.signals import (
+    after_task_publish,
+    setup_logging,
+    task_failure,
+    task_internal_error,
+    task_postrun,
+    task_prerun,
+)
 from django.conf import settings
 from structlog.stdlib import get_logger
+
+from authentik.lib.sentry import before_send
+from authentik.lib.utils.errors import exception_to_string
 
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
@@ -41,6 +51,18 @@ def task_prerun_hook(task_id, task, *args, **kwargs):
 def task_postrun_hook(task_id, task, *args, retval=None, state=None, **kwargs):
     """Log task_id on worker"""
     LOGGER.debug("Task finished", task_id=task_id, task_name=task.__name__, state=state)
+
+
+# pylint: disable=unused-argument
+@task_failure.connect
+@task_internal_error.connect
+def task_error_hook(task_id, exception: Exception, traceback, *args, **kwargs):
+    """Create system event for failed task"""
+    from authentik.events.models import Event, EventAction
+
+    LOGGER.warning("Task failure", exception=exception)
+    if before_send({}, {"exc_info": (None, exception, None)}) is not None:
+        Event.new(EventAction.SYSTEM_EXCEPTION, message=exception_to_string(exception)).save()
 
 
 # Using a string here means the worker doesn't have to serialize

@@ -93,6 +93,7 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
     if "exc_info" in hint:
         _, exc_value, _ = hint["exc_info"]
         if isinstance(exc_value, ignored_classes):
+            LOGGER.debug("dropping exception", exception=exc_value)
             return None
     if "logger" in event:
         if event["logger"] in [
