@@ -41,7 +41,7 @@ export class LDAPSyncStatusChart extends AKChart<LDAPSyncStats> {
                     const health = await api.sourcesLdapSyncStatusList({
                         slug: element.slug,
                     });
-                    health.forEach(task => {
+                    health.forEach((task) => {
                         if (task.status !== StatusEnum.Successful) {
                             failed += 1;
                         }
@@ -52,7 +52,7 @@ export class LDAPSyncStatusChart extends AKChart<LDAPSyncStats> {
                         } else {
                             healthy += 1;
                         }
-                    })
+                    });
                 } catch {
                     unsynced += 1;
                 }
