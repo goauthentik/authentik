@@ -58,7 +58,9 @@ disable =[
     "similarities",
     "cyclic-import",
     "protected-access",
-    "raise-missing-from",]
+    "raise-missing-from",
+    # To preverse django's translation function we need to use %-formatting
+    "consider-using-f-string",]
 
 load-plugins=["pylint_django","pylint.extensions.bad_builtin"]
 django-settings-module="authentik.root.settings"

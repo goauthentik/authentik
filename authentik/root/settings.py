@@ -529,7 +529,7 @@ for _app in INSTALLED_APPS:
         if "apps" in _app:
             _app = ".".join(_app.split(".")[:-2])
         try:
-            app_settings = importlib.import_module("%s.settings" % _app)
+            app_settings = importlib.import_module(f"{_app}.settings")
             INSTALLED_APPS.extend(getattr(app_settings, "INSTALLED_APPS", []))
             MIDDLEWARE.extend(getattr(app_settings, "MIDDLEWARE", []))
             AUTHENTICATION_BACKENDS.extend(getattr(app_settings, "AUTHENTICATION_BACKENDS", []))
