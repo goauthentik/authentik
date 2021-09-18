@@ -79,7 +79,7 @@ export class DeleteObjectsTable<T> extends Table<T> {
 
     renderUsedBy(usedBy: UsedBy[]): TemplateResult {
         if (usedBy.length < 1) {
-            return html` <span>${t`Not used by any other object.`}</span>`;
+            return html`<span>${t`Not used by any other object.`}</span>`;
         }
         return html`<ul class="pf-c-list">
             ${usedBy.map((ub) => {
@@ -179,7 +179,7 @@ export class DeleteBulkForm extends ModalButton {
             </section>
             <section class="pf-c-page__main-section pf-m-light">
                 <form class="pf-c-form pf-m-horizontal">
-                    <p>
+                    <p class="pf-c-title">
                         ${t`Are you sure you want to delete ${this.objects.length} ${this.objectLabel}?`}
                     </p>
                 </form>
