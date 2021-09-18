@@ -154,8 +154,8 @@ export class UserInterface extends LitElement {
                                         <span
                                             class="pf-c-notification-badge ${this
                                                 .notificationsCount > 0
-                                                ? html`pf-m-unread`
-                                                : html``}"
+                                                ? "pf-m-unread"
+                                                : ""}"
                                         >
                                             <i class="pf-icon-bell" aria-hidden="true"></i>
                                             <span class="pf-c-notification-badge__count"
