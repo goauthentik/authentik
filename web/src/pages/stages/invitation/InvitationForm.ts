@@ -6,7 +6,7 @@ import { DEFAULT_CONFIG } from "../../../api/Config";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/CodeMirror";
 import YAML from "yaml";
-import { first } from "../../../utils";
+import { dateTimeLocal, first } from "../../../utils";
 import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-invitation-form")
@@ -41,7 +41,12 @@ export class InvitationForm extends ModelForm<Invitation, string> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${t`Expires`} ?required=${true} name="expires">
-                <input type="date" class="pf-c-form-control" required />
+                <input
+                    type="datetime-local"
+                    class="pf-c-form-control"
+                    required
+                    value="${dateTimeLocal(first(this.instance?.expires, new Date()))}"
+                />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Attributes`} name="fixedData">
                 <ak-codemirror

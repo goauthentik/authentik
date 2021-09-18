@@ -5,7 +5,7 @@ import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/forms/HorizontalFormElement";
 import "../../elements/forms/FormGroup";
-import { first } from "../../utils";
+import { dateTimeLocal, first } from "../../utils";
 import { ModelForm } from "../../elements/forms/ModelForm";
 import { until } from "lit-html/directives/until";
 
@@ -111,7 +111,7 @@ export class TokenForm extends ModelForm<Token, string> {
             <ak-form-element-horizontal label=${t`Expires on`} name="expires">
                 <input
                     type="datetime-local"
-                    .valueAsNumber="${first(this.instance?.expires, new Date()).getTime()}"
+                    value="${dateTimeLocal(first(this.instance?.expires, new Date()))}"
                     class="pf-c-form-control"
                 />
             </ak-form-element-horizontal>
