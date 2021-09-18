@@ -81,7 +81,7 @@
         "lit-html": "^1.4.1",
         "moment": "^2.29.1",
         "prettier": "^2.4.1",
-        "rapidoc": "^9.0.0",
+        "rapidoc": "^9.1.0",
         "rollup": "^2.56.2",
         "rollup-plugin-commonjs": "^10.1.0",
         "rollup-plugin-copy": "^3.4.0",
