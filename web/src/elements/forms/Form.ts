@@ -141,6 +141,14 @@ export class Form<T> extends LitElement {
                 element.type === "datetime-local"
             ) {
                 json[element.name] = new Date(element.valueAsNumber);
+            } else if (
+                element.tagName.toLowerCase() === "input" &&
+                "type" in element.dataset &&
+                element.dataset["type"] === "datetime-local"
+            ) {
+                // Workaround for Firefox <93, since 92 and older don't support
+                // datetime-local fields
+                json[element.name] = new Date(element.value);
             } else if (element.tagName.toLowerCase() === "input" && element.type === "checkbox") {
                 json[element.name] = element.checked;
             } else {

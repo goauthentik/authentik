@@ -43,6 +43,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
             <ak-form-element-horizontal label=${t`Expires`} ?required=${true} name="expires">
                 <input
                     type="datetime-local"
+                    data-type="datetime-local"
                     class="pf-c-form-control"
                     required
                     value="${dateTimeLocal(first(this.instance?.expires, new Date()))}"
