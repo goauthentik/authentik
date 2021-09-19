@@ -90,7 +90,7 @@ export class LibraryApplication extends LitElement {
                             return html`
                                 <a
                                     class="pf-c-button pf-m-control pf-m-small"
-                                    href="#/core/applications/${this.application?.slug}"
+                                    href="/if/admin/#/core/applications/${this.application?.slug}"
                                 >
                                     <i class="fas fa-pencil-alt"></i>
                                 </a>
