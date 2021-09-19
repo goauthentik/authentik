@@ -15,7 +15,7 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
     def sync(self) -> int:
         """Iterate over all LDAP Groups and create authentik_core.Group instances"""
         if not self._source.sync_groups:
-            self._logger.warning("Group syncing is disabled for this Source")
+            self.message("Group syncing is disabled for this Source")
             return -1
         groups = self._source.connection.extend.standard.paged_search(
             search_base=self.base_dn_groups,
@@ -28,8 +28,8 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
             attributes = group.get("attributes", {})
             group_dn = self._flatten(self._flatten(group.get("entryDN", group.get("dn"))))
             if self._source.object_uniqueness_field not in attributes:
-                self._logger.warning(
-                    "Cannot find uniqueness Field in attributes",
+                self.message(
+                    f"Cannot find uniqueness field in attributes: '{group_dn}",
                     attributes=attributes.keys(),
                     dn=group_dn,
                 )

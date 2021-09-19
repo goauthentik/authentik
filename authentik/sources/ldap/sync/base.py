@@ -17,10 +17,17 @@ class BaseLDAPSynchronizer:
 
     _source: LDAPSource
     _logger: BoundLogger
+    _messages: list[str]
 
     def __init__(self, source: LDAPSource):
         self._source = source
+        self._messages = []
         self._logger = get_logger().bind(source=source, syncer=self.__class__.__name__)
+
+    @property
+    def messages(self) -> list[str]:
+        """Get all UI messages"""
+        return self._messages
 
     @property
     def base_dn_users(self) -> str:
@@ -35,6 +42,11 @@ class BaseLDAPSynchronizer:
         if self._source.additional_group_dn:
             return f"{self._source.additional_group_dn},{self._source.base_dn}"
         return self._source.base_dn
+
+    def message(self, *args, **kwargs):
+        """Add message that is later added to the System Task and shown to the user"""
+        self._messages.append(" ".join(args))
+        self._logger.warning(*args, **kwargs)
 
     def sync(self) -> int:
         """Sync function, implemented in subclass"""

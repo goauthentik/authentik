@@ -46,9 +46,9 @@ def ldap_sync(self: MonitoredTask, source_pk: str, sync_class: Optional[str] = N
     sync = path_to_class(sync_class)
     self.set_uid(f"{slugify(source.name)}-{sync.__name__}")
     try:
-        messages = []
         sync_inst = sync(source)
         count = sync_inst.sync()
+        messages = sync_inst.messages
         messages.append(f"Synced {count} objects.")
         self.set_status(
             TaskResult(

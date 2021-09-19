@@ -18,7 +18,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
     def sync(self) -> int:
         """Iterate over all LDAP Users and create authentik_core.User instances"""
         if not self._source.sync_users:
-            self._logger.warning("User syncing is disabled for this Source")
+            self.message("User syncing is disabled for this Source")
             return -1
         users = self._source.connection.extend.standard.paged_search(
             search_base=self.base_dn_users,
@@ -31,8 +31,8 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
             attributes = user.get("attributes", {})
             user_dn = self._flatten(user.get("entryDN", user.get("dn")))
             if self._source.object_uniqueness_field not in attributes:
-                self._logger.warning(
-                    "Cannot find uniqueness Field in attributes",
+                self.message(
+                    f"Cannot find uniqueness field in attributes: '{user_dn}",
                     attributes=attributes.keys(),
                     dn=user_dn,
                 )
@@ -66,6 +66,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 pwd_last_set: datetime = attributes.get("pwdLastSet", datetime.now())
                 pwd_last_set = pwd_last_set.replace(tzinfo=UTC)
                 if created or pwd_last_set >= ak_user.password_change_date:
+                    self.message(f"'{ak_user.username}': Reset user's password")
                     self._logger.debug(
                         "Reset user's password",
                         user=ak_user.username,
