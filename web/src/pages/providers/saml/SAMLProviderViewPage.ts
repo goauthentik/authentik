@@ -215,7 +215,6 @@ export class SAMLProviderViewPage extends LitElement {
                                           ${t`Download`}
                                       </a>
                                       <ak-action-button
-                                          class="pf-m-secondary"
                                           .apiRequest=${() => {
                                               const fullUrl =
                                                   window.location.origin +

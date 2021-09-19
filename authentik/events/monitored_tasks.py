@@ -3,7 +3,6 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from timeit import default_timer
-from traceback import format_tb
 from typing import Any, Optional
 
 from celery import Task
@@ -42,8 +41,7 @@ class TaskResult:
 
     def with_error(self, exc: Exception) -> "TaskResult":
         """Since errors might not always be pickle-able, set the traceback"""
-        self.messages.extend(format_tb(exc.__traceback__))
-        self.messages.append(str(exc))
+        self.messages.extend(exception_to_string(exc).splitlines())
         return self
 
 

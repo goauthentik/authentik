@@ -1,4 +1,4 @@
-export const PRIMARY_CLASS = "pf-m-primary";
+export const SECONDARY_CLASS = "pf-m-secondary";
 export const SUCCESS_CLASS = "pf-m-success";
 export const ERROR_CLASS = "pf-m-danger";
 export const PROGRESS_CLASS = "pf-m-in-progress";

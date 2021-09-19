@@ -104,6 +104,7 @@ export class SystemTaskListPage extends TablePage<Task> {
             html`${item.taskFinishTimestamp.toLocaleString()}`,
             this.taskStatus(item),
             html`<ak-action-button
+                class="pf-m-plain"
                 .apiRequest=${() => {
                     return new AdminApi(DEFAULT_CONFIG)
                         .adminSystemTasksRetryCreate({
@@ -119,7 +120,7 @@ export class SystemTaskListPage extends TablePage<Task> {
                         });
                 }}
             >
-                ${t`Retry Task`}
+                <i class="fas fa-sync-alt" aria-hidden="true"></i>
             </ak-action-button>`,
         ];
     }

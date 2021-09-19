@@ -1,6 +1,6 @@
 import { customElement, property } from "lit-element";
 import { CoreApi } from "@goauthentik/api";
-import { PRIMARY_CLASS, SUCCESS_CLASS } from "../../constants";
+import { SECONDARY_CLASS, SUCCESS_CLASS } from "../../constants";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ActionButton } from "./ActionButton";
 
@@ -10,7 +10,7 @@ export class TokenCopyButton extends ActionButton {
     identifier?: string;
 
     @property()
-    buttonClass: string = PRIMARY_CLASS;
+    buttonClass: string = SECONDARY_CLASS;
 
     apiRequest: () => Promise<unknown> = () => {
         this.setLoading();
@@ -28,7 +28,7 @@ export class TokenCopyButton extends ActionButton {
                 return navigator.clipboard.writeText(token.key).then(() => {
                     this.buttonClass = SUCCESS_CLASS;
                     setTimeout(() => {
-                        this.buttonClass = PRIMARY_CLASS;
+                        this.buttonClass = SECONDARY_CLASS;
                     }, 1500);
                 });
             })

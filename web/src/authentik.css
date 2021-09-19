@@ -74,7 +74,7 @@ html > form > input {
 }
 
 .pf-m-success {
-    color: var(--pf-global--success-color--100);
+    color: var(--pf-global--success-color--100) !important;
 }
 .pf-m-warning {
     color: var(--pf-global--warning-color--100);
