@@ -211,7 +211,7 @@ export class OAuth2ProviderViewPage extends LitElement {
                                             class="pf-c-form-control"
                                             readonly
                                             type="text"
-                                            value="${this.providerUrls?.providerInfo || "-"}"
+                                            value="${this.providerUrls?.providerInfo || t`-`}"
                                         />
                                     </div>
                                     <div class="pf-c-form__group">
@@ -227,7 +227,7 @@ export class OAuth2ProviderViewPage extends LitElement {
                                             class="pf-c-form-control"
                                             readonly
                                             type="text"
-                                            value="${this.providerUrls?.issuer || "-"}"
+                                            value="${this.providerUrls?.issuer || t`-`}"
                                         />
                                     </div>
                                     <hr />
@@ -244,7 +244,7 @@ export class OAuth2ProviderViewPage extends LitElement {
                                             class="pf-c-form-control"
                                             readonly
                                             type="text"
-                                            value="${this.providerUrls?.authorize || "-"}"
+                                            value="${this.providerUrls?.authorize || t`-`}"
                                         />
                                     </div>
                                     <div class="pf-c-form__group">
@@ -260,7 +260,7 @@ export class OAuth2ProviderViewPage extends LitElement {
                                             class="pf-c-form-control"
                                             readonly
                                             type="text"
-                                            value="${this.providerUrls?.token || "-"}"
+                                            value="${this.providerUrls?.token || t`-`}"
                                         />
                                     </div>
                                     <div class="pf-c-form__group">
@@ -276,7 +276,7 @@ export class OAuth2ProviderViewPage extends LitElement {
                                             class="pf-c-form-control"
                                             readonly
                                             type="text"
-                                            value="${this.providerUrls?.userInfo || "-"}"
+                                            value="${this.providerUrls?.userInfo || t`-`}"
                                         />
                                     </div>
                                     <div class="pf-c-form__group">
@@ -292,7 +292,7 @@ export class OAuth2ProviderViewPage extends LitElement {
                                             class="pf-c-form-control"
                                             readonly
                                             type="text"
-                                            value="${this.providerUrls?.logout || "-"}"
+                                            value="${this.providerUrls?.logout || t`-`}"
                                         />
                                     </div>
                                 </form>

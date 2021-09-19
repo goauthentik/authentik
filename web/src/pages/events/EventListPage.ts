@@ -63,8 +63,8 @@ export class EventListPage extends TablePage<Event> {
                           : html``}`
                 : html`-`,
             html`<span>${item.created?.toLocaleString()}</span>`,
-            html`<span>${item.clientIp || "-"}</span>`,
-            html`<span>${item.tenant?.name || "-"}</span>`,
+            html`<span>${item.clientIp || t`-`}</span>`,
+            html`<span>${item.tenant?.name || t`-`}</span>`,
             html`<a href="#/events/log/${item.pk}">
                 <i class="fas fas fa-share-square"></i>
             </a>`,

@@ -105,7 +105,7 @@ export class TokenListPage extends TablePage<Token> {
             html`${item.identifier}`,
             html`<a href="#/identity/users/${item.userObj?.pk}">${item.userObj?.username}</a>`,
             html`${item.expiring ? t`Yes` : t`No`}`,
-            html`${item.expiring ? item.expires?.toLocaleString() : "-"}`,
+            html`${item.expiring ? item.expires?.toLocaleString() : t`-`}`,
             html`${IntentToLabel(item.intent || IntentEnum.Api)}`,
             html`
                 <ak-forms-modal>

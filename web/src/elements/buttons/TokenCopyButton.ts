@@ -1,6 +1,6 @@
 import { customElement, property } from "lit-element";
 import { CoreApi } from "@goauthentik/api";
-import { SECONDARY_CLASS, SUCCESS_CLASS } from "../../constants";
+import { ERROR_CLASS, SECONDARY_CLASS, SUCCESS_CLASS } from "../../constants";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ActionButton } from "./ActionButton";
 
@@ -33,8 +33,12 @@ export class TokenCopyButton extends ActionButton {
                 });
             })
             .catch((err: Response | undefined) => {
+                this.buttonClass = ERROR_CLASS;
                 return err?.json().then((errResp) => {
                     throw new Error(errResp["detail"]);
+                    setTimeout(() => {
+                        this.buttonClass = SECONDARY_CLASS;
+                    }, 1500);
                 });
             });
     };

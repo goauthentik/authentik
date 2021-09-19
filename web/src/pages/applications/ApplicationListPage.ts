@@ -109,7 +109,7 @@ export class ApplicationListPage extends TablePage<Application> {
                       ${item.providerObj?.name}
                   </a>`
                 : html`-`,
-            html`${item.providerObj?.verboseName || "-"}`,
+            html`${item.providerObj?.verboseName || t`-`}`,
             html` <ak-forms-modal>
                     <span slot="submit"> ${t`Update`} </span>
                     <span slot="header"> ${t`Update Application`} </span>

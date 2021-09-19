@@ -106,7 +106,7 @@ export class UserListPage extends TablePage<User> {
                 <small>${item.name}</small>
             </a>`,
             html`${item.isActive ? t`Yes` : t`No`}`,
-            html`${first(item.lastLogin?.toLocaleString(), "-")}`,
+            html`${first(item.lastLogin?.toLocaleString(), t`-`)}`,
             html` <ak-forms-modal>
                     <span slot="submit"> ${t`Update`} </span>
                     <span slot="header"> ${t`Update User`} </span>

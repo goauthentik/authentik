@@ -48,7 +48,7 @@ export class MemberSelectTable extends TableModal<User> {
                 <small>${item.name}</small>
             </div>`,
             html`${item.isActive ? t`Yes` : t`No`}`,
-            html`${first(item.lastLogin?.toLocaleString(), "-")}`,
+            html`${first(item.lastLogin?.toLocaleString(), t`-`)}`,
         ];
     }
 

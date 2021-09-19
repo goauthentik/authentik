@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.api.authorization import OwnerPermissions
+from authentik.api.authorization import OwnerSuperuserPermissions
 from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
@@ -84,7 +84,7 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
         "expiring",
     ]
     ordering = ["identifier", "expires"]
-    permission_classes = [OwnerPermissions]
+    permission_classes = [OwnerSuperuserPermissions]
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
 
     def get_queryset(self):

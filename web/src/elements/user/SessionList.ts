@@ -39,6 +39,12 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
         return html`<ak-forms-delete-bulk
             objectLabel=${t`Session(s)`}
             .objects=${this.selectedElements}
+            .metadata=${(item: AuthenticatedSession) => {
+                return [
+                    { key: t`Last IP`, value: item.lastIp },
+                    { key: t`Expiry`, value: item.expires?.toLocaleString() || t`-` },
+                ];
+            }}
             .usedBy=${(item: AuthenticatedSession) => {
                 return new CoreApi(DEFAULT_CONFIG).coreAuthenticatedSessionsUsedByList({
                     uuid: item.uuid || "",

@@ -97,7 +97,7 @@ export class UserTokenList extends Table<Token> {
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
-                                    ${item.expiring ? item.expires?.toLocaleString() : "-"}
+                                    ${item.expiring ? item.expires?.toLocaleString() : t`-`}
                                 </div>
                             </dd>
                         </div>

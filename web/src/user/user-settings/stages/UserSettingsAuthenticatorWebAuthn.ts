@@ -94,7 +94,7 @@ export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
                                         <div class="pf-c-data-list__item-row">
                                             <div class="pf-c-data-list__item-content">
                                                 <div class="pf-c-data-list__cell">
-                                                    ${device.name || "-"}
+                                                    ${device.name || t`-`}
                                                 </div>
                                                 <div class="pf-c-data-list__cell">
                                                     ${t`Created ${device.createdOn?.toLocaleString()}`}

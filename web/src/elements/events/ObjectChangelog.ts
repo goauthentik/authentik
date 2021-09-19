@@ -58,7 +58,7 @@ export class ObjectChangelog extends Table<Event> {
                     ? html`<small> ${t`On behalf of ${item.user.on_behalf_of.username}`} </small>`
                     : html``}`,
             html`<span>${item.created?.toLocaleString()}</span>`,
-            html`<span>${item.clientIp || "-"}</span>`,
+            html`<span>${item.clientIp || t`-`}</span>`,
         ];
     }
 

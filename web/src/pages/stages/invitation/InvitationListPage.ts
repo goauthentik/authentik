@@ -79,7 +79,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         return [
             html`${item.pk}`,
             html`${item.createdBy?.username}`,
-            html`${item.expires?.toLocaleString() || "-"}`,
+            html`${item.expires?.toLocaleString() || t`-`}`,
         ];
     }
 

@@ -21,7 +21,26 @@ msgstr ""
 msgid "(Format: hours=-1;minutes=-2;seconds=-3)."
 msgstr ""
 
+#: src/elements/events/ObjectChangelog.ts
+#: src/elements/events/UserEvents.ts
+#: src/elements/user/SessionList.ts
+#: src/pages/applications/ApplicationListPage.ts
+#: src/pages/events/EventListPage.ts
+#: src/pages/events/EventListPage.ts
+#: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/MemberSelectModal.ts
 #: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/pages/stages/invitation/InvitationListPage.ts
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/UserListPage.ts
+#: src/user/user-settings/stages/UserSettingsAuthenticatorWebAuthn.ts
+#: src/user/user-settings/tokens/UserTokenList.ts
 msgid "-"
 msgstr ""
 
@@ -267,6 +286,7 @@ msgid "Application"
 msgstr ""
 
 #: src/pages/applications/ApplicationListPage.ts
+#: src/user/LibraryApplication.ts
 msgid "Application Icon"
 msgstr ""
 
@@ -1637,6 +1657,7 @@ msgstr ""
 msgid "Expiring?"
 msgstr ""
 
+#: src/elements/user/SessionList.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
 msgid "Expiry"
@@ -2254,6 +2275,7 @@ msgstr ""
 msgid "Label shown next to/above the prompt."
 msgstr ""
 
+#: src/elements/user/SessionList.ts
 #: src/elements/user/SessionList.ts
 msgid "Last IP"
 msgstr ""
@@ -3456,9 +3478,9 @@ msgstr ""
 msgid "Result"
 msgstr ""
 
-#: src/pages/system-tasks/SystemTaskListPage.ts
-msgid "Retry Task"
-msgstr ""
+#: 
+#~ msgid "Retry Task"
+#~ msgstr ""
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn.ts
 msgid "Retry authentication"
