@@ -26,7 +26,11 @@ import "../elements/router/RouterOutlet";
 import "../elements/messages/MessageContainer";
 import "../elements/notifications/NotificationDrawer";
 import "../elements/sidebar/Sidebar";
-import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "../constants";
+import {
+    EVENT_API_DRAWER_TOGGLE,
+    EVENT_NOTIFICATION_DRAWER_TOGGLE,
+    EVENT_REFRESH,
+} from "../constants";
 import { CurrentTenant, EventsApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG, tenant } from "../api/Config";
 import { WebsocketClient } from "../common/ws";
@@ -91,7 +95,13 @@ export class UserInterface extends LitElement {
         window.addEventListener(EVENT_API_DRAWER_TOGGLE, () => {
             this.apiDrawerOpen = !this.apiDrawerOpen;
         });
+        window.addEventListener(EVENT_REFRESH, () => {
+            this.firstUpdated();
+        });
         tenant().then((tenant) => (this.tenant = tenant));
+    }
+
+    firstUpdated(): void {
         new EventsApi(DEFAULT_CONFIG)
             .eventsNotificationsList({
                 seen: false,

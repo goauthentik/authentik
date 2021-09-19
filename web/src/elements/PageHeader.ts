@@ -15,6 +15,7 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
+    EVENT_REFRESH,
     EVENT_SIDEBAR_TOGGLE,
     TITLE_DEFAULT,
 } from "../constants";
@@ -90,14 +91,11 @@ export class PageHeader extends LitElement {
         ];
     }
 
-    renderIcon(): TemplateResult {
-        if (this.icon) {
-            if (this.iconImage) {
-                return html`<img class="pf-icon" src="${this.icon}" />&nbsp;`;
-            }
-            return html`<i class=${this.icon}></i>&nbsp;`;
-        }
-        return html``;
+    constructor() {
+        super();
+        window.addEventListener(EVENT_REFRESH, () => {
+            this.firstUpdated();
+        });
     }
 
     firstUpdated(): void {
@@ -110,6 +108,16 @@ export class PageHeader extends LitElement {
             .then((r) => {
                 this.hasNotifications = r.pagination.count > 0;
             });
+    }
+
+    renderIcon(): TemplateResult {
+        if (this.icon) {
+            if (this.iconImage) {
+                return html`<img class="pf-icon" src="${this.icon}" />&nbsp;`;
+            }
+            return html`<i class=${this.icon}></i>&nbsp;`;
+        }
+        return html``;
     }
 
     render(): TemplateResult {
