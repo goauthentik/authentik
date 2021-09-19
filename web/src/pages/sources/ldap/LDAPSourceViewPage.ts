@@ -205,12 +205,19 @@ export class LDAPSourceViewPage extends LitElement {
                             <div class="pf-c-card__footer">
                                 <ak-action-button
                                     .apiRequest=${() => {
-                                        return new SourcesApi(
-                                            DEFAULT_CONFIG,
-                                        ).sourcesLdapPartialUpdate({
-                                            slug: this.source?.slug || "",
-                                            patchedLDAPSourceRequest: this.source,
-                                        });
+                                        return new SourcesApi(DEFAULT_CONFIG)
+                                            .sourcesLdapPartialUpdate({
+                                                slug: this.source?.slug || "",
+                                                patchedLDAPSourceRequest: this.source,
+                                            })
+                                            .then(() => {
+                                                this.dispatchEvent(
+                                                    new CustomEvent(EVENT_REFRESH, {
+                                                        bubbles: true,
+                                                        composed: true,
+                                                    }),
+                                                );
+                                            });
                                     }}
                                 >
                                     ${t`Run sync again`}

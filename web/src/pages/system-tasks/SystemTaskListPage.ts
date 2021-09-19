@@ -10,6 +10,7 @@ import { TableColumn } from "../../elements/table/Table";
 import { AdminApi, Task, StatusEnum } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { PFColor } from "../../elements/Label";
+import { EVENT_REFRESH } from "../../constants";
 
 @customElement("ak-system-task-list")
 export class SystemTaskListPage extends TablePage<Task> {
@@ -104,9 +105,18 @@ export class SystemTaskListPage extends TablePage<Task> {
             this.taskStatus(item),
             html`<ak-action-button
                 .apiRequest=${() => {
-                    return new AdminApi(DEFAULT_CONFIG).adminSystemTasksRetryCreate({
-                        id: item.taskName,
-                    });
+                    return new AdminApi(DEFAULT_CONFIG)
+                        .adminSystemTasksRetryCreate({
+                            id: item.taskName,
+                        })
+                        .then(() => {
+                            this.dispatchEvent(
+                                new CustomEvent(EVENT_REFRESH, {
+                                    bubbles: true,
+                                    composed: true,
+                                }),
+                            );
+                        });
                 }}
             >
                 ${t`Retry Task`}
