@@ -3586,6 +3586,7 @@ msgid "Score"
 msgstr ""
 
 #: src/elements/table/TableSearch.ts
+#: src/user/LibraryPage.ts
 msgid "Search..."
 msgstr ""
 

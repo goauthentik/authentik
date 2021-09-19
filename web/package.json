@@ -77,6 +77,7 @@
         "eslint-plugin-custom-elements": "0.0.2",
         "eslint-plugin-lit": "^1.5.1",
         "flowchart.js": "^1.15.0",
+        "fuse.js": "^6.4.6",
         "lit-element": "^2.5.1",
         "lit-html": "^1.4.1",
         "moment": "^2.29.1",

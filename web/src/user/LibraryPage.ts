@@ -8,6 +8,7 @@ import {
     property,
     TemplateResult,
 } from "lit-element";
+import Fuse from "fuse.js";
 import { Application, CoreApi } from "@goauthentik/api";
 import { AKResponse } from "../api/Client";
 import { DEFAULT_CONFIG } from "../api/Config";
@@ -25,10 +26,18 @@ export class LibraryPage extends LitElement {
     @property({ attribute: false })
     apps?: AKResponse<Application>;
 
+    @property({ attribute: false })
+    selectedApp?: Application;
+
+    fuse?: Fuse<Application>;
+
     constructor() {
         super();
         new CoreApi(DEFAULT_CONFIG).coreApplicationsList({}).then((apps) => {
             this.apps = apps;
+            this.fuse = new Fuse(apps.results, {
+                keys: ["slug", "name"],
+            });
         });
     }
 
@@ -42,6 +51,23 @@ export class LibraryPage extends LitElement {
             main {
                 height: 100%;
                 padding: 3% 5%;
+            }
+            .header {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+            .header input {
+                width: 30ch;
+                box-sizing: border-box;
+                border: 0;
+                border-bottom: 1px solid;
+                border-bottom-color: #fd4b2d;
+                background-color: transparent;
+                font-size: 1.5rem;
+            }
+            .header input:focus {
+                outline: 0;
             }
         `);
     }
@@ -62,14 +88,40 @@ export class LibraryPage extends LitElement {
         return html`<div class="pf-l-gallery pf-m-gutter">
             ${this.apps?.results
                 .filter((app) => app.launchUrl)
-                .map((app) => html`<ak-library-app .application=${app}></ak-library-app>`)}
+                .map(
+                    (app) =>
+                        html`<ak-library-app
+                            .application=${app}
+                            ?selected=${app.slug === this.selectedApp?.slug}
+                        ></ak-library-app>`,
+                )}
         </div>`;
     }
 
     render(): TemplateResult {
         return html`<main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
-            <div class="pf-c-content">
+            <div class="pf-c-content header">
                 <h1>${t`My applications`}</h1>
+                <input
+                    @input=${(ev: InputEvent) => {
+                        const query = (ev.target as HTMLInputElement).value;
+                        if (!this.fuse) return;
+                        const apps = this.fuse.search(query);
+                        if (apps.length < 1) return;
+                        this.selectedApp = apps[0].item;
+                    }}
+                    @keydown=${(ev: KeyboardEvent) => {
+                        if (ev.key === "Enter" && this.selectedApp?.launchUrl) {
+                            window.location.assign(this.selectedApp.launchUrl);
+                        } else if (ev.key === "Escape") {
+                            (ev.target as HTMLInputElement).value = "";
+                            this.selectedApp = undefined;
+                        }
+                    }}
+                    type="text"
+                    autofocus
+                    placeholder=${t`Search...`}
+                />
             </div>
             <section class="pf-c-page__main-section">
                 ${loading(
