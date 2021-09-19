@@ -7,6 +7,7 @@ import "../../elements/forms/HorizontalFormElement";
 import "../../elements/forms/FormGroup";
 import { dateTimeLocal, first } from "../../utils";
 import { ModelForm } from "../../elements/forms/ModelForm";
+import { until } from "lit-html/directives/until";
 
 @customElement("ak-token-form")
 export class TokenForm extends ModelForm<Token, string> {
@@ -49,6 +50,27 @@ export class TokenForm extends ModelForm<Token, string> {
                 <p class="pf-c-form__helper-text">
                     ${t`Unique identifier the token is referenced by.`}
                 </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${t`User`} ?required=${true} name="user">
+                <select class="pf-c-form-control">
+                    ${until(
+                        new CoreApi(DEFAULT_CONFIG)
+                            .coreUsersList({
+                                ordering: "username",
+                            })
+                            .then((users) => {
+                                return users.results.map((user) => {
+                                    return html`<option
+                                        value=${user.pk}
+                                        ?selected=${this.instance?.user === user.pk}
+                                    >
+                                        ${user.username}
+                                    </option>`;
+                                });
+                            }),
+                        html`<option>${t`Loading...`}</option>`,
+                    )}
+                </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Intent`} ?required=${true} name="intent">
                 <select class="pf-c-form-control">
