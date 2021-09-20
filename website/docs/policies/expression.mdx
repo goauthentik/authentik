@@ -25,6 +25,23 @@ ak_message("Access denied")
 return False
 ```
 
+### `ak_user_has_authenticator(user: User, device_type: Optional[str] = None)` (2021.9+)
+
+Check if a user has any authenticator devices. Only fully validated devices are counted.
+
+Optionally, you can filter a specific device type. The following options are valid:
+
+- `totp`
+- `duo`
+- `static`
+- `webauthn`
+
+Example:
+
+```python
+return ak_user_has_authenticator(request.user)
+```
+
 import Functions from '../expressions/_functions.md'
 
 <Functions />
