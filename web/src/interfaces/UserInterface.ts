@@ -72,6 +72,10 @@ export class UserInterface extends LitElement {
                 .pf-c-drawer__content,
                 .pf-c-page__drawer {
                     z-index: auto !important;
+                    background-color: transparent !important;
+                }
+                .pf-c-page {
+                    background-color: var(--pf-global--BackgroundColor--light-300) !important;
                 }
                 .display-none {
                     display: none;
@@ -114,185 +118,187 @@ export class UserInterface extends LitElement {
     }
 
     render(): TemplateResult {
-        return html` <div class="pf-c-page">
-            <header class="pf-c-page__header">
-                <div class="pf-c-page__header-brand">
-                    <a href="#/" class="pf-c-page__header-brand-link">
-                        <img
-                            class="pf-c-brand"
-                            src="${first(this.tenant.brandingLogo, DefaultTenant.brandingLogo)}"
-                            alt="${(this.tenant.brandingTitle, DefaultTenant.brandingTitle)}"
-                        />
-                    </a>
-                </div>
-                <div class="pf-c-page__header-tools">
-                    <div class="pf-c-page__header-tools-group">
-                        ${until(
-                            uiConfig().then((config) => {
-                                if (!config.enabledFeatures.apiDrawer) {
-                                    return html``;
-                                }
-                                return html`<div
-                                    class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg"
+        return html`${until(
+            uiConfig().then((config) => {
+                return html`<div
+                    class="pf-c-page"
+                    style="background: ${config.color.background} !important"
+                >
+                    <header class="pf-c-page__header">
+                        <div class="pf-c-page__header-brand">
+                            <a href="#/" class="pf-c-page__header-brand-link">
+                                <img
+                                    class="pf-c-brand"
+                                    src="${first(
+                                        this.tenant.brandingLogo,
+                                        DefaultTenant.brandingLogo,
+                                    )}"
+                                    alt="${(this.tenant.brandingTitle,
+                                    DefaultTenant.brandingTitle)}"
+                                />
+                            </a>
+                        </div>
+                        <div class="pf-c-page__header-tools">
+                            <div class="pf-c-page__header-tools-group">
+                                ${config.enabledFeatures.apiDrawer
+                                    ? html`<div
+                                          class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg"
+                                      >
+                                          <button
+                                              class="pf-c-button pf-m-plain"
+                                              type="button"
+                                              @click=${() => {
+                                                  this.apiDrawerOpen = !this.apiDrawerOpen;
+                                              }}
+                                          >
+                                              <i class="fas fa-code" aria-hidden="true"></i>
+                                          </button>
+                                      </div>`
+                                    : html``}
+                                ${config.enabledFeatures.notificationDrawer
+                                    ? html`
+                                          <button
+                                              class="pf-c-button pf-m-plain"
+                                              type="button"
+                                              aria-label="${t`Unread notifications`}"
+                                              @click=${() => {
+                                                  this.notificationOpen = !this.notificationOpen;
+                                              }}
+                                          >
+                                              <span
+                                                  class="pf-c-notification-badge ${this
+                                                      .notificationsCount > 0
+                                                      ? "pf-m-unread"
+                                                      : ""}"
+                                              >
+                                                  <i class="pf-icon-bell" aria-hidden="true"></i>
+                                                  <span class="pf-c-notification-badge__count"
+                                                      >${this.notificationsCount}</span
+                                                  >
+                                              </span>
+                                          </button>
+                                      `
+                                    : html``}
+                                ${config.enabledFeatures.settings
+                                    ? html` <div
+                                          class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg"
+                                      >
+                                          <a
+                                              class="pf-c-button pf-m-plain"
+                                              type="button"
+                                              href="#/settings"
+                                          >
+                                              <i class="fas fa-cog" aria-hidden="true"></i>
+                                          </a>
+                                      </div>`
+                                    : html``}
+                                <a
+                                    href="/flows/-/default/invalidation/"
+                                    class="pf-c-button pf-m-plain"
                                 >
-                                    <button
-                                        class="pf-c-button pf-m-plain"
-                                        type="button"
-                                        @click=${() => {
-                                            this.apiDrawerOpen = !this.apiDrawerOpen;
-                                        }}
-                                    >
-                                        <i class="fas fa-code" aria-hidden="true"></i>
-                                    </button>
-                                </div>`;
-                            }),
-                        )}
-                        ${until(
-                            uiConfig().then((config) => {
-                                if (!config.enabledFeatures.notificationDrawer) {
-                                    return html``;
-                                }
-                                return html`
-                                    <button
-                                        class="pf-c-button pf-m-plain"
-                                        type="button"
-                                        aria-label="${t`Unread notifications`}"
-                                        @click=${() => {
-                                            this.notificationOpen = !this.notificationOpen;
-                                        }}
-                                    >
-                                        <span
-                                            class="pf-c-notification-badge ${this
-                                                .notificationsCount > 0
-                                                ? "pf-m-unread"
-                                                : ""}"
-                                        >
-                                            <i class="pf-icon-bell" aria-hidden="true"></i>
-                                            <span class="pf-c-notification-badge__count"
-                                                >${this.notificationsCount}</span
+                                    <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                                </a>
+                                ${until(
+                                    me().then((u) => {
+                                        if (!u.user.isSuperuser) return html``;
+                                        return html`
+                                            <a
+                                                class="pf-c-button pf-m-primary pf-m-small"
+                                                href="/if/admin"
                                             >
-                                        </span>
-                                    </button>
-                                `;
-                            }),
-                        )}
-                        ${until(
-                            uiConfig().then((config) => {
-                                if (!config.enabledFeatures.settings) {
-                                    return html``;
-                                }
-                                return html` <div
-                                    class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg"
-                                >
-                                    <a
-                                        class="pf-c-button pf-m-plain"
-                                        type="button"
-                                        href="#/settings"
-                                    >
-                                        <i class="fas fa-cog" aria-hidden="true"></i>
-                                    </a>
-                                </div>`;
-                            }),
-                        )}
-                        <a href="/flows/-/default/invalidation/" class="pf-c-button pf-m-plain">
-                            <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
-                        </a>
-                        ${until(
-                            me().then((u) => {
-                                if (!u.user.isSuperuser) return html``;
-                                return html`
-                                    <a class="pf-c-button pf-m-primary pf-m-small" href="/if/admin">
-                                        ${t`Admin interface`}
-                                    </a>
-                                `;
-                            }),
-                        )}
-                    </div>
-                    ${until(
-                        me().then((u) => {
-                            if (u.original) {
-                                return html`<div class="pf-c-page__header-tools">
-                                    <div class="pf-c-page__header-tools-group">
-                                        <a
-                                            class="pf-c-button pf-m-warning pf-m-small"
-                                            href=${`/-/impersonation/end/?back=${window.location.pathname}%23${window.location.hash}`}
-                                        >
-                                            ${t`Stop impersonation`}
-                                        </a>
-                                    </div>
-                                </div>`;
-                            }
-                            return html``;
-                        }),
-                    )}
-                    <div class="pf-c-page__header-tools-group">
-                        <div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-md">
+                                                ${t`Admin interface`}
+                                            </a>
+                                        `;
+                                    }),
+                                )}
+                            </div>
                             ${until(
-                                uiConfig().then((config) => {
-                                    return me().then((me) => {
-                                        switch (config.navbar.userDisplay) {
-                                            case "username":
-                                                return me.user.username;
-                                            case "name":
-                                                return me.user.name;
-                                            case "email":
-                                                return me.user.email;
-                                            default:
-                                                return me.user.username;
-                                        }
-                                    });
+                                me().then((u) => {
+                                    if (u.original) {
+                                        return html`<div class="pf-c-page__header-tools">
+                                            <div class="pf-c-page__header-tools-group">
+                                                <a
+                                                    class="pf-c-button pf-m-warning pf-m-small"
+                                                    href=${`/-/impersonation/end/?back=${window.location.pathname}%23${window.location.hash}`}
+                                                >
+                                                    ${t`Stop impersonation`}
+                                                </a>
+                                            </div>
+                                        </div>`;
+                                    }
+                                    return html``;
+                                }),
+                            )}
+                            <div class="pf-c-page__header-tools-group">
+                                <div
+                                    class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-md"
+                                >
+                                    ${until(
+                                        me().then((me) => {
+                                            switch (config.navbar.userDisplay) {
+                                                case "username":
+                                                    return me.user.username;
+                                                case "name":
+                                                    return me.user.name;
+                                                case "email":
+                                                    return me.user.email;
+                                                default:
+                                                    return me.user.username;
+                                            }
+                                        }),
+                                    )}
+                                </div>
+                            </div>
+                            ${until(
+                                me().then((me) => {
+                                    return html`<img
+                                        class="pf-c-avatar"
+                                        src=${me.user.avatar}
+                                        alt="${t`Avatar image`}"
+                                    />`;
                                 }),
                             )}
                         </div>
-                    </div>
-                    ${until(
-                        me().then((me) => {
-                            return html`<img
-                                class="pf-c-avatar"
-                                src=${me.user.avatar}
-                                alt="${t`Avatar image`}"
-                            />`;
-                        }),
-                    )}
-                </div>
-            </header>
-            <div class="pf-c-page__drawer">
-                <div
-                    class="pf-c-drawer ${this.notificationOpen || this.apiDrawerOpen
-                        ? "pf-m-expanded"
-                        : "pf-m-collapsed"}"
-                >
-                    <div class="pf-c-drawer__main">
-                        <div class="pf-c-drawer__content">
-                            <div class="pf-c-drawer__body">
-                                <main class="pf-c-page__main">
-                                    <ak-router-outlet
-                                        role="main"
-                                        class="pf-l-bullseye__item pf-c-page__main"
-                                        tabindex="-1"
-                                        id="main-content"
-                                        defaultUrl="/library"
-                                        .routes=${ROUTES}
-                                    >
-                                    </ak-router-outlet>
-                                </main>
+                    </header>
+                    <div class="pf-c-page__drawer">
+                        <div
+                            class="pf-c-drawer ${this.notificationOpen || this.apiDrawerOpen
+                                ? "pf-m-expanded"
+                                : "pf-m-collapsed"}"
+                        >
+                            <div class="pf-c-drawer__main">
+                                <div class="pf-c-drawer__content">
+                                    <div class="pf-c-drawer__body">
+                                        <main class="pf-c-page__main">
+                                            <ak-router-outlet
+                                                role="main"
+                                                class="pf-l-bullseye__item pf-c-page__main"
+                                                tabindex="-1"
+                                                id="main-content"
+                                                defaultUrl="/library"
+                                                .routes=${ROUTES}
+                                            >
+                                            </ak-router-outlet>
+                                        </main>
+                                    </div>
+                                </div>
+                                <ak-notification-drawer
+                                    class="pf-c-drawer__panel pf-m-width-33 ${this.notificationOpen
+                                        ? ""
+                                        : "display-none"}"
+                                    ?hidden=${!this.notificationOpen}
+                                ></ak-notification-drawer>
+                                <ak-api-drawer
+                                    class="pf-c-drawer__panel pf-m-width-33 ${this.apiDrawerOpen
+                                        ? ""
+                                        : "display-none"}"
+                                    ?hidden=${!this.apiDrawerOpen}
+                                ></ak-api-drawer>
                             </div>
                         </div>
-                        <ak-notification-drawer
-                            class="pf-c-drawer__panel pf-m-width-33 ${this.notificationOpen
-                                ? ""
-                                : "display-none"}"
-                            ?hidden=${!this.notificationOpen}
-                        ></ak-notification-drawer>
-                        <ak-api-drawer
-                            class="pf-c-drawer__panel pf-m-width-33 ${this.apiDrawerOpen
-                                ? ""
-                                : "display-none"}"
-                            ?hidden=${!this.apiDrawerOpen}
-                        ></ak-api-drawer>
                     </div>
-                </div>
-            </div>
-        </div>`;
+                </div>`;
+            }),
+        )}`;
     }
 }

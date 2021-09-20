@@ -14,6 +14,10 @@ export interface UIConfig {
     navbar: {
         userDisplay: "username" | "name" | "email";
     };
+    color: {
+        background: string;
+        cardBackground: string;
+    };
 }
 
 export const DefaultUIConfig: UIConfig = {
@@ -26,6 +30,10 @@ export const DefaultUIConfig: UIConfig = {
     },
     navbar: {
         userDisplay: "name",
+    },
+    color: {
+        background: "",
+        cardBackground: "",
     },
 };
 

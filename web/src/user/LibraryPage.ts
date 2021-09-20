@@ -21,7 +21,7 @@ import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import "./LibraryApplication";
 import { until } from "lit-html/directives/until";
-import { uiConfig } from "./config";
+import { UIConfig, uiConfig } from "./config";
 
 @customElement("ak-library")
 export class LibraryPage extends LitElement {
@@ -71,6 +71,9 @@ export class LibraryPage extends LitElement {
             .header input:focus {
                 outline: 0;
             }
+            .pf-c-page__main-section {
+                background-color: transparent;
+            }
         `);
     }
 
@@ -86,7 +89,7 @@ export class LibraryPage extends LitElement {
         </div>`;
     }
 
-    renderApps(): TemplateResult {
+    renderApps(config: UIConfig): TemplateResult {
         return html`<div class="pf-l-gallery pf-m-gutter">
             ${this.apps?.results
                 .filter((app) => app.launchUrl)
@@ -94,6 +97,7 @@ export class LibraryPage extends LitElement {
                     (app) =>
                         html`<ak-library-app
                             .application=${app}
+                            background=${config.color.cardBackground}
                             ?selected=${app.slug === this.selectedApp?.slug}
                         ></ak-library-app>`,
                 )}
@@ -101,45 +105,49 @@ export class LibraryPage extends LitElement {
     }
 
     render(): TemplateResult {
-        return html`<main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
-            <div class="pf-c-content header">
-                <h1>${t`My applications`}</h1>
-                ${until(
-                    uiConfig().then((config) => {
-                        if (!config.enabledFeatures.search) {
-                            return html``;
-                        }
-                        return html` <input
-                            @input=${(ev: InputEvent) => {
-                                const query = (ev.target as HTMLInputElement).value;
-                                if (!this.fuse) return;
-                                const apps = this.fuse.search(query);
-                                if (apps.length < 1) return;
-                                this.selectedApp = apps[0].item;
-                            }}
-                            @keydown=${(ev: KeyboardEvent) => {
-                                if (ev.key === "Enter" && this.selectedApp?.launchUrl) {
-                                    window.location.assign(this.selectedApp.launchUrl);
-                                } else if (ev.key === "Escape") {
-                                    (ev.target as HTMLInputElement).value = "";
-                                    this.selectedApp = undefined;
-                                }
-                            }}
-                            type="text"
-                            autofocus
-                            placeholder=${t`Search...`}
-                        />`;
-                    }),
-                )}
-            </div>
-            <section class="pf-c-page__main-section">
-                ${loading(
-                    this.apps,
-                    html`${(this.apps?.results.length || 0) > 0
-                        ? this.renderApps()
-                        : this.renderEmptyState()}`,
-                )}
-            </section>
-        </main>`;
+        return html`${until(
+            uiConfig().then((config) => {
+                return html`<main
+                    role="main"
+                    class="pf-c-page__main"
+                    tabindex="-1"
+                    id="main-content"
+                >
+                    <div class="pf-c-content header">
+                        <h1>${t`My applications`}</h1>
+                        ${config.enabledFeatures.search
+                            ? html`<input
+                                  @input=${(ev: InputEvent) => {
+                                      const query = (ev.target as HTMLInputElement).value;
+                                      if (!this.fuse) return;
+                                      const apps = this.fuse.search(query);
+                                      if (apps.length < 1) return;
+                                      this.selectedApp = apps[0].item;
+                                  }}
+                                  @keydown=${(ev: KeyboardEvent) => {
+                                      if (ev.key === "Enter" && this.selectedApp?.launchUrl) {
+                                          window.location.assign(this.selectedApp.launchUrl);
+                                      } else if (ev.key === "Escape") {
+                                          (ev.target as HTMLInputElement).value = "";
+                                          this.selectedApp = undefined;
+                                      }
+                                  }}
+                                  type="text"
+                                  autofocus
+                                  placeholder=${t`Search...`}
+                              />`
+                            : html``}
+                    </div>
+                    <section class="pf-c-page__main-section">
+                        ${loading(
+                            this.apps,
+                            html`${(this.apps?.results.length || 0) > 0
+                                ? this.renderApps(config)
+                                : this.renderEmptyState()}`,
+                        )}
+                    </section>
+                </main>`;
+            }),
+        )}`;
     }
 }

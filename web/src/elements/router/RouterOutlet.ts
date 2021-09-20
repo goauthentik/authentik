@@ -53,12 +53,7 @@ export class RouterOutlet extends LitElement {
             css`
                 :host {
                     height: 100vh;
-                    background-color: var(--pf-global--BackgroundColor--light-300) !important;
-                }
-                @media (prefers-color-scheme: dark) {
-                    :host {
-                        background-color: var(--ak-dark-background) !important;
-                    }
+                    background-color: transparent !important;
                 }
                 *:first-child {
                     flex-direction: column;

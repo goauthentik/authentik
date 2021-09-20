@@ -28,6 +28,9 @@ export class LibraryApplication extends LitElement {
     @property({ type: Boolean })
     selected = false;
 
+    @property()
+    background: string = "";
+
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -70,6 +73,7 @@ export class LibraryApplication extends LitElement {
             class="pf-c-card pf-m-hoverable pf-m-compact ${this.selected
                 ? "pf-m-selectable pf-m-selected"
                 : ""}"
+            style="background: ${this.background} !important"
         >
             <div class="pf-c-card__header">
                 ${this.application.metaIcon

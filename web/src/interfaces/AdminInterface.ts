@@ -62,9 +62,19 @@ export class AdminInterface extends LitElement {
                 .pf-c-drawer__content,
                 .pf-c-page__drawer {
                     z-index: auto !important;
+                    background-color: transparent;
                 }
                 .display-none {
                     display: none;
+                }
+                .pf-c-page {
+                    background-color: var(--pf-global--BackgroundColor--light-300) !important;
+                }
+                @media (prefers-color-scheme: dark) {
+                    /* Global page background colour */
+                    .pf-c-page {
+                        --pf-c-page--BackgroundColor: var(--ak-dark-background);
+                    }
                 }
             `,
         ];
