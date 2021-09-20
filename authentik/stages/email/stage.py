@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
 from django.urls import reverse
 from django.utils.http import urlencode
+from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from rest_framework.fields import CharField
@@ -64,7 +65,7 @@ class EmailStageView(ChallengeStageView):
         )  # + 1 because django timesince always rounds down
         token_filters = {
             "user": pending_user,
-            "identifier": f"ak-email-stage-{current_stage.name}-{pending_user}",
+            "identifier": slugify(f"ak-email-stage-{current_stage.name}-{pending_user}"),
         }
         # Don't check for validity here, we only care if the token exists
         tokens = Token.objects.filter(**token_filters)
@@ -120,7 +121,7 @@ class EmailStageView(ChallengeStageView):
         challenge = EmailChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "title": "Email sent.",
+                "title": _("Email sent."),
             }
         )
         return challenge
