@@ -40,7 +40,6 @@ class SAMLSourceViewSet(UsedByMixin, ModelViewSet):
     queryset = SAMLSource.objects.all()
     serializer_class = SAMLSourceSerializer
     lookup_field = "slug"
-    lookup_value_regex = r"^[-a-zA-Z0-9_]+\Z"
     filterset_fields = "__all__"
     ordering = ["name"]
 

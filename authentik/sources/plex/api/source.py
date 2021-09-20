@@ -49,7 +49,6 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
     queryset = PlexSource.objects.all()
     serializer_class = PlexSourceSerializer
     lookup_field = "slug"
-    lookup_value_regex = r"^[-a-zA-Z0-9_]+\Z"
     filterset_fields = [
         "name",
         "slug",

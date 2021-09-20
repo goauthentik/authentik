@@ -69,7 +69,6 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
     queryset = LDAPSource.objects.all()
     serializer_class = LDAPSourceSerializer
     lookup_field = "slug"
-    lookup_value_regex = r"^[-a-zA-Z0-9_]+\Z"
     filterset_fields = [
         "name",
         "slug",

@@ -62,7 +62,6 @@ class SourceViewSet(
     queryset = Source.objects.none()
     serializer_class = SourceSerializer
     lookup_field = "slug"
-    lookup_value_regex = r"^[-a-zA-Z0-9_]+\Z"
 
     def get_queryset(self):  # pragma: no cover
         return Source.objects.select_subclasses()

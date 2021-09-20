@@ -84,7 +84,6 @@ class OAuthSourceViewSet(UsedByMixin, ModelViewSet):
     queryset = OAuthSource.objects.all()
     serializer_class = OAuthSourceSerializer
     lookup_field = "slug"
-    lookup_value_regex = r"^[-a-zA-Z0-9_]+\Z"
     filterset_fields = [
         "name",
         "slug",

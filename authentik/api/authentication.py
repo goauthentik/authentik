@@ -40,7 +40,6 @@ def bearer_auth(raw_header: bytes) -> Optional[User]:
         raise AuthenticationFailed("Malformed header")
     tokens = Token.filter_not_expired(key=password, intent=TokenIntents.INTENT_API)
     if not tokens.exists():
-        LOGGER.info("Authenticating via secret_key")
         user = token_secret_key(password)
         if not user:
             raise AuthenticationFailed("Token invalid/expired")
@@ -58,6 +57,7 @@ def token_secret_key(value: str) -> Optional[User]:
     outposts = Outpost.objects.filter(managed=MANAGED_OUTPOST)
     if not outposts:
         return None
+    LOGGER.info("Authenticating via secret_key")
     outpost = outposts.first()
     return outpost.user
 

@@ -66,7 +66,6 @@ class TokenViewSerializer(PassiveSerializer):
 class TokenViewSet(UsedByMixin, ModelViewSet):
     """Token Viewset"""
 
-    lookup_value_regex = r"^[-a-zA-Z0-9_]+\Z"
     lookup_field = "identifier"
     queryset = Token.objects.all()
     serializer_class = TokenSerializer
