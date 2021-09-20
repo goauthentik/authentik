@@ -23,7 +23,7 @@ export class InvitationListLink extends LitElement {
     }
 
     renderLink(): string {
-        return `${window.location.protocol}//${window.location.host}/if/flow/${this.selectedFlow}/?token=${this.invitation}`;
+        return `${window.location.protocol}//${window.location.host}/if/flow/${this.selectedFlow}/?itoken=${this.invitation}`;
     }
 
     render(): TemplateResult {

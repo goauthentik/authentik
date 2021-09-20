@@ -15,7 +15,8 @@ from authentik.stages.invitation.signals import invitation_used
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 LOGGER = get_logger()
-INVITATION_TOKEN_KEY = "token"  # nosec
+INVITATION_TOKEN_KEY_CONTEXT = "token"  # nosec
+INVITATION_TOKEN_KEY = "itoken"  # nosec
 INVITATION_IN_EFFECT = "invitation_in_effect"
 INVITATION = "invitation"
 
@@ -29,10 +30,14 @@ class InvitationStageView(StageView):
 
     def get_token(self) -> Optional[str]:
         """Get token from saved get-arguments or prompt_data"""
+        # Check for ?token= and ?itoken=
         if INVITATION_TOKEN_KEY in self.request.session.get(SESSION_KEY_GET, {}):
             return self.request.session[SESSION_KEY_GET][INVITATION_TOKEN_KEY]
-        if INVITATION_TOKEN_KEY in self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {}):
-            return self.executor.plan.context[PLAN_CONTEXT_PROMPT][INVITATION_TOKEN_KEY]
+        if INVITATION_TOKEN_KEY_CONTEXT in self.request.session.get(SESSION_KEY_GET, {}):
+            return self.request.session[SESSION_KEY_GET][INVITATION_TOKEN_KEY_CONTEXT]
+        # Check for {'token': ''} in the context
+        if INVITATION_TOKEN_KEY_CONTEXT in self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {}):
+            return self.executor.plan.context[PLAN_CONTEXT_PROMPT][INVITATION_TOKEN_KEY_CONTEXT]
         return None
 
     def get(self, request: HttpRequest) -> HttpResponse:
