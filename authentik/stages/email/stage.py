@@ -3,7 +3,6 @@ from datetime import timedelta
 
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.timezone import now
@@ -99,7 +98,10 @@ class EmailStageView(ChallengeStageView):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         # Check if the user came back from the email link to verify
         if QS_KEY_TOKEN in request.session.get(SESSION_KEY_GET, {}):
-            token = get_object_or_404(Token, key=request.session[SESSION_KEY_GET][QS_KEY_TOKEN])
+            tokens = Token.filter_not_expired(key=request.session[SESSION_KEY_GET][QS_KEY_TOKEN])
+            if not tokens.exists():
+                return self.executor.stage_invalid(_("Invalid token"))
+            token = tokens.first()
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = token.user
             token.delete()
             messages.success(request, _("Successfully verified Email."))

@@ -4702,8 +4702,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/ChallengeTypes'
           description: ''
-        '404':
-          description: No Token found
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':

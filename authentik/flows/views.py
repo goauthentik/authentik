@@ -213,9 +213,6 @@ class FlowExecutorView(APIView):
                 serializers=challenge_types(),
                 resource_type_field_name="component",
             ),
-            404: OpenApiResponse(
-                description="No Token found"
-            ),  # This error can be raised by the email stage
         },
         request=OpenApiTypes.NONE,
         parameters=[
