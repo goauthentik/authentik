@@ -77,6 +77,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         "meta_publisher",
     ]
     lookup_field = "slug"
+    lookup_value_regex = r"^[-a-zA-Z0-9_]+\Z"
     ordering = ["name"]
 
     def _filter_queryset_for_list(self, queryset: QuerySet) -> QuerySet:

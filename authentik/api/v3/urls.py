@@ -99,6 +99,7 @@ from authentik.stages.user_write.api import UserWriteStageViewSet
 from authentik.tenants.api import TenantViewSet
 
 router = routers.DefaultRouter()
+router.include_format_suffixes = False
 
 router.register("admin/system_tasks", TaskViewSet, basename="admin_system_tasks")
 router.register("admin/apps", AppsViewSet, basename="apps")
