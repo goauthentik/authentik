@@ -68,7 +68,7 @@ export class AdminInterface extends LitElement {
                     display: none;
                 }
                 .pf-c-page {
-                    background-color: var(--pf-global--BackgroundColor--light-300) !important;
+                    background-color: var(--pf-c-page--BackgroundColor) !important;
                 }
                 @media (prefers-color-scheme: dark) {
                     /* Global page background colour */

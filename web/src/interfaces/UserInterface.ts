@@ -75,7 +75,7 @@ export class UserInterface extends LitElement {
                     background-color: transparent !important;
                 }
                 .pf-c-page {
-                    background-color: var(--pf-global--BackgroundColor--light-300) !important;
+                    background-color: var(--pf-c-page--BackgroundColor) !important;
                 }
                 .display-none {
                     display: none;
