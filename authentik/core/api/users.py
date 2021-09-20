@@ -8,6 +8,7 @@ from django.db.transaction import atomic
 from django.db.utils import IntegrityError
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
+from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django_filters.filters import BooleanFilter, CharFilter, ModelMultipleChoiceFilter
@@ -273,7 +274,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                     )
                     group.users.add(user)
                 token = Token.objects.create(
-                    identifier=f"service-account-{username}-password",
+                    identifier=slugify(f"service-account-{username}-password"),
                     intent=TokenIntents.INTENT_APP_PASSWORD,
                     user=user,
                     expires=now() + timedelta(days=360),
