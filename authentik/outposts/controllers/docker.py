@@ -164,11 +164,9 @@ class DockerController(BaseController):
                 self.down()
                 return self.up(depth + 1)
             # Check that container is healthy
-            if (
-                container.status == "running"
-                and container.attrs.get("State", {}).get("Health", {}).get("Status", "")
-                != "healthy"
-            ):
+            if container.status == "running" and container.attrs.get("State", {}).get(
+                "Health", {}
+            ).get("Status", "") not in ["healthy", "starting"]:
                 # At this point we know the config is correct, but the container isn't healthy,
                 # so we just restart it with the same config
                 if has_been_created:
