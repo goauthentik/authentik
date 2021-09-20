@@ -85,7 +85,7 @@ server {
 
     # all requests to /akprox must be accessible without authentication
     location /akprox {
-        proxy_pass          http://*ip or hostname of the authentik OUTPOST*:9000;
+        proxy_pass          http://*ip or hostname of the authentik OUTPOST*:9000/akprox;
         # ensure the host of this vserver matches your external URL you've configured
         # in authentik
         proxy_set_header    Host $host;
