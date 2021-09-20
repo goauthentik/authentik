@@ -20,6 +20,8 @@ import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-sta
 import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import "./LibraryApplication";
+import { until } from "lit-html/directives/until";
+import { uiConfig } from "./config";
 
 @customElement("ak-library")
 export class LibraryPage extends LitElement {
@@ -102,26 +104,33 @@ export class LibraryPage extends LitElement {
         return html`<main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
             <div class="pf-c-content header">
                 <h1>${t`My applications`}</h1>
-                <input
-                    @input=${(ev: InputEvent) => {
-                        const query = (ev.target as HTMLInputElement).value;
-                        if (!this.fuse) return;
-                        const apps = this.fuse.search(query);
-                        if (apps.length < 1) return;
-                        this.selectedApp = apps[0].item;
-                    }}
-                    @keydown=${(ev: KeyboardEvent) => {
-                        if (ev.key === "Enter" && this.selectedApp?.launchUrl) {
-                            window.location.assign(this.selectedApp.launchUrl);
-                        } else if (ev.key === "Escape") {
-                            (ev.target as HTMLInputElement).value = "";
-                            this.selectedApp = undefined;
+                ${until(
+                    uiConfig().then((config) => {
+                        if (!config.enabledFeatures.search) {
+                            return html``;
                         }
-                    }}
-                    type="text"
-                    autofocus
-                    placeholder=${t`Search...`}
-                />
+                        return html` <input
+                            @input=${(ev: InputEvent) => {
+                                const query = (ev.target as HTMLInputElement).value;
+                                if (!this.fuse) return;
+                                const apps = this.fuse.search(query);
+                                if (apps.length < 1) return;
+                                this.selectedApp = apps[0].item;
+                            }}
+                            @keydown=${(ev: KeyboardEvent) => {
+                                if (ev.key === "Enter" && this.selectedApp?.launchUrl) {
+                                    window.location.assign(this.selectedApp.launchUrl);
+                                } else if (ev.key === "Escape") {
+                                    (ev.target as HTMLInputElement).value = "";
+                                    this.selectedApp = undefined;
+                                }
+                            }}
+                            type="text"
+                            autofocus
+                            placeholder=${t`Search...`}
+                        />`;
+                    }),
+                )}
             </div>
             <section class="pf-c-page__main-section">
                 ${loading(

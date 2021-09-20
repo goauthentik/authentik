@@ -8,6 +8,8 @@ export interface UIConfig {
         settings: boolean;
         // Application edit in library (only shown when user is superuser)
         applicationEdit: boolean;
+        // Search bar
+        search: boolean;
     };
     navbar: {
         userDisplay: "username" | "name" | "email";
@@ -20,6 +22,7 @@ export const DefaultUIConfig: UIConfig = {
         notificationDrawer: true,
         settings: true,
         applicationEdit: true,
+        search: true,
     },
     navbar: {
         userDisplay: "name",
