@@ -15,7 +15,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests.test_views import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.stages.invitation.models import Invitation, InvitationStage
-from authentik.stages.invitation.stage import INVITATION_TOKEN_KEY, PLAN_CONTEXT_PROMPT
+from authentik.stages.invitation.stage import INVITATION_TOKEN_KEY, INVITATION_TOKEN_KEY_CONTEXT, PLAN_CONTEXT_PROMPT
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 
@@ -131,7 +131,7 @@ class TestUserLoginStage(APITestCase):
         )
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        plan.context[PLAN_CONTEXT_PROMPT] = {INVITATION_TOKEN_KEY: invite.pk.hex}
+        plan.context[PLAN_CONTEXT_PROMPT] = {INVITATION_TOKEN_KEY_CONTEXT: invite.pk.hex}
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
