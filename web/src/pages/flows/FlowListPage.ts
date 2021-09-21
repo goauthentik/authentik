@@ -1,19 +1,21 @@
 import { t } from "@lingui/macro";
+
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import { AKResponse } from "../../api/Client";
-import { TablePage } from "../../elements/table/TablePage";
 
+import { Flow, FlowsApi } from "@goauthentik/api";
+
+import { AKResponse } from "../../api/Client";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { PAGE_SIZE } from "../../constants";
 import "../../elements/buttons/SpinnerButton";
+import "../../elements/forms/ConfirmationForm";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
-import "../../elements/forms/ConfirmationForm";
+import { TableColumn } from "../../elements/table/Table";
+import { TablePage } from "../../elements/table/TablePage";
 import "./FlowForm";
 import "./FlowImportForm";
-import { TableColumn } from "../../elements/table/Table";
-import { PAGE_SIZE } from "../../constants";
-import { Flow, FlowsApi } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-flow-list")
 export class FlowListPage extends TablePage<Flow> {

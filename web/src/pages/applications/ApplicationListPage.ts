@@ -1,17 +1,20 @@
 import { t } from "@lingui/macro";
+
 import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
-import { AKResponse } from "../../api/Client";
-import { TablePage } from "../../elements/table/TablePage";
 
-import "../../elements/forms/ModalForm";
-import "../../elements/forms/DeleteBulkForm";
-import "../../elements/buttons/SpinnerButton";
-import { TableColumn } from "../../elements/table/Table";
-import { PAGE_SIZE } from "../../constants";
+import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
+
 import { Application, CoreApi } from "@goauthentik/api";
+
+import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
+import { PAGE_SIZE } from "../../constants";
+import "../../elements/buttons/SpinnerButton";
+import "../../elements/forms/DeleteBulkForm";
+import "../../elements/forms/ModalForm";
+import { TableColumn } from "../../elements/table/Table";
+import { TablePage } from "../../elements/table/TablePage";
 import "./ApplicationForm";
 
 @customElement("ak-application-list")

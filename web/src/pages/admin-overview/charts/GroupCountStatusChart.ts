@@ -1,9 +1,13 @@
+import { ChartOptions, ChartData } from "chart.js";
+
+import { t } from "@lingui/macro";
+
 import { customElement } from "lit/decorators";
+
 import { CoreApi } from "@goauthentik/api";
+
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { AKChart } from "../../../elements/charts/Chart";
-import { t } from "@lingui/macro";
-import { ChartOptions, ChartData } from "chart.js";
 
 interface GroupMetrics {
     count: number;

@@ -1,11 +1,12 @@
 import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import { Route } from "./Route";
-import { RouteMatch } from "./RouteMatch";
+
 import AKGlobal from "../../authentik.css";
 
-import "./Router404";
 import { ROUTE_SEPARATOR } from "../../constants";
+import { Route } from "./Route";
+import { RouteMatch } from "./RouteMatch";
+import "./Router404";
 
 // Poliyfill for hashchange.newURL,
 // https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onhashchange

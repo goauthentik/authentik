@@ -1,8 +1,11 @@
-import { customElement } from "lit/decorators";
 import { ChartData } from "chart.js";
+
+import { customElement } from "lit/decorators";
+
 import { AdminApi, LoginMetrics } from "@goauthentik/api";
-import { AKChart } from "./Chart";
+
 import { DEFAULT_CONFIG } from "../../api/Config";
+import { AKChart } from "./Chart";
 
 @customElement("ak-charts-admin-login")
 export class AdminLoginsChart extends AKChart<LoginMetrics> {

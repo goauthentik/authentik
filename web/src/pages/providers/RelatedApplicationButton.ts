@@ -1,9 +1,12 @@
 import { t } from "@lingui/macro";
+
 import { CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import { Provider } from "@goauthentik/api";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+import { Provider } from "@goauthentik/api";
 
 import "../../elements/Spinner";
 import "../../elements/forms/ModalForm";

@@ -1,27 +1,30 @@
 import { t } from "@lingui/macro";
+
 import { CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
+
+import AKGlobal from "../../../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import AKGlobal from "../../../authentik.css";
 
-import "../../../elements/buttons/ModalButton";
-import "../../../elements/buttons/SpinnerButton";
-import "../../../elements/CodeMirror";
-import "../../../elements/Tabs";
-import "../../../elements/events/ObjectChangelog";
-import "../RelatedApplicationButton";
-import "./ProxyProviderForm";
 import { ProvidersApi, ProxyProvider } from "@goauthentik/api";
+
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";
+import "../../../elements/CodeMirror";
+import "../../../elements/Tabs";
+import "../../../elements/buttons/ModalButton";
+import "../../../elements/buttons/SpinnerButton";
+import "../../../elements/events/ObjectChangelog";
 import { convertToTitle } from "../../../utils";
+import "../RelatedApplicationButton";
+import "./ProxyProviderForm";
 
 @customElement("ak-provider-proxy-view")
 export class ProxyProviderViewPage extends LitElement {

@@ -1,11 +1,14 @@
+import { t } from "@lingui/macro";
+
 import { LitElement, html, CSSResult, TemplateResult, css } from "lit";
 import { customElement, property } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
+
+import AKGlobal from "../authentik.css";
 import PFTabs from "@patternfly/patternfly/components/Tabs/tabs.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
-import AKGlobal from "../authentik.css";
+
 import { CURRENT_CLASS, ROUTE_SEPARATOR } from "../constants";
-import { t } from "@lingui/macro";
 
 @customElement("ak-tabs")
 export class Tabs extends LitElement {

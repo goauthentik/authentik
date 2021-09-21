@@ -1,11 +1,14 @@
-import { AuthenticatorsApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
+
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators";
 import { until } from "lit/directives/until";
+
+import { AuthenticatorsApi } from "@goauthentik/api";
+
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { BaseUserSettings } from "../BaseUserSettings";
 import { EVENT_REFRESH } from "../../../constants";
+import { BaseUserSettings } from "../BaseUserSettings";
 
 @customElement("ak-user-settings-authenticator-totp")
 export class UserSettingsAuthenticatorTOTP extends BaseUserSettings {

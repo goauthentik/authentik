@@ -1,28 +1,30 @@
 import { t } from "@lingui/macro";
+
 import { CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement } from "lit/decorators";
+import { until } from "lit/directives/until";
 
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
-import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
-import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import AKGlobal from "../../authentik.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
+import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
+import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
+
+import { me } from "../../api/Users";
 import "../../elements/Tabs";
 import "../../elements/user/SessionList";
 import "../../elements/user/UserConsentList";
-import "./tokens/UserTokenList";
 import "./UserSelfForm";
 import "./sources/SourceSettings";
 import "./stages/StageSettings";
-import { until } from "lit/directives/until";
-import { me } from "../../api/Users";
+import "./tokens/UserTokenList";
 
 @customElement("ak-user-settings")
 export class UserSettingsPage extends LitElement {

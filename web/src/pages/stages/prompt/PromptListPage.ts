@@ -1,18 +1,20 @@
 import { t } from "@lingui/macro";
+
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import { AKResponse } from "../../../api/Client";
-import { TablePage } from "../../../elements/table/TablePage";
 
+import { Prompt, StagesApi } from "@goauthentik/api";
+
+import { AKResponse } from "../../../api/Client";
+import { DEFAULT_CONFIG } from "../../../api/Config";
+import { PAGE_SIZE } from "../../../constants";
 import "../../../elements/buttons/ModalButton";
 import "../../../elements/buttons/SpinnerButton";
 import "../../../elements/forms/DeleteBulkForm";
 import "../../../elements/forms/ModalForm";
-import "./PromptForm";
 import { TableColumn } from "../../../elements/table/Table";
-import { PAGE_SIZE } from "../../../constants";
-import { Prompt, StagesApi } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../../api/Config";
+import { TablePage } from "../../../elements/table/TablePage";
+import "./PromptForm";
 
 @customElement("ak-stage-prompt-list")
 export class PromptListPage extends TablePage<Prompt> {

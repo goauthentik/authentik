@@ -1,7 +1,9 @@
 import { customElement, property } from "lit/decorators";
+
 import { CoreApi } from "@goauthentik/api";
-import { ERROR_CLASS, SECONDARY_CLASS, SUCCESS_CLASS } from "../../constants";
+
 import { DEFAULT_CONFIG } from "../../api/Config";
+import { ERROR_CLASS, SECONDARY_CLASS, SUCCESS_CLASS } from "../../constants";
 import { ActionButton } from "./ActionButton";
 
 @customElement("ak-token-copy-button")

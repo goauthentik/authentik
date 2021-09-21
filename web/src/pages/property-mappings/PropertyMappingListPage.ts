@@ -1,25 +1,27 @@
 import { t } from "@lingui/macro";
+
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import { AKResponse } from "../../api/Client";
-import { TablePage } from "../../elements/table/TablePage";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
 
+import { PropertyMapping, PropertymappingsApi } from "@goauthentik/api";
+
+import { AKResponse } from "../../api/Client";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { PAGE_SIZE } from "../../constants";
 import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
 import "../../elements/forms/ProxyForm";
-import "./PropertyMappingTestForm";
-import "./PropertyMappingScopeForm";
-import "./PropertyMappingLDAPForm";
-import "./PropertyMappingSAMLForm";
-import "./PropertyMappingNotification";
 import { TableColumn } from "../../elements/table/Table";
-import { until } from "lit/directives/until";
-import { PAGE_SIZE } from "../../constants";
-import { PropertyMapping, PropertymappingsApi } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { ifDefined } from "lit/directives/if-defined";
+import { TablePage } from "../../elements/table/TablePage";
+import "./PropertyMappingLDAPForm";
+import "./PropertyMappingNotification";
+import "./PropertyMappingSAMLForm";
+import "./PropertyMappingScopeForm";
+import "./PropertyMappingTestForm";
 
 @customElement("ak-property-mapping-list")
 export class PropertyMappingListPage extends TablePage<PropertyMapping> {

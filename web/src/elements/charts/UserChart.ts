@@ -1,8 +1,11 @@
-import { customElement, property } from "lit/decorators";
-import { CoreApi, UserMetrics } from "@goauthentik/api";
-import { AKChart } from "./Chart";
-import { DEFAULT_CONFIG } from "../../api/Config";
 import { ChartData } from "chart.js";
+
+import { customElement, property } from "lit/decorators";
+
+import { CoreApi, UserMetrics } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { AKChart } from "./Chart";
 
 @customElement("ak-charts-user")
 export class UserChart extends AKChart<UserMetrics> {

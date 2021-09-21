@@ -1,14 +1,17 @@
 import { t } from "@lingui/macro";
+
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import { AKResponse } from "../../api/Client";
-import { Table, TableColumn } from "../table/Table";
+
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 
-import "../forms/DeleteBulkForm";
-import { PAGE_SIZE } from "../../constants";
 import { RefreshTokenModel, Oauth2Api, ExpiringBaseGrantModel } from "@goauthentik/api";
+
+import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
+import { PAGE_SIZE } from "../../constants";
+import "../forms/DeleteBulkForm";
+import { Table, TableColumn } from "../table/Table";
 
 @customElement("ak-user-oauth-refresh-list")
 export class UserOAuthRefreshList extends Table<RefreshTokenModel> {

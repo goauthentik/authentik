@@ -1,4 +1,5 @@
 import { t } from "@lingui/macro";
+
 import { EVENT_WS_MESSAGE } from "../constants";
 import { MessageLevel } from "../elements/messages/Message";
 import { showMessage } from "../elements/messages/MessageContainer";

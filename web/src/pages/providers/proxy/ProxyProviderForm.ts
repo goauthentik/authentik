@@ -1,3 +1,15 @@
+import { t } from "@lingui/macro";
+
+import { css, CSSResult } from "lit";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
+
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
+import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
+
 import {
     CryptoApi,
     FlowsApi,
@@ -6,19 +18,11 @@ import {
     ProxyMode,
     ProxyProvider,
 } from "@goauthentik/api";
-import { t } from "@lingui/macro";
-import { css, CSSResult } from "lit";
-import { customElement, property } from "lit/decorators";
-import { html, TemplateResult } from "lit";
+
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { ModelForm } from "../../../elements/forms/ModelForm";
-import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
-import { until } from "lit/directives/until";
-import { ifDefined } from "lit/directives/if-defined";
-import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
+import "../../../elements/forms/HorizontalFormElement";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 import { first } from "../../../utils";
 
 @customElement("ak-provider-proxy-form")

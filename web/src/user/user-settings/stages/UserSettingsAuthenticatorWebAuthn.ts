@@ -1,19 +1,23 @@
+import { t } from "@lingui/macro";
+
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators";
-import { t } from "@lingui/macro";
-import { AuthenticatorsApi, WebAuthnDevice } from "@goauthentik/api";
+import { ifDefined } from "lit/directives/if-defined";
 import { until } from "lit/directives/until";
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { BaseUserSettings } from "../BaseUserSettings";
+
 import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";
+
+import { AuthenticatorsApi, WebAuthnDevice } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../../api/Config";
+import { EVENT_REFRESH } from "../../../constants";
 import "../../../elements/buttons/ModalButton";
 import "../../../elements/buttons/SpinnerButton";
 import "../../../elements/forms/DeleteForm";
 import "../../../elements/forms/Form";
-import "../../../elements/forms/ModalForm";
 import "../../../elements/forms/HorizontalFormElement";
-import { ifDefined } from "lit/directives/if-defined";
-import { EVENT_REFRESH } from "../../../constants";
+import "../../../elements/forms/ModalForm";
+import { BaseUserSettings } from "../BaseUserSettings";
 
 @customElement("ak-user-settings-authenticator-webauthn")
 export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {

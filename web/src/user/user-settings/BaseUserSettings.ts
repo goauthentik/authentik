@@ -1,11 +1,12 @@
 import { CSSResult, LitElement } from "lit";
 import { property } from "lit/decorators";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
+
 import AKGlobal from "../../authentik.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export abstract class BaseUserSettings extends LitElement {
     @property()

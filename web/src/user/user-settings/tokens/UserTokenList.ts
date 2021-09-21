@@ -1,20 +1,23 @@
 import { t } from "@lingui/macro";
+
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import { AKResponse } from "../../../api/Client";
+
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
+import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
+
+import { AKResponse } from "../../../api/Client";
+import { DEFAULT_CONFIG } from "../../../api/Config";
+import { PAGE_SIZE } from "../../../constants";
+import "../../../elements/buttons/Dropdown";
+import "../../../elements/buttons/ModalButton";
+import "../../../elements/buttons/TokenCopyButton";
 import "../../../elements/forms/DeleteBulkForm";
 import "../../../elements/forms/ModalForm";
-import "../../../elements/buttons/ModalButton";
-import "../../../elements/buttons/Dropdown";
-import "../../../elements/buttons/TokenCopyButton";
 import { Table, TableColumn } from "../../../elements/table/Table";
-import { PAGE_SIZE } from "../../../constants";
-import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import "./UserTokenForm";
 import { IntentToLabel } from "../../../pages/tokens/TokenListPage";
+import "./UserTokenForm";
 
 @customElement("ak-user-token-list")
 export class UserTokenList extends Table<Token> {

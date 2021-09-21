@@ -1,6 +1,6 @@
 import { html } from "lit";
-import { Route, SLUG_REGEX, ID_REGEX, UUID_REGEX } from "./elements/router/Route";
 
+import { Route, SLUG_REGEX, ID_REGEX, UUID_REGEX } from "./elements/router/Route";
 import "./pages/admin-overview/AdminOverviewPage";
 import "./pages/applications/ApplicationListPage";
 import "./pages/applications/ApplicationViewPage";
@@ -20,11 +20,11 @@ import "./pages/policies/reputation/UserReputationListPage";
 import "./pages/property-mappings/PropertyMappingListPage";
 import "./pages/providers/ProviderListPage";
 import "./pages/providers/ProviderViewPage";
-import "./pages/sources/SourcesListPage";
 import "./pages/sources/SourceViewPage";
+import "./pages/sources/SourcesListPage";
+import "./pages/stages/StageListPage";
 import "./pages/stages/invitation/InvitationListPage";
 import "./pages/stages/prompt/PromptListPage";
-import "./pages/stages/StageListPage";
 import "./pages/system-tasks/SystemTaskListPage";
 import "./pages/tenants/TenantListPage";
 import "./pages/tokens/TokenListPage";

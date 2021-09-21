@@ -1,5 +1,7 @@
 import { t } from "@lingui/macro";
+
 import { html, TemplateResult } from "lit";
+
 import "./elements/EmptyState";
 
 export function getCookie(name: string): string {

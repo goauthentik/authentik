@@ -1,3 +1,10 @@
+import { t } from "@lingui/macro";
+
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
+
 import {
     CryptoApi,
     FlowsApi,
@@ -10,15 +17,11 @@ import {
     ProvidersApi,
     FlowsInstancesListDesignationEnum,
 } from "@goauthentik/api";
-import { t } from "@lingui/macro";
-import { customElement, property } from "lit/decorators";
-import { html, TemplateResult } from "lit";
+
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { ModelForm } from "../../../elements/forms/ModelForm";
-import { until } from "lit/directives/until";
-import { ifDefined } from "lit/directives/if-defined";
-import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
+import "../../../elements/forms/HorizontalFormElement";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 import { first, randomString } from "../../../utils";
 
 @customElement("ak-provider-oauth2-form")

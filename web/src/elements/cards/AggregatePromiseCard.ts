@@ -1,9 +1,10 @@
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
 import { until } from "lit/directives/until";
-import { AggregateCard } from "./AggregateCard";
+
 import "../Spinner";
 import { PFSize } from "../Spinner";
+import { AggregateCard } from "./AggregateCard";
 
 @customElement("ak-aggregate-card-promise")
 export class AggregatePromiseCard extends AggregateCard {

@@ -1,13 +1,16 @@
 import { t } from "@lingui/macro";
-import { CoreApi, Group } from "@goauthentik/api";
-import { customElement, property } from "lit/decorators";
+
 import { TemplateResult, html } from "lit";
+import { customElement, property } from "lit/decorators";
+
+import { CoreApi, Group } from "@goauthentik/api";
+
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { PAGE_SIZE } from "../../constants";
+import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { TableModal } from "../../elements/table/TableModal";
-import "../../elements/buttons/SpinnerButton";
 
 @customElement("ak-user-group-select-table")
 export class GroupSelectModal extends TableModal<Group> {

@@ -1,17 +1,17 @@
 import { html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import { Source, SourcesApi } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../api/Config";
+import { ifDefined } from "lit/directives/if-defined";
 
-import "../../elements/buttons/SpinnerButton";
+import { Source, SourcesApi } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/EmptyState";
 import "../../elements/PageHeader";
-
+import "../../elements/buttons/SpinnerButton";
 import "./ldap/LDAPSourceViewPage";
 import "./oauth/OAuthSourceViewPage";
-import "./saml/SAMLSourceViewPage";
 import "./plex/PlexSourceViewPage";
-import { ifDefined } from "lit/directives/if-defined";
+import "./saml/SAMLSourceViewPage";
 
 @customElement("ak-source-view")
 export class SourceViewPage extends LitElement {

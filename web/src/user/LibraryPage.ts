@@ -1,19 +1,24 @@
+import Fuse from "fuse.js";
+
 import { t } from "@lingui/macro";
+
 import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import Fuse from "fuse.js";
+import { until } from "lit/directives/until";
+
+import AKGlobal from "../authentik.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
 import { Application, CoreApi } from "@goauthentik/api";
+
 import { AKResponse } from "../api/Client";
 import { DEFAULT_CONFIG } from "../api/Config";
 import { loading } from "../utils";
-import AKGlobal from "../authentik.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import "./LibraryApplication";
-import { until } from "lit/directives/until";
 import { UIConfig, uiConfig } from "./config";
 
 @customElement("ak-library")

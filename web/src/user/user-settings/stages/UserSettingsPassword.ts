@@ -1,8 +1,10 @@
+import { t } from "@lingui/macro";
+
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators";
-import { t } from "@lingui/macro";
-import { BaseUserSettings } from "../BaseUserSettings";
 import { ifDefined } from "lit/directives/if-defined";
+
+import { BaseUserSettings } from "../BaseUserSettings";
 
 @customElement("ak-user-settings-password")
 export class UserSettingsPassword extends BaseUserSettings {

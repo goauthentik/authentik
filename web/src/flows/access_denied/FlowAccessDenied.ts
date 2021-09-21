@@ -1,17 +1,20 @@
-import { AccessDeniedChallenge, FlowChallengeResponseRequest } from "@goauthentik/api";
+import { t } from "@lingui/macro";
+
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators";
-import { BaseStage } from "../stages/base";
+
+import AKGlobal from "../../authentik.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import AKGlobal from "../../authentik.css";
-import { t } from "@lingui/macro";
+
+import { AccessDeniedChallenge, FlowChallengeResponseRequest } from "@goauthentik/api";
 
 import "../../elements/EmptyState";
+import { BaseStage } from "../stages/base";
 
 @customElement("ak-stage-access-denied")
 export class FlowAccessDenied extends BaseStage<

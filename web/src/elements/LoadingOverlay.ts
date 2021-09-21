@@ -1,7 +1,9 @@
 import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import { PFSize } from "./Spinner";
 import { customElement, property } from "lit/decorators";
+
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+import { PFSize } from "./Spinner";
 
 @customElement("ak-loading-overlay")
 export class LoadingOverlay extends LitElement {

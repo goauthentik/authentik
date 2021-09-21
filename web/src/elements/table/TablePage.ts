@@ -1,10 +1,12 @@
 import { CSSResult } from "lit";
 import { html, TemplateResult } from "lit";
 import { ifDefined } from "lit/directives/if-defined";
-import { Table } from "./Table";
-import "../../elements/PageHeader";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
+
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+
+import "../../elements/PageHeader";
+import { Table } from "./Table";
 
 export abstract class TablePage<T> extends Table<T> {
     abstract pageTitle(): string;

@@ -1,22 +1,23 @@
-import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators";
-
 import CodeMirror from "codemirror";
+import "codemirror/addon/dialog/dialog";
 import "codemirror/addon/display/autorefresh";
+import "codemirror/addon/hint/show-hint";
 import "codemirror/addon/search/search";
 import "codemirror/addon/search/searchcursor";
-import "codemirror/addon/dialog/dialog";
-import "codemirror/addon/hint/show-hint";
-import "codemirror/mode/xml/xml.js";
-import "codemirror/mode/yaml/yaml.js";
 import "codemirror/mode/javascript/javascript.js";
 import "codemirror/mode/python/python.js";
-import CodeMirrorStyle from "codemirror/lib/codemirror.css";
-import CodeMirrorTheme from "codemirror/theme/monokai.css";
+import "codemirror/mode/xml/xml.js";
+import "codemirror/mode/yaml/yaml.js";
+import YAML from "yaml";
+
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+
 import CodeMirrorDialogStyle from "codemirror/addon/dialog/dialog.css";
 import CodeMirrorShowHintStyle from "codemirror/addon/hint/show-hint.css";
-import { ifDefined } from "lit/directives/if-defined";
-import YAML from "yaml";
+import CodeMirrorStyle from "codemirror/lib/codemirror.css";
+import CodeMirrorTheme from "codemirror/theme/monokai.css";
 
 @customElement("ak-codemirror")
 export class CodeMirrorTextarea extends LitElement {

@@ -1,11 +1,13 @@
 import { css, CSSResult, LitElement } from "lit";
-import { customElement, property } from "lit/decorators";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import AKGlobal from "../../authentik.css";
 import { TemplateResult, html } from "lit";
+import { customElement, property } from "lit/decorators";
 import { until } from "lit/directives/until";
+
+import AKGlobal from "../../authentik.css";
+import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
 import { ROUTE_SEPARATOR } from "../../constants";
 
 @customElement("ak-sidebar-item")

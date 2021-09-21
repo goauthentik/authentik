@@ -5,9 +5,10 @@ import { customElement } from "lit/decorators";
 export class DropdownButton extends LitElement {
     constructor() {
         super();
-        const menu = <HTMLElement>this.querySelector(".pf-c-dropdown__menu");
+        const menu = this.querySelector<HTMLElement>(".pf-c-dropdown__menu");
         this.querySelectorAll("button.pf-c-dropdown__toggle").forEach((btn) => {
             btn.addEventListener("click", () => {
+                if (!menu) return;
                 menu.hidden = !menu.hidden;
             });
         });

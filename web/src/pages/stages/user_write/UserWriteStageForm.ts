@@ -1,14 +1,17 @@
-import { UserWriteStage, StagesApi, CoreApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { customElement } from "lit/decorators";
+
 import { html, TemplateResult } from "lit";
-import { DEFAULT_CONFIG } from "../../../api/Config";
+import { customElement } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
-import "../../../elements/forms/HorizontalFormElement";
+import { until } from "lit/directives/until";
+
+import { UserWriteStage, StagesApi, CoreApi } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../../api/Config";
 import "../../../elements/forms/FormGroup";
+import "../../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../../elements/forms/ModelForm";
 import { first } from "../../../utils";
-import { until } from "lit/directives/until";
 
 @customElement("ak-stage-user-write-form")
 export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {

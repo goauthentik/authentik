@@ -1,17 +1,19 @@
 import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+import AKGlobal from "../../authentik.css";
+import PFBackdrop from "@patternfly/patternfly/components/Backdrop/backdrop.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFModalBox from "@patternfly/patternfly/components/ModalBox/modal-box.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
-import PFBackdrop from "@patternfly/patternfly/components/Backdrop/backdrop.css";
+import PFModalBox from "@patternfly/patternfly/components/ModalBox/modal-box.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import AKGlobal from "../../authentik.css";
+import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
 import { PFSize } from "../Spinner";
 
 export const MODAL_BUTTON_STYLES = css`

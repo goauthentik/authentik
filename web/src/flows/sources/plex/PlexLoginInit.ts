@@ -1,24 +1,28 @@
 import { t } from "@lingui/macro";
+
+import { CSSResult } from "lit";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
+
+import AKGlobal from "../../../authentik.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
 import {
     PlexAuthenticationChallenge,
     PlexAuthenticationChallengeResponseRequest,
 } from "@goauthentik/api";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import AKGlobal from "../../../authentik.css";
-import { CSSResult } from "lit";
-import { customElement } from "lit/decorators";
-import { html, TemplateResult } from "lit";
+import { SourcesApi } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../../api/Config";
+import { MessageLevel } from "../../../elements/messages/Message";
+import { showMessage } from "../../../elements/messages/MessageContainer";
 import { BaseStage } from "../../stages/base";
 import { PlexAPIClient, popupCenterScreen } from "./API";
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { SourcesApi } from "@goauthentik/api";
-import { showMessage } from "../../../elements/messages/MessageContainer";
-import { MessageLevel } from "../../../elements/messages/Message";
 
 @customElement("ak-flow-sources-plex")
 export class PlexLoginInit extends BaseStage<

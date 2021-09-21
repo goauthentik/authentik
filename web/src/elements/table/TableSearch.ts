@@ -1,13 +1,15 @@
+import { t } from "@lingui/macro";
+
 import { CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
-import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+
 import AKGlobal from "../../authentik.css";
-import { t } from "@lingui/macro";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
+import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-table-search")
 export class TableSearch extends LitElement {

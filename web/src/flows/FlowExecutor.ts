@@ -1,32 +1,18 @@
 import { t } from "@lingui/macro";
+
 import { LitElement, html, TemplateResult, CSSResult, css } from "lit";
 import { customElement, property } from "lit/decorators";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import AKGlobal from "../authentik.css";
-
 import { unsafeHTML } from "lit/directives/unsafe-html";
-import "../elements/LoadingOverlay";
-import "./access_denied/FlowAccessDenied";
-import "./stages/authenticator_static/AuthenticatorStaticStage";
-import "./stages/authenticator_totp/AuthenticatorTOTPStage";
-import "./stages/authenticator_duo/AuthenticatorDuoStage";
-import "./stages/authenticator_validate/AuthenticatorValidateStage";
-import "./stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
-import "./stages/autosubmit/AutosubmitStage";
-import "./stages/captcha/CaptchaStage";
-import "./stages/consent/ConsentStage";
-import "./stages/dummy/DummyStage";
-import "./stages/email/EmailStage";
-import "./stages/identification/IdentificationStage";
-import "./stages/password/PasswordStage";
-import "./stages/prompt/PromptStage";
-import "./sources/plex/PlexLoginInit";
-import { StageHost } from "./stages/base";
+import { until } from "lit/directives/until";
+
+import AKGlobal from "../authentik.css";
+import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
 import {
     ChallengeChoices,
     CurrentTenant,
@@ -36,13 +22,30 @@ import {
     RedirectChallenge,
     ShellChallenge,
 } from "@goauthentik/api";
+
 import { DEFAULT_CONFIG, tenant } from "../api/Config";
-import { until } from "lit/directives/until";
-import { TITLE_DEFAULT } from "../constants";
 import { configureSentry } from "../api/Sentry";
 import { WebsocketClient } from "../common/ws";
-import { first } from "../utils";
+import { TITLE_DEFAULT } from "../constants";
+import "../elements/LoadingOverlay";
 import { DefaultTenant } from "../elements/sidebar/SidebarBrand";
+import { first } from "../utils";
+import "./access_denied/FlowAccessDenied";
+import "./sources/plex/PlexLoginInit";
+import "./stages/authenticator_duo/AuthenticatorDuoStage";
+import "./stages/authenticator_static/AuthenticatorStaticStage";
+import "./stages/authenticator_totp/AuthenticatorTOTPStage";
+import "./stages/authenticator_validate/AuthenticatorValidateStage";
+import "./stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
+import "./stages/autosubmit/AutosubmitStage";
+import { StageHost } from "./stages/base";
+import "./stages/captcha/CaptchaStage";
+import "./stages/consent/ConsentStage";
+import "./stages/dummy/DummyStage";
+import "./stages/email/EmailStage";
+import "./stages/identification/IdentificationStage";
+import "./stages/password/PasswordStage";
+import "./stages/prompt/PromptStage";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement implements StageHost {

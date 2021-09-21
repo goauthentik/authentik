@@ -1,13 +1,16 @@
+import { t } from "@lingui/macro";
+
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
+import { until } from "lit/directives/until";
+
 import {
     FlowsApi,
     FlowsInstancesListDesignationEnum,
     ProvidersApi,
     SAMLProvider,
 } from "@goauthentik/api";
-import { t } from "@lingui/macro";
-import { customElement } from "lit/decorators";
-import { html, TemplateResult } from "lit";
-import { until } from "lit/directives/until";
+
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { Form } from "../../../elements/forms/Form";
 import "../../../elements/forms/HorizontalFormElement";

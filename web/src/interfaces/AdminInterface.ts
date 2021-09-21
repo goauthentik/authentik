@@ -1,32 +1,35 @@
-import "../elements/messages/MessageContainer";
+import { t } from "@lingui/macro";
+
 import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import { me } from "../api/Users";
-import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "../elements/router/Route";
-import "./locale";
-import "../elements/sidebar/SidebarItem";
-import { t } from "@lingui/macro";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import { until } from "lit/directives/until";
+
+import AKGlobal from "../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
-import AKGlobal from "../authentik.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import "../elements/router/RouterOutlet";
-import "../elements/messages/MessageContainer";
-import "../elements/notifications/NotificationDrawer";
-import "../elements/sidebar/Sidebar";
-import { until } from "lit/directives/until";
+import { AdminApi, Version } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../api/Config";
+import { me } from "../api/Users";
+import { WebsocketClient } from "../common/ws";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
     EVENT_SIDEBAR_TOGGLE,
     VERSION,
 } from "../constants";
-import { AdminApi, Version } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../api/Config";
-import { WebsocketClient } from "../common/ws";
+import "../elements/messages/MessageContainer";
+import "../elements/messages/MessageContainer";
+import "../elements/notifications/NotificationDrawer";
+import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "../elements/router/Route";
+import "../elements/router/RouterOutlet";
+import "../elements/sidebar/Sidebar";
+import "../elements/sidebar/SidebarItem";
 import { ROUTES } from "../routesAdmin";
+import "./locale";
 
 @customElement("ak-interface-admin")
 export class AdminInterface extends LitElement {

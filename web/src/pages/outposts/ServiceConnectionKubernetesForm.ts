@@ -1,14 +1,18 @@
-import { KubernetesServiceConnection, OutpostsApi } from "@goauthentik/api";
-import { t } from "@lingui/macro";
-import { customElement } from "lit/decorators";
-import { html, TemplateResult } from "lit";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { ifDefined } from "lit/directives/if-defined";
-import "../../elements/forms/HorizontalFormElement";
-import "../../elements/CodeMirror";
 import YAML from "yaml";
-import { first } from "../../utils";
+
+import { t } from "@lingui/macro";
+
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+
+import { KubernetesServiceConnection, OutpostsApi } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../api/Config";
+import "../../elements/CodeMirror";
+import "../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../elements/forms/ModelForm";
+import { first } from "../../utils";
 
 @customElement("ak-service-connection-kubernetes-form")
 export class ServiceConnectionKubernetesForm extends ModelForm<

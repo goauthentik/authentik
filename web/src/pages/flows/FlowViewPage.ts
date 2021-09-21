@@ -1,24 +1,27 @@
 import { t } from "@lingui/macro";
+
 import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import "../../elements/Tabs";
+
+import AKGlobal from "../../authentik.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+import { Flow, FlowsApi } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/PageHeader";
-import "../../elements/events/ObjectChangelog";
+import "../../elements/Tabs";
 import "../../elements/buttons/SpinnerButton";
+import "../../elements/events/ObjectChangelog";
 import "../policies/BoundPoliciesList";
 import "./BoundStagesList";
 import "./FlowDiagram";
-import { Flow, FlowsApi } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../api/Config";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import AKGlobal from "../../authentik.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-flow-view")
 export class FlowViewPage extends LitElement {

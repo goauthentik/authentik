@@ -1,13 +1,16 @@
-import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { customElement } from "lit/decorators";
+
 import { html, TemplateResult } from "lit";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import "../../elements/forms/HorizontalFormElement";
-import "../../elements/forms/FormGroup";
-import { dateTimeLocal, first } from "../../utils";
-import { ModelForm } from "../../elements/forms/ModelForm";
+import { customElement } from "lit/decorators";
 import { until } from "lit/directives/until";
+
+import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../api/Config";
+import "../../elements/forms/FormGroup";
+import "../../elements/forms/HorizontalFormElement";
+import { ModelForm } from "../../elements/forms/ModelForm";
+import { dateTimeLocal, first } from "../../utils";
 
 @customElement("ak-token-form")
 export class TokenForm extends ModelForm<Token, string> {

@@ -1,3 +1,13 @@
+import { t } from "@lingui/macro";
+
+import { CSSResult } from "lit";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
+
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+
 import {
     CoreApi,
     Application,
@@ -6,21 +16,15 @@ import {
     PolicyEngineMode,
     CapabilitiesEnum,
 } from "@goauthentik/api";
-import { t } from "@lingui/macro";
-import { CSSResult } from "lit";
-import { customElement, property } from "lit/decorators";
-import { html, TemplateResult } from "lit";
+
 import { config, DEFAULT_CONFIG } from "../../api/Config";
-import { until } from "lit/directives/until";
-import { ifDefined } from "lit/directives/if-defined";
-import "../../elements/buttons/Dropdown";
 import "../../elements/Spinner";
-import "../../elements/forms/ProxyForm";
-import "../../elements/forms/ModalForm";
-import "../../elements/forms/HorizontalFormElement";
+import "../../elements/buttons/Dropdown";
 import "../../elements/forms/FormGroup";
-import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+import "../../elements/forms/HorizontalFormElement";
+import "../../elements/forms/ModalForm";
 import { ModelForm } from "../../elements/forms/ModelForm";
+import "../../elements/forms/ProxyForm";
 import { first } from "../../utils";
 
 @customElement("ak-application-form")

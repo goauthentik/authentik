@@ -1,29 +1,28 @@
 import { t } from "@lingui/macro";
+
 import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement } from "lit/decorators";
 
-import "../../elements/charts/AdminLoginsChart";
-import "../../elements/cards/AggregatePromiseCard";
-import "./TopApplicationsTable";
+import AKGlobal from "../../authentik.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
+import "../../elements/PageHeader";
+import "../../elements/cards/AggregatePromiseCard";
+import "../../elements/charts/AdminLoginsChart";
+import "./TopApplicationsTable";
 import "./cards/AdminStatusCard";
 import "./cards/BackupStatusCard";
+import "./cards/SystemStatusCard";
 import "./cards/VersionStatusCard";
 import "./cards/WorkerStatusCard";
-import "./cards/SystemStatusCard";
-
 import "./charts/FlowStatusChart";
+import "./charts/GroupCountStatusChart";
 import "./charts/LDAPSyncStatusChart";
 import "./charts/OutpostStatusChart";
-import "./charts/UserCountStatusChart";
-import "./charts/GroupCountStatusChart";
 import "./charts/PolicyStatusChart";
-
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import AKGlobal from "../../authentik.css";
-import "../../elements/PageHeader";
+import "./charts/UserCountStatusChart";
 
 @customElement("ak-admin-overview")
 export class AdminOverviewPage extends LitElement {

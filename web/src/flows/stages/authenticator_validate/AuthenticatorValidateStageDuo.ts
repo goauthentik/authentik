@@ -1,24 +1,28 @@
 import { t } from "@lingui/macro";
+
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import { ifDefined } from "lit/directives/if-defined";
+
+import AKGlobal from "../../../authentik.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import AKGlobal from "../../../authentik.css";
-import { BaseStage } from "../base";
-import { AuthenticatorValidateStage } from "./AuthenticatorValidateStage";
-import "../../../elements/forms/FormElement";
-import "../../../elements/EmptyState";
-import "../../FormStatic";
+
 import {
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest,
     DeviceChallenge,
 } from "@goauthentik/api";
-import { ifDefined } from "lit/directives/if-defined";
+
+import "../../../elements/EmptyState";
+import "../../../elements/forms/FormElement";
+import "../../FormStatic";
+import { BaseStage } from "../base";
+import { AuthenticatorValidateStage } from "./AuthenticatorValidateStage";
 
 @customElement("ak-stage-authenticator-validate-duo")
 export class AuthenticatorValidateStageWebDuo extends BaseStage<

@@ -1,37 +1,40 @@
-import "../elements/messages/MessageContainer";
+import { t } from "@lingui/macro";
+
 import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import { me } from "../api/Users";
-import "./locale";
-import "../elements/sidebar/SidebarItem";
-import { t } from "@lingui/macro";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import { until } from "lit/directives/until";
+
+import AKGlobal from "../authentik.css";
+import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
-import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
-import AKGlobal from "../authentik.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import "../elements/router/RouterOutlet";
-import "../elements/messages/MessageContainer";
-import "../elements/notifications/NotificationDrawer";
-import "../elements/sidebar/Sidebar";
+import { CurrentTenant, EventsApi } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG, tenant } from "../api/Config";
+import { me } from "../api/Users";
+import { WebsocketClient } from "../common/ws";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
     EVENT_REFRESH,
 } from "../constants";
-import { CurrentTenant, EventsApi } from "@goauthentik/api";
-import { DEFAULT_CONFIG, tenant } from "../api/Config";
-import { WebsocketClient } from "../common/ws";
-import { ROUTES } from "../routesUser";
-import { first } from "../utils";
+import "../elements/messages/MessageContainer";
+import "../elements/messages/MessageContainer";
+import "../elements/notifications/NotificationDrawer";
+import "../elements/router/RouterOutlet";
+import "../elements/sidebar/Sidebar";
 import { DefaultTenant } from "../elements/sidebar/SidebarBrand";
-import { until } from "lit/directives/until";
+import "../elements/sidebar/SidebarItem";
+import { ROUTES } from "../routesUser";
 import { uiConfig } from "../user/config";
+import { first } from "../utils";
+import "./locale";
 
 @customElement("ak-interface-user")
 export class UserInterface extends LitElement {

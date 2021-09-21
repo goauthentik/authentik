@@ -1,10 +1,15 @@
 import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
+
 import AKGlobal from "../authentik.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+import { EventsApi } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG, tenant } from "../api/Config";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
@@ -12,8 +17,6 @@ import {
     EVENT_SIDEBAR_TOGGLE,
     TITLE_DEFAULT,
 } from "../constants";
-import { DEFAULT_CONFIG, tenant } from "../api/Config";
-import { EventsApi } from "@goauthentik/api";
 
 @customElement("ak-page-header")
 export class PageHeader extends LitElement {

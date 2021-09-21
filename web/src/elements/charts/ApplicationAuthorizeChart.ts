@@ -1,8 +1,11 @@
+import { ChartData } from "chart.js";
+
 import { customElement, property } from "lit/decorators";
+
 import { Coordinate, CoreApi } from "@goauthentik/api";
+
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AKChart } from "./Chart";
-import { ChartData } from "chart.js";
 
 @customElement("ak-charts-application-authorize")
 export class ApplicationAuthorizeChart extends AKChart<Coordinate[]> {

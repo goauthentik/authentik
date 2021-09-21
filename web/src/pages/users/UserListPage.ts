@@ -1,25 +1,28 @@
 import { t } from "@lingui/macro";
+
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import { AKResponse } from "../../api/Client";
-import { TablePage } from "../../elements/table/TablePage";
+import { until } from "lit/directives/until";
+
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import "../../elements/forms/ModalForm";
-import "../../elements/buttons/ActionButton";
-import { TableColumn } from "../../elements/table/Table";
-import { PAGE_SIZE } from "../../constants";
 import { CoreApi, User } from "@goauthentik/api";
+
+import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG, tenant } from "../../api/Config";
+import { PAGE_SIZE } from "../../constants";
+import "../../elements/buttons/ActionButton";
 import "../../elements/forms/DeleteBulkForm";
+import "../../elements/forms/ModalForm";
+import { MessageLevel } from "../../elements/messages/Message";
+import { showMessage } from "../../elements/messages/MessageContainer";
+import { TableColumn } from "../../elements/table/Table";
+import { TablePage } from "../../elements/table/TablePage";
+import { first } from "../../utils";
+import "./ServiceAccountForm";
 import "./UserActiveForm";
 import "./UserForm";
 import "./UserResetEmailForm";
-import "./ServiceAccountForm";
-import { showMessage } from "../../elements/messages/MessageContainer";
-import { MessageLevel } from "../../elements/messages/Message";
-import { first } from "../../utils";
-import { until } from "lit/directives/until";
 
 @customElement("ak-user-list")
 export class UserListPage extends TablePage<User> {

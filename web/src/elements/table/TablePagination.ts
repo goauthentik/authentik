@@ -1,11 +1,14 @@
+import { t } from "@lingui/macro";
+
 import { CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import { AKPagination } from "../../api/Client";
-import { t } from "@lingui/macro";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+import AKGlobal from "../../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
-import AKGlobal from "../../authentik.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+import { AKPagination } from "../../api/Client";
 
 @customElement("ak-table-pagination")
 export class TablePagination extends LitElement {

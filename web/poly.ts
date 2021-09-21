@@ -1,5 +1,7 @@
+import "@webcomponents/webcomponentsjs";
+import "construct-style-sheets-polyfill";
+
+import "lit/polyfill-support";
+
 // @ts-ignore
 window["polymerSkipLoadingFontRoboto"] = true;
-import "construct-style-sheets-polyfill";
-import "@webcomponents/webcomponentsjs";
-import "lit/polyfill-support";

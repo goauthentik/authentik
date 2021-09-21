@@ -1,10 +1,13 @@
-import { Application, CoreApi, PolicyTestResult } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit/decorators";
+
 import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { until } from "lit/directives/until";
+
+import { Application, CoreApi, PolicyTestResult } from "@goauthentik/api";
+
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { Form } from "../../elements/forms/Form";
-import { until } from "lit/directives/until";
 import "../../elements/forms/HorizontalFormElement";
 
 @customElement("ak-application-check-access-form")

@@ -1,11 +1,13 @@
 import { LitElement, html, TemplateResult, CSSResult, css } from "lit";
 import { customElement, property } from "lit/decorators";
-import "./Message";
-import { APIMessage } from "./Message";
+
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import { EVENT_WS_MESSAGE, WS_MSG_TYPE_MESSAGE } from "../../constants";
+
 import { WSMessage } from "../../common/ws";
+import { EVENT_WS_MESSAGE, WS_MSG_TYPE_MESSAGE } from "../../constants";
+import "./Message";
+import { APIMessage } from "./Message";
 
 export function showMessage(message: APIMessage): void {
     const container = document.querySelector<MessageContainer>("ak-message-container");

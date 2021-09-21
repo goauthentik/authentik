@@ -1,15 +1,18 @@
-import { PoliciesApi, PromptStage, StagesApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { customElement } from "lit/decorators";
+
 import { html, TemplateResult } from "lit";
-import { DEFAULT_CONFIG } from "../../../api/Config";
+import { customElement } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
-import "../../../elements/forms/HorizontalFormElement";
-import "../../../elements/forms/FormGroup";
-import "../../../elements/forms/ModalForm";
-import "./PromptForm";
 import { until } from "lit/directives/until";
+
+import { PoliciesApi, PromptStage, StagesApi } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../../api/Config";
+import "../../../elements/forms/FormGroup";
+import "../../../elements/forms/HorizontalFormElement";
+import "../../../elements/forms/ModalForm";
 import { ModelForm } from "../../../elements/forms/ModelForm";
+import "./PromptForm";
 
 @customElement("ak-stage-prompt-form")
 export class PromptStageForm extends ModelForm<PromptStage, string> {

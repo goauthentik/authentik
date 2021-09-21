@@ -1,12 +1,15 @@
-import { StagesApi, UserSetting } from "@goauthentik/api";
 import { t } from "@lingui/macro";
+
 import { CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
 import { until } from "lit/directives/until";
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { EVENT_REFRESH } from "../../../constants";
+
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 
+import { StagesApi, UserSetting } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../../api/Config";
+import { EVENT_REFRESH } from "../../../constants";
 import "../../../elements/EmptyState";
 import "./UserSettingsAuthenticatorDuo";
 import "./UserSettingsAuthenticatorStatic";

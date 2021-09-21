@@ -1,14 +1,17 @@
-import { AdminApi, EventMatcherPolicy, EventsApi, PoliciesApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { customElement } from "lit/decorators";
+
 import { html, TemplateResult } from "lit";
-import { DEFAULT_CONFIG } from "../../../api/Config";
+import { customElement } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
-import "../../../elements/forms/HorizontalFormElement";
-import "../../../elements/forms/FormGroup";
 import { until } from "lit/directives/until";
-import { first } from "../../../utils";
+
+import { AdminApi, EventMatcherPolicy, EventsApi, PoliciesApi } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../../api/Config";
+import "../../../elements/forms/FormGroup";
+import "../../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../../elements/forms/ModelForm";
+import { first } from "../../../utils";
 
 @customElement("ak-policy-event-matcher-form")
 export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string> {

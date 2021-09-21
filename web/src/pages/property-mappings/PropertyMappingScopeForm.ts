@@ -1,12 +1,15 @@
-import { ScopeMapping, PropertymappingsApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { customElement } from "lit/decorators";
+
 import { html, TemplateResult } from "lit";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { ModelForm } from "../../elements/forms/ModelForm";
+import { customElement } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
-import "../../elements/forms/HorizontalFormElement";
+
+import { ScopeMapping, PropertymappingsApi } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/CodeMirror";
+import "../../elements/forms/HorizontalFormElement";
+import { ModelForm } from "../../elements/forms/ModelForm";
 
 @customElement("ak-property-mapping-scope-form")
 export class PropertyMappingScopeForm extends ModelForm<ScopeMapping, string> {

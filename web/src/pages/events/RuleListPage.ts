@@ -1,17 +1,19 @@
 import { t } from "@lingui/macro";
+
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import { AKResponse } from "../../api/Client";
-import { TablePage } from "../../elements/table/TablePage";
 
-import "../policies/BoundPoliciesList";
+import { EventsApi, NotificationRule } from "@goauthentik/api";
+
+import { AKResponse } from "../../api/Client";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { PAGE_SIZE } from "../../constants";
 import "../../elements/buttons/SpinnerButton";
+import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
 import { TableColumn } from "../../elements/table/Table";
-import { PAGE_SIZE } from "../../constants";
-import { EventsApi, NotificationRule } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import "../../elements/forms/DeleteBulkForm";
+import { TablePage } from "../../elements/table/TablePage";
+import "../policies/BoundPoliciesList";
 import "./RuleForm";
 
 @customElement("ak-event-rule-list")

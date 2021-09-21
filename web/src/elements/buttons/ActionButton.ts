@@ -1,7 +1,8 @@
 import { customElement, property } from "lit/decorators";
-import { SpinnerButton } from "./SpinnerButton";
-import { showMessage } from "../messages/MessageContainer";
+
 import { MessageLevel } from "../messages/Message";
+import { showMessage } from "../messages/MessageContainer";
+import { SpinnerButton } from "./SpinnerButton";
 
 @customElement("ak-action-button")
 export class ActionButton extends SpinnerButton {

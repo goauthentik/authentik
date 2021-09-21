@@ -1,10 +1,12 @@
 import { t } from "@lingui/macro";
+
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators";
+
+import "../../elements/buttons/SpinnerButton";
 import { DeleteForm } from "../../elements/forms/DeleteForm";
 import { MessageLevel } from "../../elements/messages/Message";
 import { showMessage } from "../../elements/messages/MessageContainer";
-import "../../elements/buttons/SpinnerButton";
 
 @customElement("ak-user-active-form")
 export class UserActiveForm extends DeleteForm {

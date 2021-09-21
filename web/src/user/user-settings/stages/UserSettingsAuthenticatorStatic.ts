@@ -1,12 +1,15 @@
-import { AuthenticatorsApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
+
 import { CSSResult, html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
 import { until } from "lit/directives/until";
+
+import { AuthenticatorsApi } from "@goauthentik/api";
+
 import { DEFAULT_CONFIG } from "../../../api/Config";
+import { EVENT_REFRESH } from "../../../constants";
 import { STATIC_TOKEN_STYLE } from "../../../flows/stages/authenticator_static/AuthenticatorStaticStage";
 import { BaseUserSettings } from "../BaseUserSettings";
-import { EVENT_REFRESH } from "../../../constants";
-import { customElement } from "lit/decorators";
 
 @customElement("ak-user-settings-authenticator-static")
 export class UserSettingsAuthenticatorStatic extends BaseUserSettings {

@@ -1,24 +1,26 @@
 import { t } from "@lingui/macro";
+
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import { AKResponse } from "../../api/Client";
-import { TableColumn } from "../../elements/table/Table";
-import { TablePage } from "../../elements/table/TablePage";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
 
-import "../../elements/buttons/SpinnerButton";
+import { Source, SourcesApi } from "@goauthentik/api";
+
+import { AKResponse } from "../../api/Client";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { PAGE_SIZE } from "../../constants";
 import "../../elements/buttons/Dropdown";
+import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
 import "../../elements/forms/ProxyForm";
-import { until } from "lit/directives/until";
-import { PAGE_SIZE } from "../../constants";
-import { Source, SourcesApi } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { ifDefined } from "lit/directives/if-defined";
+import { TableColumn } from "../../elements/table/Table";
+import { TablePage } from "../../elements/table/TablePage";
 import "./ldap/LDAPSourceForm";
-import "./saml/SAMLSourceForm";
 import "./oauth/OAuthSourceForm";
 import "./plex/PlexSourceForm";
+import "./saml/SAMLSourceForm";
 
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {

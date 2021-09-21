@@ -1,17 +1,21 @@
 import { t } from "@lingui/macro";
+
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
+import { until } from "lit/directives/until";
+
+import PFList from "@patternfly/patternfly/components/List/list.css";
+
+import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
+
+import { AKResponse } from "../../api/Client";
 import { EVENT_REFRESH } from "../../constants";
+import { PFSize } from "../Spinner";
 import { ModalButton } from "../buttons/ModalButton";
+import "../buttons/SpinnerButton";
 import { MessageLevel } from "../messages/Message";
 import { showMessage } from "../messages/MessageContainer";
-import "../buttons/SpinnerButton";
-import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import { until } from "lit/directives/until";
 import { Table, TableColumn } from "../table/Table";
-import { AKResponse } from "../../api/Client";
-import { PFSize } from "../Spinner";
 
 type BulkDeleteMetadata = { key: string; value: string }[];
 

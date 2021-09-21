@@ -1,10 +1,13 @@
+import FlowChart from "flowchart.js";
+
 import { html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import FlowChart from "flowchart.js";
-import { loading } from "../../utils";
+
 import { FlowsApi } from "@goauthentik/api";
+
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { EVENT_REFRESH } from "../../constants";
+import { loading } from "../../utils";
 
 export const FONT_COLOUR_DARK_MODE = "#fafafa";
 export const FONT_COLOUR_LIGHT_MODE = "#151515";

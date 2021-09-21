@@ -1,10 +1,13 @@
+import { t } from "@lingui/macro";
+
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import { BaseUserSettings } from "../BaseUserSettings";
-import { SourcesApi } from "@goauthentik/api";
 import { until } from "lit/directives/until";
+
+import { SourcesApi } from "@goauthentik/api";
+
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { t } from "@lingui/macro";
+import { BaseUserSettings } from "../BaseUserSettings";
 
 @customElement("ak-user-settings-source-plex")
 export class SourceSettingsPlex extends BaseUserSettings {

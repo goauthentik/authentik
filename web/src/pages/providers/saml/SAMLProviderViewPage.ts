@@ -1,31 +1,34 @@
 import { t } from "@lingui/macro";
+
 import { CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
 import { until } from "lit/directives/until";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
-import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
-import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import AKGlobal from "../../../authentik.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
-import "../../../elements/buttons/ModalButton";
-import "../../../elements/buttons/ActionButton";
-import "../../../elements/buttons/SpinnerButton";
+import AKGlobal from "../../../authentik.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
+import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
+import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
+
+import { ProvidersApi, SAMLProvider } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../../api/Config";
+import { EVENT_REFRESH } from "../../../constants";
 import "../../../elements/CodeMirror";
 import "../../../elements/Tabs";
+import "../../../elements/buttons/ActionButton";
+import "../../../elements/buttons/ModalButton";
+import "../../../elements/buttons/SpinnerButton";
 import "../../../elements/events/ObjectChangelog";
 import "../RelatedApplicationButton";
 import "./SAMLProviderForm";
-import { ProvidersApi, SAMLProvider } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { EVENT_REFRESH } from "../../../constants";
-import { ifDefined } from "lit/directives/if-defined";
 
 @customElement("ak-provider-saml-view")
 export class SAMLProviderViewPage extends LitElement {

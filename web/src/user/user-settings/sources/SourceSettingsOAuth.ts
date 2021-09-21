@@ -1,11 +1,14 @@
+import { t } from "@lingui/macro";
+
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import { BaseUserSettings } from "../BaseUserSettings";
-import { SourcesApi } from "@goauthentik/api";
-import { until } from "lit/directives/until";
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { t } from "@lingui/macro";
 import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
+
+import { SourcesApi } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../../api/Config";
+import { BaseUserSettings } from "../BaseUserSettings";
 
 @customElement("ak-user-settings-source-oauth")
 export class SourceSettingsOAuth extends BaseUserSettings {

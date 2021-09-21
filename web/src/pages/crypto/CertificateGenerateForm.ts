@@ -1,7 +1,10 @@
-import { CertificateGenerationRequest, CertificateKeyPair, CryptoApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { customElement } from "lit/decorators";
+
 import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
+
+import { CertificateGenerationRequest, CertificateKeyPair, CryptoApi } from "@goauthentik/api";
+
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { Form } from "../../elements/forms/Form";
 import "../../elements/forms/HorizontalFormElement";

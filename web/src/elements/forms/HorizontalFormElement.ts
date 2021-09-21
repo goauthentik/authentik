@@ -1,11 +1,14 @@
+import { t } from "@lingui/macro";
+
 import { LitElement, CSSResult, css } from "lit";
-import { customElement, property } from "lit/decorators";
 import { TemplateResult, html } from "lit";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { customElement, property } from "lit/decorators";
+
+import AKGlobal from "../../authentik.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import AKGlobal from "../../authentik.css";
-import { t } from "@lingui/macro";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
 import { FormGroup } from "./FormGroup";
 
 @customElement("ak-form-element-horizontal")

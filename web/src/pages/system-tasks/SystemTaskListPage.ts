@@ -1,17 +1,20 @@
 import { t } from "@lingui/macro";
+
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import { AKResponse } from "../../api/Client";
-import { TablePage } from "../../elements/table/TablePage";
+
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/buttons/ActionButton";
-import { TableColumn } from "../../elements/table/Table";
 import { AdminApi, Task, StatusEnum } from "@goauthentik/api";
+
+import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { PFColor } from "../../elements/Label";
 import { EVENT_REFRESH } from "../../constants";
+import { PFColor } from "../../elements/Label";
+import "../../elements/buttons/ActionButton";
+import "../../elements/buttons/SpinnerButton";
+import { TableColumn } from "../../elements/table/Table";
+import { TablePage } from "../../elements/table/TablePage";
 
 @customElement("ak-system-task-list")
 export class SystemTaskListPage extends TablePage<Task> {

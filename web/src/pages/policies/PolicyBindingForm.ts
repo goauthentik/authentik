@@ -1,16 +1,20 @@
-import { CoreApi, PoliciesApi, Policy, PolicyBinding } from "@goauthentik/api";
 import { t } from "@lingui/macro";
+
 import { css, CSSResult } from "lit";
-import { customElement, property } from "lit/decorators";
 import { html, TemplateResult } from "lit";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { until } from "lit/directives/until";
+import { customElement, property } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
-import { first, groupBy } from "../../utils";
-import "../../elements/forms/HorizontalFormElement";
-import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
+import { until } from "lit/directives/until";
+
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
+
+import { CoreApi, PoliciesApi, Policy, PolicyBinding } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../api/Config";
+import "../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../elements/forms/ModelForm";
+import { first, groupBy } from "../../utils";
 
 enum target {
     policy,

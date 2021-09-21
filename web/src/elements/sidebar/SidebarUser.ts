@@ -1,12 +1,13 @@
 import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement } from "lit/decorators";
-import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
-import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
-import { me } from "../../api/Users";
+import { ifDefined } from "lit/directives/if-defined";
 import { until } from "lit/directives/until";
+
+import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
+import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { ifDefined } from "lit/directives/if-defined";
+import { me } from "../../api/Users";
 
 @customElement("ak-sidebar-user")
 export class SidebarUser extends LitElement {

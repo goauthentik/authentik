@@ -1,3 +1,10 @@
+import { t } from "@lingui/macro";
+
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
+
 import {
     FlowsApi,
     FlowStageBinding,
@@ -6,15 +13,11 @@ import {
     Stage,
     StagesApi,
 } from "@goauthentik/api";
-import { t } from "@lingui/macro";
-import { customElement, property } from "lit/decorators";
-import { html, TemplateResult } from "lit";
+
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { until } from "lit/directives/until";
-import { ifDefined } from "lit/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
-import { first, groupBy } from "../../utils";
 import { ModelForm } from "../../elements/forms/ModelForm";
+import { first, groupBy } from "../../utils";
 
 @customElement("ak-stage-binding-form")
 export class StageBindingForm extends ModelForm<FlowStageBinding, string> {

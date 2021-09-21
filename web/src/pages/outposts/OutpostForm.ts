@@ -1,13 +1,17 @@
-import { Outpost, OutpostsApi, OutpostTypeEnum, ProvidersApi } from "@goauthentik/api";
-import { t } from "@lingui/macro";
-import { customElement, property } from "lit/decorators";
-import { html, TemplateResult } from "lit";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { until } from "lit/directives/until";
-import { ifDefined } from "lit/directives/if-defined";
-import "../../elements/forms/HorizontalFormElement";
-import "../../elements/CodeMirror";
 import YAML from "yaml";
+
+import { t } from "@lingui/macro";
+
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
+
+import { Outpost, OutpostsApi, OutpostTypeEnum, ProvidersApi } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../api/Config";
+import "../../elements/CodeMirror";
+import "../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../elements/forms/ModelForm";
 
 @customElement("ak-outpost-form")

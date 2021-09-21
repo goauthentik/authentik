@@ -1,12 +1,15 @@
-import { Prompt, PromptTypeEnum, StagesApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { customElement } from "lit/decorators";
+
 import { html, TemplateResult } from "lit";
-import { DEFAULT_CONFIG } from "../../../api/Config";
+import { customElement } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
+
+import { Prompt, PromptTypeEnum, StagesApi } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../../api/Config";
 import "../../../elements/forms/HorizontalFormElement";
-import { first } from "../../../utils";
 import { ModelForm } from "../../../elements/forms/ModelForm";
+import { first } from "../../../utils";
 
 @customElement("ak-prompt-form")
 export class PromptForm extends ModelForm<Prompt, string> {

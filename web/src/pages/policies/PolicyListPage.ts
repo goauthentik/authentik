@@ -1,26 +1,28 @@
 import { t } from "@lingui/macro";
+
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import { AKResponse } from "../../api/Client";
-import { TablePage } from "../../elements/table/TablePage";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
 
+import { PoliciesApi, Policy } from "@goauthentik/api";
+
+import { AKResponse } from "../../api/Client";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { PAGE_SIZE } from "../../constants";
 import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/SpinnerButton";
+import "../../elements/forms/ConfirmationForm";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
 import "../../elements/forms/ProxyForm";
-import "../../elements/forms/ConfirmationForm";
-import "./PolicyTestForm";
 import { TableColumn } from "../../elements/table/Table";
-import { until } from "lit/directives/until";
-import { PAGE_SIZE } from "../../constants";
-import { PoliciesApi, Policy } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { ifDefined } from "lit/directives/if-defined";
+import { TablePage } from "../../elements/table/TablePage";
+import "./PolicyTestForm";
 import "./dummy/DummyPolicyForm";
 import "./event_matcher/EventMatcherPolicyForm";
-import "./expression/ExpressionPolicyForm";
 import "./expiry/ExpiryPolicyForm";
+import "./expression/ExpressionPolicyForm";
 import "./hibp/HaveIBeenPwnedPolicyForm";
 import "./password/PasswordPolicyForm";
 import "./reputation/ReputationPolicyForm";

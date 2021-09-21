@@ -1,5 +1,7 @@
-import { i18n } from "@lingui/core";
 import { en } from "make-plural/plurals";
+
+import { i18n } from "@lingui/core";
+
 import { messages as localeEN } from "../locales/en";
 import { messages as localeDEBUG } from "../locales/pseudo-LOCALE";
 

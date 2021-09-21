@@ -1,22 +1,26 @@
-import "@polymer/paper-input/paper-input";
 import "@polymer/iron-form/iron-form";
+import { IronFormElement } from "@polymer/iron-form/iron-form";
+import "@polymer/paper-input/paper-input";
 import { PaperInputElement } from "@polymer/paper-input/paper-input";
-import { showMessage } from "../../elements/messages/MessageContainer";
+
 import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
+
 import AKGlobal from "../../authentik.css";
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
-import { MessageLevel } from "../messages/Message";
-import { IronFormElement } from "@polymer/iron-form/iron-form";
-import { camelToSnake, convertToSlug } from "../../utils";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
 import { ValidationError } from "@goauthentik/api";
+
 import { EVENT_REFRESH } from "../../constants";
+import { showMessage } from "../../elements/messages/MessageContainer";
+import { camelToSnake, convertToSlug } from "../../utils";
+import { MessageLevel } from "../messages/Message";
 
 export class APIError extends Error {
     constructor(public response: ValidationError) {

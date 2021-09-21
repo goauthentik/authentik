@@ -1,15 +1,19 @@
 import { t } from "@lingui/macro";
+
 import { CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
 import { until } from "lit/directives/until";
+
+import AKGlobal from "../../../authentik.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import AKGlobal from "../../../authentik.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
 import { FlowsApi, FlowsInstancesListDesignationEnum } from "@goauthentik/api";
+
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-stage-invitation-list-link")
 export class InvitationListLink extends LitElement {

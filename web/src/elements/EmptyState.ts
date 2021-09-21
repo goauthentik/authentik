@@ -1,9 +1,11 @@
 import { CSSResult, html, LitElement, TemplateResult } from "lit";
-import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import AKGlobal from "../authentik.css";
 import { customElement, property } from "lit/decorators";
+
+import AKGlobal from "../authentik.css";
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
 import { PFSize } from "./Spinner";
 
 @customElement("ak-empty-state")

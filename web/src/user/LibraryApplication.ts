@@ -1,16 +1,20 @@
 import { t } from "@lingui/macro";
+
 import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 import { until } from "lit/directives/until";
-import { Application } from "@goauthentik/api";
-import { me } from "../api/Users";
-import { truncate } from "../utils";
+
 import AKGlobal from "../authentik.css";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+import { Application } from "@goauthentik/api";
+
+import { me } from "../api/Users";
+import { truncate } from "../utils";
 import { uiConfig } from "./config";
 
 @customElement("ak-library-app")

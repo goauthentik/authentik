@@ -1,3 +1,11 @@
+import YAML from "yaml";
+
+import { t } from "@lingui/macro";
+
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { until } from "lit/directives/until";
+
 import {
     CoreApi,
     PoliciesApi,
@@ -5,15 +13,11 @@ import {
     PolicyTestRequest,
     PolicyTestResult,
 } from "@goauthentik/api";
-import { t } from "@lingui/macro";
-import { customElement, property } from "lit/decorators";
-import { html, TemplateResult } from "lit";
+
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { Form } from "../../elements/forms/Form";
-import { until } from "lit/directives/until";
-import "../../elements/forms/HorizontalFormElement";
 import "../../elements/CodeMirror";
-import YAML from "yaml";
+import { Form } from "../../elements/forms/Form";
+import "../../elements/forms/HorizontalFormElement";
 import { first } from "../../utils";
 
 @customElement("ak-policy-test-form")

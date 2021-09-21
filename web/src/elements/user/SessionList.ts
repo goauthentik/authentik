@@ -1,13 +1,15 @@
 import { t } from "@lingui/macro";
+
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import { AKResponse } from "../../api/Client";
-import { Table, TableColumn } from "../table/Table";
 
-import "../forms/DeleteBulkForm";
-import { PAGE_SIZE } from "../../constants";
 import { CoreApi, AuthenticatedSession } from "@goauthentik/api";
+
+import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
+import { PAGE_SIZE } from "../../constants";
+import "../forms/DeleteBulkForm";
+import { Table, TableColumn } from "../table/Table";
 
 @customElement("ak-user-session-list")
 export class AuthenticatedSessionList extends Table<AuthenticatedSession> {

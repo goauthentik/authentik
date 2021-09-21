@@ -1,39 +1,41 @@
 import { t } from "@lingui/macro";
+
 import { CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
 
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
-import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
-import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import AKGlobal from "../../authentik.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
+import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
+import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
+import { CoreApi, User } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { EVENT_REFRESH } from "../../constants";
+import "../../elements/CodeMirror";
+import { PFColor } from "../../elements/Label";
+import "../../elements/PageHeader";
+import "../../elements/Tabs";
 import "../../elements/buttons/ActionButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/charts/UserChart";
-import "../../elements/CodeMirror";
 import "../../elements/events/ObjectChangelog";
 import "../../elements/events/UserEvents";
 import "../../elements/forms/ModalForm";
+import { MessageLevel } from "../../elements/messages/Message";
+import { showMessage } from "../../elements/messages/MessageContainer";
 import "../../elements/oauth/UserCodeList";
 import "../../elements/oauth/UserRefreshList";
-import "../../elements/PageHeader";
-import "../../elements/Tabs";
 import "../../elements/user/SessionList";
 import "../../elements/user/UserConsentList";
 import "./UserForm";
-import { CoreApi, User } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { EVENT_REFRESH } from "../../constants";
-import { showMessage } from "../../elements/messages/MessageContainer";
-import { MessageLevel } from "../../elements/messages/Message";
-import { PFColor } from "../../elements/Label";
 
 @customElement("ak-user-view")
 export class UserViewPage extends LitElement {

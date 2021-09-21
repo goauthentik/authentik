@@ -1,18 +1,20 @@
 import { t } from "@lingui/macro";
+
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import { AKResponse } from "../../api/Client";
-import { Table, TableColumn } from "../table/Table";
+
 import { Event, EventsApi } from "@goauthentik/api";
 
-import "../Tabs";
-import "../buttons/ModalButton";
-import "../buttons/SpinnerButton";
-import "../buttons/Dropdown";
-import "../../pages/events/EventInfo";
-import { PAGE_SIZE } from "../../constants";
+import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { EventWithContext } from "../../api/Events";
+import { PAGE_SIZE } from "../../constants";
+import "../../pages/events/EventInfo";
+import "../Tabs";
+import "../buttons/Dropdown";
+import "../buttons/ModalButton";
+import "../buttons/SpinnerButton";
+import { Table, TableColumn } from "../table/Table";
 
 @customElement("ak-object-changelog")
 export class ObjectChangelog extends Table<Event> {

@@ -1,3 +1,10 @@
+import { t } from "@lingui/macro";
+
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
+
 import {
     FlowsApi,
     IdentificationStage,
@@ -6,16 +13,12 @@ import {
     FlowsInstancesListDesignationEnum,
     SourcesApi,
 } from "@goauthentik/api";
-import { t } from "@lingui/macro";
-import { customElement } from "lit/decorators";
-import { html, TemplateResult } from "lit";
+
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { ifDefined } from "lit/directives/if-defined";
-import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
-import { until } from "lit/directives/until";
-import { first } from "../../../utils";
+import "../../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../../elements/forms/ModelForm";
+import { first } from "../../../utils";
 
 @customElement("ak-stage-identification-form")
 export class IdentificationStageForm extends ModelForm<IdentificationStage, string> {
