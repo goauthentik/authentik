@@ -51,7 +51,7 @@
         "@lingui/cli": "^3.11.1",
         "@lingui/core": "^3.11.1",
         "@lingui/macro": "^3.11.1",
-        "@patternfly/patternfly": "^4.132.2",
+        "@patternfly/patternfly": "^4.135.2",
         "@polymer/iron-form": "^3.0.1",
         "@polymer/paper-input": "^3.2.1",
         "@rollup/plugin-babel": "^5.3.0",
