@@ -1,10 +1,10 @@
 import { CoreApi, CoreUsersRecoveryEmailRetrieveRequest, StagesApi, User } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
-import { html, TemplateResult } from "lit-html";
+import { customElement, property } from "lit/decorators";
+import { html, TemplateResult } from "lit";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { Form } from "../../elements/forms/Form";
-import { until } from "lit-html/directives/until";
+import { until } from "lit/directives/until";
 import "../../elements/forms/HorizontalFormElement";
 
 @customElement("ak-user-reset-email-form")

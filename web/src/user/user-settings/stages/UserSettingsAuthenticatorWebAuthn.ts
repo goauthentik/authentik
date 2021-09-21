@@ -1,7 +1,8 @@
-import { CSSResult, customElement, html, TemplateResult } from "lit-element";
+import { CSSResult, html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
 import { t } from "@lingui/macro";
 import { AuthenticatorsApi, WebAuthnDevice } from "@goauthentik/api";
-import { until } from "lit-html/directives/until";
+import { until } from "lit/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { BaseUserSettings } from "../BaseUserSettings";
 import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";
@@ -11,7 +12,7 @@ import "../../../elements/forms/DeleteForm";
 import "../../../elements/forms/Form";
 import "../../../elements/forms/ModalForm";
 import "../../../elements/forms/HorizontalFormElement";
-import { ifDefined } from "lit-html/directives/if-defined";
+import { ifDefined } from "lit/directives/if-defined";
 import { EVENT_REFRESH } from "../../../constants";
 
 @customElement("ak-user-settings-authenticator-webauthn")

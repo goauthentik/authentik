@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
-import { customElement, html, TemplateResult } from "lit-element";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
 import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
 import { AdminApi, StatusEnum, CapabilitiesEnum } from "@goauthentik/api";
 import { config, DEFAULT_CONFIG } from "../../../api/Config";

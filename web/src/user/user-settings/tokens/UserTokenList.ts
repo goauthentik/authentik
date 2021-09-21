@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
 import { AKResponse } from "../../../api/Client";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 

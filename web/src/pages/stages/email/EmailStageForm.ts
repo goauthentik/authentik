@@ -1,13 +1,13 @@
 import { EmailStage, StagesApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
-import { html, TemplateResult } from "lit-html";
+import { customElement, property } from "lit/decorators";
+import { html, TemplateResult } from "lit";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { ifDefined } from "lit-html/directives/if-defined";
+import { ifDefined } from "lit/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
 import { first } from "../../../utils";
-import { until } from "lit-html/directives/until";
+import { until } from "lit/directives/until";
 import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-stage-email-form")

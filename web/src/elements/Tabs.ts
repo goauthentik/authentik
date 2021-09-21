@@ -1,13 +1,6 @@
-import {
-    LitElement,
-    html,
-    customElement,
-    property,
-    CSSResult,
-    TemplateResult,
-    css,
-} from "lit-element";
-import { ifDefined } from "lit-html/directives/if-defined";
+import { LitElement, html, CSSResult, TemplateResult, css } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
 import PFTabs from "@patternfly/patternfly/components/Tabs/tabs.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 import AKGlobal from "../authentik.css";

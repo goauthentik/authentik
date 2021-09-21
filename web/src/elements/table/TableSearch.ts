@@ -1,5 +1,6 @@
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { ifDefined } from "lit-html/directives/if-defined";
+import { CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";

@@ -1,13 +1,13 @@
 import { CoreApi, FlowsApi, FlowsInstancesListDesignationEnum, Tenant } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { customElement } from "lit-element";
-import { html, TemplateResult } from "lit-html";
+import { customElement } from "lit/decorators";
+import { html, TemplateResult } from "lit";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/forms/HorizontalFormElement";
 import "../../elements/forms/FormGroup";
 import { first } from "../../utils";
 import { ModelForm } from "../../elements/forms/ModelForm";
-import { until } from "lit-html/directives/until";
+import { until } from "lit/directives/until";
 import { DefaultTenant } from "../../elements/sidebar/SidebarBrand";
 
 @customElement("ak-tenant-form")

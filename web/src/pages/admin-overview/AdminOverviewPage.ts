@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
-import { css, CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
 
 import "../../elements/charts/AdminLoginsChart";
 import "../../elements/cards/AggregatePromiseCard";

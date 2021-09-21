@@ -1,5 +1,6 @@
-import { CSSResult, LitElement, property } from "lit-element";
-import { html, TemplateResult } from "lit-html";
+import { CSSResult, LitElement } from "lit";
+import { property } from "lit/decorators";
+import { html, TemplateResult } from "lit";
 import { Table } from "./Table";
 import PFModalBox from "@patternfly/patternfly/components/ModalBox/modal-box.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";

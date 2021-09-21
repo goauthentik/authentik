@@ -1,4 +1,4 @@
-import { customElement } from "lit-element";
+import { customElement } from "lit/decorators";
 import { CoreApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { AKChart } from "../../../elements/charts/Chart";

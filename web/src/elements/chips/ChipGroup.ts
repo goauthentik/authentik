@@ -1,4 +1,5 @@
-import { CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
+import { CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFChip from "@patternfly/patternfly/components/Chip/chip.css";

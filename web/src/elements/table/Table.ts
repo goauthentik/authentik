@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
-import { CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
+import { CSSResult, html, LitElement, TemplateResult } from "lit";
+import { property } from "lit/decorators";
 import { AKResponse } from "../../api/Client";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -17,7 +18,7 @@ import "../EmptyState";
 import "../chips/Chip";
 import "../chips/ChipGroup";
 import { EVENT_REFRESH } from "../../constants";
-import { ifDefined } from "lit-html/directives/if-defined";
+import { ifDefined } from "lit/directives/if-defined";
 
 export class TableColumn {
     title: string;

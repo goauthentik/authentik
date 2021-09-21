@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
-import { customElement, html, property, TemplateResult } from "lit-element";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
 import { AKResponse } from "../../api/Client";
 import { Table, TableColumn } from "../../elements/table/Table";
 
@@ -11,11 +12,11 @@ import "../../elements/Tabs";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
 import "../policies/BoundPoliciesList";
-import { until } from "lit-html/directives/until";
+import { until } from "lit/directives/until";
 import { PAGE_SIZE } from "../../constants";
 import { FlowsApi, FlowStageBinding, StagesApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { ifDefined } from "lit-html/directives/if-defined";
+import { ifDefined } from "lit/directives/if-defined";
 
 @customElement("ak-bound-stages-list")
 export class BoundStagesList extends Table<FlowStageBinding> {

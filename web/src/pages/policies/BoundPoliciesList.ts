@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
-import { customElement, html, property, TemplateResult } from "lit-element";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
 import { AKResponse } from "../../api/Client";
 import { Table, TableColumn } from "../../elements/table/Table";
 import { PoliciesApi, PolicyBinding } from "@goauthentik/api";
@@ -9,7 +10,7 @@ import "../../elements/Tabs";
 import "../../elements/forms/ProxyForm";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
-import { until } from "lit-html/directives/until";
+import { until } from "lit/directives/until";
 import { PAGE_SIZE } from "../../constants";
 import { DEFAULT_CONFIG } from "../../api/Config";
 
@@ -17,7 +18,7 @@ import "../../elements/forms/ModalForm";
 import "../groups/GroupForm";
 import "../users/UserForm";
 import "./PolicyBindingForm";
-import { ifDefined } from "lit-html/directives/if-defined";
+import { ifDefined } from "lit/directives/if-defined";
 import { PFSize } from "../../elements/Spinner";
 
 @customElement("ak-bound-policies-list")

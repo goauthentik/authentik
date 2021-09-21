@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
-import { customElement, html, property, TemplateResult } from "lit-element";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
@@ -11,11 +12,11 @@ import "../../elements/forms/ProxyForm";
 import "../../elements/forms/ConfirmationForm";
 import "./PolicyTestForm";
 import { TableColumn } from "../../elements/table/Table";
-import { until } from "lit-html/directives/until";
+import { until } from "lit/directives/until";
 import { PAGE_SIZE } from "../../constants";
 import { PoliciesApi, Policy } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { ifDefined } from "lit-html/directives/if-defined";
+import { ifDefined } from "lit/directives/if-defined";
 import "./dummy/DummyPolicyForm";
 import "./event_matcher/EventMatcherPolicyForm";
 import "./expression/ExpressionPolicyForm";

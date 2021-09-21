@@ -1,4 +1,5 @@
-import { property, TemplateResult } from "lit-element";
+import { TemplateResult } from "lit";
+import { property } from "lit/decorators";
 import { EVENT_REFRESH } from "../../constants";
 import { Form } from "./Form";
 

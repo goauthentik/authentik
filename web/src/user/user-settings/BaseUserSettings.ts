@@ -1,4 +1,5 @@
-import { CSSResult, LitElement, property } from "lit-element";
+import { CSSResult, LitElement } from "lit";
+import { property } from "lit/decorators";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";

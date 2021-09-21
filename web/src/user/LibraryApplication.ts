@@ -1,15 +1,8 @@
 import { t } from "@lingui/macro";
-import {
-    css,
-    CSSResult,
-    customElement,
-    html,
-    LitElement,
-    property,
-    TemplateResult,
-} from "lit-element";
-import { ifDefined } from "lit-html/directives/if-defined";
-import { until } from "lit-html/directives/until";
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
 import { Application } from "@goauthentik/api";
 import { me } from "../api/Users";
 import { truncate } from "../utils";
@@ -29,7 +22,7 @@ export class LibraryApplication extends LitElement {
     selected = false;
 
     @property()
-    background: string = "";
+    background = "";
 
     static get styles(): CSSResult[] {
         return [

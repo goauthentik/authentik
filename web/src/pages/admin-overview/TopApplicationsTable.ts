@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
 import { EventsApi, EventTopPerUser } from "@goauthentik/api";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import AKGlobal from "../../authentik.css";

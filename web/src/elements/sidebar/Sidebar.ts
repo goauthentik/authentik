@@ -1,4 +1,5 @@
-import { css, CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";

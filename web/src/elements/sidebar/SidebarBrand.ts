@@ -1,12 +1,5 @@
-import {
-    css,
-    CSSResult,
-    customElement,
-    html,
-    LitElement,
-    property,
-    TemplateResult,
-} from "lit-element";
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";

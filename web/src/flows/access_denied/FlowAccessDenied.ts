@@ -1,5 +1,6 @@
 import { AccessDeniedChallenge, FlowChallengeResponseRequest } from "@goauthentik/api";
-import { CSSResult, customElement, html, TemplateResult } from "lit-element";
+import { CSSResult, html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
 import { BaseStage } from "../stages/base";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";

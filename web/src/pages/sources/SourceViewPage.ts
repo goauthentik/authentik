@@ -1,4 +1,5 @@
-import { customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
 import { Source, SourcesApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 
@@ -10,7 +11,7 @@ import "./ldap/LDAPSourceViewPage";
 import "./oauth/OAuthSourceViewPage";
 import "./saml/SAMLSourceViewPage";
 import "./plex/PlexSourceViewPage";
-import { ifDefined } from "lit-html/directives/if-defined";
+import { ifDefined } from "lit/directives/if-defined";
 
 @customElement("ak-source-view")
 export class SourceViewPage extends LitElement {

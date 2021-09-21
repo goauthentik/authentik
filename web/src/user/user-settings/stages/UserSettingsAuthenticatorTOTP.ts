@@ -1,7 +1,8 @@
 import { AuthenticatorsApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { customElement, html, TemplateResult } from "lit-element";
-import { until } from "lit-html/directives/until";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
+import { until } from "lit/directives/until";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { BaseUserSettings } from "../BaseUserSettings";
 import { EVENT_REFRESH } from "../../../constants";

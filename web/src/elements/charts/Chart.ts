@@ -1,4 +1,5 @@
-import { css, CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { property } from "lit/decorators";
 import { Chart, Plugin, Tick, ChartConfiguration, ChartData, ChartOptions } from "chart.js";
 import { Legend, Tooltip } from "chart.js";
 import { DoughnutController, LineController, BarController } from "chart.js";

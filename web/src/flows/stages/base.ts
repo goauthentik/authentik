@@ -1,5 +1,6 @@
 import { ErrorDetail } from "@goauthentik/api";
-import { html, LitElement, property, TemplateResult } from "lit-element";
+import { html, LitElement, TemplateResult } from "lit";
+import { property } from "lit/decorators";
 
 export interface StageHost {
     challenge?: unknown;

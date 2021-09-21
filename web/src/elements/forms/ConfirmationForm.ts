@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
-import { customElement, html, property, TemplateResult } from "lit-element";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
 import { EVENT_REFRESH } from "../../constants";
 import { ModalButton } from "../buttons/ModalButton";
 import "../buttons/SpinnerButton";

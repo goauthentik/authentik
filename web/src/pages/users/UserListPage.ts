@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -18,7 +19,7 @@ import "./ServiceAccountForm";
 import { showMessage } from "../../elements/messages/MessageContainer";
 import { MessageLevel } from "../../elements/messages/Message";
 import { first } from "../../utils";
-import { until } from "lit-html/directives/until";
+import { until } from "lit/directives/until";
 
 @customElement("ak-user-list")
 export class UserListPage extends TablePage<User> {

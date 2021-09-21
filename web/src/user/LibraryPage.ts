@@ -1,13 +1,6 @@
 import { t } from "@lingui/macro";
-import {
-    css,
-    CSSResult,
-    customElement,
-    html,
-    LitElement,
-    property,
-    TemplateResult,
-} from "lit-element";
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
 import Fuse from "fuse.js";
 import { Application, CoreApi } from "@goauthentik/api";
 import { AKResponse } from "../api/Client";
@@ -20,7 +13,7 @@ import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-sta
 import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import "./LibraryApplication";
-import { until } from "lit-html/directives/until";
+import { until } from "lit/directives/until";
 import { UIConfig, uiConfig } from "./config";
 
 @customElement("ak-library")

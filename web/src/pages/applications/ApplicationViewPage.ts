@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
 
 import "../../elements/Tabs";
 import "../../elements/charts/ApplicationAuthorizeChart";
@@ -20,7 +21,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import AKGlobal from "../../authentik.css";
-import { ifDefined } from "lit-html/directives/if-defined";
+import { ifDefined } from "lit/directives/if-defined";
 
 @customElement("ak-application-view")
 export class ApplicationViewPage extends LitElement {

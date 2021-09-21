@@ -1,6 +1,7 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { CSSResult, html, LitElement, TemplateResult } from "lit";
 import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
+import { customElement, property } from "lit/decorators";
 
 export enum PFSize {
     Small = "pf-m-sm",

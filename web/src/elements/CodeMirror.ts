@@ -1,12 +1,5 @@
-import {
-    css,
-    CSSResult,
-    customElement,
-    html,
-    LitElement,
-    property,
-    TemplateResult,
-} from "lit-element";
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
 
 import CodeMirror from "codemirror";
 import "codemirror/addon/display/autorefresh";
@@ -22,7 +15,7 @@ import CodeMirrorStyle from "codemirror/lib/codemirror.css";
 import CodeMirrorTheme from "codemirror/theme/monokai.css";
 import CodeMirrorDialogStyle from "codemirror/addon/dialog/dialog.css";
 import CodeMirrorShowHintStyle from "codemirror/addon/hint/show-hint.css";
-import { ifDefined } from "lit-html/directives/if-defined";
+import { ifDefined } from "lit/directives/if-defined";
 import YAML from "yaml";
 
 @customElement("ak-codemirror")

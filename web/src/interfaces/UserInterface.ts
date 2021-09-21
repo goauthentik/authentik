@@ -1,13 +1,6 @@
 import "../elements/messages/MessageContainer";
-import {
-    css,
-    CSSResult,
-    customElement,
-    html,
-    LitElement,
-    property,
-    TemplateResult,
-} from "lit-element";
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
 import { me } from "../api/Users";
 import "./locale";
 import "../elements/sidebar/SidebarItem";
@@ -37,7 +30,7 @@ import { WebsocketClient } from "../common/ws";
 import { ROUTES } from "../routesUser";
 import { first } from "../utils";
 import { DefaultTenant } from "../elements/sidebar/SidebarBrand";
-import { until } from "lit-html/directives/until";
+import { until } from "lit/directives/until";
 import { uiConfig } from "../user/config";
 
 @customElement("ak-interface-user")

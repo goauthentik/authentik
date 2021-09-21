@@ -1,5 +1,6 @@
-import { customElement, html, property, TemplateResult } from "lit-element";
-import { until } from "lit-html/directives/until";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { until } from "lit/directives/until";
 import { AggregateCard } from "./AggregateCard";
 import "../Spinner";
 import { PFSize } from "../Spinner";

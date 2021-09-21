@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, TemplateResult } from "lit-element";
+import { CSSResult, html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -17,7 +18,7 @@ import {
     StagesApi,
 } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { ifDefined } from "lit-html/directives/if-defined";
+import { ifDefined } from "lit/directives/if-defined";
 
 @customElement("ak-stage-authenticator-duo")
 export class AuthenticatorDuoStage extends BaseStage<

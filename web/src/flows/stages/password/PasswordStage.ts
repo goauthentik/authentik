@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, TemplateResult } from "lit-element";
+import { CSSResult, html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -13,7 +14,7 @@ import "../../../elements/EmptyState";
 import { PasswordManagerPrefill } from "../identification/IdentificationStage";
 import "../../FormStatic";
 import { PasswordChallenge, PasswordChallengeResponseRequest } from "@goauthentik/api";
-import { ifDefined } from "lit-html/directives/if-defined";
+import { ifDefined } from "lit/directives/if-defined";
 
 @customElement("ak-stage-password")
 export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChallengeResponseRequest> {

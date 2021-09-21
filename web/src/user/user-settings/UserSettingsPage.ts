@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
+import { CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
 
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -20,7 +21,7 @@ import "./tokens/UserTokenList";
 import "./UserSelfForm";
 import "./sources/SourceSettings";
 import "./stages/StageSettings";
-import { until } from "lit-html/directives/until";
+import { until } from "lit/directives/until";
 import { me } from "../../api/Users";
 
 @customElement("ak-user-settings")

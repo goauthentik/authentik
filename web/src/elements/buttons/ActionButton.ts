@@ -1,4 +1,4 @@
-import { customElement, property } from "lit-element";
+import { customElement, property } from "lit/decorators";
 import { SpinnerButton } from "./SpinnerButton";
 import { showMessage } from "../messages/MessageContainer";
 import { MessageLevel } from "../messages/Message";

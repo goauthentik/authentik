@@ -1,6 +1,7 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { CSSResult, html, LitElement, TemplateResult } from "lit";
 import PFExpandableSection from "../../node_modules/@patternfly/patternfly/components/ExpandableSection/expandable-section.css";
+import { customElement, property } from "lit/decorators";
 
 @customElement("ak-expand")
 export class Expand extends LitElement {

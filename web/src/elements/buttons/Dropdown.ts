@@ -1,4 +1,5 @@
-import { customElement, html, LitElement, TemplateResult } from "lit-element";
+import { html, LitElement, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
 
 @customElement("ak-dropdown")
 export class DropdownButton extends LitElement {

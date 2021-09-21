@@ -1,6 +1,7 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { until } from "lit-html/directives/until";
+import { CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { until } from "lit/directives/until";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
@@ -24,7 +25,7 @@ import "./SAMLProviderForm";
 import { ProvidersApi, SAMLProvider } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";
-import { ifDefined } from "lit-html/directives/if-defined";
+import { ifDefined } from "lit/directives/if-defined";
 
 @customElement("ak-provider-saml-view")
 export class SAMLProviderViewPage extends LitElement {

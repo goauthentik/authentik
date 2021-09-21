@@ -10,13 +10,13 @@ import {
     FlowsInstancesListDesignationEnum,
 } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { customElement } from "lit-element";
-import { html, TemplateResult } from "lit-html";
+import { customElement } from "lit/decorators";
+import { html, TemplateResult } from "lit";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
-import { ifDefined } from "lit-html/directives/if-defined";
-import { until } from "lit-html/directives/until";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
 import { first } from "../../../utils";
 import { ModelForm } from "../../../elements/forms/ModelForm";
 

@@ -1,6 +1,6 @@
-import { CSSResult } from "lit-element";
-import { html, TemplateResult } from "lit-html";
-import { ifDefined } from "lit-html/directives/if-defined";
+import { CSSResult } from "lit";
+import { html, TemplateResult } from "lit";
+import { ifDefined } from "lit/directives/if-defined";
 import { Table } from "./Table";
 import "../../elements/PageHeader";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";

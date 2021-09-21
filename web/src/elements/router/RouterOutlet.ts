@@ -1,12 +1,5 @@
-import {
-    css,
-    CSSResult,
-    customElement,
-    html,
-    LitElement,
-    property,
-    TemplateResult,
-} from "lit-element";
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
 import { Route } from "./Route";
 import { RouteMatch } from "./RouteMatch";
 import AKGlobal from "../../authentik.css";

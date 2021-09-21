@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
 import { OutpostHealth } from "@goauthentik/api";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import "../../elements/Spinner";

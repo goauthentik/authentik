@@ -1,4 +1,5 @@
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
 
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";

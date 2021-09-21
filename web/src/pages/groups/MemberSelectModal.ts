@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import { CoreApi, User } from "@goauthentik/api";
-import { customElement, property } from "lit-element";
-import { TemplateResult, html } from "lit-html";
+import { customElement, property } from "lit/decorators";
+import { TemplateResult, html } from "lit";
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { PAGE_SIZE } from "../../constants";

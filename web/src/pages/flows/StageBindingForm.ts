@@ -7,11 +7,11 @@ import {
     StagesApi,
 } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
-import { html, TemplateResult } from "lit-html";
+import { customElement, property } from "lit/decorators";
+import { html, TemplateResult } from "lit";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { until } from "lit-html/directives/until";
-import { ifDefined } from "lit-html/directives/if-defined";
+import { until } from "lit/directives/until";
+import { ifDefined } from "lit/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
 import { first, groupBy } from "../../utils";
 import { ModelForm } from "../../elements/forms/ModelForm";
@@ -131,6 +131,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Order`} ?required=${true} name="order">
+                <!-- @ts-ignore -->
                 <input
                     type="number"
                     value="${until(this.getOrder())}"

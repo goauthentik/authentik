@@ -1,13 +1,14 @@
 import { t } from "@lingui/macro";
-import { customElement, html, TemplateResult } from "lit-element";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
 import { CoreApi, UserSelf } from "@goauthentik/api";
-import { ifDefined } from "lit-html/directives/if-defined";
+import { ifDefined } from "lit/directives/if-defined";
 import { DEFAULT_CONFIG, tenant } from "../../api/Config";
 import "../../elements/forms/FormElement";
 import "../../elements/EmptyState";
 import "../../elements/forms/Form";
 import "../../elements/forms/HorizontalFormElement";
-import { until } from "lit-html/directives/until";
+import { until } from "lit/directives/until";
 import { ModelForm } from "../../elements/forms/ModelForm";
 
 @customElement("ak-user-self-form")

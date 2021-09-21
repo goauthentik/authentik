@@ -1,10 +1,10 @@
 import { ScopeMapping, PropertymappingsApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { customElement } from "lit-element";
-import { html, TemplateResult } from "lit-html";
+import { customElement } from "lit/decorators";
+import { html, TemplateResult } from "lit";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ModelForm } from "../../elements/forms/ModelForm";
-import { ifDefined } from "lit-html/directives/if-defined";
+import { ifDefined } from "lit/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
 import "../../elements/CodeMirror";
 

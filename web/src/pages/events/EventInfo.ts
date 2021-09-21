@@ -1,14 +1,7 @@
 import { t } from "@lingui/macro";
-import {
-    css,
-    CSSResult,
-    customElement,
-    html,
-    LitElement,
-    property,
-    TemplateResult,
-} from "lit-element";
-import { until } from "lit-html/directives/until";
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { until } from "lit/directives/until";
 import { EventActions, FlowsApi } from "@goauthentik/api";
 import "../../elements/Spinner";
 import "../../elements/Expand";

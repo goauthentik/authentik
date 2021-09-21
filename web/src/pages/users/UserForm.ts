@@ -1,16 +1,16 @@
 import { CoreApi, Group, User } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { customElement } from "lit-element";
-import { html, TemplateResult } from "lit-html";
+import { customElement } from "lit/decorators";
+import { html, TemplateResult } from "lit";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { ifDefined } from "lit-html/directives/if-defined";
+import { ifDefined } from "lit/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
 import "../../elements/CodeMirror";
 import "./GroupSelectModal";
 import YAML from "yaml";
 import { first } from "../../utils";
 import { ModelForm } from "../../elements/forms/ModelForm";
-import { until } from "lit-html/directives/until";
+import { until } from "lit/directives/until";
 
 @customElement("ak-user-form")
 export class UserForm extends ModelForm<User, number> {

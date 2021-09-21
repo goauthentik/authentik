@@ -2,15 +2,8 @@ import "@polymer/paper-input/paper-input";
 import "@polymer/iron-form/iron-form";
 import { PaperInputElement } from "@polymer/paper-input/paper-input";
 import { showMessage } from "../../elements/messages/MessageContainer";
-import {
-    css,
-    CSSResult,
-    customElement,
-    html,
-    LitElement,
-    property,
-    TemplateResult,
-} from "lit-element";
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";

@@ -1,13 +1,6 @@
 import "../elements/messages/MessageContainer";
-import {
-    css,
-    CSSResult,
-    customElement,
-    html,
-    LitElement,
-    property,
-    TemplateResult,
-} from "lit-element";
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
 import { me } from "../api/Users";
 import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "../elements/router/Route";
 import "./locale";
@@ -23,7 +16,7 @@ import "../elements/router/RouterOutlet";
 import "../elements/messages/MessageContainer";
 import "../elements/notifications/NotificationDrawer";
 import "../elements/sidebar/Sidebar";
-import { until } from "lit-html/directives/until";
+import { until } from "lit/directives/until";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,

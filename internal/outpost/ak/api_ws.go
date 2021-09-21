@@ -128,6 +128,7 @@ func (ac *APIController) startWSHealth() {
 		if err != nil {
 			ac.logger.WithField("loop", "ws-health").WithError(err).Warning("ws write error, reconnecting")
 			ac.wsConn.CloseAndReconnect()
+			time.Sleep(time.Second * 5)
 			continue
 		} else {
 			ConnectionStatus.With(prometheus.Labels{

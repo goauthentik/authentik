@@ -1,7 +1,8 @@
 import { Outpost, OutpostTypeEnum } from "@goauthentik/api";
-import { customElement, html, property, TemplateResult } from "lit-element";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
 import { t } from "@lingui/macro";
-import { ifDefined } from "lit-html/directives/if-defined";
+import { ifDefined } from "lit/directives/if-defined";
 import "../../elements/buttons/TokenCopyButton";
 import { ModalButton } from "../../elements/buttons/ModalButton";
 

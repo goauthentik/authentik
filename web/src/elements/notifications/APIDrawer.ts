@@ -1,13 +1,6 @@
 import { Middleware, ResponseContext } from "@goauthentik/api";
-import {
-    css,
-    CSSResult,
-    customElement,
-    html,
-    LitElement,
-    property,
-    TemplateResult,
-} from "lit-element";
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";

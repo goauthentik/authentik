@@ -1,4 +1,4 @@
-import { html } from "lit-html";
+import { html } from "lit";
 import { Route } from "./elements/router/Route";
 
 import "./user/LibraryPage";

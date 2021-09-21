@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
-import { customElement, html, TemplateResult } from "lit-element";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
 import { DeleteForm } from "../../elements/forms/DeleteForm";
 import { MessageLevel } from "../../elements/messages/Message";
 import { showMessage } from "../../elements/messages/MessageContainer";

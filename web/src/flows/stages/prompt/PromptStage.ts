@@ -1,6 +1,7 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, TemplateResult } from "lit-element";
-import { unsafeHTML } from "lit-html/directives/unsafe-html";
+import { CSSResult, html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
+import { unsafeHTML } from "lit/directives/unsafe-html";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";

@@ -1,4 +1,4 @@
-import { customElement } from "lit-element";
+import { customElement } from "lit/decorators";
 import { ChartData } from "chart.js";
 import { AdminApi, LoginMetrics } from "@goauthentik/api";
 import { AKChart } from "./Chart";

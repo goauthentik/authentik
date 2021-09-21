@@ -1,12 +1,12 @@
 import { CoreApi, UserServiceAccountRequest, UserServiceAccountResponse } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
-import { html, TemplateResult } from "lit-html";
+import { customElement, property } from "lit/decorators";
+import { html, TemplateResult } from "lit";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/forms/HorizontalFormElement";
 import { Form } from "../../elements/forms/Form";
 import { ModalForm } from "../../elements/forms/ModalForm";
-import { ifDefined } from "lit-html/directives/if-defined";
+import { ifDefined } from "lit/directives/if-defined";
 
 @customElement("ak-user-service-account")
 export class ServiceAccountForm extends Form<UserServiceAccountRequest> {

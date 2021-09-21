@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
-import { css, CSSResult, customElement, html, TemplateResult } from "lit-element";
+import { css, CSSResult, html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
 import { BaseStage } from "../base";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";

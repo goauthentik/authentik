@@ -1,14 +1,6 @@
 import { t } from "@lingui/macro";
-import {
-    LitElement,
-    html,
-    customElement,
-    property,
-    TemplateResult,
-    CSSResult,
-    css,
-} from "lit-element";
-
+import { LitElement, html, TemplateResult, CSSResult, css } from "lit";
+import { customElement, property } from "lit/decorators";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
@@ -17,7 +9,7 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import AKGlobal from "../authentik.css";
 
-import { unsafeHTML } from "lit-html/directives/unsafe-html";
+import { unsafeHTML } from "lit/directives/unsafe-html";
 import "../elements/LoadingOverlay";
 import "./access_denied/FlowAccessDenied";
 import "./stages/authenticator_static/AuthenticatorStaticStage";
@@ -45,7 +37,7 @@ import {
     ShellChallenge,
 } from "@goauthentik/api";
 import { DEFAULT_CONFIG, tenant } from "../api/Config";
-import { until } from "lit-html/directives/until";
+import { until } from "lit/directives/until";
 import { TITLE_DEFAULT } from "../constants";
 import { configureSentry } from "../api/Sentry";
 import { WebsocketClient } from "../common/ws";

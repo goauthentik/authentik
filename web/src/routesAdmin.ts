@@ -1,4 +1,4 @@
-import { html } from "lit-html";
+import { html } from "lit";
 import { Route, SLUG_REGEX, ID_REGEX, UUID_REGEX } from "./elements/router/Route";
 
 import "./pages/admin-overview/AdminOverviewPage";
