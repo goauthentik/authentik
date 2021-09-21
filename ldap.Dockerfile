@@ -17,4 +17,6 @@ COPY --from=builder /go/ldap /
 
 HEALTHCHECK CMD [ "wget", "--spider", "http://localhost:9300/akprox/ping" ]
 
+EXPOSE 3389 6636 9300
+
 ENTRYPOINT ["/ldap"]

@@ -14,7 +14,6 @@ class ProxyDockerController(DockerController):
         super().__init__(outpost, connection)
         self.deployment_ports = [
             DeploymentPort(9000, "http", "tcp"),
-            DeploymentPort(9300, "http-metrics", "tcp"),
             DeploymentPort(9443, "https", "tcp"),
         ]
 

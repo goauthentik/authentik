@@ -29,4 +29,6 @@ COPY --from=builder /go/proxy /
 
 HEALTHCHECK CMD [ "wget", "--spider", "http://localhost:9300/akprox/ping" ]
 
+EXPOSE 9000 9300 9443
+
 ENTRYPOINT ["/proxy"]
