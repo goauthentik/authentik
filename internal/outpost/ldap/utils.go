@@ -149,10 +149,10 @@ func (pi *ProviderInstance) ensureAttributes(attrs []*ldap.EntryAttribute, shoul
 }
 
 func (pi *ProviderInstance) mustHaveAttribute(attrs []*ldap.EntryAttribute, name string, value []string) []*ldap.EntryAttribute {
-	shouldSet := false
+	shouldSet := true
 	for _, attr := range attrs {
 		if attr.Name == name {
-			shouldSet = true
+			shouldSet = false
 		}
 	}
 	if shouldSet {
