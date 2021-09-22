@@ -60,7 +60,7 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 		if err == nil {
 			return
 		}
-		log.WithError(err.(error)).Error("recover in serach request")
+		log.WithError(err.(error)).Error("recover in search request")
 		sentry.CaptureException(err.(error))
 	}()
 
