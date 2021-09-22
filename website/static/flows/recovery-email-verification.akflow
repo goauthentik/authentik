@@ -83,6 +83,7 @@
             },
             "model": "authentik_stages_email.emailstage",
             "attrs": {
+                "use_global_settings": true,
                 "host": "localhost",
                 "port": 25,
                 "username": "",
