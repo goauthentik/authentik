@@ -17,6 +17,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { CurrentTenant, EventsApi } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG, tenant } from "../api/Config";
+import { configureSentry } from "../api/Sentry";
 import { me } from "../api/Users";
 import { WebsocketClient } from "../common/ws";
 import {
@@ -99,6 +100,7 @@ export class UserInterface extends LitElement {
             this.firstUpdated();
         });
         tenant().then((tenant) => (this.tenant = tenant));
+        configureSentry(true);
     }
 
     firstUpdated(): void {
