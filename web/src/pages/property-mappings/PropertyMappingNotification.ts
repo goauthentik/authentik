@@ -14,7 +14,7 @@ import { ModelForm } from "../../elements/forms/ModelForm";
 @customElement("ak-property-mapping-notification-form")
 export class PropertyMappingNotification extends ModelForm<NotificationWebhookMapping, string> {
     loadInstance(pk: string): Promise<NotificationWebhookMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsNotificationRetrieveRaw({
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsNotificationRetrieve({
             pmUuid: pk,
         });
     }
