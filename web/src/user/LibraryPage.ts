@@ -29,6 +29,9 @@ export class LibraryPage extends LitElement {
     @property({ attribute: false })
     selectedApp?: Application;
 
+    @property()
+    query?: string;
+
     fuse?: Fuse<Application>;
 
     constructor() {
@@ -38,6 +41,10 @@ export class LibraryPage extends LitElement {
             this.fuse = new Fuse(apps.results, {
                 keys: ["slug", "name"],
             });
+            if (!this.fuse || !this.query) return;
+            const matchingApps = this.fuse.search(this.query);
+            if (matchingApps.length < 1) return;
+            this.selectedApp = matchingApps[0].item;
         });
     }
 
@@ -116,9 +123,9 @@ export class LibraryPage extends LitElement {
                         ${config.enabledFeatures.search
                             ? html`<input
                                   @input=${(ev: InputEvent) => {
-                                      const query = (ev.target as HTMLInputElement).value;
+                                      this.query = (ev.target as HTMLInputElement).value;
                                       if (!this.fuse) return;
-                                      const apps = this.fuse.search(query);
+                                      const apps = this.fuse.search(this.query);
                                       if (apps.length < 1) return;
                                       this.selectedApp = apps[0].item;
                                   }}
