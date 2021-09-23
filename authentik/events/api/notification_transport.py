@@ -1,7 +1,10 @@
 """NotificationTransport API Views"""
+from typing import Any
+
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ListField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -28,6 +31,14 @@ class NotificationTransportSerializer(ModelSerializer):
     def get_mode_verbose(self, instance: NotificationTransport) -> str:
         """Return selected mode with a UI Label"""
         return TransportMode(instance.mode).label
+
+    def validate(self, attrs: dict[Any, str]) -> dict[Any, str]:
+        """Ensure the required fields are set."""
+        mode = attrs.get("mode")
+        if mode in [TransportMode.WEBHOOK, TransportMode.WEBHOOK_SLACK]:
+            if "webhook_url" not in attrs or attrs.get("webhook_url", "") == "":
+                raise ValidationError("Webhook URL may not be empty.")
+        return attrs
 
     class Meta:
 

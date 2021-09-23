@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Optional, Type, Union
 from uuid import uuid4
 
 from django.conf import settings
+from django.core.validators import URLValidator
 from django.db import models
 from django.http import HttpRequest
 from django.http.request import QueryDict
@@ -223,7 +224,7 @@ class NotificationTransport(models.Model):
     name = models.TextField(unique=True)
     mode = models.TextField(choices=TransportMode.choices)
 
-    webhook_url = models.TextField(blank=True)
+    webhook_url = models.TextField(blank=True, validators=[URLValidator()])
     webhook_mapping = models.ForeignKey(
         "NotificationWebhookMapping", on_delete=models.SET_DEFAULT, null=True, default=None
     )

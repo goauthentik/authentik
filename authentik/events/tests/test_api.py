@@ -4,7 +4,13 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import User
-from authentik.events.models import Event, EventAction, Notification, NotificationSeverity
+from authentik.events.models import (
+    Event,
+    EventAction,
+    Notification,
+    NotificationSeverity,
+    TransportMode,
+)
 
 
 class TestEventsAPI(APITestCase):
@@ -41,3 +47,23 @@ class TestEventsAPI(APITestCase):
         )
         notification.refresh_from_db()
         self.assertTrue(notification.seen)
+
+    def test_transport(self):
+        """Test transport API"""
+        response = self.client.post(
+            reverse("authentik_api:notificationtransport-list"),
+            data={
+                "name": "foo-with",
+                "mode": TransportMode.WEBHOOK,
+                "webhook_url": "http://foo.com",
+            },
+        )
+        self.assertEqual(response.status_code, 201)
+        response = self.client.post(
+            reverse("authentik_api:notificationtransport-list"),
+            data={
+                "name": "foo-without",
+                "mode": TransportMode.WEBHOOK,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
