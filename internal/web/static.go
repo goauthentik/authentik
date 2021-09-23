@@ -36,13 +36,15 @@ func (ws *WebServer) configureStatic() {
 	}
 	statRouter.PathPrefix("/static/dist/").Handler(distHandler)
 	statRouter.PathPrefix("/static/authentik/").Handler(authentikHandler)
+
 	// Prevent font-loading issues on safari, which loads fonts relatively to the URL the browser is on
 	statRouter.PathPrefix("/if/flow/{flow_slug}/assets").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 
-		http.StripPrefix(fmt.Sprintf("/if/flow/%s", vars["flow_slug"]), distFs).ServeHTTP(rw, r)
+		disableIndex(http.StripPrefix(fmt.Sprintf("/if/flow/%s", vars["flow_slug"]), distFs)).ServeHTTP(rw, r)
 	})
-	statRouter.PathPrefix("/if/admin/assets").Handler(http.StripPrefix("/if/admin", distFs))
+	statRouter.PathPrefix("/if/admin/assets").Handler(disableIndex(http.StripPrefix("/if/admin", distFs)))
+	statRouter.PathPrefix("/if/user/assets").Handler(disableIndex(http.StripPrefix("/if/admin", distFs)))
 
 	statRouter.PathPrefix("/media/").Handler(http.StripPrefix("/media", fs))
 
