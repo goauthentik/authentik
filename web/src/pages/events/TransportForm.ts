@@ -20,9 +20,14 @@ import { first } from "../../utils";
 @customElement("ak-event-transport-form")
 export class TransportForm extends ModelForm<NotificationTransport, string> {
     loadInstance(pk: string): Promise<NotificationTransport> {
-        return new EventsApi(DEFAULT_CONFIG).eventsTransportsRetrieve({
-            uuid: pk,
-        });
+        return new EventsApi(DEFAULT_CONFIG)
+            .eventsTransportsRetrieve({
+                uuid: pk,
+            })
+            .then((transport) => {
+                this.onModeChange(transport.mode);
+                return transport;
+            });
     }
 
     @property({ type: Boolean })
@@ -72,12 +77,6 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
         `;
     }
 
-    firstUpdated(): void {
-        if (this.instance) {
-            this.onModeChange(this.instance.mode);
-        }
-    }
-
     onModeChange(mode: string): void {
         if (
             mode === NotificationTransportModeEnum.Webhook ||
@@ -114,6 +113,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 ?hidden=${!this.showWebhook}
                 label=${t`Webhook URL`}
                 name="webhookUrl"
+                ?required=${true}
             >
                 <input
                     type="text"
