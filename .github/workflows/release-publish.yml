@@ -33,14 +33,14 @@ jobs:
         with:
           push: ${{ github.event_name == 'release' }}
           tags: |
-            beryju/authentik:2021.9.1,
+            beryju/authentik:2021.9.2,
             beryju/authentik:latest,
-            ghcr.io/goauthentik/server:2021.9.1,
+            ghcr.io/goauthentik/server:2021.9.2,
             ghcr.io/goauthentik/server:latest
           platforms: linux/amd64,linux/arm64
           context: .
       - name: Building Docker Image (stable)
-        if: ${{ github.event_name == 'release' && !contains('2021.9.1', 'rc') }}
+        if: ${{ github.event_name == 'release' && !contains('2021.9.2', 'rc') }}
         run: |
           docker pull beryju/authentik:latest
           docker tag beryju/authentik:latest beryju/authentik:stable
@@ -75,14 +75,14 @@ jobs:
         with:
           push: ${{ github.event_name == 'release' }}
           tags: |
-            beryju/authentik-proxy:2021.9.1,
+            beryju/authentik-proxy:2021.9.2,
             beryju/authentik-proxy:latest,
-            ghcr.io/goauthentik/proxy:2021.9.1,
+            ghcr.io/goauthentik/proxy:2021.9.2,
             ghcr.io/goauthentik/proxy:latest
           file: proxy.Dockerfile
           platforms: linux/amd64,linux/arm64
       - name: Building Docker Image (stable)
-        if: ${{ github.event_name == 'release' && !contains('2021.9.1', 'rc') }}
+        if: ${{ github.event_name == 'release' && !contains('2021.9.2', 'rc') }}
         run: |
           docker pull beryju/authentik-proxy:latest
           docker tag beryju/authentik-proxy:latest beryju/authentik-proxy:stable
@@ -117,14 +117,14 @@ jobs:
         with:
           push: ${{ github.event_name == 'release' }}
           tags: |
-            beryju/authentik-ldap:2021.9.1,
+            beryju/authentik-ldap:2021.9.2,
             beryju/authentik-ldap:latest,
-            ghcr.io/goauthentik/ldap:2021.9.1,
+            ghcr.io/goauthentik/ldap:2021.9.2,
             ghcr.io/goauthentik/ldap:latest
           file: ldap.Dockerfile
           platforms: linux/amd64,linux/arm64
       - name: Building Docker Image (stable)
-        if: ${{ github.event_name == 'release' && !contains('2021.9.1', 'rc') }}
+        if: ${{ github.event_name == 'release' && !contains('2021.9.2', 'rc') }}
         run: |
           docker pull beryju/authentik-ldap:latest
           docker tag beryju/authentik-ldap:latest beryju/authentik-ldap:stable
@@ -175,7 +175,7 @@ jobs:
           SENTRY_PROJECT: authentik
           SENTRY_URL: https://sentry.beryju.org
         with:
-          version: authentik@2021.9.1
+          version: authentik@2021.9.2
           environment: beryjuorg-prod
           sourcemaps: './web/dist'
           url_prefix: '~/static/dist'
