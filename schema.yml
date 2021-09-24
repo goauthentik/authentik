@@ -21580,6 +21580,7 @@ components:
           readOnly: true
         webhook_url:
           type: string
+          format: uri
         webhook_mapping:
           type: string
           format: uuid
@@ -21609,6 +21610,7 @@ components:
           $ref: '#/components/schemas/NotificationTransportModeEnum'
         webhook_url:
           type: string
+          format: uri
         webhook_mapping:
           type: string
           format: uuid
@@ -25808,6 +25810,7 @@ components:
           $ref: '#/components/schemas/NotificationTransportModeEnum'
         webhook_url:
           type: string
+          format: uri
         webhook_mapping:
           type: string
           format: uuid

@@ -199,41 +199,36 @@ export class Form<T> extends LitElement {
                 );
                 return r;
             })
-            .catch((ex: Response | Error) => {
+            .catch(async (ex: Response | Error) => {
                 if (ex instanceof Error) {
                     throw ex;
                 }
+                let msg = ex.statusText;
                 if (ex.status > 399 && ex.status < 500) {
-                    return ex.json().then((errorMessage: ValidationError) => {
-                        if (!errorMessage) return errorMessage;
-                        if (errorMessage instanceof Error) {
-                            throw errorMessage;
+                    const errorMessage: ValidationError = await ex.json();
+                    if (!errorMessage) return errorMessage;
+                    if (errorMessage instanceof Error) {
+                        throw errorMessage;
+                    }
+                    // assign all input-related errors to their elements
+                    const elements: PaperInputElement[] = ironForm._getSubmittableElements();
+                    elements.forEach((element) => {
+                        const elementName = element.name;
+                        if (!elementName) return;
+                        if (camelToSnake(elementName) in errorMessage) {
+                            element.errorMessage =
+                                errorMessage[camelToSnake(elementName)].join(", ");
+                            element.invalid = true;
                         }
-                        // assign all input-related errors to their elements
-                        const elements: PaperInputElement[] = ironForm._getSubmittableElements();
-                        elements.forEach((element) => {
-                            const elementName = element.name;
-                            if (!elementName) return;
-                            if (camelToSnake(elementName) in errorMessage) {
-                                element.errorMessage =
-                                    errorMessage[camelToSnake(elementName)].join(", ");
-                                element.invalid = true;
-                            }
-                        });
-                        if ("non_field_errors" in errorMessage) {
-                            this.nonFieldErrors = errorMessage["non_field_errors"];
-                        }
-                        throw new APIError(errorMessage);
                     });
-                }
-                throw ex;
-            })
-            .catch((ex: Error) => {
-                let msg = ex.toString();
-                // Only change the message when we have `detail`.
-                // Everything else is handled in the form.
-                if (ex instanceof APIError && "detail" in ex.response) {
-                    msg = ex.response.detail;
+                    if ("non_field_errors" in errorMessage) {
+                        this.nonFieldErrors = errorMessage["non_field_errors"];
+                    }
+                    // Only change the message when we have `detail`.
+                    // Everything else is handled in the form.
+                    if ("detail" in errorMessage) {
+                        msg = errorMessage.detail;
+                    }
                 }
                 // error is local or not from rest_framework
                 showMessage({
