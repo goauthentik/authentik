@@ -171,72 +171,78 @@ export class UserListPage extends TablePage<User> {
                                 </div>
                             </dd>
                         </div>
-                        ${until(
-                            tenant().then((te) => {
-                                if (!te.flowRecovery) {
-                                    return html``;
-                                }
-                                return html`<div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${t`Recovery`}</span
-                                        >
-                                    </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
-                                            <ak-action-button
-                                                .apiRequest=${() => {
-                                                    return new CoreApi(DEFAULT_CONFIG)
-                                                        .coreUsersRecoveryRetrieve({
-                                                            id: item.pk || 0,
-                                                        })
-                                                        .then((rec) => {
-                                                            showMessage({
-                                                                level: MessageLevel.success,
-                                                                message: t`Successfully generated recovery link`,
-                                                                description: rec.link,
-                                                            });
-                                                        })
-                                                        .catch((ex: Response) => {
-                                                            ex.json().then(() => {
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text">${t`Recovery`}</span>
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">
+                                    ${until(
+                                        tenant().then((te) => {
+                                            if (!te.flowRecovery) {
+                                                return html`
+                                                    <p>
+                                                        ${t`To directly reset a user's password, configure a recovery flow on the currently active tenant.`}
+                                                    </p>
+                                                `;
+                                            }
+                                            return html`
+                                                <ak-action-button
+                                                    .apiRequest=${() => {
+                                                        return new CoreApi(DEFAULT_CONFIG)
+                                                            .coreUsersRecoveryRetrieve({
+                                                                id: item.pk || 0,
+                                                            })
+                                                            .then((rec) => {
                                                                 showMessage({
-                                                                    level: MessageLevel.error,
-                                                                    message: t`No recovery flow is configured.`,
+                                                                    level: MessageLevel.success,
+                                                                    message: t`Successfully generated recovery link`,
+                                                                    description: rec.link,
+                                                                });
+                                                            })
+                                                            .catch((ex: Response) => {
+                                                                ex.json().then(() => {
+                                                                    showMessage({
+                                                                        level: MessageLevel.error,
+                                                                        message: t`No recovery flow is configured.`,
+                                                                    });
                                                                 });
                                                             });
-                                                        });
-                                                }}
-                                            >
-                                                ${t`Copy recovery link`}
-                                            </ak-action-button>
-                                            ${item.email
-                                                ? html`<ak-forms-modal
-                                                      .closeAfterSuccessfulSubmit=${false}
-                                                  >
-                                                      <span slot="submit"> ${t`Send link`} </span>
-                                                      <span slot="header">
-                                                          ${t`Send recovery link to user`}
-                                                      </span>
-                                                      <ak-user-reset-email-form
-                                                          slot="form"
-                                                          .user=${item}
+                                                    }}
+                                                >
+                                                    ${t`Copy recovery link`}
+                                                </ak-action-button>
+                                                ${item.email
+                                                    ? html`<ak-forms-modal
+                                                          .closeAfterSuccessfulSubmit=${false}
                                                       >
-                                                      </ak-user-reset-email-form>
-                                                      <button
-                                                          slot="trigger"
-                                                          class="pf-c-button pf-m-secondary"
-                                                      >
-                                                          ${t`Email recovery link`}
-                                                      </button>
-                                                  </ak-forms-modal>`
-                                                : html`<span
-                                                      >${t`Recovery link cannot be emailed, user has no email address saved.`}</span
-                                                  >`}
-                                        </div>
-                                    </dd>
-                                </div>`;
-                            }),
-                        )}
+                                                          <span slot="submit">
+                                                              ${t`Send link`}
+                                                          </span>
+                                                          <span slot="header">
+                                                              ${t`Send recovery link to user`}
+                                                          </span>
+                                                          <ak-user-reset-email-form
+                                                              slot="form"
+                                                              .user=${item}
+                                                          >
+                                                          </ak-user-reset-email-form>
+                                                          <button
+                                                              slot="trigger"
+                                                              class="pf-c-button pf-m-secondary"
+                                                          >
+                                                              ${t`Email recovery link`}
+                                                          </button>
+                                                      </ak-forms-modal>`
+                                                    : html`<span
+                                                          >${t`Recovery link cannot be emailed, user has no email address saved.`}</span
+                                                      >`}
+                                            `;
+                                        }),
+                                    )}
+                                </div>
+                            </dd>
+                        </div>
                     </dl>
                 </div>
             </td>
