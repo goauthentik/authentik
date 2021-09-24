@@ -19,12 +19,16 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
         self.api = CoreV1Api(controller.client)
 
     def reconcile(self, current: V1Service, reference: V1Service):
-        super().reconcile(current, reference)
         if len(current.spec.ports) != len(reference.spec.ports):
             raise NeedsRecreate()
         for port in reference.spec.ports:
             if port not in current.spec.ports:
                 raise NeedsRecreate()
+        # run the base reconcile last, as that will probably raise NeedsUpdate
+        # after an authentik update. However the ports might have also changed during
+        # the update, so this causes the service to be re-created with higher
+        # priority than being updated.
+        super().reconcile(current, reference)
 
     def get_reference_object(self) -> V1Service:
         """Get deployment object for outpost"""
