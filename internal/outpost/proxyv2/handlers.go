@@ -45,6 +45,15 @@ func (ps *ProxyServer) Handle(rw http.ResponseWriter, r *http.Request) {
 	host := web.GetHost(r)
 	a, ok := ps.apps[host]
 	if !ok {
+		// If we only have one handler, host name switching doesn't matter
+		if len(ps.apps) == 1 {
+			ps.log.WithField("host", host).Warning("passing to single app mux")
+			for k := range ps.apps {
+				ps.apps[k].ServeHTTP(rw, r)
+				return
+			}
+		}
+
 		ps.log.WithField("host", host).Warning("no app for hostname")
 		rw.WriteHeader(400)
 		return
