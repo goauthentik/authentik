@@ -25,7 +25,7 @@ This will dump the current database into the `./backups` folder. By defaults, th
 ### Restore
 
 :::warning
-Currently, it is only supported to restore backups into the same version they have been taken from. Different versions *might* work, but this is not guarantee.
+Currently, it is only supported to restore backups into the same version they have been taken from. Different versions *might* work, but this is not guaranteed.
 Instead, install the version the backup was taken with, restore the backup and then upgrade.
 :::
 

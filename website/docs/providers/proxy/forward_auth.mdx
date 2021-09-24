@@ -3,7 +3,7 @@ title: Forward auth
 ---
 
 Using forward auth uses your existing reverse proxy to do the proxying, and only uses the
-authentik outpost to check authentication and authoirzation.
+authentik outpost to check authentication and authorization.
 
 To use forward auth instead of proxying, you have to change a couple of settings.
 In the Proxy Provider, make sure to use one of the Forward auth modes.
@@ -28,7 +28,7 @@ applications to different users.
 The only configuration difference between single application and domain level is the host you specify.
 
 For single application, you'd use the domain which the application is running on, and only /akprox
-is redirect to the outpost.
+is redirected to the outpost.
 
 For domain level, you'd use the same domain as authentik.
 

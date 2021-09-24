@@ -18,7 +18,7 @@ On a fresh authentik install, your Outpost list will look like this:
 
 ![](./stock.png)
 
-Click the edit button on the right of the colum, and set the value of `authentik_host` to the URL you want to login with.
+Click the edit button on the right of the column, and set the value of `authentik_host` to the URL you want to login with.
 Make sure to set it to full URL, only configuring a hostname or FQDN will not work.
 
 ### Routing
