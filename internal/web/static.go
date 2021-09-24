@@ -44,7 +44,7 @@ func (ws *WebServer) configureStatic() {
 		disableIndex(http.StripPrefix(fmt.Sprintf("/if/flow/%s", vars["flow_slug"]), distFs)).ServeHTTP(rw, r)
 	})
 	statRouter.PathPrefix("/if/admin/assets").Handler(disableIndex(http.StripPrefix("/if/admin", distFs)))
-	statRouter.PathPrefix("/if/user/assets").Handler(disableIndex(http.StripPrefix("/if/admin", distFs)))
+	statRouter.PathPrefix("/if/user/assets").Handler(disableIndex(http.StripPrefix("/if/user", distFs)))
 
 	statRouter.PathPrefix("/media/").Handler(http.StripPrefix("/media", fs))
 
