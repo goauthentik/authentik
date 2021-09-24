@@ -308,7 +308,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         """Allow users to change information on their own profile"""
         data = UserSelfSerializer(instance=User.objects.get(pk=request.user.pk), data=request.data)
         if not data.is_valid():
-            return Response(data.errors)
+            return Response(data.errors, status=400)
         new_user = data.save()
         # If we're impersonating, we need to update that user object
         # since it caches the full object
