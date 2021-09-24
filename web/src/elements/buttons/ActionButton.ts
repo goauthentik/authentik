@@ -7,12 +7,11 @@ import { SpinnerButton } from "./SpinnerButton";
 @customElement("ak-action-button")
 export class ActionButton extends SpinnerButton {
     @property({ attribute: false })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    apiRequest: () => Promise<any> = () => {
+    apiRequest: () => Promise<unknown> = () => {
         throw new Error();
     };
 
-    callAction = (): Promise<void> => {
+    callAction = (): Promise<unknown> => {
         this.setLoading();
         return this.apiRequest().catch((e: Error | Response) => {
             if (e instanceof Error) {

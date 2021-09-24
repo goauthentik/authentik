@@ -1,9 +1,11 @@
+import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
 
 import { CoreApi } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ERROR_CLASS, SECONDARY_CLASS, SUCCESS_CLASS } from "../../constants";
+import { PFSize } from "../Spinner";
 import { ActionButton } from "./ActionButton";
 
 @customElement("ak-token-copy-button")
@@ -27,21 +29,58 @@ export class TokenCopyButton extends ActionButton {
                 if (!token.key) {
                     return Promise.reject();
                 }
-                return navigator.clipboard.writeText(token.key).then(() => {
-                    this.buttonClass = SUCCESS_CLASS;
-                    setTimeout(() => {
-                        this.buttonClass = SECONDARY_CLASS;
-                    }, 1500);
-                });
+                setTimeout(() => {
+                    this.buttonClass = SECONDARY_CLASS;
+                }, 1500);
+                this.buttonClass = SUCCESS_CLASS;
+                return token.key;
             })
-            .catch((err: Response | undefined) => {
+            .catch((err: Error | Response | undefined) => {
                 this.buttonClass = ERROR_CLASS;
-                return err?.json().then((errResp) => {
-                    throw new Error(errResp["detail"]);
+                if (err instanceof Error) {
                     setTimeout(() => {
                         this.buttonClass = SECONDARY_CLASS;
                     }, 1500);
+                    throw err;
+                }
+                return err?.json().then((errResp) => {
+                    setTimeout(() => {
+                        this.buttonClass = SECONDARY_CLASS;
+                    }, 1500);
+                    throw new Error(errResp["detail"]);
                 });
             });
     };
+
+    render(): TemplateResult {
+        return html`<button
+            class="pf-c-button pf-m-progress ${this.classList.toString()}"
+            @click=${() => {
+                if (this.isRunning === true) {
+                    return;
+                }
+                this.setLoading();
+                navigator.clipboard.write([
+                    new ClipboardItem({
+                        "text/plain": (this.callAction() as Promise<string>)
+                            .then((key: string) => {
+                                this.setDone(SUCCESS_CLASS);
+                                return key;
+                            })
+                            .catch((err: Error) => {
+                                this.setDone(ERROR_CLASS);
+                                throw err;
+                            }),
+                    }),
+                ]);
+            }}
+        >
+            ${this.isRunning
+                ? html`<span class="pf-c-button__progress">
+                      <ak-spinner size=${PFSize.Medium}></ak-spinner>
+                  </span>`
+                : ""}
+            <slot></slot>
+        </button>`;
+    }
 }

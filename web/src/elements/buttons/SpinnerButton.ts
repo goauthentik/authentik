@@ -15,7 +15,7 @@ export class SpinnerButton extends LitElement {
     isRunning = false;
 
     @property()
-    callAction?: () => Promise<void>;
+    callAction?: () => Promise<unknown>;
 
     static get styles(): CSSResult[] {
         return [
