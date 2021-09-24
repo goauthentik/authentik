@@ -37,7 +37,7 @@ class OAuthSource(Source):
         max_length=255,
         null=True,
         verbose_name=_("Access Token URL"),
-        help_text=_("URL used by authentik to retrive tokens."),
+        help_text=_("URL used by authentik to retrieve tokens."),
     )
     profile_url = models.CharField(
         max_length=255,

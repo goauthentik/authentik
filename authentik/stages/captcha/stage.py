@@ -54,7 +54,7 @@ class CaptchaChallengeResponse(ChallengeResponse):
 
 
 class CaptchaStageView(ChallengeStageView):
-    """Simple captcha checker, logic is handeled in django-captcha module"""
+    """Simple captcha checker, logic is handled in django-captcha module"""
 
     response_class = CaptchaChallengeResponse
 

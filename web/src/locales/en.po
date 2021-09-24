@@ -605,8 +605,8 @@ msgid "Certificate Fingerprint (SHA256)"
 msgstr "Certificate Fingerprint (SHA256)"
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts
-msgid "Certificate Subjet"
-msgstr "Certificate Subjet"
+msgid "Certificate Subject"
+msgstr "Certificate Subject"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Certificate used to sign outgoing Responses going to the Service Provider."
@@ -3659,8 +3659,8 @@ msgid "Select users to add"
 msgstr "Select users to add"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Select which scopes can be used by the client. The client stil has to specify the scope to access the data."
-msgstr "Select which scopes can be used by the client. The client stil has to specify the scope to access the data."
+msgid "Select which scopes can be used by the client. The client still has to specify the scope to access the data."
+msgstr "Select which scopes can be used by the client. The client still has to specify the scope to access the data."
 
 #: src/pages/sources/plex/PlexSourceForm.ts
 msgid "Select which server a user has to be a member of to be allowed to authenticate."
@@ -4551,6 +4551,10 @@ msgstr "Title"
 #: src/pages/events/EventInfo.ts
 msgid "To"
 msgstr "To"
+
+#: src/pages/users/UserListPage.ts
+msgid "To directly reset a user's password, configure a recovery flow on the currently active tenant."
+msgstr "To directly reset a user's password, configure a recovery flow on the currently active tenant."
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "To use SSL instead, use 'ldaps://' and disable this option."

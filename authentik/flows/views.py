@@ -126,12 +126,12 @@ class FlowExecutorView(APIView):
 
     # pylint: disable=unused-argument, too-many-return-statements
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
-        # Early check if theres an active Plan for the current session
+        # Early check if there's an active Plan for the current session
         if SESSION_KEY_PLAN in self.request.session:
             self.plan = self.request.session[SESSION_KEY_PLAN]
             if self.plan.flow_pk != self.flow.pk.hex:
                 self._logger.warning(
-                    "f(exec): Found existing plan for other flow, deleteing plan",
+                    "f(exec): Found existing plan for other flow, deleting plan",
                 )
                 # Existing plan is deleted from session and instance
                 self.plan = None
@@ -433,7 +433,7 @@ class ToDefaultFlow(View):
             plan: FlowPlan = self.request.session[SESSION_KEY_PLAN]
             if plan.flow_pk != flow.pk.hex:
                 LOGGER.warning(
-                    "f(def): Found existing plan for other flow, deleteing plan",
+                    "f(def): Found existing plan for other flow, deleting plan",
                     flow_slug=flow.slug,
                 )
                 del self.request.session[SESSION_KEY_PLAN]

@@ -181,7 +181,7 @@ def outpost_post_save(model_class: str, model_pk: Any):
 
 
 def outpost_send_update(model_instace: Model):
-    """Send outpost update to all registered outposts, irregardless to which authentik
+    """Send outpost update to all registered outposts, regardless to which authentik
     instance they are connected"""
     channel_layer = get_channel_layer()
     if isinstance(model_instace, OutpostModel):
@@ -208,7 +208,7 @@ def _outpost_single_update(outpost: Outpost, layer=None):
 @CELERY_APP.task()
 def outpost_local_connection():
     """Checks the local environment and create Service connections."""
-    # Explicitly check against token filename, as thats
+    # Explicitly check against token filename, as that's
     # only present when the integration is enabled
     if Path(SERVICE_TOKEN_FILENAME).exists():
         LOGGER.debug("Detected in-cluster Kubernetes Config")

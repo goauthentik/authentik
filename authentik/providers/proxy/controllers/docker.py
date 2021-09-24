@@ -1,4 +1,4 @@
-"""Proxy Provider Docker Contoller"""
+"""Proxy Provider Docker Controller"""
 from urllib.parse import urlparse
 
 from authentik.outposts.controllers.base import DeploymentPort
@@ -8,7 +8,7 @@ from authentik.providers.proxy.models import ProxyProvider
 
 
 class ProxyDockerController(DockerController):
-    """Proxy Provider Docker Contoller"""
+    """Proxy Provider Docker Controller"""
 
     def __init__(self, outpost: Outpost, connection: DockerServiceConnection):
         super().__init__(outpost, connection)

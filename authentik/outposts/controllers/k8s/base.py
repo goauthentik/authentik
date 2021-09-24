@@ -109,7 +109,7 @@ class KubernetesObjectReconciler(Generic[T]):
         except (OpenApiException, HTTPError) as exc:
             # pylint: disable=no-member
             if isinstance(exc, ApiException) and exc.status == 404:
-                self.logger.debug("Failed to get current, assuming non-existant")
+                self.logger.debug("Failed to get current, assuming non-existent")
                 return
             self.logger.debug("Other unhandled error", exc=exc)
             raise exc
@@ -129,7 +129,7 @@ class KubernetesObjectReconciler(Generic[T]):
         raise NotImplementedError
 
     def retrieve(self) -> T:
-        """API Wrapper to retrive object"""
+        """API Wrapper to retrieve object"""
         raise NotImplementedError
 
     def delete(self, reference: T):

@@ -277,7 +277,7 @@ ${this.instance?.redirectUris}</textarea
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Select which scopes can be used by the client. The client stil has to specify the scope to access the data.`}
+                            ${t`Select which scopes can be used by the client. The client still has to specify the scope to access the data.`}
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${t`Hold control/command to select multiple items.`}

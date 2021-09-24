@@ -178,8 +178,8 @@ export class UserListPage extends TablePage<User> {
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
                                     ${until(
-                                        tenant().then((te) => {
-                                            if (!te.flowRecovery) {
+                                        tenant().then((tenant) => {
+                                            if (!tenant.flowRecovery) {
                                                 return html`
                                                     <p>
                                                         ${t`To directly reset a user's password, configure a recovery flow on the currently active tenant.`}

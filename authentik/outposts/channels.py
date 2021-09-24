@@ -104,7 +104,7 @@ class OutpostConsumer(AuthJsonConsumer):
                 expected=self.outpost.config.kubernetes_replicas,
             ).inc()
             LOGGER.debug(
-                "added outpost instace to cache",
+                "added outpost instance to cache",
                 outpost=self.outpost,
                 instance_uuid=self.last_uid,
             )

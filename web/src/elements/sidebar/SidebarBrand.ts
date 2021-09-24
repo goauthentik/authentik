@@ -15,7 +15,7 @@ import { EVENT_SIDEBAR_TOGGLE } from "../../constants";
 import { first } from "../../utils";
 
 // If the viewport is wider than MIN_WIDTH, the sidebar
-// is shown besides the content, and not overlayed.
+// is shown besides the content, and not overlaid.
 export const MIN_WIDTH = 1200;
 
 export const DefaultTenant: CurrentTenant = {

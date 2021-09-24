@@ -63,7 +63,7 @@ class ConfigView(APIView):
 
     @extend_schema(responses={200: ConfigSerializer(many=False)})
     def get(self, request: Request) -> Response:
-        """Retrive public configuration options"""
+        """Retrieve public configuration options"""
         config = ConfigSerializer(
             {
                 "error_reporting_enabled": CONFIG.y("error_reporting.enabled"),

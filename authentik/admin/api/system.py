@@ -84,7 +84,7 @@ class SystemSerializer(PassiveSerializer):
         return now()
 
     def get_embedded_outpost_host(self, request: Request) -> str:
-        """Get the FQDN configured on the embeddded outpost"""
+        """Get the FQDN configured on the embedded outpost"""
         outposts = Outpost.objects.filter(managed=MANAGED_OUTPOST)
         if not outposts.exists():
             return ""

@@ -153,7 +153,7 @@ def protected_resource_view(scopes: list[str]):
 
                 if not set(scopes).issubset(set(token.scope)):
                     LOGGER.warning(
-                        "Scope missmatch.",
+                        "Scope mismatch.",
                         required=set(scopes),
                         token_has=set(token.scope),
                     )

@@ -33,7 +33,7 @@ class UserInfoView(View):
         for scope in ScopeMapping.objects.filter(scope_name__in=scopes).order_by("scope_name"):
             if scope.description != "":
                 scope_descriptions.append({"id": scope.scope_name, "name": scope.description})
-        # GitHub Compatibility Scopes are handeled differently, since they required custom paths
+        # GitHub Compatibility Scopes are handled differently, since they required custom paths
         # Hence they don't exist as Scope objects
         github_scope_map = {
             SCOPE_GITHUB_USER: ("GitHub Compatibility: Access your User Information"),

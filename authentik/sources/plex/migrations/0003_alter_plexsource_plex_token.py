@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="plexsource",
             name="plex_token",
-            field=models.TextField(help_text="Plex token used to check firends"),
+            field=models.TextField(help_text="Plex token used to check friends"),
         ),
     ]

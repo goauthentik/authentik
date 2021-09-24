@@ -20,6 +20,11 @@ test:
 lint-fix:
 	isort authentik tests lifecycle
 	black authentik tests lifecycle
+	codespell -I .github/codespell-words.txt -w authentik
+	codespell -I .github/codespell-words.txt -w internal
+	codespell -I .github/codespell-words.txt -w cmd
+	codespell -I .github/codespell-words.txt -w web/src
+	codespell -I .github/codespell-words.txt -w website/src
 
 lint:
 	pyright authentik tests lifecycle

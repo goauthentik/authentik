@@ -1,11 +1,11 @@
-"""LDAP Provider Kubernetes Contoller"""
+"""LDAP Provider Kubernetes Controller"""
 from authentik.outposts.controllers.base import DeploymentPort
 from authentik.outposts.controllers.kubernetes import KubernetesController
 from authentik.outposts.models import KubernetesServiceConnection, Outpost
 
 
 class LDAPKubernetesController(KubernetesController):
-    """LDAP Provider Kubernetes Contoller"""
+    """LDAP Provider Kubernetes Controller"""
 
     def __init__(self, outpost: Outpost, connection: KubernetesServiceConnection):
         super().__init__(outpost, connection)

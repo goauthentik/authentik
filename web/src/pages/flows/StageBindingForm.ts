@@ -104,7 +104,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                         })
                         .then((flows) => {
                             return flows.results.map((flow) => {
-                                // No ?selected check here, as this input isnt shown on update forms
+                                // No ?selected check here, as this input isn't shown on update forms
                                 return html`<option value=${ifDefined(flow.pk)}>
                                     ${flow.name} (${flow.slug})
                                 </option>`;

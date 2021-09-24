@@ -137,7 +137,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                         <div class="pf-c-description-list__group">
                             <dt class="pf-c-description-list__term">
                                 <span class="pf-c-description-list__text"
-                                    >${t`Certificate Subjet`}</span
+                                    >${t`Certificate Subject`}</span
                                 >
                             </dt>
                             <dd class="pf-c-description-list__description">

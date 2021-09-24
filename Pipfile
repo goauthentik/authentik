@@ -48,6 +48,7 @@ duo-client = "*"
 ua-parser = "*"
 deepmerge = "*"
 colorama = "*"
+codespell = "*"
 
 [dev-packages]
 bandit = "*"

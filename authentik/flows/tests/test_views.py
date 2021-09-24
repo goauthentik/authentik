@@ -438,7 +438,7 @@ class TestFlowExecutor(APITestCase):
 
         # third request, this should trigger the re-evaluate
         # A get request will evaluate the policies and this will return stage 4
-        # but it won't save it, hence we cant' check the plan
+        # but it won't save it, hence we can't check the plan
         response = self.client.get(exec_url)
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
