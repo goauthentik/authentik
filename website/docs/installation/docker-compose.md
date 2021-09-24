@@ -31,7 +31,7 @@ echo "AUTHENTIK_ERROR_REPORTING__ENABLED=true" >> .env
 
 ## Email configuration (optional, but recommended)
 
-It is also recommended to configure global email credentials. These are used by authentik to notify you about alerts, configuration issues. They can also be used by [Email stages](flow/stages/email/index.md) to send verification/recovery emails.
+It is also recommended to configure global email credentials. These are used by authentik to notify you about alerts and configuration issues. They can also be used by [Email stages](flow/stages/email/index.md) to send verification/recovery emails.
 
 Append this block to your `.env` file
 
