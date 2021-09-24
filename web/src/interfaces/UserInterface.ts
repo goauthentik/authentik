@@ -79,6 +79,7 @@ export class UserInterface extends LitElement {
                 }
                 .pf-c-brand {
                     min-height: 48px;
+                    height: 48px;
                 }
                 .has-notifications {
                     color: #2b9af3;
