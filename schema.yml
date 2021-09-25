@@ -27379,14 +27379,14 @@ components:
         cookie_domain:
           type: string
         token_validity:
-          type: string
-          description: 'Tokens not valid on or after current time + this value (Format:
-            hours=1;minutes=2;seconds=3).'
+          type: integer
+          readOnly: true
       required:
       - external_host
       - name
       - oidc_configuration
       - pk
+      - token_validity
     ProxyProvider:
       type: object
       description: ProxyProvider Serializer

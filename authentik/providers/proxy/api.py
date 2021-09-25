@@ -1,6 +1,7 @@
 """ProxyProvider API Views"""
 from typing import Any
 
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ListField, SerializerMethodField
@@ -10,6 +11,7 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.views.provider import ProviderInfoView
 from authentik.providers.proxy.models import ProxyMode, ProxyProvider
 
@@ -106,6 +108,17 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
     """Proxy provider serializer for outposts"""
 
     oidc_configuration = SerializerMethodField()
+    token_validity = SerializerMethodField()
+
+    @extend_schema_field(OpenIDConnectConfigurationSerializer)
+    def get_oidc_configuration(self, obj: ProxyProvider):
+        """Embed OpenID Connect provider information"""
+        return ProviderInfoView(request=self.context["request"]._request).get_info(obj)
+
+    @extend_schema_field(OpenApiTypes.INT)
+    def get_token_validity(self, obj: ProxyProvider) -> int:
+        """Get token validity as second count"""
+        return timedelta_from_string(obj.token_validity).total_seconds()
 
     class Meta:
 
@@ -129,11 +142,6 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
             "cookie_domain",
             "token_validity",
         ]
-
-    @extend_schema_field(OpenIDConnectConfigurationSerializer)
-    def get_oidc_configuration(self, obj: ProxyProvider):
-        """Embed OpenID Connect provider information"""
-        return ProviderInfoView(request=self.context["request"]._request).get_info(obj)
 
 
 class ProxyOutpostConfigViewSet(ReadOnlyModelViewSet):
