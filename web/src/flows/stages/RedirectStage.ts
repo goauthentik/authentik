@@ -44,7 +44,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
                             class="pf-c-button pf-m-primary pf-m-block"
                             href=${this.challenge.to}
                         >
-                            ${t`Continue`}
+                            ${t`Follow redirect`}
                         </a>
                     </div>
                 </form>

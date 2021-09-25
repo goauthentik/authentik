@@ -20308,7 +20308,10 @@ components:
             $ref: '#/components/schemas/FlowInspectorPlan'
         current_plan:
           $ref: '#/components/schemas/FlowInspectorPlan'
+        is_completed:
+          type: boolean
       required:
+      - is_completed
       - plans
     FlowInspectorPlan:
       type: object

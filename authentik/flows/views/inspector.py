@@ -10,7 +10,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
-from rest_framework.fields import ListField, SerializerMethodField
+from rest_framework.fields import BooleanField, ListField, SerializerMethodField
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -61,6 +61,7 @@ class FlowInspectionSerializer(PassiveSerializer):
 
     plans = ListField(child=FlowInspectorPlanSerializer())
     current_plan = FlowInspectorPlanSerializer(required=False)
+    is_completed = BooleanField()
 
 
 @method_decorator(xframe_options_sameorigin, name="dispatch")
@@ -101,13 +102,18 @@ class FlowInspectorView(APIView):
                 instance=plan, context={"request": request}
             )
             plans.append(plan_serializer.data)
-        response = {
-            "plans": plans,
-        }
+        is_completed = False
         if SESSION_KEY_PLAN in request.session:
             current_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
-            current_serializer = FlowInspectorPlanSerializer(
-                instance=current_plan, context={"request": request}
-            )
-            response["current_plan"] = current_serializer.data
+        else:
+            current_plan = request.session[SESSION_KEY_HISTORY][-1]
+            is_completed = True
+        current_serializer = FlowInspectorPlanSerializer(
+            instance=current_plan, context={"request": request}
+        )
+        response = {
+            "plans": plans,
+            "current_plan": current_serializer.data,
+            "is_completed": is_completed,
+        }
         return Response(response)

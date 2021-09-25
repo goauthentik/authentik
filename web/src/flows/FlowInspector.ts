@@ -130,7 +130,7 @@ export class FlowInspector extends LitElement {
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">
                                                     ${this.state.currentPlan?.nextPlannedStage
-                                                        ?.stageObj.name || "-"}
+                                                        ?.stageObj?.name || "-"}
                                                 </div>
                                             </dd>
                                         </div>
@@ -143,7 +143,7 @@ export class FlowInspector extends LitElement {
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">
                                                     ${this.state.currentPlan?.nextPlannedStage
-                                                        ?.stageObj.verboseName || "-"}
+                                                        ?.stageObj?.verboseName || "-"}
                                                 </div>
                                             </dd>
                                         </div>
@@ -154,17 +154,17 @@ export class FlowInspector extends LitElement {
                                                 >
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                ${this.state.currentPlan?.nextPlannedStage
-                                                    ? html`<ak-expand>
-                                                          <pre class="pf-c-description-list__text">
-${JSON.stringify(this.getStage(this.state.currentPlan?.nextPlannedStage?.stageObj), null, 4)}</pre
-                                                          >
-                                                      </ak-expand>`
-                                                    : html` <div
+                                                ${this.state.isCompleted
+                                                    ? html` <div
                                                           class="pf-c-description-list__text"
                                                       >
                                                           ${t`This flow is completed.`}
-                                                      </div>`}
+                                                      </div>`
+                                                    : html`<ak-expand>
+                                                          <pre class="pf-c-description-list__text">
+${JSON.stringify(this.getStage(this.state.currentPlan?.nextPlannedStage?.stageObj), null, 4)}</pre
+                                                          >
+                                                      </ak-expand>`}
                                             </dd>
                                         </div>
                                     </dl>
@@ -192,12 +192,18 @@ ${JSON.stringify(this.getStage(this.state.currentPlan?.nextPlannedStage?.stageOb
                                                 </div>
                                                 <div class="pf-c-progress-stepper__step-main">
                                                     <div class="pf-c-progress-stepper__step-title">
-                                                        ${plan.currentStage.stageObj.name}
+                                                        ${plan.currentStage.stageObj?.name}
+                                                    </div>
+                                                    <div
+                                                        class="pf-c-progress-stepper__step-description"
+                                                    >
+                                                        ${plan.currentStage.stageObj?.verboseName}
                                                     </div>
                                                 </div>
                                             </li> `;
                                         })}
-                                        ${this.state.currentPlan?.currentStage
+                                        ${this.state.currentPlan?.currentStage &&
+                                        !this.state.isCompleted
                                             ? html` <li
                                                   class="pf-c-progress-stepper__step pf-m-current pf-m-info"
                                               >
@@ -218,12 +224,19 @@ ${JSON.stringify(this.getStage(this.state.currentPlan?.nextPlannedStage?.stageOb
                                                           class="pf-c-progress-stepper__step-title"
                                                       >
                                                           ${this.state.currentPlan?.currentStage
-                                                              ?.stageObj.name}
+                                                              ?.stageObj?.name}
+                                                      </div>
+                                                      <div
+                                                          class="pf-c-progress-stepper__step-description"
+                                                      >
+                                                          ${this.state.currentPlan?.currentStage
+                                                              ?.stageObj?.verboseName}
                                                       </div>
                                                   </div>
                                               </li>`
                                             : html``}
-                                        ${this.state.currentPlan?.nextPlannedStage
+                                        ${this.state.currentPlan?.nextPlannedStage &&
+                                        !this.state.isCompleted
                                             ? html`<li
                                                   class="pf-c-progress-stepper__step pf-m-pending"
                                               >
@@ -239,7 +252,13 @@ ${JSON.stringify(this.getStage(this.state.currentPlan?.nextPlannedStage?.stageOb
                                                           class="pf-c-progress-stepper__step-title"
                                                       >
                                                           ${this.state.currentPlan.nextPlannedStage
-                                                              .stageObj.name}
+                                                              .stageObj?.name}
+                                                      </div>
+                                                      <div
+                                                          class="pf-c-progress-stepper__step-description"
+                                                      >
+                                                          ${this.state.currentPlan?.nextPlannedStage
+                                                              ?.stageObj?.verboseName}
                                                       </div>
                                                   </div>
                                               </li>`
@@ -254,11 +273,9 @@ ${JSON.stringify(this.getStage(this.state.currentPlan?.nextPlannedStage?.stageOb
                                     <div class="pf-c-card__title">${t`Current plan cntext`}</div>
                                 </div>
                                 <div class="pf-c-card__body">
-                                    ${this.state.currentPlan?.planContext
-                                        ? html`<pre>
+                                    <pre>
 ${JSON.stringify(this.state.currentPlan?.planContext, null, 4)}</pre
-                                          >`
-                                        : html`<p>${t`This flow is completed.`}</p>`}
+                                    >
                                 </div>
                             </div>
                         </div>
@@ -268,7 +285,7 @@ ${JSON.stringify(this.state.currentPlan?.planContext, null, 4)}</pre
                                     <div class="pf-c-card__title">${t`Session ID`}</div>
                                 </div>
                                 <div class="pf-c-card__body">
-                                    <code class="break">${this.state.currentPlan.sessionId}</code>
+                                    <code class="break">${this.state.currentPlan?.sessionId}</code>
                                 </div>
                             </div>
                         </div>

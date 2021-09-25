@@ -927,7 +927,6 @@ msgstr ""
 msgid "Context"
 msgstr ""
 
-#: src/flows/stages/RedirectStage.ts
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
@@ -1864,6 +1863,10 @@ msgstr ""
 
 #: src/pages/flows/FlowListPage.ts
 msgid "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them."
+msgstr ""
+
+#: src/flows/stages/RedirectStage.ts
+msgid "Follow redirect"
 msgstr ""
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
@@ -4538,7 +4541,6 @@ msgstr ""
 msgid "These policies control which users can access this application."
 msgstr ""
 
-#: src/flows/FlowInspector.ts
 #: src/flows/FlowInspector.ts
 msgid "This flow is completed."
 msgstr ""
