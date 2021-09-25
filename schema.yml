@@ -4743,6 +4743,32 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /flows/inspector/{flow_slug}/:
+    get:
+      operationId: flows_inspector_get
+      description: Get current flow state and record it
+      parameters:
+      - in: path
+        name: flow_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - flows
+      security:
+      - authentik: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlowInspector'
+          description: ''
+        '400':
+          description: No flow plan in session.
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /flows/instances/:
     get:
       operationId: flows_instances_list
@@ -20273,6 +20299,38 @@ components:
           readOnly: true
       required:
       - diagram
+    FlowInspector:
+      type: object
+      description: Serializer for inspect endpoint
+      properties:
+        plans:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowInspectorPlan'
+        current_plan:
+          $ref: '#/components/schemas/FlowInspectorPlan'
+      required:
+      - current_plan
+      - plans
+    FlowInspectorPlan:
+      type: object
+      description: Serializer for an active FlowPlan
+      properties:
+        plan_context:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+        next_planned_stage:
+          allOf:
+          - $ref: '#/components/schemas/FlowStageBinding'
+          readOnly: true
+        session_id:
+          type: string
+          readOnly: true
+      required:
+      - next_planned_stage
+      - plan_context
+      - session_id
     FlowRequest:
       type: object
       description: Flow Serializer

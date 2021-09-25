@@ -14,7 +14,7 @@ from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, InvalidResponseAction
 from authentik.flows.planner import FlowPlan, FlowPlanner
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageView
-from authentik.flows.views import NEXT_ARG_NAME, SESSION_KEY_PLAN, FlowExecutorView
+from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.config import CONFIG
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding

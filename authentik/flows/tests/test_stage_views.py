@@ -4,7 +4,7 @@ from typing import Callable, Type
 from django.test import RequestFactory, TestCase
 
 from authentik.flows.stage import StageView
-from authentik.flows.views import FlowExecutorView
+from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.utils.reflection import all_subclasses
 
 

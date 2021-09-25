@@ -9,7 +9,7 @@ from structlog.stdlib import get_logger
 
 from authentik.flows.models import in_memory_stage
 from authentik.flows.stage import StageView
-from authentik.flows.views import SESSION_KEY_GET
+from authentik.flows.views.executor import SESSION_KEY_GET
 from authentik.stages.invitation.models import Invitation, InvitationStage
 from authentik.stages.invitation.signals import invitation_used
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT

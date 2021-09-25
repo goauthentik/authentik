@@ -32,7 +32,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner, cach
 from authentik.flows.transfer.common import DataclassEncoder
 from authentik.flows.transfer.exporter import FlowExporter
 from authentik.flows.transfer.importer import FlowImporter
-from authentik.flows.views import SESSION_KEY_PLAN
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
 
 LOGGER = get_logger()

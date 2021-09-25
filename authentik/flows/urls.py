@@ -2,7 +2,7 @@
 from django.urls import path
 
 from authentik.flows.models import FlowDesignation
-from authentik.flows.views import CancelView, ConfigureFlowInitView, ToDefaultFlow
+from authentik.flows.views.executor import CancelView, ConfigureFlowInitView, ToDefaultFlow
 
 urlpatterns = [
     path(

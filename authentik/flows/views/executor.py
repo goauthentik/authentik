@@ -52,6 +52,7 @@ NEXT_ARG_NAME = "next"
 SESSION_KEY_PLAN = "authentik_flows_plan"
 SESSION_KEY_APPLICATION_PRE = "authentik_flows_application_pre"
 SESSION_KEY_GET = "authentik_flows_get"
+SESSION_KEY_HISTORY = "authentik_flows_history"
 
 
 def challenge_types():
@@ -140,6 +141,7 @@ class FlowExecutorView(APIView):
 
         # Don't check session again as we've either already loaded the plan or we need to plan
         if not self.plan:
+            request.session[SESSION_KEY_HISTORY] = []
             self._logger.debug("f(exec): No active Plan found, initiating planner")
             try:
                 self.plan = self._initiate_plan()
@@ -321,6 +323,7 @@ class FlowExecutorView(APIView):
             "f(exec): Stage ok",
             stage_class=class_to_path(self.current_stage_view.__class__),
         )
+        self.request.session[SESSION_KEY_HISTORY].append(self.plan)
         self.plan.pop()
         self.request.session[SESSION_KEY_PLAN] = self.plan
         if self.plan.bindings:
@@ -368,6 +371,10 @@ class FlowExecutorView(APIView):
             SESSION_KEY_APPLICATION_PRE,
             SESSION_KEY_PLAN,
             SESSION_KEY_GET,
+            # We don't delete the history on purpose, as a user might
+            # still be inspecting it.
+            # It's only deleted on a fresh executions
+            # SESSION_KEY_HISTORY,
         ]
         for key in keys_to_delete:
             if key in self.request.session:

@@ -23,7 +23,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import StageView
-from authentik.flows.views import SESSION_KEY_PLAN
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.lib.views import bad_request_message

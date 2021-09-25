@@ -16,7 +16,7 @@ from authentik.core.models import Token
 from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
-from authentik.flows.views import SESSION_KEY_GET
+from authentik.flows.views.executor import SESSION_KEY_GET
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
