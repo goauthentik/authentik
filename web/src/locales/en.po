@@ -1151,6 +1151,10 @@ msgstr "Created {0}"
 msgid "Creation Date"
 msgstr "Creation Date"
 
+#: src/flows/FlowInspector.ts
+msgid "Current plan cntext"
+msgstr "Current plan cntext"
+
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/flows/FlowForm.ts
 msgid "Currently set to:"
@@ -1793,6 +1797,10 @@ msgstr "Flow"
 msgid "Flow Overview"
 msgstr "Flow Overview"
 
+#: src/flows/FlowInspector.ts
+msgid "Flow inspector"
+msgstr "Flow inspector"
+
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
@@ -2350,6 +2358,7 @@ msgstr "Load servers"
 #: src/elements/table/Table.ts
 #: src/flows/FlowExecutor.ts
 #: src/flows/FlowExecutor.ts
+#: src/flows/FlowInspector.ts
 #: src/flows/access_denied/FlowAccessDenied.ts
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
@@ -2713,6 +2722,10 @@ msgstr "New version available!"
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Newly created users are added to this group, if a group is selected."
 msgstr "Newly created users are added to this group, if a group is selected."
+
+#: src/flows/FlowInspector.ts
+msgid "Next stage"
+msgstr "Next stage"
 
 #: src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
@@ -3078,6 +3091,10 @@ msgstr "Persistent"
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Placeholder"
 msgstr "Placeholder"
+
+#: src/flows/FlowInspector.ts
+msgid "Plan history"
+msgstr "Plan history"
 
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
@@ -3748,6 +3765,10 @@ msgstr "Service Provider Binding"
 #~ msgid "Session"
 #~ msgstr "Session"
 
+#: src/flows/FlowInspector.ts
+msgid "Session ID"
+msgstr "Session ID"
+
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "Session duration"
 msgstr "Session duration"
@@ -3794,9 +3815,17 @@ msgstr "Severity"
 msgid "Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable."
 msgstr "Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable."
 
+#: src/elements/Expand.ts
+msgid "Show less"
+msgstr "Show less"
+
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Show matched user"
 msgstr "Show matched user"
+
+#: src/elements/Expand.ts
+msgid "Show more"
+msgstr "Show more"
 
 #: src/pages/flows/FlowForm.ts
 msgid "Shown as the Title in Flow pages."
@@ -3896,6 +3925,18 @@ msgstr "Stage Configuration"
 #: src/pages/flows/BoundStagesList.ts
 msgid "Stage binding(s)"
 msgstr "Stage binding(s)"
+
+#: src/flows/FlowInspector.ts
+msgid "Stage kind"
+msgstr "Stage kind"
+
+#: src/flows/FlowInspector.ts
+msgid "Stage name"
+msgstr "Stage name"
+
+#: src/flows/FlowInspector.ts
+msgid "Stage object"
+msgstr "Stage object"
 
 #: src/pages/flows/BoundStagesList.ts
 msgid "Stage type"

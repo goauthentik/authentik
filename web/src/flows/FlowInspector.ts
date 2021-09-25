@@ -7,6 +7,7 @@ import AKGlobal from "../authentik.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
+import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
@@ -30,6 +31,7 @@ export class FlowInspector extends LitElement {
             PFCard,
             PFNotificationDrawer,
             PFDescriptionList,
+            PFProgressStepper,
             AKGlobal,
             css`
                 code.break {
@@ -133,22 +135,83 @@ ${JSON.stringify(this.getStage(this.state.currentPlan.nextPlannedStage.stageObj)
                         <div class="pf-l-stack__item">
                             <div class="pf-c-card">
                                 <div class="pf-c-card__header">
-                                    <div class="pf-c-card__title">${t`Session ID`}</div>
-                                </div>
-                                <div class="pf-c-card__body">
-                                    <code class="break">${this.state.currentPlan.sessionId}</code>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="pf-l-stack__item">
-                            <div class="pf-c-card">
-                                <div class="pf-c-card__header">
                                     <div class="pf-c-card__title">${t`Current plan cntext`}</div>
                                 </div>
                                 <div class="pf-c-card__body">
                                     <pre>
 ${JSON.stringify(this.state.currentPlan.planContext, null, 4)}</pre
                                     >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pf-l-stack__item">
+                            <div class="pf-c-card">
+                                <div class="pf-c-card__header">
+                                    <div class="pf-c-card__title">${t`Plan history`}</div>
+                                </div>
+                                <div class="pf-c-card__body">
+                                    <ol class="pf-c-progress-stepper pf-m-vertical">
+                                        ${this.state.plans.map((plan) => {
+                                            return html`<li
+                                                class="pf-c-progress-stepper__step pf-m-success"
+                                            >
+                                                <div class="pf-c-progress-stepper__step-connector">
+                                                    <span class="pf-c-progress-stepper__step-icon">
+                                                        <i
+                                                            class="fas fa-check-circle"
+                                                            aria-hidden="true"
+                                                        ></i>
+                                                    </span>
+                                                </div>
+                                                <div class="pf-c-progress-stepper__step-main">
+                                                    <div class="pf-c-progress-stepper__step-title">
+                                                        ${plan.currentStage.stageObj.name}
+                                                    </div>
+                                                </div>
+                                            </li> `;
+                                        })}
+                                        <li
+                                            class="pf-c-progress-stepper__step pf-m-current pf-m-info"
+                                        >
+                                            <div class="pf-c-progress-stepper__step-connector">
+                                                <span class="pf-c-progress-stepper__step-icon">
+                                                    <i
+                                                        class="pficon pf-icon-resources-full"
+                                                        aria-hidden="true"
+                                                    ></i>
+                                                </span>
+                                            </div>
+                                            <div class="pf-c-progress-stepper__step-main">
+                                                <div class="pf-c-progress-stepper__step-title">
+                                                    ${this.state.currentPlan.currentStage.stageObj
+                                                        .name}
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="pf-c-progress-stepper__step pf-m-pending">
+                                            <div class="pf-c-progress-stepper__step-connector">
+                                                <span
+                                                    class="pf-c-progress-stepper__step-icon"
+                                                ></span>
+                                            </div>
+                                            <div class="pf-c-progress-stepper__step-main">
+                                                <div class="pf-c-progress-stepper__step-title">
+                                                    ${this.state.currentPlan.nextPlannedStage
+                                                        .stageObj.name}
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pf-l-stack__item">
+                            <div class="pf-c-card">
+                                <div class="pf-c-card__header">
+                                    <div class="pf-c-card__title">${t`Session ID`}</div>
+                                </div>
+                                <div class="pf-c-card__body">
+                                    <code class="break">${this.state.currentPlan.sessionId}</code>
                                 </div>
                             </div>
                         </div>
