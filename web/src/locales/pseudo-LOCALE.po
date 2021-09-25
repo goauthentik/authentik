@@ -927,6 +927,7 @@ msgstr ""
 msgid "Context"
 msgstr ""
 
+#: src/flows/stages/RedirectStage.ts
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
@@ -1620,6 +1621,10 @@ msgstr ""
 
 #: src/pages/flows/FlowViewPage.ts
 msgid "Execute flow"
+msgstr ""
+
+#: src/pages/flows/FlowViewPage.ts
+msgid "Execute with inspector"
 msgstr ""
 
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
@@ -3390,6 +3395,7 @@ msgstr ""
 msgid "Recovery link cannot be emailed, user has no email address saved."
 msgstr ""
 
+#: src/flows/stages/RedirectStage.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Redirect"
 msgstr ""
@@ -5294,6 +5300,10 @@ msgstr ""
 
 #: src/pages/outposts/OutpostForm.ts
 msgid "You can only select providers that match the type of the outpost."
+msgstr ""
+
+#: src/flows/stages/RedirectStage.ts
+msgid "You're about to be redirect to the following URL."
 msgstr ""
 
 #: src/interfaces/AdminInterface.ts

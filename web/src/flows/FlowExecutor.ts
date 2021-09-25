@@ -34,6 +34,7 @@ import { first } from "../utils";
 import "./FlowInspector";
 import "./access_denied/FlowAccessDenied";
 import "./sources/plex/PlexLoginInit";
+import "./stages/RedirectStage";
 import "./stages/authenticator_duo/AuthenticatorDuoStage";
 import "./stages/authenticator_static/AuthenticatorStaticStage";
 import "./stages/authenticator_totp/AuthenticatorTOTPStage";
@@ -61,7 +62,9 @@ export class FlowExecutor extends LitElement implements StageHost {
         // Assign the location as soon as we get the challenge and *not* in the render function
         // as the render function might be called multiple times, which will navigate multiple
         // times and can invalidate oauth codes
-        if (value?.type === ChallengeChoices.Redirect) {
+        // Also only auto-redirect when the inspector is open, so that a user can inspect the
+        // redirect in the inspector
+        if (value?.type === ChallengeChoices.Redirect && !this.inspectorOpen) {
             console.debug(
                 "authentik/flows: redirecting to url from server",
                 (value as RedirectChallenge).to,
@@ -225,6 +228,13 @@ export class FlowExecutor extends LitElement implements StageHost {
         }
         switch (this.challenge.type) {
             case ChallengeChoices.Redirect:
+                if (this.inspectorOpen) {
+                    return html`<ak-stage-redirect
+                        .host=${this as StageHost}
+                        .challenge=${this.challenge}
+                    >
+                    </ak-stage-redirect>`;
+                }
                 return html`<ak-empty-state ?loading=${true} header=${t`Loading`}>
                 </ak-empty-state>`;
             case ChallengeChoices.Shell:

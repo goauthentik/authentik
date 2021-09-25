@@ -933,6 +933,7 @@ msgstr "Consumer secret"
 msgid "Context"
 msgstr "Context"
 
+#: src/flows/stages/RedirectStage.ts
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
@@ -1629,6 +1630,10 @@ msgstr "Execute"
 #: src/pages/flows/FlowViewPage.ts
 msgid "Execute flow"
 msgstr "Execute flow"
+
+#: src/pages/flows/FlowViewPage.ts
+msgid "Execute with inspector"
+msgstr "Execute with inspector"
 
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
 msgid "Executes the python snippet to determine whether to allow or deny a request."
@@ -3398,6 +3403,7 @@ msgstr "Recovery keys"
 msgid "Recovery link cannot be emailed, user has no email address saved."
 msgstr "Recovery link cannot be emailed, user has no email address saved."
 
+#: src/flows/stages/RedirectStage.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Redirect"
 msgstr "Redirect"
@@ -5312,6 +5318,10 @@ msgstr "Yes"
 #: src/pages/outposts/OutpostForm.ts
 msgid "You can only select providers that match the type of the outpost."
 msgstr "You can only select providers that match the type of the outpost."
+
+#: src/flows/stages/RedirectStage.ts
+msgid "You're about to be redirect to the following URL."
+msgstr "You're about to be redirect to the following URL."
 
 #: src/interfaces/AdminInterface.ts
 msgid "You're currently impersonating {0}. Click to stop."
