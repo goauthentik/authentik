@@ -50,7 +50,7 @@ class FlowInspectorPlanSerializer(PassiveSerializer):
         ).hexdigest()
 
 
-class FlowInspectorSerializer(PassiveSerializer):
+class FlowInspectionSerializer(PassiveSerializer):
     """Serializer for inspect endpoint"""
 
     plans = ListField(child=FlowInspectorPlanSerializer())
@@ -81,7 +81,7 @@ class FlowInspectorView(APIView):
 
     @extend_schema(
         responses={
-            200: FlowInspectorSerializer(),
+            200: FlowInspectionSerializer(),
             400: OpenApiResponse(
                 description="No flow plan in session."
             ),  # This error can be raised by the email stage
@@ -94,10 +94,10 @@ class FlowInspectorView(APIView):
         current_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
         plans = []
         for plan in request.session[SESSION_KEY_HISTORY]:
-            plan_serializer = FlowInspectorPlanSerializer(instance=plan)
+            plan_serializer = FlowInspectorPlanSerializer(instance=plan, context={"request": request})
             plans.append(plan_serializer.data)
-        current_serializer = FlowInspectorPlanSerializer(instance=current_plan)
-        response = FlowInspectorSerializer(data={"plans": plans})
+        current_serializer = FlowInspectorPlanSerializer(instance=current_plan, context={"request": request})
+        response = FlowInspectionSerializer(data={"plans": plans})
         response.is_valid()
         data = response.data
         data["current_plan"] = current_serializer.data

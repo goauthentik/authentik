@@ -4763,7 +4763,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FlowInspector'
+                $ref: '#/components/schemas/FlowInspection'
           description: ''
         '400':
           description: No flow plan in session.
@@ -20299,7 +20299,7 @@ components:
           readOnly: true
       required:
       - diagram
-    FlowInspector:
+    FlowInspection:
       type: object
       description: Serializer for inspect endpoint
       properties:
