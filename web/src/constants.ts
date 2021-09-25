@@ -14,6 +14,7 @@ export const EVENT_API_DRAWER_TOGGLE = "ak-api-drawer-toggle";
 export const EVENT_SIDEBAR_TOGGLE = "ak-sidebar-toggle";
 export const EVENT_API_DRAWER_REFRESH = "ak-api-drawer-refresh";
 export const EVENT_WS_MESSAGE = "ak-ws-message";
+export const EVENT_FLOW_ADVANCE = "ak-flow-advance";
 
 export const WS_MSG_TYPE_MESSAGE = "message";
 export const WS_MSG_TYPE_REFRESH = "refresh";
