@@ -27379,7 +27379,9 @@ components:
         cookie_domain:
           type: string
         token_validity:
-          type: integer
+          type: number
+          format: float
+          nullable: true
           readOnly: true
       required:
       - external_host

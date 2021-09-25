@@ -1,7 +1,6 @@
 """ProxyProvider API Views"""
-from typing import Any
+from typing import Any, Optional
 
-from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ListField, SerializerMethodField
@@ -115,8 +114,7 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
         """Embed OpenID Connect provider information"""
         return ProviderInfoView(request=self.context["request"]._request).get_info(obj)
 
-    @extend_schema_field(OpenApiTypes.INT)
-    def get_token_validity(self, obj: ProxyProvider) -> int:
+    def get_token_validity(self, obj: ProxyProvider) -> Optional[float]:
         """Get token validity as second count"""
         return timedelta_from_string(obj.token_validity).total_seconds()
 
