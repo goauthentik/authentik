@@ -107,6 +107,21 @@ export class FlowViewPage extends LitElement {
                                                 >
                                                     ${t`Execute`}
                                                 </button>
+                                                <button
+                                                    class="pf-c-button pf-m-secondary"
+                                                    @click=${() => {
+                                                        new FlowsApi(DEFAULT_CONFIG)
+                                                            .flowsInstancesExecuteRetrieve({
+                                                                slug: this.flow.slug,
+                                                            })
+                                                            .then((link) => {
+                                                                const finalURL = `${link.link}?inspector&next=/%23${window.location.hash}`;
+                                                                window.open(finalURL, "_blank");
+                                                            });
+                                                    }}
+                                                >
+                                                    ${t`Execute with inspector`}
+                                                </button>
                                             </div>
                                         </dd>
                                         <dt class="pf-c-description-list__term">

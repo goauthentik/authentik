@@ -52,7 +52,7 @@ export class FlowInspector extends LitElement {
         window.removeEventListener(EVENT_FLOW_ADVANCE, this.advanceHandler as EventListener);
     }
 
-    advanceHandler = (e: CustomEvent): void => {
+    advanceHandler = (): void => {
         new FlowsApi(DEFAULT_CONFIG)
             .flowsInspectorGet({
                 flowSlug: this.flowSlug,
