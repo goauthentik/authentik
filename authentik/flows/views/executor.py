@@ -1,4 +1,5 @@
 """authentik multi-stage authentication engine"""
+from copy import deepcopy
 from traceback import format_tb
 from typing import Any, Optional
 
@@ -323,7 +324,7 @@ class FlowExecutorView(APIView):
             "f(exec): Stage ok",
             stage_class=class_to_path(self.current_stage_view.__class__),
         )
-        self.request.session[SESSION_KEY_HISTORY].append(self.plan)
+        self.request.session.get(SESSION_KEY_HISTORY, []).append(deepcopy(self.plan))
         self.plan.pop()
         self.request.session[SESSION_KEY_PLAN] = self.plan
         if self.plan.bindings:
