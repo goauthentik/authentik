@@ -1803,6 +1803,7 @@ msgid "Flow Overview"
 msgstr "Flow Overview"
 
 #: src/flows/FlowInspector.ts
+#: src/flows/FlowInspector.ts
 msgid "Flow inspector"
 msgstr "Flow inspector"
 
@@ -4551,6 +4552,11 @@ msgstr ""
 #: src/pages/applications/ApplicationViewPage.ts
 msgid "These policies control which users can access this application."
 msgstr "These policies control which users can access this application."
+
+#: src/flows/FlowInspector.ts
+#: src/flows/FlowInspector.ts
+msgid "This flow is completed."
+msgstr "This flow is completed."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "This provider will behave like a transparent reverse-proxy, except requests must be authenticated. If your upstream application uses HTTPS, make sure to connect to the outpost using HTTPS as well."

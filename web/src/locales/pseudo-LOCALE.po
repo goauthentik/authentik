@@ -1795,6 +1795,7 @@ msgid "Flow Overview"
 msgstr ""
 
 #: src/flows/FlowInspector.ts
+#: src/flows/FlowInspector.ts
 msgid "Flow inspector"
 msgstr ""
 
@@ -4535,6 +4536,11 @@ msgstr ""
 
 #: src/pages/applications/ApplicationViewPage.ts
 msgid "These policies control which users can access this application."
+msgstr ""
+
+#: src/flows/FlowInspector.ts
+#: src/flows/FlowInspector.ts
+msgid "This flow is completed."
 msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts

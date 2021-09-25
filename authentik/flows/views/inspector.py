@@ -40,7 +40,7 @@ class FlowInspectorPlanSerializer(PassiveSerializer):
     def get_next_planned_stage(self, plan: FlowPlan) -> FlowStageBindingSerializer:
         """Get the next planned stage"""
         if len(plan.bindings) < 2:
-            return FlowStageBindingSerializer()
+            return FlowStageBindingSerializer().data
         return FlowStageBindingSerializer(instance=plan.bindings[1]).data
 
     def get_plan_context(self, plan: FlowPlan) -> dict[str, Any]:
@@ -101,13 +101,13 @@ class FlowInspectorView(APIView):
                 instance=plan, context={"request": request}
             )
             plans.append(plan_serializer.data)
-        response = FlowInspectionSerializer(data={"plans": plans})
-        response.is_valid()
-        data = response.data
+        response = {
+            "plans": plans,
+        }
         if SESSION_KEY_PLAN in request.session:
             current_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
             current_serializer = FlowInspectorPlanSerializer(
                 instance=current_plan, context={"request": request}
             )
-            data["current_plan"] = current_serializer.data
-        return Response(data)
+            response["current_plan"] = current_serializer.data
+        return Response(response)
