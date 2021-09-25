@@ -18,12 +18,22 @@ func GetStore(p api.ProxyOutpostConfig) sessions.Store {
 		if err != nil {
 			panic(err)
 		}
+		if p.TokenValidity.IsSet() {
+			t := p.TokenValidity.Get()
+			// Add one to the validity to ensure we don't have a session with indefinite length
+			rs.Options.MaxAge = int(*t) + 1
+		}
 		rs.Options.Domain = *p.CookieDomain
 		log.Info("using redis session backend")
 		store = rs
 	} else {
 		cs := sessions.NewCookieStore([]byte(*p.CookieSecret))
 		cs.Options.Domain = *p.CookieDomain
+		if p.TokenValidity.IsSet() {
+			t := p.TokenValidity.Get()
+			// Add one to the validity to ensure we don't have a session with indefinite length
+			cs.Options.MaxAge = int(*t) + 1
+		}
 		log.Info("using cookie session backend")
 		store = cs
 	}
