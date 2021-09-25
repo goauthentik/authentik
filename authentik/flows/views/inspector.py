@@ -11,7 +11,7 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.fields import ListField, SerializerMethodField
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -67,8 +67,7 @@ class FlowInspectionSerializer(PassiveSerializer):
 class FlowInspectorView(APIView):
     """Flow inspector API"""
 
-    # TODO: Change to admin
-    permission_classes = [AllowAny]  # IsAdminUser]
+    permission_classes = [IsAdminUser]
 
     flow: Flow
     _logger: BoundLogger
