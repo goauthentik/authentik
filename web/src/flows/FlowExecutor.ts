@@ -27,7 +27,7 @@ import {
 import { DEFAULT_CONFIG, tenant } from "../api/Config";
 import { configureSentry } from "../api/Sentry";
 import { WebsocketClient } from "../common/ws";
-import { TITLE_DEFAULT } from "../constants";
+import { EVENT_FLOW_ADVANCE, TITLE_DEFAULT } from "../constants";
 import "../elements/LoadingOverlay";
 import { DefaultTenant } from "../elements/sidebar/SidebarBrand";
 import { first } from "../utils";
@@ -140,6 +140,14 @@ export class FlowExecutor extends LitElement implements StageHost {
                 flowChallengeResponseRequest: payload,
             })
             .then((data) => {
+                if (this.inspectorOpen) {
+                    window.dispatchEvent(
+                        new CustomEvent(EVENT_FLOW_ADVANCE, {
+                            bubbles: true,
+                            composed: true,
+                        }),
+                    );
+                }
                 this.challenge = data;
             })
             .catch((e: Error | Response) => {
@@ -160,6 +168,14 @@ export class FlowExecutor extends LitElement implements StageHost {
                 query: window.location.search.substring(1),
             })
             .then((challenge) => {
+                if (this.inspectorOpen) {
+                    window.dispatchEvent(
+                        new CustomEvent(EVENT_FLOW_ADVANCE, {
+                            bubbles: true,
+                            composed: true,
+                        }),
+                    );
+                }
                 this.challenge = challenge;
                 // Only set background on first update, flow won't change throughout execution
                 if (this.challenge?.flowInfo?.background) {

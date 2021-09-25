@@ -34,7 +34,10 @@ class FlowInspectorPlanSerializer(PassiveSerializer):
 
     def get_next_planned_stage(self, plan: FlowPlan) -> FlowStageBindingSerializer:
         """Get the next planned stage"""
-        binding = FlowStageBindingSerializer(instance=plan.bindings[0])
+        index = 0
+        if len(plan.bindings) > 1:
+            index = 1
+        binding = FlowStageBindingSerializer(instance=plan.bindings[index])
         return binding.data
 
     def get_plan_context(self, plan: FlowPlan) -> dict[str, Any]:

@@ -11,10 +11,10 @@ export class Expand extends LitElement {
     expanded = false;
 
     @property()
-    textOpen = "Show less";
+    textOpen = t`Show less`;
 
     @property()
-    textClosed = "Show more";
+    textClosed = t`Show more`;
 
     static get styles(): CSSResult[] {
         return [PFExpandableSection];
