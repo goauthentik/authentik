@@ -81,7 +81,7 @@ class TestUserLoginStage(APITestCase):
         self.assertEqual(list(self.client.session.keys()), [])
 
     @patch(
-        "authentik.flows.views.to_stage_response",
+        "authentik.flows.views.executor.to_stage_response",
         TO_STAGE_RESPONSE_MOCK,
     )
     def test_without_user(self):

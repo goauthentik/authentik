@@ -40,7 +40,7 @@ class TestUserLoginStage(APITestCase):
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     @patch(
-        "authentik.flows.views.to_stage_response",
+        "authentik.flows.views.executor.to_stage_response",
         TO_STAGE_RESPONSE_MOCK,
     )
     def test_without_invitation_fail(self):
@@ -108,7 +108,7 @@ class TestUserLoginStage(APITestCase):
         data = {"foo": "bar"}
         invite = Invitation.objects.create(created_by=get_anonymous_user(), fixed_data=data)
 
-        with patch("authentik.flows.views.FlowExecutorView.cancel", MagicMock()):
+        with patch("authentik.flows.views.executor.FlowExecutorView.cancel", MagicMock()):
             base_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
             args = urlencode({INVITATION_TOKEN_KEY: invite.pk.hex})
             response = self.client.get(base_url + f"?query={args}")
@@ -140,7 +140,7 @@ class TestUserLoginStage(APITestCase):
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
-        with patch("authentik.flows.views.FlowExecutorView.cancel", MagicMock()):
+        with patch("authentik.flows.views.executor.FlowExecutorView.cancel", MagicMock()):
             base_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
             response = self.client.get(base_url, follow=True)
 

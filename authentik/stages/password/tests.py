@@ -39,7 +39,7 @@ class TestPasswordStage(APITestCase):
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     @patch(
-        "authentik.flows.views.to_stage_response",
+        "authentik.flows.views.executor.to_stage_response",
         TO_STAGE_RESPONSE_MOCK,
     )
     def test_without_user(self):
@@ -153,7 +153,7 @@ class TestPasswordStage(APITestCase):
         self.assertNotIn(SESSION_KEY_PLAN, self.client.session)
 
     @patch(
-        "authentik.flows.views.to_stage_response",
+        "authentik.flows.views.executor.to_stage_response",
         TO_STAGE_RESPONSE_MOCK,
     )
     @patch(

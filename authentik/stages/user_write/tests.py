@@ -112,7 +112,7 @@ class TestUserWriteStage(APITestCase):
         self.assertNotIn("some_ignored_attribute", user_qs.first().attributes)
 
     @patch(
-        "authentik.flows.views.to_stage_response",
+        "authentik.flows.views.executor.to_stage_response",
         TO_STAGE_RESPONSE_MOCK,
     )
     def test_without_data(self):
@@ -142,7 +142,7 @@ class TestUserWriteStage(APITestCase):
         )
 
     @patch(
-        "authentik.flows.views.to_stage_response",
+        "authentik.flows.views.executor.to_stage_response",
         TO_STAGE_RESPONSE_MOCK,
     )
     def test_blank_username(self):
@@ -177,7 +177,7 @@ class TestUserWriteStage(APITestCase):
         )
 
     @patch(
-        "authentik.flows.views.to_stage_response",
+        "authentik.flows.views.executor.to_stage_response",
         TO_STAGE_RESPONSE_MOCK,
     )
     def test_duplicate_data(self):

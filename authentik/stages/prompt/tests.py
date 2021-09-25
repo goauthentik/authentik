@@ -161,7 +161,7 @@ class TestPromptStage(APITestCase):
 
         challenge_response = self.test_valid_challenge_with_policy()
 
-        with patch("authentik.flows.views.FlowExecutorView.cancel", MagicMock()):
+        with patch("authentik.flows.views.executor.FlowExecutorView.cancel", MagicMock()):
             response = self.client.post(
                 reverse(
                     "authentik_api:flow-executor",

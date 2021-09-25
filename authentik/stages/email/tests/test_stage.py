@@ -90,7 +90,7 @@ class TestEmailStage(APITestCase):
         session.save()
         token: Token = Token.objects.get(user=self.user)
 
-        with patch("authentik.flows.views.FlowExecutorView.cancel", MagicMock()):
+        with patch("authentik.flows.views.executor.FlowExecutorView.cancel", MagicMock()):
             # Call the executor shell to preseed the session
             url = reverse(
                 "authentik_api:flow-executor",
