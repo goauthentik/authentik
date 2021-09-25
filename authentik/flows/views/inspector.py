@@ -39,7 +39,7 @@ class FlowInspectorPlanSerializer(PassiveSerializer):
 
     def get_next_planned_stage(self, plan: FlowPlan) -> FlowStageBindingSerializer:
         """Get the next planned stage"""
-        if len(plan.bindings) < 1:
+        if len(plan.bindings) < 2:
             return FlowStageBindingSerializer()
         return FlowStageBindingSerializer(instance=plan.bindings[1]).data
 

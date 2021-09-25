@@ -24,6 +24,9 @@ export class FlowInspector extends LitElement {
     @property({ attribute: false })
     state?: FlowInspection;
 
+    @property({ attribute: false})
+    error?: Response;
+
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -59,6 +62,8 @@ export class FlowInspector extends LitElement {
             })
             .then((state) => {
                 this.state = state;
+            }).catch((exc) => {
+                this.error = exc;
             });
     };
 
@@ -68,7 +73,33 @@ export class FlowInspector extends LitElement {
         return stage;
     }
 
+    renderAccessDenied(): TemplateResult {
+        return html`<div class="pf-c-drawer__body pf-m-no-padding">
+            <div class="pf-c-notification-drawer">
+                <div class="pf-c-notification-drawer__header">
+                    <div class="text">
+                        <h1 class="pf-c-notification-drawer__header-title">${t`Flow inspector`}</h1>
+                    </div>
+                </div>
+                <div class="pf-c-notification-drawer__body">
+                    <div class="pf-l-stack pf-m-gutter">
+                        <div class="pf-l-stack__item">
+                            <div class="pf-c-card">
+                                <div class="pf-c-card__body">
+                                    ${this.error?.statusText}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }
+
     render(): TemplateResult {
+        if (this.error) {
+            return this.renderAccessDenied();
+        }
         if (!this.state) {
             return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
         }
