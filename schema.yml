@@ -4757,7 +4757,6 @@ paths:
       - flows
       security:
       - authentik: []
-      - {}
       responses:
         '200':
           content:
@@ -20310,7 +20309,6 @@ components:
         current_plan:
           $ref: '#/components/schemas/FlowInspectorPlan'
       required:
-      - current_plan
       - plans
     FlowInspectorPlan:
       type: object

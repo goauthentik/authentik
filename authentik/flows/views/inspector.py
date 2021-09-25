@@ -60,7 +60,7 @@ class FlowInspectionSerializer(PassiveSerializer):
     """Serializer for inspect endpoint"""
 
     plans = ListField(child=FlowInspectorPlanSerializer())
-    current_plan = FlowInspectorPlanSerializer()
+    current_plan = FlowInspectorPlanSerializer(required=False)
 
 
 @method_decorator(xframe_options_sameorigin, name="dispatch")
@@ -79,8 +79,7 @@ class FlowInspectorView(APIView):
 
     # pylint: disable=unused-argument, too-many-return-statements
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
-        # Early check if there's an active Plan for the current session
-        if SESSION_KEY_PLAN not in self.request.session:
+        if SESSION_KEY_HISTORY not in self.request.session:
             return HttpResponse(status=400)
         return super().dispatch(request, flow_slug=flow_slug)
 
@@ -96,18 +95,19 @@ class FlowInspectorView(APIView):
     )
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Get current flow state and record it"""
-        current_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
         plans = []
         for plan in request.session[SESSION_KEY_HISTORY]:
             plan_serializer = FlowInspectorPlanSerializer(
                 instance=plan, context={"request": request}
             )
             plans.append(plan_serializer.data)
-        current_serializer = FlowInspectorPlanSerializer(
-            instance=current_plan, context={"request": request}
-        )
         response = FlowInspectionSerializer(data={"plans": plans})
         response.is_valid()
         data = response.data
-        data["current_plan"] = current_serializer.data
+        if SESSION_KEY_PLAN in request.session:
+            current_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
+            current_serializer = FlowInspectorPlanSerializer(
+                instance=current_plan, context={"request": request}
+            )
+            data["current_plan"] = current_serializer.data
         return Response(data)
