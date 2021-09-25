@@ -28,17 +28,20 @@ from authentik.flows.views.executor import SESSION_KEY_HISTORY, SESSION_KEY_PLAN
 class FlowInspectorPlanSerializer(PassiveSerializer):
     """Serializer for an active FlowPlan"""
 
+    current_stage = SerializerMethodField()
+    next_planned_stage = SerializerMethodField(required=False)
     plan_context = SerializerMethodField()
-    next_planned_stage = SerializerMethodField()
     session_id = SerializerMethodField()
+
+    def get_current_stage(self, plan: FlowPlan) -> FlowStageBindingSerializer:
+        """Get the current stage"""
+        return FlowStageBindingSerializer(instance=plan.bindings[0]).data
 
     def get_next_planned_stage(self, plan: FlowPlan) -> FlowStageBindingSerializer:
         """Get the next planned stage"""
-        index = 0
-        if len(plan.bindings) > 1:
-            index = 1
-        binding = FlowStageBindingSerializer(instance=plan.bindings[index])
-        return binding.data
+        if len(plan.bindings) < 1:
+            return FlowStageBindingSerializer()
+        return FlowStageBindingSerializer(instance=plan.bindings[1]).data
 
     def get_plan_context(self, plan: FlowPlan) -> dict[str, Any]:
         """Get the plan's context, sanitized"""
@@ -97,9 +100,13 @@ class FlowInspectorView(APIView):
         current_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
         plans = []
         for plan in request.session[SESSION_KEY_HISTORY]:
-            plan_serializer = FlowInspectorPlanSerializer(instance=plan, context={"request": request})
+            plan_serializer = FlowInspectorPlanSerializer(
+                instance=plan, context={"request": request}
+            )
             plans.append(plan_serializer.data)
-        current_serializer = FlowInspectorPlanSerializer(instance=current_plan, context={"request": request})
+        current_serializer = FlowInspectorPlanSerializer(
+            instance=current_plan, context={"request": request}
+        )
         response = FlowInspectionSerializer(data={"plans": plans})
         response.is_valid()
         data = response.data

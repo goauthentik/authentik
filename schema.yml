@@ -20316,18 +20316,23 @@ components:
       type: object
       description: Serializer for an active FlowPlan
       properties:
-        plan_context:
-          type: object
-          additionalProperties: {}
+        current_stage:
+          allOf:
+          - $ref: '#/components/schemas/FlowStageBinding'
           readOnly: true
         next_planned_stage:
           allOf:
           - $ref: '#/components/schemas/FlowStageBinding'
           readOnly: true
+        plan_context:
+          type: object
+          additionalProperties: {}
+          readOnly: true
         session_id:
           type: string
           readOnly: true
       required:
+      - current_stage
       - next_planned_stage
       - plan_context
       - session_id
