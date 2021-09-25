@@ -11395,7 +11395,7 @@ paths:
   /root/config/:
     get:
       operationId: root_config_retrieve
-      description: Retrive public configuration options
+      description: Retrieve public configuration options
       tags:
       - root
       security:
@@ -21908,7 +21908,7 @@ components:
         access_token_url:
           type: string
           nullable: true
-          description: URL used by authentik to retrive tokens.
+          description: URL used by authentik to retrieve tokens.
           maxLength: 255
         profile_url:
           type: string
@@ -21983,7 +21983,7 @@ components:
         access_token_url:
           type: string
           nullable: true
-          description: URL used by authentik to retrive tokens.
+          description: URL used by authentik to retrieve tokens.
           maxLength: 255
         profile_url:
           type: string
@@ -25937,7 +25937,7 @@ components:
         access_token_url:
           type: string
           nullable: true
-          description: URL used by authentik to retrive tokens.
+          description: URL used by authentik to retrieve tokens.
           maxLength: 255
         profile_url:
           type: string
@@ -26115,7 +26115,7 @@ components:
           description: Allow friends to authenticate, even if you don't share a server.
         plex_token:
           type: string
-          description: Plex token used to check firends
+          description: Plex token used to check friends
     PatchedPolicyBindingRequest:
       type: object
       description: PolicyBinding Serializer
@@ -26748,7 +26748,7 @@ components:
           description: Allow friends to authenticate, even if you don't share a server.
         plex_token:
           type: string
-          description: Plex token used to check firends
+          description: Plex token used to check friends
       required:
       - component
       - name
@@ -26843,7 +26843,7 @@ components:
           description: Allow friends to authenticate, even if you don't share a server.
         plex_token:
           type: string
-          description: Plex token used to check firends
+          description: Plex token used to check friends
       required:
       - name
       - plex_token
@@ -27378,6 +27378,10 @@ components:
             Exclusive with internal_host.
         cookie_domain:
           type: string
+        token_validity:
+          type: string
+          description: 'Tokens not valid on or after current time + this value (Format:
+            hours=1;minutes=2;seconds=3).'
       required:
       - external_host
       - name

@@ -127,6 +127,7 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
             "basic_auth_user_attribute",
             "mode",
             "cookie_domain",
+            "token_validity",
         ]
 
     @extend_schema_field(OpenIDConnectConfigurationSerializer)
