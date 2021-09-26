@@ -38,7 +38,7 @@ TO_STAGE_RESPONSE_MOCK = MagicMock(side_effect=to_stage_response)
 
 
 class TestFlowExecutor(APITestCase):
-    """Test views logic"""
+    """Test executor"""
 
     def setUp(self):
         self.request_factory = RequestFactory()
