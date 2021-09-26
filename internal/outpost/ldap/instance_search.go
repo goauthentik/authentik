@@ -79,6 +79,11 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, errors.New("access denied")
 	}
+
+	if req.SearchRequest.Scope == ldap.ScopeBaseObject {
+		pi.log.Debug("base scope, showing domain info")
+		return pi.SearchBase(req, flags.CanSearch)
+	}
 	if !flags.CanSearch {
 		pi.log.Debug("User can't search, showing info about user")
 		return pi.SearchMe(req, flags)

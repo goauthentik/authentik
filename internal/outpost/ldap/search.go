@@ -38,7 +38,7 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 		SearchRequest: searchReq,
 		BindDN:        bindDN,
 		conn:          conn,
-		log:           ls.log.WithField("bindDN", bindDN).WithField("requestId", rid).WithField("client", utils.GetIP(conn.RemoteAddr())).WithField("filter", searchReq.Filter).WithField("baseDN", searchReq.BaseDN),
+		log:           ls.log.WithField("bindDN", bindDN).WithField("requestId", rid).WithField("scope", ldap.ScopeMap[searchReq.Scope]).WithField("client", utils.GetIP(conn.RemoteAddr())).WithField("filter", searchReq.Filter).WithField("baseDN", searchReq.BaseDN),
 		id:            rid,
 		ctx:           span.Context(),
 	}
@@ -74,7 +74,7 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 	}
 	for _, provider := range ls.providers {
 		providerBase, _ := goldap.ParseDN(provider.BaseDN)
-		if providerBase.AncestorOf(bd) {
+		if providerBase.AncestorOf(bd) || providerBase.Equal(bd) {
 			return provider.Search(req)
 		}
 	}
