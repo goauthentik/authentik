@@ -42,6 +42,7 @@ export class OutpostDeploymentModal extends ModalButton {
                         </label>
                         <div>
                             <ak-token-copy-button
+                                class="pf-m-primary"
                                 identifier="${ifDefined(this.outpost?.tokenIdentifier)}"
                             >
                                 ${t`Click to copy token`}

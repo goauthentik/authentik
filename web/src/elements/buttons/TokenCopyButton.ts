@@ -60,19 +60,43 @@ export class TokenCopyButton extends ActionButton {
                     return;
                 }
                 this.setLoading();
-                navigator.clipboard.write([
-                    new ClipboardItem({
-                        "text/plain": (this.callAction() as Promise<string>)
-                            .then((key: string) => {
+                // Because safari is stupid, it only allows navigator.clipboard.write directly
+                // in the @click handler.
+                // And also chrome is stupid, because it doesn't accept Promises as values for
+                // ClipboardItem, so now there's two implementations
+                if (
+                    navigator.userAgent.includes("Safari") &&
+                    !navigator.userAgent.includes("Chrome")
+                ) {
+                    navigator.clipboard.write([
+                        new ClipboardItem({
+                            "text/plain": (this.callAction() as Promise<string>)
+                                .then((key: string) => {
+                                    this.setDone(SUCCESS_CLASS);
+                                    return new Blob([key], {
+                                        type: "text/plain",
+                                    });
+                                })
+                                .catch((err: Error) => {
+                                    this.setDone(ERROR_CLASS);
+                                    throw err;
+                                }),
+                        }),
+                    ]);
+                } else {
+                    (this.callAction() as Promise<string>)
+                        .then((key: string) => {
+                            navigator.clipboard.writeText(key).then(() => {
                                 this.setDone(SUCCESS_CLASS);
-                                return key;
-                            })
-                            .catch((err: Error) => {
+                            });
+                        })
+                        .catch((err: Response | undefined) => {
+                            return err?.json().then((errResp) => {
                                 this.setDone(ERROR_CLASS);
-                                throw err;
-                            }),
-                    }),
-                ]);
+                                throw new Error(errResp["detail"]);
+                            });
+                        });
+                }
             }}
         >
             ${this.isRunning
