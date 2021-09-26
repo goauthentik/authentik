@@ -204,7 +204,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                         ?selected=${this.instance?.userMatchingMode ===
                         UserMatchingModeEnum.UsernameLink}
                     >
-                        ${t`Link to a user with identical username address. Can have security implications when a username is used with another source.`}
+                        ${t`Link to a user with identical username. Can have security implications when a username is used with another source.`}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.UsernameDeny}

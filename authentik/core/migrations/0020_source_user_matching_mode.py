@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
                     ),
                     (
                         "username_link",
-                        "Link to a user with identical username address. Can have security implications when a username is used with another source.",
+                        "Link to a user with identical username. Can have security implications when a username is used with another source.",
                     ),
                     (
                         "username_deny",
