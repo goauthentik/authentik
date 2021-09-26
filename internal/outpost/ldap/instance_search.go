@@ -116,6 +116,10 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 			"client":       utils.GetIP(req.conn.RemoteAddr()),
 		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: unhandled filter type: %s [%s]", filterEntity, req.Filter)
+	case "goauthentik.io/ldap/group":
+		fallthrough
+	case "goauthentik.io/ldap/virtual-group":
+		fallthrough
 	case GroupObjectClass:
 		wg := sync.WaitGroup{}
 		wg.Add(2)
@@ -165,7 +169,15 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 		}()
 		wg.Wait()
 		entries = append(gEntries, uEntries...)
-	case UserObjectClass, "":
+	case "":
+		fallthrough
+	case "organizationalPerson":
+		fallthrough
+	case "inetorgperson":
+		fallthrough
+	case "goauthentik.io/ldap/user":
+		fallthrough
+	case UserObjectClass:
 		uapisp := sentry.StartSpan(req.ctx, "authentik.providers.ldap.search.api_user")
 		searchReq, skip := parseFilterForUser(c.CoreApi.CoreUsersList(uapisp.Context()), parsedFilter, false)
 		if skip {
@@ -202,7 +214,7 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 		"name":                          {u.Name},
 		"displayName":                   {u.Name},
 		"mail":                          {*u.Email},
-		"objectClass":                   {UserObjectClass, "organizationalPerson", "goauthentik.io/ldap/user"},
+		"objectClass":                   {UserObjectClass, "organizationalPerson", "inetorgperson", "goauthentik.io/ldap/user"},
 		"uidNumber":                     {pi.GetUidNumber(u)},
 		"gidNumber":                     {pi.GetUidNumber(u)},
 	})
