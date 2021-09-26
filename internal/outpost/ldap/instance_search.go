@@ -116,6 +116,8 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 			"client":       utils.GetIP(req.conn.RemoteAddr()),
 		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: unhandled filter type: %s [%s]", filterEntity, req.Filter)
+	case "groupofuniquenames":
+		fallthrough
 	case "goauthentik.io/ldap/group":
 		fallthrough
 	case "goauthentik.io/ldap/virtual-group":
@@ -224,9 +226,9 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 func (pi *ProviderInstance) GroupEntry(g LDAPGroup) *ldap.Entry {
 	attrs := AKAttrsToLDAP(g.akAttributes)
 
-	objectClass := []string{GroupObjectClass, "goauthentik.io/ldap/group"}
+	objectClass := []string{GroupObjectClass, "groupofuniquenames", "goauthentik.io/ldap/group"}
 	if g.isVirtualGroup {
-		objectClass = []string{GroupObjectClass, "goauthentik.io/ldap/group", "goauthentik.io/ldap/virtual-group"}
+		objectClass = append(objectClass, "goauthentik.io/ldap/virtual-group")
 	}
 
 	attrs = pi.ensureAttributes(attrs, map[string][]string{
