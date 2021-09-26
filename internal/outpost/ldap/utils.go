@@ -39,6 +39,9 @@ func ldapResolveTypeSingle(in interface{}) *string {
 
 func AKAttrsToLDAP(attrs interface{}) []*ldap.EntryAttribute {
 	attrList := []*ldap.EntryAttribute{}
+	if attrs == nil {
+		return attrList
+	}
 	a := attrs.(*map[string]interface{})
 	for attrKey, attrValue := range *a {
 		entry := &ldap.EntryAttribute{Name: attrKey}
