@@ -37,6 +37,8 @@ error_reporting_environment: beryjuorg-prod
 authentik_host: https://authentik.tld/
 # Disable SSL Validation for the authentik connection
 authentik_host_insecure: false
+# Optionally specify a different URL used for user-facing interactions
+authentik_host_browser:
 # Template used for objects created (deployments, services, secrets, etc)
 object_naming_template: ak-outpost-%(name)s
 ########################################

@@ -90,6 +90,15 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
                                         ),
                                     ),
                                     V1EnvVar(
+                                        name="AUTHENTIK_HOST_BROWSER",
+                                        value_from=V1EnvVarSource(
+                                            secret_key_ref=V1SecretKeySelector(
+                                                name=self.name,
+                                                key="authentik_host_browser",
+                                            )
+                                        ),
+                                    ),
+                                    V1EnvVar(
                                         name="AUTHENTIK_TOKEN",
                                         value_from=V1EnvVarSource(
                                             secret_key_ref=V1SecretKeySelector(

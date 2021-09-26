@@ -38,6 +38,7 @@ class DockerController(BaseController):
             "AUTHENTIK_HOST": self.outpost.config.authentik_host.lower(),
             "AUTHENTIK_INSECURE": str(self.outpost.config.authentik_host_insecure).lower(),
             "AUTHENTIK_TOKEN": self.outpost.token.key,
+            "AUTHENTIK_HOST_BROWSER": self.outpost.config.authentik_host_browser,
         }
 
     def _comp_env(self, container: Container) -> bool:
@@ -215,6 +216,7 @@ class DockerController(BaseController):
                         "AUTHENTIK_HOST": self.outpost.config.authentik_host,
                         "AUTHENTIK_INSECURE": str(self.outpost.config.authentik_host_insecure),
                         "AUTHENTIK_TOKEN": self.outpost.token.key,
+                        "AUTHENTIK_HOST_BROWSER": self.outpost.config.authentik_host_browser,
                     },
                     "labels": self._get_labels(),
                 }
