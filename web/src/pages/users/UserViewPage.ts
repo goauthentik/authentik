@@ -197,6 +197,7 @@ export class UserViewPage extends LitElement {
                         </div>
                         <div class="pf-c-card__footer">
                             <ak-action-button
+                                class="pf-m-secondary"
                                 .apiRequest=${() => {
                                     return new CoreApi(DEFAULT_CONFIG)
                                         .coreUsersRecoveryRetrieve({
@@ -207,6 +208,13 @@ export class UserViewPage extends LitElement {
                                                 level: MessageLevel.success,
                                                 message: t`Successfully generated recovery link`,
                                                 description: rec.link,
+                                            });
+                                        })
+                                        .catch(() => {
+                                            showMessage({
+                                                level: MessageLevel.error,
+                                                message: t`To create a recovery link, the current tenant needs to have a recovery flow configured.`,
+                                                description: "",
                                             });
                                         });
                                 }}
