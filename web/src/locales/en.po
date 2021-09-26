@@ -4607,6 +4607,10 @@ msgstr "Title"
 msgid "To"
 msgstr "To"
 
+#: src/pages/users/UserViewPage.ts
+msgid "To create a recovery link, the current tenant needs to have a recovery flow configured."
+msgstr "To create a recovery link, the current tenant needs to have a recovery flow configured."
+
 #: src/pages/users/UserListPage.ts
 msgid "To directly reset a user's password, configure a recovery flow on the currently active tenant."
 msgstr "To directly reset a user's password, configure a recovery flow on the currently active tenant."

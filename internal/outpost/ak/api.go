@@ -116,9 +116,9 @@ func (a *APIController) OnRefresh() error {
 		log.WithError(err).Error("Failed to fetch outpost configuration")
 		return err
 	}
-	outpost := outposts.Results[0]
+	a.Outpost = outposts.Results[0]
 
-	log.WithField("name", outpost.Name).Debug("Fetched outpost configuration")
+	log.WithField("name", a.Outpost.Name).Debug("Fetched outpost configuration")
 	return a.Server.Refresh()
 }
 

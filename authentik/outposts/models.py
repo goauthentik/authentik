@@ -64,6 +64,7 @@ class OutpostConfig:
 
     authentik_host: str = ""
     authentik_host_insecure: bool = False
+    authentik_host_browser: str = ""
 
     log_level: str = CONFIG.y("log_level")
     error_reporting_enabled: bool = CONFIG.y_bool("error_reporting.enabled")
