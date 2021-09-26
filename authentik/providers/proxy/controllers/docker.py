@@ -29,6 +29,11 @@ class ProxyDockerController(DockerController):
         labels[f"traefik.http.routers.{traefik_name}-router.rule"] = f"Host({','.join(hosts)})"
         labels[f"traefik.http.routers.{traefik_name}-router.tls"] = "true"
         labels[f"traefik.http.routers.{traefik_name}-router.service"] = f"{traefik_name}-service"
-        labels[f"traefik.http.services.{traefik_name}-service.loadbalancer.healthcheck.path"] = "/"
+        labels[
+            f"traefik.http.services.{traefik_name}-service.loadbalancer.healthcheck.path"
+        ] = "/akprox/ping"
+        labels[
+            f"traefik.http.services.{traefik_name}-service.loadbalancer.healthcheck.port"
+        ] = "9300"
         labels[f"traefik.http.services.{traefik_name}-service.loadbalancer.server.port"] = "9000"
         return labels
