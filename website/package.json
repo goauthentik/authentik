@@ -16,7 +16,7 @@
         "@docusaurus/preset-classic": "2.0.0-beta.6",
         "@mdx-js/react": "^1.6.22",
         "clsx": "^1.1.1",
-        "postcss": "^8.3.7",
+        "postcss": "^8.3.8",
         "rapidoc": "^9.1.2",
         "react": "^17.0.2",
         "react-before-after-slider-component": "^0.7.4",
