@@ -216,8 +216,8 @@ class TestProviderLDAP(SeleniumTestCase):
                         "mail": [""],
                         "objectClass": [
                             "user",
-                            "inetOrgPerson",
                             "organizationalPerson",
+                            "inetOrgPerson",
                             "goauthentik.io/ldap/user",
                         ],
                         "uidNumber": [str(2000 + outpost_user.pk)],
@@ -243,8 +243,8 @@ class TestProviderLDAP(SeleniumTestCase):
                         "mail": [""],
                         "objectClass": [
                             "user",
-                            "inetOrgPerson",
                             "organizationalPerson",
+                            "inetOrgPerson",
                             "goauthentik.io/ldap/user",
                         ],
                         "uidNumber": [str(2000 + embedded_account.pk)],
@@ -270,8 +270,8 @@ class TestProviderLDAP(SeleniumTestCase):
                         "mail": [USER().email],
                         "objectClass": [
                             "user",
-                            "inetOrgPerson",
                             "organizationalPerson",
+                            "inetOrgPerson",
                             "goauthentik.io/ldap/user",
                         ],
                         "uidNumber": [str(2000 + USER().pk)],

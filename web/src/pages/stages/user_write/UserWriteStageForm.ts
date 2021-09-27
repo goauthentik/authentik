@@ -74,7 +74,7 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                             ${t`Mark newly created users as inactive.`}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Group`} name="searchGroup">
+                    <ak-form-element-horizontal label=${t`Group`} name="createUsersGroup">
                         <select class="pf-c-form-control">
                             <option
                                 value=""
