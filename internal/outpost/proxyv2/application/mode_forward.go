@@ -3,6 +3,7 @@ package application
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 
 	"goauthentik.io/api"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
@@ -38,7 +39,8 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 	if *a.proxyConfig.Mode == api.PROXYMODE_FORWARD_SINGLE {
 		host = web.GetHost(r)
 	} else if *a.proxyConfig.Mode == api.PROXYMODE_FORWARD_DOMAIN {
-		host = a.proxyConfig.ExternalHost
+		eh, _ := url.Parse(a.proxyConfig.ExternalHost)
+		host = eh.Host
 	}
 	// set the redirect flag to the current URL we have, since we redirect
 	// to a (possibly) different domain, but we want to be redirected back
