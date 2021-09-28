@@ -1,5 +1,5 @@
 # Stage 1: Build website
-FROM node as web-builder
+FROM docker.io/node as web-builder
 
 COPY ./web /static/
 
@@ -7,7 +7,7 @@ ENV NODE_ENV=production
 RUN cd /static && npm i && npm run build
 
 # Stage 2: Build
-FROM golang:1.17.1 AS builder
+FROM docker.io/golang:1.17.1 AS builder
 
 WORKDIR /go/src/goauthentik.io
 
