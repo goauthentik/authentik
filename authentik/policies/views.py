@@ -10,7 +10,7 @@ from django.views.generic.base import View
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Application, Provider, User
-from authentik.flows.views import SESSION_KEY_APPLICATION_PRE
+from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.engine import PolicyEngine

@@ -1145,6 +1145,10 @@ msgstr ""
 msgid "Creation Date"
 msgstr ""
 
+#: src/flows/FlowInspector.ts
+msgid "Current plan cntext"
+msgstr ""
+
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/flows/FlowForm.ts
 msgid "Currently set to:"
@@ -1618,6 +1622,10 @@ msgstr ""
 msgid "Execute flow"
 msgstr ""
 
+#: src/pages/flows/FlowViewPage.ts
+msgid "Execute with inspector"
+msgstr ""
+
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
 msgid "Executes the python snippet to determine whether to allow or deny a request."
 msgstr ""
@@ -1785,6 +1793,11 @@ msgstr ""
 msgid "Flow Overview"
 msgstr ""
 
+#: src/flows/FlowInspector.ts
+#: src/flows/FlowInspector.ts
+msgid "Flow inspector"
+msgstr ""
+
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
@@ -1850,6 +1863,10 @@ msgstr ""
 
 #: src/pages/flows/FlowListPage.ts
 msgid "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them."
+msgstr ""
+
+#: src/flows/stages/RedirectStage.ts
+msgid "Follow redirect"
 msgstr ""
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
@@ -2342,6 +2359,7 @@ msgstr ""
 #: src/elements/table/Table.ts
 #: src/flows/FlowExecutor.ts
 #: src/flows/FlowExecutor.ts
+#: src/flows/FlowInspector.ts
 #: src/flows/access_denied/FlowAccessDenied.ts
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
@@ -2704,6 +2722,10 @@ msgstr ""
 
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Newly created users are added to this group, if a group is selected."
+msgstr ""
+
+#: src/flows/FlowInspector.ts
+msgid "Next stage"
 msgstr ""
 
 #: src/elements/oauth/UserRefreshList.ts
@@ -3071,6 +3093,10 @@ msgstr ""
 msgid "Placeholder"
 msgstr ""
 
+#: src/flows/FlowInspector.ts
+msgid "Plan history"
+msgstr ""
+
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
 msgid "Please enter your TOTP Code"
@@ -3373,6 +3399,7 @@ msgstr ""
 msgid "Recovery link cannot be emailed, user has no email address saved."
 msgstr ""
 
+#: src/flows/stages/RedirectStage.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Redirect"
 msgstr ""
@@ -3740,6 +3767,10 @@ msgstr ""
 #~ msgid "Session"
 #~ msgstr ""
 
+#: src/flows/FlowInspector.ts
+msgid "Session ID"
+msgstr ""
+
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "Session duration"
 msgstr ""
@@ -3786,8 +3817,16 @@ msgstr ""
 msgid "Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable."
 msgstr ""
 
+#: src/elements/Expand.ts
+msgid "Show less"
+msgstr ""
+
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Show matched user"
+msgstr ""
+
+#: src/elements/Expand.ts
+msgid "Show more"
 msgstr ""
 
 #: src/pages/flows/FlowForm.ts
@@ -3887,6 +3926,18 @@ msgstr ""
 
 #: src/pages/flows/BoundStagesList.ts
 msgid "Stage binding(s)"
+msgstr ""
+
+#: src/flows/FlowInspector.ts
+msgid "Stage kind"
+msgstr ""
+
+#: src/flows/FlowInspector.ts
+msgid "Stage name"
+msgstr ""
+
+#: src/flows/FlowInspector.ts
+msgid "Stage object"
 msgstr ""
 
 #: src/pages/flows/BoundStagesList.ts
@@ -4488,6 +4539,10 @@ msgstr ""
 
 #: src/pages/applications/ApplicationViewPage.ts
 msgid "These policies control which users can access this application."
+msgstr ""
+
+#: src/flows/FlowInspector.ts
+msgid "This flow is completed."
 msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
@@ -5257,6 +5312,10 @@ msgstr ""
 
 #: src/pages/outposts/OutpostForm.ts
 msgid "You can only select providers that match the type of the outpost."
+msgstr ""
+
+#: src/flows/stages/RedirectStage.ts
+msgid "You're about to be redirect to the following URL."
 msgstr ""
 
 #: src/interfaces/AdminInterface.ts

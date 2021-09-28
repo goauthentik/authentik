@@ -30,7 +30,8 @@ from authentik.events.api.notification_transport import NotificationTransportVie
 from authentik.flows.api.bindings import FlowStageBindingViewSet
 from authentik.flows.api.flows import FlowViewSet
 from authentik.flows.api.stages import StageViewSet
-from authentik.flows.views import FlowExecutorView
+from authentik.flows.views.executor import FlowExecutorView
+from authentik.flows.views.inspector import FlowInspectorView
 from authentik.outposts.api.outposts import OutpostViewSet
 from authentik.outposts.api.service_connections import (
     DockerServiceConnectionViewSet,
@@ -227,6 +228,11 @@ urlpatterns = (
             "flows/executor/<slug:flow_slug>/",
             FlowExecutorView.as_view(),
             name="flow-executor",
+        ),
+        path(
+            "flows/inspector/<slug:flow_slug>/",
+            FlowInspectorView.as_view(),
+            name="flow-inspector",
         ),
         path("sentry/", SentryTunnelView.as_view(), name="sentry"),
         path("schema/", cache_page(86400)(SpectacularAPIView.as_view()), name="schema"),

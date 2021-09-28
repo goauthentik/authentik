@@ -12,7 +12,7 @@ from authentik.core.signals import password_changed
 from authentik.events.models import Event, EventAction
 from authentik.events.tasks import event_notification_handler
 from authentik.flows.planner import PLAN_CONTEXT_SOURCE, FlowPlan
-from authentik.flows.views import SESSION_KEY_PLAN
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.invitation.models import Invitation
 from authentik.stages.invitation.signals import invitation_used
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS

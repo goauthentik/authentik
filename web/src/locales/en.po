@@ -1151,6 +1151,10 @@ msgstr "Created {0}"
 msgid "Creation Date"
 msgstr "Creation Date"
 
+#: src/flows/FlowInspector.ts
+msgid "Current plan cntext"
+msgstr "Current plan cntext"
+
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/flows/FlowForm.ts
 msgid "Currently set to:"
@@ -1626,6 +1630,10 @@ msgstr "Execute"
 msgid "Execute flow"
 msgstr "Execute flow"
 
+#: src/pages/flows/FlowViewPage.ts
+msgid "Execute with inspector"
+msgstr "Execute with inspector"
+
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
 msgid "Executes the python snippet to determine whether to allow or deny a request."
 msgstr "Executes the python snippet to determine whether to allow or deny a request."
@@ -1793,6 +1801,11 @@ msgstr "Flow"
 msgid "Flow Overview"
 msgstr "Flow Overview"
 
+#: src/flows/FlowInspector.ts
+#: src/flows/FlowInspector.ts
+msgid "Flow inspector"
+msgstr "Flow inspector"
+
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
@@ -1859,6 +1872,10 @@ msgstr "Flows"
 #: src/pages/flows/FlowListPage.ts
 msgid "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them."
 msgstr "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them."
+
+#: src/flows/stages/RedirectStage.ts
+msgid "Follow redirect"
+msgstr "Follow redirect"
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Force the user to configure an authenticator"
@@ -2350,6 +2367,7 @@ msgstr "Load servers"
 #: src/elements/table/Table.ts
 #: src/flows/FlowExecutor.ts
 #: src/flows/FlowExecutor.ts
+#: src/flows/FlowInspector.ts
 #: src/flows/access_denied/FlowAccessDenied.ts
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
@@ -2713,6 +2731,10 @@ msgstr "New version available!"
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Newly created users are added to this group, if a group is selected."
 msgstr "Newly created users are added to this group, if a group is selected."
+
+#: src/flows/FlowInspector.ts
+msgid "Next stage"
+msgstr "Next stage"
 
 #: src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
@@ -3079,6 +3101,10 @@ msgstr "Persistent"
 msgid "Placeholder"
 msgstr "Placeholder"
 
+#: src/flows/FlowInspector.ts
+msgid "Plan history"
+msgstr "Plan history"
+
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
 msgid "Please enter your TOTP Code"
@@ -3381,6 +3407,7 @@ msgstr "Recovery keys"
 msgid "Recovery link cannot be emailed, user has no email address saved."
 msgstr "Recovery link cannot be emailed, user has no email address saved."
 
+#: src/flows/stages/RedirectStage.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Redirect"
 msgstr "Redirect"
@@ -3748,6 +3775,10 @@ msgstr "Service Provider Binding"
 #~ msgid "Session"
 #~ msgstr "Session"
 
+#: src/flows/FlowInspector.ts
+msgid "Session ID"
+msgstr "Session ID"
+
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "Session duration"
 msgstr "Session duration"
@@ -3794,9 +3825,17 @@ msgstr "Severity"
 msgid "Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable."
 msgstr "Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable."
 
+#: src/elements/Expand.ts
+msgid "Show less"
+msgstr "Show less"
+
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Show matched user"
 msgstr "Show matched user"
+
+#: src/elements/Expand.ts
+msgid "Show more"
+msgstr "Show more"
 
 #: src/pages/flows/FlowForm.ts
 msgid "Shown as the Title in Flow pages."
@@ -3896,6 +3935,18 @@ msgstr "Stage Configuration"
 #: src/pages/flows/BoundStagesList.ts
 msgid "Stage binding(s)"
 msgstr "Stage binding(s)"
+
+#: src/flows/FlowInspector.ts
+msgid "Stage kind"
+msgstr "Stage kind"
+
+#: src/flows/FlowInspector.ts
+msgid "Stage name"
+msgstr "Stage name"
+
+#: src/flows/FlowInspector.ts
+msgid "Stage object"
+msgstr "Stage object"
 
 #: src/pages/flows/BoundStagesList.ts
 msgid "Stage type"
@@ -4504,6 +4555,10 @@ msgstr ""
 #: src/pages/applications/ApplicationViewPage.ts
 msgid "These policies control which users can access this application."
 msgstr "These policies control which users can access this application."
+
+#: src/flows/FlowInspector.ts
+msgid "This flow is completed."
+msgstr "This flow is completed."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "This provider will behave like a transparent reverse-proxy, except requests must be authenticated. If your upstream application uses HTTPS, make sure to connect to the outpost using HTTPS as well."
@@ -5275,6 +5330,10 @@ msgstr "Yes"
 #: src/pages/outposts/OutpostForm.ts
 msgid "You can only select providers that match the type of the outpost."
 msgstr "You can only select providers that match the type of the outpost."
+
+#: src/flows/stages/RedirectStage.ts
+msgid "You're about to be redirect to the following URL."
+msgstr "You're about to be redirect to the following URL."
 
 #: src/interfaces/AdminInterface.ts
 msgid "You're currently impersonating {0}. Click to stop."

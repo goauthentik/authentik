@@ -12,8 +12,8 @@ from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from authentik.flows.tests.test_views import TO_STAGE_RESPONSE_MOCK
-from authentik.flows.views import SESSION_KEY_PLAN
+from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.invitation.models import Invitation, InvitationStage
 from authentik.stages.invitation.stage import (
     INVITATION_TOKEN_KEY,
@@ -40,7 +40,7 @@ class TestUserLoginStage(APITestCase):
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     @patch(
-        "authentik.flows.views.to_stage_response",
+        "authentik.flows.views.executor.to_stage_response",
         TO_STAGE_RESPONSE_MOCK,
     )
     def test_without_invitation_fail(self):
@@ -108,7 +108,7 @@ class TestUserLoginStage(APITestCase):
         data = {"foo": "bar"}
         invite = Invitation.objects.create(created_by=get_anonymous_user(), fixed_data=data)
 
-        with patch("authentik.flows.views.FlowExecutorView.cancel", MagicMock()):
+        with patch("authentik.flows.views.executor.FlowExecutorView.cancel", MagicMock()):
             base_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
             args = urlencode({INVITATION_TOKEN_KEY: invite.pk.hex})
             response = self.client.get(base_url + f"?query={args}")
@@ -140,7 +140,7 @@ class TestUserLoginStage(APITestCase):
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
-        with patch("authentik.flows.views.FlowExecutorView.cancel", MagicMock()):
+        with patch("authentik.flows.views.executor.FlowExecutorView.cancel", MagicMock()):
             base_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
             response = self.client.get(base_url, follow=True)
 

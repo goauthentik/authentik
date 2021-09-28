@@ -8,6 +8,7 @@ import { until } from "lit/directives/until";
 import AKGlobal from "../authentik.css";
 import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
@@ -26,12 +27,14 @@ import {
 import { DEFAULT_CONFIG, tenant } from "../api/Config";
 import { configureSentry } from "../api/Sentry";
 import { WebsocketClient } from "../common/ws";
-import { TITLE_DEFAULT } from "../constants";
+import { EVENT_FLOW_ADVANCE, TITLE_DEFAULT } from "../constants";
 import "../elements/LoadingOverlay";
 import { DefaultTenant } from "../elements/sidebar/SidebarBrand";
 import { first } from "../utils";
+import "./FlowInspector";
 import "./access_denied/FlowAccessDenied";
 import "./sources/plex/PlexLoginInit";
+import "./stages/RedirectStage";
 import "./stages/authenticator_duo/AuthenticatorDuoStage";
 import "./stages/authenticator_static/AuthenticatorStaticStage";
 import "./stages/authenticator_totp/AuthenticatorTOTPStage";
@@ -59,7 +62,9 @@ export class FlowExecutor extends LitElement implements StageHost {
         // Assign the location as soon as we get the challenge and *not* in the render function
         // as the render function might be called multiple times, which will navigate multiple
         // times and can invalidate oauth codes
-        if (value?.type === ChallengeChoices.Redirect) {
+        // Also only auto-redirect when the inspector is open, so that a user can inspect the
+        // redirect in the inspector
+        if (value?.type === ChallengeChoices.Redirect && !this.inspectorOpen) {
             console.debug(
                 "authentik/flows: redirecting to url from server",
                 (value as RedirectChallenge).to,
@@ -86,10 +91,14 @@ export class FlowExecutor extends LitElement implements StageHost {
     @property({ attribute: false })
     tenant?: CurrentTenant;
 
+    @property({ attribute: false })
+    inspectorOpen: boolean;
+
     ws: WebsocketClient;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFButton, PFTitle, PFList, PFBackgroundImage, AKGlobal].concat(css`
+        return [PFBase, PFLogin, PFDrawer, PFButton, PFTitle, PFList, PFBackgroundImage, AKGlobal]
+            .concat(css`
             .ak-hidden {
                 display: none;
             }
@@ -100,6 +109,9 @@ export class FlowExecutor extends LitElement implements StageHost {
                 font-family: monospace;
                 overflow-x: scroll;
             }
+            .pf-c-drawer__content {
+                background-color: transparent;
+            }
         `);
     }
 
@@ -107,6 +119,7 @@ export class FlowExecutor extends LitElement implements StageHost {
         super();
         this.ws = new WebsocketClient();
         this.flowSlug = window.location.pathname.split("/")[3];
+        this.inspectorOpen = window.location.search.includes("inspector");
     }
 
     setBackground(url: string): void {
@@ -130,6 +143,14 @@ export class FlowExecutor extends LitElement implements StageHost {
                 flowChallengeResponseRequest: payload,
             })
             .then((data) => {
+                if (this.inspectorOpen) {
+                    window.dispatchEvent(
+                        new CustomEvent(EVENT_FLOW_ADVANCE, {
+                            bubbles: true,
+                            composed: true,
+                        }),
+                    );
+                }
                 this.challenge = data;
             })
             .catch((e: Error | Response) => {
@@ -150,6 +171,14 @@ export class FlowExecutor extends LitElement implements StageHost {
                 query: window.location.search.substring(1),
             })
             .then((challenge) => {
+                if (this.inspectorOpen) {
+                    window.dispatchEvent(
+                        new CustomEvent(EVENT_FLOW_ADVANCE, {
+                            bubbles: true,
+                            composed: true,
+                        }),
+                    );
+                }
                 this.challenge = challenge;
                 // Only set background on first update, flow won't change throughout execution
                 if (this.challenge?.flowInfo?.background) {
@@ -199,6 +228,13 @@ export class FlowExecutor extends LitElement implements StageHost {
         }
         switch (this.challenge.type) {
             case ChallengeChoices.Redirect:
+                if (this.inspectorOpen) {
+                    return html`<ak-stage-redirect
+                        .host=${this as StageHost}
+                        .challenge=${this.challenge}
+                    >
+                    </ak-stage-redirect>`;
+                }
                 return html`<ak-empty-state ?loading=${true} header=${t`Loading`}>
                 </ak-empty-state>`;
             case ChallengeChoices.Shell:
@@ -333,50 +369,74 @@ export class FlowExecutor extends LitElement implements StageHost {
                     </filter>
                 </svg>
             </div>
-            <div class="pf-c-login">
-                <div class="ak-login-container">
-                    <header class="pf-c-login__header">
-                        <div class="pf-c-brand ak-brand">
-                            <img
-                                src="${first(
-                                    this.tenant?.brandingLogo,
-                                    DefaultTenant.brandingLogo,
-                                )}"
-                                alt="authentik icon"
-                            />
+            <div class="pf-c-page__drawer">
+                <div class="pf-c-drawer ${this.inspectorOpen ? "pf-m-expanded" : "pf-m-collapsed"}">
+                    <div class="pf-c-drawer__main">
+                        <div class="pf-c-drawer__content">
+                            <div class="pf-c-drawer__body">
+                                <div class="pf-c-login">
+                                    <div class="ak-login-container">
+                                        <header class="pf-c-login__header">
+                                            <div class="pf-c-brand ak-brand">
+                                                <img
+                                                    src="${first(
+                                                        this.tenant?.brandingLogo,
+                                                        DefaultTenant.brandingLogo,
+                                                    )}"
+                                                    alt="authentik icon"
+                                                />
+                                            </div>
+                                        </header>
+                                        <div class="pf-c-login__main">
+                                            ${this.renderChallengeWrapper()}
+                                        </div>
+                                        <footer class="pf-c-login__footer">
+                                            <p></p>
+                                            <ul class="pf-c-list pf-m-inline">
+                                                ${until(
+                                                    this.tenant?.uiFooterLinks?.map((link) => {
+                                                        return html`<li>
+                                                            <a href="${link.href || ""}"
+                                                                >${link.name}</a
+                                                            >
+                                                        </li>`;
+                                                    }),
+                                                )}
+                                                ${this.tenant?.brandingTitle != "authentik"
+                                                    ? html`
+                                                          <li>
+                                                              <a href="https://goauthentik.io"
+                                                                  >${t`Powered by authentik`}</a
+                                                              >
+                                                          </li>
+                                                      `
+                                                    : html``}
+                                                ${this.challenge?.flowInfo?.background?.startsWith(
+                                                    "/static",
+                                                )
+                                                    ? html`
+                                                          <li>
+                                                              <a
+                                                                  href="https://unsplash.com/@introspectivedsgn"
+                                                                  >${t`Background image`}</a
+                                                              >
+                                                          </li>
+                                                      `
+                                                    : html``}
+                                            </ul>
+                                        </footer>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </header>
-                    <div class="pf-c-login__main">${this.renderChallengeWrapper()}</div>
-                    <footer class="pf-c-login__footer">
-                        <p></p>
-                        <ul class="pf-c-list pf-m-inline">
-                            ${until(
-                                this.tenant?.uiFooterLinks?.map((link) => {
-                                    return html`<li>
-                                        <a href="${link.href || ""}">${link.name}</a>
-                                    </li>`;
-                                }),
-                            )}
-                            ${this.tenant?.brandingTitle != "authentik"
-                                ? html`
-                                      <li>
-                                          <a href="https://goauthentik.io"
-                                              >${t`Powered by authentik`}</a
-                                          >
-                                      </li>
-                                  `
-                                : html``}
-                            ${this.challenge?.flowInfo?.background?.startsWith("/static")
-                                ? html`
-                                      <li>
-                                          <a href="https://unsplash.com/@introspectivedsgn"
-                                              >${t`Background image`}</a
-                                          >
-                                      </li>
-                                  `
-                                : html``}
-                        </ul>
-                    </footer>
+
+                        <ak-flow-inspector
+                            class="pf-c-drawer__panel pf-m-width-33 ${this.inspectorOpen
+                                ? ""
+                                : "display-none"}"
+                            ?hidden=${!this.inspectorOpen}
+                        ></ak-flow-inspector>
+                    </div>
                 </div>
             </div>`;
     }

@@ -11,8 +11,8 @@ from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from authentik.flows.tests.test_views import TO_STAGE_RESPONSE_MOCK
-from authentik.flows.views import SESSION_KEY_PLAN
+from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_key
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordStage
@@ -39,7 +39,7 @@ class TestPasswordStage(APITestCase):
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     @patch(
-        "authentik.flows.views.to_stage_response",
+        "authentik.flows.views.executor.to_stage_response",
         TO_STAGE_RESPONSE_MOCK,
     )
     def test_without_user(self):
@@ -153,7 +153,7 @@ class TestPasswordStage(APITestCase):
         self.assertNotIn(SESSION_KEY_PLAN, self.client.session)
 
     @patch(
-        "authentik.flows.views.to_stage_response",
+        "authentik.flows.views.executor.to_stage_response",
         TO_STAGE_RESPONSE_MOCK,
     )
     @patch(

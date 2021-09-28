@@ -18,7 +18,7 @@ from authentik.core.models import Application, Source, User
 from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, ChallengeStageView
-from authentik.flows.views import SESSION_KEY_APPLICATION_PRE, challenge_types
+from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE, challenge_types
 from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.identification.signals import identification_failed
 from authentik.stages.password.stage import authenticate

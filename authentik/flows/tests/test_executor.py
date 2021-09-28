@@ -14,7 +14,7 @@ from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, InvalidResponseAction
 from authentik.flows.planner import FlowPlan, FlowPlanner
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageView
-from authentik.flows.views import NEXT_ARG_NAME, SESSION_KEY_PLAN, FlowExecutorView
+from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.config import CONFIG
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
@@ -38,13 +38,13 @@ TO_STAGE_RESPONSE_MOCK = MagicMock(side_effect=to_stage_response)
 
 
 class TestFlowExecutor(APITestCase):
-    """Test views logic"""
+    """Test executor"""
 
     def setUp(self):
         self.request_factory = RequestFactory()
 
     @patch(
-        "authentik.flows.views.to_stage_response",
+        "authentik.flows.views.executor.to_stage_response",
         TO_STAGE_RESPONSE_MOCK,
     )
     def test_existing_plan_diff_flow(self):
@@ -62,7 +62,7 @@ class TestFlowExecutor(APITestCase):
         session.save()
 
         cancel_mock = MagicMock()
-        with patch("authentik.flows.views.FlowExecutorView.cancel", cancel_mock):
+        with patch("authentik.flows.views.executor.FlowExecutorView.cancel", cancel_mock):
             response = self.client.get(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             )
@@ -70,7 +70,7 @@ class TestFlowExecutor(APITestCase):
             self.assertEqual(cancel_mock.call_count, 2)
 
     @patch(
-        "authentik.flows.views.to_stage_response",
+        "authentik.flows.views.executor.to_stage_response",
         TO_STAGE_RESPONSE_MOCK,
     )
     @patch(
@@ -105,7 +105,7 @@ class TestFlowExecutor(APITestCase):
         )
 
     @patch(
-        "authentik.flows.views.to_stage_response",
+        "authentik.flows.views.executor.to_stage_response",
         TO_STAGE_RESPONSE_MOCK,
     )
     def test_invalid_empty_flow(self):
@@ -124,7 +124,7 @@ class TestFlowExecutor(APITestCase):
         self.assertEqual(response.url, reverse("authentik_core:root-redirect"))
 
     @patch(
-        "authentik.flows.views.to_stage_response",
+        "authentik.flows.views.executor.to_stage_response",
         TO_STAGE_RESPONSE_MOCK,
     )
     def test_invalid_flow_redirect(self):
@@ -175,7 +175,7 @@ class TestFlowExecutor(APITestCase):
         self.assertEqual(len(plan.bindings), 1)
 
     @patch(
-        "authentik.flows.views.to_stage_response",
+        "authentik.flows.views.executor.to_stage_response",
         TO_STAGE_RESPONSE_MOCK,
     )
     def test_reevaluate_remove_last(self):

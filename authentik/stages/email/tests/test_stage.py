@@ -12,7 +12,7 @@ from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from authentik.flows.views import SESSION_KEY_PLAN
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.stage import QS_KEY_TOKEN
 
@@ -90,7 +90,7 @@ class TestEmailStage(APITestCase):
         session.save()
         token: Token = Token.objects.get(user=self.user)
 
-        with patch("authentik.flows.views.FlowExecutorView.cancel", MagicMock()):
+        with patch("authentik.flows.views.executor.FlowExecutorView.cancel", MagicMock()):
             # Call the executor shell to preseed the session
             url = reverse(
                 "authentik_api:flow-executor",

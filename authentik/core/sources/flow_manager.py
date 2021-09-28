@@ -22,7 +22,7 @@ from authentik.flows.planner import (
     PLAN_CONTEXT_SSO,
     FlowPlanner,
 )
-from authentik.flows.views import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
+from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.policies.utils import delete_none_keys
 from authentik.stages.password import BACKEND_INBUILT

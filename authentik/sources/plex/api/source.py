@@ -17,7 +17,7 @@ from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.flows.challenge import RedirectChallenge
-from authentik.flows.views import to_stage_response
+from authentik.flows.views.executor import to_stage_response
 from authentik.sources.plex.models import PlexSource
 from authentik.sources.plex.plex import PlexAuth, PlexSourceFlowManager
 
