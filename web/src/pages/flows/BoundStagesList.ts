@@ -53,8 +53,8 @@ export class BoundStagesList extends Table<FlowStageBinding> {
             .objects=${this.selectedElements}
             .metadata=${(item: FlowStageBinding) => {
                 return [
-                    { key: t`Stage`, value: item.stageObj?.name },
-                    { key: t`Stage type`, value: item.stageObj?.verboseName },
+                    { key: t`Stage`, value: item.stageObj?.name || "" },
+                    { key: t`Stage type`, value: item.stageObj?.verboseName ||"" },
                 ];
             }}
             .usedBy=${(item: FlowStageBinding) => {

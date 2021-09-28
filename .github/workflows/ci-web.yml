@@ -61,7 +61,7 @@ jobs:
           npm install
       - name: Generate API
         run: make gen-web
-      - name: prettier
+      - name: lit-analyse
         run: |
           cd web
           npm run lit-analyse
