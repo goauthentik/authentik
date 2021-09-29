@@ -157,8 +157,6 @@ export class UserListPage extends TablePage<User> {
                                             ).coreUsersPartialUpdate({
                                                 id: item.pk || 0,
                                                 patchedUserRequest: {
-                                                    username: item.username,
-                                                    name: item.name,
                                                     isActive: !item.isActive,
                                                 },
                                             });
