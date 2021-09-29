@@ -99,15 +99,16 @@ class DockerController(BaseController):
                 "image": image_name,
                 "name": container_name,
                 "detach": True,
-                "ports": {
-                    f"{port.inner_port or port.port}/{port.protocol.lower()}": port.port
-                    for port in self.deployment_ports
-                },
                 "environment": self._get_env(),
                 "labels": self._get_labels(),
                 "restart_policy": {"Name": "unless-stopped"},
                 "network": self.outpost.config.docker_network,
             }
+            if self.outpost.config.docker_map_ports:
+                container_args["ports"] = {
+                    f"{port.inner_port or port.port}/{port.protocol.lower()}": str(port.port)
+                    for port in self.deployment_ports
+                }
             if settings.TEST:
                 del container_args["ports"]
                 del container_args["network"]
