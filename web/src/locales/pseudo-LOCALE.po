@@ -155,6 +155,7 @@ msgid "Actions over the last 24 hours"
 msgstr ""
 
 #: src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Activate"
 msgstr ""
 
@@ -1172,6 +1173,7 @@ msgid "Date Time"
 msgstr ""
 
 #: src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Deactivate"
 msgstr ""
 
@@ -4986,6 +4988,7 @@ msgstr ""
 #: src/pages/tokens/TokenForm.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "User"
 msgstr ""

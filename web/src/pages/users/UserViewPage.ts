@@ -35,6 +35,7 @@ import "../../elements/oauth/UserCodeList";
 import "../../elements/oauth/UserRefreshList";
 import "../../elements/user/SessionList";
 import "../../elements/user/UserConsentList";
+import "./UserActiveForm";
 import "./UserForm";
 
 @customElement("ak-user-view")
@@ -132,7 +133,7 @@ export class UserViewPage extends LitElement {
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
-                                            ${this.user.email}
+                                            ${this.user.email || "-"}
                                         </div>
                                     </dd>
                                 </div>
@@ -194,6 +195,24 @@ export class UserViewPage extends LitElement {
                                     ${t`Edit`}
                                 </button>
                             </ak-forms-modal>
+                        </div>
+                        <div class="pf-c-card__footer">
+                            <ak-user-active-form
+                                .obj=${this.user}
+                                objectLabel=${t`User`}
+                                .delete=${() => {
+                                    return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
+                                        id: this.user?.pk || 0,
+                                        patchedUserRequest: {
+                                            isActive: !this.user?.isActive,
+                                        },
+                                    });
+                                }}
+                            >
+                                <button slot="trigger" class="pf-c-button pf-m-warning">
+                                    ${this.user.isActive ? t`Deactivate` : t`Activate`}
+                                </button>
+                            </ak-user-active-form>
                         </div>
                         <div class="pf-c-card__footer">
                             <ak-action-button
