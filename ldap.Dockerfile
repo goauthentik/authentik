@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM golang:1.17.1 AS builder
+FROM docker.io/golang:1.17.1 AS builder
 
 WORKDIR /go/src/goauthentik.io
 
