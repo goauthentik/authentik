@@ -50,7 +50,7 @@
         "@goauthentik/api": "^2021.9.3-1632814634",
         "@lingui/cli": "^3.12.1",
         "@lingui/core": "^3.11.1",
-        "@lingui/macro": "^3.11.1",
+        "@lingui/macro": "^3.12.1",
         "@patternfly/patternfly": "^4.135.2",
         "@polymer/iron-form": "^3.0.1",
         "@polymer/paper-input": "^3.2.1",
