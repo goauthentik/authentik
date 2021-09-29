@@ -72,6 +72,7 @@ class OutpostConfig:
     object_naming_template: str = field(default="ak-outpost-%(name)s")
 
     docker_network: Optional[str] = field(default=None)
+    docker_map_ports: bool = field(default=True)
 
     kubernetes_replicas: int = field(default=1)
     kubernetes_namespace: str = field(default_factory=get_namespace)

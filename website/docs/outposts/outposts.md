@@ -46,6 +46,9 @@ object_naming_template: ak-outpost-%(name)s
 ########################################
 # Network the outpost container should be connected to
 docker_network: null
+# Optionally disable mapping of ports to outpost container, may be useful when using docker networks
+# (Available with 2021.9.4+)
+docker_map_ports: true
 ########################################
 # Kubernetes outpost specific settings
 ########################################
