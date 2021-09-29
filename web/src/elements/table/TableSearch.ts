@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import { CSSResult, html, LitElement, TemplateResult } from "lit";
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 
@@ -20,7 +20,19 @@ export class TableSearch extends LitElement {
     onSearch?: (value: string) => void;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFToolbar, PFInputGroup, PFFormControl, AKGlobal];
+        return [
+            PFBase,
+            PFButton,
+            PFToolbar,
+            PFInputGroup,
+            PFFormControl,
+            AKGlobal,
+            css`
+                ::-webkit-search-cancel-button {
+                    display: none;
+                }
+            `,
+        ];
     }
 
     render(): TemplateResult {
@@ -50,6 +62,16 @@ export class TableSearch extends LitElement {
                             this.onSearch((ev.target as HTMLInputElement).value);
                         }}
                     />
+                    <button
+                        class="pf-c-button pf-m-control"
+                        type="reset"
+                        @click=${() => {
+                            if (!this.onSearch) return;
+                            this.onSearch("");
+                        }}
+                    >
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                    </button>
                     <button class="pf-c-button pf-m-control" type="submit">
                         <i class="fas fa-search" aria-hidden="true"></i>
                     </button>
