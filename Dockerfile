@@ -1,5 +1,5 @@
 # Stage 1: Lock python dependencies
-FROM python:3.9-slim-buster as locker
+FROM docker.io/python:3.9-slim-buster as locker
 
 COPY ./Pipfile /app/
 COPY ./Pipfile.lock /app/
@@ -11,7 +11,7 @@ RUN pip install pipenv && \
     pipenv lock -r --dev-only > requirements-dev.txt
 
 # Stage 2: Build website
-FROM node as website-builder
+FROM docker.io/node as website-builder
 
 COPY ./website /static/
 
@@ -19,7 +19,7 @@ ENV NODE_ENV=production
 RUN cd /static && npm i && npm run build-docs-only
 
 # Stage 3: Build webui
-FROM node as web-builder
+FROM docker.io/node as web-builder
 
 COPY ./web /static/
 
@@ -27,7 +27,7 @@ ENV NODE_ENV=production
 RUN cd /static && npm i && npm run build
 
 # Stage 4: Build go proxy
-FROM golang:1.17.1 AS builder
+FROM docker.io/golang:1.17.1 AS builder
 
 WORKDIR /work
 
@@ -47,7 +47,7 @@ COPY ./go.sum /work/go.sum
 RUN go build -o /work/authentik ./cmd/server/main.go
 
 # Stage 5: Run
-FROM python:3.9-slim-buster
+FROM docker.io/python:3.9-slim-buster
 
 WORKDIR /
 COPY --from=locker /app/requirements.txt /
