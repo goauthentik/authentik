@@ -48,7 +48,7 @@
         "@babel/preset-typescript": "^7.15.0",
         "@fortawesome/fontawesome-free": "^5.15.4",
         "@goauthentik/api": "^2021.9.3-1632814634",
-        "@lingui/cli": "^3.11.1",
+        "@lingui/cli": "^3.12.1",
         "@lingui/core": "^3.11.1",
         "@lingui/macro": "^3.11.1",
         "@patternfly/patternfly": "^4.135.2",
