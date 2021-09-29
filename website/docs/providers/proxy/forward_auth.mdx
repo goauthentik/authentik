@@ -71,7 +71,7 @@ server {
         # proxy_pass          http://localhost:5000;
 
         # authentik-specific config
-        auth_request        /akprox/auth;
+        auth_request        /akprox/auth/nginx;
         error_page          401 = @akprox_signin;
         # For domain level, use the below error_page to redirect to your Authentik server with the full redirect path
         # error_page          401 =302 https://authentik.company/akprox/start?rd=$scheme://$http_host$request_uri;
@@ -155,7 +155,7 @@ http:
   middlewares:
     authentik:
       forwardAuth:
-        address: http://authentik-outpost-example-outpost:9000/akprox/auth?traefik
+        address: http://authentik-outpost-example-outpost:9000/akprox/auth/traefik
         trustForwardHeader: true
         authResponseHeaders:
           - Set-Cookie
@@ -228,7 +228,7 @@ services:
       traefik.http.routers.authentik.rule: Host(`*external host that you configured in authentik*`) && PathPrefix(`/akprox/`)
       traefik.http.routers.authentik.entrypoints: https
       traefik.http.routers.authentik.tls: true
-      traefik.http.middlewares.authentik.forwardauth.address: http://authentik_proxy:9000/akprox/auth?traefik
+      traefik.http.middlewares.authentik.forwardauth.address: http://authentik_proxy:9000/akprox/auth/traefik
       traefik.http.middlewares.authentik.forwardauth.trustForwardHeader: true
       traefik.http.middlewares.authentik.forwardauth.authResponseHeaders: Set-Cookie,X-Auth-Username,X-Auth-Groups,X-Forwarded-Email,X-Forwarded-Preferred-Username,X-Forwarded-User
     restart: unless-stopped
@@ -255,7 +255,7 @@ metadata:
   name: authentik
 spec:
   forwardAuth:
-    address: http://authentik-outpost-example-outpost:9000/akprox/auth?traefik
+    address: http://authentik-outpost-example-outpost:9000/akprox/auth/traefik
     trustForwardHeader: true
     authResponseHeaders:
       - Set-Cookie
