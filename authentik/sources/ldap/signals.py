@@ -25,13 +25,20 @@ from authentik.stages.prompt.signals import password_validate
 # pylint: disable=unused-argument
 def sync_ldap_source_on_save(sender, instance: LDAPSource, **_):
     """Ensure that source is synced on save (if enabled)"""
-    if instance.enabled:
-        for sync_class in [
-            UserLDAPSynchronizer,
-            GroupLDAPSynchronizer,
-            MembershipLDAPSynchronizer,
-        ]:
-            ldap_sync.delay(instance.pk, class_to_path(sync_class))
+    if not instance.enabled:
+        return
+    # Don't sync sources when they don't have any property mappings. This will only happen if:
+    # - the user forgets to set them or
+    # - the source is newly created, this is the first save event
+    #   and the mappings are created with an m2m event
+    if not instance.property_mappings.exists() or not instance.property_mappings_group.exists():
+        return
+    for sync_class in [
+        UserLDAPSynchronizer,
+        GroupLDAPSynchronizer,
+        MembershipLDAPSynchronizer,
+    ]:
+        ldap_sync.delay(instance.pk, class_to_path(sync_class))
 
 
 @receiver(password_validate)

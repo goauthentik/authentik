@@ -162,7 +162,7 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
+            <ak-form-group ?expanded=${true}>
                 <span slot="header"> ${t`LDAP Attribute mapping`} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal

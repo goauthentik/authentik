@@ -207,6 +207,7 @@ export class LDAPSourceViewPage extends LitElement {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-action-button
+                                    class="pf-m-primary"
                                     .apiRequest=${() => {
                                         return new SourcesApi(DEFAULT_CONFIG)
                                             .sourcesLdapPartialUpdate({
