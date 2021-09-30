@@ -72,7 +72,8 @@ class LDAPSyncTests(TestCase):
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             user_sync = UserLDAPSynchronizer(self.source)
             user_sync.sync()
-            self.assertTrue(User.objects.filter(username="user0_sn").exists())
+            user = User.objects.filter(username="user0_sn").first()
+            self.assertFalse(user.is_active)
             self.assertFalse(User.objects.filter(username="user1_sn").exists())
 
     def test_sync_users_openldap(self):
