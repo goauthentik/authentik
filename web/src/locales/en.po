@@ -184,6 +184,10 @@ msgid "Additional group DN, prepended to the Base DN."
 msgstr "Additional group DN, prepended to the Base DN."
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
+msgid "Additional settings"
+msgstr "Additional settings"
+
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Additional user DN, prepended to the Base DN."
 msgstr "Additional user DN, prepended to the Base DN."
 
@@ -203,7 +207,6 @@ msgid "Advanced protocol settings"
 msgstr "Advanced protocol settings"
 
 #: src/pages/policies/password/PasswordPolicyForm.ts
-#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Advanced settings"
 msgstr "Advanced settings"
 
@@ -1942,7 +1945,7 @@ msgstr "Go to previous page"
 #: src/pages/events/RuleForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
-#: src/pages/providers/ldap/LDAPProviderForm.ts
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Group"
 msgstr "Group"
@@ -2268,6 +2271,10 @@ msgstr "Kubeconfig"
 msgid "LDAP (Technical preview)"
 msgstr "LDAP (Technical preview)"
 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+msgid "LDAP Attribute mapping"
+msgstr "LDAP Attribute mapping"
+
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "LDAP DN under which bind requests and search requests can be made."
 msgstr "LDAP DN under which bind requests and search requests can be made."
@@ -2411,6 +2418,7 @@ msgstr "Loading"
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderImportForm.ts
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
@@ -3034,6 +3042,10 @@ msgstr "PEM-encoded Certificate data."
 #: src/pages/groups/GroupListPage.ts
 msgid "Parent"
 msgstr "Parent"
+
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+msgid "Parent group for all the groups imported from LDAP."
+msgstr "Parent group for all the groups imported from LDAP."
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts
 msgid "Pass policy?"
@@ -4341,6 +4353,10 @@ msgstr "Sync"
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Sync groups"
 msgstr "Sync groups"
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Sync parent group"
+msgstr "Sync parent group"
 
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 msgid "Sync status"

@@ -184,6 +184,10 @@ msgid "Additional group DN, prepended to the Base DN."
 msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
+msgid "Additional settings"
+msgstr ""
+
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Additional user DN, prepended to the Base DN."
 msgstr ""
 
@@ -203,7 +207,6 @@ msgid "Advanced protocol settings"
 msgstr ""
 
 #: src/pages/policies/password/PasswordPolicyForm.ts
-#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Advanced settings"
 msgstr ""
 
@@ -1934,7 +1937,7 @@ msgstr ""
 #: src/pages/events/RuleForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
-#: src/pages/providers/ldap/LDAPProviderForm.ts
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Group"
 msgstr ""
@@ -2260,6 +2263,10 @@ msgstr ""
 msgid "LDAP (Technical preview)"
 msgstr ""
 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+msgid "LDAP Attribute mapping"
+msgstr ""
+
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "LDAP DN under which bind requests and search requests can be made."
 msgstr ""
@@ -2403,6 +2410,7 @@ msgstr ""
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderImportForm.ts
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
@@ -3025,6 +3033,10 @@ msgstr ""
 #: src/pages/groups/GroupForm.ts
 #: src/pages/groups/GroupListPage.ts
 msgid "Parent"
+msgstr ""
+
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+msgid "Parent group for all the groups imported from LDAP."
 msgstr ""
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts
@@ -4332,6 +4344,10 @@ msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Sync groups"
+msgstr ""
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Sync parent group"
 msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts

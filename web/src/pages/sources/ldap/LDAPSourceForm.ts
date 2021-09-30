@@ -5,7 +5,13 @@ import { customElement } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 import { until } from "lit/directives/until";
 
-import { LDAPSource, SourcesApi, PropertymappingsApi, LDAPSourceRequest } from "@goauthentik/api";
+import {
+    LDAPSource,
+    SourcesApi,
+    PropertymappingsApi,
+    LDAPSourceRequest,
+    CoreApi,
+} from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import "../../../elements/forms/FormGroup";
@@ -157,7 +163,7 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                 </div>
             </ak-form-group>
             <ak-form-group>
-                <span slot="header"> ${t`Advanced settings`} </span>
+                <span slot="header"> ${t`LDAP Attribute mapping`} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${t`User Property Mappings`}
@@ -248,6 +254,37 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${t`Hold control/command to select multiple items.`}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            <ak-form-group>
+                <span slot="header"> ${t`Additional settings`} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal label=${t`Group`} name="syncParentGroup">
+                        <select class="pf-c-form-control">
+                            <option
+                                value=""
+                                ?selected=${this.instance?.syncParentGroup === undefined}
+                            >
+                                ---------
+                            </option>
+                            ${until(
+                                new CoreApi(DEFAULT_CONFIG).coreGroupsList({}).then((groups) => {
+                                    return groups.results.map((group) => {
+                                        return html`<option
+                                            value=${ifDefined(group.pk)}
+                                            ?selected=${this.instance?.syncParentGroup === group.pk}
+                                        >
+                                            ${group.name}
+                                        </option>`;
+                                    });
+                                }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Parent group for all the groups imported from LDAP.`}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal

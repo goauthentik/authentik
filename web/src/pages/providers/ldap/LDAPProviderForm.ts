@@ -95,7 +95,7 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                     ${t`Flow used for users to authenticate. Currently only identification and password stages are supported.`}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Group`} name="searchGroup">
+            <ak-form-element-horizontal label=${t`Sync parent group`} name="searchGroup">
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.instance?.searchGroup === undefined}>
                         ---------
