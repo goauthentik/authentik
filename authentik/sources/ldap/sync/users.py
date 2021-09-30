@@ -10,6 +10,7 @@ from pytz import UTC
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
 from authentik.sources.ldap.sync.base import LDAP_UNIQUENESS, BaseLDAPSynchronizer
+from authentik.sources.ldap.sync.vendor.ad import UserAccountControl
 
 
 class UserLDAPSynchronizer(BaseLDAPSynchronizer):
@@ -74,5 +75,9 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                         pwd_last_set=pwd_last_set,
                     )
                     ak_user.set_unusable_password()
+                    ak_user.save()
+                if "userAccountControl" in attributes:
+                    uac = UserAccountControl(attributes.get("userAccountControl"))
+                    ak_user.is_active = not uac.ACCOUNTDISABLE
                     ak_user.save()
         return user_count
