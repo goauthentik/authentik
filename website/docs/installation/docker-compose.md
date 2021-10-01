@@ -12,9 +12,9 @@ This installation method is for test-setups and small-scale productive setups.
 
 ## Preparation
 
-Download the latest `docker-compose.yml` from [here](https://raw.githubusercontent.com/goauthentik/authentik/version/2021.9.3/docker-compose.yml). Place it in a directory of your choice.
+Download the latest `docker-compose.yml` from [here](https://raw.githubusercontent.com/goauthentik/authentik/version/2021.9.4/docker-compose.yml). Place it in a directory of your choice.
 
-To optionally deploy a different version run `echo AUTHENTIK_TAG=2021.9.3 >> .env`
+To optionally deploy a different version run `echo AUTHENTIK_TAG=2021.9.4 >> .env`
 
 If this is a fresh authentik install run the following commands to generate a password:
 
