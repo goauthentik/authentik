@@ -17,7 +17,8 @@
         "sourceLocale": "en",
         "locales": [
             "en",
-            "pseudo-LOCALE"
+            "pseudo-LOCALE",
+            "fr_FR"
         ],
         "formatOptions": {
             "lineNumbers": false
@@ -50,6 +51,7 @@
         "@goauthentik/api": "^2021.9.4-1633083586",
         "@lingui/cli": "^3.12.1",
         "@lingui/core": "^3.12.1",
+        "@lingui/detect-locale": "^3.12.1",
         "@lingui/macro": "^3.12.1",
         "@patternfly/patternfly": "^4.135.2",
         "@polymer/iron-form": "^3.0.1",
