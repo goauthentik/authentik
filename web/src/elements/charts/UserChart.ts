@@ -1,5 +1,7 @@
 import { ChartData } from "chart.js";
 
+import { t } from "@lingui/macro";
+
 import { customElement, property } from "lit/decorators";
 
 import { CoreApi, UserMetrics } from "@goauthentik/api";
@@ -22,7 +24,7 @@ export class UserChart extends AKChart<UserMetrics> {
         return {
             datasets: [
                 {
-                    label: "Failed Logins",
+                    label: t`Failed Logins`,
                     backgroundColor: "rgba(201, 25, 11, .5)",
                     spanGaps: true,
                     data:
@@ -34,7 +36,7 @@ export class UserChart extends AKChart<UserMetrics> {
                         }) || [],
                 },
                 {
-                    label: "Successful Logins",
+                    label: t`Successful Logins`,
                     backgroundColor: "rgba(189, 229, 184, .5)",
                     spanGaps: true,
                     data:
@@ -46,7 +48,7 @@ export class UserChart extends AKChart<UserMetrics> {
                         }) || [],
                 },
                 {
-                    label: "Application authorizations",
+                    label: t`Application authorizations`,
                     backgroundColor: "rgba(43, 154, 243, .5)",
                     spanGaps: true,
                     data:
