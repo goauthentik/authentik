@@ -9,11 +9,20 @@ import (
 
 func (a *Application) addHeaders(r *http.Request, c *Claims) {
 	// https://goauthentik.io/docs/providers/proxy/proxy
+
+	// Legacy headers, remove after 2022.1
 	r.Header.Set("X-Auth-Username", c.PreferredUsername)
 	r.Header.Set("X-Auth-Groups", strings.Join(c.Groups, "|"))
 	r.Header.Set("X-Forwarded-Email", c.Email)
 	r.Header.Set("X-Forwarded-Preferred-Username", c.PreferredUsername)
 	r.Header.Set("X-Forwarded-User", c.Sub)
+
+	// New headers, unique prefix
+	r.Header.Set("X-authentik-username", c.PreferredUsername)
+	r.Header.Set("X-authentik-groups", strings.Join(c.Groups, "|"))
+	r.Header.Set("X-authentik-email", c.Email)
+	r.Header.Set("X-authentik-name", c.Name)
+	r.Header.Set("X-authentik-uid", c.Sub)
 
 	userAttributes := c.Proxy.UserAttributes
 	// Attempt to set basic auth based on user's attributes
