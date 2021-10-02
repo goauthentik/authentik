@@ -2,6 +2,7 @@
 # Translators:
 # nerdinator <florian.dupret@gmail.com>, 2021
 # Charles Leclerc, 2021
+# Issy Szemeti, 2021
 # 
 msgid ""
 msgstr ""
@@ -9,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-04 16:55+0200\n"
 "PO-Revision-Date: 2021-04-25 14:57+0000\n"
-"Last-Translator: Charles Leclerc, 2021\n"
+"Last-Translator: Issy Szemeti, 2021\n"
 "Language-Team: French (France) (https://www.transifex.com/beryjuorg/teams/119923/fr_FR/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,7 +25,7 @@ msgstr ""
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "(Format: hours=-1;minutes=-2;seconds=-3)."
-msgstr "(Format : hours=-1;minutes=-2;seconds=-3)"
+msgstr "(Format : heures=-1;minutes=-2;seconds=-3)"
 
 #: src/elements/events/ObjectChangelog.ts src/elements/events/UserEvents.ts
 #: src/elements/user/SessionList.ts
