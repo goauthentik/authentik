@@ -29,7 +29,7 @@ func (a *Application) configureProxy() error {
 	}
 	rp := &httputil.ReverseProxy{Director: a.proxyModifyRequest(u)}
 	rp.Transport = ak.NewTracingTransport(context.TODO(), a.getUpstreamTransport())
-	rp.ErrorHandler = NewProxyErrorHandler(templates.GetTemplates())
+	rp.ErrorHandler = a.newProxyErrorHandler(templates.GetTemplates())
 	rp.ModifyResponse = a.proxyModifyResponse
 	a.mux.PathPrefix("/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		claims, err := a.getClaims(r)

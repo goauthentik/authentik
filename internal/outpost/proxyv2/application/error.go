@@ -1,6 +1,7 @@
 package application
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 
@@ -8,8 +9,9 @@ import (
 )
 
 // NewProxyErrorHandler creates a ProxyErrorHandler using the template given.
-func NewProxyErrorHandler(errorTemplate *template.Template) func(http.ResponseWriter, *http.Request, error) {
+func (a *Application) newProxyErrorHandler(errorTemplate *template.Template) func(http.ResponseWriter, *http.Request, error) {
 	return func(rw http.ResponseWriter, req *http.Request, proxyErr error) {
+		claims, _ := a.getClaims(req)
 		log.WithError(proxyErr).Warning("Error proxying to upstream server")
 		rw.WriteHeader(http.StatusBadGateway)
 		data := struct {
@@ -20,6 +22,9 @@ func NewProxyErrorHandler(errorTemplate *template.Template) func(http.ResponseWr
 			Title:       "Bad Gateway",
 			Message:     "Error proxying to upstream server",
 			ProxyPrefix: "/akprox",
+		}
+		if claims != nil {
+			data.Message = fmt.Sprintf("Error proxying to upstream server: %s", proxyErr.Error())
 		}
 		err := errorTemplate.Execute(rw, data)
 		if err != nil {
