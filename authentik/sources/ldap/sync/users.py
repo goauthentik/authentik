@@ -78,6 +78,6 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                     ak_user.save()
                 if "userAccountControl" in attributes:
                     uac = UserAccountControl(attributes.get("userAccountControl"))
-                    ak_user.is_active = UserAccountControl.ACCOUNTDISABLE in uac
+                    ak_user.is_active = UserAccountControl.ACCOUNTDISABLE not in uac
                     ak_user.save()
         return user_count
