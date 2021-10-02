@@ -17,7 +17,7 @@ import (
 
 func (a *Application) getUpstreamTransport() http.RoundTripper {
 	return &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: *a.proxyConfig.InternalHostSslValidation},
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: !*a.proxyConfig.InternalHostSslValidation},
 	}
 }
 
