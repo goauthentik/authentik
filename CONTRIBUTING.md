@@ -117,7 +117,7 @@ This section guides you through submitting a bug report for authentik. Following
 
 Whenever authentik encounters an error, it will be logged as an Event with the type `system_exception`. This event type has a button to directly open a pre-filled GitHub issue form.
 
-This form will have the full stack trace of the error that ocurred and shouldn't contain any sensitive data.
+This form will have the full stack trace of the error that occurred and shouldn't contain any sensitive data.
 
 ### Suggesting Enhancements
 

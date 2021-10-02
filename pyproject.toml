@@ -53,7 +53,7 @@ disable = [
   "cyclic-import",
   "protected-access",
   "raise-missing-from",
-  # To preverse django's translation function we need to use %-formatting
+  # To preserve django's translation function we need to use %-formatting
   "consider-using-f-string",
 ]
 
