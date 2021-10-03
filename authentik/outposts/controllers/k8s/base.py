@@ -10,7 +10,7 @@ from structlog.stdlib import get_logger
 from urllib3.exceptions import HTTPError
 
 from authentik import __version__
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.outposts.controllers.k8s.triggers import NeedsRecreate, NeedsUpdate
 from authentik.outposts.managed import MANAGED_OUTPOST
 
 if TYPE_CHECKING:
@@ -18,18 +18,6 @@ if TYPE_CHECKING:
 
 # pylint: disable=invalid-name
 T = TypeVar("T", V1Pod, V1Deployment)
-
-
-class ReconcileTrigger(SentryIgnoredException):
-    """Base trigger raised by child classes to notify us"""
-
-
-class NeedsRecreate(ReconcileTrigger):
-    """Exception to trigger a complete recreate of the Kubernetes Object"""
-
-
-class NeedsUpdate(ReconcileTrigger):
-    """Exception to trigger an update to the Kubernetes Object"""
 
 
 class KubernetesObjectReconciler(Generic[T]):

@@ -14,11 +14,8 @@ from kubernetes.client import (
 from kubernetes.client.models.networking_v1beta1_ingress_rule import NetworkingV1beta1IngressRule
 
 from authentik.outposts.controllers.base import FIELD_MANAGER
-from authentik.outposts.controllers.k8s.base import (
-    KubernetesObjectReconciler,
-    NeedsRecreate,
-    NeedsUpdate,
-)
+from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
+from authentik.outposts.controllers.k8s.triggers import NeedsRecreate, NeedsUpdate
 from authentik.providers.proxy.models import ProxyMode, ProxyProvider
 
 if TYPE_CHECKING:
