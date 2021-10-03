@@ -134,7 +134,7 @@ export class SAMLProviderViewPage extends LitElement {
                                         </dt>
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">
-                                                ${this.provider.audience}
+                                                ${this.provider.audience || "-"}
                                             </div>
                                         </dd>
                                     </div>
