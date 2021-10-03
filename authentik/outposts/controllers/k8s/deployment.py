@@ -18,6 +18,7 @@ from kubernetes.client import (
 
 from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler, NeedsUpdate
+from authentik.outposts.controllers.k8s.utils import compare_ports
 from authentik.outposts.models import Outpost
 
 if TYPE_CHECKING:
@@ -35,7 +36,10 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         self.outpost = self.controller.outpost
 
     def reconcile(self, current: V1Deployment, reference: V1Deployment):
-        super().reconcile(current, reference)
+        compare_ports(
+            current.spec.template.spec.containers[0].ports,
+            reference.spec.template.spec.containers[0].ports,
+        )
         if current.spec.replicas != reference.spec.replicas:
             raise NeedsUpdate()
         if (
@@ -43,6 +47,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
             != reference.spec.template.spec.containers[0].image
         ):
             raise NeedsUpdate()
+        super().reconcile(current, reference)
 
     def get_pod_meta(self) -> dict[str, str]:
         """Get common object metadata"""
