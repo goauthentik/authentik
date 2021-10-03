@@ -14,6 +14,7 @@ from django.db.migrations.operations.special import RunPython
 from django.test.testcases import TransactionTestCase
 from django.urls import reverse
 from docker import DockerClient, from_env
+from docker.errors import DockerException
 from docker.models.containers import Container
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
@@ -66,9 +67,20 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         if specs := self.get_container_specs():
             self.container = self._start_container(specs)
 
+    def get_container_image(self, base: str) -> str:
+        """Try to pull docker image based on git branch, fallback to master if not found."""
+        client: DockerClient = from_env()
+        image = f"{base}:gh-master"
+        try:
+            branch_image = f"{base}:{get_docker_tag()}"
+            client.images.pull(branch_image)
+            return branch_image
+        except DockerException:
+            client.images.pull(image)
+        return image
+
     def _start_container(self, specs: dict[str, Any]) -> Container:
         client: DockerClient = from_env()
-        client.images.pull(specs["image"])
         container = client.containers.run(**specs)
         if "healthcheck" not in specs:
             return container
