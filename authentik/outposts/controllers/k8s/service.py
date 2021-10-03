@@ -4,8 +4,9 @@ from typing import TYPE_CHECKING
 from kubernetes.client import CoreV1Api, V1Service, V1ServicePort, V1ServiceSpec
 
 from authentik.outposts.controllers.base import FIELD_MANAGER
-from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler, NeedsRecreate
+from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
 from authentik.outposts.controllers.k8s.deployment import DeploymentReconciler
+from authentik.outposts.controllers.k8s.utils import compare_ports
 
 if TYPE_CHECKING:
     from authentik.outposts.controllers.kubernetes import KubernetesController
@@ -19,11 +20,7 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
         self.api = CoreV1Api(controller.client)
 
     def reconcile(self, current: V1Service, reference: V1Service):
-        if len(current.spec.ports) != len(reference.spec.ports):
-            raise NeedsRecreate()
-        for port in reference.spec.ports:
-            if port not in current.spec.ports:
-                raise NeedsRecreate()
+        compare_ports(current.spec, reference.spec)
         # run the base reconcile last, as that will probably raise NeedsUpdate
         # after an authentik update. However the ports might have also changed during
         # the update, so this causes the service to be re-created with higher
