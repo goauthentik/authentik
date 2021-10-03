@@ -6,12 +6,14 @@ from django.core.cache import cache
 from django.core.validators import URLValidator
 from packaging.version import parse
 from prometheus_client import Info
-from requests import RequestException, get
+from requests import RequestException
 from structlog.stdlib import get_logger
 
 from authentik import ENV_GIT_HASH_KEY, __version__
 from authentik.events.models import Event, EventAction
 from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
+from authentik.lib.config import CONFIG
+from authentik.lib.utils.http import get_http_session
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
@@ -36,12 +38,17 @@ def _set_prom_info():
 @CELERY_APP.task(bind=True, base=MonitoredTask)
 def update_latest_version(self: MonitoredTask):
     """Update latest version info"""
+    if CONFIG.y_bool("disable_update_check"):
+        cache.set(VERSION_CACHE_KEY, "0.0.0", VERSION_CACHE_TIMEOUT)
+        self.set_status(TaskResult(TaskResultStatus.WARNING, messages=["Version check disabled."]))
+        return
     try:
-        response = get("https://api.github.com/repos/goauthentik/authentik/releases/latest")
+        response = get_http_session().get(
+            "https://version.goauthentik.io/version.json",
+        )
         response.raise_for_status()
         data = response.json()
-        tag_name = data.get("tag_name")
-        upstream_version = tag_name.split("/")[1]
+        upstream_version = data.get("stable", {}).get("version")
         cache.set(VERSION_CACHE_KEY, upstream_version, VERSION_CACHE_TIMEOUT)
         self.set_status(
             TaskResult(TaskResultStatus.SUCCESSFUL, ["Successfully updated latest Version"])
@@ -58,7 +65,7 @@ def update_latest_version(self: MonitoredTask):
             ).exists():
                 return
             event_dict = {"new_version": upstream_version}
-            if match := re.search(URL_FINDER, data.get("body", "")):
+            if match := re.search(URL_FINDER, data.get("stable", {}).get("changelog", "")):
                 event_dict["message"] = f"Changelog: {match.group()}"
             Event.new(EventAction.UPDATE_AVAILABLE, **event_dict).save()
     except (RequestException, IndexError) as exc:

@@ -1,3 +1,10 @@
+import { t } from "@lingui/macro";
+
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
+
 import {
     FlowsApi,
     ProvidersApi,
@@ -6,15 +13,11 @@ import {
     FlowsInstancesListDesignationEnum,
     CryptoApi,
 } from "@goauthentik/api";
-import { t } from "@lingui/macro";
-import { customElement } from "lit-element";
-import { html, TemplateResult } from "lit-html";
+
 import { DEFAULT_CONFIG, tenant } from "../../../api/Config";
-import { ModelForm } from "../../../elements/forms/ModelForm";
-import { until } from "lit-html/directives/until";
-import { ifDefined } from "lit-html/directives/if-defined";
-import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
+import "../../../elements/forms/HorizontalFormElement";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 import { first } from "../../../utils";
 
 @customElement("ak-provider-ldap-form")
@@ -92,7 +95,7 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                     ${t`Flow used for users to authenticate. Currently only identification and password stages are supported.`}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Group`} name="searchGroup">
+            <ak-form-element-horizontal label=${t`Sync parent group`} name="searchGroup">
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.instance?.searchGroup === undefined}>
                         ---------

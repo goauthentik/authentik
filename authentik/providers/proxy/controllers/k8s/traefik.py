@@ -96,7 +96,6 @@ class TraefikMiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware])
 
     def get_reference_object(self) -> TraefikMiddleware:
         """Get deployment object for outpost"""
-        port = 9000 if self.is_embedded else 4180
         return TraefikMiddleware(
             apiVersion=f"{CRD_GROUP}/{CRD_VERSION}",
             kind="Middleware",
@@ -107,14 +106,21 @@ class TraefikMiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware])
             ),
             spec=TraefikMiddlewareSpec(
                 forwardAuth=TraefikMiddlewareSpecForwardAuth(
-                    address=f"http://{self.name}.{self.namespace}:{port}/akprox/auth?traefik",
+                    address=f"http://{self.name}.{self.namespace}:9000/akprox/auth/traefik",
                     authResponseHeaders=[
                         "Set-Cookie",
+                        # Legacy headers, remove after 2022.1
                         "X-Auth-Username",
                         "X-Auth-Groups",
                         "X-Forwarded-Email",
                         "X-Forwarded-Preferred-Username",
                         "X-Forwarded-User",
+                        # New headers, unique prefix
+                        "X-authentik-username",
+                        "X-authentik-groups",
+                        "X-authentik-email",
+                        "X-authentik-name",
+                        "X-authentik-uid",
                     ],
                     trustForwardHeader=True,
                 )

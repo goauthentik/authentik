@@ -1,17 +1,11 @@
-import {
-    css,
-    CSSResult,
-    customElement,
-    html,
-    LitElement,
-    property,
-    TemplateResult,
-} from "lit-element";
-import { ifDefined } from "lit-html/directives/if-defined";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+
+import AKGlobal from "../../authentik.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
-import AKGlobal from "../../authentik.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-aggregate-card")
 export class AggregateCard extends LitElement {

@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
             model_name="oauthsource",
             name="access_token_url",
             field=models.CharField(
-                help_text="URL used by authentik to retrive tokens.",
+                help_text="URL used by authentik to retrieve tokens.",
                 max_length=255,
                 verbose_name="Access Token URL",
             ),

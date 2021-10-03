@@ -38,6 +38,7 @@ class DockerController(BaseController):
             "AUTHENTIK_HOST": self.outpost.config.authentik_host.lower(),
             "AUTHENTIK_INSECURE": str(self.outpost.config.authentik_host_insecure).lower(),
             "AUTHENTIK_TOKEN": self.outpost.token.key,
+            "AUTHENTIK_HOST_BROWSER": self.outpost.config.authentik_host_browser,
         }
 
     def _comp_env(self, container: Container) -> bool:
@@ -98,15 +99,16 @@ class DockerController(BaseController):
                 "image": image_name,
                 "name": container_name,
                 "detach": True,
-                "ports": {
-                    f"{port.inner_port or port.port}/{port.protocol.lower()}": port.port
-                    for port in self.deployment_ports
-                },
                 "environment": self._get_env(),
                 "labels": self._get_labels(),
                 "restart_policy": {"Name": "unless-stopped"},
                 "network": self.outpost.config.docker_network,
             }
+            if self.outpost.config.docker_map_ports:
+                container_args["ports"] = {
+                    f"{port.inner_port or port.port}/{port.protocol.lower()}": str(port.port)
+                    for port in self.deployment_ports
+                }
             if settings.TEST:
                 del container_args["ports"]
                 del container_args["network"]
@@ -164,11 +166,9 @@ class DockerController(BaseController):
                 self.down()
                 return self.up(depth + 1)
             # Check that container is healthy
-            if (
-                container.status == "running"
-                and container.attrs.get("State", {}).get("Health", {}).get("Status", "")
-                != "healthy"
-            ):
+            if container.status == "running" and container.attrs.get("State", {}).get(
+                "Health", {}
+            ).get("Status", "") not in ["healthy", "starting"]:
                 # At this point we know the config is correct, but the container isn't healthy,
                 # so we just restart it with the same config
                 if has_been_created:
@@ -217,6 +217,7 @@ class DockerController(BaseController):
                         "AUTHENTIK_HOST": self.outpost.config.authentik_host,
                         "AUTHENTIK_INSECURE": str(self.outpost.config.authentik_host_insecure),
                         "AUTHENTIK_TOKEN": self.outpost.token.key,
+                        "AUTHENTIK_HOST_BROWSER": self.outpost.config.authentik_host_browser,
                     },
                     "labels": self._get_labels(),
                 }

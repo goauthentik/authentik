@@ -1,6 +1,8 @@
-import { css, CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
+
 import AKGlobal from "../authentik.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-divider")
 export class Divider extends LitElement {

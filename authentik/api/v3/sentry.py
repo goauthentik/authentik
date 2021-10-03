@@ -4,16 +4,18 @@ from json import loads
 from django.conf import settings
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse
-from requests import post
-from requests.exceptions import RequestException
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.parsers import BaseParser
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
+from structlog.stdlib import get_logger
 
+from authentik.api.tasks import sentry_proxy
 from authentik.lib.config import CONFIG
+
+LOGGER = get_logger()
 
 
 class PlainTextParser(BaseParser):
@@ -46,21 +48,18 @@ class SentryTunnelView(APIView):
         """Sentry tunnel, to prevent ad blockers from blocking sentry"""
         # Only allow usage of this endpoint when error reporting is enabled
         if not CONFIG.y_bool("error_reporting.enabled", False):
+            LOGGER.debug("error reporting disabled")
             return HttpResponse(status=400)
         # Body is 2 json objects separated by \n
         full_body = request.body
-        header = loads(full_body.splitlines()[0])
+        lines = full_body.splitlines()
+        if len(lines) < 1:
+            return HttpResponse(status=400)
+        header = loads(lines[0])
         # Check that the DSN is what we expect
         dsn = header.get("dsn", "")
         if dsn != settings.SENTRY_DSN:
+            LOGGER.debug("Invalid dsn", have=dsn, expected=settings.SENTRY_DSN)
             return HttpResponse(status=400)
-        response = post(
-            "https://sentry.beryju.org/api/8/envelope/",
-            data=full_body,
-            headers={"Content-Type": "application/octet-stream"},
-        )
-        try:
-            response.raise_for_status()
-        except RequestException:
-            return HttpResponse(status=500)
-        return HttpResponse(status=response.status_code)
+        sentry_proxy.delay(full_body.decode())
+        return HttpResponse(status=204)

@@ -11,7 +11,7 @@ import (
 	"github.com/pires/go-proxyproto"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/config"
-	"goauthentik.io/internal/outpost/proxy"
+	"goauthentik.io/internal/outpost/proxyv2"
 )
 
 type WebServer struct {
@@ -22,7 +22,7 @@ type WebServer struct {
 
 	stop chan struct{} // channel for waiting shutdown
 
-	ProxyServer *proxy.Server
+	ProxyServer *proxyv2.ProxyServer
 
 	m   *mux.Router
 	lh  *mux.Router

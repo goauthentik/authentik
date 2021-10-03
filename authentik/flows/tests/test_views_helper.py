@@ -4,7 +4,7 @@ from django.urls import reverse
 
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.flows.planner import FlowPlan
-from authentik.flows.views import SESSION_KEY_PLAN
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 
 
 class TestHelperView(TestCase):

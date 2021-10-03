@@ -1,12 +1,15 @@
-import { css, CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
 import { Chart, Plugin, Tick, ChartConfiguration, ChartData, ChartOptions } from "chart.js";
 import { Legend, Tooltip } from "chart.js";
 import { DoughnutController, LineController, BarController } from "chart.js";
 import { ArcElement, BarElement } from "chart.js";
 import { TimeScale, LinearScale } from "chart.js";
 import "chartjs-adapter-moment";
-import { FONT_COLOUR_DARK_MODE, FONT_COLOUR_LIGHT_MODE } from "../../pages/flows/FlowDiagram";
+
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { property } from "lit/decorators";
+
 import { EVENT_REFRESH } from "../../constants";
+import { FONT_COLOUR_DARK_MODE, FONT_COLOUR_LIGHT_MODE } from "../../pages/flows/FlowDiagram";
 
 Chart.register(Legend, Tooltip);
 Chart.register(LineController, BarController, DoughnutController);
@@ -67,7 +70,7 @@ export abstract class AKChart<T> extends LitElement {
 
     firstUpdated(): void {
         this.apiRequest().then((r) => {
-            const canvas = <HTMLCanvasElement>this.shadowRoot?.querySelector("canvas");
+            const canvas = this.shadowRoot?.querySelector<HTMLCanvasElement>("canvas");
             if (!canvas) {
                 console.warn("Failed to get canvas element");
                 return false;

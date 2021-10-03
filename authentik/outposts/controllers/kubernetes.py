@@ -13,6 +13,7 @@ from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
 from authentik.outposts.controllers.k8s.deployment import DeploymentReconciler
 from authentik.outposts.controllers.k8s.secret import SecretReconciler
 from authentik.outposts.controllers.k8s.service import ServiceReconciler
+from authentik.outposts.controllers.k8s.service_monitor import PrometheusServiceMonitorReconciler
 from authentik.outposts.models import KubernetesServiceConnection, Outpost, ServiceConnectionInvalid
 
 
@@ -32,8 +33,9 @@ class KubernetesController(BaseController):
             "secret": SecretReconciler,
             "deployment": DeploymentReconciler,
             "service": ServiceReconciler,
+            "prometheus servicemonitor": PrometheusServiceMonitorReconciler,
         }
-        self.reconcile_order = ["secret", "deployment", "service"]
+        self.reconcile_order = ["secret", "deployment", "service", "prometheus servicemonitor"]
 
     def up(self):
         try:

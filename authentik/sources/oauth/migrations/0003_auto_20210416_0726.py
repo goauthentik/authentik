@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             name="access_token_url",
             field=models.CharField(
                 blank=True,
-                help_text="URL used by authentik to retrive tokens.",
+                help_text="URL used by authentik to retrieve tokens.",
                 max_length=255,
                 verbose_name="Access Token URL",
             ),

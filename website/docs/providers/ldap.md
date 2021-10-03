@@ -8,7 +8,11 @@ This feature is still in technical preview, so please report any Bugs you run in
 
 You can configure an LDAP Provider for applications that don't support any newer protocols or require LDAP.
 
-All users and groups in authentik's database are searchable. Currently, there is a limited support for filters (you can only search for objectClass), but this will be expanded in further releases.
+:::info
+Note: This provider requires the deployment of the [LDAP Outpost](../outposts/outposts.md)
+:::
+
+All users and groups in authentik's database are searchable. Currently, there is limited support for filters (you can only search for objectClass), but this will be expanded in further releases.
 
 Binding against the LDAP Server uses a flow in the background. This allows you to use the same policies and flows as you do for web-based logins. The only limitation is that currently only identification and password stages are supported, due to how LDAP works.
 
@@ -59,6 +63,10 @@ A virtual group is also created for each user, they have the same fields as grou
 The virtual groups gidNumber is equal to the uidNumber of the user.
 
 **Additionally**, for both users and (non-virtual) groups, any attributes you set are also present as LDAP Attributes.
+
+:::info
+Starting with 2021.9.1, custom attributes will override the inbuilt attributes.
+:::
 
 ## SSL
 

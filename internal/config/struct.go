@@ -29,6 +29,7 @@ type RedisConfig struct {
 type WebConfig struct {
 	Listen                 string `yaml:"listen"`
 	ListenTLS              string `yaml:"listen_tls"`
+	ListenMetrics          string `yaml:"listen_metrics"`
 	LoadLocalFiles         bool   `yaml:"load_local_files" env:"AUTHENTIK_WEB_LOAD_LOCAL_FILES"`
 	DisableEmbeddedOutpost bool   `yaml:"disable_embedded_outpost" env:"AUTHENTIK_WEB__DISABLE_EMBEDDED_OUTPOST"`
 }

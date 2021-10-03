@@ -1,19 +1,22 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import { AKResponse } from "../../api/Client";
-import { TablePage } from "../../elements/table/TablePage";
+
+import { CSSResult, html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { CryptoApi, CertificateKeyPair } from "@goauthentik/api";
 
-import "../../elements/forms/ModalForm";
+import { AKResponse } from "../../api/Client";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { PAGE_SIZE } from "../../constants";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
-import "./CertificateKeyPairForm";
-import "./CertificateGenerateForm";
+import "../../elements/forms/ModalForm";
 import { TableColumn } from "../../elements/table/Table";
-import { PAGE_SIZE } from "../../constants";
-import { DEFAULT_CONFIG } from "../../api/Config";
+import { TablePage } from "../../elements/table/TablePage";
+import "./CertificateGenerateForm";
+import "./CertificateKeyPairForm";
 
 @customElement("ak-crypto-certificate-list")
 export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
@@ -134,7 +137,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                         <div class="pf-c-description-list__group">
                             <dt class="pf-c-description-list__term">
                                 <span class="pf-c-description-list__text"
-                                    >${t`Certificate Subjet`}</span
+                                    >${t`Certificate Subject`}</span
                                 >
                             </dt>
                             <dd class="pf-c-description-list__description">

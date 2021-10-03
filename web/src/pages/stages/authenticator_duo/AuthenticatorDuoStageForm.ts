@@ -1,3 +1,10 @@
+import { t } from "@lingui/macro";
+
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
+
 import {
     FlowsApi,
     AuthenticatorDuoStage,
@@ -5,16 +12,12 @@ import {
     FlowsInstancesListDesignationEnum,
     AuthenticatorDuoStageRequest,
 } from "@goauthentik/api";
-import { t } from "@lingui/macro";
-import { customElement } from "lit-element";
-import { html, TemplateResult } from "lit-html";
+
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { ifDefined } from "lit-html/directives/if-defined";
-import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
-import { until } from "lit-html/directives/until";
-import { first } from "../../../utils";
+import "../../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../../elements/forms/ModelForm";
+import { first } from "../../../utils";
 
 @customElement("ak-stage-authenticator-duo-form")
 export class AuthenticatorDuoStageForm extends ModelForm<AuthenticatorDuoStage, string> {

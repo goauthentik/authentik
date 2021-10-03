@@ -23,7 +23,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import StageView
-from authentik.flows.views import SESSION_KEY_PLAN
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.lib.views import bad_request_message
@@ -238,6 +238,10 @@ class OAuthFulfillmentStage(StageView):
         parsed = urlparse(uri)
         return HttpResponseRedirectScheme(uri, allowed_schemes=[parsed.scheme])
 
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Wrapper when this stage gets hit with a post request"""
+        return self.get(request, *args, **kwargs)
+
     # pylint: disable=unused-argument
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """final Stage of an OAuth2 Flow"""
@@ -367,7 +371,7 @@ class OAuthFulfillmentStage(StageView):
 
         query_fragment["token_type"] = "bearer"
         query_fragment["expires_in"] = int(
-            timedelta_from_string(self.provider.token_validity).total_seconds()
+            timedelta_from_string(self.provider.access_code_validity).total_seconds()
         )
         query_fragment["state"] = self.params.state if self.params.state else ""
 

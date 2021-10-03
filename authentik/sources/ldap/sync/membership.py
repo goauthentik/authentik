@@ -62,8 +62,8 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
         # group_uniq might be a single string or an array with (hopefully) a single string
         if isinstance(group_uniq, list):
             if len(group_uniq) < 1:
-                self._logger.warning(
-                    "Group does not have a uniqueness attribute.",
+                self.message(
+                    f"Group does not have a uniqueness attribute: '{group_dn}'",
                     group=group_dn,
                 )
                 return None
@@ -71,8 +71,8 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
         if group_uniq not in self.group_cache:
             groups = Group.objects.filter(**{f"attributes__{LDAP_UNIQUENESS}": group_uniq})
             if not groups.exists():
-                self._logger.warning(
-                    "Group does not exist in our DB yet, run sync_groups first.",
+                self.message(
+                    f"Group does not exist in our DB yet, run sync_groups first: '{group_dn}'",
                     group=group_dn,
                 )
                 return None

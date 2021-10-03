@@ -9,6 +9,8 @@ on:
     paths-ignore:
       - website
   pull_request:
+    branches:
+      - master
 
 env:
   POSTGRES_DB: authentik
@@ -24,10 +26,10 @@ jobs:
         with:
           python-version: '3.9'
       - id: cache-pipenv
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
@@ -42,10 +44,10 @@ jobs:
         with:
           python-version: '3.9'
       - id: cache-pipenv
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
@@ -60,10 +62,10 @@ jobs:
         with:
           python-version: '3.9'
       - id: cache-pipenv
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
@@ -78,10 +80,10 @@ jobs:
         with:
           python-version: '3.9'
       - id: cache-pipenv
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
@@ -112,10 +114,10 @@ jobs:
         with:
           python-version: '3.9'
       - id: cache-pipenv
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
@@ -126,6 +128,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v2
         with:
           python-version: '3.9'
@@ -135,20 +139,25 @@ jobs:
           cp authentik/lib/default.yml local.env.yml
           git checkout $(git describe --abbrev=0 --match 'version/*')
       - id: cache-pipenv
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
         run: scripts/ci_prepare.sh
       - name: run migrations to stable
         run: pipenv run python -m lifecycle.migrate
+      - name: prepare variables
+        id: ev
+        run: |
+          python ./scripts/gh_do_set_branch.py
       - name: checkout current code
         run: |
           set -x
-          git checkout $GITHUB_REF
+          git fetch
+          git checkout ${{ steps.ev.outputs.branchName }}
           pipenv sync --dev
       - name: migrate to latest
         run: pipenv run python -m lifecycle.migrate
@@ -160,10 +169,10 @@ jobs:
         with:
           python-version: '3.9'
       - id: cache-pipenv
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
@@ -178,7 +187,7 @@ jobs:
       - name: run testspace
         if: ${{ always() }}
         run: |
-          testspace unittest.xml ?add
+          testspace [unittest]unittest.xml --link=codecov
       - if: ${{ always() }}
         uses: codecov/codecov-action@v2
   test-integration:
@@ -189,10 +198,10 @@ jobs:
         with:
           python-version: '3.9'
       - id: cache-pipenv
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
@@ -209,7 +218,7 @@ jobs:
       - name: run testspace
         if: ${{ always() }}
         run: |
-          testspace unittest.xml ?add
+          testspace [integration]unittest.xml --link=codecov
       - if: ${{ always() }}
         uses: codecov/codecov-action@v2
   test-e2e:
@@ -228,10 +237,10 @@ jobs:
         with:
           domain: ${{github.repository_owner}}
       - id: cache-pipenv
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
@@ -239,7 +248,7 @@ jobs:
           scripts/ci_prepare.sh
           docker-compose -f tests/e2e/ci.docker-compose.yml up -d
       - id: cache-web
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.6
         with:
           path: web/dist
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/**') }}
@@ -256,24 +265,9 @@ jobs:
       - name: run testspace
         if: ${{ always() }}
         run: |
-          testspace unittest.xml ?add
+          testspace [e2e]unittest.xml --link=codecov
       - if: ${{ always() }}
         uses: codecov/codecov-action@v2
-  report:
-    if: ${{ always() }}
-    needs:
-      - test-unittest
-      - test-integration
-      - test-e2e
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: testspace-com/setup-testspace@v1
-        with:
-          domain: ${{github.repository_owner}}
-      - name: finish testspace
-        run: |
-          testspace ?finish
   build:
     needs:
       - lint-pylint
@@ -310,6 +304,6 @@ jobs:
           push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
           tags: |
             beryju.org/authentik/server:gh-${{ steps.ev.outputs.branchName }}
-            beryju.org/authentik/server:gh-${{ steps.ev.outputs.branchName }}-${{ steps.ev.outputs.timestamp }}
+            beryju.org/authentik/server:gh-${{ steps.ev.outputs.branchName }}-${{ steps.ev.outputs.timestamp }}-${{ steps.ev.outputs.sha }}
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}

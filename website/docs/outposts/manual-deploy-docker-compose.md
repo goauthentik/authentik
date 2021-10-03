@@ -6,24 +6,48 @@ To deploy an outpost with docker-compose, use this snippet in your docker-compos
 
 You can also run the outpost in a separate docker-compose project, you just have to ensure that the outpost container can reach your application container.
 
+### Proxy outpost
+
 ```yaml
 version: "3.5"
 
 services:
   authentik_proxy:
-    image: ghcr.io/goauthentik/proxy:2021.8.4
+    image: ghcr.io/goauthentik/proxy:2021.9.4
+    # Optionally specify which networks the container should be
+    # might be needed to reach the core authentik server
+    # networks:
+    #   - foo
     ports:
       - 4180:4180
       - 4443:4443
+      # Starting in authentik 2021.9, use the ports below
+      # - 9000:9000
+      # - 9443:9443
     environment:
       AUTHENTIK_HOST: https://your-authentik.tld
       AUTHENTIK_INSECURE: "false"
       AUTHENTIK_TOKEN: token-generated-by-authentik
-  # Or, for the LDAP Outpost
-  authentik_proxy:
-    image: ghcr.io/goauthentik/ldap:2021.8.4
+      # Starting with 2021.9, you can optionally set this too
+      # when authentik_host for internal communication doesn't match the public URL
+      # AUTHENTIK_HOST_BROWSER: https://external-domain.tld
+```
+
+### LDAP outpost
+
+```yaml
+version: "3.5"
+
+services:
+  authentik_ldap:
+    image: ghcr.io/goauthentik/ldap:2021.9.4
+    # Optionally specify which networks the container should be
+    # might be needed to reach the core authentik server
+    # networks:
+    #   - foo
     ports:
       - 389:3389
+      - 636:6636
     environment:
       AUTHENTIK_HOST: https://your-authentik.tld
       AUTHENTIK_INSECURE: "false"

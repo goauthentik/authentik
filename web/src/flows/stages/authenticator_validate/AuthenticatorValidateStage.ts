@@ -1,22 +1,27 @@
 import { t } from "@lingui/macro";
-import { css, CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+
+import { css, CSSResult, html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+
+import AKGlobal from "../../../authentik.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import AKGlobal from "../../../authentik.css";
-import { BaseStage, StageHost } from "../base";
-import "./AuthenticatorValidateStageWebAuthn";
-import "./AuthenticatorValidateStageCode";
-import "./AuthenticatorValidateStageDuo";
-import { PasswordManagerPrefill } from "../identification/IdentificationStage";
+
 import {
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest,
     DeviceChallenge,
 } from "@goauthentik/api";
+
+import { BaseStage, StageHost } from "../base";
+import { PasswordManagerPrefill } from "../identification/IdentificationStage";
+import "./AuthenticatorValidateStageCode";
+import "./AuthenticatorValidateStageDuo";
+import "./AuthenticatorValidateStageWebAuthn";
 
 export enum DeviceClasses {
     STATIC = "static",
@@ -48,7 +53,6 @@ export class AuthenticatorValidateStage
             .authenticator-button {
                 display: flex;
                 align-items: center;
-                width: 100%;
             }
             i {
                 font-size: 1.5rem;

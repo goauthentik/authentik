@@ -153,8 +153,8 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
         # Wait until we're logged in
-        self.wait_for_url(self.if_admin_url("/library"))
-        self.driver.get(self.if_admin_url("/user"))
+        self.wait_for_url(self.if_user_url("/library"))
+        self.driver.get(self.if_user_url("/settings"))
 
         self.assert_user(
             User.objects.exclude(username="akadmin")
@@ -233,8 +233,8 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
         # Wait until we're logged in
-        self.wait_for_url(self.if_admin_url("/library"))
-        self.driver.get(self.if_admin_url("/user"))
+        self.wait_for_url(self.if_user_url("/library"))
+        self.driver.get(self.if_user_url("/settings"))
 
         self.assert_user(
             User.objects.exclude(username="akadmin")
@@ -300,8 +300,8 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
         # Wait until we're logged in
-        self.wait_for_url(self.if_admin_url("/library"))
-        self.driver.get(self.if_admin_url("/user"))
+        self.wait_for_url(self.if_user_url("/library"))
+        self.driver.get(self.if_user_url("/settings"))
 
         self.assert_user(
             User.objects.exclude(username="akadmin")

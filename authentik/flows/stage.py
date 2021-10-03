@@ -18,7 +18,7 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.models import InvalidResponseAction
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
-from authentik.flows.views import FlowExecutorView
+from authentik.flows.views.executor import FlowExecutorView
 
 PLAN_CONTEXT_PENDING_USER_IDENTIFIER = "pending_user_identifier"
 LOGGER = get_logger()

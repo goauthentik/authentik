@@ -20,6 +20,7 @@ test:
 lint-fix:
 	isort authentik tests lifecycle
 	black authentik tests lifecycle
+	codespell -I .github/codespell-words.txt -S 'web/src/locales/**' -w authentik internal cmd web/src website/src
 
 lint:
 	pyright authentik tests lifecycle
@@ -62,10 +63,10 @@ gen-outpost:
 		--additional-properties=packageName=api,enumClassPrefix=true,useOneOfDiscriminatorLookup=true,disallowAdditionalPropertiesIfNotPresent=false
 	rm -f api/go.mod api/go.sum
 
-gen: gen-build gen-clean gen-web gen-outpost
+gen: gen-build gen-clean gen-web
 
 migrate:
 	python -m lifecycle.migrate
 
 run:
-	go run -v cmd/server/main.go
+	WORKERS=1 go run -v cmd/server/main.go

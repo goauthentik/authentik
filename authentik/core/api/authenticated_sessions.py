@@ -11,6 +11,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 from ua_parser import user_agent_parser
 
+from authentik.api.authorization import OwnerSuperuserPermissions
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.models import AuthenticatedSession
 from authentik.events.geo import GEOIP_READER, GeoIPDict
@@ -102,11 +103,8 @@ class AuthenticatedSessionViewSet(
     search_fields = ["user__username", "last_ip", "last_user_agent"]
     filterset_fields = ["user__username", "last_ip", "last_user_agent"]
     ordering = ["user__username"]
-    filter_backends = [
-        DjangoFilterBackend,
-        OrderingFilter,
-        SearchFilter,
-    ]
+    permission_classes = [OwnerSuperuserPermissions]
+    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
 
     def get_queryset(self):
         user = self.request.user if self.request else get_anonymous_user()

@@ -68,7 +68,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
             webauthn_credential = webauthn_registration_response.verify()
         except RegistrationRejectedException as exc:
             LOGGER.warning("registration failed", exc=exc)
-            raise ValidationError("Registration failed. Error: {}".format(exc))
+            raise ValidationError(f"Registration failed. Error: {exc}")
 
         # Step 17.
         #

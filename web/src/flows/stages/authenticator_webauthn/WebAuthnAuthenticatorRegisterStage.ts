@@ -1,12 +1,21 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+
+import { CSSResult, html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+
+import AKGlobal from "../../../authentik.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import AKGlobal from "../../../authentik.css";
+
+import {
+    AuthenticatorWebAuthnChallenge,
+    AuthenticatorWebAuthnChallengeResponseRequest,
+} from "@goauthentik/api";
+
 import { PFSize } from "../../../elements/Spinner";
 import { BaseStage } from "../base";
 import {
@@ -14,10 +23,6 @@ import {
     transformCredentialCreateOptions,
     transformNewAssertionForServer,
 } from "./utils";
-import {
-    AuthenticatorWebAuthnChallenge,
-    AuthenticatorWebAuthnChallengeResponseRequest,
-} from "@goauthentik/api";
 
 export interface WebAuthnAuthenticatorRegisterChallengeResponse {
     response: Assertion;
@@ -51,9 +56,9 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
         // request the authenticator(s) to create a new credential keypair.
         let credential;
         try {
-            credential = <PublicKeyCredential>await navigator.credentials.create({
+            credential = (await navigator.credentials.create({
                 publicKey: publicKeyCredentialCreateOptions,
-            });
+            })) as PublicKeyCredential;
             if (!credential) {
                 throw new Error("Credential is empty");
             }

@@ -1,11 +1,10 @@
 """authentik captcha stage"""
 
 from django.http.response import HttpResponse
-from requests import RequestException, post
+from requests import RequestException
 from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
 
-from authentik import __version__
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
@@ -13,7 +12,7 @@ from authentik.flows.challenge import (
     WithUserInfoChallenge,
 )
 from authentik.flows.stage import ChallengeStageView
-from authentik.lib.utils.http import get_client_ip
+from authentik.lib.utils.http import get_client_ip, get_http_session
 from authentik.stages.captcha.models import CaptchaStage
 
 
@@ -34,11 +33,10 @@ class CaptchaChallengeResponse(ChallengeResponse):
         """Validate captcha token"""
         stage: CaptchaStage = self.stage.executor.current_stage
         try:
-            response = post(
+            response = get_http_session().post(
                 "https://www.google.com/recaptcha/api/siteverify",
                 headers={
                     "Content-type": "application/x-www-form-urlencoded",
-                    "User-agent": f"authentik {__version__} ReCaptcha",
                 },
                 data={
                     "secret": stage.private_key,
@@ -56,7 +54,7 @@ class CaptchaChallengeResponse(ChallengeResponse):
 
 
 class CaptchaStageView(ChallengeStageView):
-    """Simple captcha checker, logic is handeled in django-captcha module"""
+    """Simple captcha checker, logic is handled in django-captcha module"""
 
     response_class = CaptchaChallengeResponse
 

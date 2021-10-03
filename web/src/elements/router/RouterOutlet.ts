@@ -1,19 +1,12 @@
-import {
-    css,
-    CSSResult,
-    customElement,
-    html,
-    LitElement,
-    property,
-    TemplateResult,
-} from "lit-element";
-import { Route } from "./Route";
-import { ROUTES } from "../../routes";
-import { RouteMatch } from "./RouteMatch";
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+
 import AKGlobal from "../../authentik.css";
 
-import "./Router404";
 import { ROUTE_SEPARATOR } from "../../constants";
+import { Route } from "./Route";
+import { RouteMatch } from "./RouteMatch";
+import "./Router404";
 
 // Poliyfill for hashchange.newURL,
 // https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onhashchange
@@ -45,22 +38,18 @@ export class RouterOutlet extends LitElement {
     @property()
     defaultUrl?: string;
 
+    @property({ attribute: false })
+    routes: Route[] = [];
+
     static get styles(): CSSResult[] {
         return [
             AKGlobal,
             css`
                 :host {
                     height: 100vh;
-                    background-color: var(--pf-global--BackgroundColor--light-300) !important;
-                }
-                @media (prefers-color-scheme: dark) {
-                    :host {
-                        background-color: var(--ak-dark-background) !important;
-                    }
+                    background-color: transparent !important;
                 }
                 *:first-child {
-                    height: 100%;
-                    display: flex;
                     flex-direction: column;
                 }
             `,
@@ -90,7 +79,7 @@ export class RouterOutlet extends LitElement {
             return;
         }
         let matchedRoute: RouteMatch | null = null;
-        ROUTES.some((route) => {
+        this.routes.some((route) => {
             const match = route.url.exec(activeUrl);
             if (match != null) {
                 matchedRoute = new RouteMatch(route);

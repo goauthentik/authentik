@@ -57,11 +57,11 @@ class FlowPlan:
     markers: list[StageMarker] = field(default_factory=list)
 
     def append_stage(self, stage: Stage, marker: Optional[StageMarker] = None):
-        """Append `stage` to all stages, optionall with stage marker"""
+        """Append `stage` to all stages, optionally with stage marker"""
         return self.append(FlowStageBinding(stage=stage), marker)
 
     def append(self, binding: FlowStageBinding, marker: Optional[StageMarker] = None):
-        """Append `stage` to all stages, optionall with stage marker"""
+        """Append `stage` to all stages, optionally with stage marker"""
         self.bindings.append(binding)
         self.markers.append(marker or StageMarker())
 

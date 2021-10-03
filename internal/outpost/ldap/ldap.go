@@ -29,9 +29,9 @@ type ProviderInstance struct {
 	s        *LDAPServer
 	log      *log.Entry
 
-	tlsServerName *string
-	cert          *tls.Certificate
-
+	tlsServerName       *string
+	cert                *tls.Certificate
+	outpostName         string
 	searchAllowedGroups []*strfmt.UUID
 	boundUsersMutex     sync.RWMutex
 	boundUsers          map[string]UserFlags
@@ -85,4 +85,8 @@ func NewServer(ac *ak.APIController) *LDAPServer {
 	s.SearchFunc("", ls)
 	s.CloseFunc("", ls)
 	return ls
+}
+
+func (ls *LDAPServer) Type() string {
+	return "ldap"
 }

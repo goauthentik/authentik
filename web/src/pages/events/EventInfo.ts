@@ -1,26 +1,23 @@
 import { t } from "@lingui/macro";
-import {
-    css,
-    CSSResult,
-    customElement,
-    html,
-    LitElement,
-    property,
-    TemplateResult,
-} from "lit-element";
-import { until } from "lit-html/directives/until";
-import { EventActions, FlowsApi } from "@goauthentik/api";
-import "../../elements/Spinner";
-import "../../elements/Expand";
-import { PFSize } from "../../elements/Spinner";
-import { EventContext, EventModel, EventWithContext } from "../../api/Events";
-import { DEFAULT_CONFIG } from "../../api/Config";
+
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { until } from "lit/directives/until";
+
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
+
+import { EventActions, FlowsApi } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { EventContext, EventModel, EventWithContext } from "../../api/Events";
 import { VERSION } from "../../constants";
+import "../../elements/Expand";
+import "../../elements/Spinner";
+import { PFSize } from "../../elements/Spinner";
 
 @customElement("ak-event-info")
 export class EventInfo extends LitElement {

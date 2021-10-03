@@ -38,7 +38,7 @@ class OAuthSource(Source):
         max_length=255,
         null=True,
         verbose_name=_("Access Token URL"),
-        help_text=_("URL used by authentik to retrive tokens."),
+        help_text=_("URL used by authentik to retrieve tokens."),
     )
     profile_url = models.CharField(
         max_length=255,
@@ -164,7 +164,7 @@ class AzureADOAuthSource(OAuthSource):
         verbose_name_plural = _("Azure AD OAuth Sources")
 
 
-class OpenIDOAuthSource(OAuthSource):
+class OpenIDConnectOAuthSource(OAuthSource):
     """Login using a Generic OpenID-Connect compliant provider."""
 
     class Meta:

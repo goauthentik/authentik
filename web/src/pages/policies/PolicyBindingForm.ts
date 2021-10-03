@@ -1,15 +1,20 @@
-import { CoreApi, PoliciesApi, Policy, PolicyBinding } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { css, CSSResult, customElement, property } from "lit-element";
-import { html, TemplateResult } from "lit-html";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { until } from "lit-html/directives/until";
-import { ifDefined } from "lit-html/directives/if-defined";
-import { first, groupBy } from "../../utils";
-import "../../elements/forms/HorizontalFormElement";
-import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
+
+import { css, CSSResult } from "lit";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
+
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
+
+import { CoreApi, PoliciesApi, Policy, PolicyBinding } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../api/Config";
+import "../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../elements/forms/ModelForm";
+import { first, groupBy } from "../../utils";
 
 enum target {
     policy,
@@ -280,6 +285,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Order`} ?required=${true} name="order">
+                <!-- @ts-ignore -->
                 <input
                     type="number"
                     value="${until(this.getOrder())}"

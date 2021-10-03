@@ -46,7 +46,7 @@ def cache_key(binding: PolicyBinding, request: PolicyRequest) -> str:
 
 
 class PolicyProcess(PROCESS_CLASS):
-    """Evaluate a single policy within a seprate process"""
+    """Evaluate a single policy within a separate process"""
 
     connection: Connection
     binding: PolicyBinding

@@ -5,7 +5,6 @@ from django.db.models import F, Q
 from django.db.models import Value as V
 from django.http.request import HttpRequest
 
-from authentik import __version__
 from authentik.lib.config import CONFIG
 from authentik.tenants.models import Tenant
 
@@ -20,9 +19,10 @@ def get_tenant_for_request(request: HttpRequest) -> Tenant:
         .filter(Q(host_domain__iendswith=F("domain")) | _q_default)
         .order_by("default")
     )
-    if not db_tenants.exists():
+    tenants = list(db_tenants.all())
+    if len(tenants) < 1:
         return DEFAULT_TENANT
-    return db_tenants.first()
+    return tenants[0]
 
 
 def context_processor(request: HttpRequest) -> dict[str, Any]:
@@ -30,6 +30,5 @@ def context_processor(request: HttpRequest) -> dict[str, Any]:
     tenant = getattr(request, "tenant", DEFAULT_TENANT)
     return {
         "tenant": tenant,
-        "ak_version": __version__,
         "footer_links": CONFIG.y("footer_links"),
     }

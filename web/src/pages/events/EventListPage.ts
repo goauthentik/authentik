@@ -1,6 +1,10 @@
 import { t } from "@lingui/macro";
-import { customElement, html, property, TemplateResult } from "lit-element";
+
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+
 import { Event, EventsApi } from "@goauthentik/api";
+
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { EventWithContext } from "../../api/Events";
@@ -63,8 +67,8 @@ export class EventListPage extends TablePage<Event> {
                           : html``}`
                 : html`-`,
             html`<span>${item.created?.toLocaleString()}</span>`,
-            html`<span>${item.clientIp || "-"}</span>`,
-            html`<span>${item.tenant?.name || "-"}</span>`,
+            html`<span>${item.clientIp || t`-`}</span>`,
+            html`<span>${item.tenant?.name || t`-`}</span>`,
             html`<a href="#/events/log/${item.pk}">
                 <i class="fas fas fa-share-square"></i>
             </a>`,

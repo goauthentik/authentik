@@ -12,13 +12,27 @@ import (
 	"strings"
 
 	"github.com/getsentry/sentry-go"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/outpost/ak"
+	"goauthentik.io/internal/utils"
 )
 
 type StageComponent string
+
+var (
+	FlowTimingGet = promauto.NewHistogramVec(prometheus.HistogramOpts{
+		Name: "authentik_outpost_flow_timing_get",
+		Help: "Duration it took to get a challenge",
+	}, []string{"stage", "flow", "client", "user"})
+	FlowTimingPost = promauto.NewHistogramVec(prometheus.HistogramOpts{
+		Name: "authentik_outpost_flow_timing_post",
+		Help: "Duration it took to send a challenge",
+	}, []string{"stage", "flow", "client", "user"})
+)
 
 const (
 	StageIdentification        = StageComponent("ak-stage-identification")
@@ -37,6 +51,7 @@ type FlowExecutor struct {
 	Answers map[StageComponent]string
 	Context context.Context
 
+	cip      string
 	api      *api.APIClient
 	flowSlug string
 	log      *log.Entry
@@ -58,11 +73,12 @@ func NewFlowExecutor(ctx context.Context, flowSlug string, refConfig *api.Config
 	config := api.NewConfiguration()
 	config.Host = refConfig.Host
 	config.Scheme = refConfig.Scheme
-	config.UserAgent = constants.OutpostUserAgent()
 	config.HTTPClient = &http.Client{
 		Jar:       jar,
-		Transport: ak.NewTracingTransport(ctx, ak.GetTLSTransport()),
+		Transport: ak.NewUserAgentTransport(constants.OutpostUserAgent(), ak.NewTracingTransport(ctx, ak.GetTLSTransport())),
 	}
+	token := strings.Split(refConfig.DefaultHeader["Authorization"], " ")[1]
+	config.AddDefaultHeader(HeaderAuthentikOutpostToken, token)
 	apiClient := api.NewAPIClient(config)
 	return &FlowExecutor{
 		Params:   url.Values{},
@@ -71,8 +87,9 @@ func NewFlowExecutor(ctx context.Context, flowSlug string, refConfig *api.Config
 		api:      apiClient,
 		flowSlug: flowSlug,
 		log:      l,
-		token:    strings.Split(refConfig.DefaultHeader["Authorization"], " ")[1],
+		token:    token,
 		sp:       rsp,
+		cip:      "",
 	}
 }
 
@@ -87,13 +104,8 @@ type ChallengeInt interface {
 }
 
 func (fe *FlowExecutor) DelegateClientIP(a net.Addr) {
-	host, _, err := net.SplitHostPort(a.String())
-	if err != nil {
-		fe.log.WithError(err).Warning("Failed to get remote IP")
-		return
-	}
-	fe.api.GetConfig().AddDefaultHeader(HeaderAuthentikRemoteIP, host)
-	fe.api.GetConfig().AddDefaultHeader(HeaderAuthentikOutpostToken, fe.token)
+	fe.cip = utils.GetIP(a)
+	fe.api.GetConfig().AddDefaultHeader(HeaderAuthentikRemoteIP, fe.cip)
 }
 
 func (fe *FlowExecutor) CheckApplicationAccess(appSlug string) (bool, error) {
@@ -146,6 +158,12 @@ func (fe *FlowExecutor) solveFlowChallenge(depth int) (bool, error) {
 	gcsp.SetTag("ak_challenge", string(ch.GetType()))
 	gcsp.SetTag("ak_component", ch.GetComponent())
 	gcsp.Finish()
+	FlowTimingGet.With(prometheus.Labels{
+		"stage":  ch.GetComponent(),
+		"flow":   fe.flowSlug,
+		"client": fe.cip,
+		"user":   fe.Answers[StageIdentification],
+	}).Observe(float64(gcsp.EndTime.Sub(gcsp.StartTime)))
 
 	// Resole challenge
 	scsp := sentry.StartSpan(fe.Context, "authentik.outposts.flow_executor.solve_challenge")
@@ -206,6 +224,13 @@ func (fe *FlowExecutor) solveFlowChallenge(depth int) (bool, error) {
 			}
 		}
 	}
+	FlowTimingPost.With(prometheus.Labels{
+		"stage":  ch.GetComponent(),
+		"flow":   fe.flowSlug,
+		"client": fe.cip,
+		"user":   fe.Answers[StageIdentification],
+	}).Observe(float64(scsp.EndTime.Sub(scsp.StartTime)))
+
 	if depth >= 10 {
 		return false, errors.New("exceeded stage recursion depth")
 	}

@@ -1,18 +1,13 @@
-import {
-    LitElement,
-    html,
-    customElement,
-    TemplateResult,
-    property,
-    CSSResult,
-    css,
-} from "lit-element";
-import "./Message";
-import { APIMessage } from "./Message";
+import { LitElement, html, TemplateResult, CSSResult, css } from "lit";
+import { customElement, property } from "lit/decorators";
+
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import { EVENT_WS_MESSAGE, WS_MSG_TYPE_MESSAGE } from "../../constants";
+
 import { WSMessage } from "../../common/ws";
+import { EVENT_WS_MESSAGE, WS_MSG_TYPE_MESSAGE } from "../../constants";
+import "./Message";
+import { APIMessage } from "./Message";
 
 export function showMessage(message: APIMessage): void {
     const container = document.querySelector<MessageContainer>("ak-message-container");
@@ -49,12 +44,8 @@ export class MessageContainer extends LitElement {
         }) as EventListener);
     }
 
-    // add a new message, but only if the message isn't currently shown.
     addMessage(message: APIMessage): void {
-        const matchingMessages = this.messages.filter((m) => m.message == message.message);
-        if (matchingMessages.length < 1) {
-            this.messages.push(message);
-        }
+        this.messages.push(message);
     }
 
     render(): TemplateResult {

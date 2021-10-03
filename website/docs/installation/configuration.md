@@ -48,15 +48,20 @@ To use an S3-compatible storage, set the following settings.
 - `AUTHENTIK_REDIS__OUTPOST_SESSION_DB`: Database for sessions for the embedded outpost, defaults to 3
 - `AUTHENTIK_REDIS__CACHE_TIMEOUT`: Timeout for cached data until it expires in seconds, defaults to 300
 - `AUTHENTIK_REDIS__CACHE_TIMEOUT_FLOWS`: Timeout for cached flow plans until they expire in seconds, defaults to 300
-- `AUTHENTIK_REDIS__CACHE_TIMEOUT_POLICIES`: Timeout for cached polices until they expire in seconds, defaults to 300
+- `AUTHENTIK_REDIS__CACHE_TIMEOUT_POLICIES`: Timeout for cached policies until they expire in seconds, defaults to 300
 - `AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION`: Timeout for cached reputation until they expire in seconds, defaults to 300
 
 ## authentik Settings
+
+### AUTHENTIK_SECRET_KEY
+
+Secret key used for cookie signing and unique user IDs, don't change this after the first install.
 
 ### AUTHENTIK_LOG_LEVEL
 
 Log level for the server and worker containers. Possible values: debug, info, warning, error
 Defaults to `info`.
+
 
 ### AUTHENTIK_ERROR_REPORTING
 
@@ -73,6 +78,10 @@ Defaults to `info`.
 - `AUTHENTIK_ERROR_REPORTING__SEND_PII`
 
   Whether or not to send personal data, like usernames. Defaults to `false`.
+
+### AUTHENTIK_DISABLE_UPDATE_CHECK
+
+Optionally disable the update check. Defaults to `false`.
 
 ### AUTHENTIK_EMAIL
 

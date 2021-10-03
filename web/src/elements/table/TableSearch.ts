@@ -1,12 +1,15 @@
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { ifDefined } from "lit-html/directives/if-defined";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
-import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import AKGlobal from "../../authentik.css";
 import { t } from "@lingui/macro";
+
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+
+import AKGlobal from "../../authentik.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
+import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-table-search")
 export class TableSearch extends LitElement {
@@ -17,7 +20,19 @@ export class TableSearch extends LitElement {
     onSearch?: (value: string) => void;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFToolbar, PFInputGroup, PFFormControl, AKGlobal];
+        return [
+            PFBase,
+            PFButton,
+            PFToolbar,
+            PFInputGroup,
+            PFFormControl,
+            AKGlobal,
+            css`
+                ::-webkit-search-cancel-button {
+                    display: none;
+                }
+            `,
+        ];
     }
 
     render(): TemplateResult {
@@ -47,6 +62,16 @@ export class TableSearch extends LitElement {
                             this.onSearch((ev.target as HTMLInputElement).value);
                         }}
                     />
+                    <button
+                        class="pf-c-button pf-m-control"
+                        type="reset"
+                        @click=${() => {
+                            if (!this.onSearch) return;
+                            this.onSearch("");
+                        }}
+                    >
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                    </button>
                     <button class="pf-c-button pf-m-control" type="submit">
                         <i class="fas fa-search" aria-hidden="true"></i>
                     </button>

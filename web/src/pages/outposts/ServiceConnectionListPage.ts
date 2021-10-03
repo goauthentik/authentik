@@ -1,24 +1,26 @@
 import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
-import { html, TemplateResult } from "lit-html";
-import { AKResponse } from "../../api/Client";
-import { TableColumn } from "../../elements/table/Table";
-import { TablePage } from "../../elements/table/TablePage";
 
-import "./OutpostHealth";
-import "../../elements/buttons/SpinnerButton";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
+
+import { OutpostsApi, ServiceConnection } from "@goauthentik/api";
+
+import { AKResponse } from "../../api/Client";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { PAGE_SIZE } from "../../constants";
+import { PFColor } from "../../elements/Label";
 import "../../elements/buttons/Dropdown";
+import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
-import "./ServiceConnectionKubernetesForm";
-import "./ServiceConnectionDockerForm";
-import { until } from "lit-html/directives/until";
-import { PAGE_SIZE } from "../../constants";
-import { OutpostsApi, ServiceConnection } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/forms/ProxyForm";
-import { ifDefined } from "lit-html/directives/if-defined";
-import { PFColor } from "../../elements/Label";
+import { TableColumn } from "../../elements/table/Table";
+import { TablePage } from "../../elements/table/TablePage";
+import "./OutpostHealth";
+import "./ServiceConnectionDockerForm";
+import "./ServiceConnectionKubernetesForm";
 
 @customElement("ak-outpost-service-connection-list")
 export class OutpostServiceConnectionListPage extends TablePage<ServiceConnection> {

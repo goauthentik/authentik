@@ -1,12 +1,15 @@
 import { t } from "@lingui/macro";
-import { customElement, html, property, TemplateResult } from "lit-element";
-import { AKResponse } from "../../api/Client";
-import { Table, TableColumn } from "../table/Table";
 
-import "../forms/DeleteBulkForm";
-import { PAGE_SIZE } from "../../constants";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+
 import { CoreApi, UserConsent } from "@goauthentik/api";
+
+import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
+import { PAGE_SIZE } from "../../constants";
+import "../forms/DeleteBulkForm";
+import { Table, TableColumn } from "../table/Table";
 
 @customElement("ak-user-consent-list")
 export class UserConsentList extends Table<UserConsent> {

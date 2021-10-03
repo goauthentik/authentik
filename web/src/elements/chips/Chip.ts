@@ -1,9 +1,10 @@
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
 
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import AKGlobal from "../../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFChip from "@patternfly/patternfly/components/Chip/chip.css";
-import AKGlobal from "../../authentik.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-chip")
 export class Chip extends LitElement {

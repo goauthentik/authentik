@@ -1,8 +1,9 @@
-import { html, TemplateResult } from "lit-html";
-import { until } from "lit-html/directives/until";
+import { html, TemplateResult } from "lit";
+import { until } from "lit/directives/until";
+
 import { EVENT_REFRESH } from "../../../constants";
-import { AggregateCard } from "../../../elements/cards/AggregateCard";
 import { PFSize } from "../../../elements/Spinner";
+import { AggregateCard } from "../../../elements/cards/AggregateCard";
 
 export interface AdminStatus {
     icon: string;

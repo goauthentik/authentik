@@ -1,7 +1,7 @@
 """ProxyProvider API Views"""
-from typing import Any
+from typing import Any, Optional
 
-from drf_spectacular.utils import extend_schema_field, extend_schema_serializer
+from drf_spectacular.utils import extend_schema_field
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ListField, SerializerMethodField
 from rest_framework.serializers import ModelSerializer
@@ -10,6 +10,7 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.views.provider import ProviderInfoView
 from authentik.providers.proxy.models import ProxyMode, ProxyProvider
 
@@ -72,6 +73,7 @@ class ProxyProviderSerializer(ProviderSerializer):
             "mode",
             "redirect_uris",
             "cookie_domain",
+            "token_validity",
         ]
 
 
@@ -101,11 +103,20 @@ class ProxyProviderViewSet(UsedByMixin, ModelViewSet):
     ordering = ["name"]
 
 
-@extend_schema_serializer(deprecate_fields=["forward_auth_mode"])
 class ProxyOutpostConfigSerializer(ModelSerializer):
     """Proxy provider serializer for outposts"""
 
     oidc_configuration = SerializerMethodField()
+    token_validity = SerializerMethodField()
+
+    @extend_schema_field(OpenIDConnectConfigurationSerializer)
+    def get_oidc_configuration(self, obj: ProxyProvider):
+        """Embed OpenID Connect provider information"""
+        return ProviderInfoView(request=self.context["request"]._request).get_info(obj)
+
+    def get_token_validity(self, obj: ProxyProvider) -> Optional[float]:
+        """Get token validity as second count"""
+        return timedelta_from_string(obj.token_validity).total_seconds()
 
     class Meta:
 
@@ -127,12 +138,8 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
             "basic_auth_user_attribute",
             "mode",
             "cookie_domain",
+            "token_validity",
         ]
-
-    @extend_schema_field(OpenIDConnectConfigurationSerializer)
-    def get_oidc_configuration(self, obj: ProxyProvider):
-        """Embed OpenID Connect provider information"""
-        return ProviderInfoView(request=self.context["request"]._request).get_info(obj)
 
 
 class ProxyOutpostConfigViewSet(ReadOnlyModelViewSet):

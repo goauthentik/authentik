@@ -1,16 +1,17 @@
-import { customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
 
-import "../../elements/buttons/SpinnerButton";
+import { Provider, ProvidersApi } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/EmptyState";
 import "../../elements/PageHeader";
-
-import "./saml/SAMLProviderViewPage";
+import "../../elements/buttons/SpinnerButton";
+import "./ldap/LDAPProviderViewPage";
 import "./oauth2/OAuth2ProviderViewPage";
 import "./proxy/ProxyProviderViewPage";
-import "./ldap/LDAPProviderViewPage";
-import { Provider, ProvidersApi } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { ifDefined } from "lit-html/directives/if-defined";
+import "./saml/SAMLProviderViewPage";
 
 @customElement("ak-provider-view")
 export class ProviderViewPage extends LitElement {

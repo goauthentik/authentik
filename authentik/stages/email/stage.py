@@ -3,9 +3,9 @@ from datetime import timedelta
 
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.http import urlencode
+from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from rest_framework.fields import CharField
@@ -16,13 +16,13 @@ from authentik.core.models import Token
 from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
-from authentik.flows.views import SESSION_KEY_GET
+from authentik.flows.views.executor import SESSION_KEY_GET
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger()
-QS_KEY_TOKEN = "token"  # nosec
+QS_KEY_TOKEN = "etoken"  # nosec
 PLAN_CONTEXT_EMAIL_SENT = "email_sent"
 
 
@@ -65,7 +65,7 @@ class EmailStageView(ChallengeStageView):
         )  # + 1 because django timesince always rounds down
         token_filters = {
             "user": pending_user,
-            "identifier": f"ak-email-stage-{current_stage.name}-{pending_user}",
+            "identifier": slugify(f"ak-email-stage-{current_stage.name}-{pending_user}"),
         }
         # Don't check for validity here, we only care if the token exists
         tokens = Token.objects.filter(**token_filters)
@@ -99,7 +99,10 @@ class EmailStageView(ChallengeStageView):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         # Check if the user came back from the email link to verify
         if QS_KEY_TOKEN in request.session.get(SESSION_KEY_GET, {}):
-            token = get_object_or_404(Token, key=request.session[SESSION_KEY_GET][QS_KEY_TOKEN])
+            tokens = Token.filter_not_expired(key=request.session[SESSION_KEY_GET][QS_KEY_TOKEN])
+            if not tokens.exists():
+                return self.executor.stage_invalid(_("Invalid token"))
+            token = tokens.first()
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = token.user
             token.delete()
             messages.success(request, _("Successfully verified Email."))
@@ -118,7 +121,7 @@ class EmailStageView(ChallengeStageView):
         challenge = EmailChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "title": "Email sent.",
+                "title": _("Email sent."),
             }
         )
         return challenge

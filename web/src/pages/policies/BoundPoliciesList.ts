@@ -1,24 +1,26 @@
 import { t } from "@lingui/macro";
-import { customElement, html, property, TemplateResult } from "lit-element";
-import { AKResponse } from "../../api/Client";
-import { Table, TableColumn } from "../../elements/table/Table";
+
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
+
 import { PoliciesApi, PolicyBinding } from "@goauthentik/api";
 
-import "../../elements/forms/DeleteBulkForm";
-import "../../elements/Tabs";
-import "../../elements/forms/ProxyForm";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/buttons/Dropdown";
-import { until } from "lit-html/directives/until";
-import { PAGE_SIZE } from "../../constants";
+import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
-
+import { PAGE_SIZE } from "../../constants";
+import { PFSize } from "../../elements/Spinner";
+import "../../elements/Tabs";
+import "../../elements/buttons/Dropdown";
+import "../../elements/buttons/SpinnerButton";
+import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
+import "../../elements/forms/ProxyForm";
+import { Table, TableColumn } from "../../elements/table/Table";
 import "../groups/GroupForm";
 import "../users/UserForm";
 import "./PolicyBindingForm";
-import { ifDefined } from "lit-html/directives/if-defined";
-import { PFSize } from "../../elements/Spinner";
 
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList extends Table<PolicyBinding> {

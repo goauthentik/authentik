@@ -1,4 +1,5 @@
-import { TemplateResult } from "lit-html";
+import { TemplateResult } from "lit";
+
 import { Route } from "./Route";
 
 export class RouteMatch {

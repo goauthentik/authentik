@@ -8,16 +8,15 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <title>{% block title %}{% trans title|default:tenant.branding_title %}{% endblock %}</title>
-        <link rel="shortcut icon" type="image/png" href="{% static 'dist/assets/icons/icon.png' %}?v={{ ak_version }}">
-        <link rel="stylesheet" type="text/css" href="{% static 'dist/patternfly-base.css' %}?v={{ ak_version }}">
-        <link rel="stylesheet" type="text/css" href="{% static 'dist/page.css' %}?v={{ ak_version }}">
-        <link rel="stylesheet" type="text/css" href="{% static 'dist/empty-state.css' %}?v={{ ak_version }}">
-        <link rel="stylesheet" type="text/css" href="{% static 'dist/spinner.css' %}?v={{ ak_version }}">
+        <link rel="shortcut icon" type="image/png" href="{% static 'dist/assets/icons/icon.png' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'dist/patternfly-base.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'dist/page.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'dist/empty-state.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'dist/spinner.css' %}">
         {% block head_before %}
         {% endblock %}
-        <link rel="stylesheet" type="text/css" href="{% static 'dist/authentik.css' %}?v={{ ak_version }}">
-        <script src="{% static 'dist/poly.js' %}?v={{ ak_version }}" type="module"></script>
-        <script>window["polymerSkipLoadingFontRoboto"] = true;</script>
+        <link rel="stylesheet" type="text/css" href="{% static 'dist/authentik.css' %}">
+        <script src="{% static 'dist/poly.js' %}" type="module"></script>
         {% block head %}
         {% endblock %}
     </head>

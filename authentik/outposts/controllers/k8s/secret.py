@@ -26,7 +26,7 @@ class SecretReconciler(KubernetesObjectReconciler[V1Secret]):
     def reconcile(self, current: V1Secret, reference: V1Secret):
         super().reconcile(current, reference)
         for key in reference.data.keys():
-            if current.data[key] != reference.data[key]:
+            if key not in current.data or current.data[key] != reference.data[key]:
                 raise NeedsUpdate()
 
     def get_reference_object(self) -> V1Secret:
@@ -40,6 +40,9 @@ class SecretReconciler(KubernetesObjectReconciler[V1Secret]):
                     str(self.controller.outpost.config.authentik_host_insecure)
                 ),
                 "token": b64string(self.controller.outpost.token.key),
+                "authentik_host_browser": b64string(
+                    self.controller.outpost.config.authentik_host_browser
+                ),
             },
         )
 

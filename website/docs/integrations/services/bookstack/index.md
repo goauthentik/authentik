@@ -34,20 +34,31 @@ In authentik, under _Providers_, create a _SAML Provider_ with these settings:
 - Audience: https://book.company/saml2/metadata
 
 **Advanced protocol settings**
-- Signing Certificate:  Choose your certificate or the default authentik Self-signed Certificate
+- Signing Certificate: Choose your certificate or the default authentik Self-signed Certificate
 All other options as default.
 
 ![](./authentik_saml_bookstack.png)
 
-Save your settings, and obtain your Metadata URL from Authentik.
+### Step 2
+
+In authentik, create an application which uses this provider. Optionally apply access restrictions to the application using policy bindings.
+
+- Name: Bookstack
+- Slug: bookstack
+- Provider: Bookstack
+- Launch URL: https://book.company
+
+### Step 3
+
+Obtain your Metadata URL from Authentik.
 
 1. Click on the BookStack Provider
 2. Click the Metadata Tab
-3. Click Copy download URL (This URL is the `METADATAURL` required in Step 2)
+3. Click Copy download URL (This URL is the `METADATAURL` required in Step 4)
 
 ![](./metadataurl.png)
 
-### Step 2
+### Step 4
 
 Edit the `.env` file inside of the `www` folder of Bookstack.
 
@@ -64,7 +75,7 @@ SAML2_EMAIL_ATTRIBUTE=email
 # Name of the attribute to use as an ID for the SAML user.
 SAML2_EXTERNAL_ID_ATTRIBUTE=uid
 # Name of the attribute(s) to use for the user's display name
-# Can have mulitple attributes listed, separated with a '|' in which
+# Can have multiple attributes listed, separated with a '|' in which
 # case those values will be joined with a space.
 # Example: SAML2_DISPLAY_NAME_ATTRIBUTES=firstName|lastName
 # Defaults to the ID value if not found.
@@ -80,15 +91,6 @@ SAML2_AUTOLOAD_METADATA=true
 :::note
 Bookstack Reference link: https://www.bookstackapp.com/docs/admin/saml2-auth/
 :::
-
-### Step 3
-
-In authentik, create an application which uses this provider. Optionally apply access restrictions to the application using policy bindings.
-
-- Name: Bookstack
-- Slug: bookstack
-- Provider: Bookstack
-- Launch URL: https://book.company
 
 ## Notes
 

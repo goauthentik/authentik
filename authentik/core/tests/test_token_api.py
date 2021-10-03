@@ -1,4 +1,6 @@
 """Test token API"""
+from json import loads
+
 from django.urls.base import reverse
 from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
@@ -13,7 +15,8 @@ class TestTokenAPI(APITestCase):
 
     def setUp(self) -> None:
         super().setUp()
-        self.user = User.objects.get(username="akadmin")
+        self.user = User.objects.create(username="testuser")
+        self.admin = User.objects.get(username="akadmin")
         self.client.force_login(self.user)
 
     def test_token_create(self):
@@ -55,3 +58,29 @@ class TestTokenAPI(APITestCase):
         clean_expired_models.delay().get()
         token.refresh_from_db()
         self.assertNotEqual(key, token.key)
+
+    def test_list(self):
+        """Test Token List (Test normal authentication)"""
+        token_should: Token = Token.objects.create(
+            identifier="test", expiring=False, user=self.user
+        )
+        Token.objects.create(identifier="test-2", expiring=False, user=get_anonymous_user())
+        response = self.client.get(reverse(("authentik_api:token-list")))
+        body = loads(response.content)
+        self.assertEqual(len(body["results"]), 1)
+        self.assertEqual(body["results"][0]["identifier"], token_should.identifier)
+
+    def test_list_admin(self):
+        """Test Token List (Test with admin auth)"""
+        self.client.force_login(self.admin)
+        token_should: Token = Token.objects.create(
+            identifier="test", expiring=False, user=self.user
+        )
+        token_should_not: Token = Token.objects.create(
+            identifier="test-2", expiring=False, user=get_anonymous_user()
+        )
+        response = self.client.get(reverse(("authentik_api:token-list")))
+        body = loads(response.content)
+        self.assertEqual(len(body["results"]), 2)
+        self.assertEqual(body["results"][0]["identifier"], token_should.identifier)
+        self.assertEqual(body["results"][1]["identifier"], token_should_not.identifier)

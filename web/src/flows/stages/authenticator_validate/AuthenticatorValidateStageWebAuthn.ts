@@ -1,12 +1,22 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+
+import { CSSResult, html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+
+import AKGlobal from "../../../authentik.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import AKGlobal from "../../../authentik.css";
+
+import {
+    AuthenticatorValidationChallenge,
+    AuthenticatorValidationChallengeResponseRequest,
+    DeviceChallenge,
+} from "@goauthentik/api";
+
 import { PFSize } from "../../../elements/Spinner";
 import {
     transformAssertionForServer,
@@ -14,11 +24,6 @@ import {
 } from "../authenticator_webauthn/utils";
 import { BaseStage } from "../base";
 import { AuthenticatorValidateStage } from "./AuthenticatorValidateStage";
-import {
-    AuthenticatorValidationChallenge,
-    AuthenticatorValidationChallengeResponseRequest,
-    DeviceChallenge,
-} from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-validate-webauthn")
 export class AuthenticatorValidateStageWebAuthn extends BaseStage<
@@ -44,9 +49,8 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
     async authenticate(): Promise<void> {
         // convert certain members of the PublicKeyCredentialRequestOptions into
         // byte arrays as expected by the spec.
-        const credentialRequestOptions = <PublicKeyCredentialRequestOptions>(
-            this.deviceChallenge?.challenge
-        );
+        const credentialRequestOptions = this.deviceChallenge
+            ?.challenge as PublicKeyCredentialRequestOptions;
         const transformedCredentialRequestOptions =
             transformCredentialRequestOptions(credentialRequestOptions);
 
@@ -67,7 +71,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
         // we now have an authentication assertion! encode the byte arrays contained
         // in the assertion data as strings for posting to the server
         const transformedAssertionForServer = transformAssertionForServer(
-            <PublicKeyCredential>assertion,
+            assertion as PublicKeyCredential,
         );
 
         // post the assertion to the server for verification.

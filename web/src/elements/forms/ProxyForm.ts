@@ -1,4 +1,6 @@
-import { customElement, html, property, TemplateResult } from "lit-element";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+
 import { Form } from "./Form";
 
 @customElement("ak-proxy-form")

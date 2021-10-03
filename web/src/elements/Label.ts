@@ -1,7 +1,9 @@
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFLabel from "@patternfly/patternfly/components/Label/label.css";
+import { CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+
 import AKGlobal from "../authentik.css";
+import PFLabel from "@patternfly/patternfly/components/Label/label.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export enum PFColor {
     Green = "pf-m-green",

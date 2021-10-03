@@ -12,7 +12,7 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
-from authentik.flows.views import InvalidStageError
+from authentik.flows.views.executor import InvalidStageError
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 
 LOGGER = get_logger()

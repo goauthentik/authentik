@@ -1,7 +1,10 @@
-import { customElement, LitElement, CSSResult, property, css } from "lit-element";
-import { TemplateResult, html } from "lit-html";
+import { LitElement, CSSResult, css } from "lit";
+import { TemplateResult, html } from "lit";
+import { customElement, property } from "lit/decorators";
+
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+
 import { ErrorDetail } from "@goauthentik/api";
 
 @customElement("ak-form-element")

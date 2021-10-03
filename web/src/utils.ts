@@ -1,5 +1,7 @@
 import { t } from "@lingui/macro";
-import { html, TemplateResult } from "lit-html";
+
+import { html, TemplateResult } from "lit";
+
 import "./elements/EmptyState";
 
 export function getCookie(name: string): string {
@@ -86,4 +88,14 @@ export function randomString(len: number): string {
     const arr = new Uint8Array(len / 2);
     window.crypto.getRandomValues(arr);
     return hexEncode(arr);
+}
+
+export function dateTimeLocal(date: Date): string {
+    // So for some reason, the datetime-local input field requires ISO Datetime as value
+    // But the standard javascript date.toISOString() returns everything with seconds and
+    // milliseconds, which the input field doesn't like (on chrome, on firefox its fine)
+    // On chrome, setting .valueAsNumber works, but that causes an error on firefox, so go
+    // figure.
+    const parts = date.toISOString().split(":");
+    return `${parts[0]}:${parts[1]}`;
 }

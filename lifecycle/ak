@@ -14,9 +14,12 @@ function check_if_root {
         # Get group ID of the docker socket, so we can create a matching group and
         # add ourselves to it
         DOCKER_GID=$(stat -c '%g' $SOCKET)
+        # Ensure group for the id exists
         getent group $DOCKER_GID || groupadd -f -g $DOCKER_GID docker
         usermod -a -G $DOCKER_GID authentik
-        GROUP="authentik:docker"
+        # since the name of the group might not be docker, we need to lookup the group id
+        GROUP_NAME=$(getent group $DOCKER_GID  | sed 's/:/\n/g' | head -1)
+        GROUP="authentik:${GROUP_NAME}"
     fi
     # Fix permissions of backups and media
     chown -R authentik:authentik /media /backups

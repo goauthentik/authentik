@@ -1,17 +1,20 @@
 import { t } from "@lingui/macro";
-import { customElement, html, property, TemplateResult } from "lit-element";
-import { AKResponse } from "../../api/Client";
-import { TablePage } from "../../elements/table/TablePage";
 
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+
+import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
+
+import { AKResponse } from "../../api/Client";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { PAGE_SIZE } from "../../constants";
 import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/TokenCopyButton";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
-import "./TokenForm";
 import { TableColumn } from "../../elements/table/Table";
-import { PAGE_SIZE } from "../../constants";
-import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../api/Config";
+import { TablePage } from "../../elements/table/TablePage";
+import "./TokenForm";
 
 export function IntentToLabel(intent: IntentEnum): string {
     switch (intent) {
@@ -105,19 +108,21 @@ export class TokenListPage extends TablePage<Token> {
             html`${item.identifier}`,
             html`<a href="#/identity/users/${item.userObj?.pk}">${item.userObj?.username}</a>`,
             html`${item.expiring ? t`Yes` : t`No`}`,
-            html`${item.expiring ? item.expires?.toLocaleString() : "-"}`,
+            html`${item.expiring ? item.expires?.toLocaleString() : t`-`}`,
             html`${IntentToLabel(item.intent || IntentEnum.Api)}`,
             html`
-                ${item.managed
-                    ? html``
-                    : html`<ak-forms-modal>
-                          <span slot="submit"> ${t`Update`} </span>
-                          <span slot="header"> ${t`Update Token`} </span>
-                          <ak-token-form slot="form" .instancePk=${item.identifier}></ak-token-form>
-                          <button slot="trigger" class="pf-c-button pf-m-plain">
-                              <i class="fas fa-edit"></i>
-                          </button>
-                      </ak-forms-modal>`}
+                <ak-forms-modal>
+                    <span slot="submit"> ${t`Update`} </span>
+                    <span slot="header"> ${t`Update Token`} </span>
+                    <ak-token-form slot="form" .instancePk=${item.identifier}></ak-token-form>
+                    <button
+                        ?disabled=${item.managed !== null}
+                        slot="trigger"
+                        class="pf-c-button pf-m-plain"
+                    >
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </ak-forms-modal>
                 <ak-token-copy-button identifier="${item.identifier}">
                     <i class="fas fa-copy"></i>
                 </ak-token-copy-button>

@@ -46,9 +46,9 @@ class OAuthSourceSerializer(SourceSerializer):
     type = SerializerMethodField()
 
     @extend_schema_field(SourceTypeSerializer)
-    def get_type(self, instace: OAuthSource) -> SourceTypeSerializer:
+    def get_type(self, instance: OAuthSource) -> SourceTypeSerializer:
         """Get source's type configuration"""
-        return SourceTypeSerializer(instace.type).data
+        return SourceTypeSerializer(instance.type).data
 
     def validate(self, attrs: dict) -> dict:
         provider_type = MANAGER.find_type(attrs.get("provider_type", ""))

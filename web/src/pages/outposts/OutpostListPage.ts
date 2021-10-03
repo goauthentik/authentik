@@ -1,24 +1,28 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, property } from "lit-element";
-import { html, TemplateResult } from "lit-html";
-import { AKResponse } from "../../api/Client";
-import { TableColumn } from "../../elements/table/Table";
-import { TablePage } from "../../elements/table/TablePage";
+
+import { CSSResult } from "lit";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
+
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
+import { Outpost, OutpostsApi } from "@goauthentik/api";
+
+import { AKResponse } from "../../api/Client";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { PAGE_SIZE } from "../../constants";
+import { PFSize } from "../../elements/Spinner";
+import "../../elements/buttons/SpinnerButton";
+import "../../elements/forms/DeleteBulkForm";
+import "../../elements/forms/ModalForm";
+import { TableColumn } from "../../elements/table/Table";
+import { TablePage } from "../../elements/table/TablePage";
+import "./OutpostDeploymentModal";
+import "./OutpostForm";
 import "./OutpostHealth";
 import "./OutpostHealthSimple";
-import "./OutpostForm";
-import "./OutpostDeploymentModal";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/forms/ModalForm";
-import "../../elements/forms/DeleteBulkForm";
-import { PAGE_SIZE } from "../../constants";
-import { Outpost, OutpostsApi } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { ifDefined } from "lit-html/directives/if-defined";
-import { PFSize } from "../../elements/Spinner";
-import { until } from "lit-html/directives/until";
 
 @customElement("ak-outpost-list")
 export class OutpostListPage extends TablePage<Outpost> {

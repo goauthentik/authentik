@@ -58,4 +58,4 @@ class TestImpersonation(TestCase):
         self.client.force_login(self.other_user)
 
         response = self.client.get(reverse("authentik_core:impersonate-end"))
-        self.assertRedirects(response, reverse("authentik_core:if-admin"))
+        self.assertRedirects(response, reverse("authentik_core:if-user"))

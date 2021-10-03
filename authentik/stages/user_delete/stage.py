@@ -14,6 +14,10 @@ LOGGER = get_logger()
 class UserDeleteStageView(StageView):
     """Finalise unenrollment flow by deleting the user object."""
 
+    def post(self, request: HttpRequest) -> HttpResponse:
+        """Wrapper for post requests"""
+        return self.get(request)
+
     def get(self, request: HttpRequest) -> HttpResponse:
         """Delete currently pending user"""
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:

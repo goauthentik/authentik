@@ -6,3 +6,5 @@ dist
 coverage
 # don't lint generated code
 api/
+# Import order matters
+poly.ts

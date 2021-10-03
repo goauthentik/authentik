@@ -2,12 +2,12 @@
 from urllib.parse import urlencode
 
 from django.http.response import Http404
-from requests import Session
 from requests.exceptions import RequestException
 from structlog.stdlib import get_logger
 
 from authentik import __version__
 from authentik.core.sources.flow_manager import SourceFlowManager
+from authentik.lib.utils.http import get_http_session
 from authentik.sources.plex.models import PlexSource, PlexSourceConnection
 
 LOGGER = get_logger()
@@ -24,7 +24,7 @@ class PlexAuth:
     def __init__(self, source: PlexSource, token: str):
         self._source = source
         self._token = token
-        self._session = Session()
+        self._session = get_http_session()
         self._session.headers.update(
             {"Accept": "application/json", "Content-Type": "application/json"}
         )

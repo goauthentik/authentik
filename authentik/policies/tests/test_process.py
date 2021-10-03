@@ -14,7 +14,7 @@ from authentik.policies.types import PolicyRequest
 
 
 def clear_policy_cache():
-    """Ensure no policy-related keys are stil cached"""
+    """Ensure no policy-related keys are still cached"""
     keys = cache.keys("policy_*")
     cache.delete(keys)
 

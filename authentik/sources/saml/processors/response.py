@@ -18,7 +18,7 @@ from authentik.flows.planner import (
     PLAN_CONTEXT_SSO,
     FlowPlanner,
 )
-from authentik.flows.views import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
+from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.policies.utils import delete_none_keys
 from authentik.sources.saml.exceptions import (
@@ -190,7 +190,7 @@ class ResponseProcessor:
         # Ensure redirect is carried through when user was trying to
         # authorize application
         final_redirect = self._http_request.session.get(SESSION_KEY_GET, {}).get(
-            NEXT_ARG_NAME, "authentik_core:if-admin"
+            NEXT_ARG_NAME, "authentik_core:if-user"
         )
         if matching_users.exists():
             # User exists already, switch to authentication flow

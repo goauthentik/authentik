@@ -12,7 +12,7 @@ class UserWriteStageSerializer(StageSerializer):
     class Meta:
 
         model = UserWriteStage
-        fields = StageSerializer.Meta.fields + ["create_users_as_inactive"]
+        fields = StageSerializer.Meta.fields + ["create_users_as_inactive", "create_users_group"]
 
 
 class UserWriteStageViewSet(UsedByMixin, ModelViewSet):

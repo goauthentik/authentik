@@ -27,7 +27,7 @@ class TestHTTP(TestCase):
         token = Token.objects.create(
             identifier="test", user=self.user, intent=TokenIntents.INTENT_API
         )
-        # Invalid, non-existant token
+        # Invalid, non-existent token
         request = self.factory.get(
             "/",
             **{
@@ -36,7 +36,7 @@ class TestHTTP(TestCase):
             },
         )
         self.assertEqual(get_client_ip(request), "127.0.0.1")
-        # Invalid, user doesn't have permisions
+        # Invalid, user doesn't have permissions
         request = self.factory.get(
             "/",
             **{

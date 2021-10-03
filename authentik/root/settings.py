@@ -372,7 +372,7 @@ CELERY_RESULT_BACKEND = (
 # Database backup
 DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
 DBBACKUP_STORAGE_OPTIONS = {"location": "./backups" if DEBUG else "/backups"}
-DBBACKUP_FILENAME_TEMPLATE = "authentik-backup-{datetime}.sql"
+DBBACKUP_FILENAME_TEMPLATE = f"authentik-backup-{__version__}-{{datetime}}.sql"
 DBBACKUP_CONNECTOR_MAPPING = {
     "django_prometheus.db.backends.postgresql": "dbbackup.db.postgresql.PgDumpConnector",
 }
@@ -529,7 +529,7 @@ for _app in INSTALLED_APPS:
         if "apps" in _app:
             _app = ".".join(_app.split(".")[:-2])
         try:
-            app_settings = importlib.import_module("%s.settings" % _app)
+            app_settings = importlib.import_module(f"{_app}.settings")
             INSTALLED_APPS.extend(getattr(app_settings, "INSTALLED_APPS", []))
             MIDDLEWARE.extend(getattr(app_settings, "MIDDLEWARE", []))
             AUTHENTICATION_BACKENDS.extend(getattr(app_settings, "AUTHENTICATION_BACKENDS", []))

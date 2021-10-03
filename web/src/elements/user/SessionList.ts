@@ -1,12 +1,15 @@
 import { t } from "@lingui/macro";
-import { customElement, html, property, TemplateResult } from "lit-element";
-import { AKResponse } from "../../api/Client";
-import { Table, TableColumn } from "../table/Table";
 
-import "../forms/DeleteBulkForm";
-import { PAGE_SIZE } from "../../constants";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+
 import { CoreApi, AuthenticatedSession } from "@goauthentik/api";
+
+import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
+import { PAGE_SIZE } from "../../constants";
+import "../forms/DeleteBulkForm";
+import { Table, TableColumn } from "../table/Table";
 
 @customElement("ak-user-session-list")
 export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
@@ -39,6 +42,12 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
         return html`<ak-forms-delete-bulk
             objectLabel=${t`Session(s)`}
             .objects=${this.selectedElements}
+            .metadata=${(item: AuthenticatedSession) => {
+                return [
+                    { key: t`Last IP`, value: item.lastIp },
+                    { key: t`Expiry`, value: item.expires?.toLocaleString() || t`-` },
+                ];
+            }}
             .usedBy=${(item: AuthenticatedSession) => {
                 return new CoreApi(DEFAULT_CONFIG).coreAuthenticatedSessionsUsedByList({
                     uuid: item.uuid || "",

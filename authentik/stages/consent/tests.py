@@ -11,7 +11,7 @@ from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlan
-from authentik.flows.views import SESSION_KEY_PLAN
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.consent.models import ConsentMode, ConsentStage, UserConsent
 
 
@@ -44,8 +44,10 @@ class TestConsentStage(APITestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             {},
         )
+        # pylint: disable=no-member
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
+            # pylint: disable=no-member
             force_str(response.content),
             {
                 "component": "xak-flow-redirect",

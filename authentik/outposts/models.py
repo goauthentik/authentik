@@ -65,6 +65,7 @@ class OutpostConfig:
 
     authentik_host: str = ""
     authentik_host_insecure: bool = False
+    authentik_host_browser: str = ""
 
     log_level: str = CONFIG.y("log_level")
     error_reporting_enabled: bool = CONFIG.y_bool("error_reporting.enabled")
@@ -72,6 +73,7 @@ class OutpostConfig:
     object_naming_template: str = field(default="ak-outpost-%(name)s")
 
     docker_network: Optional[str] = field(default=None)
+    docker_map_ports: bool = field(default=True)
 
     kubernetes_replicas: int = field(default=1)
     kubernetes_namespace: str = field(default_factory=get_namespace)

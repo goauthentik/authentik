@@ -19,6 +19,14 @@ This will send a POST request to the given URL with the following contents:
 
 The `Content-Type` header is set to `text/json`.
 
+Starting in 2021.9, you can also select a Notification mapping. This allows you to freely configure the request's payload. For example:
+
+```python
+return {
+    "foo": context['notification'].body,
+}
+```
+
 ## Slack Webhook
 
 This sends a request using the Slack-specific format. This is also compatible with Discord's webhooks by appending `/slack` to the Discord webhook URL.

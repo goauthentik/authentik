@@ -14,7 +14,7 @@ func BUILD() string {
 }
 
 func OutpostUserAgent() string {
-	return fmt.Sprintf("authentik-outpost@%s (%s)", VERSION, BUILD())
+	return fmt.Sprintf("authentik-outpost@%s (build=%s)", VERSION, BUILD())
 }
 
-const VERSION = "2021.8.4"
+const VERSION = "2021.9.4"

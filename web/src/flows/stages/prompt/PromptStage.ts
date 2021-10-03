@@ -1,19 +1,24 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, TemplateResult } from "lit-element";
-import { unsafeHTML } from "lit-html/directives/unsafe-html";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+
+import { CSSResult, html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
+import { unsafeHTML } from "lit/directives/unsafe-html";
+
+import AKGlobal from "../../../authentik.css";
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
-import AKGlobal from "../../../authentik.css";
-import { BaseStage } from "../base";
-import "../../../elements/forms/FormElement";
-import "../../../elements/EmptyState";
-import "../../../elements/Divider";
+
 import { PromptChallenge, PromptChallengeResponseRequest, StagePrompt } from "@goauthentik/api";
+
+import "../../../elements/Divider";
+import "../../../elements/EmptyState";
+import "../../../elements/forms/FormElement";
+import { BaseStage } from "../base";
 
 @customElement("ak-stage-prompt")
 export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeResponseRequest> {

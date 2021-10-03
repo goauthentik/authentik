@@ -1,8 +1,13 @@
-import { customElement, property } from "lit-element";
+import { ChartData } from "chart.js";
+
+import { t } from "@lingui/macro";
+
+import { customElement, property } from "lit/decorators";
+
 import { Coordinate, CoreApi } from "@goauthentik/api";
+
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AKChart } from "./Chart";
-import { ChartData } from "chart.js";
 
 @customElement("ak-charts-application-authorize")
 export class ApplicationAuthorizeChart extends AKChart<Coordinate[]> {
@@ -19,7 +24,7 @@ export class ApplicationAuthorizeChart extends AKChart<Coordinate[]> {
         return {
             datasets: [
                 {
-                    label: "Authorizations",
+                    label: t`Authorizations`,
                     backgroundColor: "rgba(189, 229, 184, .5)",
                     spanGaps: true,
                     data:

@@ -128,8 +128,8 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     def set_oauth_defaults(self):
         """Ensure all OAuth2-related settings are correct"""
         self.client_type = ClientTypes.CONFIDENTIAL
-        self.jwt_alg = JWTAlgorithms.RS256
-        self.rsa_key = CertificateKeyPair.objects.exclude(key_data__iexact="").first()
+        self.jwt_alg = JWTAlgorithms.HS256
+        self.rsa_key = None
         scopes = ScopeMapping.objects.filter(
             scope_name__in=[
                 SCOPE_OPENID,
@@ -139,12 +139,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
             ]
         )
         self.property_mappings.set(scopes)
-        self.redirect_uris = "\n".join(
-            [
-                _get_callback_url(self.external_host),
-                _get_callback_url(self.internal_host),
-            ]
-        )
+        self.redirect_uris = _get_callback_url(self.external_host)
 
     def __str__(self):
         return f"Proxy Provider {self.name}"

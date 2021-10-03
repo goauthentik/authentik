@@ -1,13 +1,16 @@
-import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { customElement } from "lit-element";
-import { html, TemplateResult } from "lit-html";
+
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
+import { until } from "lit/directives/until";
+
+import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
+
 import { DEFAULT_CONFIG } from "../../api/Config";
-import "../../elements/forms/HorizontalFormElement";
 import "../../elements/forms/FormGroup";
-import { first } from "../../utils";
+import "../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../elements/forms/ModelForm";
-import { until } from "lit-html/directives/until";
+import { dateTimeLocal, first } from "../../utils";
 
 @customElement("ak-token-form")
 export class TokenForm extends ModelForm<Token, string> {
@@ -111,7 +114,8 @@ export class TokenForm extends ModelForm<Token, string> {
             <ak-form-element-horizontal label=${t`Expires on`} name="expires">
                 <input
                     type="datetime-local"
-                    .valueAsNumber="${first(this.instance?.expires, new Date()).getTime()}"
+                    data-type="datetime-local"
+                    value="${dateTimeLocal(first(this.instance?.expires, new Date()))}"
                     class="pf-c-form-control"
                 />
             </ak-form-element-horizontal>

@@ -1,7 +1,11 @@
-import { customElement, property } from "lit-element";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+
 import { CoreApi } from "@goauthentik/api";
-import { PRIMARY_CLASS, SUCCESS_CLASS } from "../../constants";
+
 import { DEFAULT_CONFIG } from "../../api/Config";
+import { ERROR_CLASS, SECONDARY_CLASS, SUCCESS_CLASS } from "../../constants";
+import { PFSize } from "../Spinner";
 import { ActionButton } from "./ActionButton";
 
 @customElement("ak-token-copy-button")
@@ -10,7 +14,7 @@ export class TokenCopyButton extends ActionButton {
     identifier?: string;
 
     @property()
-    buttonClass: string = PRIMARY_CLASS;
+    buttonClass: string = SECONDARY_CLASS;
 
     apiRequest: () => Promise<unknown> = () => {
         this.setLoading();
@@ -25,17 +29,82 @@ export class TokenCopyButton extends ActionButton {
                 if (!token.key) {
                     return Promise.reject();
                 }
-                return navigator.clipboard.writeText(token.key).then(() => {
-                    this.buttonClass = SUCCESS_CLASS;
-                    setTimeout(() => {
-                        this.buttonClass = PRIMARY_CLASS;
-                    }, 1500);
-                });
+                setTimeout(() => {
+                    this.buttonClass = SECONDARY_CLASS;
+                }, 1500);
+                this.buttonClass = SUCCESS_CLASS;
+                return token.key;
             })
-            .catch((err: Response | undefined) => {
+            .catch((err: Error | Response | undefined) => {
+                this.buttonClass = ERROR_CLASS;
+                if (err instanceof Error) {
+                    setTimeout(() => {
+                        this.buttonClass = SECONDARY_CLASS;
+                    }, 1500);
+                    throw err;
+                }
                 return err?.json().then((errResp) => {
+                    setTimeout(() => {
+                        this.buttonClass = SECONDARY_CLASS;
+                    }, 1500);
                     throw new Error(errResp["detail"]);
                 });
             });
     };
+
+    render(): TemplateResult {
+        return html`<button
+            class="pf-c-button pf-m-progress ${this.classList.toString()}"
+            @click=${() => {
+                if (this.isRunning === true) {
+                    return;
+                }
+                this.setLoading();
+                // Because safari is stupid, it only allows navigator.clipboard.write directly
+                // in the @click handler.
+                // And also chrome is stupid, because it doesn't accept Promises as values for
+                // ClipboardItem, so now there's two implementations
+                if (
+                    navigator.userAgent.includes("Safari") &&
+                    !navigator.userAgent.includes("Chrome")
+                ) {
+                    navigator.clipboard.write([
+                        new ClipboardItem({
+                            "text/plain": (this.callAction() as Promise<string>)
+                                .then((key: string) => {
+                                    this.setDone(SUCCESS_CLASS);
+                                    return new Blob([key], {
+                                        type: "text/plain",
+                                    });
+                                })
+                                .catch((err: Error) => {
+                                    this.setDone(ERROR_CLASS);
+                                    throw err;
+                                }),
+                        }),
+                    ]);
+                } else {
+                    (this.callAction() as Promise<string>)
+                        .then((key: string) => {
+                            navigator.clipboard.writeText(key).then(() => {
+                                this.setDone(SUCCESS_CLASS);
+                            });
+                        })
+                        .catch((err: Response | undefined) => {
+                            return err?.json().then((errResp) => {
+                                this.setDone(ERROR_CLASS);
+                                throw new Error(errResp["detail"]);
+                            });
+                        });
+                }
+            }}
+        >
+            ${this.isRunning
+                ? html`<span class="pf-c-button__progress">
+                      <ak-spinner size=${PFSize.Medium}></ak-spinner>
+                  </span>`
+                : ""}
+            <slot></slot>
+        </button>`;
+    }
 }

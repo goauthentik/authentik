@@ -2,6 +2,8 @@
 
 from ldap3 import MOCK_SYNC, OFFLINE_AD_2012_R2, Connection, Server
 
+from authentik.sources.ldap.sync.vendor.ad import UserAccountControl
+
 
 def mock_ad_connection(password: str) -> Connection:
     """Create mock AD connection"""
@@ -54,6 +56,8 @@ def mock_ad_connection(password: str) -> Connection:
             "objectSid": "user0",
             "objectClass": "person",
             "distinguishedName": "cn=user0,ou=users,dc=goauthentik,dc=io",
+            "userAccountControl": UserAccountControl.ACCOUNTDISABLE
+            + UserAccountControl.NORMAL_ACCOUNT,
         },
     )
     # User without SID

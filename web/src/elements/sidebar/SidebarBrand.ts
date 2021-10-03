@@ -1,26 +1,21 @@
-import {
-    css,
-    CSSResult,
-    customElement,
-    html,
-    LitElement,
-    property,
-    TemplateResult,
-} from "lit-element";
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+
+import AKGlobal from "../../authentik.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import AKGlobal from "../../authentik.css";
 
-import { configureSentry } from "../../api/Sentry";
 import { CurrentTenant } from "@goauthentik/api";
-import { ifDefined } from "lit-html/directives/if-defined";
-import { EVENT_SIDEBAR_TOGGLE } from "../../constants";
+
 import { tenant } from "../../api/Config";
+import { configureSentry } from "../../api/Sentry";
+import { EVENT_SIDEBAR_TOGGLE } from "../../constants";
+import { first } from "../../utils";
 
 // If the viewport is wider than MIN_WIDTH, the sidebar
-// is shown besides the content, and not overlayed.
+// is shown besides the content, and not overlaid.
 export const MIN_WIDTH = 1200;
 
 export const DefaultTenant: CurrentTenant = {
@@ -99,7 +94,7 @@ export class SidebarBrand extends LitElement {
             <a href="#/" class="pf-c-page__header-brand-link">
                 <div class="pf-c-brand ak-brand">
                     <img
-                        src="${ifDefined(this.tenant.brandingLogo)}"
+                        src="${first(this.tenant.brandingLogo, DefaultTenant.brandingLogo)}"
                         alt="authentik icon"
                         loading="lazy"
                     />

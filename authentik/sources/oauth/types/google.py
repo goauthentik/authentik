@@ -38,5 +38,5 @@ class GoogleType(SourceType):
     slug = "google"
 
     authorization_url = "https://accounts.google.com/o/oauth2/auth"
-    access_token_url = "https://accounts.google.com/o/oauth2/token"  # nosec
+    access_token_url = "https://oauth2.googleapis.com/token"  # nosec
     profile_url = "https://www.googleapis.com/oauth2/v1/userinfo"

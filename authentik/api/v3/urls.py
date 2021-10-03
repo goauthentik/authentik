@@ -24,12 +24,14 @@ from authentik.core.api.users import UserViewSet
 from authentik.crypto.api import CertificateKeyPairViewSet
 from authentik.events.api.event import EventViewSet
 from authentik.events.api.notification import NotificationViewSet
+from authentik.events.api.notification_mapping import NotificationWebhookMappingViewSet
 from authentik.events.api.notification_rule import NotificationRuleViewSet
 from authentik.events.api.notification_transport import NotificationTransportViewSet
 from authentik.flows.api.bindings import FlowStageBindingViewSet
 from authentik.flows.api.flows import FlowViewSet
 from authentik.flows.api.stages import StageViewSet
-from authentik.flows.views import FlowExecutorView
+from authentik.flows.views.executor import FlowExecutorView
+from authentik.flows.views.inspector import FlowInspectorView
 from authentik.managed.api import ConfigFileViewSet
 from authentik.outposts.api.outposts import OutpostViewSet
 from authentik.outposts.api.service_connections import (
@@ -99,6 +101,7 @@ from authentik.stages.user_write.api import UserWriteStageViewSet
 from authentik.tenants.api import TenantViewSet
 
 router = routers.DefaultRouter()
+router.include_format_suffixes = False
 
 router.register("admin/system_tasks", TaskViewSet, basename="admin_system_tasks")
 router.register("admin/apps", AppsViewSet, basename="apps")
@@ -161,6 +164,7 @@ router.register("propertymappings/all", PropertyMappingViewSet)
 router.register("propertymappings/ldap", LDAPPropertyMappingViewSet)
 router.register("propertymappings/saml", SAMLPropertyMappingViewSet)
 router.register("propertymappings/scope", ScopeMappingViewSet)
+router.register("propertymappings/notification", NotificationWebhookMappingViewSet)
 
 router.register("authenticators/duo", DuoDeviceViewSet)
 router.register("authenticators/static", StaticDeviceViewSet)
@@ -226,6 +230,11 @@ urlpatterns = (
             "flows/executor/<slug:flow_slug>/",
             FlowExecutorView.as_view(),
             name="flow-executor",
+        ),
+        path(
+            "flows/inspector/<slug:flow_slug>/",
+            FlowInspectorView.as_view(),
+            name="flow-inspector",
         ),
         path("sentry/", SentryTunnelView.as_view(), name="sentry"),
         path("schema/", cache_page(86400)(SpectacularAPIView.as_view()), name="schema"),

@@ -1,10 +1,13 @@
 import { t } from "@lingui/macro";
-import { customElement, html, property, TemplateResult } from "lit-element";
+
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+
 import { EVENT_REFRESH } from "../../constants";
-import { ModalButton } from "../buttons/ModalButton";
-import { Form } from "./Form";
-import "../buttons/SpinnerButton";
 import "../LoadingOverlay";
+import { ModalButton } from "../buttons/ModalButton";
+import "../buttons/SpinnerButton";
+import { Form } from "./Form";
 
 @customElement("ak-forms-modal")
 export class ModalForm extends ModalButton {

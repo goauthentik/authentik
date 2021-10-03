@@ -39,6 +39,9 @@ func ldapResolveTypeSingle(in interface{}) *string {
 
 func AKAttrsToLDAP(attrs interface{}) []*ldap.EntryAttribute {
 	attrList := []*ldap.EntryAttribute{}
+	if attrs == nil {
+		return attrList
+	}
 	a := attrs.(*map[string]interface{})
 	for attrKey, attrValue := range *a {
 		entry := &ldap.EntryAttribute{Name: attrKey}
@@ -139,4 +142,27 @@ func (pi *ProviderInstance) GetRIDForGroup(uid string) int32 {
 	}
 
 	return int32(gid)
+}
+
+func (pi *ProviderInstance) ensureAttributes(attrs []*ldap.EntryAttribute, shouldHave map[string][]string) []*ldap.EntryAttribute {
+	for name, values := range shouldHave {
+		attrs = pi.mustHaveAttribute(attrs, name, values)
+	}
+	return attrs
+}
+
+func (pi *ProviderInstance) mustHaveAttribute(attrs []*ldap.EntryAttribute, name string, value []string) []*ldap.EntryAttribute {
+	shouldSet := true
+	for _, attr := range attrs {
+		if attr.Name == name {
+			shouldSet = false
+		}
+	}
+	if shouldSet {
+		return append(attrs, &ldap.EntryAttribute{
+			Name:   name,
+			Values: value,
+		})
+	}
+	return attrs
 }

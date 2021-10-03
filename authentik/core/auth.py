@@ -8,7 +8,7 @@ from django.http.request import HttpRequest
 from authentik.core.models import Token, TokenIntents, User
 from authentik.events.utils import cleanse_dict, sanitize_dict
 from authentik.flows.planner import FlowPlan
-from authentik.flows.views import SESSION_KEY_PLAN
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 

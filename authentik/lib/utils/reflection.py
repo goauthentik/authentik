@@ -1,5 +1,6 @@
 """authentik lib reflection utilities"""
 from importlib import import_module
+from typing import Union
 
 from django.conf import settings
 
@@ -19,12 +20,12 @@ def all_subclasses(cls, sort=True):
     return classes
 
 
-def class_to_path(cls):
+def class_to_path(cls: type) -> str:
     """Turn Class (Class or instance) into module path"""
     return f"{cls.__module__}.{cls.__name__}"
 
 
-def path_to_class(path):
+def path_to_class(path: Union[str, None]) -> Union[type, None]:
     """Import module and return class"""
     if not path:
         return None

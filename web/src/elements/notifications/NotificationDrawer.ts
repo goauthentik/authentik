@@ -1,26 +1,23 @@
 import { t } from "@lingui/macro";
-import {
-    css,
-    CSSResult,
-    customElement,
-    html,
-    LitElement,
-    property,
-    TemplateResult,
-} from "lit-element";
+
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+
+import AKGlobal from "../../authentik.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
 import { EventsApi, Notification } from "@goauthentik/api";
+
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
-import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import AKGlobal from "../../authentik.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import { EVENT_NOTIFICATION_DRAWER_TOGGLE } from "../../constants";
+import { EVENT_NOTIFICATION_DRAWER_TOGGLE, EVENT_REFRESH } from "../../constants";
 import { ActionToLabel } from "../../pages/events/utils";
-import { showMessage } from "../messages/MessageContainer";
 import { MessageLevel } from "../messages/Message";
+import { showMessage } from "../messages/MessageContainer";
 
 @customElement("ak-notification-drawer")
 export class NotificationDrawer extends LitElement {
@@ -114,6 +111,12 @@ export class NotificationDrawer extends LitElement {
                             })
                             .then(() => {
                                 this.firstUpdated();
+                                this.dispatchEvent(
+                                    new CustomEvent(EVENT_REFRESH, {
+                                        bubbles: true,
+                                        composed: true,
+                                    }),
+                                );
                             });
                     }}
                 >
@@ -173,6 +176,13 @@ export class NotificationDrawer extends LitElement {
                                         level: MessageLevel.success,
                                         message: t`Successfully cleared notifications`,
                                     });
+                                    this.firstUpdated();
+                                    this.dispatchEvent(
+                                        new CustomEvent(EVENT_REFRESH, {
+                                            bubbles: true,
+                                            composed: true,
+                                        }),
+                                    );
                                 });
                         }}
                         class="pf-c-button pf-m-secondary pf-m-block"

@@ -25,7 +25,7 @@ log_level: debug
 secret_key: "A long key you can generate with `pwgen 40 1` for example"
 ```
 
-Afterwards, you can start authentik by running `make run`.
+Afterwards, you can start authentik by running `make run`. authentik is now accessible under `localhost:9000`.
 
 Generally speaking, authentik is a Django application, ran by gunicorn, proxied by a Go application. The Go application serves static files.
 
@@ -37,15 +37,7 @@ Run `make gen` to generate an updated OpenAPI document for any changes you made.
 
 ## Frontend
 
-By default, no transpiled bundle of the frontend is included. To build the UI, you need Node 12 or newer.
-
-The Frontend also uses a generated API client to talk with the backend. To generate this client, [openapitools/openapi-generator-cli](https://github.com/OpenAPITools/openapi-generator) is used.
-
-If you want to generate the client without installing anything, run this command:
-
-```shell
-make gen-web
-```
+By default, no compiled bundle of the frontend is included. To build the UI, you need Node 14 or newer.
 
 To build the UI, run these commands:
 

@@ -16,7 +16,11 @@ class Command(BaseCommand):  # pragma: no cover
         """Send a test-email with global settings"""
         delete_stage = False
         if options["stage"]:
-            stage = EmailStage.objects.get(name=options["stage"])
+            stages = EmailStage.objects.filter(name=options["stage"])
+            if not stages.exists():
+                print(f"Stage '{options['stage']}' does not exist")
+                return
+            stage = stages.first()
         else:
             stage = EmailStage.objects.create(
                 name=f"temp-global-stage-{uuid4()}", use_global_settings=True

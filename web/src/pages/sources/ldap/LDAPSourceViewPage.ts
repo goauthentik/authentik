@@ -1,29 +1,33 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
-import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
-import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
+import { CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { until } from "lit/directives/until";
+
 import AKGlobal from "../../../authentik.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
+import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
+import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
-import "../../../elements/buttons/SpinnerButton";
-import "../../../elements/buttons/ActionButton";
+import { LDAPSource, SourcesApi, StatusEnum } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../../api/Config";
+import { EVENT_REFRESH } from "../../../constants";
 import "../../../elements/CodeMirror";
 import "../../../elements/Tabs";
+import "../../../elements/buttons/ActionButton";
+import "../../../elements/buttons/SpinnerButton";
 import "../../../elements/events/ObjectChangelog";
 import "../../../elements/forms/ModalForm";
 import "./LDAPSourceForm";
-import { until } from "lit-html/directives/until";
-import { LDAPSource, SourcesApi, StatusEnum } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { EVENT_REFRESH } from "../../../constants";
 
 @customElement("ak-source-ldap-view")
 export class LDAPSourceViewPage extends LitElement {
@@ -53,6 +57,7 @@ export class LDAPSourceViewPage extends LitElement {
             PFCard,
             PFDescriptionList,
             PFSizing,
+            PFList,
             AKGlobal,
         ];
     }
@@ -168,51 +173,58 @@ export class LDAPSourceViewPage extends LitElement {
                             <div class="pf-c-card__body">
                                 ${until(
                                     new SourcesApi(DEFAULT_CONFIG)
-                                        .sourcesLdapSyncStatusRetrieve({
+                                        .sourcesLdapSyncStatusList({
                                             slug: this.source.slug,
                                         })
-                                        .then((ls) => {
-                                            let header = html``;
-                                            if (ls.status === StatusEnum.Warning) {
-                                                header = html`<p>
-                                                    ${t`Task finished with warnings`}
-                                                </p>`;
-                                            } else if (status === StatusEnum.Error) {
-                                                header = html`<p>
-                                                    ${t`Task finished with errors`}
-                                                </p>`;
-                                            } else {
-                                                header = html`<p>
-                                                    ${t`Last sync: ${ls.taskFinishTimestamp.toLocaleString()}`}
-                                                </p>`;
+                                        .then((tasks) => {
+                                            if (tasks.length < 1) {
+                                                return html`<p>${t`Not synced yet.`}</p>`;
                                             }
-                                            return html`
-                                                ${header}
-                                                <ul>
-                                                    ${ls.messages.map((m) => {
-                                                        return html`<li>${m}</li>`;
-                                                    })}
-                                                </ul>
-                                            `;
-                                        })
-                                        .catch(() => {
-                                            return html`<p>${t`Not synced yet.`}</p>`;
+                                            return html`<ul class="pf-c-list">
+                                                ${tasks.map((task) => {
+                                                    let header = "";
+                                                    if (task.status === StatusEnum.Warning) {
+                                                        header = t`Task finished with warnings`;
+                                                    } else if (task.status === StatusEnum.Error) {
+                                                        header = t`Task finished with errors`;
+                                                    } else {
+                                                        header = t`Last sync: ${task.taskFinishTimestamp.toLocaleString()}`;
+                                                    }
+                                                    return html`<li>
+                                                        <p>${task.taskName}</p>
+                                                        <ul class="pf-c-list">
+                                                            <li>${header}</li>
+                                                            ${task.messages.map((m) => {
+                                                                return html`<li>${m}</li>`;
+                                                            })}
+                                                        </ul>
+                                                    </li> `;
+                                                })}
+                                            </ul>`;
                                         }),
                                     "loading",
                                 )}
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-action-button
+                                    class="pf-m-primary"
                                     .apiRequest=${() => {
-                                        return new SourcesApi(
-                                            DEFAULT_CONFIG,
-                                        ).sourcesLdapPartialUpdate({
-                                            slug: this.source?.slug || "",
-                                            patchedLDAPSourceRequest: this.source,
-                                        });
+                                        return new SourcesApi(DEFAULT_CONFIG)
+                                            .sourcesLdapPartialUpdate({
+                                                slug: this.source?.slug || "",
+                                                patchedLDAPSourceRequest: this.source,
+                                            })
+                                            .then(() => {
+                                                this.dispatchEvent(
+                                                    new CustomEvent(EVENT_REFRESH, {
+                                                        bubbles: true,
+                                                        composed: true,
+                                                    }),
+                                                );
+                                            });
                                     }}
                                 >
-                                    ${t`Retry Task`}
+                                    ${t`Run sync again`}
                                 </ak-action-button>
                             </div>
                         </div>

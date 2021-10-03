@@ -4,13 +4,14 @@
 {% load i18n %}
 
 {% block head_before %}
-{% if flow.compatibility_mode %}
+{{ block.super }}
+{% if flow.compatibility_mode and not inspector %}
 <script>ShadyDOM = { force: !navigator.webdriver };</script>
 {% endif %}
 {% endblock %}
 
 {% block head %}
-<script src="{% static 'dist/FlowInterface.js' %}?v={{ ak_version }}" type="module"></script>
+<script src="{% static 'dist/FlowInterface.js' %}" type="module"></script>
 <style>
 .pf-c-background-image::before {
     --ak-flow-background: url("{{ flow.background_url }}");

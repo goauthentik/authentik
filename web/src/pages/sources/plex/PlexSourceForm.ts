@@ -1,3 +1,10 @@
+import { t } from "@lingui/macro";
+
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
+
 import {
     PlexSource,
     SourcesApi,
@@ -5,17 +12,13 @@ import {
     UserMatchingModeEnum,
     FlowsInstancesListDesignationEnum,
 } from "@goauthentik/api";
-import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
-import { html, TemplateResult } from "lit-html";
+
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
-import { ifDefined } from "lit-html/directives/if-defined";
-import { until } from "lit-html/directives/until";
-import { first, randomString } from "../../../utils";
-import { PlexAPIClient, PlexResource, popupCenterScreen } from "../../../flows/sources/plex/API";
 import { ModelForm } from "../../../elements/forms/ModelForm";
+import { PlexAPIClient, PlexResource, popupCenterScreen } from "../../../flows/sources/plex/API";
+import { first, randomString } from "../../../utils";
 
 @customElement("ak-source-plex-form")
 export class PlexSourceForm extends ModelForm<PlexSource, string> {
@@ -201,7 +204,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                         ?selected=${this.instance?.userMatchingMode ===
                         UserMatchingModeEnum.UsernameLink}
                     >
-                        ${t`Link to a user with identical username address. Can have security implications when a username is used with another source.`}
+                        ${t`Link to a user with identical username. Can have security implications when a username is used with another source.`}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.UsernameDeny}

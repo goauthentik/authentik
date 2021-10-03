@@ -1,9 +1,12 @@
-import { DenyStage, StagesApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { customElement } from "lit-element";
-import { html, TemplateResult } from "lit-html";
+
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+
+import { DenyStage, StagesApi } from "@goauthentik/api";
+
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { ifDefined } from "lit-html/directives/if-defined";
 import "../../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../../elements/forms/ModelForm";
 

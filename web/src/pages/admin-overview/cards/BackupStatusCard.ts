@@ -1,9 +1,13 @@
 import { t } from "@lingui/macro";
-import { customElement, html, TemplateResult } from "lit-element";
-import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
+
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
+
 import { AdminApi, StatusEnum, CapabilitiesEnum } from "@goauthentik/api";
+
 import { config, DEFAULT_CONFIG } from "../../../api/Config";
 import { convertToTitle } from "../../../utils";
+import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
 
 @customElement("ak-admin-status-card-backup")
 export class BackupStatusCard extends AdminStatusCard<StatusEnum> {

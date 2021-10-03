@@ -77,7 +77,7 @@ def sanitize_dict(source: dict[Any, Any]) -> dict[Any, Any]:
     final_dict = {}
     for key, value in source.items():
         if is_dataclass(value):
-            # Because asdict calls `copy.deepcopy(obj)` on everything thats not tuple/dict,
+            # Because asdict calls `copy.deepcopy(obj)` on everything that's not tuple/dict,
             # and deepcopy doesn't work with HttpRequests (neither django nor rest_framework).
             # Currently, the only dataclass that actually holds an http request is a PolicyRequest
             if isinstance(value, PolicyRequest):

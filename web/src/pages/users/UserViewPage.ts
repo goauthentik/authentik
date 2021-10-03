@@ -1,38 +1,42 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
-import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
-import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import { CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+
 import AKGlobal from "../../authentik.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
+import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
+import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
+import { CoreApi, User } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { EVENT_REFRESH } from "../../constants";
+import "../../elements/CodeMirror";
+import { PFColor } from "../../elements/Label";
+import "../../elements/PageHeader";
+import "../../elements/Tabs";
 import "../../elements/buttons/ActionButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/charts/UserChart";
-import "../../elements/CodeMirror";
 import "../../elements/events/ObjectChangelog";
 import "../../elements/events/UserEvents";
 import "../../elements/forms/ModalForm";
+import { MessageLevel } from "../../elements/messages/Message";
+import { showMessage } from "../../elements/messages/MessageContainer";
 import "../../elements/oauth/UserCodeList";
 import "../../elements/oauth/UserRefreshList";
-import "../../elements/PageHeader";
-import "../../elements/Tabs";
 import "../../elements/user/SessionList";
 import "../../elements/user/UserConsentList";
+import "./UserActiveForm";
 import "./UserForm";
-import { CoreApi, User } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { EVENT_REFRESH } from "../../constants";
-import { showMessage } from "../../elements/messages/MessageContainer";
-import { MessageLevel } from "../../elements/messages/Message";
-import { PFColor } from "../../elements/Label";
 
 @customElement("ak-user-view")
 export class UserViewPage extends LitElement {
@@ -129,7 +133,7 @@ export class UserViewPage extends LitElement {
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
-                                            ${this.user.email}
+                                            ${this.user.email || "-"}
                                         </div>
                                     </dd>
                                 </div>
@@ -193,7 +197,26 @@ export class UserViewPage extends LitElement {
                             </ak-forms-modal>
                         </div>
                         <div class="pf-c-card__footer">
+                            <ak-user-active-form
+                                .obj=${this.user}
+                                objectLabel=${t`User`}
+                                .delete=${() => {
+                                    return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
+                                        id: this.user?.pk || 0,
+                                        patchedUserRequest: {
+                                            isActive: !this.user?.isActive,
+                                        },
+                                    });
+                                }}
+                            >
+                                <button slot="trigger" class="pf-c-button pf-m-warning">
+                                    ${this.user.isActive ? t`Deactivate` : t`Activate`}
+                                </button>
+                            </ak-user-active-form>
+                        </div>
+                        <div class="pf-c-card__footer">
                             <ak-action-button
+                                class="pf-m-secondary"
                                 .apiRequest=${() => {
                                     return new CoreApi(DEFAULT_CONFIG)
                                         .coreUsersRecoveryRetrieve({
@@ -204,6 +227,13 @@ export class UserViewPage extends LitElement {
                                                 level: MessageLevel.success,
                                                 message: t`Successfully generated recovery link`,
                                                 description: rec.link,
+                                            });
+                                        })
+                                        .catch(() => {
+                                            showMessage({
+                                                level: MessageLevel.error,
+                                                message: t`To create a recovery link, the current tenant needs to have a recovery flow configured.`,
+                                                description: "",
                                             });
                                         });
                                 }}

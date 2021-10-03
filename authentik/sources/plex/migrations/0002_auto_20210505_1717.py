@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="plexsource",
             name="plex_token",
-            field=models.TextField(default="", help_text="Plex token used to check firends"),
+            field=models.TextField(default="", help_text="Plex token used to check friends"),
         ),
         migrations.AlterField(
             model_name="plexsource",

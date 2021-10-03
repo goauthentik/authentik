@@ -1,13 +1,16 @@
 import { t } from "@lingui/macro";
+
+import { TemplateResult, html } from "lit";
+import { customElement, property } from "lit/decorators";
+
 import { CoreApi, User } from "@goauthentik/api";
-import { customElement, property } from "lit-element";
-import { TemplateResult, html } from "lit-html";
+
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { PAGE_SIZE } from "../../constants";
+import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { TableModal } from "../../elements/table/TableModal";
-import "../../elements/buttons/SpinnerButton";
 import { first } from "../../utils";
 
 @customElement("ak-group-member-select-table")
@@ -48,7 +51,7 @@ export class MemberSelectTable extends TableModal<User> {
                 <small>${item.name}</small>
             </div>`,
             html`${item.isActive ? t`Yes` : t`No`}`,
-            html`${first(item.lastLogin?.toLocaleString(), "-")}`,
+            html`${first(item.lastLogin?.toLocaleString(), t`-`)}`,
         ];
     }
 

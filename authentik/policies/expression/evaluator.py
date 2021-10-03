@@ -3,8 +3,10 @@ from ipaddress import ip_address, ip_network
 from typing import TYPE_CHECKING, Optional
 
 from django.http import HttpRequest
+from django_otp import devices_for_user
 from structlog.stdlib import get_logger
 
+from authentik.core.models import User
 from authentik.flows.planner import PLAN_CONTEXT_SSO
 from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.lib.utils.http import get_client_ip
@@ -28,6 +30,7 @@ class PolicyEvaluator(BaseEvaluator):
         self._messages = []
         self._context["ak_logger"] = get_logger(policy_name)
         self._context["ak_message"] = self.expr_func_message
+        self._context["ak_user_has_authenticator"] = self.expr_func_user_has_authenticator
         self._context["ip_address"] = ip_address
         self._context["ip_network"] = ip_network
         self._filename = policy_name or "PolicyEvaluator"
@@ -35,6 +38,19 @@ class PolicyEvaluator(BaseEvaluator):
     def expr_func_message(self, message: str):
         """Wrapper to append to messages list, which is returned with PolicyResult"""
         self._messages.append(message)
+
+    def expr_func_user_has_authenticator(
+        self, user: User, device_type: Optional[str] = None
+    ) -> bool:
+        """Check if a user has any authenticator devices, optionally matching *device_type*"""
+        user_devices = devices_for_user(user)
+        if device_type:
+            for device in user_devices:
+                device_class = device.__class__.__name__.lower().replace("device", "")
+                if device_class == device_type:
+                    return True
+            return False
+        return len(user_devices) > 0
 
     def set_policy_request(self, request: PolicyRequest):
         """Update context based on policy request (if http request is given, update that too)"""

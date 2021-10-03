@@ -12,7 +12,7 @@ import (
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/gounicorn"
 	"goauthentik.io/internal/outpost/ak"
-	"goauthentik.io/internal/outpost/proxy"
+	"goauthentik.io/internal/outpost/proxyv2"
 	"goauthentik.io/internal/web"
 )
 
@@ -57,6 +57,7 @@ func main() {
 	ws := web.NewWebServer()
 	defer g.Kill()
 	defer ws.Shutdown()
+	go web.RunMetricsServer()
 	for {
 		go attemptStartBackend(g)
 		ws.Start()
@@ -99,12 +100,13 @@ func attemptProxyStart(ws *web.WebServer, u *url.URL) {
 			}
 			continue
 		}
-		srv := proxy.NewServer(ac)
+		srv := proxyv2.NewProxyServer(ac, 0)
 		ws.ProxyServer = srv
 		ac.Server = srv
 		log.WithField("logger", "authentik").Debug("attempting to start outpost")
 		err := ac.StartBackgorundTasks()
 		if err != nil {
+			log.WithField("logger", "authentik").WithError(err).Warning("outpost failed to start")
 			attempt += 1
 			time.Sleep(15 * time.Second)
 			if attempt > maxTries {

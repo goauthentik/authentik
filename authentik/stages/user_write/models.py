@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 
+from authentik.core.models import Group
 from authentik.flows.models import Stage
 
 
@@ -16,6 +17,14 @@ class UserWriteStage(Stage):
     create_users_as_inactive = models.BooleanField(
         default=False,
         help_text=_("When set, newly created users are inactive and cannot login."),
+    )
+
+    create_users_group = models.ForeignKey(
+        Group,
+        null=True,
+        default=None,
+        on_delete=models.SET_DEFAULT,
+        help_text=_("Optionally add newly created users to this group."),
     )
 
     @property

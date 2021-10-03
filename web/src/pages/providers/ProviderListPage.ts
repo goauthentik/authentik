@@ -1,24 +1,27 @@
 import { t } from "@lingui/macro";
-import { customElement, html, property, TemplateResult } from "lit-element";
-import { AKResponse } from "../../api/Client";
-import { TablePage } from "../../elements/table/TablePage";
 
-import "../../elements/buttons/SpinnerButton";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
+
+import { Provider, ProvidersApi } from "@goauthentik/api";
+
+import { AKResponse } from "../../api/Client";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { PAGE_SIZE } from "../../constants";
 import "../../elements/buttons/Dropdown";
+import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
 import "../../elements/forms/ProxyForm";
+import { TableColumn } from "../../elements/table/Table";
+import { TablePage } from "../../elements/table/TablePage";
 import "./ldap/LDAPProviderForm";
 import "./oauth2/OAuth2ProviderForm";
 import "./proxy/ProxyProviderForm";
 import "./saml/SAMLProviderForm";
 import "./saml/SAMLProviderImportForm";
-import { TableColumn } from "../../elements/table/Table";
-import { until } from "lit-html/directives/until";
-import { PAGE_SIZE } from "../../constants";
-import { Provider, ProvidersApi } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-provider-list")
 export class ProviderListPage extends TablePage<Provider> {

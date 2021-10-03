@@ -1,17 +1,20 @@
 import { t } from "@lingui/macro";
-import { customElement, html, property, TemplateResult } from "lit-element";
-import { AKResponse } from "../../api/Client";
-import { Table, TableColumn } from "../table/Table";
+
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+
 import { Event, EventsApi } from "@goauthentik/api";
 
-import "../Tabs";
-import "../buttons/ModalButton";
-import "../buttons/SpinnerButton";
-import "../buttons/Dropdown";
-import "../../pages/events/EventInfo";
-import { PAGE_SIZE } from "../../constants";
+import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { EventWithContext } from "../../api/Events";
+import { PAGE_SIZE } from "../../constants";
+import "../../pages/events/EventInfo";
+import "../Tabs";
+import "../buttons/Dropdown";
+import "../buttons/ModalButton";
+import "../buttons/SpinnerButton";
+import { Table, TableColumn } from "../table/Table";
 
 @customElement("ak-object-changelog")
 export class ObjectChangelog extends Table<Event> {
@@ -58,7 +61,7 @@ export class ObjectChangelog extends Table<Event> {
                     ? html`<small> ${t`On behalf of ${item.user.on_behalf_of.username}`} </small>`
                     : html``}`,
             html`<span>${item.created?.toLocaleString()}</span>`,
-            html`<span>${item.clientIp || "-"}</span>`,
+            html`<span>${item.clientIp || t`-`}</span>`,
         ];
     }
 

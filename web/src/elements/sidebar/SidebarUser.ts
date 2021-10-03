@@ -1,11 +1,13 @@
-import { css, CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
-import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
+
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
-import { me } from "../../api/Users";
-import { until } from "lit-html/directives/until";
+import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { ifDefined } from "lit-html/directives/if-defined";
+import { me } from "../../api/Users";
 
 @customElement("ak-sidebar-user")
 export class SidebarUser extends LitElement {
@@ -32,7 +34,7 @@ export class SidebarUser extends LitElement {
 
     render(): TemplateResult {
         return html`
-            <a href="#/user" class="pf-c-nav__link user-avatar" id="user-settings">
+            <a href="/if/user/#/settings" class="pf-c-nav__link user-avatar" id="user-settings">
                 ${until(
                     me().then((u) => {
                         return html`<img

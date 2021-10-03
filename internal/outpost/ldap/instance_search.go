@@ -8,7 +8,10 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	"github.com/nmcclain/ldap"
+	"github.com/prometheus/client_golang/prometheus"
 	"goauthentik.io/api"
+	"goauthentik.io/internal/outpost/ldap/metrics"
+	"goauthentik.io/internal/utils"
 )
 
 func (pi *ProviderInstance) SearchMe(req SearchRequest, f UserFlags) (ldap.ServerSearchResult, error) {
@@ -32,12 +35,33 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 	entries := []*ldap.Entry{}
 	filterEntity, err := ldap.GetFilterObjectClass(req.Filter)
 	if err != nil {
+		metrics.RequestsRejected.With(prometheus.Labels{
+			"outpost_name": pi.outpostName,
+			"type":         "search",
+			"reason":       "filter_parse_fail",
+			"dn":           req.BindDN,
+			"client":       utils.GetIP(req.conn.RemoteAddr()),
+		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: error parsing filter: %s", req.Filter)
 	}
 	if len(req.BindDN) < 1 {
+		metrics.RequestsRejected.With(prometheus.Labels{
+			"outpost_name": pi.outpostName,
+			"type":         "search",
+			"reason":       "empty_bind_dn",
+			"dn":           req.BindDN,
+			"client":       utils.GetIP(req.conn.RemoteAddr()),
+		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: Anonymous BindDN not allowed %s", req.BindDN)
 	}
 	if !strings.HasSuffix(req.BindDN, baseDN) {
+		metrics.RequestsRejected.With(prometheus.Labels{
+			"outpost_name": pi.outpostName,
+			"type":         "search",
+			"reason":       "invalid_bind_dn",
+			"dn":           req.BindDN,
+			"client":       utils.GetIP(req.conn.RemoteAddr()),
+		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: BindDN %s not in our BaseDN %s", req.BindDN, pi.BaseDN)
 	}
 
@@ -46,7 +70,19 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 	pi.boundUsersMutex.RUnlock()
 	if !ok {
 		pi.log.Debug("User info not cached")
+		metrics.RequestsRejected.With(prometheus.Labels{
+			"outpost_name": pi.outpostName,
+			"type":         "search",
+			"reason":       "user_info_not_cached",
+			"dn":           req.BindDN,
+			"client":       utils.GetIP(req.conn.RemoteAddr()),
+		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, errors.New("access denied")
+	}
+
+	if req.SearchRequest.Scope == ldap.ScopeBaseObject {
+		pi.log.Debug("base scope, showing domain info")
+		return pi.SearchBase(req, flags.CanSearch)
 	}
 	if !flags.CanSearch {
 		pi.log.Debug("User can't search, showing info about user")
@@ -56,6 +92,13 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 
 	parsedFilter, err := ldap.CompileFilter(req.Filter)
 	if err != nil {
+		metrics.RequestsRejected.With(prometheus.Labels{
+			"outpost_name": pi.outpostName,
+			"type":         "search",
+			"reason":       "filter_parse_fail",
+			"dn":           req.BindDN,
+			"client":       utils.GetIP(req.conn.RemoteAddr()),
+		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: error parsing filter: %s", req.Filter)
 	}
 
@@ -65,7 +108,20 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 
 	switch filterEntity {
 	default:
+		metrics.RequestsRejected.With(prometheus.Labels{
+			"outpost_name": pi.outpostName,
+			"type":         "search",
+			"reason":       "unhandled_filter_type",
+			"dn":           req.BindDN,
+			"client":       utils.GetIP(req.conn.RemoteAddr()),
+		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: unhandled filter type: %s [%s]", filterEntity, req.Filter)
+	case "groupOfUniqueNames":
+		fallthrough
+	case "goauthentik.io/ldap/group":
+		fallthrough
+	case "goauthentik.io/ldap/virtual-group":
+		fallthrough
 	case GroupObjectClass:
 		wg := sync.WaitGroup{}
 		wg.Add(2)
@@ -115,7 +171,15 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 		}()
 		wg.Wait()
 		entries = append(gEntries, uEntries...)
-	case UserObjectClass, "":
+	case "":
+		fallthrough
+	case "organizationalPerson":
+		fallthrough
+	case "inetOrgPerson":
+		fallthrough
+	case "goauthentik.io/ldap/user":
+		fallthrough
+	case UserObjectClass:
 		uapisp := sentry.StartSpan(req.ctx, "authentik.providers.ldap.search.api_user")
 		searchReq, skip := parseFilterForUser(c.CoreApi.CoreUsersList(uapisp.Context()), parsedFilter, false)
 		if skip {
@@ -136,99 +200,45 @@ func (pi *ProviderInstance) Search(req SearchRequest) (ldap.ServerSearchResult, 
 }
 
 func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
-	attrs := []*ldap.EntryAttribute{
-		{
-			Name:   "cn",
-			Values: []string{u.Username},
-		},
-		{
-			Name:   "sAMAccountName",
-			Values: []string{u.Username},
-		},
-		{
-			Name:   "uid",
-			Values: []string{u.Uid},
-		},
-		{
-			Name:   "name",
-			Values: []string{u.Name},
-		},
-		{
-			Name:   "displayName",
-			Values: []string{u.Name},
-		},
-		{
-			Name:   "mail",
-			Values: []string{*u.Email},
-		},
-		{
-			Name:   "objectClass",
-			Values: []string{UserObjectClass, "organizationalPerson", "goauthentik.io/ldap/user"},
-		},
-		{
-			Name:   "uidNumber",
-			Values: []string{pi.GetUidNumber(u)},
-		},
-		{
-			Name:   "gidNumber",
-			Values: []string{pi.GetUidNumber(u)},
-		},
-	}
-
-	attrs = append(attrs, &ldap.EntryAttribute{Name: "memberOf", Values: pi.GroupsForUser(u)})
-
-	// Old fields for backwards compatibility
-	attrs = append(attrs, &ldap.EntryAttribute{Name: "accountStatus", Values: []string{BoolToString(*u.IsActive)}})
-	attrs = append(attrs, &ldap.EntryAttribute{Name: "superuser", Values: []string{BoolToString(u.IsSuperuser)}})
-
-	attrs = append(attrs, &ldap.EntryAttribute{Name: "goauthentik.io/ldap/active", Values: []string{BoolToString(*u.IsActive)}})
-	attrs = append(attrs, &ldap.EntryAttribute{Name: "goauthentik.io/ldap/superuser", Values: []string{BoolToString(u.IsSuperuser)}})
-
-	attrs = append(attrs, AKAttrsToLDAP(u.Attributes)...)
-
 	dn := pi.GetUserDN(u.Username)
+	attrs := AKAttrsToLDAP(u.Attributes)
 
+	attrs = pi.ensureAttributes(attrs, map[string][]string{
+		"memberOf": pi.GroupsForUser(u),
+		// Old fields for backwards compatibility
+		"accountStatus":                 {BoolToString(*u.IsActive)},
+		"superuser":                     {BoolToString(u.IsSuperuser)},
+		"goauthentik.io/ldap/active":    {BoolToString(*u.IsActive)},
+		"goauthentik.io/ldap/superuser": {BoolToString(u.IsSuperuser)},
+		"cn":                            {u.Username},
+		"sAMAccountName":                {u.Username},
+		"uid":                           {u.Uid},
+		"name":                          {u.Name},
+		"displayName":                   {u.Name},
+		"mail":                          {*u.Email},
+		"objectClass":                   {UserObjectClass, "organizationalPerson", "inetOrgPerson", "goauthentik.io/ldap/user"},
+		"uidNumber":                     {pi.GetUidNumber(u)},
+		"gidNumber":                     {pi.GetUidNumber(u)},
+	})
 	return &ldap.Entry{DN: dn, Attributes: attrs}
 }
 
 func (pi *ProviderInstance) GroupEntry(g LDAPGroup) *ldap.Entry {
-	attrs := []*ldap.EntryAttribute{
-		{
-			Name:   "cn",
-			Values: []string{g.cn},
-		},
-		{
-			Name:   "uid",
-			Values: []string{g.uid},
-		},
-		{
-			Name:   "sAMAccountName",
-			Values: []string{g.cn},
-		},
-		{
-			Name:   "gidNumber",
-			Values: []string{g.gidNumber},
-		},
-	}
+	attrs := AKAttrsToLDAP(g.akAttributes)
 
+	objectClass := []string{GroupObjectClass, "groupOfUniqueNames", "goauthentik.io/ldap/group"}
 	if g.isVirtualGroup {
-		attrs = append(attrs, &ldap.EntryAttribute{
-			Name:   "objectClass",
-			Values: []string{GroupObjectClass, "goauthentik.io/ldap/group", "goauthentik.io/ldap/virtual-group"},
-		})
-	} else {
-		attrs = append(attrs, &ldap.EntryAttribute{
-			Name:   "objectClass",
-			Values: []string{GroupObjectClass, "goauthentik.io/ldap/group"},
-		})
+		objectClass = append(objectClass, "goauthentik.io/ldap/virtual-group")
 	}
 
-	attrs = append(attrs, &ldap.EntryAttribute{Name: "member", Values: g.member})
-	attrs = append(attrs, &ldap.EntryAttribute{Name: "goauthentik.io/ldap/superuser", Values: []string{BoolToString(g.isSuperuser)}})
-
-	if g.akAttributes != nil {
-		attrs = append(attrs, AKAttrsToLDAP(g.akAttributes)...)
-	}
-
+	attrs = pi.ensureAttributes(attrs, map[string][]string{
+		"objectClass":                   objectClass,
+		"member":                        g.member,
+		"goauthentik.io/ldap/superuser": {BoolToString(g.isSuperuser)},
+		"cn":                            {g.cn},
+		"uid":                           {g.uid},
+		"sAMAccountName":                {g.cn},
+		"gidNumber":                     {g.gidNumber},
+	})
 	return &ldap.Entry{DN: g.dn, Attributes: attrs}
 }

@@ -1,21 +1,24 @@
 import { t } from "@lingui/macro";
-import { customElement, html, property, TemplateResult } from "lit-element";
-import { AKResponse } from "../../api/Client";
-import { Table, TableColumn } from "../../elements/table/Table";
 
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
+
+import { FlowsApi, FlowStageBinding, StagesApi } from "@goauthentik/api";
+
+import { AKResponse } from "../../api/Client";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { PAGE_SIZE } from "../../constants";
+import "../../elements/Tabs";
+import "../../elements/buttons/Dropdown";
+import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
 import "../../elements/forms/ProxyForm";
-import "./StageBindingForm";
-import "../../elements/Tabs";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/buttons/Dropdown";
+import { Table, TableColumn } from "../../elements/table/Table";
 import "../policies/BoundPoliciesList";
-import { until } from "lit-html/directives/until";
-import { PAGE_SIZE } from "../../constants";
-import { FlowsApi, FlowStageBinding, StagesApi } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { ifDefined } from "lit-html/directives/if-defined";
+import "./StageBindingForm";
 
 @customElement("ak-bound-stages-list")
 export class BoundStagesList extends Table<FlowStageBinding> {
@@ -50,8 +53,8 @@ export class BoundStagesList extends Table<FlowStageBinding> {
             .objects=${this.selectedElements}
             .metadata=${(item: FlowStageBinding) => {
                 return [
-                    { key: t`Stage`, value: item.stageObj?.name },
-                    { key: t`Stage type`, value: item.stageObj?.verboseName },
+                    { key: t`Stage`, value: item.stageObj?.name || "" },
+                    { key: t`Stage type`, value: item.stageObj?.verboseName || "" },
                 ];
             }}
             .usedBy=${(item: FlowStageBinding) => {

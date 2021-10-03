@@ -11,6 +11,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/recws-org/recws"
 	"goauthentik.io/api"
 	"goauthentik.io/internal/constants"
@@ -43,11 +44,10 @@ type APIController struct {
 // NewAPIController initialise new API Controller instance from URL and API token
 func NewAPIController(akURL url.URL, token string) *APIController {
 	config := api.NewConfiguration()
-	config.UserAgent = constants.OutpostUserAgent()
 	config.Host = akURL.Host
 	config.Scheme = akURL.Scheme
 	config.HTTPClient = &http.Client{
-		Transport: NewTracingTransport(context.TODO(), GetTLSTransport()),
+		Transport: NewUserAgentTransport(constants.OutpostUserAgent(), NewTracingTransport(context.TODO(), GetTLSTransport())),
 	}
 	config.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
 
@@ -87,7 +87,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		instanceUUID: uuid.New(),
 		Outpost:      outpost,
 	}
-	ac.logger.Debugf("HA Reload offset: %s", ac.reloadOffset)
+	ac.logger.WithField("offset", ac.reloadOffset).Debug("HA Reload offset")
 	ac.initWS(akURL, strfmt.UUID(outpost.Pk))
 	return ac
 }
@@ -107,10 +107,40 @@ func (a *APIController) Start() error {
 	return nil
 }
 
+func (a *APIController) OnRefresh() error {
+	// Because we don't know the outpost UUID, we simply do a list and pick the first
+	// The service account this token belongs to should only have access to a single outpost
+	outposts, _, err := a.Client.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
+
+	if err != nil {
+		log.WithError(err).Error("Failed to fetch outpost configuration")
+		return err
+	}
+	a.Outpost = outposts.Results[0]
+
+	log.WithField("name", a.Outpost.Name).Debug("Fetched outpost configuration")
+	return a.Server.Refresh()
+}
+
 func (a *APIController) StartBackgorundTasks() error {
-	err := a.Server.Refresh()
+	OutpostInfo.With(prometheus.Labels{
+		"outpost_name": a.Outpost.Name,
+		"outpost_type": a.Server.Type(),
+		"uuid":         a.instanceUUID.String(),
+		"version":      constants.VERSION,
+		"build":        constants.BUILD(),
+	}).Set(1)
+	err := a.OnRefresh()
 	if err != nil {
 		return errors.Wrap(err, "failed to run initial refresh")
+	} else {
+		LastUpdate.With(prometheus.Labels{
+			"uuid":         a.instanceUUID.String(),
+			"outpost_name": a.Outpost.Name,
+			"outpost_type": a.Server.Type(),
+			"version":      constants.VERSION,
+			"build":        constants.BUILD(),
+		}).SetToCurrentTime()
 	}
 	go func() {
 		a.logger.Debug("Starting WS Handler...")

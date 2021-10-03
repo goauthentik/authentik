@@ -4,7 +4,6 @@
     "embeddedLanguageFormatting": "auto",
     "htmlWhitespaceSensitivity": "css",
     "insertPragma": false,
-    "jsxBracketSameLine": false,
     "jsxSingleQuote": false,
     "printWidth": 100,
     "proseWrap": "preserve",
@@ -15,5 +14,7 @@
     "tabWidth": 4,
     "trailingComma": "all",
     "useTabs": false,
-    "vueIndentScriptAndStyle": false
+    "vueIndentScriptAndStyle": false,
+    "importOrder": ["^@lingui/(.*)$", "^lit(.*)$", "\\.css$", "^@goauthentik/api$", "^[./]"],
+    "importOrderSeparation": true
 }

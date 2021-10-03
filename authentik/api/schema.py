@@ -11,7 +11,7 @@ from drf_spectacular.types import OpenApiTypes
 
 
 def build_standard_type(obj, **kwargs):
-    """Build a basic type with optional add ons."""
+    """Build a basic type with optional add owns."""
     schema = build_basic_type(obj)
     schema.update(kwargs)
     return schema
@@ -31,7 +31,7 @@ VALIDATION_ERROR = build_object_type(
         "non_field_errors": build_array_type(build_standard_type(OpenApiTypes.STR)),
         "code": build_standard_type(OpenApiTypes.STR),
     },
-    required=["detail"],
+    required=[],
     additionalProperties={},
 )
 

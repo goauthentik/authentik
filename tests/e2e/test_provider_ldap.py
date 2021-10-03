@@ -15,7 +15,14 @@ from authentik.flows.models import Flow
 from authentik.outposts.managed import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost, OutpostType
 from authentik.providers.ldap.models import LDAPProvider
-from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, object_manager, retry
+from tests.e2e.utils import (
+    USER,
+    SeleniumTestCase,
+    apply_migration,
+    get_docker_tag,
+    object_manager,
+    retry,
+)
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -33,7 +40,7 @@ class TestProviderLDAP(SeleniumTestCase):
         """Start ldap container based on outpost created"""
         client: DockerClient = from_env()
         container = client.containers.run(
-            image="beryju.org/authentik/outpost-ldap:gh-master",
+            image=f"beryju.org/authentik/outpost-ldap:{get_docker_tag()}",
             detach=True,
             network_mode="host",
             auto_remove=True,
@@ -210,6 +217,7 @@ class TestProviderLDAP(SeleniumTestCase):
                         "objectClass": [
                             "user",
                             "organizationalPerson",
+                            "inetOrgPerson",
                             "goauthentik.io/ldap/user",
                         ],
                         "uidNumber": [str(2000 + outpost_user.pk)],
@@ -236,6 +244,7 @@ class TestProviderLDAP(SeleniumTestCase):
                         "objectClass": [
                             "user",
                             "organizationalPerson",
+                            "inetOrgPerson",
                             "goauthentik.io/ldap/user",
                         ],
                         "uidNumber": [str(2000 + embedded_account.pk)],
@@ -262,6 +271,7 @@ class TestProviderLDAP(SeleniumTestCase):
                         "objectClass": [
                             "user",
                             "organizationalPerson",
+                            "inetOrgPerson",
                             "goauthentik.io/ldap/user",
                         ],
                         "uidNumber": [str(2000 + USER().pk)],

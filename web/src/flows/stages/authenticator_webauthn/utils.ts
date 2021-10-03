@@ -1,4 +1,5 @@
 import * as base64js from "base64-js";
+
 import { hexEncode } from "../../../utils";
 
 export function b64enc(buf: Uint8Array): string {
@@ -44,7 +45,7 @@ export interface Assertion {
  */
 export function transformNewAssertionForServer(newAssertion: PublicKeyCredential): Assertion {
     const attObj = new Uint8Array(
-        (<AuthenticatorAttestationResponse>newAssertion.response).attestationObject,
+        (newAssertion.response as AuthenticatorAttestationResponse).attestationObject,
     );
     const clientDataJSON = new Uint8Array(newAssertion.response.clientDataJSON);
     const rawId = new Uint8Array(newAssertion.rawId);
@@ -101,7 +102,7 @@ export interface AuthAssertion {
  * @param {PublicKeyCredential} newAssertion
  */
 export function transformAssertionForServer(newAssertion: PublicKeyCredential): AuthAssertion {
-    const response = <AuthenticatorAssertionResponse>newAssertion.response;
+    const response = newAssertion.response as AuthenticatorAssertionResponse;
     const authData = new Uint8Array(response.authenticatorData);
     const clientDataJSON = new Uint8Array(response.clientDataJSON);
     const rawId = new Uint8Array(newAssertion.rawId);

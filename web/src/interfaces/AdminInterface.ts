@@ -1,38 +1,35 @@
-import "../elements/messages/MessageContainer";
-import {
-    css,
-    CSSResult,
-    customElement,
-    html,
-    LitElement,
-    property,
-    TemplateResult,
-} from "lit-element";
-import { me } from "../api/Users";
-import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "../elements/router/Route";
-import "./locale";
-import "../elements/sidebar/SidebarItem";
 import { t } from "@lingui/macro";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
+
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { until } from "lit/directives/until";
+
+import AKGlobal from "../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
-import AKGlobal from "../authentik.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import "../elements/router/RouterOutlet";
-import "../elements/messages/MessageContainer";
-import "../elements/notifications/NotificationDrawer";
-import "../elements/sidebar/Sidebar";
-import { until } from "lit-html/directives/until";
+import { AdminApi, Version } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../api/Config";
+import { me } from "../api/Users";
+import { WebsocketClient } from "../common/ws";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
     EVENT_SIDEBAR_TOGGLE,
     VERSION,
 } from "../constants";
-import { AdminApi, Version } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../api/Config";
-import { WebsocketClient } from "../common/ws";
+import "../elements/messages/MessageContainer";
+import "../elements/messages/MessageContainer";
+import "../elements/notifications/NotificationDrawer";
+import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "../elements/router/Route";
+import "../elements/router/RouterOutlet";
+import "../elements/sidebar/Sidebar";
+import "../elements/sidebar/SidebarItem";
+import { ROUTES } from "../routesAdmin";
+import "./locale";
 
 @customElement("ak-interface-admin")
 export class AdminInterface extends LitElement {
@@ -61,9 +58,19 @@ export class AdminInterface extends LitElement {
                 .pf-c-drawer__content,
                 .pf-c-page__drawer {
                     z-index: auto !important;
+                    background-color: transparent;
                 }
                 .display-none {
                     display: none;
+                }
+                .pf-c-page {
+                    background-color: var(--pf-c-page--BackgroundColor) !important;
+                }
+                @media (prefers-color-scheme: dark) {
+                    /* Global page background colour */
+                    .pf-c-page {
+                        --pf-c-page--BackgroundColor: var(--ak-dark-background);
+                    }
                 }
             `,
         ];
@@ -110,7 +117,8 @@ export class AdminInterface extends LitElement {
                                         class="pf-c-page__main"
                                         tabindex="-1"
                                         id="main-content"
-                                        defaultUrl="/library"
+                                        defaultUrl="/administration/overview"
+                                        .routes=${ROUTES}
                                     >
                                     </ak-router-outlet>
                                 </main>
@@ -135,9 +143,11 @@ export class AdminInterface extends LitElement {
     }
 
     renderSidebarItems(): TemplateResult {
-        const superUserCondition = () => {
-            return me().then((u) => u.user.isSuperuser || false);
-        };
+        me().then((u) => {
+            if (!u.user.isSuperuser) {
+                window.location.assign("/if/user");
+            }
+        });
         return html`
             ${until(
                 this.version.then((version) => {
@@ -167,19 +177,16 @@ export class AdminInterface extends LitElement {
                     return html``;
                 }),
             )}
-            <ak-sidebar-item path="/library">
-                <span slot="label">${t`Library`}</span>
+            <ak-sidebar-item path="/if/user/" ?isAbsoluteLink=${true} ?highlight=${true}>
+                <span slot="label">${t`User interface`}</span>
             </ak-sidebar-item>
-            <ak-sidebar-item .condition=${superUserCondition}>
-                <span slot="label">${t`Monitor`}</span>
-                <ak-sidebar-item path="/administration/overview">
-                    <span slot="label">${t`Overview`}</span>
-                </ak-sidebar-item>
-                <ak-sidebar-item path="/administration/system-tasks">
-                    <span slot="label">${t`System Tasks`}</span>
-                </ak-sidebar-item>
+            <ak-sidebar-item path="/administration/overview">
+                <span slot="label">${t`Overview`}</span>
             </ak-sidebar-item>
-            <ak-sidebar-item .condition=${superUserCondition}>
+            <ak-sidebar-item path="/administration/system-tasks">
+                <span slot="label">${t`System Tasks`}</span>
+            </ak-sidebar-item>
+            <ak-sidebar-item>
                 <span slot="label">${t`Resources`}</span>
                 <ak-sidebar-item
                     path="/core/applications"
@@ -203,7 +210,7 @@ export class AdminInterface extends LitElement {
                     <span slot="label">${t`Tenants`}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
-            <ak-sidebar-item .condition=${superUserCondition}>
+            <ak-sidebar-item>
                 <span slot="label">${t`Outposts`}</span>
                 <ak-sidebar-item path="/outpost/outposts">
                     <span slot="label">${t`Outposts`}</span>
@@ -212,7 +219,7 @@ export class AdminInterface extends LitElement {
                     <span slot="label">${t`Integrations`}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
-            <ak-sidebar-item .condition=${superUserCondition}>
+            <ak-sidebar-item>
                 <span slot="label">${t`Events`}</span>
                 <ak-sidebar-item
                     path="/events/log"
@@ -227,7 +234,7 @@ export class AdminInterface extends LitElement {
                     <span slot="label">${t`Notification Transports`}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
-            <ak-sidebar-item .condition=${superUserCondition}>
+            <ak-sidebar-item>
                 <span slot="label">${t`Customisation`}</span>
                 <ak-sidebar-item path="/policy/policies">
                     <span slot="label">${t`Policies`}</span>
@@ -242,7 +249,7 @@ export class AdminInterface extends LitElement {
                     <span slot="label">${t`Property Mappings`}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
-            <ak-sidebar-item .condition=${superUserCondition}>
+            <ak-sidebar-item>
                 <span slot="label">${t`Flows`}</span>
                 <ak-sidebar-item
                     path="/flow/flows"
@@ -260,7 +267,7 @@ export class AdminInterface extends LitElement {
                     <span slot="label">${t`Invitations`}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
-            <ak-sidebar-item .condition=${superUserCondition}>
+            <ak-sidebar-item>
                 <span slot="label">${t`Identity & Cryptography`}</span>
                 <ak-sidebar-item
                     path="/identity/users"

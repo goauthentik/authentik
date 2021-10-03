@@ -1,3 +1,10 @@
+import { t } from "@lingui/macro";
+
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
+
 import {
     FlowsApi,
     FlowStageBinding,
@@ -6,15 +13,11 @@ import {
     Stage,
     StagesApi,
 } from "@goauthentik/api";
-import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
-import { html, TemplateResult } from "lit-html";
+
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { until } from "lit-html/directives/until";
-import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/forms/HorizontalFormElement";
-import { first, groupBy } from "../../utils";
 import { ModelForm } from "../../elements/forms/ModelForm";
+import { first, groupBy } from "../../utils";
 
 @customElement("ak-stage-binding-form")
 export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
@@ -101,7 +104,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                         })
                         .then((flows) => {
                             return flows.results.map((flow) => {
-                                // No ?selected check here, as this input isnt shown on update forms
+                                // No ?selected check here, as this input isn't shown on update forms
                                 return html`<option value=${ifDefined(flow.pk)}>
                                     ${flow.name} (${flow.slug})
                                 </option>`;
@@ -131,6 +134,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Order`} ?required=${true} name="order">
+                <!-- @ts-ignore -->
                 <input
                     type="number"
                     value="${until(this.getOrder())}"

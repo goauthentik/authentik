@@ -1,15 +1,18 @@
-import { CSSResult, LitElement, property } from "lit-element";
-import { html, TemplateResult } from "lit-html";
-import { Table } from "./Table";
-import PFModalBox from "@patternfly/patternfly/components/ModalBox/modal-box.css";
-import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
-import PFBackdrop from "@patternfly/patternfly/components/Backdrop/backdrop.css";
-import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import { CSSResult, LitElement } from "lit";
+import { html, TemplateResult } from "lit";
+import { property } from "lit/decorators";
+
 import AKGlobal from "../../authentik.css";
+import PFBackdrop from "@patternfly/patternfly/components/Backdrop/backdrop.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFModalBox from "@patternfly/patternfly/components/ModalBox/modal-box.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
+import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
+
 import { PFSize } from "../Spinner";
 import { MODAL_BUTTON_STYLES } from "../buttons/ModalButton";
+import { Table } from "./Table";
 
 export abstract class TableModal<T> extends Table<T> {
     @property()

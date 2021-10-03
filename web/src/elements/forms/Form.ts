@@ -1,29 +1,26 @@
-import "@polymer/paper-input/paper-input";
 import "@polymer/iron-form/iron-form";
+import { IronFormElement } from "@polymer/iron-form/iron-form";
+import "@polymer/paper-input/paper-input";
 import { PaperInputElement } from "@polymer/paper-input/paper-input";
-import { showMessage } from "../../elements/messages/MessageContainer";
-import {
-    css,
-    CSSResult,
-    customElement,
-    html,
-    LitElement,
-    property,
-    TemplateResult,
-} from "lit-element";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
+
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+
 import AKGlobal from "../../authentik.css";
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
-import { MessageLevel } from "../messages/Message";
-import { IronFormElement } from "@polymer/iron-form/iron-form";
-import { camelToSnake, convertToSlug } from "../../utils";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
 import { ValidationError } from "@goauthentik/api";
+
 import { EVENT_REFRESH } from "../../constants";
+import { showMessage } from "../../elements/messages/MessageContainer";
+import { camelToSnake, convertToSlug } from "../../utils";
+import { MessageLevel } from "../messages/Message";
 
 export class APIError extends Error {
     constructor(public response: ValidationError) {
@@ -141,6 +138,14 @@ export class Form<T> extends LitElement {
                 element.type === "datetime-local"
             ) {
                 json[element.name] = new Date(element.valueAsNumber);
+            } else if (
+                element.tagName.toLowerCase() === "input" &&
+                "type" in element.dataset &&
+                element.dataset["type"] === "datetime-local"
+            ) {
+                // Workaround for Firefox <93, since 92 and older don't support
+                // datetime-local fields
+                json[element.name] = new Date(element.value);
             } else if (element.tagName.toLowerCase() === "input" && element.type === "checkbox") {
                 json[element.name] = element.checked;
             } else {
@@ -194,41 +199,36 @@ export class Form<T> extends LitElement {
                 );
                 return r;
             })
-            .catch((ex: Response | Error) => {
+            .catch(async (ex: Response | Error) => {
                 if (ex instanceof Error) {
                     throw ex;
                 }
+                let msg = ex.statusText;
                 if (ex.status > 399 && ex.status < 500) {
-                    return ex.json().then((errorMessage: ValidationError) => {
-                        if (!errorMessage) return errorMessage;
-                        if (errorMessage instanceof Error) {
-                            throw errorMessage;
+                    const errorMessage: ValidationError = await ex.json();
+                    if (!errorMessage) return errorMessage;
+                    if (errorMessage instanceof Error) {
+                        throw errorMessage;
+                    }
+                    // assign all input-related errors to their elements
+                    const elements: PaperInputElement[] = ironForm._getSubmittableElements();
+                    elements.forEach((element) => {
+                        const elementName = element.name;
+                        if (!elementName) return;
+                        if (camelToSnake(elementName) in errorMessage) {
+                            element.errorMessage =
+                                errorMessage[camelToSnake(elementName)].join(", ");
+                            element.invalid = true;
                         }
-                        // assign all input-related errors to their elements
-                        const elements: PaperInputElement[] = ironForm._getSubmittableElements();
-                        elements.forEach((element) => {
-                            const elementName = element.name;
-                            if (!elementName) return;
-                            if (camelToSnake(elementName) in errorMessage) {
-                                element.errorMessage =
-                                    errorMessage[camelToSnake(elementName)].join(", ");
-                                element.invalid = true;
-                            }
-                        });
-                        if ("non_field_errors" in errorMessage) {
-                            this.nonFieldErrors = errorMessage["non_field_errors"];
-                        }
-                        throw new APIError(errorMessage);
                     });
-                }
-                throw ex;
-            })
-            .catch((ex: Error) => {
-                let msg = ex.toString();
-                // Only change the message when we have `detail`.
-                // Everything else is handled in the form.
-                if (ex instanceof APIError && "detail" in ex.response) {
-                    msg = ex.response.detail;
+                    if ("non_field_errors" in errorMessage) {
+                        this.nonFieldErrors = errorMessage["non_field_errors"];
+                    }
+                    // Only change the message when we have `detail`.
+                    // Everything else is handled in the form.
+                    if ("detail" in errorMessage) {
+                        msg = errorMessage.detail;
+                    }
                 }
                 // error is local or not from rest_framework
                 showMessage({

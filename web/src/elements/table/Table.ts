@@ -1,23 +1,25 @@
 import { t } from "@lingui/macro";
-import { CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
-import { AKResponse } from "../../api/Client";
 
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFTable from "@patternfly/patternfly/components/Table/table.css";
-import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
+import { CSSResult, html, LitElement, TemplateResult } from "lit";
+import { property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+
+import AKGlobal from "../../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
-import AKGlobal from "../../authentik.css";
+import PFTable from "@patternfly/patternfly/components/Table/table.css";
+import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
+import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import "./TablePagination";
-import "./TableSearch";
+import { AKResponse } from "../../api/Client";
+import { EVENT_REFRESH } from "../../constants";
 import "../EmptyState";
 import "../chips/Chip";
 import "../chips/ChipGroup";
-import { EVENT_REFRESH } from "../../constants";
-import { ifDefined } from "lit-html/directives/if-defined";
+import "./TablePagination";
+import "./TableSearch";
 
 export class TableColumn {
     title: string;

@@ -1,19 +1,24 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, TemplateResult } from "lit-element";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+
+import { CSSResult, html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+
+import AKGlobal from "../../../authentik.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import AKGlobal from "../../../authentik.css";
-import { PFSize } from "../../../elements/Spinner";
-import { BaseStage } from "../base";
-import "../../../elements/forms/FormElement";
-import "../../../elements/EmptyState";
-import "../../FormStatic";
+
 import { CaptchaChallenge, CaptchaChallengeResponseRequest } from "@goauthentik/api";
-import { ifDefined } from "lit-html/directives/if-defined";
+
+import "../../../elements/EmptyState";
+import { PFSize } from "../../../elements/Spinner";
+import "../../../elements/forms/FormElement";
+import "../../FormStatic";
+import { BaseStage } from "../base";
 
 @customElement("ak-stage-captcha")
 export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeResponseRequest> {

@@ -9,7 +9,12 @@ from django.utils.translation import gettext_lazy as _
 from django_filters.filters import AllValuesMultipleFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    OpenApiResponse,
+    extend_schema,
+    extend_schema_field,
+)
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, FileField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
@@ -185,7 +190,7 @@ class SAMLPropertyMappingSerializer(PropertyMappingSerializer):
 class SAMLPropertyMappingFilter(FilterSet):
     """Filter for SAMLPropertyMapping"""
 
-    managed = AllValuesMultipleFilter(field_name="managed")
+    managed = extend_schema_field(OpenApiTypes.STR)(AllValuesMultipleFilter(field_name="managed"))
 
     class Meta:
         model = SAMLPropertyMapping

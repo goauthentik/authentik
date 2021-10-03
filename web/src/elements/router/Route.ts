@@ -1,4 +1,4 @@
-import { html, TemplateResult } from "lit-html";
+import { html, TemplateResult } from "lit";
 
 export const SLUG_REGEX = "[-a-zA-Z0-9_]+";
 export const ID_REGEX = "\\d+";
@@ -23,6 +23,15 @@ export class Route {
         this.callback = () => {
             console.debug(`authentik/router: redirecting ${to}`);
             window.location.hash = `#${to}`;
+            return html``;
+        };
+        return this;
+    }
+
+    redirectRaw(to: string): Route {
+        this.callback = () => {
+            console.debug(`authentik/router: redirecting ${to}`);
+            window.location.hash = `${to}`;
             return html``;
         };
         return this;

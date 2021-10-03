@@ -1,18 +1,21 @@
 import { t } from "@lingui/macro";
-import { customElement, html, property, TemplateResult } from "lit-element";
-import { AKResponse } from "../../api/Client";
-import { TablePage } from "../../elements/table/TablePage";
 
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+
+import { Flow, FlowsApi } from "@goauthentik/api";
+
+import { AKResponse } from "../../api/Client";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { PAGE_SIZE } from "../../constants";
 import "../../elements/buttons/SpinnerButton";
+import "../../elements/forms/ConfirmationForm";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
-import "../../elements/forms/ConfirmationForm";
+import { TableColumn } from "../../elements/table/Table";
+import { TablePage } from "../../elements/table/TablePage";
 import "./FlowForm";
 import "./FlowImportForm";
-import { TableColumn } from "../../elements/table/Table";
-import { PAGE_SIZE } from "../../constants";
-import { Flow, FlowsApi } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-flow-list")
 export class FlowListPage extends TablePage<Flow> {
@@ -101,7 +104,9 @@ export class FlowListPage extends TablePage<Flow> {
                                 slug: item.slug,
                             })
                             .then((link) => {
-                                window.open(`${link.link}?next=/%23${window.location.href}`);
+                                window.open(
+                                    `${link.link}?inspector&next=/%23${window.location.href}`,
+                                );
                             });
                     }}
                 >

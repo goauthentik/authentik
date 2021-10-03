@@ -1,26 +1,30 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 
-import "../../elements/Tabs";
-import "../../elements/charts/ApplicationAuthorizeChart";
-import "../../elements/buttons/SpinnerButton";
+import { CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+
+import AKGlobal from "../../authentik.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+import { Application, CoreApi } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/EmptyState";
+import "../../elements/PageHeader";
+import "../../elements/Tabs";
+import "../../elements/buttons/SpinnerButton";
+import "../../elements/charts/ApplicationAuthorizeChart";
 import "../../elements/events/ObjectChangelog";
 import "../policies/BoundPoliciesList";
-import "./ApplicationForm";
 import "./ApplicationCheckAccessForm";
-import "../../elements/PageHeader";
-import { Application, CoreApi } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import AKGlobal from "../../authentik.css";
-import { ifDefined } from "lit-html/directives/if-defined";
+import "./ApplicationForm";
 
 @customElement("ak-application-view")
 export class ApplicationViewPage extends LitElement {

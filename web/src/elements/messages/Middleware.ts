@@ -1,5 +1,7 @@
-import { Middleware, ResponseContext } from "@goauthentik/api";
 import { t } from "@lingui/macro";
+
+import { Middleware, ResponseContext } from "@goauthentik/api";
+
 import { MessageLevel } from "./Message";
 import { showMessage } from "./MessageContainer";
 

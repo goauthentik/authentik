@@ -32,7 +32,7 @@ class TestConfig(TestCase):
         config = ConfigLoader()
         environ["foo"] = "bar"
         self.assertEqual(config.parse_uri("env://foo"), "bar")
-        self.assertEqual(config.parse_uri("env://fo?bar"), "bar")
+        self.assertEqual(config.parse_uri("env://foo?bar"), "bar")
 
     def test_uri_file(self):
         """Test URI parsing (file load)"""

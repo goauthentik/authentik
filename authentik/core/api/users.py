@@ -1,4 +1,5 @@
 """User API Views"""
+from datetime import timedelta
 from json import loads
 from typing import Optional
 
@@ -7,6 +8,8 @@ from django.db.transaction import atomic
 from django.db.utils import IntegrityError
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
+from django.utils.text import slugify
+from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django_filters.filters import BooleanFilter, CharFilter, ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
@@ -271,9 +274,10 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                     )
                     group.users.add(user)
                 token = Token.objects.create(
-                    identifier=f"service-account-{username}-password",
+                    identifier=slugify(f"service-account-{username}-password"),
                     intent=TokenIntents.INTENT_APP_PASSWORD,
                     user=user,
+                    expires=now() + timedelta(days=360),
                 )
                 return Response({"username": user.username, "token": token.key})
             except (IntegrityError) as exc:
@@ -304,7 +308,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         """Allow users to change information on their own profile"""
         data = UserSelfSerializer(instance=User.objects.get(pk=request.user.pk), data=request.data)
         if not data.is_valid():
-            return Response(data.errors)
+            return Response(data.errors, status=400)
         new_user = data.save()
         # If we're impersonating, we need to update that user object
         # since it caches the full object

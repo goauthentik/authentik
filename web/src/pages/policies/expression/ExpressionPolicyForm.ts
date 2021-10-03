@@ -1,14 +1,17 @@
-import { ExpressionPolicy, PoliciesApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { customElement } from "lit-element";
-import { html, TemplateResult } from "lit-html";
+
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+
+import { ExpressionPolicy, PoliciesApi } from "@goauthentik/api";
+
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { ifDefined } from "lit-html/directives/if-defined";
-import "../../../elements/forms/HorizontalFormElement";
-import "../../../elements/forms/FormGroup";
 import "../../../elements/CodeMirror";
-import { first } from "../../../utils";
+import "../../../elements/forms/FormGroup";
+import "../../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../../elements/forms/ModelForm";
+import { first } from "../../../utils";
 
 @customElement("ak-policy-expression-form")
 export class ExpressionPolicyForm extends ModelForm<ExpressionPolicy, string> {

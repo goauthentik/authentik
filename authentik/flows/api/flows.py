@@ -29,7 +29,7 @@ from authentik.core.api.utils import (
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
-from authentik.flows.views import SESSION_KEY_PLAN
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
 from authentik.managed.transport.common import DataclassEncoder
 from authentik.managed.transport.exporter import Exporter

@@ -48,9 +48,7 @@ duo-client = "*"
 ua-parser = "*"
 deepmerge = "*"
 colorama = "*"
-
-[requires]
-python_version = "3.9"
+codespell = "*"
 
 [dev-packages]
 bandit = "*"

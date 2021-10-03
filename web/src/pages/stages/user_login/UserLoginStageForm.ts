@@ -1,12 +1,15 @@
-import { UserLoginStage, StagesApi } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { customElement } from "lit-element";
-import { html, TemplateResult } from "lit-html";
+
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
+
+import { UserLoginStage, StagesApi } from "@goauthentik/api";
+
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
-import { first } from "../../../utils";
+import "../../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../../elements/forms/ModelForm";
+import { first } from "../../../utils";
 
 @customElement("ak-stage-user-login-form")
 export class UserLoginStageForm extends ModelForm<UserLoginStage, string> {

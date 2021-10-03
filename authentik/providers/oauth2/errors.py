@@ -151,12 +151,13 @@ class AuthorizeError(OAuth2Error):
         # http://openid.net/specs/openid-connect-core-1_0.html#ImplicitAuthError
         hash_or_question = "#" if self.grant_type == GrantTypes.IMPLICIT else "?"
 
-        uri = "{0}{1}error={2}&error_description={3}".format(
-            self.redirect_uri, hash_or_question, self.error, description
+        uri = (
+            f"{self.redirect_uri}{hash_or_question}error="
+            f"{self.error}&error_description={description}"
         )
 
         # Add state if present.
-        uri = uri + ("&state={0}".format(self.state) if self.state else "")
+        uri = uri + (f"&state={self.state}" if self.state else "")
 
         return uri
 

@@ -183,7 +183,7 @@ class OAuth2Provider(Provider):
         ),
     )
     token_validity = models.TextField(
-        default="minutes=10",
+        default="days=30",
         validators=[timedelta_string_validator],
         help_text=_(
             (

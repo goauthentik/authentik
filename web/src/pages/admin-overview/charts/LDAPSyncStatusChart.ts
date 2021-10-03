@@ -1,10 +1,14 @@
-import { t } from "@lingui/macro";
-import { customElement } from "lit-element";
-import { SourcesApi, StatusEnum } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import "../../../elements/forms/ConfirmationForm";
-import { AKChart } from "../../../elements/charts/Chart";
 import { ChartOptions, ChartData } from "chart.js";
+
+import { t } from "@lingui/macro";
+
+import { customElement } from "lit/decorators";
+
+import { SourcesApi, StatusEnum } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../../api/Config";
+import { AKChart } from "../../../elements/charts/Chart";
+import "../../../elements/forms/ConfirmationForm";
 
 interface LDAPSyncStats {
     healthy: number;
@@ -38,19 +42,21 @@ export class LDAPSyncStatusChart extends AKChart<LDAPSyncStats> {
         await Promise.all(
             sources.results.map(async (element) => {
                 try {
-                    const health = await api.sourcesLdapSyncStatusRetrieve({
+                    const health = await api.sourcesLdapSyncStatusList({
                         slug: element.slug,
                     });
-                    if (health.status !== StatusEnum.Successful) {
-                        failed += 1;
-                    }
-                    const now = new Date().getTime();
-                    const maxDelta = 3600000; // 1 hour
-                    if (!health || now - health.taskFinishTimestamp.getTime() > maxDelta) {
-                        unsynced += 1;
-                    } else {
-                        healthy += 1;
-                    }
+                    health.forEach((task) => {
+                        if (task.status !== StatusEnum.Successful) {
+                            failed += 1;
+                        }
+                        const now = new Date().getTime();
+                        const maxDelta = 3600000; // 1 hour
+                        if (!health || now - task.taskFinishTimestamp.getTime() > maxDelta) {
+                            unsynced += 1;
+                        } else {
+                            healthy += 1;
+                        }
+                    });
                 } catch {
                     unsynced += 1;
                 }

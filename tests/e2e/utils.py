@@ -1,5 +1,6 @@
 """authentik e2e testing utilities"""
 import json
+import os
 from functools import lru_cache, wraps
 from os import environ, makedirs
 from time import sleep, time
@@ -34,6 +35,17 @@ RETRIES = int(environ.get("RETRIES", "5"))
 def USER() -> User:  # noqa
     """Cached function that always returns akadmin"""
     return User.objects.get(username="akadmin")
+
+
+def get_docker_tag() -> str:
+    """Get docker-tag based off of CI variables"""
+    env_pr_branch = "GITHUB_HEAD_REF"
+    default_branch = "GITHUB_REF"
+    branch_name = os.environ.get(default_branch, "master")
+    if os.environ.get(env_pr_branch, "") != "":
+        branch_name = os.environ[env_pr_branch]
+    branch_name = branch_name.replace("refs/heads/", "").replace("/", "-")
+    return f"gh-{branch_name}"
 
 
 class SeleniumTestCase(StaticLiveServerTestCase):
@@ -114,9 +126,9 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         """reverse `view` with `**kwargs` into full URL using live_server_url"""
         return self.live_server_url + reverse(view, kwargs=kwargs)
 
-    def if_admin_url(self, view) -> str:
+    def if_user_url(self, view) -> str:
         """same as self.url() but show URL in shell"""
-        return f"{self.live_server_url}/if/admin/#{view}"
+        return f"{self.live_server_url}/if/user/#{view}"
 
     def get_shadow_root(self, selector: str, container: Optional[WebElement] = None) -> WebElement:
         """Get shadow root element's inner shadowRoot"""

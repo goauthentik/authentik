@@ -1,10 +1,14 @@
-import { t } from "@lingui/macro";
-import { customElement } from "lit-element";
-import { OutpostsApi } from "@goauthentik/api";
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import "../../../elements/forms/ConfirmationForm";
-import { AKChart } from "../../../elements/charts/Chart";
 import { ChartOptions, ChartData } from "chart.js";
+
+import { t } from "@lingui/macro";
+
+import { customElement } from "lit/decorators";
+
+import { OutpostsApi } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../../api/Config";
+import { AKChart } from "../../../elements/charts/Chart";
+import "../../../elements/forms/ConfirmationForm";
 
 interface OutpostStats {
     healthy: number;

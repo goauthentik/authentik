@@ -1,3 +1,10 @@
+import { t } from "@lingui/macro";
+
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
+
 import {
     OAuthSource,
     SourcesApi,
@@ -7,16 +14,12 @@ import {
     FlowsInstancesListDesignationEnum,
     SourceType,
 } from "@goauthentik/api";
-import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
-import { html, TemplateResult } from "lit-html";
+
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
-import { ifDefined } from "lit-html/directives/if-defined";
-import { until } from "lit-html/directives/until";
-import { first } from "../../../utils";
 import { ModelForm } from "../../../elements/forms/ModelForm";
+import { first } from "../../../utils";
 
 @customElement("ak-source-oauth-form")
 export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
@@ -77,7 +80,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
         if (!this.providerType?.urlsCustomizable) {
             return html``;
         }
-        return html` <ak-form-group>
+        return html` <ak-form-group .expanded=${true}>
             <span slot="header"> ${t`URL settings`} </span>
             <div slot="body" class="pf-c-form">
                 <ak-form-element-horizontal
@@ -90,6 +93,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         value="${first(
                             this.instance?.authorizationUrl,
                             this.providerType.authorizationUrl,
+                            "",
                         )}"
                         class="pf-c-form-control"
                         required
@@ -108,6 +112,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         value="${first(
                             this.instance?.accessTokenUrl,
                             this.providerType.accessTokenUrl,
+                            "",
                         )}"
                         class="pf-c-form-control"
                         required
@@ -123,7 +128,11 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                 >
                     <input
                         type="text"
-                        value="${first(this.instance?.profileUrl, this.providerType.profileUrl)}"
+                        value="${first(
+                            this.instance?.profileUrl,
+                            this.providerType.profileUrl,
+                            "",
+                        )}"
                         class="pf-c-form-control"
                         required
                     />
@@ -210,7 +219,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         ?selected=${this.instance?.userMatchingMode ===
                         UserMatchingModeEnum.UsernameLink}
                     >
-                        ${t`Link to a user with identical username address. Can have security implications when a username is used with another source.`}
+                        ${t`Link to a user with identical username. Can have security implications when a username is used with another source.`}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.UsernameDeny}

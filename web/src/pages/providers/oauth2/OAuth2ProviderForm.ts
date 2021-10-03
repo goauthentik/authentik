@@ -1,3 +1,10 @@
+import { t } from "@lingui/macro";
+
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+import { until } from "lit/directives/until";
+
 import {
     CryptoApi,
     FlowsApi,
@@ -10,15 +17,11 @@ import {
     ProvidersApi,
     FlowsInstancesListDesignationEnum,
 } from "@goauthentik/api";
-import { t } from "@lingui/macro";
-import { customElement, property } from "lit-element";
-import { html, TemplateResult } from "lit-html";
+
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { ModelForm } from "../../../elements/forms/ModelForm";
-import { until } from "lit-html/directives/until";
-import { ifDefined } from "lit-html/directives/if-defined";
-import "../../../elements/forms/HorizontalFormElement";
 import "../../../elements/forms/FormGroup";
+import "../../../elements/forms/HorizontalFormElement";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 import { first, randomString } from "../../../utils";
 
 @customElement("ak-provider-oauth2-form")
@@ -179,7 +182,7 @@ ${this.instance?.redirectUris}</textarea
                 <span slot="header"> ${t`Advanced protocol settings`} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Access code validity`}
+                        label=${t`Access token validity`}
                         ?required=${true}
                         name="accessCodeValidity"
                     >
@@ -190,7 +193,10 @@ ${this.instance?.redirectUris}</textarea
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Configure how long access codes are valid for.`}
+                            ${t`Configure how long access tokens are valid for.`}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`If you are using an Implicit, client-side flow (where the token-endpoint isn't used), you probably want to increase this time.`}
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${t`(Format: hours=-1;minutes=-2;seconds=-3).`}
@@ -203,7 +209,7 @@ ${this.instance?.redirectUris}</textarea
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.tokenValidity, "minutes=10")}"
+                            value="${first(this.instance?.tokenValidity, "days=30")}"
                             class="pf-c-form-control"
                             required
                         />
@@ -271,7 +277,7 @@ ${this.instance?.redirectUris}</textarea
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Select which scopes can be used by the client. The client stil has to specify the scope to access the data.`}
+                            ${t`Select which scopes can be used by the client. The client still has to specify the scope to access the data.`}
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${t`Hold control/command to select multiple items.`}

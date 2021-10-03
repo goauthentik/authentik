@@ -1,15 +1,10 @@
 import { t } from "@lingui/macro";
-import {
-    css,
-    CSSResult,
-    customElement,
-    html,
-    LitElement,
-    property,
-    TemplateResult,
-} from "lit-element";
+
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
+
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
-import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-form-static")
 export class FormStatic extends LitElement {

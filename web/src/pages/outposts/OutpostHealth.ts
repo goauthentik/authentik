@@ -1,10 +1,15 @@
 import { t } from "@lingui/macro";
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { OutpostHealth } from "@goauthentik/api";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import "../../elements/Spinner";
+
+import { CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators";
+
 import AKGlobal from "../../authentik.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+import { OutpostHealth } from "@goauthentik/api";
+
 import { PFColor } from "../../elements/Label";
+import "../../elements/Spinner";
 
 @customElement("ak-outpost-health")
 export class OutpostHealthElement extends LitElement {

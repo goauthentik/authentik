@@ -1,14 +1,17 @@
-import { CoreApi, FlowsApi, FlowsInstancesListDesignationEnum, Tenant } from "@goauthentik/api";
 import { t } from "@lingui/macro";
-import { customElement } from "lit-element";
-import { html, TemplateResult } from "lit-html";
+
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators";
+import { until } from "lit/directives/until";
+
+import { CoreApi, FlowsApi, FlowsInstancesListDesignationEnum, Tenant } from "@goauthentik/api";
+
 import { DEFAULT_CONFIG } from "../../api/Config";
-import "../../elements/forms/HorizontalFormElement";
 import "../../elements/forms/FormGroup";
-import { first } from "../../utils";
+import "../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../elements/forms/ModelForm";
-import { until } from "lit-html/directives/until";
 import { DefaultTenant } from "../../elements/sidebar/SidebarBrand";
+import { first } from "../../utils";
 
 @customElement("ak-tenant-form")
 export class TenantForm extends ModelForm<Tenant, string> {

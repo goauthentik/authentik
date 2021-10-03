@@ -22,7 +22,7 @@ from authentik.flows.planner import (
     PLAN_CONTEXT_SSO,
     FlowPlanner,
 )
-from authentik.flows.views import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
+from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.policies.utils import delete_none_keys
 from authentik.stages.password import BACKEND_INBUILT
@@ -184,7 +184,7 @@ class SourceFlowManager:
         # Ensure redirect is carried through when user was trying to
         # authorize application
         final_redirect = self.request.session.get(SESSION_KEY_GET, {}).get(
-            NEXT_ARG_NAME, "authentik_core:if-admin"
+            NEXT_ARG_NAME, "authentik_core:if-user"
         )
         kwargs.update(
             {
@@ -243,9 +243,9 @@ class SourceFlowManager:
             return self.handle_auth_user(connection)
         return redirect(
             reverse(
-                "authentik_core:if-admin",
+                "authentik_core:if-user",
             )
-            + f"#/user;page-{self.source.slug}"
+            + f"#/settings;page-{self.source.slug}"
         )
 
     def handle_enroll(
