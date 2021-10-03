@@ -4,7 +4,7 @@ from pathlib import Path
 from kubernetes.client.models.v1_container_port import V1ContainerPort
 from kubernetes.config.incluster_config import SERVICE_TOKEN_FILENAME
 
-from authentik.outposts.controllers.k8s.base import NeedsRecreate
+from authentik.outposts.controllers.k8s.triggers import NeedsRecreate
 
 
 def get_namespace() -> str:
