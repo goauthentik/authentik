@@ -42,7 +42,7 @@ authentik_host_browser:
 # Template used for objects created (deployments, services, secrets, etc)
 object_naming_template: ak-outpost-%(name)s
 ########################################
-# Kubernetes outpost specific settings
+# Docker outpost specific settings
 ########################################
 # Network the outpost container should be connected to
 docker_network: null
