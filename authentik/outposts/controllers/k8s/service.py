@@ -20,7 +20,7 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
         self.api = CoreV1Api(controller.client)
 
     def reconcile(self, current: V1Service, reference: V1Service):
-        compare_ports(current.spec, reference.spec)
+        compare_ports(current.spec.ports, reference.spec.ports)
         # run the base reconcile last, as that will probably raise NeedsUpdate
         # after an authentik update. However the ports might have also changed during
         # the update, so this causes the service to be re-created with higher
