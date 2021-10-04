@@ -159,6 +159,10 @@ msgstr ""
 msgid "Activate"
 msgstr ""
 
+#: src/pages/stages/email/EmailStageForm.ts
+msgid "Activate pending user on success"
+msgstr ""
+
 #: src/pages/groups/MemberSelectModal.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
@@ -292,6 +296,10 @@ msgstr ""
 #: src/pages/applications/ApplicationListPage.ts
 #: src/user/LibraryApplication.ts
 msgid "Application Icon"
+msgstr ""
+
+#: src/elements/charts/UserChart.ts
+msgid "Application authorizations"
 msgstr ""
 
 #: src/pages/events/utils.ts
@@ -433,6 +441,10 @@ msgstr ""
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderImportForm.ts
 msgid "Authorization flow"
+msgstr ""
+
+#: src/elements/charts/ApplicationAuthorizeChart.ts
+msgid "Authorizations"
 msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
@@ -1716,6 +1728,11 @@ msgstr ""
 msgid "External host"
 msgstr ""
 
+#: src/elements/charts/AdminLoginsChart.ts
+#: src/elements/charts/UserChart.ts
+msgid "Failed Logins"
+msgstr ""
+
 #: src/pages/stages/password/PasswordStageForm.ts
 msgid "Failed attempts before cancel"
 msgstr ""
@@ -1770,8 +1787,12 @@ msgstr ""
 msgid "Field which contains a unique Identifier."
 msgstr ""
 
+#: 
+#~ msgid "Field which contains members of a group."
+#~ msgstr ""
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
-msgid "Field which contains members of a group."
+msgid "Field which contains members of a group. Note that if using the \"memberUid\" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'"
 msgstr ""
 
 #: src/pages/stages/prompt/PromptStageForm.ts
@@ -3599,6 +3620,10 @@ msgstr ""
 msgid "Score"
 msgstr ""
 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Search group"
+msgstr ""
+
 #: src/elements/table/TableSearch.ts
 #: src/user/LibraryPage.ts
 msgid "Search..."
@@ -4019,6 +4044,11 @@ msgstr ""
 msgid "Successful"
 msgstr ""
 
+#: src/elements/charts/AdminLoginsChart.ts
+#: src/elements/charts/UserChart.ts
+msgid "Successful Logins"
+msgstr ""
+
 #: src/pages/flows/FlowListPage.ts
 msgid "Successfully cleared flow cache"
 msgstr ""
@@ -4346,9 +4376,9 @@ msgstr ""
 msgid "Sync groups"
 msgstr ""
 
-#: src/pages/providers/ldap/LDAPProviderForm.ts
-msgid "Sync parent group"
-msgstr ""
+#: 
+#~ msgid "Sync parent group"
+#~ msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 msgid "Sync status"
@@ -5195,6 +5225,10 @@ msgstr ""
 
 #: src/pages/events/TransportForm.ts
 msgid "Webhook URL"
+msgstr ""
+
+#: src/pages/stages/email/EmailStageForm.ts
+msgid "When a user returns from the email successfully, their account will be activated."
 msgstr ""
 
 #: src/pages/stages/identification/IdentificationStageForm.ts

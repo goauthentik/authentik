@@ -106,6 +106,9 @@ class EmailStageView(ChallengeStageView):
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = token.user
             token.delete()
             messages.success(request, _("Successfully verified Email."))
+            if self.executor.current_stage.activate_user_on_success:
+                self.executor.plan.context[PLAN_CONTEXT_PENDING_USER].is_active = True
+                self.executor.plan.context[PLAN_CONTEXT_PENDING_USER].save()
             return self.executor.stage_ok()
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
             LOGGER.debug("No pending user")
