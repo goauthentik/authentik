@@ -355,7 +355,7 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Field which contains members of a group.`}
+                            ${t`Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'`}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal

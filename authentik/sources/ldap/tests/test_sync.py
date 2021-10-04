@@ -137,6 +137,34 @@ class LDAPSyncTests(TestCase):
             group = Group.objects.filter(name="group1")
             self.assertTrue(group.exists())
 
+    def test_sync_groups_openldap_posix_group(self):
+        """Test posix group sync"""
+        self.source.object_uniqueness_field = "cn"
+        self.source.group_membership_field = "memberUid"
+        self.source.user_object_filter = "(objectClass=posixAccount)"
+        self.source.group_object_filter = "(objectClass=posixGroup)"
+        self.source.property_mappings.set(
+            LDAPPropertyMapping.objects.filter(
+                Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/openldap")
+            )
+        )
+        self.source.property_mappings_group.set(
+            LDAPPropertyMapping.objects.filter(managed="goauthentik.io/sources/ldap/openldap-cn")
+        )
+        self.source.save()
+        connection = PropertyMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync.sync()
+            group_sync = GroupLDAPSynchronizer(self.source)
+            group_sync.sync()
+            membership_sync = MembershipLDAPSynchronizer(self.source)
+            membership_sync.sync()
+            # Test if membership mapping based on memberUid works.
+            posix_group = Group.objects.filter(name="group-posix").first()
+            self.assertTrue(posix_group.users.filter(name="user-posix").exists())
+
     def test_tasks_ad(self):
         """Test Scheduled tasks"""
         self.source.property_mappings.set(
