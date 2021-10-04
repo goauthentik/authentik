@@ -1,7 +1,6 @@
 """Gunicorn config"""
 import os
 import pwd
-import warnings
 from multiprocessing import cpu_count
 
 import structlog
@@ -17,7 +16,7 @@ try:
 except KeyError:
     pass
 
-worker_class = "uvicorn.workers.UvicornWorker"
+worker_class = "uvicorn.workers.UvicornH11Worker"
 # Docker containers don't have /tmp as tmpfs
 if os.path.exists("/dev/shm"):  # nosec
     worker_tmp_dir = "/dev/shm"  # nosec
@@ -61,28 +60,3 @@ else:
     default_workers = max(cpu_count() * 0.25, 1) + 1  # Minimum of 2 workers
     workers = int(os.environ.get("WORKERS", default_workers))
 threads = int(os.environ.get("THREADS", 4))
-
-warnings.filterwarnings(
-    "ignore",
-    message="defusedxml.lxml is no longer supported and will be removed in a future release.",
-)
-warnings.filterwarnings(
-    "ignore",
-    message="defusedxml.cElementTree is deprecated, import from defusedxml.ElementTree instead.",
-)
-warnings.filterwarnings(
-    "ignore",
-    message=(
-        "'django_prometheus' defines default_app_config = 'django_prometheus.apps.DjangoPromethe"
-        "usConfig'. Django now detects this configuration automatically. You can remove d"
-        "efault_app_config."
-    ),
-)
-warnings.filterwarnings(
-    "ignore",
-    message=(
-        "'dbbackup' defines default_app_config = 'dbbackup.apps.DbbackupConfig'. Django now det"
-        "ects this configuration automatically. You can remove default_app_config."
-    ),
-)
-warnings.simplefilter("once")
