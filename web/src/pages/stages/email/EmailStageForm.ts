@@ -147,6 +147,21 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${t`Stage-specific settings`} </span>
                 <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal name="activateUserOnSuccess">
+                        <div class="pf-c-check">
+                            <input
+                                type="checkbox"
+                                class="pf-c-check__input"
+                                ?checked=${first(this.instance?.activateUserOnSuccess, true)}
+                            />
+                            <label class="pf-c-check__label">
+                                ${t`Activate pending user on success`}
+                            </label>
+                        </div>
+                        <p class="pf-c-form__helper-text">
+                            ${t`When a user returns from the email successfully, their account will be activated.`}
+                        </p>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="useGlobalSettings">
                         <div class="pf-c-check">
                             <input

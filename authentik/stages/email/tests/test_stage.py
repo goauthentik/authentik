@@ -31,6 +31,7 @@ class TestEmailStage(APITestCase):
         )
         self.stage = EmailStage.objects.create(
             name="email",
+            activate_user_on_success=True,
         )
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
@@ -84,6 +85,8 @@ class TestEmailStage(APITestCase):
         """Test with token"""
         # Make sure token exists
         self.test_pending_user()
+        self.user.is_active = False
+        self.user.save()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
@@ -125,3 +128,4 @@ class TestEmailStage(APITestCase):
             session = self.client.session
             plan: FlowPlan = session[SESSION_KEY_PLAN]
             self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER], self.user)
+            self.assertTrue(plan.context[PLAN_CONTEXT_PENDING_USER].is_active)

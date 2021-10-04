@@ -100,7 +100,8 @@
                 "from_address": "system@authentik.local",
                 "token_expiry": 30,
                 "subject": "authentik",
-                "template": "email/account_confirmation.html"
+                "template": "email/account_confirmation.html",
+                "activate_user_on_success": true
             }
         },
         {

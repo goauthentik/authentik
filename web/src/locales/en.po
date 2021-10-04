@@ -159,6 +159,10 @@ msgstr "Actions over the last 24 hours"
 msgid "Activate"
 msgstr "Activate"
 
+#: src/pages/stages/email/EmailStageForm.ts
+msgid "Activate pending user on success"
+msgstr "Activate pending user on success"
+
 #: src/pages/groups/MemberSelectModal.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
@@ -293,6 +297,10 @@ msgstr "Application"
 #: src/user/LibraryApplication.ts
 msgid "Application Icon"
 msgstr "Application Icon"
+
+#: src/elements/charts/UserChart.ts
+msgid "Application authorizations"
+msgstr "Application authorizations"
 
 #: src/pages/events/utils.ts
 msgid "Application authorized"
@@ -438,6 +446,10 @@ msgstr "Authorization URL"
 #: src/pages/providers/saml/SAMLProviderImportForm.ts
 msgid "Authorization flow"
 msgstr "Authorization flow"
+
+#: src/elements/charts/ApplicationAuthorizeChart.ts
+msgid "Authorizations"
+msgstr "Authorizations"
 
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 msgid "Authorize URL"
@@ -1732,6 +1744,11 @@ msgstr "External Host"
 msgid "External host"
 msgstr "External host"
 
+#: src/elements/charts/AdminLoginsChart.ts
+#: src/elements/charts/UserChart.ts
+msgid "Failed Logins"
+msgstr "Failed Logins"
+
 #: src/pages/stages/password/PasswordStageForm.ts
 msgid "Failed attempts before cancel"
 msgstr "Failed attempts before cancel"
@@ -1786,9 +1803,13 @@ msgstr "Field of the user object this value is written to."
 msgid "Field which contains a unique Identifier."
 msgstr "Field which contains a unique Identifier."
 
+#: 
+#~ msgid "Field which contains members of a group."
+#~ msgstr "Field which contains members of a group."
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
-msgid "Field which contains members of a group."
-msgstr "Field which contains members of a group."
+msgid "Field which contains members of a group. Note that if using the \"memberUid\" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'"
+msgstr "Field which contains members of a group. Note that if using the \"memberUid\" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'"
 
 #: src/pages/stages/prompt/PromptStageForm.ts
 msgid "Fields"
@@ -3634,6 +3655,10 @@ msgstr "Scopes"
 msgid "Score"
 msgstr "Score"
 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Search group"
+msgstr "Search group"
+
 #: src/elements/table/TableSearch.ts
 #: src/user/LibraryPage.ts
 msgid "Search..."
@@ -4078,6 +4103,11 @@ msgstr "Subject-alt name"
 msgid "Successful"
 msgstr "Successful"
 
+#: src/elements/charts/AdminLoginsChart.ts
+#: src/elements/charts/UserChart.ts
+msgid "Successful Logins"
+msgstr "Successful Logins"
+
 #: src/pages/flows/FlowListPage.ts
 msgid "Successfully cleared flow cache"
 msgstr "Successfully cleared flow cache"
@@ -4405,9 +4435,9 @@ msgstr "Sync"
 msgid "Sync groups"
 msgstr "Sync groups"
 
-#: src/pages/providers/ldap/LDAPProviderForm.ts
-msgid "Sync parent group"
-msgstr "Sync parent group"
+#: 
+#~ msgid "Sync parent group"
+#~ msgstr "Sync parent group"
 
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 msgid "Sync status"
@@ -5266,6 +5296,10 @@ msgstr "Webhook Mapping"
 #: src/pages/events/TransportForm.ts
 msgid "Webhook URL"
 msgstr "Webhook URL"
+
+#: src/pages/stages/email/EmailStageForm.ts
+msgid "When a user returns from the email successfully, their account will be activated."
+msgstr "When a user returns from the email successfully, their account will be activated."
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown."

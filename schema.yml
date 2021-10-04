@@ -15664,6 +15664,10 @@ paths:
       description: EmailStage Viewset
       parameters:
       - in: query
+        name: activate_user_on_success
+        schema:
+          type: boolean
+      - in: query
         name: from_address
         schema:
           type: string
@@ -19836,6 +19840,9 @@ components:
           type: string
         template:
           type: string
+        activate_user_on_success:
+          type: boolean
+          description: Activate users upon completion of stage.
       required:
       - component
       - name
@@ -19888,6 +19895,9 @@ components:
           type: string
         template:
           type: string
+        activate_user_on_success:
+          type: boolean
+          description: Activate users upon completion of stage.
       required:
       - name
     ErrorDetail:
@@ -25434,6 +25444,9 @@ components:
           type: string
         template:
           type: string
+        activate_user_on_success:
+          type: boolean
+          description: Activate users upon completion of stage.
     PatchedEventMatcherPolicyRequest:
       type: object
       description: Event Matcher Policy Serializer
