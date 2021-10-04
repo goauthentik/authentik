@@ -6,6 +6,8 @@ title: Full development environment
 
 To create a local development setup for authentik, you need the following:
 
+### Requirements
+
 - Python 3.9
 - pipenv, which is used to manage dependencies, and can be installed with `pip install pipenv`
 - Go 1.16
@@ -13,6 +15,13 @@ To create a local development setup for authentik, you need the following:
 - Redis (any recent version will do)
 
 For PostgreSQL and Redis, you can use the docker-compose file in `scripts/`. You can also use a native install, if you prefer.
+
+### Setup
+
+```shell
+pipenv shell # Creates a python virtualenv, and activates it in a new shell
+pipenv sync --dev # Install all required dependencies, including development dependencies
+```
 
 To configure authentik to use the local databases, create a file in the authentik directory called `local.env.yml`, with the following contents
 
