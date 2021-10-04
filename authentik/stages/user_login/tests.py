@@ -109,3 +109,29 @@ class TestUserLoginStage(APITestCase):
                 },
             },
         )
+
+    def test_inactive_account(self):
+        """Test with a valid pending user and backend"""
+        self.user.is_active = False
+        self.user.save()
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_str(response.content),
+            {
+                "component": "xak-flow-redirect",
+                "to": reverse("authentik_core:root-redirect"),
+                "type": ChallengeTypes.REDIRECT.value,
+            },
+        )
+        response = self.client.get(reverse("authentik_api:application-list"))
+        self.assertEqual(response.status_code, 403)
