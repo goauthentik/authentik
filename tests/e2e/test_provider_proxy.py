@@ -86,7 +86,7 @@ class TestProviderProxy(SeleniumTestCase):
         )
         outpost.providers.add(proxy)
         outpost.save()
-        _ = outpost.user
+        outpost.build_user_permissions(outpost.user)
 
         self.proxy_container = self.start_proxy(outpost)
 
@@ -150,7 +150,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
         )
         outpost.providers.add(proxy)
         outpost.save()
-        _ = outpost.user
+        outpost.build_user_permissions(outpost.user)
 
         # Wait until outpost healthcheck succeeds
         healthcheck_retries = 0

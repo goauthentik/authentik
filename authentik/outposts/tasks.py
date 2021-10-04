@@ -126,6 +126,7 @@ def outpost_token_ensurer(self: MonitoredTask):
     all_outposts = Outpost.objects.all()
     for outpost in all_outposts:
         _ = outpost.token
+        outpost.build_user_permissions(outpost.user)
     self.set_status(
         TaskResult(
             TaskResultStatus.SUCCESSFUL,
@@ -196,7 +197,7 @@ def _outpost_single_update(outpost: Outpost, layer=None):
     # Ensure token again, because this function is called when anything related to an
     # OutpostModel is saved, so we can be sure permissions are right
     _ = outpost.token
-    _ = outpost.user
+    outpost.build_user_permissions(outpost.user)
     if not layer:  # pragma: no cover
         layer = get_channel_layer()
     for state in OutpostState.for_outpost(outpost):
