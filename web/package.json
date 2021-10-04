@@ -48,7 +48,7 @@
         "@babel/preset-env": "^7.15.6",
         "@babel/preset-typescript": "^7.15.0",
         "@fortawesome/fontawesome-free": "^5.15.4",
-        "@goauthentik/api": "^2021.9.4-1633366097",
+        "@goauthentik/api": "^2021.9.5-1633377803",
         "@lingui/cli": "^3.12.1",
         "@lingui/core": "^3.12.1",
         "@lingui/detect-locale": "^3.12.1",
