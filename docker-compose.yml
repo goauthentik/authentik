@@ -7,8 +7,6 @@ services:
     restart: unless-stopped
     volumes:
       - database:/var/lib/postgresql/data
-    networks:
-      - internal
     environment:
       - POSTGRES_PASSWORD=${PG_PASS:?database password required}
       - POSTGRES_USER=${PG_USER:-authentik}
@@ -18,8 +16,6 @@ services:
   redis:
     image: redis:alpine
     restart: unless-stopped
-    networks:
-      - internal
   server:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2021.9.5}
     restart: unless-stopped
@@ -36,8 +32,6 @@ services:
       - ./media:/media
       - ./custom-templates:/templates
       - geoip:/geoip
-    networks:
-      - internal
     env_file:
       - .env
     ports:
@@ -47,8 +41,6 @@ services:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2021.9.5}
     restart: unless-stopped
     command: worker
-    networks:
-      - internal
     environment:
       AUTHENTIK_REDIS__HOST: redis
       AUTHENTIK_POSTGRESQL__HOST: postgresql
@@ -83,6 +75,3 @@ volumes:
     driver: local
   geoip:
     driver: local
-
-networks:
-  internal: {}
