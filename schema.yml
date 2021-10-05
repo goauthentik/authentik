@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2021.9.5
+  version: 2021.9.6
   description: Making authentication simple.
   contact:
     email: hello@beryju.org
