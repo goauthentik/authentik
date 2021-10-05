@@ -707,9 +707,13 @@ msgstr "Vérifier les avant-postes."
 msgid "Check status"
 msgstr "Vérifier le statut"
 
+#: 
+#~ msgid "Check your Emails for a password reset link."
+#~ msgstr "Vérifiez vos courriels pour un lien de récupération de mot de passe."
+
 #: src/flows/stages/email/EmailStage.ts
-msgid "Check your Emails for a password reset link."
-msgstr "Vérifiez vos courriels pour un lien de récupération de mot de passe."
+msgid "Check your Inbox for a verification email."
+msgstr ""
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Checkbox"
