@@ -212,6 +212,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     """User Viewset"""
 
     queryset = User.objects.none()
+    ordering = ["username"]
     serializer_class = UserSerializer
     search_fields = ["username", "name", "is_active", "email"]
     filterset_class = UsersFilter
