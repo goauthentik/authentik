@@ -59,6 +59,9 @@ func main() {
 	defer common.Defer()
 
 	ac := ak.NewAPIController(*akURLActual, akToken)
+	if ac == nil {
+		os.Exit(1)
+	}
 
 	ac.Server = proxyv2.NewProxyServer(ac, portOffset)
 
