@@ -108,6 +108,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
     queryset = Flow.objects.all()
     serializer_class = FlowSerializer
     lookup_field = "slug"
+    ordering = ["slug", "name"]
     search_fields = ["name", "slug", "designation", "title"]
     filterset_fields = ["flow_uuid", "name", "slug", "designation"]
 
