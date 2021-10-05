@@ -101,8 +101,13 @@ class UserSelfSerializer(ModelSerializer):
 
     is_superuser = BooleanField(read_only=True)
     avatar = CharField(read_only=True)
-    groups = ListSerializer(child=GroupSerializer(), read_only=True, source="ak_groups")
+    groups = SerializerMethodField()
     uid = CharField(read_only=True)
+
+    def get_groups(self, user: User) -> list[str]:
+        """Return only the group names a user is member of"""
+        for group in user.ak_groups.all():
+            yield group.name
 
     class Meta:
 

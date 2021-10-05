@@ -29273,7 +29273,7 @@ components:
         groups:
           type: array
           items:
-            $ref: '#/components/schemas/Group'
+            type: string
           readOnly: true
         email:
           type: string
