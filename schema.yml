@@ -2318,6 +2318,10 @@ paths:
           - app_password
           - recovery
           - verification
+      - in: query
+        name: managed
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query

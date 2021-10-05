@@ -37,6 +37,7 @@ export class UserTokenList extends Table<Token> {
             page: page,
             pageSize: PAGE_SIZE,
             search: this.search || "",
+            managed: "",
         });
     }
 
