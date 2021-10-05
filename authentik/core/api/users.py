@@ -90,6 +90,9 @@ class UserSerializer(ModelSerializer):
             "attributes",
             "uid",
         ]
+        extra_kwargs = {
+            "name": {"allow_blank": True},
+        }
 
 
 class UserSelfSerializer(ModelSerializer):
@@ -117,6 +120,7 @@ class UserSelfSerializer(ModelSerializer):
         ]
         extra_kwargs = {
             "is_active": {"read_only": True},
+            "name": {"allow_blank": True},
         }
 
 
