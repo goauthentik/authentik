@@ -11,6 +11,7 @@ import (
 	"github.com/pires/go-proxyproto"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/config"
+	"goauthentik.io/internal/gounicorn"
 	"goauthentik.io/internal/outpost/proxyv2"
 )
 
@@ -27,9 +28,10 @@ type WebServer struct {
 	m   *mux.Router
 	lh  *mux.Router
 	log *log.Entry
+	p   *gounicorn.GoUnicorn
 }
 
-func NewWebServer() *WebServer {
+func NewWebServer(g *gounicorn.GoUnicorn) *WebServer {
 	l := log.WithField("logger", "authentik.g.web")
 	mainHandler := mux.NewRouter()
 	if config.G.ErrorReporting.Enabled {
@@ -46,6 +48,7 @@ func NewWebServer() *WebServer {
 		m:   mainHandler,
 		lh:  logginRouter,
 		log: l,
+		p:   g,
 	}
 	ws.configureStatic()
 	ws.configureProxy()
