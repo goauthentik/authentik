@@ -48,10 +48,10 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
     }
 
     render(): TemplateResult {
-        if (this._instancePk) {
+        if (this._instancePk && !this._initialLoad) {
             if (
                 // if we're in viewport now and haven't loaded AND have a PK set, load now
-                (this.isInViewport && !this._initialLoad) ||
+                this.isInViewport ||
                 // Or if we don't check for viewport in some cases
                 !this.viewportCheck
             ) {
