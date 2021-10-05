@@ -103,11 +103,13 @@ export class OutpostListPage extends TablePage<Outpost> {
                         <i class="fas fa-edit"></i>
                     </button>
                 </ak-forms-modal>
-                <ak-outpost-deployment-modal .outpost=${item} size=${PFSize.Medium}>
-                    <button slot="trigger" class="pf-c-button pf-m-tertiary">
-                        ${t`View Deployment Info`}
-                    </button>
-                </ak-outpost-deployment-modal>`,
+                ${item.managed !== "goauthentik.io/outposts/embedded"
+                    ? html`<ak-outpost-deployment-modal .outpost=${item} size=${PFSize.Medium}>
+                          <button slot="trigger" class="pf-c-button pf-m-tertiary">
+                              ${t`View Deployment Info`}
+                          </button>
+                      </ak-outpost-deployment-modal>`
+                    : html``}`,
         ];
     }
 
