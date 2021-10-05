@@ -59,14 +59,14 @@ class MetricsView(View):
 
 
 class LiveView(View):
-    """View for liveness probe, always returns Http 201"""
+    """View for liveness probe, always returns Http 204"""
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
-        return HttpResponse(status=201)
+        return HttpResponse(status=204)
 
 
 class ReadyView(View):
-    """View for readiness probe, always returns Http 201, unless sql or redis is down"""
+    """View for readiness probe, always returns Http 204, unless sql or redis is down"""
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
         try:
@@ -79,4 +79,4 @@ class ReadyView(View):
             redis_conn.ping()
         except RedisError:
             return HttpResponse(status=503)
-        return HttpResponse(status=201)
+        return HttpResponse(status=204)
