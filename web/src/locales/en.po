@@ -706,9 +706,13 @@ msgstr "Check outposts."
 msgid "Check status"
 msgstr "Check status"
 
+#: 
+#~ msgid "Check your Emails for a password reset link."
+#~ msgstr "Check your Emails for a password reset link."
+
 #: src/flows/stages/email/EmailStage.ts
-msgid "Check your Emails for a password reset link."
-msgstr "Check your Emails for a password reset link."
+msgid "Check your Inbox for a verification email."
+msgstr "Check your Inbox for a verification email."
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Checkbox"
