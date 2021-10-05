@@ -978,9 +978,9 @@ msgstr "Cookie domain"
 msgid "Copy"
 msgstr "Copy"
 
-#: src/user/user-settings/tokens/UserTokenList.ts
-msgid "Copy Key"
-msgstr "Copy Key"
+#: 
+#~ msgid "Copy Key"
+#~ msgstr "Copy Key"
 
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "Copy download URL"
@@ -4684,6 +4684,10 @@ msgstr "Token count"
 #: src/pages/stages/email/EmailStageForm.ts
 msgid "Token expiry"
 msgstr "Token expiry"
+
+#: src/pages/tokens/TokenListPage.ts
+msgid "Token is managed by authentik."
+msgstr "Token is managed by authentik."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts

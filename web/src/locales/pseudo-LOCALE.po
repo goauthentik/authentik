@@ -972,9 +972,9 @@ msgstr ""
 msgid "Copy"
 msgstr ""
 
-#: src/user/user-settings/tokens/UserTokenList.ts
-msgid "Copy Key"
-msgstr ""
+#: 
+#~ msgid "Copy Key"
+#~ msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "Copy download URL"
@@ -4668,6 +4668,10 @@ msgstr ""
 
 #: src/pages/stages/email/EmailStageForm.ts
 msgid "Token expiry"
+msgstr ""
+
+#: src/pages/tokens/TokenListPage.ts
+msgid "Token is managed by authentik."
 msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
