@@ -48,7 +48,7 @@ elif [[ "$1" == "test" ]]; then
     check_if_root "python -m manage test authentik"
 elif [[ "$1" == "healthcheck" ]]; then
     mode=$(cat $MODE_FILE)
-    if [[ $mode == "server "]]; then
+    if [[ $mode == "server" ]]; then
         curl --user-agent "authentik Healthcheck" -I http://localhost:9000/-/health/ready/
     elif [[ $mode == "worker" ]]; then
         celery -A authentik.root.celery inspect ping -d celery@$HOSTNAME
