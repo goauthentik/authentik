@@ -151,8 +151,11 @@ export class UserTokenList extends Table<Token> {
                         <i class="fas fa-edit"></i>
                     </button>
                 </ak-forms-modal>
-                <ak-token-copy-button identifier="${item.identifier}">
-                    ${t`Copy Key`}
+                <ak-token-copy-button
+                    class="pf-c-button pf-m-plain"
+                    identifier="${item.identifier}"
+                >
+                    <i class="fas fa-copy"></i>
                 </ak-token-copy-button>
             `,
         ];

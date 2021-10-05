@@ -105,7 +105,10 @@ export class TokenListPage extends TablePage<Token> {
 
     row(item: Token): TemplateResult[] {
         return [
-            html`${item.identifier}`,
+            html`<div>
+                <div>${item.identifier}</div>
+                ${item.managed ? html`<small>${t`Token is managed by authentik.`}</small>` : html``}
+            </div>`,
             html`<a href="#/identity/users/${item.userObj?.pk}">${item.userObj?.username}</a>`,
             html`${item.expiring ? t`Yes` : t`No`}`,
             html`${item.expiring ? item.expires?.toLocaleString() : t`-`}`,
@@ -123,7 +126,10 @@ export class TokenListPage extends TablePage<Token> {
                         <i class="fas fa-edit"></i>
                     </button>
                 </ak-forms-modal>
-                <ak-token-copy-button identifier="${item.identifier}">
+                <ak-token-copy-button
+                    class="pf-c-button pf-m-plain"
+                    identifier="${item.identifier}"
+                >
                     <i class="fas fa-copy"></i>
                 </ak-token-copy-button>
             `,
