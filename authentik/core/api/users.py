@@ -104,10 +104,21 @@ class UserSelfSerializer(ModelSerializer):
     groups = SerializerMethodField()
     uid = CharField(read_only=True)
 
-    def get_groups(self, user: User) -> list[str]:
+    @extend_schema_field(
+        ListSerializer(
+            child=inline_serializer(
+                "UserSelfGroups",
+                {"name": CharField(read_only=True), "pk": CharField(read_only=True)},
+            )
+        )
+    )
+    def get_groups(self, user: User):
         """Return only the group names a user is member of"""
         for group in user.ak_groups.all():
-            yield group.name
+            yield {
+                "name": group.name,
+                "pk": group.pk,
+            }
 
     class Meta:
 
