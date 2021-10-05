@@ -29273,7 +29273,7 @@ components:
         groups:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/UserSelfGroups'
           readOnly: true
         email:
           type: string
@@ -29295,6 +29295,18 @@ components:
       - pk
       - uid
       - username
+    UserSelfGroups:
+      type: object
+      properties:
+        name:
+          type: string
+          readOnly: true
+        pk:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
     UserSelfRequest:
       type: object
       description: |-
