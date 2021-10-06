@@ -44,6 +44,10 @@ msgstr "(Format: hours=-1;minutes=-2;seconds=-3)."
 msgid "-"
 msgstr "-"
 
+#: src/pages/flows/FlowImportForm.ts
+msgid ".akflow files, which can be found on goauthentik.io and can be exported by authentik."
+msgstr ".akflow files, which can be found on goauthentik.io and can be exported by authentik."
+
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "6 digits, widely compatible"
 msgstr "6 digits, widely compatible"
@@ -478,7 +482,6 @@ msgstr "Background image"
 
 #: src/pages/flows/FlowForm.ts
 #: src/pages/flows/FlowForm.ts
-#: src/pages/flows/FlowImportForm.ts
 msgid "Background shown during execution."
 msgstr "Background shown during execution."
 
