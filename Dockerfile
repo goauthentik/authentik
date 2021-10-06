@@ -1,5 +1,5 @@
 # Stage 1: Lock python dependencies
-FROM docker.io/python:3.9-slim-buster as locker
+FROM docker.io/python:3.10.0-slim-buster as locker
 
 COPY ./Pipfile /app/
 COPY ./Pipfile.lock /app/
@@ -47,7 +47,7 @@ COPY ./go.sum /work/go.sum
 RUN go build -o /work/authentik ./cmd/server/main.go
 
 # Stage 5: Run
-FROM docker.io/python:3.9-slim-buster
+FROM docker.io/python:3.10.0-slim-buster
 
 WORKDIR /
 COPY --from=locker /app/requirements.txt /
