@@ -35,6 +35,7 @@ class StagePromptSerializer(PassiveSerializer):
     required = BooleanField()
     placeholder = CharField(allow_blank=True)
     order = IntegerField()
+    sub_text = CharField()
 
 
 class PromptChallenge(Challenge):

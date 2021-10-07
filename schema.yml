@@ -26254,6 +26254,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/StageRequest'
+        sub_text:
+          type: string
     PatchedPromptStageRequest:
       type: object
       description: PromptStage Serializer
@@ -27133,6 +27135,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Stage'
+        sub_text:
+          type: string
       required:
       - field_key
       - label
@@ -27197,6 +27201,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/StageRequest'
+        sub_text:
+          type: string
       required:
       - field_key
       - label
@@ -28509,12 +28515,15 @@ components:
           type: string
         order:
           type: integer
+        sub_text:
+          type: string
       required:
       - field_key
       - label
       - order
       - placeholder
       - required
+      - sub_text
       - type
     StageRequest:
       type: object
