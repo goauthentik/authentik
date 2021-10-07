@@ -65,6 +65,7 @@ class TestPasswordPolicyFlow(APITestCase):
                         "placeholder": "PASSWORD_PLACEHOLDER",
                         "required": True,
                         "type": "password",
+                        "sub_text": "",
                     }
                 ],
                 "flow_info": {
