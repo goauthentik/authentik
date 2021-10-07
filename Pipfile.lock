@@ -128,11 +128,11 @@
         },
         "botocore": {
             "hashes": [
-                "sha256:0a7102556adcb2416d3a8deda42adf276b661dbd76073ea766250c9f5e208b80",
-                "sha256:93d72ed993f2065debc7bb90335c947f6ed6fb1b16863647b79ffe19abe2867b"
+                "sha256:43fab79905e3dfe56f92a137314ef1afbf040f7c06516a003351c24322cbfd7c",
+                "sha256:d712f572022670916bd77fbe421155dcf575398b9dced88035ed3658679883bd"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==1.21.55"
+            "version": "==1.21.56"
         },
         "cachetools": {
             "hashes": [
@@ -430,11 +430,11 @@
         },
         "django-storages": {
             "hashes": [
-                "sha256:c823dbf56c9e35b0999a13d7e05062b837bae36c518a40255d522fbe3750fbb4",
-                "sha256:f28765826d507a0309cfaa849bd084894bc71d81bf0d09479168d44785396f80"
+                "sha256:b3fdb4337b1e54b8a23fe41c62d91648e26249f9fc00e882d1d09e16207aa204",
+                "sha256:b76fb6758ff6251565d07a18fe051ca1dc886921052cd5a7e373442449c72a4a"
             ],
             "index": "pypi",
-            "version": "==1.11.1"
+            "version": "==1.12"
         },
         "djangorestframework": {
             "hashes": [
