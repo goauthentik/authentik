@@ -133,11 +133,10 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.9'
-      - name: checkout stable
+      - name: prepare variables
+        id: ev
         run: |
-          # Copy current, latest config to local
-          cp authentik/lib/default.yml local.env.yml
-          git checkout $(git describe --abbrev=0 --match 'version/*')
+          python ./scripts/gh_env.py
       - id: cache-pipenv
         uses: actions/cache@v2.1.6
         with:
@@ -147,12 +146,13 @@ jobs:
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
         run: scripts/ci_prepare.sh
+      - name: checkout stable
+        run: |
+          # Copy current, latest config to local
+          cp authentik/lib/default.yml local.env.yml
+          git checkout $(git describe --abbrev=0 --match 'version/*')
       - name: run migrations to stable
         run: pipenv run python -m lifecycle.migrate
-      - name: prepare variables
-        id: ev
-        run: |
-          python ./scripts/gh_env.py
       - name: checkout current code
         run: |
           set -x
