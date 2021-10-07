@@ -85,7 +85,7 @@ class TestUserWriteStage(APITestCase):
         plan.context[PLAN_CONTEXT_PROMPT] = {
             "username": "test-user-new",
             "password": new_password,
-            "attribute_some-custom-attribute": "test",
+            "attribute.some.custom-attribute": "test",
             "some_ignored_attribute": "bar",
         }
         session = self.client.session
@@ -108,7 +108,7 @@ class TestUserWriteStage(APITestCase):
         user_qs = User.objects.filter(username=plan.context[PLAN_CONTEXT_PROMPT]["username"])
         self.assertTrue(user_qs.exists())
         self.assertTrue(user_qs.first().check_password(new_password))
-        self.assertEqual(user_qs.first().attributes["some-custom-attribute"], "test")
+        self.assertEqual(user_qs.first().attributes["some"]["custom-attribute"], "test")
         self.assertNotIn("some_ignored_attribute", user_qs.first().attributes)
 
     @patch(

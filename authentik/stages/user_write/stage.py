@@ -1,4 +1,5 @@
 """Write stage logic"""
+from typing import Any
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.db import transaction
@@ -22,6 +23,23 @@ LOGGER = get_logger()
 
 class UserWriteStageView(StageView):
     """Finalise Enrollment flow by creating a user object."""
+
+    def write_attribute(self, user: User, key: str, value: Any):
+        """Allow use of attributes.foo.bar when writing to a user, with full
+        recursion"""
+        parts = key.replace("_", ".").split(".")
+        if len(parts) < 1:
+            return
+        # Function will always be called with a key like attribute.
+        # this is just a sanity check to ensure that is removed
+        if parts[0] == "attribute":
+            parts = parts[1:]
+        attrs = user.attributes
+        for comp in parts[:-1]:
+            if comp not in attrs:
+                attrs[comp] = {}
+            attrs = attrs.get(comp)
+        attrs[parts[-1]] = value
 
     def post(self, request: HttpRequest) -> HttpResponse:
         """Wrapper for post requests"""
@@ -71,10 +89,10 @@ class UserWriteStageView(StageView):
             # Otherwise we just save it as custom attribute, but only if the value is prefixed with
             # `attribute_`, to prevent accidentally saving values
             else:
-                if not key.startswith("attribute_"):
+                if not key.startswith("attribute.") and not key.startswith("attribute_"):
                     LOGGER.debug("discarding key", key=key)
                     continue
-                user.attributes[key.replace("attribute_", "", 1)] = value
+                self.write_attribute(user, key, value)
         # Extra check to prevent flows from saving a user with a blank username
         if user.username == "":
             LOGGER.warning("Aborting write to empty username", user=user)
