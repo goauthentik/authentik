@@ -278,6 +278,10 @@ msgstr "Alternatively, if your current device has Duo installed, click on this l
 msgid "Always require consent"
 msgstr "Always require consent"
 
+#: src/pages/stages/prompt/PromptForm.ts
+msgid "Any HTML can be used."
+msgstr "Any HTML can be used."
+
 #: src/pages/events/EventInfo.ts
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 msgid "App"
@@ -2053,6 +2057,10 @@ msgstr "Healthy outposts"
 #: src/pages/admin-overview/charts/LDAPSyncStatusChart.ts
 msgid "Healthy sources"
 msgstr "Healthy sources"
+
+#: src/pages/stages/prompt/PromptForm.ts
+msgid "Help text"
+msgstr "Help text"
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Hidden: Hidden field, can be used to insert data into form."
@@ -5345,6 +5353,10 @@ msgstr "When selected, incoming assertion's Signatures will be validated against
 #: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
 msgstr "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
+
+#: src/pages/stages/prompt/PromptForm.ts
+msgid "When used in conjunction with a User Write stage, use attributes.foo to write attributes."
+msgstr "When used in conjunction with a User Write stage, use attributes.foo to write attributes."
 
 #: src/pages/tenants/TenantForm.ts
 msgid "When using an external logging solution for archiving, this can be set to \"minutes=5\"."

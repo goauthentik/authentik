@@ -64,6 +64,7 @@ class Prompt(SerializerModel):
     type = models.CharField(max_length=100, choices=FieldTypes.choices)
     required = models.BooleanField(default=True)
     placeholder = models.TextField(blank=True)
+    sub_text = models.TextField(blank=True, default="")
 
     order = models.IntegerField(default=0)
 

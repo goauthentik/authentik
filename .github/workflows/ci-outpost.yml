@@ -61,8 +61,8 @@ jobs:
         with:
           push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
           tags: |
-            beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchName }}
-            beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchName }}-${{ steps.ev.outputs.timestamp }}
+            beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchNameContainer }}
+            beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}
             beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ steps.ev.outputs.sha }}
           file: ${{ matrix.type }}.Dockerfile
           build-args: |

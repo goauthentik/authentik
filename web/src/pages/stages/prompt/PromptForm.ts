@@ -123,6 +123,9 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 <p class="pf-c-form__helper-text">
                     ${t`Name of the form field, also used to store the value.`}
                 </p>
+                <p class="pf-c-form__helper-text">
+                    ${t`When used in conjunction with a User Write stage, use attributes.foo to write attributes.`}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Label`} ?required=${true} name="label">
                 <input
@@ -156,6 +159,11 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     required
                 />
                 <p class="pf-c-form__helper-text">${t`Optionally pre-fill the input value`}</p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${t`Help text`} name="subText">
+                <ak-codemirror mode="htmlmixed" value="${ifDefined(this.instance?.subText)}">
+                </ak-codemirror>
+                <p class="pf-c-form__helper-text">${t`Any HTML can be used.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Order`} ?required=${true} name="order">
                 <input

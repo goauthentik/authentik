@@ -42,8 +42,10 @@ class TestUserLogoutStage(APITestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
 
+        # pylint: disable=no-member
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
+            # pylint: disable=no-member
             force_str(response.content),
             {
                 "component": "xak-flow-redirect",
