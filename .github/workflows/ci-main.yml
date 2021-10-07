@@ -142,15 +142,15 @@ jobs:
         with:
           path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
-      - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
       - name: checkout stable
         run: |
           # Copy current, latest config to local
           cp authentik/lib/default.yml local.env.yml
           git checkout $(git describe --abbrev=0 --match 'version/*')
+      - name: prepare
+        env:
+          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+        run: scripts/ci_prepare.sh
       - name: run migrations to stable
         run: pipenv run python -m lifecycle.migrate
       - name: checkout current code
@@ -159,6 +159,10 @@ jobs:
           git fetch
           git checkout ${{ steps.ev.outputs.branchName }}
           pipenv sync --dev
+      - name: prepare
+        env:
+          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+        run: scripts/ci_prepare.sh
       - name: migrate to latest
         run: pipenv run python -m lifecycle.migrate
   test-unittest:
