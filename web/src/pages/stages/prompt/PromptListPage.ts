@@ -14,6 +14,7 @@ import "../../../elements/forms/DeleteBulkForm";
 import "../../../elements/forms/ModalForm";
 import { TableColumn } from "../../../elements/table/Table";
 import { TablePage } from "../../../elements/table/TablePage";
+import { truncate } from "../../../utils";
 import "./PromptForm";
 
 @customElement("ak-stage-prompt-list")
@@ -81,7 +82,7 @@ export class PromptListPage extends TablePage<Prompt> {
     row(item: Prompt): TemplateResult[] {
         return [
             html`${item.fieldKey}`,
-            html`${item.label}`,
+            html`${truncate(item.label, 20)}`,
             html`${item.type}`,
             html`${item.order}`,
             html`${item.promptstageSet?.map((stage) => {
