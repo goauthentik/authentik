@@ -303,7 +303,7 @@ jobs:
         with:
           push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
           tags: |
-            beryju.org/authentik/server:gh-${{ steps.ev.outputs.branchName }}
-            beryju.org/authentik/server:gh-${{ steps.ev.outputs.branchName }}-${{ steps.ev.outputs.timestamp }}-${{ steps.ev.outputs.sha }}
+            beryju.org/authentik/server:gh-${{ steps.ev.outputs.branchNameContainer }}
+            beryju.org/authentik/server:gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}-${{ steps.ev.outputs.sha }}
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
