@@ -32,7 +32,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner, cach
 from authentik.flows.transfer.common import DataclassEncoder
 from authentik.flows.transfer.exporter import FlowExporter
 from authentik.flows.transfer.importer import FlowImporter
-from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.flows.views.executor import SESSION_KEY_HISTORY, SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
 
 LOGGER = get_logger()
@@ -334,6 +334,9 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
     # pylint: disable=unused-argument
     def execute(self, request: Request, slug: str):
         """Execute flow for current user"""
+        # Because we pre-plan the flow here, and not in the planner, we need to manually clear
+        # the history of the inspector
+        request.session[SESSION_KEY_HISTORY] = []
         flow: Flow = self.get_object()
         planner = FlowPlanner(flow)
         planner.use_cache = False
