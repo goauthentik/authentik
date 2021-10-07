@@ -1,5 +1,6 @@
 """Write stage logic"""
 from typing import Any
+
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.db import transaction
