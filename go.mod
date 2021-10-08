@@ -34,7 +34,7 @@ require (
 	github.com/recws-org/recws v1.3.1
 	github.com/sirupsen/logrus v1.8.1
 	go.mongodb.org/mongo-driver v1.5.2 // indirect
-	goauthentik.io/api v0.202197.1
+	goauthentik.io/api v0.202197.2
 	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2 // indirect
 	golang.org/x/net v0.0.0-20210510120150-4163338589ed // indirect
 	golang.org/x/oauth2 v0.0.0-20210323180902-22b0adad7558
