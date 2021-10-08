@@ -27,7 +27,7 @@ ENV NODE_ENV=production
 RUN cd /static && npm i && npm run build
 
 # Stage 4: Build go proxy
-FROM docker.io/golang:1.17.1 AS builder
+FROM docker.io/golang:1.17.2 AS builder
 
 WORKDIR /work
 
