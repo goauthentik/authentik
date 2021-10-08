@@ -5,6 +5,7 @@ from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
+from authentik.core.models import User
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView
 from authentik.lib.utils.time import timedelta_from_string
@@ -32,9 +33,12 @@ class UserLoginStageView(StageView):
         backend = self.executor.plan.context.get(
             PLAN_CONTEXT_AUTHENTICATION_BACKEND, BACKEND_INBUILT
         )
+        user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
+        if not user.is_active:
+            LOGGER.warning("User is not active, login will not work.")
         login(
             self.request,
-            self.executor.plan.context[PLAN_CONTEXT_PENDING_USER],
+            user,
             backend=backend,
         )
         delta = timedelta_from_string(self.executor.current_stage.session_duration)
@@ -45,7 +49,7 @@ class UserLoginStageView(StageView):
         LOGGER.debug(
             "Logged in",
             backend=backend,
-            user=self.executor.plan.context[PLAN_CONTEXT_PENDING_USER],
+            user=user,
             flow_slug=self.executor.flow.slug,
             session_duration=self.executor.current_stage.session_duration,
         )

@@ -10,7 +10,7 @@ from requests import RequestException
 from structlog.stdlib import get_logger
 
 from authentik import ENV_GIT_HASH_KEY, __version__
-from authentik.events.models import Event, EventAction
+from authentik.events.models import Event, EventAction, Notification
 from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import get_http_session
@@ -33,6 +33,18 @@ def _set_prom_info():
             "build_hash": environ.get(ENV_GIT_HASH_KEY, ""),
         }
     )
+
+
+@CELERY_APP.task()
+def clear_update_notifications():
+    """Clear update notifications on startup if the notification was for the version
+    we're running now."""
+    for notification in Notification.objects.filter(event__action=EventAction.UPDATE_AVAILABLE):
+        if "new_version" not in notification.event.context:
+            continue
+        notification_version = notification.event.context["new_version"]
+        if notification_version == __version__:
+            notification.delete()
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)

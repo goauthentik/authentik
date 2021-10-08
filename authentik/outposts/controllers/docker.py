@@ -76,6 +76,9 @@ class DockerController(BaseController):
         #   {'HostIp': '0.0.0.0', 'HostPort': '389'},
         #   {'HostIp': '::', 'HostPort': '389'}
         # ]}
+        # If no ports are mapped (either mapping disabled, or host network)
+        if not container.ports:
+            return False
         for port in self.deployment_ports:
             key = f"{port.inner_port or port.port}/{port.protocol.lower()}"
             if key not in container.ports:
@@ -87,14 +90,24 @@ class DockerController(BaseController):
                 return True
         return False
 
+    def try_pull_image(self):
+        """Try to pull the image needed for this outpost based on the CONFIG
+        `outposts.docker_image_base`, but fall back to known-good images"""
+        image = self.get_container_image()
+        try:
+            self.client.images.pull(image)
+        except DockerException:
+            image = f"ghcr.io/goauthentik/{self.outpost.type}:latest"
+            self.client.images.pull(image)
+        return image
+
     def _get_container(self) -> tuple[Container, bool]:
         container_name = f"authentik-proxy-{self.outpost.uuid.hex}"
         try:
             return self.client.containers.get(container_name), False
         except NotFound:
             self.logger.info("(Re-)creating container...")
-            image_name = self.get_container_image()
-            self.client.images.pull(image_name)
+            image_name = self.try_pull_image()
             container_args = {
                 "image": image_name,
                 "name": container_name,
@@ -132,11 +145,12 @@ class DockerController(BaseController):
             # Check if the container is out of date, delete it and retry
             if len(container.image.tags) > 0:
                 tag: str = container.image.tags[0]
-                if tag != self.get_container_image():
+                should_image = self.try_pull_image()
+                if tag != should_image:
                     self.logger.info(
                         "Container has mismatched image, re-creating...",
                         has=tag,
-                        should=self.get_container_image(),
+                        should=should_image,
                     )
                     self.down()
                     return self.up(depth + 1)

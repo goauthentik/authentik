@@ -48,7 +48,7 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.HARBOR_USERNAME }}
         run: |
-          python ./scripts/gh_do_set_branch.py
+          python ./scripts/gh_env.py
       - name: Login to Container Registry
         uses: docker/login-action@v1
         if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
@@ -61,8 +61,8 @@ jobs:
         with:
           push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
           tags: |
-            beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchName }}
-            beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchName }}-${{ steps.ev.outputs.timestamp }}
+            beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchNameContainer }}
+            beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}
             beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ steps.ev.outputs.sha }}
           file: ${{ matrix.type }}.Dockerfile
           build-args: |

@@ -90,6 +90,9 @@ class UserSerializer(ModelSerializer):
             "attributes",
             "uid",
         ]
+        extra_kwargs = {
+            "name": {"allow_blank": True},
+        }
 
 
 class UserSelfSerializer(ModelSerializer):
@@ -98,8 +101,24 @@ class UserSelfSerializer(ModelSerializer):
 
     is_superuser = BooleanField(read_only=True)
     avatar = CharField(read_only=True)
-    groups = ListSerializer(child=GroupSerializer(), read_only=True, source="ak_groups")
+    groups = SerializerMethodField()
     uid = CharField(read_only=True)
+
+    @extend_schema_field(
+        ListSerializer(
+            child=inline_serializer(
+                "UserSelfGroups",
+                {"name": CharField(read_only=True), "pk": CharField(read_only=True)},
+            )
+        )
+    )
+    def get_groups(self, user: User):
+        """Return only the group names a user is member of"""
+        for group in user.ak_groups.all():
+            yield {
+                "name": group.name,
+                "pk": group.pk,
+            }
 
     class Meta:
 
@@ -117,6 +136,7 @@ class UserSelfSerializer(ModelSerializer):
         ]
         extra_kwargs = {
             "is_active": {"read_only": True},
+            "name": {"allow_blank": True},
         }
 
 
@@ -208,6 +228,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     """User Viewset"""
 
     queryset = User.objects.none()
+    ordering = ["username"]
     serializer_class = UserSerializer
     search_fields = ["username", "name", "is_active", "email"]
     filterset_class = UsersFilter

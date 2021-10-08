@@ -44,6 +44,10 @@ msgstr "(Format: hours=-1;minutes=-2;seconds=-3)."
 msgid "-"
 msgstr "-"
 
+#: src/pages/flows/FlowImportForm.ts
+msgid ".akflow files, which can be found on goauthentik.io and can be exported by authentik."
+msgstr ".akflow files, which can be found on goauthentik.io and can be exported by authentik."
+
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "6 digits, widely compatible"
 msgstr "6 digits, widely compatible"
@@ -159,6 +163,10 @@ msgstr "Actions over the last 24 hours"
 msgid "Activate"
 msgstr "Activate"
 
+#: src/pages/stages/email/EmailStageForm.ts
+msgid "Activate pending user on success"
+msgstr "Activate pending user on success"
+
 #: src/pages/groups/MemberSelectModal.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
@@ -270,6 +278,10 @@ msgstr "Alternatively, if your current device has Duo installed, click on this l
 msgid "Always require consent"
 msgstr "Always require consent"
 
+#: src/pages/stages/prompt/PromptForm.ts
+msgid "Any HTML can be used."
+msgstr "Any HTML can be used."
+
 #: src/pages/events/EventInfo.ts
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 msgid "App"
@@ -293,6 +305,10 @@ msgstr "Application"
 #: src/user/LibraryApplication.ts
 msgid "Application Icon"
 msgstr "Application Icon"
+
+#: src/elements/charts/UserChart.ts
+msgid "Application authorizations"
+msgstr "Application authorizations"
 
 #: src/pages/events/utils.ts
 msgid "Application authorized"
@@ -439,6 +455,10 @@ msgstr "Authorization URL"
 msgid "Authorization flow"
 msgstr "Authorization flow"
 
+#: src/elements/charts/ApplicationAuthorizeChart.ts
+msgid "Authorizations"
+msgstr "Authorizations"
+
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 msgid "Authorize URL"
 msgstr "Authorize URL"
@@ -466,7 +486,6 @@ msgstr "Background image"
 
 #: src/pages/flows/FlowForm.ts
 #: src/pages/flows/FlowForm.ts
-#: src/pages/flows/FlowImportForm.ts
 msgid "Background shown during execution."
 msgstr "Background shown during execution."
 
@@ -694,9 +713,13 @@ msgstr "Check outposts."
 msgid "Check status"
 msgstr "Check status"
 
+#: 
+#~ msgid "Check your Emails for a password reset link."
+#~ msgstr "Check your Emails for a password reset link."
+
 #: src/flows/stages/email/EmailStage.ts
-msgid "Check your Emails for a password reset link."
-msgstr "Check your Emails for a password reset link."
+msgid "Check your Inbox for a verification email."
+msgstr "Check your Inbox for a verification email."
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Checkbox"
@@ -966,9 +989,9 @@ msgstr "Cookie domain"
 msgid "Copy"
 msgstr "Copy"
 
-#: src/user/user-settings/tokens/UserTokenList.ts
-msgid "Copy Key"
-msgstr "Copy Key"
+#: 
+#~ msgid "Copy Key"
+#~ msgstr "Copy Key"
 
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "Copy download URL"
@@ -1732,6 +1755,11 @@ msgstr "External Host"
 msgid "External host"
 msgstr "External host"
 
+#: src/elements/charts/AdminLoginsChart.ts
+#: src/elements/charts/UserChart.ts
+msgid "Failed Logins"
+msgstr "Failed Logins"
+
 #: src/pages/stages/password/PasswordStageForm.ts
 msgid "Failed attempts before cancel"
 msgstr "Failed attempts before cancel"
@@ -1786,9 +1814,13 @@ msgstr "Field of the user object this value is written to."
 msgid "Field which contains a unique Identifier."
 msgstr "Field which contains a unique Identifier."
 
+#: 
+#~ msgid "Field which contains members of a group."
+#~ msgstr "Field which contains members of a group."
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
-msgid "Field which contains members of a group."
-msgstr "Field which contains members of a group."
+msgid "Field which contains members of a group. Note that if using the \"memberUid\" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'"
+msgstr "Field which contains members of a group. Note that if using the \"memberUid\" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'"
 
 #: src/pages/stages/prompt/PromptStageForm.ts
 msgid "Fields"
@@ -2025,6 +2057,10 @@ msgstr "Healthy outposts"
 #: src/pages/admin-overview/charts/LDAPSyncStatusChart.ts
 msgid "Healthy sources"
 msgstr "Healthy sources"
+
+#: src/pages/stages/prompt/PromptForm.ts
+msgid "Help text"
+msgstr "Help text"
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Hidden: Hidden field, can be used to insert data into form."
@@ -3634,6 +3670,10 @@ msgstr "Scopes"
 msgid "Score"
 msgstr "Score"
 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Search group"
+msgstr "Search group"
+
 #: src/elements/table/TableSearch.ts
 #: src/user/LibraryPage.ts
 msgid "Search..."
@@ -4078,6 +4118,11 @@ msgstr "Subject-alt name"
 msgid "Successful"
 msgstr "Successful"
 
+#: src/elements/charts/AdminLoginsChart.ts
+#: src/elements/charts/UserChart.ts
+msgid "Successful Logins"
+msgstr "Successful Logins"
+
 #: src/pages/flows/FlowListPage.ts
 msgid "Successfully cleared flow cache"
 msgstr "Successfully cleared flow cache"
@@ -4405,9 +4450,9 @@ msgstr "Sync"
 msgid "Sync groups"
 msgstr "Sync groups"
 
-#: src/pages/providers/ldap/LDAPProviderForm.ts
-msgid "Sync parent group"
-msgstr "Sync parent group"
+#: 
+#~ msgid "Sync parent group"
+#~ msgstr "Sync parent group"
 
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 msgid "Sync status"
@@ -4654,6 +4699,10 @@ msgstr "Token count"
 #: src/pages/stages/email/EmailStageForm.ts
 msgid "Token expiry"
 msgstr "Token expiry"
+
+#: src/pages/tokens/TokenListPage.ts
+msgid "Token is managed by authentik."
+msgstr "Token is managed by authentik."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
@@ -5267,6 +5316,10 @@ msgstr "Webhook Mapping"
 msgid "Webhook URL"
 msgstr "Webhook URL"
 
+#: src/pages/stages/email/EmailStageForm.ts
+msgid "When a user returns from the email successfully, their account will be activated."
+msgstr "When a user returns from the email successfully, their account will be activated."
+
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown."
 msgstr "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown."
@@ -5300,6 +5353,10 @@ msgstr "When selected, incoming assertion's Signatures will be validated against
 #: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
 msgstr "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
+
+#: src/pages/stages/prompt/PromptForm.ts
+msgid "When used in conjunction with a User Write stage, use attributes.foo to write attributes."
+msgstr "When used in conjunction with a User Write stage, use attributes.foo to write attributes."
 
 #: src/pages/tenants/TenantForm.ts
 msgid "When using an external logging solution for archiving, this can be set to \"minutes=5\"."

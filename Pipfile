@@ -55,7 +55,7 @@ bandit = "*"
 black = "==21.5b1"
 bump2version = "*"
 colorama = "*"
-coverage = "*"
+coverage = {extras = ["toml"],version = "*"}
 pylint = "*"
 pylint-django = "*"
 pytest = "*"

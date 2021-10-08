@@ -360,19 +360,8 @@ class Outpost(SerializerModel, ManagedModel):
         """Username for service user"""
         return f"ak-outpost-{self.uuid.hex}"
 
-    @property
-    def user(self) -> User:
-        """Get/create user with access to all required objects"""
-        users = User.objects.filter(username=self.user_identifier)
-        if not users.exists():
-            user: User = User.objects.create(username=self.user_identifier)
-            user.set_unusable_password()
-            user.save()
-        else:
-            user = users.first()
-        user.attributes[USER_ATTRIBUTE_SA] = True
-        user.attributes[USER_ATTRIBUTE_CAN_OVERRIDE_IP] = True
-        user.save()
+    def build_user_permissions(self, user: User):
+        """Create per-object and global permissions for outpost service-account"""
         # To ensure the user only has the correct permissions, we delete all of them and re-add
         # the ones the user needs
         with transaction.atomic():
@@ -416,6 +405,23 @@ class Outpost(SerializerModel, ManagedModel):
             "Updated service account's permissions",
             perms=UserObjectPermission.objects.filter(user=user),
         )
+
+    @property
+    def user(self) -> User:
+        """Get/create user with access to all required objects"""
+        users = User.objects.filter(username=self.user_identifier)
+        should_create_user = not users.exists()
+        if should_create_user:
+            user: User = User.objects.create(username=self.user_identifier)
+            user.set_unusable_password()
+            user.save()
+        else:
+            user = users.first()
+        user.attributes[USER_ATTRIBUTE_SA] = True
+        user.attributes[USER_ATTRIBUTE_CAN_OVERRIDE_IP] = True
+        user.save()
+        if should_create_user:
+            self.build_user_permissions(user)
         return user
 
     @property

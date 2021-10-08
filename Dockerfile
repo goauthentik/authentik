@@ -27,7 +27,7 @@ ENV NODE_ENV=production
 RUN cd /static && npm i && npm run build
 
 # Stage 4: Build go proxy
-FROM docker.io/golang:1.17.1 AS builder
+FROM docker.io/golang:1.17.2 AS builder
 
 WORKDIR /work
 
@@ -80,8 +80,12 @@ COPY ./lifecycle/ /lifecycle
 COPY --from=builder /work/authentik /authentik-proxy
 
 USER authentik
+
 ENV TMPDIR /dev/shm/
 ENV PYTHONUNBUFFERED 1
 ENV prometheus_multiproc_dir /dev/shm/
 ENV PATH "/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/lifecycle"
+
+HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 CMD [ "/lifecycle/ak", "healthcheck" ]
+
 ENTRYPOINT [ "/lifecycle/ak" ]

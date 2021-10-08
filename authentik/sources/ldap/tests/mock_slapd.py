@@ -77,5 +77,24 @@ def mock_slapd_connection(password: str) -> Connection:
             "objectClass": "person",
         },
     )
+    # Group with posixGroup and memberUid
+    connection.strategy.add_entry(
+        "cn=group-posix,ou=groups,dc=goauthentik,dc=io",
+        {
+            "cn": "group-posix",
+            "objectClass": "posixGroup",
+            "memberUid": ["user-posix"],
+        },
+    )
+    # User with posixAccount
+    connection.strategy.add_entry(
+        "cn=user-posix,ou=users,dc=goauthentik,dc=io",
+        {
+            "userPassword": password,
+            "uid": "user-posix",
+            "cn": "user-posix",
+            "objectClass": "posixAccount",
+        },
+    )
     connection.bind()
     return connection

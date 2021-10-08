@@ -127,6 +127,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                                 ${prompt.required
                                     ? html`<p class="pf-c-form__helper-text">${t`Required.`}</p>`
                                     : html``}
+                                <p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>
                             </div>`;
                         }
                         // Special types that aren't rendered in a wrapper
@@ -144,6 +145,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                             .errors=${(this.challenge?.responseErrors || {})[prompt.fieldKey]}
                         >
                             ${unsafeHTML(this.renderPromptInner(prompt))}
+                            <p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>
                         </ak-form-element>`;
                     })}
                     ${"non_field_errors" in (this.challenge?.responseErrors || {})

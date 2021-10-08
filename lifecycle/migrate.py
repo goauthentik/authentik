@@ -13,6 +13,7 @@ from authentik.lib.config import CONFIG
 
 LOGGER = get_logger()
 ADV_LOCK_UID = 1000
+LOCKED = False
 
 
 class BaseMigration:
@@ -33,6 +34,22 @@ class BaseMigration:
         """Run the actual migration"""
 
 
+def wait_for_lock():
+    """lock an advisory lock to prevent multiple instances from migrating at once"""
+    LOGGER.info("waiting to acquire database lock")
+    curr.execute("SELECT pg_advisory_lock(%s)", (ADV_LOCK_UID,))
+    # pylint: disable=global-statement
+    global LOCKED
+    LOCKED = True
+
+
+def release_lock():
+    """Release database lock"""
+    if not LOCKED:
+        return
+    curr.execute("SELECT pg_advisory_unlock(%s)", (ADV_LOCK_UID,))
+
+
 if __name__ == "__main__":
 
     conn = connect(
@@ -43,9 +60,6 @@ if __name__ == "__main__":
         port=int(CONFIG.y("postgresql.port")),
     )
     curr = conn.cursor()
-    # lock an advisory lock to prevent multiple instances from migrating at once
-    LOGGER.info("waiting to acquire database lock")
-    curr.execute("SELECT pg_advisory_lock(%s)", (ADV_LOCK_UID,))
     try:
         for migration in Path(__file__).parent.absolute().glob("system_migrations/*.py"):
             spec = spec_from_file_location("lifecycle.system_migrations", migration)
@@ -58,11 +72,14 @@ if __name__ == "__main__":
                     continue
                 migration = sub(curr, conn)
                 if migration.needs_migration():
+                    wait_for_lock()
                     LOGGER.info("Migration needs to be applied", migration=sub)
                     migration.run()
                     LOGGER.info("Migration finished applying", migration=sub)
+                    release_lock()
         LOGGER.info("applying django migrations")
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
+        wait_for_lock()
         try:
             from django.core.management import execute_from_command_line
         except ImportError as exc:
@@ -73,4 +90,4 @@ if __name__ == "__main__":
             ) from exc
         execute_from_command_line(["", "migrate"])
     finally:
-        curr.execute("SELECT pg_advisory_unlock(%s)", (ADV_LOCK_UID,))
+        release_lock()

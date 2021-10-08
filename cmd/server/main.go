@@ -54,7 +54,7 @@ func main() {
 	u, _ := url.Parse("http://localhost:8000")
 
 	g := gounicorn.NewGoUnicorn()
-	ws := web.NewWebServer()
+	ws := web.NewWebServer(g)
 	defer g.Kill()
 	defer ws.Shutdown()
 	go web.RunMetricsServer()

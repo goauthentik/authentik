@@ -43,6 +43,7 @@ class EmailStageSerializer(StageSerializer):
             "token_expiry",
             "subject",
             "template",
+            "activate_user_on_success",
         ]
         extra_kwargs = {"password": {"write_only": True}}
 
@@ -65,6 +66,7 @@ class EmailStageViewSet(UsedByMixin, ModelViewSet):
         "token_expiry",
         "subject",
         "template",
+        "activate_user_on_success",
     ]
     ordering = ["name"]
 

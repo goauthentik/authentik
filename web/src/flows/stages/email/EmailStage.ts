@@ -37,7 +37,7 @@ export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponse
                     }}
                 >
                     <div class="pf-c-form__group">
-                        <p>${t`Check your Emails for a password reset link.`}</p>
+                        <p>${t`Check your Inbox for a verification email.`}</p>
                     </div>
 
                     <div class="pf-c-form__group pf-m-action">

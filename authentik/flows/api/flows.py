@@ -29,7 +29,7 @@ from authentik.core.api.utils import (
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
-from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.flows.views.executor import SESSION_KEY_HISTORY, SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
 from authentik.managed.transport.common import DataclassEncoder
 from authentik.managed.transport.exporter import Exporter
@@ -108,6 +108,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
     queryset = Flow.objects.all()
     serializer_class = FlowSerializer
     lookup_field = "slug"
+    ordering = ["slug", "name"]
     search_fields = ["name", "slug", "designation", "title"]
     filterset_fields = ["flow_uuid", "name", "slug", "designation"]
 
@@ -333,6 +334,9 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
     # pylint: disable=unused-argument
     def execute(self, request: Request, slug: str):
         """Execute flow for current user"""
+        # Because we pre-plan the flow here, and not in the planner, we need to manually clear
+        # the history of the inspector
+        request.session[SESSION_KEY_HISTORY] = []
         flow: Flow = self.get_object()
         planner = FlowPlanner(flow)
         planner.use_cache = False

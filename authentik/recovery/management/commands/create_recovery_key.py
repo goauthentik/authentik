@@ -37,7 +37,11 @@ class Command(BaseCommand):
         duration = int(options.get("duration", 1))
         _now = now()
         expiry = _now + timedelta(days=duration * 365.2425)
-        user = User.objects.get(username=options.get("user"))
+        users = User.objects.filter(username=options.get("user"))
+        if not users.exists():
+            self.stderr.write(f"User '{options.get('user')}' not found.")
+            return
+        user = users.first()
         token = Token.objects.create(
             expires=expiry,
             user=user,

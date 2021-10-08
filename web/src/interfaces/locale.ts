@@ -16,5 +16,13 @@ i18n.load("debug", localeDEBUG);
 
 const DEFAULT_FALLBACK = () => "en";
 
-const result = detect(fromUrl("lang"), fromStorage("lang"), fromNavigator(), DEFAULT_FALLBACK);
-i18n.activate(result || DEFAULT_FALLBACK());
+const detected =
+    detect(fromUrl("lang"), fromStorage("lang"), fromNavigator(), DEFAULT_FALLBACK) ||
+    DEFAULT_FALLBACK();
+if (detected in i18n._messages) {
+    console.debug(`authentik/locale: Activating detected locale '${detected}'`);
+    i18n.activate(detected);
+} else {
+    console.debug(`authentik/locale: No locale for '${detected}', falling back to en`);
+    i18n.activate(DEFAULT_FALLBACK());
+}

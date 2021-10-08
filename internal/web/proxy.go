@@ -40,6 +40,10 @@ func (ws *WebServer) configureProxy() {
 		ws.proxyErrorHandler(rw, r, fmt.Errorf("proxy not running"))
 	})
 	ws.m.PathPrefix("/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+		if !ws.p.IsRunning() {
+			ws.proxyErrorHandler(rw, r, fmt.Errorf("authentik core not running yet"))
+			return
+		}
 		host := web.GetHost(r)
 		before := time.Now()
 		if ws.ProxyServer != nil {
@@ -59,8 +63,12 @@ func (ws *WebServer) configureProxy() {
 }
 
 func (ws *WebServer) proxyErrorHandler(rw http.ResponseWriter, req *http.Request, err error) {
-	ws.log.WithError(err).Warning("proxy error")
+	ws.log.Warning(err.Error())
 	rw.WriteHeader(http.StatusBadGateway)
+	_, err = rw.Write([]byte("authentik starting..."))
+	if err != nil {
+		ws.log.WithError(err).Warning("failed to write error message")
+	}
 }
 
 func (ws *WebServer) proxyModifyResponse(r *http.Response) error {

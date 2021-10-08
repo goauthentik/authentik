@@ -16,14 +16,7 @@ from authentik.flows.models import Flow
 from authentik.outposts.models import DockerServiceConnection, Outpost, OutpostConfig, OutpostType
 from authentik.outposts.tasks import outpost_local_connection
 from authentik.providers.proxy.models import ProxyProvider
-from tests.e2e.utils import (
-    USER,
-    SeleniumTestCase,
-    apply_migration,
-    get_docker_tag,
-    object_manager,
-    retry,
-)
+from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, object_manager, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -49,7 +42,7 @@ class TestProviderProxy(SeleniumTestCase):
         """Start proxy container based on outpost created"""
         client: DockerClient = from_env()
         container = client.containers.run(
-            image=f"beryju.org/authentik/outpost-proxy:{get_docker_tag()}",
+            image=self.get_container_image("beryju.org/authentik/outpost-proxy"),
             detach=True,
             network_mode="host",
             auto_remove=True,
@@ -93,7 +86,7 @@ class TestProviderProxy(SeleniumTestCase):
         )
         outpost.providers.add(proxy)
         outpost.save()
-        _ = outpost.user
+        outpost.build_user_permissions(outpost.user)
 
         self.proxy_container = self.start_proxy(outpost)
 
@@ -157,7 +150,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
         )
         outpost.providers.add(proxy)
         outpost.save()
-        _ = outpost.user
+        outpost.build_user_permissions(outpost.user)
 
         # Wait until outpost healthcheck succeeds
         healthcheck_retries = 0

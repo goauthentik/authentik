@@ -82,6 +82,7 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
         "description",
         "expires",
         "expiring",
+        "managed",
     ]
     ordering = ["identifier", "expires"]
     permission_classes = [OwnerSuperuserPermissions]

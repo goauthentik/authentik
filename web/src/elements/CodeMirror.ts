@@ -4,6 +4,7 @@ import "codemirror/addon/display/autorefresh";
 import "codemirror/addon/hint/show-hint";
 import "codemirror/addon/search/search";
 import "codemirror/addon/search/searchcursor";
+import "codemirror/mode/htmlmixed/htmlmixed.js";
 import "codemirror/mode/javascript/javascript.js";
 import "codemirror/mode/python/python.js";
 import "codemirror/mode/xml/xml.js";
