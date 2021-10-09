@@ -14147,6 +14147,10 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: from_number
+        schema:
+          type: string
+      - in: query
         name: name
         schema:
           type: string
@@ -19177,12 +19181,15 @@ components:
             If empty, user will not be able to configure this stage.
         provider:
           $ref: '#/components/schemas/ProviderEnum'
+        from_number:
+          type: string
         twilio_account_sid:
           type: string
         twilio_auth:
           type: string
       required:
       - component
+      - from_number
       - name
       - pk
       - provider
@@ -19208,11 +19215,14 @@ components:
             If empty, user will not be able to configure this stage.
         provider:
           $ref: '#/components/schemas/ProviderEnum'
+        from_number:
+          type: string
         twilio_account_sid:
           type: string
         twilio_auth:
           type: string
       required:
+      - from_number
       - name
       - provider
       - twilio_account_sid
@@ -25933,6 +25943,8 @@ components:
             If empty, user will not be able to configure this stage.
         provider:
           $ref: '#/components/schemas/ProviderEnum'
+        from_number:
+          type: string
         twilio_account_sid:
           type: string
         twilio_auth:

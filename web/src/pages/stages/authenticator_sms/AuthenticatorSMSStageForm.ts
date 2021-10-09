@@ -79,6 +79,21 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                         </select>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
+                        label=${t`From number`}
+                        ?required=${true}
+                        name="fromNumber"
+                    >
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.fromNumber || "")}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`Number the SMS will be sent from.`}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
                         label=${t`Twilio Account SID`}
                         ?required=${true}
                         name="twilioAccountSid"

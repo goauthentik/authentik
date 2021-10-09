@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-09 18:07+0000\n"
+"POT-Creation-Date: 2021-10-09 20:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1214,6 +1214,27 @@ msgstr ""
 msgid "Duo Devices"
 msgstr ""
 
+#: authentik/stages/authenticator_sms/models.py:97
+msgid "SMS Authenticator Setup Stage"
+msgstr ""
+
+#: authentik/stages/authenticator_sms/models.py:98
+msgid "SMS Authenticator Setup Stages"
+msgstr ""
+
+#: authentik/stages/authenticator_sms/models.py:116
+msgid "SMS Device"
+msgstr ""
+
+#: authentik/stages/authenticator_sms/models.py:117
+msgid "SMS Devices"
+msgstr ""
+
+#: authentik/stages/authenticator_sms/stage.py:54
+#: authentik/stages/authenticator_totp/stage.py:45
+msgid "Code does not match"
+msgstr ""
+
 #: authentik/stages/authenticator_static/models.py:48
 msgid "Static Authenticator Stage"
 msgstr ""
@@ -1236,10 +1257,6 @@ msgstr ""
 
 #: authentik/stages/authenticator_totp/models.py:56
 msgid "TOTP Authenticator Setup Stages"
-msgstr ""
-
-#: authentik/stages/authenticator_totp/stage.py:45
-msgid "OTP Code does not match"
 msgstr ""
 
 #: authentik/stages/authenticator_validate/challenge.py:85

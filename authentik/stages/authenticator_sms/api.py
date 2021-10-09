@@ -21,6 +21,7 @@ class AuthenticatorSMSStageSerializer(StageSerializer):
         fields = StageSerializer.Meta.fields + [
             "configure_flow",
             "provider",
+            "from_number",
             "twilio_account_sid",
             "twilio_auth",
         ]

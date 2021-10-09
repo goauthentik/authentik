@@ -6,6 +6,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django_otp.models import SideChannelDevice
+from requests.exceptions import RequestException
+from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
@@ -19,7 +21,7 @@ LOGGER = get_logger()
 class SMSProviders(models.TextChoices):
     """Supported SMS Providers"""
 
-    Twilio = "twilio"
+    TWILIO = "twilio"
 
 
 class AuthenticatorSMSStage(ConfigurableStage, Stage):
@@ -27,24 +29,35 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
 
     provider = models.TextField(choices=SMSProviders.choices)
 
+    from_number = models.TextField()
+
     twilio_account_sid = models.TextField()
     twilio_auth = models.TextField()
 
+    def send(self, token: str, device: "SMSDevice"):
+        if self.provider == SMSProviders.TWILIO:
+            return self.send_twilio(token, device)
+        raise ValueError(f"invalid provider {self.provider}")
+
     def send_twilio(self, token: str, device: "SMSDevice"):
+        """send sms via twilio provider"""
         response = get_http_session().post(
             f"https://api.twilio.com/2010-04-01/Accounts/{self.twilio_account_sid}/Messages.json",
             data={
-                "From": "foo",
-                "To": device.number,
+                "From": self.from_number,
+                "To": device.phone_number,
                 "Body": token,
             },
             auth=(self.twilio_account_sid, self.twilio_auth),
         )
         try:
             response.raise_for_status()
-        except Exception as exc:
-            LOGGER.warning("Error sending token by Twilio SMS", exc=exc)
-            raise
+        except RequestException as exc:
+            LOGGER.warning("Error sending token by Twilio SMS", exc=exc, body=response.text)
+            if response.status_code == 400:
+                raise ValidationError(response.json().get("message"))
+            else:
+                raise
 
         if "sid" not in response.json():
             message = response.json().get("message")

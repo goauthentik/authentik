@@ -43,7 +43,7 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
 
     def validate_code(self, code: str) -> str:
         """Validate code-based response, raise error if code isn't allowed"""
-        self._challenge_allowed([DeviceClasses.TOTP, DeviceClasses.STATIC])
+        self._challenge_allowed([DeviceClasses.TOTP, DeviceClasses.STATIC, DeviceClasses.SMS])
         return validate_challenge_code(code, self.stage.request, self.stage.get_pending_user())
 
     def validate_webauthn(self, webauthn: dict) -> dict:
