@@ -33,7 +33,7 @@ import "../elements/sidebar/Sidebar";
 import { DefaultTenant } from "../elements/sidebar/SidebarBrand";
 import "../elements/sidebar/SidebarItem";
 import { ROUTES } from "../routesUser";
-import { uiConfig } from "../user/config";
+import { uiConfig, UserDisplay } from "../user/config";
 import { first } from "../utils";
 import "./locale";
 
@@ -235,11 +235,11 @@ export class UserInterface extends LitElement {
                                     ${until(
                                         me().then((me) => {
                                             switch (config.navbar.userDisplay) {
-                                                case "username":
+                                                case UserDisplay.username:
                                                     return me.user.username;
-                                                case "name":
+                                                case UserDisplay.name:
                                                     return me.user.name;
-                                                case "email":
+                                                case UserDisplay.email:
                                                     return me.user.email;
                                                 default:
                                                     return me.user.username;
