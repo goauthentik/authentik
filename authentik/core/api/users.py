@@ -22,7 +22,7 @@ from drf_spectacular.utils import (
 )
 from guardian.shortcuts import get_anonymous_user, get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, JSONField, SerializerMethodField
+from rest_framework.fields import CharField, DictField, JSONField, SerializerMethodField
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -103,6 +103,7 @@ class UserSelfSerializer(ModelSerializer):
     avatar = CharField(read_only=True)
     groups = SerializerMethodField()
     uid = CharField(read_only=True)
+    settings = DictField(source="attributes.settings")
 
     @extend_schema_field(
         ListSerializer(
@@ -133,6 +134,7 @@ class UserSelfSerializer(ModelSerializer):
             "email",
             "avatar",
             "uid",
+            "settings",
         ]
         extra_kwargs = {
             "is_active": {"read_only": True},

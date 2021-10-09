@@ -29295,6 +29295,9 @@ components:
         uid:
           type: string
           readOnly: true
+        settings:
+          type: object
+          additionalProperties: {}
       required:
       - avatar
       - groups
@@ -29302,6 +29305,7 @@ components:
       - is_superuser
       - name
       - pk
+      - settings
       - uid
       - username
     UserSelfGroups:
@@ -29336,8 +29340,12 @@ components:
           format: email
           title: Email address
           maxLength: 254
+        settings:
+          type: object
+          additionalProperties: {}
       required:
       - name
+      - settings
       - username
     UserServiceAccountRequest:
       type: object
