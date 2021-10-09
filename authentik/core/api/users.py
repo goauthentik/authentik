@@ -103,7 +103,7 @@ class UserSelfSerializer(ModelSerializer):
     avatar = CharField(read_only=True)
     groups = SerializerMethodField()
     uid = CharField(read_only=True)
-    settings = DictField(source="attributes.settings")
+    settings = DictField(source="attributes.settings", default=dict)
 
     @extend_schema_field(
         ListSerializer(
