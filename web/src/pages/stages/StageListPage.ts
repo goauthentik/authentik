@@ -18,6 +18,7 @@ import "../../elements/forms/ProxyForm";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
 import "./authenticator_duo/AuthenticatorDuoStageForm.ts";
+import "./authenticator_sms/AuthenticatorSMSStageForm.ts";
 import "./authenticator_static/AuthenticatorStaticStageForm.ts";
 import "./authenticator_totp/AuthenticatorTOTPStageForm.ts";
 import "./authenticator_validate/AuthenticatorValidateStageForm.ts";
