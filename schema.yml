@@ -416,7 +416,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this sms device.
+        description: A unique integer value identifying this SMS Device.
         required: true
       tags:
       - authenticators
@@ -896,7 +896,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this sms device.
+        description: A unique integer value identifying this SMS Device.
         required: true
       tags:
       - authenticators
@@ -921,7 +921,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this sms device.
+        description: A unique integer value identifying this SMS Device.
         required: true
       tags:
       - authenticators
@@ -952,7 +952,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this sms device.
+        description: A unique integer value identifying this SMS Device.
         required: true
       tags:
       - authenticators
@@ -982,7 +982,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this sms device.
+        description: A unique integer value identifying this SMS Device.
         required: true
       tags:
       - authenticators
@@ -1004,7 +1004,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this sms device.
+        description: A unique integer value identifying this SMS Device.
         required: true
       tags:
       - authenticators
@@ -19127,10 +19127,10 @@ components:
           type: string
         pending_user_avatar:
           type: string
-        config_url:
-          type: string
+        phone_number_required:
+          type: boolean
+          default: true
       required:
-      - config_url
       - pending_user
       - pending_user_avatar
       - type
@@ -19143,8 +19143,8 @@ components:
           default: ak-stage-authenticator-sms
         code:
           type: integer
-      required:
-      - code
+        phone_number:
+          type: string
     AuthenticatorSMSStage:
       type: object
       description: AuthenticatorSMSStage Serializer
@@ -28959,8 +28959,12 @@ components:
           type: integer
           readOnly: true
           title: ID
+        phone_number:
+          type: string
+          readOnly: true
       required:
       - name
+      - phone_number
       - pk
     SMSDeviceRequest:
       type: object

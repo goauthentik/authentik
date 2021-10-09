@@ -1,6 +1,7 @@
 """OTP Time-based models"""
 from typing import Optional, Type
 
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.views import View
@@ -85,4 +86,19 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
 
 
 class SMSDevice(SideChannelDevice):
-    pass
+    """SMS Device"""
+
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+
+    # Connect to the stage to when validating access we know the API Credentials
+    stage = models.ForeignKey(AuthenticatorSMSStage, on_delete=models.CASCADE)
+
+    phone_number = models.TextField()
+
+    def __str__(self):
+        return self.name or str(self.user)
+
+    class Meta:
+
+        verbose_name = _("SMS Device")
+        verbose_name_plural = _("SMS Devices")

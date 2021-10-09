@@ -41,11 +41,11 @@ class SMSDeviceSerializer(ModelSerializer):
     class Meta:
 
         model = SMSDevice
-        fields = [
-            "name",
-            "pk",
-        ]
+        fields = ["name", "pk", "phone_number"]
         depth = 2
+        extra_kwargs = {
+            "phone_number": {"read_only": True},
+        }
 
 
 class SMSDeviceViewSet(

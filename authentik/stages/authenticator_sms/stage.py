@@ -1,9 +1,11 @@
 """SMS Setup stage"""
+from typing import Optional
+
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
-from rest_framework.fields import CharField, IntegerField
+from rest_framework.fields import BooleanField, CharField, IntegerField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
@@ -16,6 +18,7 @@ from authentik.flows.challenge import (
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_sms.models import AuthenticatorSMSStage, SMSDevice
+from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 LOGGER = get_logger()
 SESSION_SMS_DEVICE = "sms_device"
@@ -24,7 +27,9 @@ SESSION_SMS_DEVICE = "sms_device"
 class AuthenticatorSMSChallenge(WithUserInfoChallenge):
     """SMS Setup challenge"""
 
-    config_url = CharField()
+    # Set to true if no previous prompt stage set the phone number
+    # this stage will also check prompt_data.phone
+    phone_number_required = BooleanField(default=True)
     component = CharField(default="ak-stage-authenticator-sms")
 
 
@@ -33,15 +38,24 @@ class AuthenticatorSMSChallengeResponse(ChallengeResponse):
 
     device: SMSDevice
 
-    code = IntegerField()
+    code = IntegerField(required=False)
+    phone_number = CharField(required=False)
+
     component = CharField(default="ak-stage-authenticator-sms")
 
-    def validate_code(self, code: int) -> int:
-        """Validate sms code"""
-        if self.device is not None:
-            if not self.device.verify_token(code):
-                raise ValidationError(_("Code does not match"))
-        return code
+    # def validate(self, attrs: dict) -> dict:
+    #     """Check """
+    #     if "code" not in attrs:
+    #         # No code yet, but we have a phone number, so send a verification email
+    #         self.device.stage
+    #     return super().validate(attrs)
+
+    # def validate_code(self, code: int) -> int:
+    #     """Validate sms code"""
+    #     if self.device is not None:
+    #         if not self.device.verify_token(code):
+    #             raise ValidationError(_("Code does not match"))
+    #     return code
 
 
 class AuthenticatorSMSStageView(ChallengeStageView):
@@ -49,10 +63,17 @@ class AuthenticatorSMSStageView(ChallengeStageView):
 
     response_class = AuthenticatorSMSChallengeResponse
 
+    def _has_phone_number(self) -> Optional[str]:
+        context = self.executor.plan.context
+        if "phone" in context.get(PLAN_CONTEXT_PROMPT, {}):
+            return context.get(PLAN_CONTEXT_PROMPT, {}).get("phone")
+        return None
+
     def get_challenge(self, *args, **kwargs) -> Challenge:
         return AuthenticatorSMSChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
+                "phone_number_required": self._has_phone_number() is not None,
             }
         )
 
