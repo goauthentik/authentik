@@ -338,7 +338,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-LOCALE_PATHS = ['./locale']
+LOCALE_PATHS = ["./locale"]
 
 # Celery settings
 # Add a 10 minute timeout to all Celery tasks.
