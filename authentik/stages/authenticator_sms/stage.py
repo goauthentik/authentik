@@ -1,9 +1,8 @@
-"""TOTP Setup stage"""
+"""SMS Setup stage"""
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
-from django_otp.plugins.otp_totp.models import TOTPDevice
 from rest_framework.fields import CharField, IntegerField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
@@ -16,55 +15,50 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
-from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage
-from authentik.stages.authenticator_totp.settings import OTP_TOTP_ISSUER
+from authentik.stages.authenticator_sms.models import AuthenticatorSMSStage, SMSDevice
 
 LOGGER = get_logger()
-SESSION_TOTP_DEVICE = "totp_device"
+SESSION_SMS_DEVICE = "sms_device"
 
 
-class AuthenticatorTOTPChallenge(WithUserInfoChallenge):
-    """TOTP Setup challenge"""
+class AuthenticatorSMSChallenge(WithUserInfoChallenge):
+    """SMS Setup challenge"""
 
     config_url = CharField()
-    component = CharField(default="ak-stage-authenticator-totp")
+    component = CharField(default="ak-stage-authenticator-sms")
 
 
-class AuthenticatorTOTPChallengeResponse(ChallengeResponse):
-    """TOTP Challenge response, device is set by get_response_instance"""
+class AuthenticatorSMSChallengeResponse(ChallengeResponse):
+    """SMS Challenge response, device is set by get_response_instance"""
 
-    device: TOTPDevice
+    device: SMSDevice
 
     code = IntegerField()
-    component = CharField(default="ak-stage-authenticator-totp")
+    component = CharField(default="ak-stage-authenticator-sms")
 
     def validate_code(self, code: int) -> int:
-        """Validate totp code"""
+        """Validate sms code"""
         if self.device is not None:
             if not self.device.verify_token(code):
                 raise ValidationError(_("Code does not match"))
         return code
 
 
-class AuthenticatorTOTPStageView(ChallengeStageView):
-    """OTP totp Setup stage"""
+class AuthenticatorSMSStageView(ChallengeStageView):
+    """OTP sms Setup stage"""
 
-    response_class = AuthenticatorTOTPChallengeResponse
+    response_class = AuthenticatorSMSChallengeResponse
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
-        device: TOTPDevice = self.request.session[SESSION_TOTP_DEVICE]
-        return AuthenticatorTOTPChallenge(
+        return AuthenticatorSMSChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "config_url": device.config_url.replace(
-                    OTP_TOTP_ISSUER, slugify(self.request.tenant.branding_title)
-                ),
             }
         )
 
     def get_response_instance(self, data: QueryDict) -> ChallengeResponse:
         response = super().get_response_instance(data)
-        response.device = self.request.session[SESSION_TOTP_DEVICE]
+        response.device = self.request.session[SESSION_SMS_DEVICE]
         return response
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
@@ -75,20 +69,20 @@ class AuthenticatorTOTPStageView(ChallengeStageView):
 
         # Currently, this stage only supports one device per user. If the user already
         # has a device, just skip to the next stage
-        if TOTPDevice.objects.filter(user=user).exists():
+        if SMSDevice.objects.filter(user=user).exists():
             return self.executor.stage_ok()
 
-        stage: AuthenticatorTOTPStage = self.executor.current_stage
+        stage: AuthenticatorSMSStage = self.executor.current_stage
 
-        if SESSION_TOTP_DEVICE not in self.request.session:
-            device = TOTPDevice(user=user, confirmed=True, digits=stage.digits)
+        if SESSION_SMS_DEVICE not in self.request.session:
+            device = SMSDevice(user=user, confirmed=True, digits=stage.digits)
 
-            self.request.session[SESSION_TOTP_DEVICE] = device
+            self.request.session[SESSION_SMS_DEVICE] = device
         return super().get(request, *args, **kwargs)
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
-        """TOTP Token is validated by challenge"""
-        device: TOTPDevice = self.request.session[SESSION_TOTP_DEVICE]
+        """SMS Token is validated by challenge"""
+        device: SMSDevice = self.request.session[SESSION_SMS_DEVICE]
         device.save()
-        del self.request.session[SESSION_TOTP_DEVICE]
+        del self.request.session[SESSION_SMS_DEVICE]
         return self.executor.stage_ok()
