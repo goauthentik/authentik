@@ -57,7 +57,6 @@ export function uiConfig(): Promise<UIConfig> {
         if ("userInterface" in settings) {
             config = parseConfig(settings.userInterface);
         }
-        console.debug(JSON.stringify(config));
         return config;
     });
 }

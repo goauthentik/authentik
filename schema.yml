@@ -29305,7 +29305,6 @@ components:
       - is_superuser
       - name
       - pk
-      - settings
       - uid
       - username
     UserSelfGroups:
@@ -29345,7 +29344,6 @@ components:
           additionalProperties: {}
       required:
       - name
-      - settings
       - username
     UserServiceAccountRequest:
       type: object
