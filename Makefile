@@ -27,6 +27,10 @@ lint:
 	bandit -r authentik tests lifecycle -x node_modules
 	pylint authentik tests lifecycle
 
+i18n-extract:
+	./manage.py makemessages --ignore web --ignore internal --ignore web --ignore web-api --ignore website -l en
+	cd web && npm run extract
+
 gen-build:
 	./manage.py spectacular --file schema.yml
 

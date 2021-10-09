@@ -79,6 +79,8 @@ COPY ./manage.py /
 COPY ./lifecycle/ /lifecycle
 COPY --from=builder /work/authentik /authentik-proxy
 
+RUN /manage.py compilemessages
+
 USER authentik
 
 ENV TMPDIR /dev/shm/

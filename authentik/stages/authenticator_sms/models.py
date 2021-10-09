@@ -16,12 +16,13 @@ LOGGER = get_logger()
 
 
 class SMSProviders(models.TextChoices):
+    """Supported SMS Providers"""
 
     Twilio = "twilio"
 
 
 class AuthenticatorSMSStage(ConfigurableStage, Stage):
-    """Enroll a user's device into Time-based OTP."""
+    """Use SMS-based TOTP instead of authenticator-based."""
 
     provider = models.TextField(choices=SMSProviders.choices)
 
