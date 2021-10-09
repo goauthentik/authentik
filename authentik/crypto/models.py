@@ -13,9 +13,10 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from authentik.lib.models import CreatedUpdatedModel
+from authentik.managed.models import ManagedModel
 
 
-class CertificateKeyPair(CreatedUpdatedModel):
+class CertificateKeyPair(ManagedModel, CreatedUpdatedModel):
     """CertificateKeyPair that can be used for signing or encrypting if `key_data`
     is set, otherwise it can be used to verify remote data."""
 

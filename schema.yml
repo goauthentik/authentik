@@ -3088,6 +3088,10 @@ paths:
           type: boolean
         description: Only return certificate-key pairs with keys
       - in: query
+        name: managed
+        schema:
+          type: string
+      - in: query
         name: name
         schema:
           type: string
@@ -19174,6 +19178,14 @@ components:
         private_key_download_url:
           type: string
           readOnly: true
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects which are managed by authentik. These objects are created
+            and updated automatically. This is flag only indicates that an object
+            can be overwritten by migrations. You can still modify the objects via
+            the API, but expect changes to be overwritten in a later update.
       required:
       - cert_expiry
       - cert_subject
@@ -19199,6 +19211,14 @@ components:
           writeOnly: true
           description: Optional Private Key. If this is set, you can use this keypair
             for encryption.
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects which are managed by authentik. These objects are created
+            and updated automatically. This is flag only indicates that an object
+            can be overwritten by migrations. You can still modify the objects via
+            the API, but expect changes to be overwritten in a later update.
       required:
       - certificate_data
       - name
@@ -25310,6 +25330,14 @@ components:
           writeOnly: true
           description: Optional Private Key. If this is set, you can use this keypair
             for encryption.
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects which are managed by authentik. These objects are created
+            and updated automatically. This is flag only indicates that an object
+            can be overwritten by migrations. You can still modify the objects via
+            the API, but expect changes to be overwritten in a later update.
     PatchedConsentStageRequest:
       type: object
       description: ConsentStage Serializer

@@ -99,6 +99,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
             "private_key_available",
             "certificate_download_url",
             "private_key_download_url",
+            "managed",
         ]
         extra_kwargs = {
             "key_data": {"write_only": True},
@@ -134,7 +135,7 @@ class CertificateKeyPairFilter(FilterSet):
 
     class Meta:
         model = CertificateKeyPair
-        fields = ["name"]
+        fields = ["name", "managed"]
 
 
 class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
