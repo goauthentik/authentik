@@ -79,8 +79,6 @@ COPY ./manage.py /
 COPY ./lifecycle/ /lifecycle
 COPY --from=builder /work/authentik /authentik-proxy
 
-RUN AUTHENTIK_SECRET_KEY=dev /manage.py compilemessages
-
 USER authentik
 
 ENV TMPDIR /dev/shm/
