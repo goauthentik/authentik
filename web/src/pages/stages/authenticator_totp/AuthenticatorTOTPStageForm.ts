@@ -10,6 +10,7 @@ import {
     AuthenticatorTOTPStage,
     StagesApi,
     FlowsInstancesListDesignationEnum,
+    DigitsEnum,
 } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";
@@ -64,10 +65,16 @@ export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${t`Digits`} ?required=${true} name="digits">
                         <select name="users" class="pf-c-form-control">
-                            <option value="6" ?selected=${this.instance?.digits === 6}>
+                            <option
+                                value="${DigitsEnum.NUMBER_6}"
+                                ?selected=${this.instance?.digits === DigitsEnum.NUMBER_6}
+                            >
                                 ${t`6 digits, widely compatible`}
                             </option>
-                            <option value="8" ?selected=${this.instance?.digits === 8}>
+                            <option
+                                value="${DigitsEnum.NUMBER_8}"
+                                ?selected=${this.instance?.digits === DigitsEnum.NUMBER_8}
+                            >
                                 ${t`8 digits, not compatible with apps like Google Authenticator`}
                             </option>
                         </select>

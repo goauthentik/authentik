@@ -71,12 +71,42 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                     >
                         <select name="users" class="pf-c-form-control">
                             <option
-                                value="6"
+                                value="${ProviderEnum.Twilio}"
                                 ?selected=${this.instance?.provider === ProviderEnum.Twilio}
                             >
                                 ${t`Twilio`}
                             </option>
                         </select>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Twilio Account SID`}
+                        ?required=${true}
+                        name="twilioAccountSid"
+                    >
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.twilioAccountSid || "")}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`Get this value from https://console.twilio.com`}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Twilio Auth Token`}
+                        ?required=${true}
+                        name="twilioAuth"
+                    >
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.twilioAuth || "")}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`Get this value from https://console.twilio.com`}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Configuration flow`} name="configureFlow">
                         <select class="pf-c-form-control">
