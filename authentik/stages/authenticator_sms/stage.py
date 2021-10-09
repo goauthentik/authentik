@@ -43,12 +43,13 @@ class AuthenticatorSMSChallengeResponse(ChallengeResponse):
 
     component = CharField(default="ak-stage-authenticator-sms")
 
-    # def validate(self, attrs: dict) -> dict:
-    #     """Check """
-    #     if "code" not in attrs:
-    #         # No code yet, but we have a phone number, so send a verification email
-    #         self.device.stage
-    #     return super().validate(attrs)
+    def validate(self, attrs: dict) -> dict:
+        """Check"""
+        print(attrs)
+        # if "code" not in attrs:
+        #     # No code yet, but we have a phone number, so send a verification email
+        #     self.device.stage
+        return super().validate(attrs)
 
     # def validate_code(self, code: int) -> int:
     #     """Validate sms code"""
@@ -73,7 +74,7 @@ class AuthenticatorSMSStageView(ChallengeStageView):
         return AuthenticatorSMSChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "phone_number_required": self._has_phone_number() is not None,
+                "phone_number_required": self._has_phone_number() is None,
             }
         )
 
@@ -96,8 +97,9 @@ class AuthenticatorSMSStageView(ChallengeStageView):
         stage: AuthenticatorSMSStage = self.executor.current_stage
 
         if SESSION_SMS_DEVICE not in self.request.session:
-            device = SMSDevice(user=user, confirmed=True, digits=stage.digits)
-
+            device = SMSDevice(user=user, confirmed=True, stage=stage)
+            if phone_number := self._has_phone_number():
+                device.phone_number = phone_number
             self.request.session[SESSION_SMS_DEVICE] = device
         return super().get(request, *args, **kwargs)
 
