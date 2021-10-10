@@ -26264,8 +26264,6 @@ components:
         field_key:
           type: string
           description: Name of the form field, also used to store the value
-          maxLength: 50
-          pattern: ^[-a-zA-Z0-9_]+$
         label:
           type: string
         type:
@@ -27145,8 +27143,6 @@ components:
         field_key:
           type: string
           description: Name of the form field, also used to store the value
-          maxLength: 50
-          pattern: ^[-a-zA-Z0-9_]+$
         label:
           type: string
         type:
@@ -27211,8 +27207,6 @@ components:
         field_key:
           type: string
           description: Name of the form field, also used to store the value
-          maxLength: 50
-          pattern: ^[-a-zA-Z0-9_]+$
         label:
           type: string
         type:
