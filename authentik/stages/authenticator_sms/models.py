@@ -35,6 +35,7 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
     twilio_auth = models.TextField()
 
     def send(self, token: str, device: "SMSDevice"):
+        """Send message via selected provider"""
         if self.provider == SMSProviders.TWILIO:
             return self.send_twilio(token, device)
         raise ValueError(f"invalid provider {self.provider}")
@@ -56,8 +57,7 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
             LOGGER.warning("Error sending token by Twilio SMS", exc=exc, body=response.text)
             if response.status_code == 400:
                 raise ValidationError(response.json().get("message"))
-            else:
-                raise
+            raise
 
         if "sid" not in response.json():
             message = response.json().get("message")

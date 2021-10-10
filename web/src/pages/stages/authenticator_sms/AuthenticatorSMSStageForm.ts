@@ -7,7 +7,6 @@ import { until } from "lit/directives/until";
 
 import {
     FlowsApi,
-    AuthenticatorTOTPStage,
     StagesApi,
     FlowsInstancesListDesignationEnum,
     AuthenticatorSMSStage,
