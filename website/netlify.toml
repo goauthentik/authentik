@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/v2/*"
+  to = "https://registry.goauthentik.io/v2/:splat"
+  status = 200
+  force = true
