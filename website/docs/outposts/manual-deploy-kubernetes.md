@@ -14,7 +14,7 @@ metadata:
     app.kubernetes.io/instance: __OUTPOST_NAME__
     app.kubernetes.io/managed-by: goauthentik.io
     app.kubernetes.io/name: authentik-proxy
-    app.kubernetes.io/version: 2021.9.7
+    app.kubernetes.io/version: 2021.9.8
   name: authentik-outpost-api
 stringData:
   authentik_host: "__AUTHENTIK_URL__"
@@ -29,7 +29,7 @@ metadata:
     app.kubernetes.io/instance: __OUTPOST_NAME__
     app.kubernetes.io/managed-by: goauthentik.io
     app.kubernetes.io/name: authentik-proxy
-    app.kubernetes.io/version: 2021.9.7
+    app.kubernetes.io/version: 2021.9.8
   name: authentik-outpost
 spec:
   ports:
@@ -54,7 +54,7 @@ metadata:
     app.kubernetes.io/instance: __OUTPOST_NAME__
     app.kubernetes.io/managed-by: goauthentik.io
     app.kubernetes.io/name: authentik-proxy
-    app.kubernetes.io/version: 2021.9.7
+    app.kubernetes.io/version: 2021.9.8
   name: authentik-outpost
 spec:
   selector:
@@ -62,14 +62,14 @@ spec:
       app.kubernetes.io/instance: __OUTPOST_NAME__
       app.kubernetes.io/managed-by: goauthentik.io
       app.kubernetes.io/name: authentik-proxy
-      app.kubernetes.io/version: 2021.9.7
+      app.kubernetes.io/version: 2021.9.8
   template:
     metadata:
       labels:
         app.kubernetes.io/instance: __OUTPOST_NAME__
         app.kubernetes.io/managed-by: goauthentik.io
         app.kubernetes.io/name: authentik-proxy
-        app.kubernetes.io/version: 2021.9.7
+        app.kubernetes.io/version: 2021.9.8
     spec:
       containers:
         - env:
@@ -88,7 +88,7 @@ spec:
               secretKeyRef:
                 key: authentik_host_insecure
                 name: authentik-outpost-api
-        image: ghcr.io/goauthentik/proxy:2021.9.7
+        image: ghcr.io/goauthentik/proxy:2021.9.8
         name: proxy
         ports:
           - containerPort: 9000
@@ -110,7 +110,7 @@ metadata:
     app.kubernetes.io/instance: __OUTPOST_NAME__
     app.kubernetes.io/managed-by: goauthentik.io
     app.kubernetes.io/name: authentik-proxy
-    app.kubernetes.io/version: 2021.9.7
+    app.kubernetes.io/version: 2021.9.8
   name: authentik-outpost
 spec:
   rules:
