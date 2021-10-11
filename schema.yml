@@ -20150,6 +20150,7 @@ components:
       - totp
       - webauthn
       - duo
+      - sms
       type: string
     DigestAlgorithmEnum:
       enum:
