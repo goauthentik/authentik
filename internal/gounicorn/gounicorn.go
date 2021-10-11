@@ -19,7 +19,7 @@ type GoUnicorn struct {
 }
 
 func NewGoUnicorn() *GoUnicorn {
-	logger := log.WithField("logger", "authentik.g.unicorn")
+	logger := log.WithField("logger", "authentik.router.unicorn")
 	g := &GoUnicorn{
 		log:     logger,
 		started: false,

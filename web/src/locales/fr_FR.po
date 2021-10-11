@@ -62,6 +62,10 @@ msgstr "6 chiffres, compatibilité large"
 msgid "8 digits, not compatible with apps like Google Authenticator"
 msgstr "8 chiffres, incompatible avec certaines applications telles que Google Authenticator"
 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
+msgid "A code has been sent to you via SMS."
+msgstr ""
+
 #: src/interfaces/AdminInterface.ts
 msgid "A newer version of the frontend is available."
 msgstr "Une nouvelle version de l'interface est disponible."
@@ -419,7 +423,7 @@ msgstr "Audience"
 msgid "Authenticating with Plex..."
 msgstr "Authentification avec Plex..."
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Authentication"
 msgstr "Authentification"
 
@@ -435,7 +439,7 @@ msgstr "Flux d'authentification"
 msgid "Authenticator"
 msgstr "Authentificateur"
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Authorization"
 msgstr "Authorisation"
 
@@ -806,6 +810,7 @@ msgstr "Type du client"
 msgid "Close"
 msgstr "Fermer"
 
+#: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
 msgid "Code"
@@ -836,6 +841,7 @@ msgid "Configuration error"
 msgstr "Erreur de configuration"
 
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 #: src/pages/stages/password/PasswordStageForm.ts
@@ -958,6 +964,8 @@ msgstr "Secret consumer"
 msgid "Context"
 msgstr "Contexte"
 
+#: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
+#: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
@@ -1323,7 +1331,6 @@ msgid "Designates whether this user should be treated as active. Unselect this i
 msgstr "Indique si cet utilisateur doit être traité comme actif. Désélectionnez cette option au lieu de supprimer les comptes."
 
 #: src/pages/flows/FlowForm.ts
-#: src/pages/flows/FlowListPage.ts
 msgid "Designation"
 msgstr "Désignation"
 
@@ -1370,6 +1377,10 @@ msgstr "Chiffres"
 #: src/user/user-settings/stages/UserSettingsAuthenticatorDuo.ts
 msgid "Disable Duo authenticator"
 msgstr "Désactiver l'authentificateur Duo"
+
+#: src/user/user-settings/stages/UserSettingsAuthenticatorSMS.ts
+msgid "Disable SMS authenticator"
+msgstr ""
 
 #: src/user/user-settings/stages/UserSettingsAuthenticatorStatic.ts
 msgid "Disable Static Tokens"
@@ -1526,6 +1537,10 @@ msgstr "L'avant poste intégré n'est pas configuré correctement"
 msgid "Enable Duo authenticator"
 msgstr "Activer l'authentificateur Duo"
 
+#: src/user/user-settings/stages/UserSettingsAuthenticatorSMS.ts
+msgid "Enable SMS authenticator"
+msgstr ""
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Enable StartTLS"
 msgstr "Activer StartTLS"
@@ -1555,7 +1570,7 @@ msgstr "Activé"
 msgid "Enabling this toggle will create a group named after the user, with the user as member."
 msgstr "Activer cette option va créer un groupe du même nom que l'utilisateur dont il sera membre."
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Enrollment"
 msgstr "Inscription"
 
@@ -1855,6 +1870,7 @@ msgid "Flow used by an authenticated user to configure their password. If empty,
 msgstr "Flux utilisé par un utilisateur authentifié pour configurer son mot de passe. S'il est vide, l'utilisateur ne sera pas en mesure de changer son mot de passe."
 
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
@@ -1939,6 +1955,10 @@ msgstr "De"
 msgid "From address"
 msgstr "Adresse d'origine"
 
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "From number"
+msgstr ""
+
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "GID start number"
 msgstr "Numéro de départ du GID"
@@ -1959,6 +1979,11 @@ msgstr "Générer"
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Generate Certificate-Key Pair"
 msgstr "Générer une paire clé/certificat"
+
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "Get this value from https://console.twilio.com"
+msgstr ""
 
 #~ msgid "Go to admin interface"
 #~ msgstr "Aller à l'interface d'administration"
@@ -2243,7 +2268,7 @@ msgstr "Validation SSL de l'hôte interne"
 msgid "Invalid response action"
 msgstr "Action de réponse invalide"
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Invalidation"
 msgstr "Invalidation"
 
@@ -2396,6 +2421,7 @@ msgstr "Charger les serveurs"
 #: src/flows/FlowInspector.ts
 #: src/flows/access_denied/FlowAccessDenied.ts
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
+#: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
@@ -2465,6 +2491,7 @@ msgstr "Chargement en cours"
 #: src/pages/sources/saml/SAMLSourceForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
@@ -2701,6 +2728,7 @@ msgstr "Mes applications"
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 #: src/pages/stages/StageListPage.ts
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
@@ -2863,6 +2891,8 @@ msgid "Not used by any other object."
 msgstr "Pas utilisé par un autre objet."
 
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
+#: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
+#: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
@@ -2908,6 +2938,10 @@ msgstr "Notifications"
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Number"
 msgstr "Nombre"
+
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "Number the SMS will be sent from."
+msgstr ""
 
 #: src/pages/users/UserViewPage.ts
 msgid "OAuth Authorization Codes"
@@ -3121,6 +3155,10 @@ msgstr "Mot de passe : Entrée masquée, le mot de passe est vérifié par les s
 msgid "Persistent"
 msgstr "Persistant"
 
+#: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
+msgid "Phone number"
+msgstr ""
+
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Placeholder"
 msgstr "Par défaut"
@@ -3129,8 +3167,16 @@ msgstr "Par défaut"
 msgid "Plan history"
 msgstr "Historique du plan"
 
-#: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
+msgid "Please enter your Code"
+msgstr ""
+
+#: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
+msgid "Please enter your Phone number."
+msgstr ""
+
+#: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
+#: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 msgid "Please enter your TOTP Code"
 msgstr "Veuillez saisirvotre code TOTP"
 
@@ -3310,6 +3356,7 @@ msgstr "Assure la prise en charge de protocoles tels que SAML et OAuth aux appli
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Provider"
 msgstr "Fournisseur"
 
@@ -3404,7 +3451,7 @@ msgstr "Ré-évaluer les politiques"
 msgid "Receive a push notification on your phone to prove your identity."
 msgstr "Recevez une notification push sur votre téléphone pour prouver votre identité."
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "Recovery"
@@ -3589,6 +3636,15 @@ msgstr "SHA512"
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "SLO URL"
 msgstr "URL SLO"
+
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
+#: src/user/user-settings/stages/UserSettingsAuthenticatorSMS.ts
+msgid "SMS"
+msgstr ""
+
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "SMS-based Authenticators"
+msgstr ""
 
 #: src/pages/stages/email/EmailStageForm.ts
 msgid "SMTP Host"
@@ -3937,7 +3993,7 @@ msgstr "Étape"
 msgid "Stage Bindings"
 msgstr "Liaisons de l'étape"
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Stage Configuration"
 msgstr "Configuration de l'étape"
 
@@ -3984,6 +4040,10 @@ msgstr "Étape de configuration d'un authentificateur Duo. Cette étape devrait 
 msgid "Stage used to configure a static authenticator (i.e. static tokens). This stage should be used for configuration flows."
 msgstr "Étape de configuration d'un authentificateur statique (jetons statiques). Cette étape devrait être utilisée en flux de configuration."
 
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "Stage used to configure an SMS-based TOTP authenticator."
+msgstr ""
+
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Stage used to validate any authenticator. This stage should be used during authentication or authorization flows."
 msgstr "Étape utilisée pour valider tout type d'authentificateur. Cette étape devrait être utilisée en flux d'authentification ou d'autorisation."
@@ -3993,6 +4053,7 @@ msgid "Stage(s)"
 msgstr "Étape(s)"
 
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
@@ -4044,12 +4105,14 @@ msgid "Status"
 msgstr "Statut"
 
 #: src/user/user-settings/stages/UserSettingsAuthenticatorDuo.ts
+#: src/user/user-settings/stages/UserSettingsAuthenticatorSMS.ts
 #: src/user/user-settings/stages/UserSettingsAuthenticatorStatic.ts
 #: src/user/user-settings/stages/UserSettingsAuthenticatorTOTP.ts
 msgid "Status: Disabled"
 msgstr "Statut : Désactivé"
 
 #: src/user/user-settings/stages/UserSettingsAuthenticatorDuo.ts
+#: src/user/user-settings/stages/UserSettingsAuthenticatorSMS.ts
 #: src/user/user-settings/stages/UserSettingsAuthenticatorStatic.ts
 #: src/user/user-settings/stages/UserSettingsAuthenticatorTOTP.ts
 msgid "Status: Enabled"
@@ -4174,6 +4237,7 @@ msgid "Successfully created source."
 msgstr "Source créée avec succès"
 
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
@@ -4329,6 +4393,7 @@ msgid "Successfully updated source."
 msgstr "Source mise à jour avec succès"
 
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
@@ -4673,6 +4738,10 @@ msgstr "Jetons et mots de passe d'application"
 msgid "Tokens are used throughout authentik for Email validation stages, Recovery keys and API access."
 msgstr "Les jetons sont utilisés dans authentik pour les étapes de validation des courriels, les clés de récupération et l'accès aux API."
 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
+msgid "Tokens sent via SMS."
+msgstr ""
+
 #: src/pages/admin-overview/charts/FlowStatusChart.ts
 msgid "Total flows"
 msgstr "Flux totaux"
@@ -4700,6 +4769,18 @@ msgstr "Transitoire"
 #: src/pages/events/RuleForm.ts
 msgid "Transports"
 msgstr "Transports"
+
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "Twilio"
+msgstr ""
+
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "Twilio Account SID"
+msgstr ""
+
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "Twilio Auth Token"
+msgstr ""
 
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/outposts/OutpostForm.ts
@@ -4758,7 +4839,7 @@ msgstr "URL utilisée pour demander le jeton initial. Cette URL est uniquement r
 msgid "Unbound policies"
 msgstr "Politiques non liées"
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Unenrollment"
 msgstr "Désinscription"
 

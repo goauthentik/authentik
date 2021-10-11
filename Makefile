@@ -73,4 +73,4 @@ migrate:
 	python -m lifecycle.migrate
 
 run:
-	WORKERS=1 go run -v cmd/server/main.go
+	go run -v cmd/server/main.go

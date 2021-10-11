@@ -57,7 +57,7 @@ class Prompt(SerializerModel):
 
     prompt_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    field_key = models.SlugField(
+    field_key = models.TextField(
         help_text=_("Name of the form field, also used to store the value")
     )
     label = models.TextField()

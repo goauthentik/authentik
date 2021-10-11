@@ -20,6 +20,7 @@ var running = true
 
 func main() {
 	log.SetLevel(log.DebugLevel)
+	log.SetFormatter(&log.JSONFormatter{})
 	config.DefaultConfig()
 	err := config.LoadConfig("./authentik/lib/default.yml")
 	if err != nil {
@@ -80,7 +81,7 @@ func attemptStartBackend(g *gounicorn.GoUnicorn) {
 		if !running {
 			return
 		}
-		log.WithField("logger", "authentik.g").WithError(err).Warning("gunicorn process died, restarting")
+		log.WithField("logger", "authentik.router").WithError(err).Warning("gunicorn process died, restarting")
 	}
 }
 

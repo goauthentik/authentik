@@ -108,5 +108,5 @@ class TestProxyDocker(TestCase):
         self.assertEqual(compose["version"], "3.5")
         self.assertEqual(
             compose["services"]["authentik_proxy"]["image"],
-            f"beryju.org/authentik/outpost-proxy:{get_docker_tag()}",
+            f"ghcr.io/goauthentik/dev-proxy:{get_docker_tag()}",
         )

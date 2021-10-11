@@ -32,7 +32,7 @@ type WebServer struct {
 }
 
 func NewWebServer(g *gounicorn.GoUnicorn) *WebServer {
-	l := log.WithField("logger", "authentik.g.web")
+	l := log.WithField("logger", "authentik.router")
 	mainHandler := mux.NewRouter()
 	if config.G.ErrorReporting.Enabled {
 		mainHandler.Use(recoveryMiddleware())

@@ -15,6 +15,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { AKResponse } from "../../api/Client";
 import { EVENT_REFRESH } from "../../constants";
+import { groupBy } from "../../utils";
 import "../EmptyState";
 import "../chips/Chip";
 import "../chips/ChipGroup";
@@ -154,6 +155,12 @@ export abstract class Table<T> extends LitElement {
         });
     }
 
+    public groupBy(items: T[]): [string, T[]][] {
+        return groupBy(items, () => {
+            return "";
+        });
+    }
+
     public fetch(): void {
         if (this.isLoading) {
             return;
@@ -213,7 +220,22 @@ export abstract class Table<T> extends LitElement {
         if (this.data.pagination.count === 0) {
             return [this.renderEmpty()];
         }
-        return this.data.results.map((item: T) => {
+        const groupedResults = this.groupBy(this.data.results);
+        if (groupedResults.length === 1) {
+            return this.renderRowGroup(groupedResults[0][1]);
+        }
+        return groupedResults.map(([group, items]) => {
+            return html`<thead>
+                    <tr role="row">
+                        <th role="columnheader" scope="row" colspan="200">${group}</th>
+                    </tr>
+                </thead>
+                ${this.renderRowGroup(items)}`;
+        });
+    }
+
+    private renderRowGroup(items: T[]): TemplateResult[] {
+        return items.map((item) => {
             return html`<tbody
                 role="rowgroup"
                 class="${this.expandedElements.indexOf(item) > -1 ? "pf-m-expanded" : ""}"

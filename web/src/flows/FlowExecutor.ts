@@ -36,6 +36,7 @@ import "./access_denied/FlowAccessDenied";
 import "./sources/plex/PlexLoginInit";
 import "./stages/RedirectStage";
 import "./stages/authenticator_duo/AuthenticatorDuoStage";
+import "./stages/authenticator_sms/AuthenticatorSMSStage";
 import "./stages/authenticator_static/AuthenticatorStaticStage";
 import "./stages/authenticator_totp/AuthenticatorTOTPStage";
 import "./stages/authenticator_validate/AuthenticatorValidateStage";
@@ -311,6 +312,11 @@ export class FlowExecutor extends LitElement implements StageHost {
                             .host=${this as StageHost}
                             .challenge=${this.challenge}
                         ></ak-stage-authenticator-validate>`;
+                    case "ak-stage-authenticator-sms":
+                        return html`<ak-stage-authenticator-sms
+                            .host=${this as StageHost}
+                            .challenge=${this.challenge}
+                        ></ak-stage-authenticator-sms>`;
                     case "ak-flow-sources-plex":
                         return html`<ak-flow-sources-plex
                             .host=${this as StageHost}

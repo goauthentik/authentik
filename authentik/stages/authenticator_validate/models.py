@@ -18,6 +18,7 @@ class DeviceClasses(models.TextChoices):
     TOTP = "totp", _("TOTP")
     WEBAUTHN = "webauthn", _("WebAuthn")
     DUO = "duo", _("Duo")
+    SMS = "sms", _("SMS")
 
 
 def default_device_classes() -> list:

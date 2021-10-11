@@ -1,0 +1,21 @@
+name: ghcr-retention
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # every day at midnight
+
+jobs:
+  clean-ghcr:
+    name: Delete old unused container images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete 'dev' containers older than a week
+        uses: sondrelg/container-retention-policy@v1
+        with:
+          image-names: dev-server,dev-ldap,dev-proxy
+          cut-off: One month ago UTC
+          account-type: org
+          org-name: goauthentik
+          untagged-only: false
+          token: ${{ secrets.GHCR_CLEANUP_TOKEN }}
+          skip-tags: gh-next,gh-master

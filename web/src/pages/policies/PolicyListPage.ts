@@ -18,6 +18,7 @@ import "../../elements/forms/ModalForm";
 import "../../elements/forms/ProxyForm";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
+import { groupBy } from "../../utils";
 import "./PolicyTestForm";
 import "./dummy/DummyPolicyForm";
 import "./event_matcher/EventMatcherPolicyForm";
@@ -62,6 +63,10 @@ export class PolicyListPage extends TablePage<Policy> {
             new TableColumn(t`Type`),
             new TableColumn(t`Actions`),
         ];
+    }
+
+    groupBy(items: Policy[]): [string, Policy[]][] {
+        return groupBy(items, (policy) => policy.verboseNamePlural);
     }
 
     row(item: Policy): TemplateResult[] {
