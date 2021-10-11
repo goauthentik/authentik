@@ -144,12 +144,11 @@ class DockerController(BaseController):
                 return None
             # Check if the container is out of date, delete it and retry
             if len(container.image.tags) > 0:
-                tag: str = container.image.tags[0]
                 should_image = self.try_pull_image()
-                if tag != should_image:
+                if should_image not in container.image.tags:
                     self.logger.info(
                         "Container has mismatched image, re-creating...",
-                        has=tag,
+                        has=container.tags,
                         should=should_image,
                     )
                     self.down()
