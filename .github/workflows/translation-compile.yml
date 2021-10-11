@@ -29,8 +29,11 @@ jobs:
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
-      - name: run pylint
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gettext
+          scripts/ci_prepare.sh
+      - name: run compile
         run: pipenv run ./manage.py compilemessages
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
