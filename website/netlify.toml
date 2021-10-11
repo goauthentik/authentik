@@ -1,5 +1,11 @@
 [[redirects]]
+  from = "/v2/"
+  to = "https://ghcr.registry.beryju.org/v2/"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/v2/*"
-  to = "https://registry.goauthentik.io/v2/:splat"
+  to = "https://ghcr.registry.beryju.org/v2/goauthentik/:splat"
   status = 200
   force = true
