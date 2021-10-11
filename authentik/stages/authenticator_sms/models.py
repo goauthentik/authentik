@@ -51,6 +51,7 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
             },
             auth=(self.twilio_account_sid, self.twilio_auth),
         )
+        LOGGER.debug("Sent SMS", to=device.phone_number)
         try:
             response.raise_for_status()
         except RequestException as exc:

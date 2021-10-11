@@ -19538,6 +19538,8 @@ components:
         component:
           type: string
           default: ak-stage-authenticator-validate
+        selected_challenge:
+          $ref: '#/components/schemas/DeviceChallengeRequest'
         code:
           type: string
         webauthn:
@@ -20130,6 +20132,21 @@ components:
       required:
       - name
     DeviceChallenge:
+      type: object
+      description: Single device challenge
+      properties:
+        device_class:
+          type: string
+        device_uid:
+          type: string
+        challenge:
+          type: object
+          additionalProperties: {}
+      required:
+      - challenge
+      - device_class
+      - device_uid
+    DeviceChallengeRequest:
       type: object
       description: Single device challenge
       properties:

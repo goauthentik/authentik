@@ -9,9 +9,11 @@ from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUse
 from authentik.flows.models import NotConfiguredAction, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
+from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.challenge import (
     DeviceChallenge,
     get_challenge_for_device,
+    select_challenge,
     validate_challenge_code,
     validate_challenge_duo,
     validate_challenge_webauthn,
@@ -30,6 +32,8 @@ class AuthenticatorValidationChallenge(WithUserInfoChallenge):
 
 class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     """Challenge used for Code-based and WebAuthn authenticators"""
+
+    selected_challenge = DeviceChallenge(required=False)
 
     code = CharField(required=False)
     webauthn = JSONField(required=False)
@@ -58,6 +62,22 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         """Initiate Duo authentication"""
         self._challenge_allowed([DeviceClasses.DUO])
         return validate_challenge_duo(duo, self.stage.request, self.stage.get_pending_user())
+
+    def validate_selected_challenge(self, challenge: dict) -> dict:
+        """Check which challenge the user has selected. Actual logic only used for SMS stage."""
+        # First check if the challenge is valid
+        for device_challenge in self.stage.request.session.get("device_challenges"):
+            if device_challenge.get("device_class", "") != challenge.get("device_class", ""):
+                raise ValidationError("invalid challenge selected")
+            if device_challenge.get("device_uid", "") != challenge.get("device_uid", ""):
+                raise ValidationError("invalid challenge selected")
+        if challenge.get("device_class", "") != "sms":
+            return challenge
+        devices = SMSDevice.objects.filter(pk=int(challenge.get("device_uid", "0")))
+        if not devices.exists():
+            raise ValidationError("device does not exist")
+        select_challenge(self.stage.request, devices.first())
+        return challenge
 
     def validate(self, attrs: dict):
         # Checking if the given data is from a valid device class is done above

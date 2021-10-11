@@ -19,6 +19,7 @@ from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User
 from authentik.lib.utils.http import get_client_ip
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
+from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.authenticator_webauthn.utils import generate_challenge, get_origin
 
@@ -75,6 +76,19 @@ def get_webauthn_challenge(request: HttpRequest, device: WebAuthnDevice) -> dict
             )
 
     return assertion
+
+
+def select_challenge(request: HttpRequest, device: Device):
+    """Callback when the user selected a challenge in the frontend."""
+    if isinstance(device, SMSDevice):
+        select_challenge_sms(request, device)
+    return
+
+
+def select_challenge_sms(request: HttpRequest, device: SMSDevice):
+    """Send SMS"""
+    device.generate_token()
+    device.stage.send(device.token, device)
 
 
 def validate_challenge_code(code: str, request: HttpRequest, user: User) -> str:
