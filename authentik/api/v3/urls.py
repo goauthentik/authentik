@@ -68,6 +68,11 @@ from authentik.stages.authenticator_duo.api import (
     DuoAdminDeviceViewSet,
     DuoDeviceViewSet,
 )
+from authentik.stages.authenticator_sms.api import (
+    AuthenticatorSMSStageViewSet,
+    SMSAdminDeviceViewSet,
+    SMSDeviceViewSet,
+)
 from authentik.stages.authenticator_static.api import (
     AuthenticatorStaticStageViewSet,
     StaticAdminDeviceViewSet,
@@ -165,6 +170,7 @@ router.register("propertymappings/scope", ScopeMappingViewSet)
 router.register("propertymappings/notification", NotificationWebhookMappingViewSet)
 
 router.register("authenticators/duo", DuoDeviceViewSet)
+router.register("authenticators/sms", SMSDeviceViewSet)
 router.register("authenticators/static", StaticDeviceViewSet)
 router.register("authenticators/totp", TOTPDeviceViewSet)
 router.register("authenticators/webauthn", WebAuthnDeviceViewSet)
@@ -172,6 +178,11 @@ router.register(
     "authenticators/admin/duo",
     DuoAdminDeviceViewSet,
     basename="admin-duodevice",
+)
+router.register(
+    "authenticators/admin/sms",
+    SMSAdminDeviceViewSet,
+    basename="admin-smsdevice",
 )
 router.register(
     "authenticators/admin/static",
@@ -187,6 +198,7 @@ router.register(
 
 router.register("stages/all", StageViewSet)
 router.register("stages/authenticator/duo", AuthenticatorDuoStageViewSet)
+router.register("stages/authenticator/sms", AuthenticatorSMSStageViewSet)
 router.register("stages/authenticator/static", AuthenticatorStaticStageViewSet)
 router.register("stages/authenticator/totp", AuthenticatorTOTPStageViewSet)
 router.register("stages/authenticator/validate", AuthenticatorValidateStageViewSet)

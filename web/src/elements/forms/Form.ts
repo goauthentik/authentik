@@ -219,6 +219,9 @@ export class Form<T> extends LitElement {
                             element.errorMessage =
                                 errorMessage[camelToSnake(elementName)].join(", ");
                             element.invalid = true;
+                        } else {
+                            element.errorMessage = "";
+                            element.invalid = false;
                         }
                     });
                     if ("non_field_errors" in errorMessage) {

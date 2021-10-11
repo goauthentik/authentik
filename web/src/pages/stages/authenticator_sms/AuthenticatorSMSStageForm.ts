@@ -7,10 +7,10 @@ import { until } from "lit/directives/until";
 
 import {
     FlowsApi,
-    AuthenticatorTOTPStage,
     StagesApi,
     FlowsInstancesListDesignationEnum,
-    DigitsEnum,
+    AuthenticatorSMSStage,
+    ProviderEnum,
 } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";
@@ -18,10 +18,10 @@ import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../../elements/forms/ModelForm";
 
-@customElement("ak-stage-authenticator-totp-form")
-export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage, string> {
-    loadInstance(pk: string): Promise<AuthenticatorTOTPStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorTotpRetrieve({
+@customElement("ak-stage-authenticator-sms-form")
+export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, string> {
+    loadInstance(pk: string): Promise<AuthenticatorSMSStage> {
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorSmsRetrieve({
             stageUuid: pk,
         });
     }
@@ -34,15 +34,15 @@ export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage
         }
     }
 
-    send = (data: AuthenticatorTOTPStage): Promise<AuthenticatorTOTPStage> => {
+    send = (data: AuthenticatorSMSStage): Promise<AuthenticatorSMSStage> => {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorTotpUpdate({
+            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorSmsUpdate({
                 stageUuid: this.instance.pk || "",
-                authenticatorTOTPStageRequest: data,
+                authenticatorSMSStageRequest: data,
             });
         } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorTotpCreate({
-                authenticatorTOTPStageRequest: data,
+            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorSmsCreate({
+                authenticatorSMSStageRequest: data,
             });
         }
     };
@@ -50,7 +50,7 @@ export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <div class="form-help-text">
-                ${t`Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator).`}
+                ${t`Stage used to configure an SMS-based TOTP authenticator.`}
             </div>
             <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
                 <input
@@ -63,21 +63,64 @@ export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${t`Stage-specific settings`} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${t`Digits`} ?required=${true} name="digits">
+                    <ak-form-element-horizontal
+                        label=${t`Provider`}
+                        ?required=${true}
+                        name="provider"
+                    >
                         <select name="users" class="pf-c-form-control">
                             <option
-                                value="${DigitsEnum.NUMBER_6}"
-                                ?selected=${this.instance?.digits === DigitsEnum.NUMBER_6}
+                                value="${ProviderEnum.Twilio}"
+                                ?selected=${this.instance?.provider === ProviderEnum.Twilio}
                             >
-                                ${t`6 digits, widely compatible`}
-                            </option>
-                            <option
-                                value="${DigitsEnum.NUMBER_8}"
-                                ?selected=${this.instance?.digits === DigitsEnum.NUMBER_8}
-                            >
-                                ${t`8 digits, not compatible with apps like Google Authenticator`}
+                                ${t`Twilio`}
                             </option>
                         </select>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`From number`}
+                        ?required=${true}
+                        name="fromNumber"
+                    >
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.fromNumber || "")}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`Number the SMS will be sent from.`}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Twilio Account SID`}
+                        ?required=${true}
+                        name="twilioAccountSid"
+                    >
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.twilioAccountSid || "")}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`Get this value from https://console.twilio.com`}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Twilio Auth Token`}
+                        ?required=${true}
+                        name="twilioAuth"
+                    >
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.twilioAuth || "")}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`Get this value from https://console.twilio.com`}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Configuration flow`} name="configureFlow">
                         <select class="pf-c-form-control">

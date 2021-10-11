@@ -109,6 +109,12 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                             >
                                 ${t`Duo Authenticators`}
                             </option>
+                            <option
+                                value=${DeviceClassesEnum.Sms}
+                                ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Sms)}
+                            >
+                                ${t`SMS-based Authenticators`}
+                            </option>
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${t`Device classes which can be used to authenticate.`}

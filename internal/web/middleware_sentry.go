@@ -10,7 +10,7 @@ import (
 
 func recoveryMiddleware() func(next http.Handler) http.Handler {
 	sentryHandler := sentryhttp.New(sentryhttp.Options{})
-	l := log.WithField("logger", "authentik.sentry")
+	l := log.WithField("logger", "authentik.router.sentry")
 	return func(next http.Handler) http.Handler {
 		sentryHandler.Handle(next)
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

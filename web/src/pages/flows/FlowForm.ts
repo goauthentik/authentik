@@ -17,6 +17,7 @@ import { config, DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../elements/forms/ModelForm";
 import { first } from "../../utils";
+import { DesignationToLabel } from "./utils";
 
 @customElement("ak-flow-form")
 export class FlowForm extends ModelForm<Flow, string> {
@@ -80,43 +81,43 @@ export class FlowForm extends ModelForm<Flow, string> {
                 value=${FlowDesignationEnum.Authentication}
                 ?selected=${this.instance?.designation === FlowDesignationEnum.Authentication}
             >
-                ${t`Authentication`}
+                ${DesignationToLabel(FlowDesignationEnum.Authentication)}
             </option>
             <option
                 value=${FlowDesignationEnum.Authorization}
                 ?selected=${this.instance?.designation === FlowDesignationEnum.Authorization}
             >
-                ${t`Authorization`}
+                ${DesignationToLabel(FlowDesignationEnum.Authorization)}
             </option>
             <option
                 value=${FlowDesignationEnum.Enrollment}
                 ?selected=${this.instance?.designation === FlowDesignationEnum.Enrollment}
             >
-                ${t`Enrollment`}
+                ${DesignationToLabel(FlowDesignationEnum.Enrollment)}
             </option>
             <option
                 value=${FlowDesignationEnum.Invalidation}
                 ?selected=${this.instance?.designation === FlowDesignationEnum.Invalidation}
             >
-                ${t`Invalidation`}
+                ${DesignationToLabel(FlowDesignationEnum.Invalidation)}
             </option>
             <option
                 value=${FlowDesignationEnum.Recovery}
                 ?selected=${this.instance?.designation === FlowDesignationEnum.Recovery}
             >
-                ${t`Recovery`}
+                ${DesignationToLabel(FlowDesignationEnum.Recovery)}
             </option>
             <option
                 value=${FlowDesignationEnum.StageConfiguration}
                 ?selected=${this.instance?.designation === FlowDesignationEnum.StageConfiguration}
             >
-                ${t`Stage Configuration`}
+                ${DesignationToLabel(FlowDesignationEnum.StageConfiguration)}
             </option>
             <option
                 value=${FlowDesignationEnum.Unenrollment}
                 ?selected=${this.instance?.designation === FlowDesignationEnum.Unenrollment}
             >
-                ${t`Unenrollment`}
+                ${DesignationToLabel(FlowDesignationEnum.Unenrollment)}
             </option>
         `;
     }

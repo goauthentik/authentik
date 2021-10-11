@@ -14,8 +14,10 @@ import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
+import { groupBy } from "../../utils";
 import "./FlowForm";
 import "./FlowImportForm";
+import { DesignationToLabel } from "./utils";
 
 @customElement("ak-flow-list")
 export class FlowListPage extends TablePage<Flow> {
@@ -46,11 +48,19 @@ export class FlowListPage extends TablePage<Flow> {
         });
     }
 
+    groupBy(items: Flow[]): [string, Flow[]][] {
+        return groupBy(items, (flow) => {
+            if (!flow.designation) {
+                return "";
+            }
+            return DesignationToLabel(flow.designation);
+        });
+    }
+
     columns(): TableColumn[] {
         return [
             new TableColumn(t`Identifier`, "slug"),
             new TableColumn(t`Name`, "name"),
-            new TableColumn(t`Designation`, "designation"),
             new TableColumn(t`Stages`),
             new TableColumn(t`Policies`),
             new TableColumn(t`Actions`),
@@ -85,7 +95,6 @@ export class FlowListPage extends TablePage<Flow> {
                 <code>${item.slug}</code>
             </a>`,
             html`${item.name}`,
-            html`${item.designation}`,
             html`${Array.from(item.stages || []).length}`,
             html`${Array.from(item.policies || []).length}`,
             html` <ak-forms-modal>

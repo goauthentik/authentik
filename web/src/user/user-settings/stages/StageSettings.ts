@@ -12,6 +12,7 @@ import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";
 import "../../../elements/EmptyState";
 import "./UserSettingsAuthenticatorDuo";
+import "./UserSettingsAuthenticatorSMS";
 import "./UserSettingsAuthenticatorStatic";
 import "./UserSettingsAuthenticatorTOTP";
 import "./UserSettingsAuthenticatorWebAuthn";
@@ -69,6 +70,12 @@ export class UserStageSettingsPage extends LitElement {
                     .configureUrl=${stage.configureUrl}
                 >
                 </ak-user-settings-authenticator-duo>`;
+            case "ak-user-settings-authenticator-sms":
+                return html`<ak-user-settings-authenticator-sms
+                    objectId=${stage.objectUid}
+                    .configureUrl=${stage.configureUrl}
+                >
+                </ak-user-settings-authenticator-sms>`;
             default:
                 return html`<p>${t`Error: unsupported stage settings: ${stage.component}`}</p>`;
         }
