@@ -63,9 +63,9 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
                             >
                         </div>
                     </ak-form-static>
-                    ${this.deviceChallenge?.deviceClass == DeviceClassesEnum.Sms ? html`<p>
-                        ${t`A code has been sent to you via SMS.`}
-                    </p>` : html``}
+                    ${this.deviceChallenge?.deviceClass == DeviceClassesEnum.Sms
+                        ? html`<p>${t`A code has been sent to you via SMS.`}</p>`
+                        : html``}
                     <ak-form-element
                         label="${t`Code`}"
                         ?required="${true}"

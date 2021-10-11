@@ -19,12 +19,12 @@ import {
     FlowsApi,
 } from "@goauthentik/api";
 
+import { DEFAULT_CONFIG } from "../../../api/Config";
 import { BaseStage, StageHost } from "../base";
 import { PasswordManagerPrefill } from "../identification/IdentificationStage";
 import "./AuthenticatorValidateStageCode";
 import "./AuthenticatorValidateStageDuo";
 import "./AuthenticatorValidateStageWebAuthn";
-import { DEFAULT_CONFIG } from "../../../api/Config";
 
 @customElement("ak-stage-authenticator-validate")
 export class AuthenticatorValidateStage
@@ -43,16 +43,15 @@ export class AuthenticatorValidateStage
         this._selectedDeviceChallenge = value;
         // We don't use this.submit here, as we don't want to advance the flow.
         // We just want to notify the backend which challenge has been selected.
-        new FlowsApi(DEFAULT_CONFIG)
-            .flowsExecutorSolve({
-                flowSlug: this.host.flowSlug,
-                query: window.location.search.substring(1),
-                flowChallengeResponseRequest: {
-                    // @ts-ignore
-                    component: this.challenge.component || "",
-                    selectedChallenge: value,
-                },
-            });
+        new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
+            flowSlug: this.host.flowSlug,
+            query: window.location.search.substring(1),
+            flowChallengeResponseRequest: {
+                // @ts-ignore
+                component: this.challenge.component || "",
+                selectedChallenge: value,
+            },
+        });
     }
 
     get selectedDeviceChallenge(): DeviceChallenge | undefined {
