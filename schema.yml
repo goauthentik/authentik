@@ -14151,6 +14151,14 @@ paths:
         schema:
           type: string
       - in: query
+        name: generic_wrapper_api_auth
+        schema:
+          type: string
+      - in: query
+        name: generic_wrapper_api_url
+        schema:
+          type: string
+      - in: query
         name: name
         schema:
           type: string
@@ -14177,6 +14185,7 @@ paths:
         schema:
           type: string
           enum:
+          - generic
           - twilio
       - name: search
         required: false
@@ -19187,6 +19196,10 @@ components:
           type: string
         twilio_auth:
           type: string
+        generic_wrapper_api_url:
+          type: string
+        generic_wrapper_api_auth:
+          type: string
       required:
       - component
       - from_number
@@ -19220,6 +19233,10 @@ components:
         twilio_account_sid:
           type: string
         twilio_auth:
+          type: string
+        generic_wrapper_api_url:
+          type: string
+        generic_wrapper_api_auth:
           type: string
       required:
       - from_number
@@ -25967,6 +25984,10 @@ components:
           type: string
         twilio_auth:
           type: string
+        generic_wrapper_api_url:
+          type: string
+        generic_wrapper_api_auth:
+          type: string
     PatchedAuthenticatorStaticStageRequest:
       type: object
       description: AuthenticatorStaticStage Serializer
@@ -28147,6 +28168,7 @@ components:
     ProviderEnum:
       enum:
       - twilio
+      - generic
       type: string
     ProviderRequest:
       type: object

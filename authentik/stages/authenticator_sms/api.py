@@ -24,6 +24,8 @@ class AuthenticatorSMSStageSerializer(StageSerializer):
             "from_number",
             "twilio_account_sid",
             "twilio_auth",
+            "generic_wrapper_api_url",
+            "generic_wrapper_api_auth",
         ]
 
 

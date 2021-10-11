@@ -75,6 +75,12 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                             >
                                 ${t`Twilio`}
                             </option>
+                            <option
+                                value="${ProviderEnum.Generic}"
+                            >
+                                ${t`Generic`}
+                            </option>
+
                         </select>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
@@ -121,6 +127,32 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                         <p class="pf-c-form__helper-text">
                             ${t`Get this value from https://console.twilio.com`}
                         </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Generic Wrapper API URL`}
+                        ?required=${true}
+                        name="genericWrapperApiURL"
+                    >
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.genericWrapperApiUrl || "")}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`This is the full endpoint to send POST request to.`}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Generic Wrapper API Auth`}
+                        ?required=${false}
+                        name="genericWrapperApiAuth"
+                    >
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.genericWrapperApiAuth || "")}"
+                            class="pf-c-form-control"
+                        />
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Configuration flow`} name="configureFlow">
                         <select class="pf-c-form-control">
