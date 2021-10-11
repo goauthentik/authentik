@@ -32,7 +32,7 @@ from authentik.flows.api.flows import FlowViewSet
 from authentik.flows.api.stages import StageViewSet
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.flows.views.inspector import FlowInspectorView
-from authentik.managed.api import ConfigFileViewSet
+from authentik.managed.api import BlueprintInstanceViewSet
 from authentik.outposts.api.outposts import OutpostViewSet
 from authentik.outposts.api.service_connections import (
     DockerServiceConnectionViewSet,
@@ -110,7 +110,6 @@ router.include_format_suffixes = False
 
 router.register("admin/system_tasks", TaskViewSet, basename="admin_system_tasks")
 router.register("admin/apps", AppsViewSet, basename="apps")
-router.register("admin/config_files", ConfigFileViewSet, basename="admin_config_files")
 
 router.register("core/authenticated_sessions", AuthenticatedSessionViewSet)
 router.register("core/applications", ApplicationViewSet)
@@ -136,6 +135,8 @@ router.register("events/events", EventViewSet)
 router.register("events/notifications", NotificationViewSet)
 router.register("events/transports", NotificationTransportViewSet)
 router.register("events/rules", NotificationRuleViewSet)
+
+router.register("managed/blueprints", BlueprintInstanceViewSet)
 
 router.register("sources/all", SourceViewSet)
 router.register("sources/user_connections/oauth", UserOAuthSourceConnectionViewSet)
