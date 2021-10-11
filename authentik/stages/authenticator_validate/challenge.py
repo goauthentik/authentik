@@ -82,7 +82,6 @@ def select_challenge(request: HttpRequest, device: Device):
     """Callback when the user selected a challenge in the frontend."""
     if isinstance(device, SMSDevice):
         select_challenge_sms(request, device)
-    return
 
 
 def select_challenge_sms(request: HttpRequest, device: SMSDevice):
