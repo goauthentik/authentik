@@ -39,7 +39,7 @@ Note the Client ID and Client Secret values. Create an application, using the pr
 
 ```
 ~ mc admin config set myminio identity_openid \
-  config_url="https://id.beryju.org/application/o/<applicaiton-slug>/.well-known/openid-configuration" \
+  config_url="https://authentik.company/application/o/<applicaiton-slug>/.well-known/openid-configuration" \
   client_id="<client id from above>" \
   scopes="openid,profile,email,minio"
 ```
