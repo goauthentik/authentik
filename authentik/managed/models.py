@@ -1,6 +1,11 @@
 """Managed Object models"""
+from uuid import uuid4
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from rest_framework.serializers import Serializer
+
+from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 
 
 class ManagedModel(models.Model):
@@ -24,3 +29,46 @@ class ManagedModel(models.Model):
     class Meta:
 
         abstract = True
+
+
+class BlueprintInstanceStatus(models.TextChoices):
+    """Instance status"""
+
+    SUCCESSFUL = "successful"
+    WARNING = "warning"
+    ERROR = "error"
+    UNKNOWN = "unknown"
+
+
+class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
+    """Instance of a single blueprint. Can be parameterized via context attribute when
+    blueprint in `path` has inputs."""
+
+    instance_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+
+    name = models.TextField()
+    path = models.TextField()
+    context = models.JSONField()
+    last_applied = models.DateTimeField(auto_now=True)
+    status = models.TextField(choices=BlueprintInstanceStatus.choices)
+    enabled = models.BooleanField(default=True)
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.managed.api import BlueprintInstanceSerializer
+
+        return BlueprintInstanceSerializer
+
+    def __str__(self) -> str:
+        return f"Blueprint Instance {self.name}"
+
+    class Meta:
+
+        verbose_name = _("Blueprint Instance")
+        verbose_name_plural = _("Blueprint Instances")
+        unique_together = (
+            (
+                "name",
+                "path",
+            ),
+        )
