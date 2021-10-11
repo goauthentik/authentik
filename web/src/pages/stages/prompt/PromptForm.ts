@@ -7,6 +7,7 @@ import { ifDefined } from "lit/directives/if-defined";
 import { Prompt, PromptTypeEnum, StagesApi } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";
+import "../../../elements/CodeMirror";
 import "../../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../../elements/forms/ModelForm";
 import { first } from "../../../utils";

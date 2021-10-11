@@ -24,16 +24,17 @@ class CertificateBuilder:
         self.__builder = None
         self.__certificate = None
         self.common_name = "authentik Self-signed Certificate"
+        self.cert = CertificateKeyPair()
 
     def save(self) -> Optional[CertificateKeyPair]:
         """Save generated certificate as model"""
         if not self.__certificate:
             raise ValueError("Certificated hasn't been built yet")
-        return CertificateKeyPair.objects.create(
-            name=self.common_name,
-            certificate_data=self.certificate,
-            key_data=self.private_key,
-        )
+        self.cert.name = self.common_name
+        self.cert.certificate_data = self.certificate
+        self.cert.key_data = self.private_key
+        self.cert.save()
+        return self.cert
 
     def build(
         self,

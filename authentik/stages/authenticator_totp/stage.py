@@ -42,7 +42,7 @@ class AuthenticatorTOTPChallengeResponse(ChallengeResponse):
         """Validate totp code"""
         if self.device is not None:
             if not self.device.verify_token(code):
-                raise ValidationError(_("OTP Code does not match"))
+                raise ValidationError(_("Code does not match"))
         return code
 
 

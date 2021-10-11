@@ -17,6 +17,7 @@ import "../../elements/forms/ModalForm";
 import "../../elements/forms/ProxyForm";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
+import { groupBy } from "../../utils";
 import "./PropertyMappingLDAPForm";
 import "./PropertyMappingNotification";
 import "./PropertyMappingSAMLForm";
@@ -54,6 +55,10 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
             search: this.search || "",
             managedIsnull: this.hideManaged ? true : undefined,
         });
+    }
+
+    groupBy(items: PropertyMapping[]): [string, PropertyMapping[]][] {
+        return groupBy(items, (mapping) => mapping.verboseNamePlural);
     }
 
     columns(): TableColumn[] {

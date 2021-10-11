@@ -1,3 +1,11 @@
+import { me } from "../api/Users";
+
+export enum UserDisplay {
+    "username",
+    "name",
+    "email",
+}
+
 export interface UIConfig {
     enabledFeatures: {
         // API Request drawer in navbar
@@ -12,7 +20,7 @@ export interface UIConfig {
         search: boolean;
     };
     navbar: {
-        userDisplay: "username" | "name" | "email";
+        userDisplay: UserDisplay;
     };
     color: {
         background: string;
@@ -20,23 +28,35 @@ export interface UIConfig {
     };
 }
 
-export const DefaultUIConfig: UIConfig = {
-    enabledFeatures: {
+export class DefaultUIConfig implements UIConfig {
+    enabledFeatures = {
         apiDrawer: true,
         notificationDrawer: true,
         settings: true,
         applicationEdit: true,
         search: true,
-    },
-    navbar: {
-        userDisplay: "name",
-    },
-    color: {
+    };
+    navbar = {
+        userDisplay: UserDisplay.username,
+    };
+    color = {
         background: "",
         cardBackground: "",
-    },
-};
+    };
+}
+
+export function parseConfig(raw: string): UIConfig {
+    const c = JSON.parse(raw);
+    return Object.assign(new DefaultUIConfig(), c);
+}
 
 export function uiConfig(): Promise<UIConfig> {
-    return Promise.resolve(DefaultUIConfig);
+    return me().then((user) => {
+        const settings = user.user.settings;
+        let config = new DefaultUIConfig();
+        if ("userInterface" in settings) {
+            config = parseConfig(settings.userInterface);
+        }
+        return config;
+    });
 }

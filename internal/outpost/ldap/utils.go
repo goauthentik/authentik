@@ -122,10 +122,22 @@ func (pi *ProviderInstance) GetVirtualGroupDN(group string) string {
 }
 
 func (pi *ProviderInstance) GetUidNumber(user api.User) string {
+	uidNumber, ok := user.GetAttributes()["uidNumber"].(string)
+
+	if ok {
+		return uidNumber
+	}
+
 	return strconv.FormatInt(int64(pi.uidStartNumber+user.Pk), 10)
 }
 
 func (pi *ProviderInstance) GetGidNumber(group api.Group) string {
+	gidNumber, ok := group.GetAttributes()["gidNumber"].(string)
+
+	if ok {
+		return gidNumber
+	}
+
 	return strconv.FormatInt(int64(pi.gidStartNumber+pi.GetRIDForGroup(group.Pk)), 10)
 }
 

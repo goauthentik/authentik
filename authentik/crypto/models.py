@@ -14,9 +14,10 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
+from authentik.managed.models import ManagedModel
 
 
-class CertificateKeyPair(SerializerModel, CreatedUpdatedModel):
+class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
     """CertificateKeyPair that can be used for signing or encrypting if `key_data`
     is set, otherwise it can be used to verify remote data."""
 

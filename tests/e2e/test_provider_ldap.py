@@ -33,7 +33,7 @@ class TestProviderLDAP(SeleniumTestCase):
         """Start ldap container based on outpost created"""
         client: DockerClient = from_env()
         container = client.containers.run(
-            image=self.get_container_image("beryju.org/authentik/outpost-ldap"),
+            image=self.get_container_image("ghcr.io/goauthentik/dev-ldap"),
             detach=True,
             network_mode="host",
             auto_remove=True,
@@ -80,7 +80,7 @@ class TestProviderLDAP(SeleniumTestCase):
         return user
 
     @retry()
-    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @object_manager
     def test_ldap_bind_success(self):
@@ -106,7 +106,7 @@ class TestProviderLDAP(SeleniumTestCase):
         )
 
     @retry()
-    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @object_manager
     def test_ldap_bind_success_ssl(self):
@@ -132,7 +132,7 @@ class TestProviderLDAP(SeleniumTestCase):
         )
 
     @retry()
-    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @object_manager
     def test_ldap_bind_fail(self):
@@ -156,8 +156,7 @@ class TestProviderLDAP(SeleniumTestCase):
         )
 
     @retry()
-    @apply_migration("authentik_core", "0003_default_user")
-    @apply_migration("authentik_core", "0009_group_is_superuser")
+    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @object_manager
     def test_ldap_bind_search(self):
