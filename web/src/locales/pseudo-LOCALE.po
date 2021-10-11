@@ -3655,8 +3655,13 @@ msgstr ""
 msgid "SLO URL"
 msgstr ""
 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 #: src/user/user-settings/stages/UserSettingsAuthenticatorSMS.ts
 msgid "SMS"
+msgstr ""
+
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "SMS-based Authenticators"
 msgstr ""
 
 #: src/pages/stages/email/EmailStageForm.ts
@@ -4768,6 +4773,10 @@ msgstr ""
 
 #: src/pages/tokens/TokenListPage.ts
 msgid "Tokens are used throughout authentik for Email validation stages, Recovery keys and API access."
+msgstr ""
+
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
+msgid "Tokens sent via SMS."
 msgstr ""
 
 #: src/pages/admin-overview/charts/FlowStatusChart.ts

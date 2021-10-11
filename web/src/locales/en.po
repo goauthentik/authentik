@@ -3663,9 +3663,14 @@ msgstr "SHA512"
 msgid "SLO URL"
 msgstr "SLO URL"
 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 #: src/user/user-settings/stages/UserSettingsAuthenticatorSMS.ts
 msgid "SMS"
 msgstr "SMS"
+
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "SMS-based Authenticators"
+msgstr "SMS-based Authenticators"
 
 #: src/pages/stages/email/EmailStageForm.ts
 msgid "SMTP Host"
@@ -4784,6 +4789,10 @@ msgstr "Tokens and App passwords"
 #: src/pages/tokens/TokenListPage.ts
 msgid "Tokens are used throughout authentik for Email validation stages, Recovery keys and API access."
 msgstr "Tokens are used throughout authentik for Email validation stages, Recovery keys and API access."
+
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
+msgid "Tokens sent via SMS."
+msgstr "Tokens sent via SMS."
 
 #: src/pages/admin-overview/charts/FlowStatusChart.ts
 msgid "Total flows"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-09 20:45+0000\n"
+"POT-Creation-Date: 2021-10-11 14:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1275,15 +1275,19 @@ msgstr ""
 msgid "Duo"
 msgstr ""
 
-#: authentik/stages/authenticator_validate/models.py:56
+#: authentik/stages/authenticator_validate/models.py:21
+msgid "SMS"
+msgstr ""
+
+#: authentik/stages/authenticator_validate/models.py:57
 msgid "Device classes which can be used to authenticate"
 msgstr ""
 
-#: authentik/stages/authenticator_validate/models.py:78
+#: authentik/stages/authenticator_validate/models.py:79
 msgid "Authenticator Validation Stage"
 msgstr ""
 
-#: authentik/stages/authenticator_validate/models.py:79
+#: authentik/stages/authenticator_validate/models.py:80
 msgid "Authenticator Validation Stages"
 msgstr ""
 
