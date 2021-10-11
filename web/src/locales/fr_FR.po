@@ -419,7 +419,7 @@ msgstr "Audience"
 msgid "Authenticating with Plex..."
 msgstr "Authentification avec Plex..."
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Authentication"
 msgstr "Authentification"
 
@@ -435,7 +435,7 @@ msgstr "Flux d'authentification"
 msgid "Authenticator"
 msgstr "Authentificateur"
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Authorization"
 msgstr "Authorisation"
 
@@ -1327,7 +1327,6 @@ msgid "Designates whether this user should be treated as active. Unselect this i
 msgstr "Indique si cet utilisateur doit être traité comme actif. Désélectionnez cette option au lieu de supprimer les comptes."
 
 #: src/pages/flows/FlowForm.ts
-#: src/pages/flows/FlowListPage.ts
 msgid "Designation"
 msgstr "Désignation"
 
@@ -1567,7 +1566,7 @@ msgstr "Activé"
 msgid "Enabling this toggle will create a group named after the user, with the user as member."
 msgstr "Activer cette option va créer un groupe du même nom que l'utilisateur dont il sera membre."
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Enrollment"
 msgstr "Inscription"
 
@@ -2265,7 +2264,7 @@ msgstr "Validation SSL de l'hôte interne"
 msgid "Invalid response action"
 msgstr "Action de réponse invalide"
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Invalidation"
 msgstr "Invalidation"
 
@@ -3445,7 +3444,7 @@ msgstr "Ré-évaluer les politiques"
 msgid "Receive a push notification on your phone to prove your identity."
 msgstr "Recevez une notification push sur votre téléphone pour prouver votre identité."
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "Recovery"
@@ -3987,7 +3986,7 @@ msgstr "Étape"
 msgid "Stage Bindings"
 msgstr "Liaisons de l'étape"
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Stage Configuration"
 msgstr "Configuration de l'étape"
 
@@ -4833,7 +4832,7 @@ msgstr "URL utilisée pour demander le jeton initial. Cette URL est uniquement r
 msgid "Unbound policies"
 msgstr "Politiques non liées"
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Unenrollment"
 msgstr "Désinscription"
 

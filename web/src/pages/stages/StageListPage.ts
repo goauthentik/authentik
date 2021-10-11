@@ -68,7 +68,7 @@ export class StageListPage extends TablePage<Stage> {
     }
 
     groupBy(items: Stage[]): [string, Stage[]][] {
-        return groupBy(items, (stage) => stage.verboseName);
+        return groupBy(items, (stage) => stage.verboseNamePlural);
     }
 
     columns(): TableColumn[] {

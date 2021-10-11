@@ -411,7 +411,7 @@ msgstr ""
 msgid "Authenticating with Plex..."
 msgstr ""
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Authentication"
 msgstr ""
 
@@ -427,7 +427,7 @@ msgstr ""
 msgid "Authenticator"
 msgstr ""
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Authorization"
 msgstr ""
 
@@ -1329,7 +1329,6 @@ msgid "Designates whether this user should be treated as active. Unselect this i
 msgstr ""
 
 #: src/pages/flows/FlowForm.ts
-#: src/pages/flows/FlowListPage.ts
 msgid "Designation"
 msgstr ""
 
@@ -1573,7 +1572,7 @@ msgstr ""
 msgid "Enabling this toggle will create a group named after the user, with the user as member."
 msgstr ""
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Enrollment"
 msgstr ""
 
@@ -2274,7 +2273,7 @@ msgstr ""
 msgid "Invalid response action"
 msgstr ""
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Invalidation"
 msgstr ""
 
@@ -3467,7 +3466,7 @@ msgstr ""
 msgid "Receive a push notification on your phone to prove your identity."
 msgstr ""
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "Recovery"
@@ -4020,7 +4019,7 @@ msgstr ""
 msgid "Stage Bindings"
 msgstr ""
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Stage Configuration"
 msgstr ""
 
@@ -4876,7 +4875,7 @@ msgstr ""
 msgid "Unbound policies"
 msgstr ""
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Unenrollment"
 msgstr ""
 

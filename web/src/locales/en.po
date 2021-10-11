@@ -415,7 +415,7 @@ msgstr "Audience"
 msgid "Authenticating with Plex..."
 msgstr "Authenticating with Plex..."
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Authentication"
 msgstr "Authentication"
 
@@ -431,7 +431,7 @@ msgstr "Authentication flow"
 msgid "Authenticator"
 msgstr "Authenticator"
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Authorization"
 msgstr "Authorization"
 
@@ -1337,7 +1337,6 @@ msgid "Designates whether this user should be treated as active. Unselect this i
 msgstr "Designates whether this user should be treated as active. Unselect this instead of deleting accounts."
 
 #: src/pages/flows/FlowForm.ts
-#: src/pages/flows/FlowListPage.ts
 msgid "Designation"
 msgstr "Designation"
 
@@ -1581,7 +1580,7 @@ msgstr "Enabled"
 msgid "Enabling this toggle will create a group named after the user, with the user as member."
 msgstr "Enabling this toggle will create a group named after the user, with the user as member."
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Enrollment"
 msgstr "Enrollment"
 
@@ -2282,7 +2281,7 @@ msgstr "Internal host SSL Validation"
 msgid "Invalid response action"
 msgstr "Invalid response action"
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Invalidation"
 msgstr "Invalidation"
 
@@ -3475,7 +3474,7 @@ msgstr "Re-evaluate policies"
 msgid "Receive a push notification on your phone to prove your identity."
 msgstr "Receive a push notification on your phone to prove your identity."
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "Recovery"
@@ -4028,7 +4027,7 @@ msgstr "Stage"
 msgid "Stage Bindings"
 msgstr "Stage Bindings"
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Stage Configuration"
 msgstr "Stage Configuration"
 
@@ -4891,7 +4890,7 @@ msgstr "URL used to request the initial token. This URL is only required for OAu
 msgid "Unbound policies"
 msgstr "Unbound policies"
 
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/utils.ts
 msgid "Unenrollment"
 msgstr "Unenrollment"
 
