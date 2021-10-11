@@ -6,7 +6,7 @@ module.exports = {
         },
         {
             type: "category",
-            label: "Setup",
+            label: "Using the API",
             items: [
                 "api/api",
                 "api/flow-executor",
