@@ -56,6 +56,10 @@ msgstr "6 digits, widely compatible"
 msgid "8 digits, not compatible with apps like Google Authenticator"
 msgstr "8 digits, not compatible with apps like Google Authenticator"
 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
+msgid "A code has been sent to you via SMS."
+msgstr "A code has been sent to you via SMS."
+
 #: src/interfaces/AdminInterface.ts
 msgid "A newer version of the frontend is available."
 msgstr "A newer version of the frontend is available."
@@ -3189,13 +3193,16 @@ msgstr "Placeholder"
 msgid "Plan history"
 msgstr "Plan history"
 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
+msgid "Please enter your Code"
+msgstr "Please enter your Code"
+
 #: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
 msgid "Please enter your Phone number."
 msgstr "Please enter your Phone number."
 
 #: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
-#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
 msgid "Please enter your TOTP Code"
 msgstr "Please enter your TOTP Code"
 
