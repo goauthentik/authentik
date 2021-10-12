@@ -39,9 +39,6 @@ func (ws *WebServer) configureProxy() {
 		}
 		ws.proxyErrorHandler(rw, r, fmt.Errorf("proxy not running"))
 	})
-	ws.m.Path("/-/health/live/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-		rw.WriteHeader(204)
-	})
 	ws.m.PathPrefix("/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		if !ws.p.IsRunning() {
 			ws.proxyErrorHandler(rw, r, fmt.Errorf("authentik core not running yet"))
