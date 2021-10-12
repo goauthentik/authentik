@@ -14150,6 +14150,18 @@ paths:
         schema:
           type: string
       - in: query
+        name: auth_password
+        schema:
+          type: string
+      - in: query
+        name: auth_type
+        schema:
+          type: string
+          nullable: true
+          enum:
+          - basic
+          - bearer
+      - in: query
         name: configure_flow
         schema:
           type: string
@@ -18860,6 +18872,11 @@ components:
       required:
       - name
       - slug
+    AuthTypeEnum:
+      enum:
+      - bearer
+      - basic
+      type: string
     AuthenticateWebAuthnStage:
       type: object
       description: AuthenticateWebAuthnStage Serializer
@@ -19188,6 +19205,13 @@ components:
           type: string
         auth:
           type: string
+        auth_password:
+          type: string
+          nullable: true
+        auth_type:
+          allOf:
+          - $ref: '#/components/schemas/AuthTypeEnum'
+          nullable: true
       required:
       - account_sid
       - auth
@@ -19222,6 +19246,13 @@ components:
           type: string
         auth:
           type: string
+        auth_password:
+          type: string
+          nullable: true
+        auth_type:
+          allOf:
+          - $ref: '#/components/schemas/AuthTypeEnum'
+          nullable: true
       required:
       - account_sid
       - auth
@@ -25968,6 +25999,13 @@ components:
           type: string
         auth:
           type: string
+        auth_password:
+          type: string
+          nullable: true
+        auth_type:
+          allOf:
+          - $ref: '#/components/schemas/AuthTypeEnum'
+          nullable: true
     PatchedAuthenticatorStaticStageRequest:
       type: object
       description: AuthenticatorStaticStage Serializer

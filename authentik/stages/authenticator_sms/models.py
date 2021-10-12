@@ -25,6 +25,12 @@ class SMSProviders(models.TextChoices):
     GENERIC = "generic"
 
 
+class SMSAuthTypes(models.TextChoices):
+    """Supported SMS Auth Types"""
+    BEARER = "bearer"
+    BASIC = "basic"
+
+
 class AuthenticatorSMSStage(ConfigurableStage, Stage):
     """Use SMS-based TOTP instead of authenticator-based."""
 
@@ -34,6 +40,8 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
 
     account_sid = models.TextField()
     auth = models.TextField()
+    auth_password = models.TextField(null=True)
+    auth_type = models.TextField(choices=SMSAuthTypes.choices, null=True)
 
     def send(self, token: str, device: "SMSDevice"):
         """Send message via selected provider"""
@@ -70,14 +78,30 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
 
     def send_generic(self, token: str, device: "SMSDevice"):
         """Send SMS via outside API"""
-        response = get_http_session().post(
-            f"{self.account_sid}",
-            data={
-                "From": self.from_number,
-                "To": device.phone_number,
-                "Body": token,
-            },
-        )
+        data = {
+            "From": self.from_number,
+            "To": device.phone_number,
+            "Body": token,
+        }
+
+        if self.auth_type == SMSAuthTypes.BEARER:
+            response = get_http_session().post(
+                f"{self.account_sid}",
+                data,
+                headers={
+                    "Authorization": f"Bearer {self.auth}"
+                },
+            )
+
+        elif self.auth_type == SMSAuthTypes.BASIC:
+            response = get_http_session().post(
+                f"{self.account_sid}",
+                data,
+                auth=(self.auth, self.auth_password),
+            )
+        else:
+            raise
+
         LOGGER.debug("Sent SMS", to=device.phone_number)
         try:
             response.raise_for_status()

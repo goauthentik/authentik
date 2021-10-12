@@ -24,6 +24,8 @@ class AuthenticatorSMSStageSerializer(StageSerializer):
             "from_number",
             "account_sid",
             "auth",
+            "auth_password",
+            "auth_type",
         ]
 
 
