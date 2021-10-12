@@ -32,11 +32,8 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
 
     from_number = models.TextField()
 
-    twilio_account_sid = models.TextField()
-    twilio_auth = models.TextField()
-
-    generic_wrapper_api_url = models.TextField(default=None)
-    generic_wrapper_api_auth = models.TextField(default=None)
+    account_sid = models.TextField()
+    auth = models.TextField()
 
     def send(self, token: str, device: "SMSDevice"):
         """Send message via selected provider"""
@@ -49,13 +46,13 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
     def send_twilio(self, token: str, device: "SMSDevice"):
         """send sms via twilio provider"""
         response = get_http_session().post(
-            f"https://api.twilio.com/2010-04-01/Accounts/{self.twilio_account_sid}/Messages.json",
+            f"https://api.twilio.com/2010-04-01/Accounts/{self.account_sid}/Messages.json",
             data={
                 "From": self.from_number,
                 "To": device.phone_number,
                 "Body": token,
             },
-            auth=(self.twilio_account_sid, self.twilio_auth),
+            auth=(self.account_sid, self.auth),
         )
         LOGGER.debug("Sent SMS", to=device.phone_number)
         try:
@@ -74,7 +71,7 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
     def send_generic(self, token: str, device: "SMSDevice"):
         """Send SMS via outside API"""
         response = get_http_session().post(
-            f"{self.generic_wrapper_api_url}",
+            f"{self.account_sid}",
             data={
                 "From": self.from_number,
                 "To": device.phone_number,

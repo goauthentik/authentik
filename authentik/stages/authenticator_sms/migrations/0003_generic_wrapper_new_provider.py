@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_stages_authenticator_sms", "0003_generic_wrapper_initial"),
+        ("authentik_stages_authenticator_sms", "0002_authenticatorsmsstage_from_number"),
     ]
 
     operations = [

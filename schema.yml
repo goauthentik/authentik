@@ -14142,20 +14142,20 @@ paths:
       description: AuthenticatorSMSStage Viewset
       parameters:
       - in: query
+        name: account_sid
+        schema:
+          type: string
+      - in: query
+        name: auth
+        schema:
+          type: string
+      - in: query
         name: configure_flow
         schema:
           type: string
           format: uuid
       - in: query
         name: from_number
-        schema:
-          type: string
-      - in: query
-        name: generic_wrapper_api_auth
-        schema:
-          type: string
-      - in: query
-        name: generic_wrapper_api_url
         schema:
           type: string
       - in: query
@@ -14198,14 +14198,6 @@ paths:
         schema:
           type: string
           format: uuid
-      - in: query
-        name: twilio_account_sid
-        schema:
-          type: string
-      - in: query
-        name: twilio_auth
-        schema:
-          type: string
       tags:
       - stages
       security:
@@ -19192,22 +19184,18 @@ components:
           $ref: '#/components/schemas/ProviderEnum'
         from_number:
           type: string
-        twilio_account_sid:
+        account_sid:
           type: string
-        twilio_auth:
-          type: string
-        generic_wrapper_api_url:
-          type: string
-        generic_wrapper_api_auth:
+        auth:
           type: string
       required:
+      - account_sid
+      - auth
       - component
       - from_number
       - name
       - pk
       - provider
-      - twilio_account_sid
-      - twilio_auth
       - verbose_name
       - verbose_name_plural
     AuthenticatorSMSStageRequest:
@@ -19230,20 +19218,16 @@ components:
           $ref: '#/components/schemas/ProviderEnum'
         from_number:
           type: string
-        twilio_account_sid:
+        account_sid:
           type: string
-        twilio_auth:
-          type: string
-        generic_wrapper_api_url:
-          type: string
-        generic_wrapper_api_auth:
+        auth:
           type: string
       required:
+      - account_sid
+      - auth
       - from_number
       - name
       - provider
-      - twilio_account_sid
-      - twilio_auth
     AuthenticatorStaticChallenge:
       type: object
       description: Static authenticator challenge
@@ -25980,13 +25964,9 @@ components:
           $ref: '#/components/schemas/ProviderEnum'
         from_number:
           type: string
-        twilio_account_sid:
+        account_sid:
           type: string
-        twilio_auth:
-          type: string
-        generic_wrapper_api_url:
-          type: string
-        generic_wrapper_api_auth:
+        auth:
           type: string
     PatchedAuthenticatorStaticStageRequest:
       type: object
