@@ -1,11 +1,18 @@
 [[redirects]]
-  from = "/v2/"
-  to = "https://ghcr.registry.beryju.org/v2/"
+  from = "/*"
+  to = "/.netlify/functions/go-get"
+  status = 200
+  force = true
+  query = {go-get = "1"}
+
+[[redirects]]
+  from = "/v2"
+  to = "/.netlify/functions/oci-proxy"
   status = 200
   force = true
 
 [[redirects]]
   from = "/v2/*"
-  to = "https://ghcr.registry.beryju.org/v2/goauthentik/:splat"
+  to = "https://ghcr.io/v2/goauthentik/:splat"
   status = 200
   force = true

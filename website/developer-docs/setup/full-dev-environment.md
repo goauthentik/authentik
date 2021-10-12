@@ -34,6 +34,8 @@ log_level: debug
 secret_key: "A long key you can generate with `pwgen 40 1` for example"
 ```
 
+To apply database migrations, run `make migrate`. This is needed after the initial setup, and whenever you fetch new source from upstream.
+
 Afterwards, you can start authentik by running `make run`. authentik is now accessible under `localhost:9000`.
 
 Generally speaking, authentik is a Django application, ran by gunicorn, proxied by a Go application. The Go application serves static files.
