@@ -1,12 +1,13 @@
-import { t } from "@lingui/macro";
+import {t} from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import {html, TemplateResult} from "lit";
 import {customElement, property} from "lit/decorators";
-import { ifDefined } from "lit/directives/if-defined";
-import { until } from "lit/directives/until";
+import {ifDefined} from "lit/directives/if-defined";
+import {until} from "lit/directives/until";
 
 import {
     AuthenticatorSMSStage,
+    AuthTypeEnum,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
     ProviderEnum,
@@ -30,6 +31,9 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
     shouldShowTwilio = false;
     @property({type: Boolean})
     shouldShowGeneric = false;
+
+    @property({type: Boolean})
+    shouldShowAuthPassword = false;
 
     getSuccessMessage(): string {
         if (this.instance) {
@@ -57,15 +61,29 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
             provider === ProviderEnum.Twilio
         ) {
             this.shouldShowTwilio = true;
-        } if (
-            provider === ProviderEnum.Generic )
-        {
-            this.shouldShowGeneric = true;
-        } else {
             this.shouldShowGeneric = false;
+        }
+        if (
+            provider === ProviderEnum.Generic
+        ) {
+            this.shouldShowGeneric = true;
             this.shouldShowTwilio = false;
         }
     }
+
+    onAuthTypeChange(auth_type: string): void {
+        if (
+            auth_type === AuthTypeEnum.Basic
+        ) {
+            this.shouldShowAuthPassword = true;
+        }
+        if (
+            auth_type === AuthTypeEnum.Bearer
+        ) {
+            this.shouldShowAuthPassword = false;
+        }
+    }
+
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
@@ -164,7 +182,34 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Generic Wrapper API URL`}
+                        label=${t`Auth Type`}
+                        ?hidden=${!this.shouldShowGeneric}
+                        @change=${(ev: Event) => {
+                                const current = (ev.target as HTMLInputElement).value;
+                                this.onAuthTypeChange(current);
+                        }}
+                        ?required=${true}
+                        name="auth_type"
+                    >
+                        <select
+                            name="authType"
+                            class="pf-c-form-control"
+                        >
+                            <option
+                                value="${AuthTypeEnum.Bearer}"
+                            >
+                                ${t`Bearer Token`}
+                            </option>
+                            <option
+                                value="${AuthTypeEnum.Basic}"
+                            >
+                                ${t`Basic Auth`}
+                            </option>
+
+                        </select>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`External API URL`}
                         ?hidden=${!this.shouldShowGeneric}
                         ?required=${true}
                         name="genericWrapperApiURL"
@@ -176,13 +221,13 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`This is the full endpoint to send POST request to.`}
+                            ${t`This is the full endpoint to send POST requests to.`}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Generic Wrapper API Auth`}
+                        label=${t`API Auth Username`}
                         ?hidden=${!this.shouldShowGeneric}
-                        ?required=${false}
+                        ?required=${true}
                         name="genericWrapperApiAuth"
                     >
                         <input
@@ -190,6 +235,24 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                             value="${ifDefined(this.instance?.auth || "")}"
                             class="pf-c-form-control"
                         />
+                        <p class="pf-c-form__helper-text">
+                            ${t`This is the username to be used with basic auth or the token when used with bearer token`}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`API Auth password`}
+                        ?hidden=${!this.shouldShowGeneric || !this.shouldShowAuthPassword}
+                        ?required=${true}
+                        name="genericWrapperApiPassword"
+                    >
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.authPassword || "")}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`This is the password to be used with basic auth`}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Configuration flow`} name="configureFlow">
                         <select class="pf-c-form-control">
