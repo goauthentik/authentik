@@ -1,7 +1,7 @@
 const gitHubNamespace = "goauthentik.io";
 
 exports.handler = async function (event, context) {
-    const repo = "";
+    let repo = "";
     switch (event.path) {
         case "/":
             repo = "authentik.git";
