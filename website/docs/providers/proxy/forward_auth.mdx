@@ -211,7 +211,7 @@ services:
       - '--entrypoints.https.address=:443'
 
   authentik_proxy:
-    image: ghcr.io/goauthentik/proxy:2021.5.1
+    image: goauthentik.io/proxy:2021.5.1
     ports:
       - 9000:9000
       - 9443:9443

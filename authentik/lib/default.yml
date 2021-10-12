@@ -54,7 +54,7 @@ outposts:
   # %(type)s: Outpost type; proxy, ldap, etc
   # %(version)s: Current version; 2021.4.1
   # %(build_hash)s: Build hash if you're running a beta version
-  docker_image_base: "ghcr.io/goauthentik/%(type)s:%(version)s"
+  docker_image_base: "goauthentik.io/%(type)s:%(version)s"
 
 disable_update_check: false
 avatars: env://AUTHENTIK_AUTHENTIK__AVATARS?gravatar

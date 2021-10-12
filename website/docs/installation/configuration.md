@@ -128,7 +128,7 @@ Optionally disable the update check. Defaults to `false`.
    - `%(version)s`: Current version; 2021.4.1
    - `%(build_hash)s`: Build hash if you're running a beta version
 
-  Placeholder for outpost docker images. Default: `ghcr.io/goauthentik/%(type)s:%(version)s`.
+  Placeholder for outpost docker images. Default: `goauthentik.io/%(type)s:%(version)s`.
 
 ### AUTHENTIK_AVATARS
 
