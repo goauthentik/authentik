@@ -73,11 +73,11 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		endpint:       endpoint,
 		oauthConfig:   oauth2Config,
 		tokenVerifier: verifier,
-		sessions:      GetStore(p),
 		proxyConfig:   p,
 		httpClient:    c,
 		mux:           mux,
 	}
+	a.sessions = a.getStore(p)
 	muxLogger := log.WithField("logger", "authentik.outpost.proxyv2.application").WithField("name", p.Name)
 	mux.Use(web.NewLoggingHandler(muxLogger, func(l *log.Entry, r *http.Request) *log.Entry {
 		s, err := a.sessions.Get(r, constants.SeesionName)
