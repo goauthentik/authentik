@@ -1,13 +1,13 @@
 [[redirects]]
   from = "/*"
-  to = "https://goauthentik.io/.netlify/functions/go-get"
+  to = "/.netlify/functions/go-get"
   status = 200
   force = true
   query = {go-get = "1"}
 
 [[redirects]]
   from = "/v2"
-  to = "https://goauthentik.io/.netlify/functions/oci-proxy"
+  to = "/.netlify/functions/oci-proxy"
   status = 200
   force = true
 
