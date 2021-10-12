@@ -189,10 +189,10 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                                 this.onAuthTypeChange(current);
                         }}
                         ?required=${true}
-                        name="auth_type"
+                        name="authType"
                     >
                         <select
-                            name="authType"
+                            name="users"
                             class="pf-c-form-control"
                         >
                             <option
@@ -212,7 +212,7 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                         label=${t`External API URL`}
                         ?hidden=${!this.shouldShowGeneric}
                         ?required=${true}
-                        name="genericWrapperApiURL"
+                        name="accountSid"
                     >
                         <input
                             type="text"
@@ -228,7 +228,7 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                         label=${t`API Auth Username`}
                         ?hidden=${!this.shouldShowGeneric}
                         ?required=${true}
-                        name="genericWrapperApiAuth"
+                        name="auth"
                     >
                         <input
                             type="text"
@@ -242,12 +242,12 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                     <ak-form-element-horizontal
                         label=${t`API Auth password`}
                         ?hidden=${!this.shouldShowGeneric || !this.shouldShowAuthPassword}
-                        ?required=${true}
-                        name="genericWrapperApiPassword"
+                        ?required=${false}
+                        name="authPassword"
                     >
                         <input
                             type="text"
-                            value="${ifDefined(this.instance?.authPassword || "")}"
+                            value="${ifDefined(this.instance?.authPassword || "null")}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">
