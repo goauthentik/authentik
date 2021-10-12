@@ -4,7 +4,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.views import error
 from authentik.lib.utils.reflection import get_apps
-from authentik.root.monitoring import LiveView, MetricsView, ReadyView
+from authentik.root.monitoring import MetricsView, ReadyView
 
 LOGGER = get_logger()
 
@@ -44,6 +44,5 @@ for _authentik_app in get_apps():
 
 urlpatterns += [
     path("metrics/", MetricsView.as_view(), name="metrics"),
-    path("-/health/live/", LiveView.as_view(), name="health-live"),
     path("-/health/ready/", ReadyView.as_view(), name="health-ready"),
 ]
