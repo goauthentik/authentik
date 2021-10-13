@@ -107,7 +107,6 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                         name="provider"
                     >
                         <select
-                            name="users"
                             class="pf-c-form-control"
                             @change=${(ev: Event) => {
                                 const current = (ev.target as HTMLInputElement).value;
@@ -115,18 +114,13 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                             } }
                         >
                             <option
-                                value=""
-                                ?selected=${this.instance?.provider === undefined}
-                            >
-                                ---------
-                            </option>
-                            <option
                                 value="${ProviderEnum.Twilio}"
                             >
                                 ${t`Twilio`}
                             </option>
                             <option
                                 value="${ProviderEnum.Generic}"
+                                ?selected=${this.instance?.provider === ProviderEnum.Generic}
                             >
                                 ${t`Generic`}
                             </option>
