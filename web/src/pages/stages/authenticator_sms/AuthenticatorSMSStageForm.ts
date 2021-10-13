@@ -192,11 +192,11 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                         name="authType"
                     >
                         <select
-                            name="users"
                             class="pf-c-form-control"
                         >
                             <option
                                 value="${AuthTypeEnum.Bearer}"
+                                 ?selected=${this.instance?.authType === AuthTypeEnum.Bearer}
                             >
                                 ${t`Bearer Token`}
                             </option>
