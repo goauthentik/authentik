@@ -13,6 +13,7 @@ import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css"
 import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import { CurrentTenant, EventsApi } from "@goauthentik/api";
 
@@ -56,6 +57,7 @@ export class UserInterface extends LitElement {
     static get styles(): CSSResult[] {
         return [
             PFBase,
+            PFDisplay,
             PFBrand,
             PFPage,
             PFAvatar,
@@ -155,7 +157,9 @@ export class UserInterface extends LitElement {
                                       </div>`
                                     : html``}
                                 ${config.enabledFeatures.notificationDrawer
-                                    ? html`
+                                    ? html`<div
+                                          class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg"
+                                      >
                                           <button
                                               class="pf-c-button pf-m-plain"
                                               type="button"
@@ -176,12 +180,10 @@ export class UserInterface extends LitElement {
                                                   >
                                               </span>
                                           </button>
-                                      `
+                                      </div> `
                                     : html``}
                                 ${config.enabledFeatures.settings
-                                    ? html` <div
-                                          class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg"
-                                      >
+                                    ? html` <div class="pf-c-page__header-tools-item">
                                           <a
                                               class="pf-c-button pf-m-plain"
                                               type="button"
@@ -191,18 +193,20 @@ export class UserInterface extends LitElement {
                                           </a>
                                       </div>`
                                     : html``}
-                                <a
-                                    href="/flows/-/default/invalidation/"
-                                    class="pf-c-button pf-m-plain"
-                                >
-                                    <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
-                                </a>
+                                <div class="pf-c-page__header-tools-item">
+                                    <a
+                                        href="/flows/-/default/invalidation/"
+                                        class="pf-c-button pf-m-plain"
+                                    >
+                                        <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                                    </a>
+                                </div>
                                 ${until(
                                     me().then((u) => {
                                         if (!u.user.isSuperuser) return html``;
                                         return html`
                                             <a
-                                                class="pf-c-button pf-m-primary pf-m-small"
+                                                class="pf-c-button pf-m-primary pf-m-small pf-u-display-none pf-u-display-block-on-md"
                                                 href="/if/admin"
                                             >
                                                 ${t`Admin interface`}

@@ -12,6 +12,7 @@ import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-sta
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import { Application, CoreApi } from "@goauthentik/api";
 
@@ -53,7 +54,7 @@ export class LibraryPage extends LitElement {
     }
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFEmptyState, PFPage, PFContent, PFGallery, AKGlobal].concat(css`
+        return [PFBase, PFDisplay, PFEmptyState, PFPage, PFContent, PFGallery, AKGlobal].concat(css`
             :host,
             main {
                 height: 100%;
@@ -138,6 +139,7 @@ export class LibraryPage extends LitElement {
                                       }
                                   }}
                                   type="text"
+                                  class="pf-u-display-none pf-u-display-block-on-md"
                                   autofocus
                                   placeholder=${t`Search...`}
                               />`

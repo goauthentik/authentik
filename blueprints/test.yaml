@@ -1,0 +1,8 @@
+version: v2
+meta:
+  author: test
+  version: 2021.9.8
+  required_authentik_version: 2021.9.8
+  verified: true
+inputs: []
+resources: []
