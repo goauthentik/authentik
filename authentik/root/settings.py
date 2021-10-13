@@ -451,7 +451,6 @@ structlog.configure_once(
         structlog.stdlib.PositionalArgumentsFormatter(),
         structlog.processors.TimeStamper(fmt="iso", utc=False),
         structlog.processors.StackInfoRenderer(),
-        structlog.processors.format_exc_info,
         structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
     ],
     logger_factory=structlog.stdlib.LoggerFactory(),
@@ -468,7 +467,6 @@ LOG_PRE_CHAIN = [
     structlog.stdlib.add_logger_name,
     structlog.processors.TimeStamper(),
     structlog.processors.StackInfoRenderer(),
-    structlog.processors.format_exc_info,
 ]
 
 LOGGING = {

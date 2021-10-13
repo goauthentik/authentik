@@ -30,6 +30,8 @@ MODE_FILE="/tmp/authentik-mode"
 
 if [[ "$1" == "server" ]]; then
     echo "server" > $MODE_FILE
+    # We only set prometheus_multiproc_dir for serer, as with the worker it just fills up the disk
+    export prometheus_multiproc_dir=/dev/shm/
     python -m lifecycle.migrate
     /authentik-proxy
 elif [[ "$1" == "worker" ]]; then
