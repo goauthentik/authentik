@@ -16,3 +16,7 @@
   to = "https://ghcr.io/v2/goauthentik/:splat"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/version/*"
+  to = "https://raw.githubusercontent.com/goauthentik/authentik/version-:splat"
