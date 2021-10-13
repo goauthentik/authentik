@@ -250,7 +250,7 @@ jobs:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
         run: |
           scripts/ci_prepare.sh
-          docker-compose -f tests/e2e/ci.docker-compose.yml up -d
+          docker-compose -f tests/e2e/docker-compose.yml up -d
       - id: cache-web
         uses: actions/cache@v2.1.6
         with:
