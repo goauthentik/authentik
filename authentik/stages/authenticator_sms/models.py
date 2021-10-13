@@ -118,8 +118,8 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
                 status_code=response.status_code,
                 body=response.text
             ).set_user(device.user).save()
-            if response.status_code == 400:
-                raise ValidationError(response.json().get("message"))
+            if response.status_code >= 400:
+                raise ValidationError(response.text)
             raise
 
     @property
