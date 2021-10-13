@@ -14,6 +14,8 @@
 [[redirects]]
   from = "/v2/*"
   to = "https://ghcr.io/v2/goauthentik/:splat"
+  status = 200
+  force = true
 
 [[redirects]]
   from = "/version/*"
