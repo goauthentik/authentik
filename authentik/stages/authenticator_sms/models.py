@@ -14,6 +14,8 @@ from structlog.stdlib import get_logger
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, Stage
 from authentik.lib.utils.http import get_http_session
+from authentik.lib.utils.errors import exception_to_string
+from authentik.events.models import Event, EventAction
 
 LOGGER = get_logger()
 
@@ -78,15 +80,9 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
 
     def send_generic(self, token: str, device: "SMSDevice"):
         """Send SMS via outside API"""
-        from_number = ""
-
-        if self.from_number is not None:
-            from_number += self.from_number
-        else:
-            from_number += "None"
 
         data = {
-            "From": from_number,
+            "From": self.from_number,
             "To": device.phone_number,
             "Body": token,
         }
@@ -113,29 +109,17 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
         try:
             response.raise_for_status()
         except RequestException as exc:
-            LOGGER.warning("Error sending token by generic SMS", exc=exc)
+            LOGGER.warning("Error sending token by generic SMS", exc=exc, status=response.status_code,
+                           body=response.text[:100])
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message=f"Error sending SMS",
+                exc=exception_to_string(exc),
+                status_code=response.status_code,
+                body=response.text
+            ).set_user(device.user).save()
             if response.status_code == 400:
                 raise ValidationError(response.json().get("message"))
-            if response.status_code == 521:
-                LOGGER.debug("Cloudflare reported that origin web server is down, unable to connect, 521")
-                raise ValidationError("Cloudflare reported that origin web server is down, unable to connect, 521")
-            if response.status_code == 522:
-                LOGGER.debug("Cloudflare reported connection timed out, 522")
-                raise ValidationError("Cloudflare reported connection timed out, 522")
-            if response.status_code == 523:
-                LOGGER.debug("Cloudflare reported that origin is unreachable, 523")
-                raise ValidationError("Cloudflare reported that origin is unreachable, 523")
-            if response.status_code == 524:
-                LOGGER.debug("Cloudflare was able to connect to origin, but it did not provide response "
-                             "in timely fashion, 524")
-                raise ValidationError("Cloudflare was able to connect to origin, but it did not provide response "
-                                      "in timely fashion, 524")
-            if response.status_code == 525:
-                LOGGER.debug("Cloudflare reported an SSL handshake failure, 525")
-                raise ValidationError("Cloudflare reported an SSL handshake failure, 525")
-            if response.status_code == 526:
-                LOGGER.debug("Cloudflare reported an invalid SSL certificate error, 526")
-                raise ValidationError("Cloudflare reported an error, 526")
             raise
 
     @property
