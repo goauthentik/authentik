@@ -92,7 +92,7 @@ class DockerController(BaseController):
 
     def try_pull_image(self):
         """Try to pull the image needed for this outpost based on the CONFIG
-        `outposts.docker_image_base`, but fall back to known-good images"""
+        `outposts.container_image_base`, but fall back to known-good images"""
         image = self.get_container_image()
         try:
             self.client.images.pull(image)

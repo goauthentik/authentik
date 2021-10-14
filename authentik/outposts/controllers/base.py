@@ -72,7 +72,7 @@ class BaseController:
         if self.outpost.config.container_image is not None:
             return self.outpost.config.container_image
 
-        image_name_template: str = CONFIG.y("outposts.docker_image_base")
+        image_name_template: str = CONFIG.y("outposts.container_image_base")
         return image_name_template % {
             "type": self.outpost.type,
             "version": __version__,
