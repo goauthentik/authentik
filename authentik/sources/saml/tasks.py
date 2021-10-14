@@ -3,7 +3,12 @@ from django.utils.timezone import now
 from structlog.stdlib import get_logger
 
 from authentik.core.models import AuthenticatedSession, User
-from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
+from authentik.events.monitored_tasks import (
+    MonitoredTask,
+    TaskResult,
+    TaskResultStatus,
+    prefill_task,
+)
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.celery import CELERY_APP
 from authentik.sources.saml.models import SAMLSource
@@ -12,6 +17,7 @@ LOGGER = get_logger()
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
+@prefill_task()
 def clean_temporary_users(self: MonitoredTask):
     """Remove temporary users created by SAML Sources"""
     _now = now()

@@ -3,6 +3,7 @@ package application
 import (
 	"crypto/tls"
 	"encoding/gob"
+	"fmt"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -12,6 +13,7 @@ import (
 	"github.com/coreos/go-oidc"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
+	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api"
@@ -41,12 +43,13 @@ type Application struct {
 	mux *mux.Router
 }
 
-func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore, ak *ak.APIController) *Application {
+func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore, ak *ak.APIController) (*Application, error) {
 	gob.Register(Claims{})
+	muxLogger := log.WithField("logger", "authentik.outpost.proxyv2.application").WithField("name", p.Name)
 
 	externalHost, err := url.Parse(p.ExternalHost)
 	if err != nil {
-		log.WithError(err).Warning("Failed to parse URL, skipping provider")
+		return nil, fmt.Errorf("failed to parse URL, skipping provider")
 	}
 
 	ks := hs256.NewKeySet(*p.ClientSecret)
@@ -78,7 +81,6 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		mux:           mux,
 	}
 	a.sessions = a.getStore(p)
-	muxLogger := log.WithField("logger", "authentik.outpost.proxyv2.application").WithField("name", p.Name)
 	mux.Use(web.NewLoggingHandler(muxLogger, func(l *log.Entry, r *http.Request) *log.Entry {
 		s, err := a.sessions.Get(r, constants.SeesionName)
 		if err != nil {
@@ -130,13 +132,13 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		err = a.configureForward()
 	}
 	if err != nil {
-		a.log.WithError(err).Warning("failed to configure mode")
+		return nil, errors.Wrap(err, "failed to configure application mode")
 	}
 
 	if kp := p.Certificate.Get(); kp != nil {
 		err := cs.AddKeypair(*kp)
 		if err != nil {
-			a.log.WithError(err).Warning("Failed to initially fetch certificate")
+			return nil, errors.Wrap(err, "failed to initially fetch certificate")
 		}
 		a.Cert = cs.Get(*kp)
 	}
@@ -147,13 +149,13 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 			re, err := regexp.Compile(regex)
 			if err != nil {
 				// TODO: maybe create event for this?
-				a.log.WithError(err).Warning("failed to compile regex")
+				return nil, errors.Wrap(err, "failed to compile SkipPathRegex")
 			} else {
 				a.UnauthenticatedRegex = append(a.UnauthenticatedRegex, re)
 			}
 		}
 	}
-	return a
+	return a, nil
 }
 
 func (a *Application) IsAllowlisted(r *http.Request) bool {

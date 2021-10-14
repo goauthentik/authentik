@@ -2,7 +2,12 @@
 from django.core.cache import cache
 from structlog.stdlib import get_logger
 
-from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
+from authentik.events.monitored_tasks import (
+    MonitoredTask,
+    TaskResult,
+    TaskResultStatus,
+    prefill_task,
+)
 from authentik.policies.reputation.models import IPReputation, UserReputation
 from authentik.policies.reputation.signals import CACHE_KEY_IP_PREFIX, CACHE_KEY_USER_PREFIX
 from authentik.root.celery import CELERY_APP
@@ -11,6 +16,7 @@ LOGGER = get_logger()
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
+@prefill_task()
 def save_ip_reputation(self: MonitoredTask):
     """Save currently cached reputation to database"""
     objects_to_update = []
@@ -24,6 +30,7 @@ def save_ip_reputation(self: MonitoredTask):
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
+@prefill_task()
 def save_user_reputation(self: MonitoredTask):
     """Save currently cached reputation to database"""
     objects_to_update = []

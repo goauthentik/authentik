@@ -24,8 +24,12 @@ func (ps *ProxyServer) Refresh() error {
 		hc := &http.Client{
 			Transport: ak.NewUserAgentTransport(constants.OutpostUserAgent()+ua, ak.NewTracingTransport(context.TODO(), ak.GetTLSTransport())),
 		}
-		a := application.NewApplication(provider, hc, ps.cryptoStore, ps.akAPI)
-		apps[a.Host] = a
+		a, err := application.NewApplication(provider, hc, ps.cryptoStore, ps.akAPI)
+		if err != nil {
+			ps.log.WithError(err).Warning("failed to setup application")
+		} else {
+			apps[a.Host] = a
+		}
 	}
 	ps.apps = apps
 	ps.log.Debug("Swapped maps")

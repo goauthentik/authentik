@@ -14190,6 +14190,25 @@ paths:
       description: AuthenticatorSMSStage Viewset
       parameters:
       - in: query
+        name: account_sid
+        schema:
+          type: string
+      - in: query
+        name: auth
+        schema:
+          type: string
+      - in: query
+        name: auth_password
+        schema:
+          type: string
+      - in: query
+        name: auth_type
+        schema:
+          type: string
+          enum:
+          - basic
+          - bearer
+      - in: query
         name: configure_flow
         schema:
           type: string
@@ -14225,6 +14244,7 @@ paths:
         schema:
           type: string
           enum:
+          - generic
           - twilio
       - name: search
         required: false
@@ -14237,14 +14257,6 @@ paths:
         schema:
           type: string
           format: uuid
-      - in: query
-        name: twilio_account_sid
-        schema:
-          type: string
-      - in: query
-        name: twilio_auth
-        schema:
-          type: string
       tags:
       - stages
       security:
@@ -18907,6 +18919,11 @@ components:
       required:
       - name
       - slug
+    AuthTypeEnum:
+      enum:
+      - basic
+      - bearer
+      type: string
     AuthenticateWebAuthnStage:
       type: object
       description: AuthenticateWebAuthnStage Serializer
@@ -19231,18 +19248,22 @@ components:
           $ref: '#/components/schemas/ProviderEnum'
         from_number:
           type: string
-        twilio_account_sid:
+        account_sid:
           type: string
-        twilio_auth:
+        auth:
           type: string
+        auth_password:
+          type: string
+        auth_type:
+          $ref: '#/components/schemas/AuthTypeEnum'
       required:
+      - account_sid
+      - auth
       - component
       - from_number
       - name
       - pk
       - provider
-      - twilio_account_sid
-      - twilio_auth
       - verbose_name
       - verbose_name_plural
     AuthenticatorSMSStageRequest:
@@ -19265,16 +19286,20 @@ components:
           $ref: '#/components/schemas/ProviderEnum'
         from_number:
           type: string
-        twilio_account_sid:
+        account_sid:
           type: string
-        twilio_auth:
+        auth:
           type: string
+        auth_password:
+          type: string
+        auth_type:
+          $ref: '#/components/schemas/AuthTypeEnum'
       required:
+      - account_sid
+      - auth
       - from_number
       - name
       - provider
-      - twilio_account_sid
-      - twilio_auth
     AuthenticatorStaticChallenge:
       type: object
       description: Static authenticator challenge
@@ -26033,10 +26058,14 @@ components:
           $ref: '#/components/schemas/ProviderEnum'
         from_number:
           type: string
-        twilio_account_sid:
+        account_sid:
           type: string
-        twilio_auth:
+        auth:
           type: string
+        auth_password:
+          type: string
+        auth_type:
+          $ref: '#/components/schemas/AuthTypeEnum'
     PatchedAuthenticatorStaticStageRequest:
       type: object
       description: AuthenticatorStaticStage Serializer
@@ -28217,6 +28246,7 @@ components:
     ProviderEnum:
       enum:
       - twilio
+      - generic
       type: string
     ProviderRequest:
       type: object
