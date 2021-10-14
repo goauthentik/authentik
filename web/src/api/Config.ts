@@ -50,7 +50,7 @@ export function tenant(): Promise<CurrentTenant> {
 }
 
 export const DEFAULT_CONFIG = new Configuration({
-    basePath: "/api/v3",
+    basePath: process.env.AK_API_BASE_PATH + "/api/v3",
     headers: {
         "X-CSRFToken": getCookie("authentik_csrf"),
     },
@@ -61,4 +61,4 @@ export const DEFAULT_CONFIG = new Configuration({
     ],
 });
 
-console.debug(`authentik(early): version ${VERSION}`);
+console.debug(`authentik(early): version ${VERSION}, apiBase ${DEFAULT_CONFIG.basePath}`);

@@ -44,6 +44,7 @@ const resources = [
 
 // eslint-disable-next-line no-undef
 const isProdBuild = process.env.NODE_ENV === "production";
+const apiBasePath = process.env.AK_API_BASE_PATH || "";
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 function manualChunks(id) {
     if (id.includes("@goauthentik/api")) {
@@ -111,6 +112,7 @@ export default [
             }),
             replace({
                 "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
+                "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
                 "preventAssignment": true,
             }),
             sourcemaps(),
@@ -144,6 +146,7 @@ export default [
             }),
             replace({
                 "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
+                "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
                 "preventAssignment": true,
             }),
             sourcemaps(),
@@ -177,6 +180,7 @@ export default [
             }),
             replace({
                 "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
+                "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
                 "preventAssignment": true,
             }),
             sourcemaps(),
