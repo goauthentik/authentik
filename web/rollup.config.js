@@ -44,6 +44,7 @@ const resources = [
 
 // eslint-disable-next-line no-undef
 const isProdBuild = process.env.NODE_ENV === "production";
+// eslint-disable-next-line no-undef
 const apiBasePath = process.env.AK_API_BASE_PATH || "";
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 function manualChunks(id) {
