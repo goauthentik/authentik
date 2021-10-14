@@ -7,7 +7,9 @@ from typing import Any, Optional
 
 from celery import Task
 from django.core.cache import cache
+from django.utils.translation import gettext_lazy as _
 from prometheus_client import Gauge
+from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction
 from authentik.lib.utils.errors import exception_to_string
@@ -18,6 +20,8 @@ GAUGE_TASKS = Gauge(
     ["task_name", "task_uid", "status"],
 )
 
+LOGGER = get_logger()
+
 
 class TaskResultStatus(Enum):
     """Possible states of tasks"""
@@ -25,6 +29,7 @@ class TaskResultStatus(Enum):
     SUCCESSFUL = 1
     WARNING = 2
     ERROR = 4
+    UNKNOWN = 8
 
 
 @dataclass
@@ -105,6 +110,27 @@ class TaskInfo:
             self.task_name += f"_{self.result.uid}"
         self.set_prom_metrics()
         cache.set(key, self, timeout=timeout_hours * 60 * 60)
+
+
+def prefill_task():
+    """Ensure a task's details are always in cache, so it can always be triggered via API"""
+
+    def inner_wrap(func):
+        TaskInfo(
+            task_name=func.__name__,
+            task_description=func.__doc__,
+            result=TaskResult(TaskResultStatus.UNKNOWN, messages=[_("Task has not been run yet.")]),
+            task_call_module=func.__module__,
+            task_call_func=func.__name__,
+            # We don't have real values for these attributes but they cannot be null
+            start_timestamp=default_timer(),
+            finish_timestamp=default_timer(),
+            finish_time=datetime.now(),
+        ).save(86400)
+        LOGGER.debug("prefilled task", task_name=func.__name__)
+        return func
+
+    return inner_wrap
 
 
 class MonitoredTask(Task):

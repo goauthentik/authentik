@@ -17,7 +17,12 @@ from kubernetes.config.incluster_config import SERVICE_TOKEN_FILENAME
 from kubernetes.config.kube_config import KUBE_CONFIG_DEFAULT_LOCATION
 from structlog.stdlib import get_logger
 
-from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
+from authentik.events.monitored_tasks import (
+    MonitoredTask,
+    TaskResult,
+    TaskResultStatus,
+    prefill_task,
+)
 from authentik.lib.utils.reflection import path_to_class
 from authentik.outposts.controllers.base import BaseController, ControllerException
 from authentik.outposts.models import (
@@ -71,6 +76,7 @@ def outpost_service_connection_state(connection_pk: Any):
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
+@prefill_task()
 def outpost_service_connection_monitor(self: MonitoredTask):
     """Regularly check the state of Outpost Service Connections"""
     connections = OutpostServiceConnection.objects.all()
@@ -120,6 +126,7 @@ def outpost_controller(
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
+@prefill_task()
 def outpost_token_ensurer(self: MonitoredTask):
     """Periodically ensure that all Outposts have valid Service Accounts
     and Tokens"""
