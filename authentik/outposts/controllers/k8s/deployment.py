@@ -1,4 +1,6 @@
 """Kubernetes Deployment Reconciler"""
+from django.utils.text import slugify
+
 from typing import TYPE_CHECKING
 
 from kubernetes.client import (
@@ -11,6 +13,7 @@ from kubernetes.client import (
     V1EnvVarSource,
     V1LabelSelector,
     V1ObjectMeta,
+    V1ObjectReference,
     V1PodSpec,
     V1PodTemplateSpec,
     V1SecretKeySelector,
@@ -56,6 +59,8 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
             "app.kubernetes.io/name": "authentik-outpost",
             "app.kubernetes.io/managed-by": "goauthentik.io",
             "goauthentik.io/outpost-uuid": self.controller.outpost.uuid.hex,
+            "goauthentik.io/outpost-name": slugify(self.controller.outpost.name),
+            "goauthentik.io/outpost-type": self.controller.outpost.type
         }
 
     def get_reference_object(self) -> V1Deployment:
@@ -72,6 +77,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
             )
         meta = self.get_object_meta(name=self.name)
         image_name = self.controller.get_container_image()
+        image_pull_secrets = self.outpost.config.kubernetes_image_pull_secrets
         return V1Deployment(
             metadata=meta,
             spec=V1DeploymentSpec(
@@ -80,6 +86,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
                 template=V1PodTemplateSpec(
                     metadata=V1ObjectMeta(labels=self.get_pod_meta()),
                     spec=V1PodSpec(
+                        image_pull_secrets=[V1ObjectReference(name=secret) for secret in image_pull_secrets],
                         containers=[
                             V1Container(
                                 name=str(self.outpost.type),

@@ -49,6 +49,9 @@ docker_network: null
 # Optionally disable mapping of ports to outpost container, may be useful when using docker networks
 # (Available with 2021.9.4+)
 docker_map_ports: true
+# Use a specific docker image for this outpost rather than the default. This also applies to Kubernetes
+# outposts.
+docker_image:
 ########################################
 # Kubernetes outpost specific settings
 ########################################
@@ -70,4 +73,7 @@ kubernetes_service_type: ClusterIP
 # - 'ingress'
 # - 'traefik middleware'
 kubernetes_disabled_components: []
+# If the above docker image is in a private repository, use these secrets to pull.
+# NOTE: The secret must be created manually in the namespace first.
+kubernetes_image_pull_secrets: []
 ```

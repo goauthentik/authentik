@@ -4,6 +4,7 @@ from typing import Type
 
 from kubernetes.client.api_client import ApiClient
 from kubernetes.client.exceptions import OpenApiException
+
 from structlog.testing import capture_logs
 from urllib3.exceptions import HTTPError
 from yaml import dump_all
