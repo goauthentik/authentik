@@ -9,7 +9,7 @@ import { Source, SourcesApi } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { PAGE_SIZE } from "../../constants";
+import { uiConfig } from "../../common/config";
 import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
@@ -42,11 +42,11 @@ export class SourceListPage extends TablePage<Source> {
     @property()
     order = "name";
 
-    apiEndpoint(page: number): Promise<AKResponse<Source>> {
+    async apiEndpoint(page: number): Promise<AKResponse<Source>> {
         return new SourcesApi(DEFAULT_CONFIG).sourcesAllList({
             ordering: this.order,
             page: page,
-            pageSize: PAGE_SIZE,
+            pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
         });
     }

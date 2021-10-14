@@ -9,7 +9,7 @@ import { Application, CoreApi } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { PAGE_SIZE } from "../../constants";
+import { uiConfig } from "../../common/config";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
@@ -37,11 +37,11 @@ export class ApplicationListPage extends TablePage<Application> {
     @property()
     order = "name";
 
-    apiEndpoint(page: number): Promise<AKResponse<Application>> {
+    async apiEndpoint(page: number): Promise<AKResponse<Application>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
             ordering: this.order,
             page: page,
-            pageSize: PAGE_SIZE,
+            pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
             superuserFullList: true,
         });

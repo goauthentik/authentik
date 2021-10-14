@@ -40,7 +40,7 @@ export class SystemTaskListPage extends TablePage<Task> {
         return super.styles.concat(PFDescriptionList);
     }
 
-    apiEndpoint(page: number): Promise<AKResponse<Task>> {
+    async apiEndpoint(page: number): Promise<AKResponse<Task>> {
         return new AdminApi(DEFAULT_CONFIG).adminSystemTasksList().then((tasks) => {
             return {
                 pagination: {

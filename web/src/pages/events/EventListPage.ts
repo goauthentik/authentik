@@ -8,7 +8,7 @@ import { Event, EventsApi } from "@goauthentik/api";
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { EventWithContext } from "../../api/Events";
-import { PAGE_SIZE } from "../../constants";
+import { uiConfig } from "../../common/config";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
 import "./EventInfo";
@@ -34,11 +34,11 @@ export class EventListPage extends TablePage<Event> {
     @property()
     order = "-created";
 
-    apiEndpoint(page: number): Promise<AKResponse<Event>> {
+    async apiEndpoint(page: number): Promise<AKResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
             ordering: this.order,
             page: page,
-            pageSize: PAGE_SIZE,
+            pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
         });
     }

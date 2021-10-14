@@ -38,7 +38,7 @@ export class DeleteObjectsTable<T> extends Table<T> {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    apiEndpoint(page: number): Promise<AKResponse<T>> {
+    async apiEndpoint(page: number): Promise<AKResponse<T>> {
         return Promise.resolve({
             pagination: {
                 count: this.objects.length,

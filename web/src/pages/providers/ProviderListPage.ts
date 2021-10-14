@@ -9,7 +9,7 @@ import { Provider, ProvidersApi } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { PAGE_SIZE } from "../../constants";
+import { uiConfig } from "../../common/config";
 import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
@@ -43,11 +43,11 @@ export class ProviderListPage extends TablePage<Provider> {
     @property()
     order = "name";
 
-    apiEndpoint(page: number): Promise<AKResponse<Provider>> {
+    async apiEndpoint(page: number): Promise<AKResponse<Provider>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersAllList({
             ordering: this.order,
             page: page,
-            pageSize: PAGE_SIZE,
+            pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
         });
     }

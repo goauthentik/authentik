@@ -14,8 +14,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { Application } from "@goauthentik/api";
 
 import { me } from "../api/Users";
+import { uiConfig } from "../common/config";
 import { truncate } from "../utils";
-import { uiConfig } from "./config";
 
 @customElement("ak-library-app")
 export class LibraryApplication extends LitElement {

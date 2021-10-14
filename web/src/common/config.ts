@@ -26,6 +26,9 @@ export interface UIConfig {
         background: string;
         cardBackground: string;
     };
+    pagination: {
+        perPage: number;
+    };
 }
 
 export class DefaultUIConfig implements UIConfig {
@@ -43,20 +46,26 @@ export class DefaultUIConfig implements UIConfig {
         background: "",
         cardBackground: "",
     };
+    pagination = {
+        perPage: 20,
+    };
 }
 
-export function parseConfig(raw: string): UIConfig {
-    const c = JSON.parse(raw);
-    return Object.assign(new DefaultUIConfig(), c);
-}
+let globalUiConfig: Promise<UIConfig>;
 
 export function uiConfig(): Promise<UIConfig> {
-    return me().then((user) => {
-        const settings = user.user.settings;
-        let config = new DefaultUIConfig();
-        if ("userInterface" in settings) {
-            config = parseConfig(settings.userInterface);
-        }
-        return config;
-    });
+    if (!globalUiConfig) {
+        globalUiConfig = me().then((user) => {
+            const settings = user.user.settings;
+            let config = new DefaultUIConfig();
+            if (!settings) {
+                return config;
+            }
+            if ("userInterface" in settings) {
+                config = Object.assign(new DefaultUIConfig(), settings.userInterface);
+            }
+            return config;
+        });
+    }
+    return globalUiConfig;
 }

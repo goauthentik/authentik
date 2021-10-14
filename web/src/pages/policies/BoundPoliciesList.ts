@@ -9,7 +9,7 @@ import { PoliciesApi, PolicyBinding } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { PAGE_SIZE } from "../../constants";
+import { uiConfig } from "../../common/config";
 import { PFSize } from "../../elements/Spinner";
 import "../../elements/Tabs";
 import "../../elements/buttons/Dropdown";
@@ -32,12 +32,12 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
 
     checkbox = true;
 
-    apiEndpoint(page: number): Promise<AKResponse<PolicyBinding>> {
+    async apiEndpoint(page: number): Promise<AKResponse<PolicyBinding>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsList({
             target: this.target || "",
             ordering: "order",
             page: page,
-            pageSize: PAGE_SIZE,
+            pageSize: (await uiConfig()).pagination.perPage,
         });
     }
 

@@ -8,7 +8,7 @@ import { Event, EventsApi } from "@goauthentik/api";
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { EventWithContext } from "../../api/Events";
-import { PAGE_SIZE } from "../../constants";
+import { uiConfig } from "../../common/config";
 import "../../pages/events/EventInfo";
 import "../Tabs";
 import "../buttons/Dropdown";
@@ -26,11 +26,11 @@ export class ObjectChangelog extends Table<Event> {
     @property()
     targetUser!: string;
 
-    apiEndpoint(page: number): Promise<AKResponse<Event>> {
+    async apiEndpoint(page: number): Promise<AKResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
             page: page,
             ordering: this.order,
-            pageSize: PAGE_SIZE / 2,
+            pageSize: (await uiConfig()).pagination.perPage / 2,
             username: this.targetUser,
         });
     }

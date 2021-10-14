@@ -7,7 +7,7 @@ import { CoreApi, UserConsent } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { PAGE_SIZE } from "../../constants";
+import { uiConfig } from "../../common/config";
 import "../forms/DeleteBulkForm";
 import { Table, TableColumn } from "../table/Table";
 
@@ -16,12 +16,12 @@ export class UserConsentList extends Table<UserConsent> {
     @property({ type: Number })
     userId?: number;
 
-    apiEndpoint(page: number): Promise<AKResponse<UserConsent>> {
+    async apiEndpoint(page: number): Promise<AKResponse<UserConsent>> {
         return new CoreApi(DEFAULT_CONFIG).coreUserConsentList({
             user: this.userId,
             ordering: this.order,
             page: page,
-            pageSize: PAGE_SIZE,
+            pageSize: (await uiConfig()).pagination.perPage,
         });
     }
 

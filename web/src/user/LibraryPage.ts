@@ -18,9 +18,9 @@ import { Application, CoreApi } from "@goauthentik/api";
 
 import { AKResponse } from "../api/Client";
 import { DEFAULT_CONFIG } from "../api/Config";
+import { UIConfig, uiConfig } from "../common/config";
 import { loading } from "../utils";
 import "./LibraryApplication";
-import { UIConfig, uiConfig } from "./config";
 
 @customElement("ak-library")
 export class LibraryPage extends LitElement {

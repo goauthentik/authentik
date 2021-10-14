@@ -9,7 +9,7 @@ import { RefreshTokenModel, Oauth2Api, ExpiringBaseGrantModel } from "@goauthent
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { PAGE_SIZE } from "../../constants";
+import { uiConfig } from "../../common/config";
 import "../forms/DeleteBulkForm";
 import { Table, TableColumn } from "../table/Table";
 
@@ -24,12 +24,12 @@ export class UserOAuthRefreshList extends Table<RefreshTokenModel> {
         return super.styles.concat(PFFlex);
     }
 
-    apiEndpoint(page: number): Promise<AKResponse<RefreshTokenModel>> {
+    async apiEndpoint(page: number): Promise<AKResponse<RefreshTokenModel>> {
         return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensList({
             user: this.userId,
             ordering: "expires",
             page: page,
-            pageSize: PAGE_SIZE,
+            pageSize: (await uiConfig()).pagination.perPage,
         });
     }
 

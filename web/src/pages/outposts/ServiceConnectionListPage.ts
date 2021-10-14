@@ -9,7 +9,7 @@ import { OutpostsApi, ServiceConnection } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { PAGE_SIZE } from "../../constants";
+import { uiConfig } from "../../common/config";
 import { PFColor } from "../../elements/Label";
 import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/SpinnerButton";
@@ -39,11 +39,11 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
 
     checkbox = true;
 
-    apiEndpoint(page: number): Promise<AKResponse<ServiceConnection>> {
+    async apiEndpoint(page: number): Promise<AKResponse<ServiceConnection>> {
         return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllList({
             ordering: this.order,
             page: page,
-            pageSize: PAGE_SIZE,
+            pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
         });
     }
