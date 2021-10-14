@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                         ("totp", "TOTP"),
                         ("webauthn", "WebAuthn"),
                         ("duo", "Duo"),
-                        ("sms", "SMS"),
+                        ("sms", "SMS")
                     ]
                 ),
                 default=authentik.stages.authenticator_validate.models.default_device_classes,

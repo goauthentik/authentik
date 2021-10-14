@@ -14,6 +14,8 @@ from structlog.stdlib import get_logger
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, Stage
 from authentik.lib.utils.http import get_http_session
+from authentik.lib.utils.errors import exception_to_string
+from authentik.events.models import Event, EventAction
 
 LOGGER = get_logger()
 
@@ -22,6 +24,13 @@ class SMSProviders(models.TextChoices):
     """Supported SMS Providers"""
 
     TWILIO = "twilio"
+    GENERIC = "generic"
+
+
+class SMSAuthTypes(models.TextChoices):
+    """Supported SMS Auth Types"""
+    BEARER = "bearer"
+    BASIC = "basic"
 
 
 class AuthenticatorSMSStage(ConfigurableStage, Stage):
@@ -31,25 +40,29 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
 
     from_number = models.TextField()
 
-    twilio_account_sid = models.TextField()
-    twilio_auth = models.TextField()
+    account_sid = models.TextField()
+    auth = models.TextField()
+    auth_password = models.TextField(null=True)
+    auth_type = models.TextField(choices=SMSAuthTypes.choices, null=True)
 
     def send(self, token: str, device: "SMSDevice"):
         """Send message via selected provider"""
         if self.provider == SMSProviders.TWILIO:
             return self.send_twilio(token, device)
+        if self.provider == SMSProviders.GENERIC:
+            return self.send_generic(token, device)
         raise ValueError(f"invalid provider {self.provider}")
 
     def send_twilio(self, token: str, device: "SMSDevice"):
         """send sms via twilio provider"""
         response = get_http_session().post(
-            f"https://api.twilio.com/2010-04-01/Accounts/{self.twilio_account_sid}/Messages.json",
+            f"https://api.twilio.com/2010-04-01/Accounts/{self.account_sid}/Messages.json",
             data={
                 "From": self.from_number,
                 "To": device.phone_number,
                 "Body": token,
             },
-            auth=(self.twilio_account_sid, self.twilio_auth),
+            auth=(self.account_sid, self.auth),
         )
         LOGGER.debug("Sent SMS", to=device.phone_number)
         try:
@@ -64,6 +77,50 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
             message = response.json().get("message")
             LOGGER.warning("Error sending token by Twilio SMS", message=message)
             raise Exception(message)
+
+    def send_generic(self, token: str, device: "SMSDevice"):
+        """Send SMS via outside API"""
+
+        data = {
+            "From": self.from_number,
+            "To": device.phone_number,
+            "Body": token,
+        }
+
+        if self.auth_type == SMSAuthTypes.BEARER:
+            response = get_http_session().post(
+                f"{self.account_sid}",
+                json=data,
+                headers={
+                    "Authorization": f"Bearer {self.auth}"
+                },
+            )
+
+        elif self.auth_type == SMSAuthTypes.BASIC:
+            response = get_http_session().post(
+                f"{self.account_sid}",
+                json=data,
+                auth=(self.auth, self.auth_password),
+            )
+        else:
+            raise
+
+        LOGGER.debug("Sent SMS", to=device.phone_number)
+        try:
+            response.raise_for_status()
+        except RequestException as exc:
+            LOGGER.warning("Error sending token by generic SMS", exc=exc, status=response.status_code,
+                           body=response.text[:100])
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message=f"Error sending SMS",
+                exc=exception_to_string(exc),
+                status_code=response.status_code,
+                body=response.text
+            ).set_user(device.user).save()
+            if response.status_code >= 400:
+                raise ValidationError(response.text)
+            raise
 
     @property
     def serializer(self) -> BaseSerializer:
@@ -113,6 +170,5 @@ class SMSDevice(SideChannelDevice):
         return self.name or str(self.user)
 
     class Meta:
-
         verbose_name = _("SMS Device")
         verbose_name_plural = _("SMS Devices")

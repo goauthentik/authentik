@@ -22,8 +22,10 @@ class AuthenticatorSMSStageSerializer(StageSerializer):
             "configure_flow",
             "provider",
             "from_number",
-            "twilio_account_sid",
-            "twilio_auth",
+            "account_sid",
+            "auth",
+            "auth_password",
+            "auth_type",
         ]
 
 
