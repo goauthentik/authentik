@@ -148,7 +148,7 @@ class DockerController(BaseController):
                 if should_image not in container.image.tags:
                     self.logger.info(
                         "Container has mismatched image, re-creating...",
-                        has=container.tags,
+                        has=container.image.tags,
                         should=should_image,
                     )
                     self.down()
