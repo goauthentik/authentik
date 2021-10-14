@@ -69,6 +69,9 @@ class BaseController:
 
     def get_container_image(self) -> str:
         """Get container image to use for this outpost"""
+        if self.outpost.config.container_image is not None:
+            return self.outpost.config.container_image
+
         image_name_template: str = CONFIG.y("outposts.docker_image_base")
         return image_name_template % {
             "type": self.outpost.type,
