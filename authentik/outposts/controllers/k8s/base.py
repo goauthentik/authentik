@@ -139,7 +139,7 @@ class KubernetesObjectReconciler(Generic[T]):
                 "app.kubernetes.io/managed-by": "goauthentik.io",
                 "goauthentik.io/outpost-uuid": self.controller.outpost.uuid.hex,
                 "goauthentik.io/outpost-type": self.controller.outpost.type,
-                "goauthentik.io/outpost-name": slugify(self.controller.outpost.name)
+                "goauthentik.io/outpost-name": slugify(self.controller.outpost.name),
             },
             **kwargs,
         )

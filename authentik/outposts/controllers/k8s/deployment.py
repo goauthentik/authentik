@@ -1,8 +1,7 @@
 """Kubernetes Deployment Reconciler"""
-from django.utils.text import slugify
-
 from typing import TYPE_CHECKING
 
+from django.utils.text import slugify
 from kubernetes.client import (
     AppsV1Api,
     V1Container,
@@ -60,7 +59,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
             "app.kubernetes.io/managed-by": "goauthentik.io",
             "goauthentik.io/outpost-uuid": self.controller.outpost.uuid.hex,
             "goauthentik.io/outpost-name": slugify(self.controller.outpost.name),
-            "goauthentik.io/outpost-type": self.controller.outpost.type
+            "goauthentik.io/outpost-type": self.controller.outpost.type,
         }
 
     def get_reference_object(self) -> V1Deployment:
@@ -86,7 +85,9 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
                 template=V1PodTemplateSpec(
                     metadata=V1ObjectMeta(labels=self.get_pod_meta()),
                     spec=V1PodSpec(
-                        image_pull_secrets=[V1ObjectReference(name=secret) for secret in image_pull_secrets],
+                        image_pull_secrets=[
+                            V1ObjectReference(name=secret) for secret in image_pull_secrets
+                        ],
                         containers=[
                             V1Container(
                                 name=str(self.outpost.type),
@@ -131,7 +132,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
                                     ),
                                 ],
                             )
-                        ]
+                        ],
                     ),
                 ),
             ),

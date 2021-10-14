@@ -83,6 +83,7 @@ class OutpostConfig:
     kubernetes_disabled_components: list[str] = field(default_factory=list)
     kubernetes_image_pull_secrets: Optional[list[str]] = field(default_factory=list)
 
+
 class OutpostModel(Model):
     """Base model for providers that need more objects than just themselves"""
 
