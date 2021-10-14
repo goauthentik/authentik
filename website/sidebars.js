@@ -115,6 +115,7 @@ module.exports = {
             label: "Stages",
             items: [
                 "flow/stages/authenticator_duo/index",
+                "flow/stages/authenticator_sms/index",
                 "flow/stages/authenticator_static/index",
                 "flow/stages/authenticator_totp/index",
                 "flow/stages/authenticator_validate/index",
