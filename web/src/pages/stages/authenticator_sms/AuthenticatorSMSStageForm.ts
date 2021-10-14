@@ -22,18 +22,22 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 @customElement("ak-stage-authenticator-sms-form")
 export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, string> {
     loadInstance(pk: string): Promise<AuthenticatorSMSStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorSmsRetrieve({
-            stageUuid: pk,
-        });
+        return new StagesApi(DEFAULT_CONFIG)
+            .stagesAuthenticatorSmsRetrieve({
+                stageUuid: pk,
+            })
+            .then((stage) => {
+                this.provider = stage.provider;
+                this.authType = stage.authType;
+                return stage;
+            });
     }
 
-    @property({ type: Boolean })
-    shouldShowTwilio = false;
-    @property({ type: Boolean })
-    shouldShowGeneric = false;
+    @property({ attribute: false })
+    provider?: ProviderEnum;
 
-    @property({ type: Boolean })
-    shouldShowAuthPassword = false;
+    @property({ attribute: false })
+    authType?: AuthTypeEnum;
 
     getSuccessMessage(): string {
         if (this.instance) {
@@ -55,26 +59,6 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
             });
         }
     };
-
-    onProviderChange(provider: string): void {
-        if (provider === ProviderEnum.Twilio) {
-            this.shouldShowTwilio = true;
-            this.shouldShowGeneric = false;
-        }
-        if (provider === ProviderEnum.Generic) {
-            this.shouldShowGeneric = true;
-            this.shouldShowTwilio = false;
-        }
-    }
-
-    onAuthTypeChange(auth_type: string): void {
-        if (auth_type === AuthTypeEnum.Basic) {
-            this.shouldShowAuthPassword = true;
-        }
-        if (auth_type === AuthTypeEnum.Bearer) {
-            this.shouldShowAuthPassword = false;
-        }
-    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
@@ -101,7 +85,7 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                             class="pf-c-form-control"
                             @change=${(ev: Event) => {
                                 const current = (ev.target as HTMLInputElement).value;
-                                this.onProviderChange(current);
+                                this.provider = current as ProviderEnum;
                             }}
                         >
                             <option
@@ -136,7 +120,7 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
 
                     <ak-form-element-horizontal
                         label=${t`Twilio Account SID`}
-                        ?hidden=${!this.shouldShowTwilio}
+                        ?hidden=${this.provider !== ProviderEnum.Twilio}
                         ?required=${true}
                         name="accountSid"
                     >
@@ -152,7 +136,7 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Twilio Auth Token`}
-                        ?hidden=${!this.shouldShowTwilio}
+                        ?hidden=${this.provider !== ProviderEnum.Twilio}
                         ?required=${true}
                         name="auth"
                     >
@@ -167,28 +151,33 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Auth Type`}
-                        ?hidden=${!this.shouldShowGeneric}
+                        label=${t`Authentication Type`}
+                        ?hidden=${this.provider !== ProviderEnum.Generic}
                         @change=${(ev: Event) => {
                             const current = (ev.target as HTMLInputElement).value;
-                            this.onAuthTypeChange(current);
+                            this.authType = current as AuthTypeEnum;
                         }}
                         ?required=${true}
                         name="authType"
                     >
                         <select class="pf-c-form-control">
                             <option
+                                value="${AuthTypeEnum.Basic}"
+                                ?selected=${this.instance?.authType === AuthTypeEnum.Basic}
+                            >
+                                ${t`Basic Auth`}
+                            </option>
+                            <option
                                 value="${AuthTypeEnum.Bearer}"
                                 ?selected=${this.instance?.authType === AuthTypeEnum.Bearer}
                             >
                                 ${t`Bearer Token`}
                             </option>
-                            <option value="${AuthTypeEnum.Basic}">${t`Basic Auth`}</option>
                         </select>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`External API URL`}
-                        ?hidden=${!this.shouldShowGeneric}
+                        ?hidden=${this.provider !== ProviderEnum.Generic}
                         ?required=${true}
                         name="accountSid"
                     >
@@ -204,7 +193,7 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`API Auth Username`}
-                        ?hidden=${!this.shouldShowGeneric}
+                        ?hidden=${this.provider !== ProviderEnum.Generic}
                         ?required=${true}
                         name="auth"
                     >
@@ -219,13 +208,16 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`API Auth password`}
-                        ?hidden=${!this.shouldShowGeneric || !this.shouldShowAuthPassword}
+                        ?hidden=${!(
+                            this.provider === ProviderEnum.Generic &&
+                            this.authType === AuthTypeEnum.Basic
+                        )}
                         ?required=${false}
                         name="authPassword"
                     >
                         <input
                             type="text"
-                            value="${ifDefined(this.instance?.authPassword || "null")}"
+                            value="${ifDefined(this.instance?.authPassword)}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">

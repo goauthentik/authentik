@@ -95,6 +95,14 @@ msgstr ""
 msgid "API Access"
 msgstr ""
 
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "API Auth Username"
+msgstr ""
+
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "API Auth password"
+msgstr ""
+
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "API Hostname"
 msgstr ""
@@ -411,12 +419,20 @@ msgstr ""
 msgid "Audience"
 msgstr ""
 
+#: 
+#~ msgid "Auth Type"
+#~ msgstr ""
+
 #: src/flows/sources/plex/PlexLoginInit.ts
 msgid "Authenticating with Plex..."
 msgstr ""
 
 #: src/pages/flows/utils.ts
 msgid "Authentication"
+msgstr ""
+
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "Authentication Type"
 msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
@@ -524,8 +540,16 @@ msgstr ""
 msgid "Based on the username"
 msgstr ""
 
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "Basic Auth"
+msgstr ""
+
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Basic-Auth"
+msgstr ""
+
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "Bearer Token"
 msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
@@ -1748,6 +1772,10 @@ msgstr ""
 msgid "Expression using Python."
 msgstr ""
 
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "External API URL"
+msgstr ""
+
 #: src/pages/applications/ApplicationListPage.ts
 msgid "External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access."
 msgstr ""
@@ -1985,6 +2013,10 @@ msgstr ""
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Generate Certificate-Key Pair"
+msgstr ""
+
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "Generic"
 msgstr ""
 
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
@@ -4671,6 +4703,18 @@ msgstr ""
 
 #: src/flows/FlowInspector.ts
 msgid "This flow is completed."
+msgstr ""
+
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "This is the full endpoint to send POST requests to."
+msgstr ""
+
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "This is the password to be used with basic auth"
+msgstr ""
+
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "This is the username to be used with basic auth or the token when used with bearer token"
 msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
