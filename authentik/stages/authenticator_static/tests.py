@@ -6,7 +6,7 @@ from rest_framework.test import APITestCase
 from authentik.core.models import User
 
 
-class AuthenticatorStaticStage(APITestCase):
+class AuthenticatorStaticStageTests(APITestCase):
     """Test Static API"""
 
     def test_api_delete(self):

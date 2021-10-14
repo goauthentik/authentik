@@ -18,7 +18,7 @@ class PytestTestRunner:  # pragma: no cover
         CONFIG.y_set("authentik.geoip", "tests/GeoLite2-City-Test.mmdb")
         CONFIG.y_set(
             "outposts.docker_image_base",
-            f"beryju.org/authentik/outpost-%(type)s:{get_docker_tag()}",
+            f"goauthentik.io/dev-%(type)s:{get_docker_tag()}",
         )
 
     def run_tests(self, test_labels):

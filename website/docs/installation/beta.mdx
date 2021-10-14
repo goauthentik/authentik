@@ -17,9 +17,9 @@ import TabItem from '@theme/TabItem';
 Add the following block to your `.env` file:
 
 ```shell
-AUTHENTIK_IMAGE=beryju.org/authentik/server
+AUTHENTIK_IMAGE=goauthentik.io/dev-server
 AUTHENTIK_TAG=gh-next
-AUTHENTIK_OUTPOSTS__DOCKER_IMAGE_BASE=beryju.org/authentik/outpost-%(type)s:gh-next
+AUTHENTIK_OUTPOSTS__DOCKER_IMAGE_BASE=goauthentik.io/dev-%(type)s:gh-next
 ```
 
 Afterwards, run the upgrade commands from the latest releasae notes.
@@ -30,9 +30,9 @@ Add the following block to your `values.yml` file:
 ```yaml
 authentik:
   outposts:
-    docker_image_base: beryju.org/authentik/outpost-%(type)s:gh-%(build_hash)s
+    docker_image_base: goauthentik.io/dev-%(type)s:gh-%(build_hash)s
 image:
-  repository: beryju.org/authentik/server
+  repository: goauthentik.io/dev-server
   tag: gh-next
   # pullPolicy: Always to ensure you always get the latest version
   pullPolicy: Always

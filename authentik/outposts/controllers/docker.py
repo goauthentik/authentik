@@ -97,7 +97,7 @@ class DockerController(BaseController):
         try:
             self.client.images.pull(image)
         except DockerException:
-            image = f"ghcr.io/goauthentik/{self.outpost.type}:latest"
+            image = f"goauthentik.io/{self.outpost.type}:latest"
             self.client.images.pull(image)
         return image
 
@@ -144,12 +144,11 @@ class DockerController(BaseController):
                 return None
             # Check if the container is out of date, delete it and retry
             if len(container.image.tags) > 0:
-                tag: str = container.image.tags[0]
                 should_image = self.try_pull_image()
-                if tag != should_image:
+                if should_image not in container.image.tags:
                     self.logger.info(
                         "Container has mismatched image, re-creating...",
-                        has=tag,
+                        has=container.tags,
                         should=should_image,
                     )
                     self.down()

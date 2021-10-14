@@ -53,17 +53,17 @@ jobs:
         uses: docker/login-action@v1
         if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
         with:
-          registry: beryju.org
-          username: ${{ secrets.HARBOR_USERNAME }}
-          password: ${{ secrets.HARBOR_PASSWORD }}
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Building Docker Image
         uses: docker/build-push-action@v2
         with:
           push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
           tags: |
-            beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchNameContainer }}
-            beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}
-            beryju.org/authentik/outpost-${{ matrix.type }}:gh-${{ steps.ev.outputs.sha }}
+            ghcr.io/goauthentik/dev-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchNameContainer }}
+            ghcr.io/goauthentik/dev-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}
+            ghcr.io/goauthentik/dev-${{ matrix.type }}:gh-${{ steps.ev.outputs.sha }}
           file: ${{ matrix.type }}.Dockerfile
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}

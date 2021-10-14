@@ -1,5 +1,22 @@
 [[redirects]]
-  from = "/v2/*"
-  to = "https://registry.goauthentik.io/v2/:splat"
+  from = "/*"
+  to = "/.netlify/functions/go-get"
   status = 200
   force = true
+  query = {go-get = "1"}
+
+[[redirects]]
+  from = "/v2"
+  to = "/.netlify/functions/oci-proxy"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/v2/*"
+  to = "https://ghcr.io/v2/goauthentik/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/version/*"
+  to = "https://raw.githubusercontent.com/goauthentik/authentik/version-:splat"

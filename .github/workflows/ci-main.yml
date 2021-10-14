@@ -250,7 +250,7 @@ jobs:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
         run: |
           scripts/ci_prepare.sh
-          docker-compose -f tests/e2e/ci.docker-compose.yml up -d
+          docker-compose -f tests/e2e/docker-compose.yml up -d
       - id: cache-web
         uses: actions/cache@v2.1.6
         with:
@@ -299,15 +299,15 @@ jobs:
         uses: docker/login-action@v1
         if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
         with:
-          registry: beryju.org
-          username: ${{ secrets.HARBOR_USERNAME }}
-          password: ${{ secrets.HARBOR_PASSWORD }}
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Building Docker Image
         uses: docker/build-push-action@v2
         with:
           push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
           tags: |
-            beryju.org/authentik/server:gh-${{ steps.ev.outputs.branchNameContainer }}
-            beryju.org/authentik/server:gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}-${{ steps.ev.outputs.sha }}
+            ghcr.io/goauthentik/dev-server:gh-${{ steps.ev.outputs.branchNameContainer }}
+            ghcr.io/goauthentik/dev-server:gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}-${{ steps.ev.outputs.sha }}
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}

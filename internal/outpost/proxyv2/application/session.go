@@ -5,13 +5,12 @@ import (
 	"strconv"
 
 	"github.com/gorilla/sessions"
-	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api"
 	"goauthentik.io/internal/config"
 	"gopkg.in/boj/redistore.v1"
 )
 
-func GetStore(p api.ProxyOutpostConfig) sessions.Store {
+func (a *Application) getStore(p api.ProxyOutpostConfig) sessions.Store {
 	var store sessions.Store
 	if config.G.Redis.Host != "" {
 		rs, err := redistore.NewRediStoreWithDB(10, "tcp", fmt.Sprintf("%s:%d", config.G.Redis.Host, config.G.Redis.Port), config.G.Redis.Password, strconv.Itoa(config.G.Redis.OutpostSessionDB), []byte(*p.CookieSecret))
@@ -24,7 +23,7 @@ func GetStore(p api.ProxyOutpostConfig) sessions.Store {
 			rs.Options.MaxAge = int(*t) + 1
 		}
 		rs.Options.Domain = *p.CookieDomain
-		log.Info("using redis session backend")
+		a.log.Info("using redis session backend")
 		store = rs
 	} else {
 		cs := sessions.NewCookieStore([]byte(*p.CookieSecret))
@@ -34,7 +33,7 @@ func GetStore(p api.ProxyOutpostConfig) sessions.Store {
 			// Add one to the validity to ensure we don't have a session with indefinite length
 			cs.Options.MaxAge = int(*t) + 1
 		}
-		log.Info("using cookie session backend")
+		a.log.Info("using cookie session backend")
 		store = cs
 	}
 	return store

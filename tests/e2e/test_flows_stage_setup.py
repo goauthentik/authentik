@@ -17,7 +17,7 @@ class TestFlowsStageSetup(SeleniumTestCase):
     """test stage setup flows"""
 
     @retry()
-    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_stages_password", "0002_passwordstage_change_flow")

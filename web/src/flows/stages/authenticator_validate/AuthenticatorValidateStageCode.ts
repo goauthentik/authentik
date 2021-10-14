@@ -16,6 +16,7 @@ import {
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest,
     DeviceChallenge,
+    DeviceClassesEnum,
 } from "@goauthentik/api";
 
 import "../../../elements/EmptyState";
@@ -62,6 +63,9 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
                             >
                         </div>
                     </ak-form-static>
+                    ${this.deviceChallenge?.deviceClass == DeviceClassesEnum.Sms
+                        ? html`<p>${t`A code has been sent to you via SMS.`}</p>`
+                        : html``}
                     <ak-form-element
                         label="${t`Code`}"
                         ?required="${true}"
@@ -74,7 +78,7 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
                             name="code"
                             inputmode="numeric"
                             pattern="[0-9]*"
-                            placeholder="${t`Please enter your TOTP Code`}"
+                            placeholder="${t`Please enter your Code`}"
                             autofocus=""
                             autocomplete="one-time-code"
                             class="pf-c-form-control"

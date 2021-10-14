@@ -93,12 +93,11 @@ INSTALLED_APPS = [
     "django.contrib.humanize",
     "authentik.admin",
     "authentik.api",
-    "authentik.events",
     "authentik.crypto",
+    "authentik.events",
     "authentik.flows",
-    "authentik.outposts",
     "authentik.lib",
-    "authentik.policies",
+    "authentik.outposts",
     "authentik.policies.dummy",
     "authentik.policies.event_matcher",
     "authentik.policies.expiry",
@@ -106,9 +105,10 @@ INSTALLED_APPS = [
     "authentik.policies.hibp",
     "authentik.policies.password",
     "authentik.policies.reputation",
-    "authentik.providers.proxy",
+    "authentik.policies",
     "authentik.providers.ldap",
     "authentik.providers.oauth2",
+    "authentik.providers.proxy",
     "authentik.providers.saml",
     "authentik.recovery",
     "authentik.sources.ldap",
@@ -116,6 +116,7 @@ INSTALLED_APPS = [
     "authentik.sources.plex",
     "authentik.sources.saml",
     "authentik.stages.authenticator_duo",
+    "authentik.stages.authenticator_sms",
     "authentik.stages.authenticator_static",
     "authentik.stages.authenticator_totp",
     "authentik.stages.authenticator_validate",
@@ -204,6 +205,9 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
+    "DEFAULT_THROTTLE_RATES": {
+        "flow_executor": "100/day",
+    },
 }
 
 REDIS_PROTOCOL_PREFIX = "redis://"
@@ -447,7 +451,6 @@ structlog.configure_once(
         structlog.stdlib.PositionalArgumentsFormatter(),
         structlog.processors.TimeStamper(fmt="iso", utc=False),
         structlog.processors.StackInfoRenderer(),
-        structlog.processors.format_exc_info,
         structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
     ],
     logger_factory=structlog.stdlib.LoggerFactory(),
@@ -464,7 +467,6 @@ LOG_PRE_CHAIN = [
     structlog.stdlib.add_logger_name,
     structlog.processors.TimeStamper(),
     structlog.processors.StackInfoRenderer(),
-    structlog.processors.format_exc_info,
 ]
 
 LOGGING = {

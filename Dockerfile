@@ -83,7 +83,6 @@ USER authentik
 
 ENV TMPDIR /dev/shm/
 ENV PYTHONUNBUFFERED 1
-ENV prometheus_multiproc_dir /dev/shm/
 ENV PATH "/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/lifecycle"
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 CMD [ "/lifecycle/ak", "healthcheck" ]
