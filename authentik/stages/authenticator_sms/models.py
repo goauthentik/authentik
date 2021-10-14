@@ -30,8 +30,8 @@ class SMSProviders(models.TextChoices):
 class SMSAuthTypes(models.TextChoices):
     """Supported SMS Auth Types"""
 
-    BEARER = "bearer"
     BASIC = "basic"
+    BEARER = "bearer"
 
 
 class AuthenticatorSMSStage(ConfigurableStage, Stage):
@@ -43,8 +43,8 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
 
     account_sid = models.TextField()
     auth = models.TextField()
-    auth_password = models.TextField(null=True)
-    auth_type = models.TextField(choices=SMSAuthTypes.choices, null=True)
+    auth_password = models.TextField(default="", blank=True)
+    auth_type = models.TextField(choices=SMSAuthTypes.choices, default=SMSAuthTypes.BASIC)
 
     def send(self, token: str, device: "SMSDevice"):
         """Send message via selected provider"""
