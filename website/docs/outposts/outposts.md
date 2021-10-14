@@ -41,6 +41,9 @@ authentik_host_insecure: false
 authentik_host_browser:
 # Template used for objects created (deployments, services, secrets, etc)
 object_naming_template: ak-outpost-%(name)s
+# Use a specific docker image for this outpost rather than the default. This also applies to Kubernetes
+# outposts.
+conatiner_image:
 ########################################
 # Docker outpost specific settings
 ########################################
@@ -49,9 +52,6 @@ docker_network: null
 # Optionally disable mapping of ports to outpost container, may be useful when using docker networks
 # (Available with 2021.9.4+)
 docker_map_ports: true
-# Use a specific docker image for this outpost rather than the default. This also applies to Kubernetes
-# outposts.
-docker_image:
 ########################################
 # Kubernetes outpost specific settings
 ########################################

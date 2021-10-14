@@ -73,7 +73,8 @@ class OutpostConfig:
 
     docker_network: Optional[str] = field(default=None)
     docker_map_ports: bool = field(default=True)
-    docker_image: Optional[str] = field(default=None)
+
+    container_image: Optional[str] = field(default=None)
 
     kubernetes_replicas: int = field(default=1)
     kubernetes_namespace: str = field(default_factory=get_namespace)

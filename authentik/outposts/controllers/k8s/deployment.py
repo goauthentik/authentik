@@ -59,7 +59,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
             "app.kubernetes.io/managed-by": "goauthentik.io",
             "goauthentik.io/outpost-uuid": self.controller.outpost.uuid.hex,
             "goauthentik.io/outpost-name": slugify(self.controller.outpost.name),
-            "goauthentik.io/outpost-type": self.controller.outpost.type,
+            "goauthentik.io/outpost-type": str(self.controller.outpost.type),
         }
 
     def get_reference_object(self) -> V1Deployment:
