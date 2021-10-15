@@ -131,7 +131,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         if not existing_device:
             WebAuthnDevice.objects.create(
                 user=self.get_pending_user(),
-                public_key=webauthn_credential.public_key,
+                public_key=webauthn_credential.credential_public_key,
                 credential_id=webauthn_credential.credential_id,
                 sign_count=webauthn_credential.sign_count,
                 rp_id=get_rp_id(self.request),

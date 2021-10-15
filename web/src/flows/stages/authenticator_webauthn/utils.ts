@@ -33,10 +33,11 @@ export interface Assertion {
     id: string;
     rawId: string;
     type: string;
-    attObj: string;
-    clientData: string;
     registrationClientExtensions: string;
-    response: AuthenticatorResponse;
+    response: {
+        clientDataJSON: string;
+        attestationObject: string;
+    };
 }
 
 /**
@@ -56,10 +57,11 @@ export function transformNewAssertionForServer(newAssertion: PublicKeyCredential
         id: newAssertion.id,
         rawId: b64enc(rawId),
         type: newAssertion.type,
-        attObj: b64enc(attObj),
-        clientData: b64enc(clientDataJSON),
         registrationClientExtensions: JSON.stringify(registrationClientExtensions),
-        response: newAssertion.response,
+        response: {
+            clientDataJSON: b64enc(clientDataJSON),
+            attestationObject: b64enc(attObj),
+        },
     };
 }
 
