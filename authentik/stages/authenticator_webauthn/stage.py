@@ -1,7 +1,4 @@
 """WebAuthn stage"""
-
-from secrets import token_urlsafe
-
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from rest_framework.fields import CharField, JSONField
