@@ -8,6 +8,7 @@ from webauthn import generate_registration_options, verify_registration_response
 from webauthn.helpers.exceptions import InvalidRegistrationResponse
 from webauthn.helpers.structs import (
     AuthenticatorSelectionCriteria,
+    PublicKeyCredentialCreationOptions,
     RegistrationCredential,
     ResidentKeyRequirement,
     UserVerificationRequirement,
@@ -24,7 +25,11 @@ from authentik.flows.challenge import (
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
-from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
+from authentik.stages.authenticator_webauthn.utils import (
+    bytes_to_base64url_dict,
+    get_origin,
+    get_rp_id,
+)
 
 LOGGER = get_logger()
 
@@ -82,7 +87,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
 
         user = self.get_pending_user()
 
-        registration_options = generate_registration_options(
+        registration_options: PublicKeyCredentialCreationOptions = generate_registration_options(
             rp_id=get_rp_id(self.request),
             rp_name=self.request.tenant.branding_title,
             user_id=user.uid,
@@ -95,11 +100,10 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         )
 
         self.request.session["challenge"] = registration_options.challenge
-
         return AuthenticatorWebAuthnChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "registration": registration_options.dict(),
+                "registration": bytes_to_base64url_dict(registration_options.dict()),
             }
         )
 

@@ -18,7 +18,11 @@ from authentik.lib.utils.http import get_client_ip
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
-from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
+from authentik.stages.authenticator_webauthn.utils import (
+    bytes_to_base64url_dict,
+    get_origin,
+    get_rp_id,
+)
 
 LOGGER = get_logger()
 
@@ -57,7 +61,7 @@ def get_webauthn_challenge(request: HttpRequest, device: WebAuthnDevice) -> dict
 
     request.session["challenge"] = authentication_options.challenge
 
-    return authentication_options.dict()
+    return bytes_to_base64url_dict(authentication_options.dict())
 
 
 def select_challenge(request: HttpRequest, device: Device):
