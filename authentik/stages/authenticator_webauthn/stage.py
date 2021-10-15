@@ -1,10 +1,13 @@
 """WebAuthn stage"""
+from json import loads
+
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
+from pydantic.error_wrappers import ValidationError as PydanticValidationError
 from rest_framework.fields import CharField, JSONField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
-from webauthn import generate_registration_options, verify_registration_response
+from webauthn import generate_registration_options, options_to_json, verify_registration_response
 from webauthn.helpers.exceptions import InvalidRegistrationResponse
 from webauthn.helpers.structs import (
     AuthenticatorSelectionCriteria,
@@ -25,11 +28,7 @@ from authentik.flows.challenge import (
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
-from authentik.stages.authenticator_webauthn.utils import (
-    bytes_to_base64url_dict,
-    get_origin,
-    get_rp_id,
-)
+from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
 
 LOGGER = get_logger()
 
@@ -63,7 +62,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
                 expected_rp_id=get_rp_id(self.request),
                 expected_origin=get_origin(self.request),
             )
-        except InvalidRegistrationResponse as exc:
+        except (InvalidRegistrationResponse, PydanticValidationError) as exc:
             LOGGER.warning("registration failed", exc=exc)
             raise ValidationError(f"Registration failed. Error: {exc}")
 
@@ -98,12 +97,13 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
                 user_verification=UserVerificationRequirement.PREFERRED,
             ),
         )
+        registration_options.user.id = user.uid
 
         self.request.session["challenge"] = registration_options.challenge
         return AuthenticatorWebAuthnChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "registration": bytes_to_base64url_dict(registration_options.dict()),
+                "registration": loads(options_to_json(registration_options)),
             }
         )
 

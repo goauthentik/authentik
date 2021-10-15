@@ -1,4 +1,6 @@
 """Validation stage challenge checking"""
+from json import loads
+
 from django.http import HttpRequest
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
@@ -9,6 +11,7 @@ from rest_framework.fields import CharField, JSONField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 from webauthn import generate_authentication_options, verify_authentication_response
+from webauthn.helpers import options_to_json
 from webauthn.helpers.exceptions import InvalidAuthenticationResponse
 from webauthn.helpers.structs import AuthenticationCredential, PublicKeyCredentialDescriptor
 
@@ -18,11 +21,7 @@ from authentik.lib.utils.http import get_client_ip
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
-from authentik.stages.authenticator_webauthn.utils import (
-    bytes_to_base64url_dict,
-    get_origin,
-    get_rp_id,
-)
+from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
 
 LOGGER = get_logger()
 
@@ -61,7 +60,7 @@ def get_webauthn_challenge(request: HttpRequest, device: WebAuthnDevice) -> dict
 
     request.session["challenge"] = authentication_options.challenge
 
-    return bytes_to_base64url_dict(authentication_options.dict())
+    return loads(options_to_json(authentication_options))
 
 
 def select_challenge(request: HttpRequest, device: Device):
@@ -85,6 +84,7 @@ def validate_challenge_code(code: str, request: HttpRequest, user: User) -> str:
     return code
 
 
+# pylint: disable=unused-argument
 def validate_challenge_webauthn(data: dict, request: HttpRequest, user: User) -> dict:
     """Validate WebAuthn Challenge"""
     challenge = request.session.get("challenge")
