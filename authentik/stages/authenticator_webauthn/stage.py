@@ -3,6 +3,8 @@ from json import loads
 
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
+
+# pylint: disable=no-name-in-module
 from pydantic.error_wrappers import ValidationError as PydanticValidationError
 from rest_framework.fields import CharField, JSONField
 from rest_framework.serializers import ValidationError

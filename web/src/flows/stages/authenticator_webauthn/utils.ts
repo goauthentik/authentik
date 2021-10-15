@@ -36,6 +36,7 @@ export interface Assertion {
     attObj: string;
     clientData: string;
     registrationClientExtensions: string;
+    response: AuthenticatorResponse;
 }
 
 /**
@@ -58,6 +59,7 @@ export function transformNewAssertionForServer(newAssertion: PublicKeyCredential
         attObj: b64enc(attObj),
         clientData: b64enc(clientDataJSON),
         registrationClientExtensions: JSON.stringify(registrationClientExtensions),
+        response: newAssertion.response,
     };
 }
 
