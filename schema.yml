@@ -7033,6 +7033,10 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: policy__isnull
+        schema:
+          type: boolean
       - name: search
         required: false
         in: query
@@ -7044,6 +7048,15 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: target_in
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       - in: query
         name: timeout
         schema:
@@ -29418,6 +29431,7 @@ components:
       - SUCCESSFUL
       - WARNING
       - ERROR
+      - UNKNOWN
       type: string
     SubModeEnum:
       enum:
