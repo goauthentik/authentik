@@ -1,7 +1,5 @@
 import * as base64js from "base64-js";
 
-import { hexEncode } from "../../../utils";
-
 export function b64enc(buf: Uint8Array): string {
     return base64js.fromByteArray(buf).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
 }
