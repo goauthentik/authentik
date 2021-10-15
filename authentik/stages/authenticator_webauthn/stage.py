@@ -1,5 +1,5 @@
 """WebAuthn stage"""
-from json import loads
+from json import loads, dumps
 
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
@@ -59,7 +59,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
 
         try:
             registration: VerifiedRegistration = verify_registration_response(
-                credential=RegistrationCredential.parse_obj(response),
+                credential=RegistrationCredential.parse_raw(dumps(response)),
                 expected_challenge=challenge,
                 expected_rp_id=get_rp_id(self.request),
                 expected_origin=get_origin(self.request),

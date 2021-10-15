@@ -1,5 +1,5 @@
 """Validation stage challenge checking"""
-from json import loads
+from json import dumps, loads
 
 from django.http import HttpRequest
 from django.http.response import Http404
@@ -96,7 +96,7 @@ def validate_challenge_webauthn(data: dict, request: HttpRequest, user: User) ->
 
     try:
         authentication_verification = verify_authentication_response(
-            credential=AuthenticationCredential.parse_obj(data),
+            credential=AuthenticationCredential.parse_obj(dumps(data)),
             expected_challenge=challenge,
             expected_rp_id=get_rp_id(request),
             expected_origin=get_origin(request),
