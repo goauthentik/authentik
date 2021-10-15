@@ -55,7 +55,7 @@
         "@lingui/core": "^3.12.1",
         "@lingui/detect-locale": "^3.12.1",
         "@lingui/macro": "^3.12.1",
-        "@patternfly/patternfly": "^4.135.2",
+        "@patternfly/patternfly": "^4.144.5",
         "@polymer/iron-form": "^3.0.1",
         "@polymer/paper-input": "^3.2.1",
         "@rollup/plugin-babel": "^5.3.0",
