@@ -95,10 +95,13 @@ export interface AuthAssertion {
     id: string;
     rawId: string;
     type: string;
-    clientData: string;
-    authData: string;
-    signature: string;
     assertionClientExtensions: string;
+    response: {
+        clientDataJSON: string;
+        authenticatorData: string;
+        signature: string;
+        userHandle: string | null;
+    };
 }
 
 /**
@@ -117,9 +120,13 @@ export function transformAssertionForServer(newAssertion: PublicKeyCredential): 
         id: newAssertion.id,
         rawId: b64enc(rawId),
         type: newAssertion.type,
-        authData: b64RawEnc(authData),
-        clientData: b64RawEnc(clientDataJSON),
-        signature: hexEncode(sig),
         assertionClientExtensions: JSON.stringify(assertionClientExtensions),
+
+        response: {
+            clientDataJSON: b64RawEnc(clientDataJSON),
+            signature: b64RawEnc(sig),
+            authenticatorData: b64RawEnc(authData),
+            userHandle: null,
+        },
     };
 }

@@ -12,7 +12,7 @@ from rest_framework.fields import CharField, JSONField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 from webauthn import generate_authentication_options, verify_authentication_response
-from webauthn.helpers import options_to_json
+from webauthn.helpers import base64url_to_bytes, options_to_json
 from webauthn.helpers.exceptions import InvalidAuthenticationResponse
 from webauthn.helpers.structs import AuthenticationCredential
 
@@ -102,12 +102,13 @@ def validate_challenge_webauthn(data: dict, request: HttpRequest, user: User) ->
             expected_challenge=challenge,
             expected_rp_id=get_rp_id(request),
             expected_origin=get_origin(request),
-            credential_public_key=device.public_key,
+            credential_public_key=base64url_to_bytes(device.public_key),
             credential_current_sign_count=device.sign_count,
             require_user_verification=False,
         )
 
     except (InvalidAuthenticationResponse) as exc:
+        LOGGER.warning("Assertion failed", exc=exc)
         raise ValidationError("Assertion failed") from exc
 
     device.set_sign_count(authentication_verification.new_sign_count)

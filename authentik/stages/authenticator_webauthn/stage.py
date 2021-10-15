@@ -3,9 +3,6 @@ from json import dumps, loads
 
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
-
-# pylint: disable=no-name-in-module
-from pydantic.error_wrappers import ValidationError as PydanticValidationError
 from rest_framework.fields import CharField, JSONField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
@@ -56,6 +53,9 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
 
     def validate_response(self, response: dict) -> dict:
         """Validate webauthn challenge response"""
+        # pylint: disable=no-name-in-module
+        from pydantic.error_wrappers import ValidationError as PydanticValidationError
+
         challenge = self.request.session["challenge"]
 
         try:

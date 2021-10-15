@@ -17,13 +17,10 @@ from django.views.generic import View
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, PolymorphicProxySerializer, extend_schema
 from rest_framework.permissions import AllowAny
-from rest_framework.request import Request
-from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
 from sentry_sdk import capture_exception
 from structlog.stdlib import BoundLogger, get_logger
 
-from authentik.api.throttle import SessionThrottle
 from authentik.core.models import USER_ATTRIBUTE_DEBUG
 from authentik.events.models import Event, EventAction, cleanse_dict
 from authentik.flows.challenge import (
@@ -100,33 +97,10 @@ class InvalidStageError(SentryIgnoredException):
     """Error raised when a challenge from a stage is not valid"""
 
 
-class FlowPendingUserThrottle(ScopedRateThrottle):
-    """Custom throttle based on which user is pending"""
-
-    def get_cache_key(self, request: Request, view) -> str:
-        if SESSION_KEY_PLAN not in request._request.session:
-            return ""
-        if PLAN_CONTEXT_PENDING_USER not in request._request.session[SESSION_KEY_PLAN].context:
-            return ""
-        user = request._request.session[SESSION_KEY_PLAN].context[PLAN_CONTEXT_PENDING_USER]
-        return f"authentik-throttle-flow-pending-{user.uid}"
-
-    def allow_request(self, request: Request, view) -> bool:
-        if SESSION_KEY_PLAN not in request._request.session:
-            return True
-        if PLAN_CONTEXT_PENDING_USER not in request._request.session[SESSION_KEY_PLAN].context:
-            return True
-        if request._request.user.is_superuser:
-            return True
-        return super().allow_request(request, view)
-
-
 @method_decorator(xframe_options_sameorigin, name="dispatch")
 class FlowExecutorView(APIView):
     """Stage 1 Flow executor, passing requests to Stage Views"""
 
-    throttle_classes = [SessionThrottle, FlowPendingUserThrottle]
-    throttle_scope = "flow_executor"
     permission_classes = [AllowAny]
 
     flow: Flow
