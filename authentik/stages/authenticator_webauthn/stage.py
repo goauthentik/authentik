@@ -1,5 +1,5 @@
 """WebAuthn stage"""
-from json import loads, dumps
+from json import dumps, loads
 
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
@@ -10,6 +10,7 @@ from rest_framework.fields import CharField, JSONField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 from webauthn import generate_registration_options, options_to_json, verify_registration_response
+from webauthn.helpers import bytes_to_base64url
 from webauthn.helpers.exceptions import InvalidRegistrationResponse
 from webauthn.helpers.structs import (
     AuthenticatorSelectionCriteria,
@@ -69,7 +70,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
             raise ValidationError(f"Registration failed. Error: {exc}")
 
         credential_id_exists = WebAuthnDevice.objects.filter(
-            credential_id=registration.credential_id
+            credential_id=bytes_to_base64url(registration.credential_id)
         ).first()
         if credential_id_exists:
             raise ValidationError("Credential ID already exists.")
@@ -95,7 +96,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
             user_name=user.username,
             user_display_name=user.name,
             authenticator_selection=AuthenticatorSelectionCriteria(
-                resident_key=ResidentKeyRequirement.REQUIRED,
+                resident_key=ResidentKeyRequirement.PREFERRED,
                 user_verification=UserVerificationRequirement.PREFERRED,
             ),
         )
@@ -126,13 +127,13 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         # Webauthn Challenge has already been validated
         webauthn_credential: VerifiedRegistration = response.validated_data["response"]
         existing_device = WebAuthnDevice.objects.filter(
-            credential_id=webauthn_credential.credential_id
+            credential_id=bytes_to_base64url(webauthn_credential.credential_id)
         ).first()
         if not existing_device:
             WebAuthnDevice.objects.create(
                 user=self.get_pending_user(),
-                public_key=webauthn_credential.credential_public_key,
-                credential_id=webauthn_credential.credential_id,
+                public_key=bytes_to_base64url(webauthn_credential.credential_public_key),
+                credential_id=bytes_to_base64url(webauthn_credential.credential_id),
                 sign_count=webauthn_credential.sign_count,
                 rp_id=get_rp_id(self.request),
             )

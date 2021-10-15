@@ -1,5 +1,6 @@
 """Validation stage challenge checking"""
 from json import dumps, loads
+from typing import Optional
 
 from django.http import HttpRequest
 from django.http.response import Http404
@@ -13,7 +14,7 @@ from structlog.stdlib import get_logger
 from webauthn import generate_authentication_options, verify_authentication_response
 from webauthn.helpers import options_to_json
 from webauthn.helpers.exceptions import InvalidAuthenticationResponse
-from webauthn.helpers.structs import AuthenticationCredential, PublicKeyCredentialDescriptor
+from webauthn.helpers.structs import AuthenticationCredential
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User
@@ -42,16 +43,17 @@ def get_challenge_for_device(request: HttpRequest, device: Device) -> dict:
     return {}
 
 
-def get_webauthn_challenge(request: HttpRequest, device: WebAuthnDevice) -> dict:
+def get_webauthn_challenge(request: HttpRequest, device: Optional[WebAuthnDevice] = None) -> dict:
     """Send the client a challenge that we'll check later"""
     request.session.pop("challenge", None)
 
     allowed_credentials = []
 
-    # We want all the user's WebAuthn devices and merge their challenges
-    for user_device in WebAuthnDevice.objects.filter(user=device.user).order_by("name"):
-        user_device: WebAuthnDevice
-        allowed_credentials.append(PublicKeyCredentialDescriptor(id=user_device.credential_id))
+    if device:
+        # We want all the user's WebAuthn devices and merge their challenges
+        for user_device in WebAuthnDevice.objects.filter(user=device.user).order_by("name"):
+            user_device: WebAuthnDevice
+            allowed_credentials.append(user_device.descriptor)
 
     authentication_options = generate_authentication_options(
         rp_id=get_rp_id(request),
@@ -96,7 +98,7 @@ def validate_challenge_webauthn(data: dict, request: HttpRequest, user: User) ->
 
     try:
         authentication_verification = verify_authentication_response(
-            credential=AuthenticationCredential.parse_obj(dumps(data)),
+            credential=AuthenticationCredential.parse_raw(dumps(data)),
             expected_challenge=challenge,
             expected_rp_id=get_rp_id(request),
             expected_origin=get_origin(request),
