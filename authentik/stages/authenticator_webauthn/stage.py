@@ -1,16 +1,22 @@
 """WebAuthn stage"""
+from json import dumps, loads
 
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from rest_framework.fields import CharField, JSONField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
-from webauthn.webauthn import (
-    RegistrationRejectedException,
-    WebAuthnCredential,
-    WebAuthnMakeCredentialOptions,
-    WebAuthnRegistrationResponse,
+from webauthn import generate_registration_options, options_to_json, verify_registration_response
+from webauthn.helpers import bytes_to_base64url
+from webauthn.helpers.exceptions import InvalidRegistrationResponse
+from webauthn.helpers.structs import (
+    AuthenticatorSelectionCriteria,
+    PublicKeyCredentialCreationOptions,
+    RegistrationCredential,
+    ResidentKeyRequirement,
+    UserVerificationRequirement,
 )
+from webauthn.registration.verify_registration_response import VerifiedRegistration
 
 from authentik.core.models import User
 from authentik.flows.challenge import (
@@ -22,7 +28,7 @@ from authentik.flows.challenge import (
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
-from authentik.stages.authenticator_webauthn.utils import generate_challenge, get_origin, get_rp_id
+from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
 
 LOGGER = get_logger()
 
@@ -47,46 +53,29 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
 
     def validate_response(self, response: dict) -> dict:
         """Validate webauthn challenge response"""
+        # pylint: disable=no-name-in-module
+        from pydantic.error_wrappers import ValidationError as PydanticValidationError
+
         challenge = self.request.session["challenge"]
 
-        trusted_attestation_cert_required = True
-        self_attestation_permitted = True
-        none_attestation_permitted = True
-
-        webauthn_registration_response = WebAuthnRegistrationResponse(
-            get_rp_id(self.request),
-            get_origin(self.request),
-            response,
-            challenge,
-            trusted_attestation_cert_required=trusted_attestation_cert_required,
-            self_attestation_permitted=self_attestation_permitted,
-            none_attestation_permitted=none_attestation_permitted,
-            uv_required=False,
-        )  # User Verification
-
         try:
-            webauthn_credential = webauthn_registration_response.verify()
-        except RegistrationRejectedException as exc:
+            registration: VerifiedRegistration = verify_registration_response(
+                credential=RegistrationCredential.parse_raw(dumps(response)),
+                expected_challenge=challenge,
+                expected_rp_id=get_rp_id(self.request),
+                expected_origin=get_origin(self.request),
+            )
+        except (InvalidRegistrationResponse, PydanticValidationError) as exc:
             LOGGER.warning("registration failed", exc=exc)
             raise ValidationError(f"Registration failed. Error: {exc}")
 
-        # Step 17.
-        #
-        # Check that the credentialId is not yet registered to any other user.
-        # If registration is requested for a credential that is already registered
-        # to a different user, the Relying Party SHOULD fail this registration
-        # ceremony, or it MAY decide to accept the registration, e.g. while deleting
-        # the older registration.
         credential_id_exists = WebAuthnDevice.objects.filter(
-            credential_id=webauthn_credential.credential_id
+            credential_id=bytes_to_base64url(registration.credential_id)
         ).first()
         if credential_id_exists:
             raise ValidationError("Credential ID already exists.")
 
-        webauthn_credential.credential_id = str(webauthn_credential.credential_id, "utf-8")
-        webauthn_credential.public_key = str(webauthn_credential.public_key, "utf-8")
-
-        return webauthn_credential
+        return registration
 
 
 class AuthenticatorWebAuthnStageView(ChallengeStageView):
@@ -98,35 +87,26 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         # clear session variables prior to starting a new registration
         self.request.session.pop("challenge", None)
 
-        challenge = generate_challenge(32)
-
-        # We strip the saved challenge of padding, so that we can do a byte
-        # comparison on the URL-safe-without-padding challenge we get back
-        # from the browser.
-        # We will still pass the padded version down to the browser so that the JS
-        # can decode the challenge into binary without too much trouble.
-        self.request.session["challenge"] = challenge.rstrip("=")
         user = self.get_pending_user()
-        make_credential_options = WebAuthnMakeCredentialOptions(
-            challenge,
-            self.request.tenant.branding_title,
-            get_rp_id(self.request),
-            user.uid,
-            user.username,
-            user.name,
-            user.avatar,
+
+        registration_options: PublicKeyCredentialCreationOptions = generate_registration_options(
+            rp_id=get_rp_id(self.request),
+            rp_name=self.request.tenant.branding_title,
+            user_id=user.uid,
+            user_name=user.username,
+            user_display_name=user.name,
+            authenticator_selection=AuthenticatorSelectionCriteria(
+                resident_key=ResidentKeyRequirement.PREFERRED,
+                user_verification=UserVerificationRequirement.PREFERRED,
+            ),
         )
+        registration_options.user.id = user.uid
 
-        registration_dict = make_credential_options.registration_dict
-        registration_dict["authenticatorSelection"] = {
-            "requireResidentKey": False,
-            "userVerification": "preferred",
-        }
-
+        self.request.session["challenge"] = registration_options.challenge
         return AuthenticatorWebAuthnChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "registration": registration_dict,
+                "registration": loads(options_to_json(registration_options)),
             }
         )
 
@@ -145,15 +125,15 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         # Webauthn Challenge has already been validated
-        webauthn_credential: WebAuthnCredential = response.validated_data["response"]
+        webauthn_credential: VerifiedRegistration = response.validated_data["response"]
         existing_device = WebAuthnDevice.objects.filter(
-            credential_id=webauthn_credential.credential_id
+            credential_id=bytes_to_base64url(webauthn_credential.credential_id)
         ).first()
         if not existing_device:
             WebAuthnDevice.objects.create(
                 user=self.get_pending_user(),
-                public_key=webauthn_credential.public_key,
-                credential_id=webauthn_credential.credential_id,
+                public_key=bytes_to_base64url(webauthn_credential.credential_public_key),
+                credential_id=bytes_to_base64url(webauthn_credential.credential_id),
                 sign_count=webauthn_credential.sign_count,
                 rp_id=get_rp_id(self.request),
             )

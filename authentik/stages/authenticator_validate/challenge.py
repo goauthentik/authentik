@@ -1,4 +1,7 @@
 """Validation stage challenge checking"""
+from json import dumps, loads
+from typing import Optional
+
 from django.http import HttpRequest
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
@@ -8,12 +11,10 @@ from django_otp.models import Device
 from rest_framework.fields import CharField, JSONField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
-from webauthn import WebAuthnAssertionOptions, WebAuthnAssertionResponse, WebAuthnUser
-from webauthn.webauthn import (
-    AuthenticationRejectedException,
-    RegistrationRejectedException,
-    WebAuthnUserDataMissing,
-)
+from webauthn import generate_authentication_options, verify_authentication_response
+from webauthn.helpers import base64url_to_bytes, options_to_json
+from webauthn.helpers.exceptions import InvalidAuthenticationResponse
+from webauthn.helpers.structs import AuthenticationCredential
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User
@@ -21,7 +22,7 @@ from authentik.lib.utils.http import get_client_ip
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
-from authentik.stages.authenticator_webauthn.utils import generate_challenge, get_origin
+from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
 
 LOGGER = get_logger()
 
@@ -42,40 +43,26 @@ def get_challenge_for_device(request: HttpRequest, device: Device) -> dict:
     return {}
 
 
-def get_webauthn_challenge(request: HttpRequest, device: WebAuthnDevice) -> dict:
+def get_webauthn_challenge(request: HttpRequest, device: Optional[WebAuthnDevice] = None) -> dict:
     """Send the client a challenge that we'll check later"""
     request.session.pop("challenge", None)
 
-    challenge = generate_challenge(32)
+    allowed_credentials = []
 
-    # We strip the padding from the challenge stored in the session
-    # for the reasons outlined in the comment in webauthn_begin_activate.
-    request.session["challenge"] = challenge.rstrip("=")
+    if device:
+        # We want all the user's WebAuthn devices and merge their challenges
+        for user_device in WebAuthnDevice.objects.filter(user=device.user).order_by("name"):
+            user_device: WebAuthnDevice
+            allowed_credentials.append(user_device.descriptor)
 
-    assertion = {}
-    user = device.user
+    authentication_options = generate_authentication_options(
+        rp_id=get_rp_id(request),
+        allow_credentials=allowed_credentials,
+    )
 
-    # We want all the user's WebAuthn devices and merge their challenges
-    for user_device in WebAuthnDevice.objects.filter(user=device.user).order_by("name"):
-        webauthn_user = WebAuthnUser(
-            user.uid,
-            user.username,
-            user.name,
-            user.avatar,
-            user_device.credential_id,
-            user_device.public_key,
-            user_device.sign_count,
-            user_device.rp_id,
-        )
-        webauthn_assertion_options = WebAuthnAssertionOptions(webauthn_user, challenge)
-        if assertion == {}:
-            assertion = webauthn_assertion_options.assertion_dict
-        else:
-            assertion["allowCredentials"] += webauthn_assertion_options.assertion_dict.get(
-                "allowCredentials"
-            )
+    request.session["challenge"] = authentication_options.challenge
 
-    return assertion
+    return loads(options_to_json(authentication_options))
 
 
 def select_challenge(request: HttpRequest, device: Device):
@@ -99,45 +86,32 @@ def validate_challenge_code(code: str, request: HttpRequest, user: User) -> str:
     return code
 
 
+# pylint: disable=unused-argument
 def validate_challenge_webauthn(data: dict, request: HttpRequest, user: User) -> dict:
     """Validate WebAuthn Challenge"""
     challenge = request.session.get("challenge")
-    assertion_response = data
-    credential_id = assertion_response.get("id")
+    credential_id = data.get("id")
 
     device = WebAuthnDevice.objects.filter(credential_id=credential_id).first()
     if not device:
         raise ValidationError("Device does not exist.")
 
-    webauthn_user = WebAuthnUser(
-        user.uid,
-        user.username,
-        user.name,
-        user.avatar,
-        device.credential_id,
-        device.public_key,
-        device.sign_count,
-        device.rp_id,
-    )
-
-    webauthn_assertion_response = WebAuthnAssertionResponse(
-        webauthn_user,
-        assertion_response,
-        challenge,
-        get_origin(request),
-        uv_required=False,
-    )  # User Verification
-
     try:
-        sign_count = webauthn_assertion_response.verify()
-    except (
-        AuthenticationRejectedException,
-        WebAuthnUserDataMissing,
-        RegistrationRejectedException,
-    ) as exc:
+        authentication_verification = verify_authentication_response(
+            credential=AuthenticationCredential.parse_raw(dumps(data)),
+            expected_challenge=challenge,
+            expected_rp_id=get_rp_id(request),
+            expected_origin=get_origin(request),
+            credential_public_key=base64url_to_bytes(device.public_key),
+            credential_current_sign_count=device.sign_count,
+            require_user_verification=False,
+        )
+
+    except (InvalidAuthenticationResponse) as exc:
+        LOGGER.warning("Assertion failed", exc=exc)
         raise ValidationError("Assertion failed") from exc
 
-    device.set_sign_count(sign_count)
+    device.set_sign_count(authentication_verification.new_sign_count)
     return data
 
 

@@ -205,10 +205,6 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
-    "DEFAULT_THROTTLE_RATES": {
-        "anon": "100/day",
-        "flow_executor": "100/day",
-    },
 }
 
 REDIS_PROTOCOL_PREFIX = "redis://"

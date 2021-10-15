@@ -7,6 +7,7 @@ from django.utils.encoding import force_str
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from rest_framework.exceptions import ValidationError
 from rest_framework.test import APITestCase
+from webauthn.helpers import bytes_to_base64url
 
 from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
@@ -101,8 +102,8 @@ class AuthenticatorValidateStageTests(APITestCase):
 
         webauthn_device = WebAuthnDevice.objects.create(
             user=self.user,
-            public_key="qwerqwerqre",
-            credential_id="foobarbaz",
+            public_key=bytes_to_base64url(b"qwerqwerqre"),
+            credential_id=bytes_to_base64url(b"foobarbaz"),
             sign_count=0,
             rp_id="foo",
         )
@@ -113,14 +114,13 @@ class AuthenticatorValidateStageTests(APITestCase):
             {
                 "allowCredentials": [
                     {
-                        "id": "foobarbaz",
-                        "transports": ["usb", "nfc", "ble", "internal"],
+                        "id": "Zm9vYmFyYmF6",
                         "type": "public-key",
                     }
                 ],
-                "rpId": "foo",
+                "rpId": "testserver",
                 "timeout": 60000,
-                "userVerification": "discouraged",
+                "userVerification": "preferred",
             },
         )
 

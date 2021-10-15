@@ -119,7 +119,9 @@ export class UserSettingsAuthenticatorWebAuthn extends BaseUserSettings {
             <div class="pf-c-card__footer">
                 ${this.configureUrl
                     ? html`<a
-                          href="${this.configureUrl}?next=/${encodeURIComponent("#/settings")}"
+                          href="${this.configureUrl}?next=/${encodeURIComponent(
+                              "#/settings;page-stages",
+                          )}"
                           class="pf-c-button pf-m-primary"
                           >${t`Configure WebAuthn`}
                       </a>`
