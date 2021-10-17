@@ -81,7 +81,7 @@ class DockerController(BaseController):
             return False
         for port in self.deployment_ports:
             key = f"{port.inner_port or port.port}/{port.protocol.lower()}"
-            if key not in container.ports:
+            if not container.ports.get(key, None):
                 return True
             host_matching = False
             for host_port in container.ports[key]:
