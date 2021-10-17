@@ -175,6 +175,38 @@ ${this.instance?.redirectUris}</textarea
                             ${t`If no explicit redirect URIs are specified, any redirect URI is allowed.`}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${t`RSA Key`} name="rsaKey">
+                        <select class="pf-c-form-control">
+                            <option value="" ?selected=${this.instance?.rsaKey === undefined}>
+                                ---------
+                            </option>
+                            ${until(
+                                new CryptoApi(DEFAULT_CONFIG)
+                                    .cryptoCertificatekeypairsList({
+                                        ordering: "pk",
+                                        hasKey: true,
+                                    })
+                                    .then((keys) => {
+                                        return keys.results.map((key) => {
+                                            let selected = this.instance?.rsaKey === key.pk;
+                                            if (keys.results.length === 1) {
+                                                selected = true;
+                                            }
+                                            return html`<option
+                                                value=${ifDefined(key.pk)}
+                                                ?selected=${selected}
+                                            >
+                                                ${key.name}
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Key used to sign the tokens. Only required when JWT Algorithm is set to RS256.`}
+                        </p>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
 
@@ -281,38 +313,6 @@ ${this.instance?.redirectUris}</textarea
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${t`Hold control/command to select multiple items.`}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`RSA Key`} name="rsaKey">
-                        <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.rsaKey === undefined}>
-                                ---------
-                            </option>
-                            ${until(
-                                new CryptoApi(DEFAULT_CONFIG)
-                                    .cryptoCertificatekeypairsList({
-                                        ordering: "pk",
-                                        hasKey: true,
-                                    })
-                                    .then((keys) => {
-                                        return keys.results.map((key) => {
-                                            let selected = this.instance?.rsaKey === key.pk;
-                                            if (keys.results.length === 1) {
-                                                selected = true;
-                                            }
-                                            return html`<option
-                                                value=${ifDefined(key.pk)}
-                                                ?selected=${selected}
-                                            >
-                                                ${key.name}
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
-                        <p class="pf-c-form__helper-text">
-                            ${t`Key used to sign the tokens. Only required when JWT Algorithm is set to RS256.`}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
