@@ -60,7 +60,7 @@ def clean_expired_models(self: MonitoredTask):
 def backup_database(self: MonitoredTask):  # pragma: no cover
     """Database backup"""
     self.result_timeout_hours = 25
-    if SERVICE_HOST_ENV_NAME in environ and not CONFIG.y("postgresql.s3_backup"):
+    if SERVICE_HOST_ENV_NAME in environ and not CONFIG.y("postgresql.s3_backup.bucket"):
         LOGGER.info("Running in k8s and s3 backups are not configured, skipping")
         self.set_status(
             TaskResult(
