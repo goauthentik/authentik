@@ -29,10 +29,7 @@ jobs:
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gettext
-          scripts/ci_prepare.sh
+        uses: ./.github/actions/ci-prepare
       - name: run compile
         run: pipenv run ./manage.py compilemessages
       - name: Create Pull Request

@@ -33,7 +33,7 @@ jobs:
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
+        uses: ./.github/actions/ci-prepare
       - name: run pylint
         run: pipenv run pylint authentik tests lifecycle
   lint-black:
@@ -51,7 +51,7 @@ jobs:
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
+        uses: ./.github/actions/ci-prepare
       - name: run black
         run: pipenv run black --check authentik tests lifecycle
   lint-isort:
@@ -69,7 +69,7 @@ jobs:
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
+        uses: ./.github/actions/ci-prepare
       - name: run isort
         run: pipenv run isort --check authentik tests lifecycle
   lint-bandit:
@@ -87,7 +87,7 @@ jobs:
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
+        uses: ./.github/actions/ci-prepare
       - name: run bandit
         run: pipenv run bandit -r authentik tests lifecycle
   lint-pyright:
@@ -101,11 +101,11 @@ jobs:
         with:
           node-version: '16'
       - name: prepare
-        run: |
-          scripts/ci_prepare.sh
-          npm install -g pyright@1.1.136
+        uses: ./.github/actions/ci-prepare
       - name: run bandit
-        run: pipenv run pyright e2e lifecycle
+        run: |
+          npm install -g pyright@1.1.136
+          pipenv run pyright e2e lifecycle
   test-migrations:
     runs-on: ubuntu-latest
     steps:
@@ -121,7 +121,7 @@ jobs:
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
+        uses: ./.github/actions/ci-prepare
       - name: run migrations
         run: pipenv run python -m lifecycle.migrate
   test-migrations-from-stable:
@@ -135,8 +135,7 @@ jobs:
           python-version: '3.9'
       - name: prepare variables
         id: ev
-        run: |
-          python ./scripts/gh_env.py
+        uses: ./.github/actions/gh-env
       - id: cache-pipenv
         uses: actions/cache@v2.1.6
         with:
@@ -150,12 +149,12 @@ jobs:
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+        uses: ./.github/actions/ci-prepare
+      - name: run migrations to stable
         run: |
-          scripts/ci_prepare.sh
           # Sync anyways since stable will have different dependencies
           pipenv sync --dev
-      - name: run migrations to stable
-        run: pipenv run python -m lifecycle.migrate
+          pipenv run python -m lifecycle.migrate
       - name: checkout current code
         run: |
           set -x
@@ -165,7 +164,7 @@ jobs:
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
+        uses: ./.github/actions/ci-prepare
       - name: migrate to latest
         run: pipenv run python -m lifecycle.migrate
   test-unittest:
@@ -183,7 +182,7 @@ jobs:
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
+        uses: ./.github/actions/ci-prepare
       - uses: testspace-com/setup-testspace@v1
         with:
           domain: ${{github.repository_owner}}
@@ -212,7 +211,7 @@ jobs:
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
+        uses: ./.github/actions/ci-prepare
       - uses: testspace-com/setup-testspace@v1
         with:
           domain: ${{github.repository_owner}}
@@ -251,9 +250,9 @@ jobs:
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
-        run: |
-          scripts/ci_prepare.sh
-          docker-compose -f tests/e2e/docker-compose.yml up -d
+        uses: ./.github/actions/ci-prepare
+      - name: start e2e containers
+        run: docker-compose -f tests/e2e/docker-compose.yml up -d
       - id: cache-web
         uses: actions/cache@v2.1.6
         with:
@@ -296,8 +295,7 @@ jobs:
         id: ev
         env:
           DOCKER_USERNAME: ${{ secrets.HARBOR_USERNAME }}
-        run: |
-          python ./scripts/gh_env.py
+        uses: ./.github/actions/gh-env
       - name: Login to Container Registry
         uses: docker/login-action@v1
         if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
