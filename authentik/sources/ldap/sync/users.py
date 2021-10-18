@@ -62,6 +62,6 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
             else:
                 self._logger.debug("Synced User", user=ak_user.username, created=created)
                 user_count += 1
-                MicrosoftActiveDirectory(self._source).sync(attributes, user, created)
-                FreeIPA(self._source).sync(attributes, user, created)
+                MicrosoftActiveDirectory(self._source).sync(attributes, ak_user, created)
+                FreeIPA(self._source).sync(attributes, ak_user, created)
         return user_count

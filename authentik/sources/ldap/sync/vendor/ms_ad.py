@@ -43,8 +43,8 @@ class MicrosoftActiveDirectory(BaseLDAPSynchronizer):
     """Microsoft-specific LDAP"""
 
     def sync(self, attributes: dict[str, Any], user: User, created: bool):
-        self.ms_check_uac(attributes, user, created)
-        self.ms_check_pwd_last_set(attributes, user)
+        self.ms_check_pwd_last_set(attributes, user, created)
+        self.ms_check_uac(attributes, user)
 
     def ms_check_pwd_last_set(self, attributes: dict[str, Any], user: User, created: bool):
         """Check pwdLastSet"""
