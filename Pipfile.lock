@@ -1329,11 +1329,11 @@
         },
         "webauthn": {
             "hashes": [
-                "sha256:1c068b93ab0f03fc6905e42e42e6ad24caa4f2632ff13ab846d5e2ef0bf1aa37",
-                "sha256:6710b8b3d846010fcf303d4fb96ca42de154aeeec379ead4e18cc582a11f9abc"
+                "sha256:11b02195ee7875bd6c9a786dfee8eb0170ad3292ce168e1a47160c56b23d3362",
+                "sha256:984ab4964e5e1dae5b9d27ffb1b781cac7678491811e3dec5de672e5f58aa57a"
             ],
             "index": "pypi",
-            "version": "==1.0.0"
+            "version": "==1.0.1"
         },
         "websocket-client": {
             "hashes": [
@@ -1771,7 +1771,7 @@
                 "sha256:9c2ea1e62d871267b78307fe511c0838ba0da28698c5732d54e2790bf3ba9899",
                 "sha256:e17d6e2b81095c9db0a03a8025a957f334d6ea30b26f9ec70805411e5c7c81f2"
             ],
-            "markers": "python_version < '4' and python_full_version >= '3.6.1'",
+            "markers": "python_version < '4.0' and python_full_version >= '3.6.1'",
             "version": "==5.9.3"
         },
         "lazy-object-proxy": {
@@ -2080,11 +2080,11 @@
         },
         "stevedore": {
             "hashes": [
-                "sha256:59b58edb7f57b11897f150475e7bc0c39c5381f0b8e3fa9f5c20ce6c89ec4aa1",
-                "sha256:920ce6259f0b2498aaa4545989536a27e4e4607b8318802d7ddc3a533d3d069e"
+                "sha256:a547de73308fd7e90075bb4d301405bebf705292fa90a90fc3bcf9133f58616c",
+                "sha256:f40253887d8712eaa2bb0ea3830374416736dc8ec0e22f5a65092c1174c44335"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==3.4.0"
+            "version": "==3.5.0"
         },
         "toml": {
             "hashes": [
