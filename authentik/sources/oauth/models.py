@@ -2,7 +2,6 @@
 from typing import TYPE_CHECKING, Optional, Type
 
 from django.db import models
-from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
@@ -49,7 +48,7 @@ class OAuthSource(Source):
     consumer_secret = models.TextField()
 
     @property
-    def type(self) -> "SourceType":
+    def type(self) -> Type["SourceType"]:
         """Return the provider instance for this source"""
         from authentik.sources.oauth.types.manager import MANAGER
 
@@ -67,6 +66,7 @@ class OAuthSource(Source):
 
     @property
     def ui_login_button(self) -> UILoginButton:
+        provider_type = self.type
         return UILoginButton(
             challenge=RedirectChallenge(
                 instance={
@@ -77,7 +77,7 @@ class OAuthSource(Source):
                     ),
                 }
             ),
-            icon_url=static(f"authentik/sources/{self.provider_type}.svg"),
+            icon_url=provider_type().icon_url(),
             name=self.name,
         )
 
@@ -171,6 +171,16 @@ class OpenIDConnectOAuthSource(OAuthSource):
         abstract = True
         verbose_name = _("OpenID OAuth Source")
         verbose_name_plural = _("OpenID OAuth Sources")
+
+
+class AppleOAuthSource(OAuthSource):
+    """Login using a apple.com."""
+
+    class Meta:
+
+        abstract = True
+        verbose_name = _("Apple OAuth Source")
+        verbose_name_plural = _("Apple OAuth Sources")
 
 
 class UserOAuthSourceConnection(UserSourceConnection):
