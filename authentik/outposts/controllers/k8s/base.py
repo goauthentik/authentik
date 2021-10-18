@@ -70,6 +70,17 @@ class KubernetesObjectReconciler(Generic[T]):
                 raise exc
             else:
                 self.reconcile(current, reference)
+        except NeedsUpdate:
+            try:
+                self.update(current, reference)
+                self.logger.debug("Updating")
+            except (OpenApiException, HTTPError) as exc:
+                # pylint: disable=no-member
+                if isinstance(exc, ApiException) and exc.status == 422:
+                    self.logger.debug("Failed to update current, triggering re-create")
+                    raise NeedsRecreate from exc
+                self.logger.debug("Other unhandled error", exc=exc)
+                raise exc
         except NeedsRecreate:
             self.logger.debug("Recreate requested")
             if current:
@@ -79,9 +90,6 @@ class KubernetesObjectReconciler(Generic[T]):
                 self.logger.debug("No old found, creating")
             self.logger.debug("Creating")
             self.create(reference)
-        except NeedsUpdate:
-            self.logger.debug("Updating")
-            self.update(current, reference)
         else:
             self.logger.debug("Object is up-to-date.")
 
