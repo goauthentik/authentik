@@ -50,7 +50,7 @@ In authentik, create an application which uses this provider. Optionally apply a
 
 ### Step 3
 
-Obtain your Metadata URL from Authentik.
+Obtain your Metadata URL from authentik.
 
 1. Click on the BookStack Provider
 2. Click the Metadata Tab
@@ -69,7 +69,7 @@ Modify the following Example SAML config and paste incorporate into your `.env` 
 AUTH_METHOD=saml2
 # Set the display name to be shown on the login button.
 # (Login with <name>)
-SAML2_NAME=Authentik
+SAML2_NAME=authentik
 # Name of the attribute which provides the user's email address
 SAML2_EMAIL_ATTRIBUTE=email
 # Name of the attribute to use as an ID for the SAML user.

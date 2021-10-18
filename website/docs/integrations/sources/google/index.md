@@ -15,7 +15,7 @@ The following placeholders will be used:
 You will need to create a new project, and OAuth credentials in the Google Developer console.  The developer console can be overwhelming at first.
 
 1. Visit https://console.developers.google.com/ to create a new project
-2. Create a New project. 
+2. Create a New project.
 
 ![Example Screen](googledeveloper1.png)
 
@@ -62,7 +62,7 @@ _I'm only going to list the mandatory/important fields to complete._
 24. Click **Create**
 25. Copy and store _Your Client ID_ and _Your Client Secret_ for later
 
-## Authentik
+## authentik
 
 26. Under _Resources -> Sources_ Click **Create Google OAuth Source**
 
@@ -72,7 +72,7 @@ _I'm only going to list the mandatory/important fields to complete._
 30. **Consumer Secret:** Your Client Secret from step 25
 31. **Provider Type:** Google
 
-Here is an exmple of a complete Authentik Google OAuth Source
+Here is an example of a complete authentik Google OAuth Source
 
 ![Example Screen](authentiksource.png)
 

@@ -33,7 +33,7 @@ Here is an example of a completed OAuth2 screen for Discord.
 
 ![Example Screen](discord4.png)
 
-## Authentik
+## authentik
 
 8. Under _Resources -> Sources_ Click **Create Discord OAuth Source**
 
@@ -43,7 +43,7 @@ Here is an example of a completed OAuth2 screen for Discord.
 12. **Consumer Secret:** Client Secret from step 5
 13. **Provider type:** Discord
 
-Here is an exmple of a complete Authentik Discord OAuth Source
+Here is an example of a complete authentik Discord OAuth Source
 
 ![Example Screen](discord5.png)
 
