@@ -15,7 +15,7 @@ reference implementations.
 
 The following placeholders will be used:
 
-- `matrix.company` is the FQDN of the MinIO install.
+- `matrix.company` is the FQDN of the Matrix install.
 - `authentik.company` is the FQDN of the authentik install.
 
 Create an application in authentik. Create an OAuth2/OpenID provider with the following parameters:
@@ -43,6 +43,7 @@ oidc_providers:
     scopes:
       - "openid"
       - "profile"
+      - "email"
     user_mapping_provider:
       config:
         localpart_template: "{{ '{{ user.name }}' }}"
