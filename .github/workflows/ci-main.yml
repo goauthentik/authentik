@@ -146,6 +146,7 @@ jobs:
           # Copy current, latest config to local
           cp authentik/lib/default.yml local.env.yml
           git checkout $(git describe --abbrev=0 --match 'version/*')
+          git checkout ${{ steps.ev.outputs.branchName }} -- ./.github
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}

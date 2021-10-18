@@ -14,7 +14,7 @@ runs:
         if [[ "$INSTALL" != "true" ]]; then
             pipenv install --dev
         fi
-    - shell: python
+    - shell: pipenv run python {0}
       run: |
         """Utility script to generate a config for CI runs"""
         from yaml import safe_dump
