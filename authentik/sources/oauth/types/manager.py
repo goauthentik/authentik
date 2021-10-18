@@ -23,8 +23,8 @@ class SourceType:
 
     callback_view = OAuthCallback
     redirect_view = OAuthRedirect
-    name: str
-    slug: str
+    name: str = "default"
+    slug: str = "default"
 
     urls_customizable = False
 

@@ -119,7 +119,7 @@ class TestIdentificationStage(APITestCase):
                             "to": "/source/oauth/login/test/",
                             "type": ChallengeTypes.REDIRECT.value,
                         },
-                        "icon_url": "/static/authentik/sources/.svg",
+                        "icon_url": "/static/authentik/sources/default.svg",
                         "name": "test",
                     }
                 ],
@@ -170,7 +170,7 @@ class TestIdentificationStage(APITestCase):
                             "to": "/source/oauth/login/test/",
                             "type": ChallengeTypes.REDIRECT.value,
                         },
-                        "icon_url": "/static/authentik/sources/.svg",
+                        "icon_url": "/static/authentik/sources/default.svg",
                         "name": "test",
                     }
                 ],
@@ -226,7 +226,7 @@ class TestIdentificationStage(APITestCase):
                 },
                 "sources": [
                     {
-                        "icon_url": "/static/authentik/sources/.svg",
+                        "icon_url": "/static/authentik/sources/default.svg",
                         "name": "test",
                         "challenge": {
                             "component": "xak-flow-redirect",
@@ -280,7 +280,7 @@ class TestIdentificationStage(APITestCase):
                             "to": "/source/oauth/login/test/",
                             "type": ChallengeTypes.REDIRECT.value,
                         },
-                        "icon_url": "/static/authentik/sources/.svg",
+                        "icon_url": "/static/authentik/sources/default.svg",
                         "name": "test",
                     }
                 ],
