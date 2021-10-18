@@ -64,6 +64,7 @@ module.exports = {
                     label: "as Source",
                     items: [
                         "integrations/sources/index",
+                        "integrations/sources/apple/index",
                         "integrations/sources/active-directory/index",
                         "integrations/sources/discord/index",
                         "integrations/sources/github/index",

@@ -76,9 +76,9 @@ auth:
         # The auth url to send users to if they want to authenticate using OpenID Connect.
         authurl: https://authentik.company/application/o/vikunja/
         # The client ID used to authenticate Vikunja at the OpenID Connect provider.
-        clientid: THIS IS THE CLIENT ID YOU COPIED FROM STEP 1 in Authentik
+        clientid: THIS IS THE CLIENT ID YOU COPIED FROM STEP 1 in authentik
         # The client secret used to authenticate Vikunja at the OpenID Connect provider.
-        clientsecret: THIS IS THE CLIENT SECRET YOU COPIED FROM STEP 1 in Authentik
+        clientsecret: THIS IS THE CLIENT SECRET YOU COPIED FROM STEP 1 in authentik
 ```
 
 :::note

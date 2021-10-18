@@ -252,7 +252,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         ?writeOnly=${this.instance !== undefined}
                         name="consumerSecret"
                     >
-                        <input type="text" value="" class="pf-c-form-control" required />
+                        <textarea class="pf-c-form-control"></textarea>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

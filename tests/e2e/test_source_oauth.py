@@ -43,7 +43,7 @@ class OAUth1Type(SourceType):
     urls_customizable = False
 
 
-SOURCE_TYPE_MOCK = Mock(return_value=OAUth1Type())
+SOURCE_TYPE_MOCK = Mock(return_value=OAUth1Type)
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")

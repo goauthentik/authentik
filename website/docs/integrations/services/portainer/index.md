@@ -21,7 +21,7 @@ The following placeholders will be used:
 - `port.company` is the FQDN of Portainer.
 - `authentik.company` is the FQDN of authentik.
 
-### Step 1 - Authentik
+### Step 1 - authentik
 
 In authentik, under _Providers_, create an _OAuth2/OpenID Provider_ with these settings:
 
@@ -57,7 +57,7 @@ Portainer by default shows commas between each item in the Scopes field.  Do **N
 
 ![](./port1.png)
 
-### Step 3 - Authentik
+### Step 3 - authentik
 
 In authentik, create an application which uses this provider. Optionally apply access restrictions to the application using policy bindings.
 

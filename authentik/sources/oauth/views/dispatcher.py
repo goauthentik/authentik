@@ -1,6 +1,8 @@
 """Dispatch OAuth views to respective views"""
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
 from authentik.sources.oauth.models import OAuthSource
@@ -9,6 +11,7 @@ from authentik.sources.oauth.types.manager import MANAGER, RequestKind
 LOGGER = get_logger()
 
 
+@method_decorator(csrf_exempt, name="dispatch")
 class DispatcherView(View):
     """Dispatch OAuth Redirect/Callback views to their proper class based on URL parameters"""
 

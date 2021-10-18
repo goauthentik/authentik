@@ -20,10 +20,16 @@ class OAuth2Client(BaseOAuthClient):
         "Accept": "application/json",
     }
 
+    def get_request_arg(self, key: str, default: Optional[Any] = None) -> Any:
+        """Depending on request type, get data from post or get"""
+        if self.request.method == "POST":
+            return self.request.POST.get(key, default)
+        return self.request.GET.get(key, default)
+
     def check_application_state(self) -> bool:
         "Check optional state parameter."
         stored = self.request.session.get(self.session_key, None)
-        returned = self.request.GET.get("state", None)
+        returned = self.get_request_arg("state", None)
         check = False
         if stored is not None:
             if returned is not None:
@@ -38,23 +44,31 @@ class OAuth2Client(BaseOAuthClient):
         "Generate state optional parameter."
         return get_random_string(32)
 
+    def get_client_id(self) -> str:
+        """Get client id"""
+        return self.source.consumer_key
+
+    def get_client_secret(self) -> str:
+        """Get client secret"""
+        return self.source.consumer_secret
+
     def get_access_token(self, **request_kwargs) -> Optional[dict[str, Any]]:
         "Fetch access token from callback request."
         callback = self.request.build_absolute_uri(self.callback or self.request.path)
         if not self.check_application_state():
             LOGGER.warning("Application state check failed.")
             return None
-        if "code" in self.request.GET:
-            args = {
-                "client_id": self.source.consumer_key,
-                "redirect_uri": callback,
-                "client_secret": self.source.consumer_secret,
-                "code": self.request.GET["code"],
-                "grant_type": "authorization_code",
-            }
-        else:
+        code = self.get_request_arg("code", None)
+        if not code:
             LOGGER.warning("No code returned by the source")
             return None
+        args = {
+            "client_id": self.get_client_id(),
+            "client_secret": self.get_client_secret(),
+            "redirect_uri": callback,
+            "code": code,
+            "grant_type": "authorization_code",
+        }
         try:
             access_token_url = self.source.type.access_token_url or ""
             if self.source.type.urls_customizable and self.source.access_token_url:
@@ -75,7 +89,7 @@ class OAuth2Client(BaseOAuthClient):
     def get_redirect_args(self) -> dict[str, str]:
         "Get request parameters for redirect url."
         callback = self.request.build_absolute_uri(self.callback)
-        client_id: str = self.source.consumer_key
+        client_id: str = self.get_client_id()
         args: dict[str, str] = {
             "client_id": client_id,
             "redirect_uri": callback,
