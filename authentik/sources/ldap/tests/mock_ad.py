@@ -2,7 +2,7 @@
 
 from ldap3 import MOCK_SYNC, OFFLINE_AD_2012_R2, Connection, Server
 
-from authentik.sources.ldap.sync.vendor.ad import UserAccountControl
+from authentik.sources.ldap.sync.vendor.ms_ad import UserAccountControl
 
 
 def mock_ad_connection(password: str) -> Connection:
