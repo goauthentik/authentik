@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "2928ad096a32a4ed1b96c4357a52bf111ca8b9000b86d9d1f2f1afb8318fab29"
+            "sha256": "ca7c64798cac0dfeb6aa088d6bf0261895398db26c4769274b77ef974ee06501"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -650,11 +650,11 @@
         },
         "kubernetes": {
             "hashes": [
-                "sha256:0c72d00e7883375bd39ae99758425f5e6cb86388417cf7cc84305c211b2192cf",
-                "sha256:ff31ec17437293e7d4e1459f1228c42d27c7724dfb56b4868aba7a901a5b72c9"
+                "sha256:82d7d58f3e3b59fee227740e01af8d14e5d853d37cef6e71b4ee51a4f1a5d0d8",
+                "sha256:b7fce8b8d8e92d8023929d83cdb5e6e381f99e905d4488533c05280e18a03ced"
             ],
             "index": "pypi",
-            "version": "==18.20.0"
+            "version": "==v19.15.0b1"
         },
         "ldap3": {
             "hashes": [
@@ -1527,13 +1527,6 @@
         }
     },
     "develop": {
-        "appdirs": {
-            "hashes": [
-                "sha256:7d5d0167b2b1ba821647616af46a749d1c653740dd0d2415100fe26e27afdf41",
-                "sha256:a841dacd6b99318a741b166adb07e19ee71a274450e68237b4650ca1055ab128"
-            ],
-            "version": "==1.4.4"
-        },
         "astroid": {
             "hashes": [
                 "sha256:0e361da0744d5011d4f5d57e64473ba9b7ab4da1e2d45d6631ebd67dd28c3cce",
@@ -1568,11 +1561,11 @@
         },
         "black": {
             "hashes": [
-                "sha256:23695358dbcb3deafe7f0a3ad89feee5999a46be5fec21f4f1d108be0bcdb3b1",
-                "sha256:8a60071a0043876a4ae96e6c69bd3a127dad2c1ca7c8083573eb82f92705d008"
+                "sha256:380f1b5da05e5a1429225676655dddb96f5ae8c75bdf91e53d798871b902a115",
+                "sha256:7de4cfc7eb6b710de325712d40125689101d21d25283eed7e9998722cf10eb91"
             ],
             "index": "pypi",
-            "version": "==21.5b1"
+            "version": "==21.9b0"
         },
         "bump2version": {
             "hashes": [
@@ -1778,7 +1771,7 @@
                 "sha256:9c2ea1e62d871267b78307fe511c0838ba0da28698c5732d54e2790bf3ba9899",
                 "sha256:e17d6e2b81095c9db0a03a8025a957f334d6ea30b26f9ec70805411e5c7c81f2"
             ],
-            "markers": "python_version < '4.0' and python_full_version >= '3.6.1'",
+            "markers": "python_version < '4' and python_full_version >= '3.6.1'",
             "version": "==5.9.3"
         },
         "lazy-object-proxy": {
@@ -2124,6 +2117,14 @@
             ],
             "markers": "python_version >= '3.5'",
             "version": "==0.9.2"
+        },
+        "typing-extensions": {
+            "hashes": [
+                "sha256:49f75d16ff11f1cd258e1b988ccff82a3ca5570217d7ad8c5f48205dd99a677e",
+                "sha256:d8226d10bc02a29bcc81df19a26e56a9647f8b0a6d4a83924139f4a8b01f17b7",
+                "sha256:f1d25edafde516b146ecd0613dabcc61409817af4766fbbcfb8d1ad4ec441a34"
+            ],
+            "version": "==3.10.0.2"
         },
         "urllib3": {
             "extras": [
