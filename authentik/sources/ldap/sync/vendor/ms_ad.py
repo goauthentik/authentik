@@ -48,6 +48,8 @@ class MicrosoftActiveDirectory(BaseLDAPSynchronizer):
 
     def ms_check_pwd_last_set(self, attributes: dict[str, Any], user: User, created: bool):
         """Check pwdLastSet"""
+        if "pwdLastSet" not in attributes:
+            return
         pwd_last_set: datetime = attributes.get("pwdLastSet", datetime.now())
         pwd_last_set = pwd_last_set.replace(tzinfo=UTC)
         if created or pwd_last_set >= user.password_change_date:
@@ -63,8 +65,11 @@ class MicrosoftActiveDirectory(BaseLDAPSynchronizer):
 
     def ms_check_uac(self, attributes: dict[str, Any], user: User):
         """Check userAccountControl"""
-        if uac_bit := attributes.get("userAccountControl", None):
-            # uac_bit: int = attributes.get("userAccountControl")
-            uac = UserAccountControl(uac_bit)
-            user.is_active = UserAccountControl.ACCOUNTDISABLE not in uac
-            user.save()
+        if "userAccountControl" not in attributes:
+            return
+        # Default from https://docs.microsoft.com/en-us/troubleshoot/windows-server/identity
+        #   /useraccountcontrol-manipulate-account-properties
+        uac_bit = attributes.get("userAccountControl", 512)
+        uac = UserAccountControl(uac_bit)
+        user.is_active = UserAccountControl.ACCOUNTDISABLE not in uac
+        user.save()
