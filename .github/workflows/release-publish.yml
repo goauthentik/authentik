@@ -3,9 +3,6 @@ name: authentik-on-release
 on:
   release:
     types: [published, created]
-  push:
-    branches:
-      - version-*
 
 jobs:
   # Build
@@ -142,15 +139,13 @@ jobs:
       - uses: actions/checkout@v2
       - name: Run test suite in final docker images
         run: |
-          sudo apt-get install -y pwgen
-          echo "PG_PASS=$(pwgen 40 1)" >> .env
-          echo "AUTHENTIK_SECRET_KEY=$(pwgen 50 1)" >> .env
+          echo "PG_PASS=$(openssl rand -base64 32)" >> .env
+          echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 32)" >> .env
           docker-compose pull -q
           docker-compose up --no-start
           docker-compose start postgresql redis
           docker-compose run -u root server test
   sentry-release:
-    if: ${{ github.event_name == 'release' }}
     needs:
       - test-release
     runs-on: ubuntu-latest
