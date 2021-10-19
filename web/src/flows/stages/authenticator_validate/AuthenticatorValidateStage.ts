@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 
 import { css, CSSResult, html, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators";
+import { customElement, state } from "lit/decorators";
 
 import AKGlobal from "../../../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -36,11 +36,12 @@ export class AuthenticatorValidateStage
 {
     flowSlug = "";
 
+    @state()
     _selectedDeviceChallenge?: DeviceChallenge;
 
-    @property({ attribute: false })
     set selectedDeviceChallenge(value: DeviceChallenge | undefined) {
         this._selectedDeviceChallenge = value;
+        if (!value) return;
         // We don't use this.submit here, as we don't want to advance the flow.
         // We just want to notify the backend which challenge has been selected.
         new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
