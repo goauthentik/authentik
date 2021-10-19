@@ -29,7 +29,6 @@ import { configureSentry } from "../api/Sentry";
 import { WebsocketClient } from "../common/ws";
 import { EVENT_FLOW_ADVANCE, TITLE_DEFAULT } from "../constants";
 import "../elements/LoadingOverlay";
-import { DefaultTenant } from "../elements/sidebar/SidebarBrand";
 import { first } from "../utils";
 import "./FlowInspector";
 import "./access_denied/FlowAccessDenied";
@@ -385,11 +384,7 @@ export class FlowExecutor extends LitElement implements StageHost {
                                         <header class="pf-c-login__header">
                                             <div class="pf-c-brand ak-brand">
                                                 <img
-                                                    src="${first(
-                                                        this.tenant?.brandingLogo,
-                                                        DefaultTenant.brandingLogo,
-                                                    )}"
-                                                    alt="authentik icon"
+                                                    src="${first(this.tenant?.brandingLogo, "")}"
                                                 />
                                             </div>
                                         </header>
