@@ -13,15 +13,14 @@ jobs:
       - uses: actions/checkout@v2
       - name: Pre-release test
         run: |
-          docker-compose pull -q
-          echo "AUTHENTIK_IMAGE=testing" >> .env
-          echo "AUTHENTIK_TAG=latest" >> .env
           echo "PG_PASS=$(openssl rand -base64 32)" >> .env
           echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 32)" >> .env
           docker build \
             --no-cache \
             -t testing:latest \
             -f Dockerfile .
+          echo "AUTHENTIK_IMAGE=testing" >> .env
+          echo "AUTHENTIK_TAG=latest" >> .env
           docker-compose up --no-start
           docker-compose start postgresql redis
           docker-compose run -u root server test
