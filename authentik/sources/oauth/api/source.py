@@ -3,7 +3,7 @@ from django.urls.base import reverse_lazy
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_field
 from rest_framework.decorators import action
-from rest_framework.fields import BooleanField, CharField, SerializerMethodField
+from rest_framework.fields import BooleanField, CharField, ChoiceField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
@@ -31,6 +31,7 @@ class SourceTypeSerializer(PassiveSerializer):
 class OAuthSourceSerializer(SourceSerializer):
     """OAuth Source Serializer"""
 
+    provider_type = ChoiceField(choices=MANAGER.get_name_tuple())
     callback_url = SerializerMethodField()
 
     def get_callback_url(self, instance: OAuthSource) -> str:

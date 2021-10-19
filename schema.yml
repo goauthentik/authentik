@@ -22668,8 +22668,7 @@ components:
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
         provider_type:
-          type: string
-          maxLength: 255
+          $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
           type: string
           nullable: true
@@ -22743,8 +22742,7 @@ components:
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
         provider_type:
-          type: string
-          maxLength: 255
+          $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
           type: string
           nullable: true
@@ -26806,8 +26804,7 @@ components:
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
         provider_type:
-          type: string
-          maxLength: 255
+          $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
           type: string
           nullable: true
@@ -28209,6 +28206,18 @@ components:
       required:
       - authorization_flow
       - name
+    ProviderTypeEnum:
+      enum:
+      - apple
+      - azuread
+      - discord
+      - facebook
+      - github
+      - google
+      - openidconnect
+      - reddit
+      - twitter
+      type: string
     ProxyMode:
       enum:
       - proxy
