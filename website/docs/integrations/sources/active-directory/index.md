@@ -27,7 +27,7 @@ The following placeholders will be used:
 
     ![](./02_delegate.png)
 
-7. Grant these additional permissions (only required when *Sync users' password* is enabled, and dependant on your AD Domain)
+7. Grant these additional permissions (only required when *Sync users' password* is enabled, and dependent on your AD Domain)
 
     ![](./03_additional_perms.png)
 

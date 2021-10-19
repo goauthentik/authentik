@@ -99,5 +99,5 @@ BookStack will attempt to match the SAML user to an existing BookStack user base
 :::
 
 :::note
-SAML Group Sync is supported by Bookstack.  Review the BookStack documention on the required Environment variables.  https://www.bookstackapp.com/docs/admin/saml2-auth/
+SAML Group Sync is supported by Bookstack.  Review the BookStack documentation on the required Environment variables.  https://www.bookstackapp.com/docs/admin/saml2-auth/
 :::

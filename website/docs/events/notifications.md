@@ -22,7 +22,7 @@ To match events with an "Expression Policy", you can write code like so:
 if "event" not in request.context:
     return False
 
-return ip_address(request.context["evnet"].client_ip) in ip_network('192.0.2.0/24')
+return ip_address(request.context["event"].client_ip) in ip_network('192.0.2.0/24')
 ```
 
 ## Selecting who gets notified

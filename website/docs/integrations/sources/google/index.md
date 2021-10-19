@@ -20,7 +20,7 @@ You will need to create a new project, and OAuth credentials in the Google Devel
 ![Example Screen](googledeveloper1.png)
 
 3. **Project Name**: Choose a name
-4. **Organization**: Leave as defaut if unsure
+4. **Organization**: Leave as default if unsure
 5. **Location**: Leave as default if unsure
 
 ![Example Screen](googledeveloper2.png)
@@ -36,7 +36,7 @@ You will need to create a new project, and OAuth credentials in the Google Devel
 ![Example Screen](googledeveloper4.png)
 
 
-10. **User Type:** If you do not have a Google Workspace (GSuite) account choose _External_.  If you do have a Google Workspace (Gsuite) account and want to limit acces to only users inside of your organization choose _Internal_
+10. **User Type:** If you do not have a Google Workspace (GSuite) account choose _External_.  If you do have a Google Workspace (Gsuite) account and want to limit access to only users inside of your organization choose _Internal_
 
 _I'm only going to list the mandatory/important fields to complete._
 

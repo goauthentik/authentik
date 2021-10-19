@@ -3,7 +3,7 @@ title: Example Flows
 ---
 
 :::info
-You can apply theses flows multiple times to stay updated, however this will discard all changes you've made.
+You can apply these flows multiple times to stay updated, however this will discard all changes you've made.
 :::
 
 :::info

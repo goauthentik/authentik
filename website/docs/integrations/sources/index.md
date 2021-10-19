@@ -11,4 +11,4 @@ To have sources show on the default login screen you will need to add them. This
 2. Click on **default-authentication-flow** 
 3. Click the **Stage Bindings** tab
 4. Chose **Edit Stage** for the _default-authentication-identification_ stage
-5. Under **Sources** you should see the addtional sources you have configured.  Click all applicable sources to have them displayed on the Login Page
+5. Under **Sources** you should see the additional sources you have configured.  Click all applicable sources to have them displayed on the Login Page

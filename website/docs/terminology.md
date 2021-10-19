@@ -39,7 +39,7 @@ Property Mappings allow you to make information available for external applicati
 
 ### Outpost
 
-An outpost is a separate component of authentik, which can be deployed anywhere, irregardless of the authentik deployment. The outpost offers services that aren't implemented directly into the authentik core, like Reverse Proxying.
+An outpost is a separate component of authentik, which can be deployed anywhere, regardless of the authentik deployment. The outpost offers services that aren't implemented directly into the authentik core, like Reverse Proxying.
 
 Currently there is only a reverse-proxy outpost, in the future there will be more different outpost types.
 
