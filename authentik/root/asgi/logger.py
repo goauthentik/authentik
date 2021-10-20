@@ -3,7 +3,7 @@ from time import time
 
 from structlog.stdlib import get_logger
 
-from authentik.core.middleware import RESPONSE_HEADER_ID
+from authentik.core.middleware import INTERNAL_HEADER_PREFIX, RESPONSE_HEADER_ID
 from authentik.root.asgi.types import ASGIApp, Message, Receive, Scope, Send
 
 ASGI_IP_HEADERS = (
@@ -26,6 +26,8 @@ class ASGILogger:
         content_length = 0
         status_code = 0
         request_id = ""
+        # Copy all headers starting with X-authentik-internal
+        copied_headers = {}
         location = ""
         start = time()
 
@@ -45,9 +47,19 @@ class ASGILogger:
             if message["type"] == "http.response.start":
                 response_headers = dict(message["headers"])
                 nonlocal request_id
+                nonlocal copied_headers
                 nonlocal location
                 request_id = response_headers.get(RESPONSE_HEADER_ID.encode(), b"").decode()
                 location = response_headers.get(b"Location", b"").decode()
+                # Copy all internal headers to log, and remove them from the final response
+                for header in list(response_headers.keys()):
+                    if not header.decode().startswith(INTERNAL_HEADER_PREFIX):
+                        continue
+                    copied_headers[
+                        header.decode().replace(INTERNAL_HEADER_PREFIX, "")
+                    ] = response_headers[header].decode()
+                    del response_headers[header]
+                message["headers"] = list(response_headers.items())
 
             if message["type"] == "http.response.body" and not message.get("more_body", True):
                 nonlocal start
@@ -55,6 +67,7 @@ class ASGILogger:
                 kwargs = {"request_id": request_id}
                 if location != "":
                     kwargs["location"] = location
+                kwargs.update(copied_headers)
                 self.log(scope, runtime, content_length, status_code, **kwargs)
             await send(message)
 
