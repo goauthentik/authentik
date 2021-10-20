@@ -1,6 +1,6 @@
 """authentik flow signals"""
 from django.core.cache import cache
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from structlog.stdlib import get_logger
 
@@ -15,6 +15,7 @@ def delete_cache_prefix(prefix: str) -> int:
 
 
 @receiver(post_save)
+@receiver(pre_delete)
 # pylint: disable=unused-argument
 def invalidate_flow_cache(sender, instance, **_):
     """Invalidate flow cache when flow is updated"""
