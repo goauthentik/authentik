@@ -80,7 +80,7 @@
         "eslint": "^8.0.1",
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-custom-elements": "0.0.2",
-        "eslint-plugin-lit": "^1.6.0",
+        "eslint-plugin-lit": "^1.6.1",
         "flowchart.js": "^1.16.0",
         "fuse.js": "^6.4.6",
         "lit": "^2.0.2",
