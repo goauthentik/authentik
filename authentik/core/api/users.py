@@ -45,6 +45,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import LinkSerializer, PassiveSerializer, is_dict
 from authentik.core.middleware import SESSION_IMPERSONATE_ORIGINAL_USER, SESSION_IMPERSONATE_USER
 from authentik.core.models import (
+    USER_ATTRIBUTE_CHANGE_USERNAME,
     USER_ATTRIBUTE_SA,
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     Group,
@@ -113,13 +114,21 @@ class UserSelfSerializer(ModelSerializer):
             )
         )
     )
-    def get_groups(self, user: User):
+    def get_groups(self, _: User):
         """Return only the group names a user is member of"""
-        for group in user.ak_groups.all():
+        for group in self.instance.ak_groups.all():
             yield {
                 "name": group.name,
                 "pk": group.pk,
             }
+
+    def validate_username(self, username: str):
+        """Check if the user is allowed to change their username"""
+        if self.instance.group_attributes().get(USER_ATTRIBUTE_CHANGE_USERNAME, True):
+            return username
+        if username != self.instance.username:
+            raise ValidationError("Not allowed to change username.")
+        return username
 
     class Meta:
 
@@ -337,7 +346,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         # since it caches the full object
         if SESSION_IMPERSONATE_USER in request.session:
             request.session[SESSION_IMPERSONATE_USER] = new_user
-        serializer = SessionUserSerializer(data={"user": UserSelfSerializer(request.user).data})
+        serializer = SessionUserSerializer(data={"user": data.data})
         serializer.is_valid()
         return Response(serializer.data)
 

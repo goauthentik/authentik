@@ -1,6 +1,22 @@
 ---
-title: User Object
+title: User
 ---
+
+## Attributes
+
+### `goauthentik.io/user/can-change-username`
+
+Optional flag, when set to false prevents the user from changing their own username.
+
+### `goauthentik.io/user/token-expires`:
+
+Optional flag, when set to false, Tokens created by the user will not expire.
+
+### `goauthentik.io/user/debug`:
+
+See [Troubleshooting access problems](../troubleshooting/access.md), when set, the user gets a more detailed explanation of access decisions.
+
+## Object attributes
 
 The User object has the following attributes:
 
@@ -11,8 +27,8 @@ The User object has the following attributes:
 - `is_active` Boolean field if user is active.
 - `date_joined` Date user joined/was created.
 - `password_change_date` Date password was last changed.
-- `attributes` Dynamic attributes.
-- `group_attributes` Merged attributes of all groups the user is member of and the user's own attributes.
+- `attributes` Dynamic attributes, see above
+- `group_attributes()` Merged attributes of all groups the user is member of and the user's own attributes.
 - `ak_groups` This is a queryset of all the user's groups.
 
     You can do additional filtering like

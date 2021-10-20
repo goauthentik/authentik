@@ -10,6 +10,13 @@ module.exports = {
         },
         {
             type: "category",
+            label: "Users & Groups",
+            items: [
+                "user-group/user"
+            ]
+        },
+        {
+            type: "category",
             label: "Installation",
             items: [
                 "installation/index",
@@ -144,17 +151,6 @@ module.exports = {
             type: "category",
             label: "Property Mappings",
             items: ["property-mappings/index", "property-mappings/expression"],
-        },
-        {
-            type: "category",
-            label: "Expressions",
-            items: [
-                {
-                    type: "category",
-                    label: "Reference",
-                    items: ["expressions/reference/user-object"],
-                },
-            ],
         },
         {
             type: "category",
