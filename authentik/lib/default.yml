@@ -56,6 +56,7 @@ outposts:
   # %(build_hash)s: Build hash if you're running a beta version
   container_image_base: env://AUTHENTIK_OUTPOSTS__DOCKER_IMAGE_BASE?goauthentik.io/%(type)s:%(version)s
 
+cookie_domain: null
 disable_update_check: false
 avatars: env://AUTHENTIK_AUTHENTIK__AVATARS?gravatar
 geoip: "./GeoLite2-City.mmdb"

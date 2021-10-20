@@ -72,6 +72,7 @@ _cookie_suffix = "_debug" if DEBUG else ""
 CSRF_COOKIE_NAME = "authentik_csrf"
 LANGUAGE_COOKIE_NAME = f"authentik_language{_cookie_suffix}"
 SESSION_COOKIE_NAME = f"authentik_session{_cookie_suffix}"
+SESSION_COOKIE_DOMAIN = CONFIG.y("cookie_domain", None)
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",

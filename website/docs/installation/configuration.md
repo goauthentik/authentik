@@ -62,6 +62,13 @@ Secret key used for cookie signing and unique user IDs, don't change this after 
 Log level for the server and worker containers. Possible values: debug, info, warning, error
 Defaults to `info`.
 
+### AUTHENTIK_COOKIE_DOMAIN
+
+Which domain the session cookie should be set to. By default, the cookie is set to the domain authentik is accessed under.
+
+### AUTHENTIK_DISABLE_UPDATE_CHECK
+
+Disable the inbuilt update-checker. Defaults to `false`.
 
 ### AUTHENTIK_ERROR_REPORTING
 
