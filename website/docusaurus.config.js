@@ -121,7 +121,7 @@ module.exports = {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.86, maximum-scale=3.0, minimum-scale=0.86">
     <meta name="generator" content="Docusaurus v<%= it.version %>">
-    <script async defer data-domain="goauthentik.io" src="//js/script.js"></script>
+    <script async defer data-domain="goauthentik.io" src="https://goauthentik.io/js/script.js"></script>
     <%~ it.headTags %>
     <% it.metaAttributes.forEach((metaAttribute) => { %>
       <%~ metaAttribute %>

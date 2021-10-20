@@ -23,7 +23,7 @@
 
 [[redirects]]
   from = "/js/script.js"
-  to = "https://plausible.io/js/plausible.hash.exclusions.outbound-links.js"
+  to = "https://plausible.io/js/plausible.outbound-links.js"
   status = 200
   force = true
 
