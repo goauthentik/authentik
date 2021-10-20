@@ -20,9 +20,9 @@ authentik is an open-source Identity Provider focused on flexibility and versati
 
 ## Installation
 
-For small/test setups it is recommended to use docker-compose, see the [documentation](https://goauthentik.io/docs/installation/docker-compose/)
+For small/test setups it is recommended to use docker-compose, see the [documentation](https://goauthentik.io/docs/installation/docker-compose/?utm_source=github)
 
-For bigger setups, there is a Helm Chart [here](https://github.com/goauthentik/helm). This is documented [here](https://goauthentik.io/docs/installation/kubernetes/)
+For bigger setups, there is a Helm Chart [here](https://github.com/goauthentik/helm). This is documented [here](https://goauthentik.io/docs/installation/kubernetes/?utm_source=github)
 
 ## Screenshots
 
@@ -33,7 +33,7 @@ Light | Dark
 
 ## Development
 
-See [Development Documentation](https://goauthentik.io/developer-docs/)
+See [Development Documentation](https://goauthentik.io/developer-docs/?utm_source=github)
 
 ## Security
 

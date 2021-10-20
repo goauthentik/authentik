@@ -165,7 +165,9 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 </p>
                 <p class="pf-c-form__helper-text">
                     See
-                    <a target="_blank" href="https://goauthentik.io/docs/outposts/outposts"
+                    <a
+                        target="_blank"
+                        href="https://goauthentik.io/docs/outposts/outposts?utm_source=authentik"
                         >documentation</a
                     >.
                 </p>
@@ -208,7 +210,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     See
                     <a
                         target="_blank"
-                        href="https://goauthentik.io/docs/outposts/outposts#configuration"
+                        href="https://goauthentik.io/docs/outposts/outposts?utm_source=authentik#configuration"
                         >documentation</a
                     >.
                 </p>

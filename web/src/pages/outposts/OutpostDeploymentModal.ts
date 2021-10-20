@@ -20,7 +20,9 @@ export class OutpostDeploymentModal extends ModalButton {
             </div>
             <div class="pf-c-modal-box__body">
                 <p>
-                    <a target="_blank" href="https://goauthentik.io/docs/outposts/outposts/#deploy"
+                    <a
+                        target="_blank"
+                        href="https://goauthentik.io/docs/outposts/outposts/?utm_source=authentik#deploy"
                         >${t`View deployment documentation`}</a
                     >
                 </p>

@@ -131,7 +131,7 @@ When you are creating an enhancement suggestion, please fill in [the template](h
 
 authentik can be run locally, all though depending on which part you want to work on, different pre-requisites are required.
 
-This is documented in the [developer docs](https://goauthentik.io/developer-docs/)
+This is documented in the [developer docs](https://goauthentik.io/developer-docs/?utm_source=github)
 
 ### Pull Requests
 

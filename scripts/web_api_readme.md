@@ -1,6 +1,6 @@
 ## @goauthentik/api
 
-This package provides a generated API Client for [authentik](https://goauthentik.io).
+This package provides a generated API Client for [authentik](https://goauthentik.io?utm_source=npm-api-package).
 
 ### Building
 

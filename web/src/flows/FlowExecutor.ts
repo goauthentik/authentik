@@ -406,7 +406,8 @@ export class FlowExecutor extends LitElement implements StageHost {
                                                 ${this.tenant?.brandingTitle != "authentik"
                                                     ? html`
                                                           <li>
-                                                              <a href="https://goauthentik.io"
+                                                              <a
+                                                                  href="https://goauthentik.io?utm_source=authentik&amp;utm_medium=flow"
                                                                   >${t`Powered by authentik`}</a
                                                               >
                                                           </li>
