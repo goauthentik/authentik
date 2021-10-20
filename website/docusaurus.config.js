@@ -119,10 +119,9 @@ module.exports = {
 <html <%~ it.htmlAttributes %>>
   <head>
     <meta charset="UTF-8">
-    <meta name="go-import" content="goauthentik.io/api git https://github.com/goauthentik/client-go">
     <meta name="viewport" content="width=device-width, initial-scale=0.86, maximum-scale=3.0, minimum-scale=0.86">
     <meta name="generator" content="Docusaurus v<%= it.version %>">
-    <script async defer data-domain="goauthentik.io" src="https://public.s3.beryju.org/plausibl.js"></script>
+    <script async defer data-domain="goauthentik.io" src="//js/script.js"></script>
     <%~ it.headTags %>
     <% it.metaAttributes.forEach((metaAttribute) => { %>
       <%~ metaAttribute %>
