@@ -13,7 +13,7 @@ jobs:
         uses: sondrelg/container-retention-policy@v1
         with:
           image-names: dev-server,dev-ldap,dev-proxy
-          cut-off: One month ago UTC
+          cut-off: One week ago UTC
           account-type: org
           org-name: goauthentik
           untagged-only: false
