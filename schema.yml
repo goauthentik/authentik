@@ -20109,9 +20109,9 @@ components:
             $ref: '#/components/schemas/FooterLink'
           readOnly: true
           default:
-          - href: https://goauthentik.io/docs/
+          - href: https://goauthentik.io/docs/?utm_source=authentik
             name: Documentation
-          - href: https://goauthentik.io/
+          - href: https://goauthentik.io/?utm_source=authentik
             name: authentik Website
         flow_authentication:
           type: string
