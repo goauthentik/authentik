@@ -4,7 +4,7 @@
 
 ---
 
-[![Join Discord](https://img.shields.io/discord/809154715984199690?label=Discord&style=for-the-badge)](https://discord.gg/jg33eMhnj6)
+[![Join Discord](https://img.shields.io/discord/809154715984199690?label=Discord&style=for-the-badge)](https://goauthentik.io/discord)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/goauthentik/authentik/authentik-ci-main?label=core%20build&style=for-the-badge)](https://github.com/goauthentik/authentik/actions/workflows/ci-main.yml)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/goauthentik/authentik/authentik-ci-outpost?label=outpost%20build&style=for-the-badge)](https://github.com/goauthentik/authentik/actions/workflows/ci-outpost.yml)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/goauthentik/authentik/authentik-ci-web?label=web%20build&style=for-the-badge)](https://github.com/goauthentik/authentik/actions/workflows/ci-web.yml)

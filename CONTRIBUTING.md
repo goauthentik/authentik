@@ -31,7 +31,7 @@ Basically, don't be a dickhead. This is an open-source non-profit project, that 
 
 ## I don't want to read this whole thing I just have a question!!!
 
-Either [create a question on GitHub](https://github.com/goauthentik/authentik/issues/new?assignees=&labels=question&template=question.md&title=) or join [the Discord server](https://discord.gg/jg33eMhnj6)
+Either [create a question on GitHub](https://github.com/goauthentik/authentik/issues/new?assignees=&labels=question&template=question.md&title=) or join [the Discord server](https://goauthentik.io/discord)
 
 ## What should I know before I get started?
 
