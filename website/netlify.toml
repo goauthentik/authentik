@@ -1,4 +1,8 @@
 [[redirects]]
+  from = "/discord"
+  to = "https://discord.gg/jg33eMhnj6"
+
+[[redirects]]
   from = "/*"
   to = "/.netlify/functions/go-get"
   status = 200
