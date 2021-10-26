@@ -25,6 +25,8 @@ All of these variables can be set to values, but you can also use a URI-like for
 
 ### PostgreSQL Backup Settings
 
+- `AUTHENTIK_POSTGRESQL__BACKUP__ENABLED`: Controls if the inbuilt backup-mechanism is enabled, defaults to true (new in 2021.10).
+
 Optionally enable automated database backups to S3 or S3-compatible storages.
 
 - `AUTHENTIK_POSTGRESQL__S3_BACKUP__ACCESS_KEY`: S3 Access Key

@@ -5,6 +5,16 @@ postgresql:
   user: authentik
   port: 5432
   password: 'env://POSTGRES_PASSWORD'
+  backup:
+    enabled: true
+  s3_backup:
+    access_key: ""
+    secret_key: ""
+    bucket: ""
+    region: eu-central-1
+    host: ""
+    location: ""
+    insecure_skip_verify: false
 
 web:
   listen: 0.0.0.0:9000
