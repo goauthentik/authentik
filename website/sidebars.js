@@ -74,6 +74,7 @@ module.exports = {
                         "integrations/sources/apple/index",
                         "integrations/sources/active-directory/index",
                         "integrations/sources/discord/index",
+                        "integrations/sources/freeipa/index",
                         "integrations/sources/github/index",
                         "integrations/sources/google/index",
                         "integrations/sources/ldap/index",
