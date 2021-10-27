@@ -37,7 +37,7 @@ func (ls *LDAPServer) StartLDAPTLSServer() error {
 
 	ln, err := net.Listen("tcp", listen)
 	if err != nil {
-		ls.log.Fatalf("FATAL: listen (%s) failed - %s", listen, err)
+		ls.log.WithField("listen", listen).WithError(err).Fatalf("FATAL: listen failed")
 	}
 
 	proxyListener := &proxyproto.Listener{Listener: ln}

@@ -12,7 +12,7 @@ import (
 	directbind "goauthentik.io/internal/outpost/ldap/bind/direct"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/flags"
-	directsearch "goauthentik.io/internal/outpost/ldap/search/direct"
+	memorysearch "goauthentik.io/internal/outpost/ldap/search/memory"
 )
 
 func (ls *LDAPServer) Refresh() error {
@@ -55,7 +55,8 @@ func (ls *LDAPServer) Refresh() error {
 			providers[idx].cert = ls.cs.Get(*kp)
 		}
 
-		providers[idx].searcher = directsearch.NewDirectSearcher(providers[idx])
+		// providers[idx].searcher = directsearch.NewDirectSearcher(providers[idx])
+		providers[idx].searcher = memorysearch.NewMemorySearcher(providers[idx])
 		providers[idx].binder = directbind.NewDirectBinder(providers[idx])
 	}
 	ls.providers = providers
