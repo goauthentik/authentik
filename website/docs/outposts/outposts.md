@@ -39,11 +39,11 @@ authentik_host: https://authentik.tld/
 authentik_host_insecure: false
 # Optionally specify a different URL used for user-facing interactions
 authentik_host_browser:
-# Template used for objects created (deployments, services, secrets, etc)
+# Template used for objects created (deployments/containers, services, secrets, etc)
 object_naming_template: ak-outpost-%(name)s
 # Use a specific docker image for this outpost rather than the default. This also applies to Kubernetes
 # outposts.
-conatiner_image:
+container_image:
 ########################################
 # Docker outpost specific settings
 ########################################
