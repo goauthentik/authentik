@@ -2,49 +2,17 @@ package ldap
 
 import (
 	"crypto/tls"
+	"net"
 	"sync"
 
-	"github.com/go-openapi/strfmt"
+	"github.com/pires/go-proxyproto"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api"
 	"goauthentik.io/internal/crypto"
 	"goauthentik.io/internal/outpost/ak"
+	"goauthentik.io/internal/outpost/ldap/metrics"
 
 	"github.com/nmcclain/ldap"
 )
-
-const GroupObjectClass = "group"
-const UserObjectClass = "user"
-
-type ProviderInstance struct {
-	BaseDN string
-
-	UserDN string
-
-	VirtualGroupDN string
-	GroupDN        string
-
-	appSlug  string
-	flowSlug string
-	s        *LDAPServer
-	log      *log.Entry
-
-	tlsServerName       *string
-	cert                *tls.Certificate
-	outpostName         string
-	searchAllowedGroups []*strfmt.UUID
-	boundUsersMutex     sync.RWMutex
-	boundUsers          map[string]UserFlags
-
-	uidStartNumber int32
-	gidStartNumber int32
-}
-
-type UserFlags struct {
-	UserInfo  *api.User
-	UserPk    int32
-	CanSearch bool
-}
 
 type LDAPServer struct {
 	s           *ldap.Server
@@ -53,17 +21,6 @@ type LDAPServer struct {
 	cs          *ak.CryptoStore
 	defaultCert *tls.Certificate
 	providers   []*ProviderInstance
-}
-
-type LDAPGroup struct {
-	dn             string
-	cn             string
-	uid            string
-	gidNumber      string
-	member         []string
-	isSuperuser    bool
-	isVirtualGroup bool
-	akAttributes   interface{}
 }
 
 func NewServer(ac *ak.APIController) *LDAPServer {
@@ -89,4 +46,55 @@ func NewServer(ac *ak.APIController) *LDAPServer {
 
 func (ls *LDAPServer) Type() string {
 	return "ldap"
+}
+
+func (ls *LDAPServer) StartLDAPServer() error {
+	listen := "0.0.0.0:3389"
+
+	ln, err := net.Listen("tcp", listen)
+	if err != nil {
+		ls.log.Fatalf("FATAL: listen (%s) failed - %s", listen, err)
+	}
+	proxyListener := &proxyproto.Listener{Listener: ln}
+	defer proxyListener.Close()
+
+	ls.log.WithField("listen", listen).Info("Starting ldap server")
+	err = ls.s.Serve(proxyListener)
+	if err != nil {
+		return err
+	}
+	ls.log.Printf("closing %s", ln.Addr())
+	return ls.s.ListenAndServe(listen)
+}
+
+func (ls *LDAPServer) Start() error {
+	wg := sync.WaitGroup{}
+	wg.Add(3)
+	go func() {
+		defer wg.Done()
+		metrics.RunServer()
+	}()
+	go func() {
+		defer wg.Done()
+		err := ls.StartLDAPServer()
+		if err != nil {
+			panic(err)
+		}
+	}()
+	go func() {
+		defer wg.Done()
+		err := ls.StartLDAPTLSServer()
+		if err != nil {
+			panic(err)
+		}
+	}()
+	wg.Wait()
+	return nil
+}
+
+func (ls *LDAPServer) TimerFlowCacheExpiry() {
+	for _, p := range ls.providers {
+		ls.log.WithField("flow", p.flowSlug).Debug("Pre-heating flow cache")
+		p.binder.TimerFlowCacheExpiry()
+	}
 }

@@ -1,13 +1,14 @@
-package ldap
+package direct
 
 import (
 	"fmt"
 
 	"github.com/nmcclain/ldap"
 	"goauthentik.io/internal/constants"
+	"goauthentik.io/internal/outpost/ldap/search"
 )
 
-func (pi *ProviderInstance) SearchBase(req SearchRequest, authz bool) (ldap.ServerSearchResult, error) {
+func (ds *DirectSearcher) SearchBase(req *search.Request, authz bool) (ldap.ServerSearchResult, error) {
 	dn := ""
 	if authz {
 		dn = req.SearchRequest.BaseDN
@@ -19,7 +20,7 @@ func (pi *ProviderInstance) SearchBase(req SearchRequest, authz bool) (ldap.Serv
 				Attributes: []*ldap.EntryAttribute{
 					{
 						Name:   "distinguishedName",
-						Values: []string{pi.BaseDN},
+						Values: []string{ds.si.GetBaseDN()},
 					},
 					{
 						Name:   "objectClass",
@@ -32,9 +33,9 @@ func (pi *ProviderInstance) SearchBase(req SearchRequest, authz bool) (ldap.Serv
 					{
 						Name: "namingContexts",
 						Values: []string{
-							pi.BaseDN,
-							pi.GroupDN,
-							pi.UserDN,
+							ds.si.GetBaseDN(),
+							ds.si.GetBaseUserDN(),
+							ds.si.GetBaseGroupDN(),
 						},
 					},
 					{
