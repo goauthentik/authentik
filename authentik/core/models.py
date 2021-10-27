@@ -39,7 +39,8 @@ USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
 USER_ATTRIBUTE_SA = "goauthentik.io/user/service-account"
 USER_ATTRIBUTE_SOURCES = "goauthentik.io/user/sources"
 USER_ATTRIBUTE_TOKEN_EXPIRING = "goauthentik.io/user/token-expires"  # nosec
-USER_ATTRIBUTE_CHANGE_USERNAME = "goauthentik.io/user/can-change-username"  # nosec
+USER_ATTRIBUTE_CHANGE_USERNAME = "goauthentik.io/user/can-change-username"
+USER_ATTRIBUTE_CHANGE_EMAIL = "goauthentik.io/user/can-change-email"
 USER_ATTRIBUTE_CAN_OVERRIDE_IP = "goauthentik.io/user/override-ips"
 
 GRAVATAR_URL = "https://secure.gravatar.com"

@@ -8,6 +8,10 @@ title: User
 
 Optional flag, when set to false prevents the user from changing their own username.
 
+### `goauthentik.io/user/can-change-email`
+
+Optional flag, when set to false prevents the user from changing their own email.
+
 ### `goauthentik.io/user/token-expires`:
 
 Optional flag, when set to false, Tokens created by the user will not expire.
