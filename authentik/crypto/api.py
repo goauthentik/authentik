@@ -141,7 +141,7 @@ class CertificateKeyPairFilter(FilterSet):
 class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
     """CertificateKeyPair Viewset"""
 
-    queryset = CertificateKeyPair.objects.all()
+    queryset = CertificateKeyPair.objects.exclude(managed__isnull=False)
     serializer_class = CertificateKeyPairSerializer
     filterset_class = CertificateKeyPairFilter
 
