@@ -40,7 +40,7 @@ export class LibraryPage extends LitElement {
         new CoreApi(DEFAULT_CONFIG).coreApplicationsList({}).then((apps) => {
             this.apps = apps;
             this.fuse = new Fuse(apps.results, {
-                keys: ["slug", "name"],
+                keys: ["slug", "name", "metaDescription", "metaPublisher"],
             });
             if (!this.fuse || !this.query) return;
             const matchingApps = this.fuse.search(this.query);
