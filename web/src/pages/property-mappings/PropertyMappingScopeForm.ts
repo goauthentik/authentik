@@ -1,10 +1,10 @@
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 
-import { ScopeMapping, PropertymappingsApi } from "@goauthentik/api";
+import { PropertymappingsApi, ScopeMapping } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/CodeMirror";

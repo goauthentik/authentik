@@ -1,12 +1,12 @@
 import { t } from "@lingui/macro";
 
-import { CSSResult, html, LitElement, TemplateResult } from "lit";
+import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 
 import AKGlobal from "../../authentik.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 
-import { EventsApi, EventTopPerUser } from "@goauthentik/api";
+import { EventTopPerUser, EventsApi } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/Spinner";

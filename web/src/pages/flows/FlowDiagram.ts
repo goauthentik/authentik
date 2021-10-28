@@ -1,6 +1,6 @@
 import FlowChart from "flowchart.js";
 
-import { html, LitElement, TemplateResult } from "lit";
+import { LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 
 import { FlowsApi } from "@goauthentik/api";

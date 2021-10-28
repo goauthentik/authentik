@@ -1,7 +1,7 @@
 import { en, fr } from "make-plural/plurals";
 
 import { i18n } from "@lingui/core";
-import { detect, fromUrl, fromStorage, fromNavigator } from "@lingui/detect-locale";
+import { detect, fromNavigator, fromStorage, fromUrl } from "@lingui/detect-locale";
 
 import { messages as localeEN } from "../locales/en";
 import { messages as localeFR_FR } from "../locales/fr_FR";

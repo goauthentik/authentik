@@ -1,5 +1,5 @@
 import { CSSResult, LitElement } from "lit";
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { property } from "lit/decorators";
 
 import AKGlobal from "../../authentik.css";

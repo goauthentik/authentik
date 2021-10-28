@@ -11,7 +11,7 @@ import "codemirror/mode/xml/xml.js";
 import "codemirror/mode/yaml/yaml.js";
 import YAML from "yaml";
 
-import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 

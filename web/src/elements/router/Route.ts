@@ -1,4 +1,4 @@
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 
 export const SLUG_REGEX = "[-a-zA-Z0-9_]+";
 export const ID_REGEX = "\\d+";

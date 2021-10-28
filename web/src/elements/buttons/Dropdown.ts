@@ -1,4 +1,4 @@
-import { html, LitElement, TemplateResult } from "lit";
+import { LitElement, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators";
 
 @customElement("ak-dropdown")

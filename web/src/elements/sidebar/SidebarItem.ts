@@ -1,4 +1,4 @@
-import { css, CSSResult, LitElement } from "lit";
+import { CSSResult, LitElement, css } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 import { until } from "lit/directives/until";
