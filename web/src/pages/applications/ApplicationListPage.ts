@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";

@@ -3,7 +3,7 @@ import { IronFormElement } from "@polymer/iron-form/iron-form";
 import "@polymer/paper-input/paper-input";
 import { PaperInputElement } from "@polymer/paper-input/paper-input";
 
-import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators";
 
 import AKGlobal from "../../authentik.css";

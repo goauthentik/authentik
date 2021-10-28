@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import { LitElement, html, CSSResult, TemplateResult, css } from "lit";
+import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 

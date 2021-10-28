@@ -1,10 +1,10 @@
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 
-import { ReputationPolicy, PoliciesApi } from "@goauthentik/api";
+import { PoliciesApi, ReputationPolicy } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import "../../../elements/forms/FormGroup";

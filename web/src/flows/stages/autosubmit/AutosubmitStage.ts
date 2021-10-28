@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators";
 
 import AKGlobal from "../../../authentik.css";
@@ -11,7 +11,7 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { AutosubmitChallenge, AutoSubmitChallengeResponseRequest } from "@goauthentik/api";
+import { AutoSubmitChallengeResponseRequest, AutosubmitChallenge } from "@goauthentik/api";
 
 import "../../../elements/EmptyState";
 import { BaseStage } from "../base";

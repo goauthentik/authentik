@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import { CSSResult, html, LitElement, TemplateResult } from "lit";
+import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 
 import AKGlobal from "../../../authentik.css";
@@ -15,7 +15,7 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
-import { ProvidersApi, LDAPProvider } from "@goauthentik/api";
+import { LDAPProvider, ProvidersApi } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";

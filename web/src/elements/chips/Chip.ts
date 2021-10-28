@@ -1,4 +1,4 @@
-import { CSSResult, html, LitElement, TemplateResult } from "lit";
+import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 
 import AKGlobal from "../../authentik.css";

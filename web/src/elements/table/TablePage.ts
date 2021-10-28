@@ -1,5 +1,5 @@
 import { CSSResult } from "lit";
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { ifDefined } from "lit/directives/if-defined";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";

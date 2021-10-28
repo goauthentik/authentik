@@ -1,11 +1,11 @@
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators";
 
-import { AdminApi, StatusEnum, CapabilitiesEnum } from "@goauthentik/api";
+import { AdminApi, CapabilitiesEnum, StatusEnum } from "@goauthentik/api";
 
-import { config, DEFAULT_CONFIG } from "../../../api/Config";
+import { DEFAULT_CONFIG, config } from "../../../api/Config";
 import { convertToTitle } from "../../../utils";
 import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
 

@@ -1,4 +1,4 @@
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { until } from "lit/directives/until";
 
 import { EVENT_REFRESH } from "../../../constants";
