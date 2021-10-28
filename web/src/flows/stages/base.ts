@@ -1,4 +1,4 @@
-import { html, LitElement, TemplateResult } from "lit";
+import { LitElement, TemplateResult, html } from "lit";
 import { property } from "lit/decorators";
 
 import { ErrorDetail } from "@goauthentik/api";

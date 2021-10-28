@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import { LitElement, html, TemplateResult, CSSResult, css } from "lit";
+import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators";
 import { unsafeHTML } from "lit/directives/unsafe-html";
 import { until } from "lit/directives/until";
@@ -16,8 +16,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
     ChallengeChoices,
-    CurrentTenant,
     ChallengeTypes,
+    CurrentTenant,
     FlowChallengeResponseRequest,
     FlowsApi,
     RedirectChallenge,

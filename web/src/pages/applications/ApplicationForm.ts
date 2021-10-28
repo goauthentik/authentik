@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 
 import { CSSResult } from "lit";
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 import { until } from "lit/directives/until";
@@ -9,15 +9,15 @@ import { until } from "lit/directives/until";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 
 import {
-    CoreApi,
     Application,
-    ProvidersApi,
-    Provider,
-    PolicyEngineMode,
     CapabilitiesEnum,
+    CoreApi,
+    PolicyEngineMode,
+    Provider,
+    ProvidersApi,
 } from "@goauthentik/api";
 
-import { config, DEFAULT_CONFIG } from "../../api/Config";
+import { DEFAULT_CONFIG, config } from "../../api/Config";
 import "../../elements/Spinner";
 import "../../elements/buttons/Dropdown";
 import "../../elements/forms/FormGroup";

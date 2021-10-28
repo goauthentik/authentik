@@ -26,7 +26,7 @@ require (
 	github.com/imdario/mergo v0.3.12
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/nmcclain/asn1-ber v0.0.0-20170104154839-2661553a0484
-	github.com/nmcclain/ldap v0.0.0-20191021200707-3b3b69a7e9e3
+	github.com/nmcclain/ldap v0.0.0-20210720162743-7f8d1e44eeba
 	github.com/pires/go-proxyproto v0.6.1
 	github.com/pkg/errors v0.9.1
 	github.com/pquerna/cachecontrol v0.0.0-20201205024021-ac21108117ac // indirect
@@ -34,7 +34,7 @@ require (
 	github.com/recws-org/recws v1.3.1
 	github.com/sirupsen/logrus v1.8.1
 	go.mongodb.org/mongo-driver v1.5.2 // indirect
-	goauthentik.io/api v0.2021101.4
+	goauthentik.io/api v0.2021101.5
 	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2 // indirect
 	golang.org/x/net v0.0.0-20210510120150-4163338589ed // indirect
 	golang.org/x/oauth2 v0.0.0-20210323180902-22b0adad7558

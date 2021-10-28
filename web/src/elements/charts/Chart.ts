@@ -1,11 +1,11 @@
-import { Chart, Plugin, Tick, ChartConfiguration, ChartData, ChartOptions } from "chart.js";
+import { Chart, ChartConfiguration, ChartData, ChartOptions, Plugin, Tick } from "chart.js";
 import { Legend, Tooltip } from "chart.js";
-import { DoughnutController, LineController, BarController } from "chart.js";
+import { BarController, DoughnutController, LineController } from "chart.js";
 import { ArcElement, BarElement } from "chart.js";
-import { TimeScale, LinearScale } from "chart.js";
+import { LinearScale, TimeScale } from "chart.js";
 import "chartjs-adapter-moment";
 
-import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { property } from "lit/decorators";
 
 import { EVENT_REFRESH } from "../../constants";

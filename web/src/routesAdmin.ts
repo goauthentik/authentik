@@ -1,6 +1,6 @@
 import { html } from "lit";
 
-import { Route, SLUG_REGEX, ID_REGEX, UUID_REGEX } from "./elements/router/Route";
+import { ID_REGEX, Route, SLUG_REGEX, UUID_REGEX } from "./elements/router/Route";
 import "./pages/admin-overview/AdminOverviewPage";
 import "./pages/applications/ApplicationListPage";
 import "./pages/applications/ApplicationViewPage";

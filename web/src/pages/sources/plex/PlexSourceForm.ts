@@ -1,16 +1,16 @@
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 import { until } from "lit/directives/until";
 
 import {
+    FlowsApi,
+    FlowsInstancesListDesignationEnum,
     PlexSource,
     SourcesApi,
-    FlowsApi,
     UserMatchingModeEnum,
-    FlowsInstancesListDesignationEnum,
 } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";

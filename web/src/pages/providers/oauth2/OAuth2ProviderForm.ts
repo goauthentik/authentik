@@ -1,21 +1,21 @@
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 import { until } from "lit/directives/until";
 
 import {
+    ClientTypeEnum,
     CryptoApi,
     FlowsApi,
-    OAuth2Provider,
-    ClientTypeEnum,
+    FlowsInstancesListDesignationEnum,
     IssuerModeEnum,
     JwtAlgEnum,
-    SubModeEnum,
+    OAuth2Provider,
     PropertymappingsApi,
     ProvidersApi,
-    FlowsInstancesListDesignationEnum,
+    SubModeEnum,
 } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";

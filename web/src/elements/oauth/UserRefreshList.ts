@@ -1,11 +1,11 @@
 import { t } from "@lingui/macro";
 
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 
-import { RefreshTokenModel, Oauth2Api, ExpiringBaseGrantModel } from "@goauthentik/api";
+import { ExpiringBaseGrantModel, Oauth2Api, RefreshTokenModel } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";

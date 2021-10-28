@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators";
 
 import "../../elements/buttons/SpinnerButton";

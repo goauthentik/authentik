@@ -1,12 +1,12 @@
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators";
 
 import { AdminApi, Version } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { AdminStatusCard, AdminStatus } from "./AdminStatusCard";
+import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
 
 @customElement("ak-admin-status-version")
 export class VersionStatusCard extends AdminStatusCard<Version> {

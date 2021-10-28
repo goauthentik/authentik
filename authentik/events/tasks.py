@@ -98,7 +98,9 @@ def notification_transport(self: MonitoredTask, notification_pk: int, transport_
         notification: Notification = Notification.objects.filter(pk=notification_pk).first()
         if not notification:
             return
-        transport: NotificationTransport = NotificationTransport.objects.get(pk=transport_pk)
+        transport = NotificationTransport.objects.filter(pk=transport_pk).first()
+        if not transport:
+            return
         transport.send(notification)
         self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL))
     except NotificationTransportError as exc:

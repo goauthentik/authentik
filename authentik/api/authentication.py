@@ -45,7 +45,8 @@ def bearer_auth(raw_header: bytes) -> Optional[User]:
         if not user:
             raise AuthenticationFailed("Token invalid/expired")
         return user
-    LOCAL.authentik[KEY_AUTH_VIA] = "api_token"
+    if hasattr(LOCAL, "authentik"):
+        LOCAL.authentik[KEY_AUTH_VIA] = "api_token"
     return tokens.first().user
 
 
@@ -59,7 +60,8 @@ def token_secret_key(value: str) -> Optional[User]:
     outposts = Outpost.objects.filter(managed=MANAGED_OUTPOST)
     if not outposts:
         return None
-    LOCAL.authentik[KEY_AUTH_VIA] = "secret_key"
+    if hasattr(LOCAL, "authentik"):
+        LOCAL.authentik[KEY_AUTH_VIA] = "secret_key"
     outpost = outposts.first()
     return outpost.user
 

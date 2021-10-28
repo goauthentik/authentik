@@ -2,7 +2,7 @@ import Fuse from "fuse.js";
 
 import { t } from "@lingui/macro";
 
-import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators";
 import { until } from "lit/directives/until";
 

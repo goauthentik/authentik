@@ -448,7 +448,7 @@ class RefreshToken(ExpiringModel, BaseGrantModel):
         elif self.provider.sub_mode == SubModes.USER_USERNAME:
             sub = user.username
         elif self.provider.sub_mode == SubModes.USER_UPN:
-            sub = user.attributes["upn"]
+            sub = user.attributes.get("upn", user.uid)
         else:
             raise ValueError(
                 (

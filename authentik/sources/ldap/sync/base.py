@@ -82,6 +82,8 @@ class BaseLDAPSynchronizer:
                 value = mapping.evaluate(user=None, request=None, ldap=kwargs, dn=object_dn)
                 if value is None:
                     continue
+                if isinstance(value, (bytes)):
+                    continue
                 object_field = mapping.object_field
                 if object_field.startswith("attributes."):
                     # Because returning a list might desired, we can't
