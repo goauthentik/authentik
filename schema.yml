@@ -655,6 +655,27 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /authenticators/all/:
+    get:
+      operationId: authenticators_all_list
+      description: Get all devices for current user
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Device'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /authenticators/duo/:
     get:
       operationId: authenticators_duo_list
@@ -20169,6 +20190,29 @@ components:
             $ref: '#/components/schemas/FlowRequest'
       required:
       - name
+    Device:
+      type: object
+      description: Serializer for Duo authenticator devices
+      properties:
+        verbose_name:
+          type: string
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          readOnly: true
+        pk:
+          type: integer
+        name:
+          type: string
+        type:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
+      - type
+      - verbose_name
+      - verbose_name_plural
     DeviceChallenge:
       type: object
       description: Single device challenge
