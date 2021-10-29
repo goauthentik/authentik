@@ -12,7 +12,7 @@ require (
 	github.com/go-openapi/analysis v0.20.1 // indirect
 	github.com/go-openapi/errors v0.20.0 // indirect
 	github.com/go-openapi/runtime v0.20.0
-	github.com/go-openapi/strfmt v0.20.3
+	github.com/go-openapi/strfmt v0.21.0
 	github.com/go-openapi/swag v0.19.15 // indirect
 	github.com/go-openapi/validate v0.20.2 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible
@@ -33,7 +33,6 @@ require (
 	github.com/prometheus/client_golang v1.11.0
 	github.com/recws-org/recws v1.3.1
 	github.com/sirupsen/logrus v1.8.1
-	go.mongodb.org/mongo-driver v1.5.2 // indirect
 	goauthentik.io/api v0.2021101.5
 	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2 // indirect
 	golang.org/x/net v0.0.0-20210510120150-4163338589ed // indirect
