@@ -1,5 +1,5 @@
 # Stage 1: Build website
-FROM docker.io/node:16 as web-builder
+FROM docker.io/node:17 as web-builder
 
 COPY ./web /static/
 
