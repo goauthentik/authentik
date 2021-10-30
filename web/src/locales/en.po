@@ -39,7 +39,6 @@ msgstr "(Format: hours=-1;minutes=-2;seconds=-3)."
 #: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/users/UserListPage.ts
-#: src/user/user-settings/stages/UserSettingsAuthenticatorWebAuthn.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "-"
 msgstr "-"
@@ -447,7 +446,6 @@ msgid "Authentication flow"
 msgstr "Authentication flow"
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
-#: src/user/user-settings/stages/UserSettingsAuthenticatorWebAuthn.ts
 msgid "Authenticator"
 msgstr "Authenticator"
 
@@ -683,7 +681,7 @@ msgstr "Certificate/Key used for authentication. Can be left empty for no authen
 msgid "Certificates"
 msgstr "Certificates"
 
-#: src/user/user-settings/stages/UserSettingsPassword.ts
+#: src/user/user-settings/details/UserPassword.ts
 msgid "Change password"
 msgstr "Change password"
 
@@ -691,7 +689,7 @@ msgstr "Change password"
 msgid "Change status"
 msgstr "Change status"
 
-#: src/user/user-settings/stages/UserSettingsPassword.ts
+#: src/user/user-settings/details/UserPassword.ts
 msgid "Change your password"
 msgstr "Change your password"
 
@@ -875,9 +873,9 @@ msgstr "Configuration flow"
 msgid "Configuration stage"
 msgstr "Configuration stage"
 
-#: src/user/user-settings/stages/UserSettingsAuthenticatorWebAuthn.ts
-msgid "Configure WebAuthn"
-msgstr "Configure WebAuthn"
+#: 
+#~ msgid "Configure WebAuthn"
+#~ msgstr "Configure WebAuthn"
 
 #: 
 #~ msgid "Configure how long access codes are valid for."
@@ -1200,9 +1198,9 @@ msgstr "Create {0}"
 msgid "Created by"
 msgstr "Created by"
 
-#: src/user/user-settings/stages/UserSettingsAuthenticatorWebAuthn.ts
-msgid "Created {0}"
-msgstr "Created {0}"
+#: 
+#~ msgid "Created {0}"
+#~ msgstr "Created {0}"
 
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
@@ -1289,7 +1287,8 @@ msgstr "Define how notifications are sent to users, like Email or Webhook."
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/users/UserListPage.ts
-#: src/user/user-settings/stages/UserSettingsAuthenticatorWebAuthn.ts
+#: src/user/user-settings/mfa/MFADevicesPage.ts
+#: src/user/user-settings/sources/SourceConnectionsPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Delete"
 msgstr "Delete"
@@ -1315,7 +1314,7 @@ msgstr "Delete"
 #~ msgid "Delete Session"
 #~ msgstr "Delete Session"
 
-#: src/user/user-settings/UserSelfForm.ts
+#: src/user/user-settings/details/UserDetailsForm.ts
 msgid "Delete account"
 msgstr "Delete account"
 
@@ -1392,9 +1391,14 @@ msgstr "Device classes"
 msgid "Device classes which can be used to authenticate."
 msgstr "Device classes which can be used to authenticate."
 
-#: src/user/user-settings/stages/UserSettingsAuthenticatorWebAuthn.ts
-msgid "Device name"
-msgstr "Device name"
+#: 
+#~ msgid "Device name"
+#~ msgstr "Device name"
+
+#: src/user/user-settings/mfa/MFADevicesPage.ts
+#: src/user/user-settings/sources/SourceConnectionsPage.ts
+msgid "Device(s)"
+msgstr "Device(s)"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
@@ -1410,21 +1414,21 @@ msgstr "Digits"
 #~ msgid "Disable"
 #~ msgstr "Disable"
 
-#: src/user/user-settings/stages/UserSettingsAuthenticatorDuo.ts
-msgid "Disable Duo authenticator"
-msgstr "Disable Duo authenticator"
+#: 
+#~ msgid "Disable Duo authenticator"
+#~ msgstr "Disable Duo authenticator"
 
-#: src/user/user-settings/stages/UserSettingsAuthenticatorSMS.ts
-msgid "Disable SMS authenticator"
-msgstr "Disable SMS authenticator"
+#: 
+#~ msgid "Disable SMS authenticator"
+#~ msgstr "Disable SMS authenticator"
 
-#: src/user/user-settings/stages/UserSettingsAuthenticatorStatic.ts
-msgid "Disable Static Tokens"
-msgstr "Disable Static Tokens"
+#: 
+#~ msgid "Disable Static Tokens"
+#~ msgstr "Disable Static Tokens"
 
-#: src/user/user-settings/stages/UserSettingsAuthenticatorTOTP.ts
-msgid "Disable Time-based OTP"
-msgstr "Disable Time-based OTP"
+#: 
+#~ msgid "Disable Time-based OTP"
+#~ msgstr "Disable Time-based OTP"
 
 #: src/pages/sources/SourcesListPage.ts
 msgid "Disabled"
@@ -1466,9 +1470,9 @@ msgstr "Due to protocol limitations, this certificate is only used when the outp
 msgid "Dummy stage used for testing. Shows a simple continue button and always passes."
 msgstr "Dummy stage used for testing. Shows a simple continue button and always passes."
 
-#: src/user/user-settings/stages/UserSettingsAuthenticatorDuo.ts
-msgid "Duo"
-msgstr "Duo"
+#: 
+#~ msgid "Duo"
+#~ msgstr "Duo"
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Duo Authenticators"
@@ -1477,6 +1481,10 @@ msgstr "Duo Authenticators"
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 msgid "Duo activation"
 msgstr "Duo activation"
+
+#: src/user/user-settings/mfa/MFADevicesPage.ts
+msgid "Duo authenticator"
+msgstr "Duo authenticator"
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Duo push-notifications"
@@ -1534,7 +1542,7 @@ msgstr "Either no applications are defined, or you don't have access to any."
 #: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserViewPage.ts
-#: src/user/user-settings/UserSelfForm.ts
+#: src/user/user-settings/details/UserDetailsForm.ts
 msgid "Email"
 msgstr "Email"
 
@@ -1571,25 +1579,25 @@ msgstr "Embedded outpost is not configured correctly."
 #~ msgid "Enable"
 #~ msgstr "Enable"
 
-#: src/user/user-settings/stages/UserSettingsAuthenticatorDuo.ts
-msgid "Enable Duo authenticator"
-msgstr "Enable Duo authenticator"
+#: 
+#~ msgid "Enable Duo authenticator"
+#~ msgstr "Enable Duo authenticator"
 
-#: src/user/user-settings/stages/UserSettingsAuthenticatorSMS.ts
-msgid "Enable SMS authenticator"
-msgstr "Enable SMS authenticator"
+#: 
+#~ msgid "Enable SMS authenticator"
+#~ msgstr "Enable SMS authenticator"
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Enable StartTLS"
 msgstr "Enable StartTLS"
 
-#: src/user/user-settings/stages/UserSettingsAuthenticatorStatic.ts
-msgid "Enable Static Tokens"
-msgstr "Enable Static Tokens"
+#: 
+#~ msgid "Enable Static Tokens"
+#~ msgstr "Enable Static Tokens"
 
-#: src/user/user-settings/stages/UserSettingsAuthenticatorTOTP.ts
-msgid "Enable TOTP"
-msgstr "Enable TOTP"
+#: 
+#~ msgid "Enable TOTP"
+#~ msgstr "Enable TOTP"
 
 #: src/pages/flows/FlowForm.ts
 msgid "Enable compatibility mode, increases compatibility with password managers on mobile devices."
@@ -1607,6 +1615,11 @@ msgstr "Enabled"
 #: src/pages/users/ServiceAccountForm.ts
 msgid "Enabling this toggle will create a group named after the user, with the user as member."
 msgstr "Enabling this toggle will create a group named after the user, with the user as member."
+
+#: src/user/user-settings/mfa/MFADevicesPage.ts
+#: src/user/user-settings/sources/SourceConnectionsPage.ts
+msgid "Enroll"
+msgstr "Enroll"
 
 #: src/pages/flows/utils.ts
 msgid "Enrollment"
@@ -1643,9 +1656,9 @@ msgstr "Error when validating assertion on server: {err}"
 msgid "Error: unsupported source settings: {0}"
 msgstr "Error: unsupported source settings: {0}"
 
-#: src/user/user-settings/stages/StageSettings.ts
-msgid "Error: unsupported stage settings: {0}"
-msgstr "Error: unsupported stage settings: {0}"
+#: 
+#~ msgid "Error: unsupported stage settings: {0}"
+#~ msgstr "Error: unsupported stage settings: {0}"
 
 #: src/pages/flows/StageBindingForm.ts
 msgid "Evaluate on plan"
@@ -2488,9 +2501,10 @@ msgstr "Load servers"
 #: src/flows/stages/prompt/PromptStage.ts
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
-#: src/user/user-settings/UserSelfForm.ts
+#: src/user/user-settings/details/UserDetailsForm.ts
+#: src/user/user-settings/mfa/MFADevicesPage.ts
+#: src/user/user-settings/sources/SourceConnectionsPage.ts
 #: src/user/user-settings/sources/SourceSettings.ts
-#: src/user/user-settings/stages/StageSettings.ts
 #: src/utils.ts
 msgid "Loading"
 msgstr "Loading"
@@ -2620,6 +2634,10 @@ msgstr "Logs"
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Long-running operations which authentik executes in the background."
 msgstr "Long-running operations which authentik executes in the background."
+
+#: src/user/user-settings/UserSettingsPage.ts
+msgid "MFA Devices"
+msgstr "MFA Devices"
 
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Mark newly created users as inactive."
@@ -2802,7 +2820,8 @@ msgstr "My applications"
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
-#: src/user/user-settings/UserSelfForm.ts
+#: src/user/user-settings/details/UserDetailsForm.ts
+#: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "Name"
 msgstr "Name"
 
@@ -2947,6 +2966,7 @@ msgstr "Not used by any other object."
 #: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageDuo.ts
 #: src/flows/stages/captcha/CaptchaStage.ts
@@ -3201,9 +3221,9 @@ msgstr "Password set"
 msgid "Password stage"
 msgstr "Password stage"
 
-#: src/user/user-settings/UserSettingsPage.ts
-msgid "Password, 2FA, etc"
-msgstr "Password, 2FA, etc"
+#: 
+#~ msgid "Password, 2FA, etc"
+#~ msgstr "Password, 2FA, etc"
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical."
@@ -3625,7 +3645,7 @@ msgstr "Required."
 
 #: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserForm.ts
-#: src/user/user-settings/UserSelfForm.ts
+#: src/user/user-settings/details/UserDetailsForm.ts
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 
@@ -3702,9 +3722,12 @@ msgid "SLO URL"
 msgstr "SLO URL"
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
-#: src/user/user-settings/stages/UserSettingsAuthenticatorSMS.ts
 msgid "SMS"
 msgstr "SMS"
+
+#: src/user/user-settings/mfa/MFADevicesPage.ts
+msgid "SMS authenticator"
+msgstr "SMS authenticator"
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "SMS-based Authenticators"
@@ -3735,7 +3758,7 @@ msgstr "SSO URL"
 msgid "Same identifier is used for all providers"
 msgstr "Same identifier is used for all providers"
 
-#: src/user/user-settings/UserSelfForm.ts
+#: src/user/user-settings/details/UserDetailsForm.ts
 msgid "Save"
 msgstr "Save"
 
@@ -3782,6 +3805,10 @@ msgstr "Secret was viewed"
 #: src/pages/events/EventInfo.ts
 msgid "Secret:"
 msgstr "Secret:"
+
+#: src/user/user-settings/mfa/MFADevicesPage.ts
+msgid "Security key authenticator"
+msgstr "Security key authenticator"
 
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts
@@ -4034,6 +4061,10 @@ msgstr "Something went wrong! Please try again later."
 msgid "Source linked"
 msgstr "Source linked"
 
+#: src/user/user-settings/sources/SourceConnectionsPage.ts
+msgid "Source name"
+msgstr "Source name"
+
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
 #: src/user/user-settings/sources/SourceSettingsPlex.ts
 msgid "Source {0}"
@@ -4162,9 +4193,13 @@ msgstr "State"
 msgid "Static Tokens"
 msgstr "Static Tokens"
 
-#: src/user/user-settings/stages/UserSettingsAuthenticatorStatic.ts
-msgid "Static tokens"
-msgstr "Static tokens"
+#: src/user/user-settings/mfa/MFADevicesPage.ts
+msgid "Static authenticator"
+msgstr "Static authenticator"
+
+#: 
+#~ msgid "Static tokens"
+#~ msgstr "Static tokens"
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Static: Static value, displayed as-is."
@@ -4178,19 +4213,19 @@ msgstr "Statically deny the flow. To use this stage effectively, disable *Evalua
 msgid "Status"
 msgstr "Status"
 
-#: src/user/user-settings/stages/UserSettingsAuthenticatorDuo.ts
-#: src/user/user-settings/stages/UserSettingsAuthenticatorSMS.ts
-#: src/user/user-settings/stages/UserSettingsAuthenticatorStatic.ts
-#: src/user/user-settings/stages/UserSettingsAuthenticatorTOTP.ts
-msgid "Status: Disabled"
-msgstr "Status: Disabled"
+#: 
+#: 
+#: 
+#: 
+#~ msgid "Status: Disabled"
+#~ msgstr "Status: Disabled"
 
-#: src/user/user-settings/stages/UserSettingsAuthenticatorDuo.ts
-#: src/user/user-settings/stages/UserSettingsAuthenticatorSMS.ts
-#: src/user/user-settings/stages/UserSettingsAuthenticatorStatic.ts
-#: src/user/user-settings/stages/UserSettingsAuthenticatorTOTP.ts
-msgid "Status: Enabled"
-msgstr "Status: Enabled"
+#: 
+#: 
+#: 
+#: 
+#~ msgid "Status: Enabled"
+#~ msgstr "Status: Enabled"
 
 #: src/interfaces/UserInterface.ts
 msgid "Stop impersonation"
@@ -4397,13 +4432,13 @@ msgstr "Successfully updated binding."
 msgid "Successfully updated certificate-key pair."
 msgstr "Successfully updated certificate-key pair."
 
-#: src/user/user-settings/UserSelfForm.ts
+#: src/user/user-settings/details/UserDetailsForm.ts
 msgid "Successfully updated details."
 msgstr "Successfully updated details."
 
-#: src/user/user-settings/stages/UserSettingsAuthenticatorWebAuthn.ts
-msgid "Successfully updated device."
-msgstr "Successfully updated device."
+#: 
+#~ msgid "Successfully updated device."
+#~ msgstr "Successfully updated device."
 
 #: src/pages/flows/FlowForm.ts
 msgid "Successfully updated flow."
@@ -4596,6 +4631,10 @@ msgstr "TLS Verification Certificate"
 msgid "TOTP Authenticators"
 msgstr "TOTP Authenticators"
 
+#: src/user/user-settings/mfa/MFADevicesPage.ts
+msgid "TOTP authenticator"
+msgstr "TOTP authenticator"
+
 #: src/pages/flows/StageBindingForm.ts
 msgid "Target"
 msgstr "Target"
@@ -4760,9 +4799,9 @@ msgstr "Time in minutes the token sent is valid."
 msgid "Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3)."
 msgstr "Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3)."
 
-#: src/user/user-settings/stages/UserSettingsAuthenticatorTOTP.ts
-msgid "Time-based One-Time Passwords"
-msgstr "Time-based One-Time Passwords"
+#: 
+#~ msgid "Time-based One-Time Passwords"
+#~ msgstr "Time-based One-Time Passwords"
 
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyBindingForm.ts
@@ -4893,6 +4932,7 @@ msgstr "Twilio Auth Token"
 #: src/pages/sources/SourcesListPage.ts
 #: src/pages/stages/prompt/PromptForm.ts
 #: src/pages/stages/prompt/PromptListPage.ts
+#: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "Type"
 msgstr "Type"
 
@@ -5015,9 +5055,8 @@ msgstr "Up-to-date!"
 #: src/pages/users/UserActiveForm.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
-#: src/user/user-settings/stages/UserSettingsAuthenticatorWebAuthn.ts
-#: src/user/user-settings/stages/UserSettingsAuthenticatorWebAuthn.ts
-#: src/user/user-settings/stages/UserSettingsAuthenticatorWebAuthn.ts
+#: src/user/user-settings/mfa/MFADevicesPage.ts
+#: src/user/user-settings/sources/SourceConnectionsPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Update"
 msgstr "Update"
@@ -5034,6 +5073,11 @@ msgstr "Update Binding"
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Update Certificate-Key Pair"
 msgstr "Update Certificate-Key Pair"
+
+#: src/user/user-settings/mfa/MFADevicesPage.ts
+#: src/user/user-settings/sources/SourceConnectionsPage.ts
+msgid "Update Device"
+msgstr "Update Device"
 
 #: src/pages/flows/FlowListPage.ts
 msgid "Update Flow"
@@ -5275,7 +5319,7 @@ msgid "User's avatar"
 msgstr "User's avatar"
 
 #: src/pages/users/UserForm.ts
-#: src/user/user-settings/UserSelfForm.ts
+#: src/user/user-settings/details/UserDetailsForm.ts
 msgid "User's display name."
 msgstr "User's display name."
 
@@ -5303,7 +5347,7 @@ msgstr "Userinfo URL"
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
-#: src/user/user-settings/UserSelfForm.ts
+#: src/user/user-settings/details/UserDetailsForm.ts
 msgid "Username"
 msgstr "Username"
 
@@ -5421,9 +5465,9 @@ msgstr "Warning: authentik Domain is not configured, authentication will not wor
 msgid "WebAuthn Authenticators"
 msgstr "WebAuthn Authenticators"
 
-#: src/user/user-settings/stages/UserSettingsAuthenticatorWebAuthn.ts
-msgid "WebAuthn Devices"
-msgstr "WebAuthn Devices"
+#: 
+#~ msgid "WebAuthn Devices"
+#~ msgstr "WebAuthn Devices"
 
 #: src/pages/events/TransportForm.ts
 msgid "Webhook (Slack/Discord)"
