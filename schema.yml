@@ -13428,12 +13428,6 @@ paths:
         required: true
       tags:
       - sources
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserSourceConnectionRequest'
-        required: true
       security:
       - authentik: []
       responses:
@@ -13459,11 +13453,6 @@ paths:
         required: true
       tags:
       - sources
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedUserSourceConnectionRequest'
       security:
       - authentik: []
       responses:
@@ -27202,8 +27191,6 @@ components:
       type: object
       description: Plex Source connection Serializer
       properties:
-        user:
-          type: integer
         source:
           type: string
           format: uuid
@@ -27727,8 +27714,6 @@ components:
       type: object
       description: OAuth Source Serializer
       properties:
-        user:
-          type: integer
         source:
           type: string
           format: uuid
@@ -27770,12 +27755,6 @@ components:
         attributes:
           type: object
           additionalProperties: {}
-    PatchedUserSourceConnectionRequest:
-      type: object
-      description: OAuth Source Serializer
-      properties:
-        user:
-          type: integer
     PatchedUserWriteStageRequest:
       type: object
       description: UserWriteStage Serializer
@@ -27922,6 +27901,7 @@ components:
           title: ID
         user:
           type: integer
+          readOnly: true
         source:
           type: string
           format: uuid
@@ -27939,8 +27919,6 @@ components:
       type: object
       description: Plex Source connection Serializer
       properties:
-        user:
-          type: integer
         source:
           type: string
           format: uuid
@@ -27952,7 +27930,6 @@ components:
       - identifier
       - plex_token
       - source
-      - user
     PlexSourceRequest:
       type: object
       description: Plex Source Serializer
@@ -30312,6 +30289,7 @@ components:
           title: ID
         user:
           type: integer
+          readOnly: true
         source:
           type: string
           format: uuid
@@ -30327,8 +30305,6 @@ components:
       type: object
       description: OAuth Source Serializer
       properties:
-        user:
-          type: integer
         source:
           type: string
           format: uuid
@@ -30338,7 +30314,6 @@ components:
       required:
       - identifier
       - source
-      - user
     UserReputation:
       type: object
       description: UserReputation Serializer
@@ -30540,21 +30515,19 @@ components:
           title: ID
         user:
           type: integer
+          readOnly: true
         source:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
       required:
+      - created
       - pk
       - source
-      - user
-    UserSourceConnectionRequest:
-      type: object
-      description: OAuth Source Serializer
-      properties:
-        user:
-          type: integer
-      required:
       - user
     UserWriteStage:
       type: object

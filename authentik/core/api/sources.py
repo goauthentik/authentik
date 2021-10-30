@@ -129,7 +129,12 @@ class UserSourceConnectionSerializer(SourceSerializer):
             "pk",
             "user",
             "source",
+            "created",
         ]
+        extra_kwargs = {
+            "user": {"read_only": True},
+            "created": {"read_only": True},
+        }
 
 
 class UserSourceConnectionViewSet(
