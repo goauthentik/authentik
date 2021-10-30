@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators";
+import { customElement, property } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 
 import { AuthenticatorsApi, Device } from "@goauthentik/api";
@@ -12,9 +12,14 @@ import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-user-mfa-form")
 export class MFADeviceForm extends ModelForm<Device, number> {
+    @property()
+    deviceType!: string;
+
     loadInstance(pk: number): Promise<Device> {
         return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList().then((devices) => {
-            return devices.filter((device) => device.pk === pk)[0];
+            return devices.filter((device) => {
+                return device.pk === pk && device.type === this.deviceType;
+            })[0];
         });
     }
 

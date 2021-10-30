@@ -146,7 +146,8 @@ export class MFADevicesPage extends Table<Device> {
                 <ak-forms-modal>
                     <span slot="submit">${t`Update`}</span>
                     <span slot="header">${t`Update Device`}</span>
-                    <ak-user-mfa-form slot="form" .instancePk=${item.pk}> </ak-user-mfa-form>
+                    <ak-user-mfa-form slot="form" deviceType=${item.type} .instancePk=${item.pk}>
+                    </ak-user-mfa-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <i class="fas fa-edit"></i>
                     </button>
