@@ -35,7 +35,8 @@ type APIController struct {
 
 	logger *log.Entry
 
-	reloadOffset time.Duration
+	reloadOffset    time.Duration
+	lastWsReconnect time.Time
 
 	wsConn       *recws.RecConn
 	instanceUUID uuid.UUID
@@ -142,6 +143,10 @@ func (a *APIController) StartBackgorundTasks() error {
 			"build":        constants.BUILD(),
 		}).SetToCurrentTime()
 	}
+	go func() {
+		a.logger.Debug("Starting WS reconnector...")
+		a.startWSReConnector()
+	}()
 	go func() {
 		a.logger.Debug("Starting WS Handler...")
 		a.startWSHandler()
